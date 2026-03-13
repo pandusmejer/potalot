@@ -52,6 +52,43 @@ export async function updateSeed(seedId: string, formData: FormData) {
   return { success: true }
 }
 
+export async function createSeedsBatch(
+  seeds: Array<{
+    name: string
+    variety?: string | null
+    brand?: string | null
+    guide_id?: string | null
+    quantity?: number | null
+    year_purchased?: number | null
+    expiry_year?: number | null
+    notes?: string | null
+    status?: string
+  }>
+) {
+  const supabase = await createClient()
+  const userId = DEMO_USER_ID
+
+  const rows = seeds.map((s) => ({
+    user_id: userId,
+    name: s.name,
+    variety: s.variety || null,
+    brand: s.brand || null,
+    guide_id: s.guide_id || null,
+    quantity: s.quantity || null,
+    year_purchased: s.year_purchased || null,
+    expiry_year: s.expiry_year || null,
+    notes: s.notes || null,
+    status: s.status || 'in_stock',
+  }))
+
+  const { error } = await supabase.from('seeds').insert(rows)
+
+  if (error) return { error: error.message }
+  revalidatePath('/inventory')
+  revalidatePath('/dashboard')
+  return { success: true, count: rows.length }
+}
+
 export async function deleteSeed(seedId: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('seeds').delete().eq('id', seedId)

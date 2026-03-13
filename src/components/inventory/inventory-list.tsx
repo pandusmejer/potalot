@@ -6,9 +6,10 @@ import { Card } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SeedForm } from '@/components/inventory/seed-form'
 import { PlantForm } from '@/components/inventory/plant-form'
+import { SeedUploadDialog } from '@/components/inventory/seed-upload-dialog'
 import { PLANT_STATUSES, SEED_STATUSES, type PlantStatus } from '@/lib/constants'
 import type { Seed, Plant, PlantGuide } from '@/lib/types'
-import { Package, Sprout, Plus } from 'lucide-react'
+import { Package, Sprout, Plus, Upload } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -24,6 +25,7 @@ export function InventoryList({ seeds, plants, guides }: InventoryListProps) {
   const [plantFormOpen, setPlantFormOpen] = useState(false)
   const [editingSeed, setEditingSeed] = useState<Seed | null>(null)
   const [editingPlant, setEditingPlant] = useState<Plant | null>(null)
+  const [uploadOpen, setUploadOpen] = useState(false)
 
   return (
     <div>
@@ -45,6 +47,12 @@ export function InventoryList({ seeds, plants, guides }: InventoryListProps) {
           Planter ({plants.length})
         </button>
         <div className="flex-1" />
+        {tab === 'seeds' && (
+          <Button size="sm" variant="secondary" onClick={() => setUploadOpen(true)}>
+            <Upload className="h-4 w-4 mr-1" />
+            Upload
+          </Button>
+        )}
         <Button
           size="sm"
           onClick={() => tab === 'seeds' ? setSeedFormOpen(true) : setPlantFormOpen(true)}
@@ -142,6 +150,11 @@ export function InventoryList({ seeds, plants, guides }: InventoryListProps) {
         plant={editingPlant}
         guides={guides}
         seeds={seeds}
+      />
+      <SeedUploadDialog
+        open={uploadOpen}
+        onClose={() => setUploadOpen(false)}
+        guides={guides}
       />
     </div>
   )
