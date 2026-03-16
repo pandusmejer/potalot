@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getAnthropicClient } from '@/lib/anthropic/client'
+import Anthropic from '@anthropic-ai/sdk'
 import { adminTools } from '@/lib/admin/tools'
 import { executeAdminTool } from '@/lib/admin/tool-executor'
 import { buildAdminSystemPrompt } from '@/lib/admin/system-prompt'
@@ -18,7 +18,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Ingen besked' }, { status: 400 })
   }
 
-  const client = getAnthropicClient()
+  // Create client explicitly with API key to avoid conflict with Authorization header
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   const systemPrompt = buildAdminSystemPrompt()
 
   // Build API messages from chat history
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     // Tool use loop — max 10 iterations to prevent runaway
     for (let i = 0; i < 10; i++) {
       const response = await client.messages.create({
-        model: 'claude-sonnet-4-6-20250514',
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 4096,
         system: systemPrompt,
         tools: adminTools,
