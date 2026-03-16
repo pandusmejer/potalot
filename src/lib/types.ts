@@ -149,3 +149,15 @@ export interface AiMessage {
   content: string
   timestamp: string
 }
+
+export interface ChangeRequest {
+  id: string
+  description: string
+  details: string | null
+  category: 'content' | 'design' | 'feature' | 'bug'
+  priority: 'low' | 'medium' | 'high'
+  status: 'pending' | 'in_progress' | 'done' | 'rejected'
+  requested_by: string
+  created_at: string
+  updated_at: string
+}
