@@ -1,36 +1,117 @@
-export default function DashboardPage() {
+import { createClient } from '@/lib/supabase/server'
+import { DEMO_USER_ID } from '@/lib/demo'
+import { StatusCards } from '@/components/dashboard/status-cards'
+import { TodaysTasks } from '@/components/dashboard/todays-tasks'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { SEED_STATUSES, GUIDE_CATEGORIES } from '@/lib/constants'
+import { getCurrentSeason } from '@/lib/utils'
+import type { Task, Seed, PlantGuide } from '@/lib/types'
+import Link from 'next/link'
+import { Package, BookOpen, ArrowRight } from 'lucide-react'
+
+export default async function DashboardPage() {
+  const supabase = await createClient()
+  const userId = DEMO_USER_ID
+
+  const [seedsRes, plantsRes, tasksRes, notesRes, guidesRes] = await Promise.all([
+    supabase.from('seeds').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+    supabase.from('plants').select('*').eq('user_id', userId),
+    supabase.from('tasks').select('*, plant:plants(name, variety)').eq('user_id', userId).is('completed_at', null).order('due_date', { ascending: true }).limit(10),
+    supabase.from('notes').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('season_year', new Date().getFullYear()),
+    supabase.from('plant_guides').select('*').order('name_da', { ascending: true }),
+  ])
+
+  const seeds = (seedsRes.data || []) as Seed[]
+  const plants = plantsRes.data || []
+  const tasks = (tasksRes.data || []) as Task[]
+  const guides = (guidesRes.data || []) as PlantGuide[]
+
+  const activePlants = plants.filter(p => !['done', 'dead'].includes(p.status)).length
+  const seedsInStock = seeds.filter(s => s.status === 'in_stock').length
+  const notesSeason = notesRes.count || 0
+  const season = getCurrentSeason()
+  const recentSeeds = seeds.slice(0, 6)
+  const upcomingTasks = tasks.slice(0, 5)
+
   return (
-    <main style={{ padding: 32, fontFamily: "sans-serif" }}>
-      <h1>Potalot Dashboard</h1>
-      <p>Hvis du kan se dette på Netlify, redigerer du det rigtige dashboard.</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Overblik</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {season.charAt(0).toUpperCase() + season.slice(1)} {new Date().getFullYear()} — {seeds.length} frø, {activePlants} aktive planter
+        </p>
+      </div>
 
-      <section style={{ marginTop: 24 }}>
-        <h2>Frøbank</h2>
-        <ul>
-          <li>Tigerella</li>
-          <li>Purple Jalapeño</li>
-          <li>Agurk Marketmore</li>
-        </ul>
-      </section>
+      <StatusCards
+        activePlants={activePlants}
+        seedsInStock={seedsInStock}
+        tasksThisWeek={upcomingTasks.length}
+        notesSeason={notesSeason}
+      />
 
-      <section style={{ marginTop: 24 }}>
-        <h2>Dyrkningsguides</h2>
-        <p>Guides skal ligge centralt og kobles til frø.</p>
-      </section>
+      <div className="grid lg:grid-cols-2 gap-6">
+        <TodaysTasks tasks={upcomingTasks} title="Kommende opgaver" />
 
-      <section style={{ marginTop: 24 }}>
-        <h2>To-do</h2>
-        <ul>
-          <li>Forspir tomater</li>
-          <li>Ompot chili</li>
-          <li>Tjek frø med udløb snart</li>
-        </ul>
-      </section>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Frøbank
+            </CardTitle>
+            <Link href="/inventory" className="text-xs text-primary flex items-center gap-1 hover:underline">
+              Se alle <ArrowRight className="h-3 w-3" />
+            </Link>
+          </CardHeader>
+          {recentSeeds.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-2">Ingen frø endnu</p>
+          ) : (
+            <div className="space-y-2">
+              {recentSeeds.map((seed) => {
+                const statusMeta = SEED_STATUSES[seed.status as keyof typeof SEED_STATUSES]
+                return (
+                  <div key={seed.id} className="flex items-center justify-between py-1.5">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {seed.name}{seed.variety ? ` — ${seed.variety}` : ''}
+                      </p>
+                      {seed.brand && (
+                        <p className="text-xs text-muted-foreground">{seed.brand}</p>
+                      )}
+                    </div>
+                    {statusMeta && (
+                      <Badge className={statusMeta.color}>{statusMeta.label}</Badge>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </Card>
+      </div>
 
-      <section style={{ marginTop: 24 }}>
-        <h2>Idébank</h2>
-        <p>Mit Haveår, høstkurv, stemmestyring, community som valgfri feature.</p>
-      </section>
-    </main>
-  );
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            Dyrkningsguides
+          </CardTitle>
+          <Link href="/guides" className="text-xs text-primary flex items-center gap-1 hover:underline">
+            Se alle {guides.length} <ArrowRight className="h-3 w-3" />
+          </Link>
+        </CardHeader>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(GUIDE_CATEGORIES).map(([key, meta]) => {
+            const count = guides.filter(g => g.category === key).length
+            if (count === 0) return null
+            return (
+              <Link key={key} href={`/guides?category=${key}`} className="inline-flex items-center gap-1.5">
+                <Badge className={meta.color}>{meta.label} ({count})</Badge>
+              </Link>
+            )
+          })}
+        </div>
+      </Card>
+    </div>
+  )
 }
