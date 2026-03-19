@@ -7,14 +7,8 @@ import { InventoryList } from '@/components/inventory/inventory-list'
 export default async function InventoryPage() {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
-  
 
-  const [seedsRes, plantsRes, guidesRes] = await Promise.all([
-    supabase
-      .from('seeds')
-      .select('*, guide:plant_guides(name_da)')
-      .eq('user_id', userId)
-      .order('name'),
+  const [plantsRes, guidesRes, seedsRes] = await Promise.all([
     supabase
       .from('plants')
       .select('*, guide:plant_guides(name_da)')
@@ -24,18 +18,23 @@ export default async function InventoryPage() {
       .from('plant_guides')
       .select('*')
       .order('name_da'),
+    supabase
+      .from('seeds')
+      .select('*')
+      .eq('user_id', userId)
+      .order('name'),
   ])
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-foreground">Beholdning</h1>
-        <p className="text-sm text-muted-foreground">Dine frø og planter</p>
+        <p className="text-sm text-muted-foreground">Dine planter og dyrkningsstatus</p>
       </div>
       <InventoryList
-        seeds={seedsRes.data ?? []}
         plants={plantsRes.data ?? []}
         guides={guidesRes.data ?? []}
+        seeds={seedsRes.data ?? []}
       />
     </div>
   )

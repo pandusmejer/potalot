@@ -3,11 +3,12 @@
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
-  CalendarDays,
-  StickyNote,
-  Sparkles,
+  Wheat,
   Package,
+  CalendarDays,
   BookOpen,
+  Users,
+  Lightbulb,
   Settings,
   Sprout,
 } from 'lucide-react'
@@ -15,12 +16,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
-  { href: '/dashboard', label: 'Overblik', icon: LayoutDashboard },
-  { href: '/calendar', label: 'Kalender', icon: CalendarDays },
-  { href: '/notes', label: 'Noter', icon: StickyNote },
-  { href: '/ai', label: 'AI Assistent', icon: Sparkles },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/froebank', label: 'Frøbank', icon: Wheat },
   { href: '/inventory', label: 'Beholdning', icon: Package },
+  { href: '/calendar', label: 'Kalender', icon: CalendarDays },
   { href: '/guides', label: 'Guides', icon: BookOpen },
+  { href: '/community', label: 'Community', icon: Users },
+  { href: '/idetavle', label: 'Idétavle', icon: Lightbulb },
 ]
 
 export function Sidebar() {
