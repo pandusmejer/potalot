@@ -47,11 +47,25 @@ export interface Seed {
   quantity: number | null
   year_purchased: number | null
   expiry_year: number | null
+  expiry_date: string | null
+  seeds_total: number | null
+  seeds_sown: number | null
+  primary_category: string
+  subcategory: string | null
+  plant_type: string | null
   notes: string | null
   status: 'in_stock' | 'sown' | 'depleted'
   created_at: string
   updated_at: string
   guide?: PlantGuide | null
+}
+
+export interface SeedSubcategory {
+  id: string
+  user_id: string
+  primary_category: string
+  name: string
+  created_at: string
 }
 
 export interface Plant {
