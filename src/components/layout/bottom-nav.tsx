@@ -4,13 +4,13 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   Wheat,
-  Package,
+  Sprout,
   CalendarDays,
   MoreHorizontal,
   BookOpen,
   Users,
   Lightbulb,
-  StickyNote,
+  ClipboardList,
   Sparkles,
   Settings,
   X,
@@ -22,15 +22,15 @@ import { useState, useEffect, useRef } from 'react'
 const primaryItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/froebank', label: 'Frøbank', icon: Wheat },
-  { href: '/inventory', label: 'Beholdning', icon: Package },
+  { href: '/vaekst', label: 'Vækst', icon: Sprout },
   { href: '/calendar', label: 'Kalender', icon: CalendarDays },
 ]
 
 const moreItems = [
   { href: '/guides', label: 'Guides', icon: BookOpen },
+  { href: '/dyrkningslog', label: 'Dyrkningslog', icon: ClipboardList },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/idetavle', label: 'Idétavle', icon: Lightbulb },
-  { href: '/notes', label: 'Noter', icon: StickyNote },
   { href: '/ai', label: 'AI Assistent', icon: Sparkles },
   { href: '/settings', label: 'Indstillinger', icon: Settings },
 ]

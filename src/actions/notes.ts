@@ -24,6 +24,7 @@ export async function createNote(formData: FormData) {
   })
 
   if (error) return { error: error.message }
+  revalidatePath('/dyrkningslog')
   revalidatePath('/notes')
   revalidatePath('/dashboard')
   return { success: true }
@@ -47,6 +48,7 @@ export async function updateNote(noteId: string, formData: FormData) {
     .eq('id', noteId)
 
   if (error) return { error: error.message }
+  revalidatePath('/dyrkningslog')
   revalidatePath('/notes')
   return { success: true }
 }
@@ -56,6 +58,7 @@ export async function deleteNote(noteId: string) {
   const { error } = await supabase.from('notes').delete().eq('id', noteId)
 
   if (error) return { error: error.message }
+  revalidatePath('/dyrkningslog')
   revalidatePath('/notes')
   return { success: true }
 }

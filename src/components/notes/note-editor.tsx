@@ -13,9 +13,10 @@ import { Trash2 } from 'lucide-react'
 interface NoteEditorProps {
   note?: Note | null
   plants: { id: string; name: string; variety?: string | null }[]
+  basePath?: string
 }
 
-export function NoteEditor({ note, plants }: NoteEditorProps) {
+export function NoteEditor({ note, plants, basePath = '/dyrkningslog' }: NoteEditorProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +30,7 @@ export function NoteEditor({ note, plants }: NoteEditorProps) {
       if (result?.error) {
         setError(result.error)
       } else {
-        router.push('/notes')
+        router.push(basePath)
       }
     })
   }
@@ -38,7 +39,7 @@ export function NoteEditor({ note, plants }: NoteEditorProps) {
     if (!note) return
     startTransition(async () => {
       await deleteNote(note.id)
-      router.push('/notes')
+      router.push(basePath)
     })
   }
 
@@ -101,7 +102,7 @@ export function NoteEditor({ note, plants }: NoteEditorProps) {
           )}
         </div>
         <div className="flex gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push('/notes')}>Annuller</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(basePath)}>Annuller</Button>
           <Button type="submit" disabled={isPending}>
             {isPending ? 'Gemmer...' : note ? 'Opdater' : 'Opret'}
           </Button>

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
-import { Package, Sprout, CalendarDays, StickyNote } from 'lucide-react'
+import { Sprout, Package, CalendarDays, ClipboardList } from 'lucide-react'
 
 interface StatusCardsProps {
   activePlants: number
@@ -11,10 +11,10 @@ interface StatusCardsProps {
 
 export function StatusCards({ activePlants, seedsInStock, tasksThisWeek, notesSeason }: StatusCardsProps) {
   const cards = [
-    { label: 'Aktive planter', value: activePlants, icon: Sprout, color: 'text-green-600', href: '/inventory' },
+    { label: 'Aktive planter', value: activePlants, icon: Sprout, color: 'text-green-600', href: '/vaekst' },
     { label: 'Frø på lager', value: seedsInStock, icon: Package, color: 'text-amber-600', href: '/froebank' },
     { label: 'Opgaver denne uge', value: tasksThisWeek, icon: CalendarDays, color: 'text-blue-600', href: '/calendar' },
-    { label: 'Noter i år', value: notesSeason, icon: StickyNote, color: 'text-purple-600', href: '/notes' },
+    { label: 'Dyrkningslog', value: notesSeason, icon: ClipboardList, color: 'text-purple-600', href: '/dyrkningslog' },
   ]
 
   return (

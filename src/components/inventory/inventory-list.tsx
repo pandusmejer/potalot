@@ -43,7 +43,7 @@ export function InventoryList({ plants, guides, seeds }: InventoryListProps) {
           {plants.map((plant) => {
             const statusMeta = PLANT_STATUSES[plant.status as PlantStatus]
             return (
-              <Link key={plant.id} href={`/inventory/${plant.id}`}>
+              <Link key={plant.id} href={`/vaekst/${plant.id}`}>
                 <Card className="cursor-pointer hover:border-primary/30 transition-colors">
                   <div className="flex items-start justify-between">
                     <div>

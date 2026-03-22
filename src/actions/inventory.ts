@@ -7,6 +7,7 @@ import { parseDanishDate } from '@/lib/date-utils'
 
 function revalidateAll() {
   revalidatePath('/froebank')
+  revalidatePath('/vaekst')
   revalidatePath('/inventory')
   revalidatePath('/dashboard')
 }

@@ -5,11 +5,12 @@ import Link from 'next/link'
 
 interface NoteCardProps {
   note: Note
+  basePath?: string
 }
 
-export function NoteCard({ note }: NoteCardProps) {
+export function NoteCard({ note, basePath = '/dyrkningslog' }: NoteCardProps) {
   return (
-    <Link href={`/notes/${note.id}`} className="block">
+    <Link href={`${basePath}/${note.id}`} className="block">
       <div className="rounded-lg border border-border bg-card p-4 hover:border-primary/30 transition-colors">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-medium text-foreground line-clamp-1">{note.title}</h3>

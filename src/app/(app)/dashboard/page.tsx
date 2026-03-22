@@ -59,7 +59,7 @@ export default async function DashboardPage() {
               <Package className="h-4 w-4" />
               Frøbank
             </CardTitle>
-            <Link href="/inventory" className="text-xs text-primary flex items-center gap-1 hover:underline">
+            <Link href="/vaekst" className="text-xs text-primary flex items-center gap-1 hover:underline">
               Se alle <ArrowRight className="h-3 w-3" />
             </Link>
           </CardHeader>
