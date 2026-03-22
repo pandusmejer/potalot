@@ -2,12 +2,15 @@ export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { GUIDE_CATEGORIES } from '@/lib/constants'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown } from 'lucide-react'
+import {
+  ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown,
+  Sprout, Flower2, Scissors, TreePine, Bug, AlertTriangle,
+  Lightbulb, Calendar, Info
+} from 'lucide-react'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -15,6 +18,40 @@ interface Props {
 
 const SUN_LABELS: Record<string, string> = { full_sun: 'Fuld sol', partial_shade: 'Halvskygge', shade: 'Skygge' }
 const WATER_LABELS: Record<string, string> = { low: 'Lavt', medium: 'Medium', high: 'Højt' }
+
+function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h2 className="flex items-center gap-2 text-base font-semibold text-foreground border-b border-border pb-2">
+        {icon}
+        {title}
+      </h2>
+      {children}
+    </section>
+  )
+}
+
+function Callout({ type, children }: { type: 'tip' | 'warning' | 'mistake'; children: React.ReactNode }) {
+  const styles = {
+    tip: { bg: 'bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800', icon: <Lightbulb className="h-4 w-4 text-green-600 shrink-0 mt-0.5" />, label: 'Tip' },
+    warning: { bg: 'bg-amber-50 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800', icon: <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />, label: 'Vær opmærksom' },
+    mistake: { bg: 'bg-red-50 border-red-200 dark:bg-red-950/30 dark:border-red-800', icon: <Info className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />, label: 'Typisk fejl' },
+  }
+  const s = styles[type]
+  return (
+    <div className={`flex gap-3 p-4 rounded-lg border ${s.bg}`}>
+      {s.icon}
+      <div className="text-sm">
+        <span className="font-medium">{s.label}: </span>
+        <span className="text-foreground/80">{children}</span>
+      </div>
+    </div>
+  )
+}
+
+function Prose({ text }: { text: string }) {
+  return <div className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{text}</div>
+}
 
 export default async function GuideDetailPage({ params }: Props) {
   const { slug } = await params
@@ -38,129 +75,191 @@ export default async function GuideDetailPage({ params }: Props) {
     { label: 'Høst', period: guide.harvest_start && guide.harvest_end ? `${guide.harvest_start} – ${guide.harvest_end}` : null },
   ].filter((t) => t.period)
 
+  const hasGrowingInfo = guide.sowing_info || guide.repotting_info || guide.planting_out_info || guide.care_info
+  const hasBiology = guide.biology_info || (guide.companion_plants && guide.companion_plants.length > 0)
+
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-3">
-        <Link href="/guides">
-          <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold text-foreground">{guide.name_da}</h1>
-          {guide.name_en && <p className="text-sm text-muted-foreground italic">{guide.name_en}</p>}
+    <article className="max-w-2xl space-y-8">
+      {/* ========== Header ========== */}
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <Link href="/guides">
+            <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>
+          </Link>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-foreground">{guide.name_da}</h1>
+            {guide.name_en && <p className="text-sm text-muted-foreground italic mt-0.5">{guide.name_en}</p>}
+          </div>
+          {catMeta && <Badge className={catMeta.color}>{catMeta.label}</Badge>}
         </div>
-        {catMeta && <Badge className={catMeta.color}>{catMeta.label}</Badge>}
+
+        {guide.description && (
+          <p className="text-base text-foreground/80 leading-relaxed">{guide.description}</p>
+        )}
       </div>
 
-      {guide.description && (
-        <p className="text-sm text-foreground">{guide.description}</p>
-      )}
-
-      <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+      {/* ========== Quick Reference ========== */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {guide.sun_requirement && (
-          <Card className="flex items-center gap-2 text-sm">
-            <Sun className="h-4 w-4 text-amber-500" />
+          <div className="flex items-center gap-2.5 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20">
+            <Sun className="h-5 w-5 text-amber-500" />
             <div>
-              <p className="text-xs text-muted-foreground">Sol</p>
-              <p className="font-medium">{SUN_LABELS[guide.sun_requirement]}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sol</p>
+              <p className="text-sm font-medium">{SUN_LABELS[guide.sun_requirement]}</p>
             </div>
-          </Card>
+          </div>
         )}
         {guide.water_need && (
-          <Card className="flex items-center gap-2 text-sm">
-            <Droplets className="h-4 w-4 text-blue-500" />
+          <div className="flex items-center gap-2.5 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20">
+            <Droplets className="h-5 w-5 text-blue-500" />
             <div>
-              <p className="text-xs text-muted-foreground">Vand</p>
-              <p className="font-medium">{WATER_LABELS[guide.water_need]}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Vand</p>
+              <p className="text-sm font-medium">{WATER_LABELS[guide.water_need]}</p>
             </div>
-          </Card>
-        )}
-        <Card className="flex items-center gap-2 text-sm">
-          <Snowflake className="h-4 w-4 text-cyan-500" />
-          <div>
-            <p className="text-xs text-muted-foreground">Frostfast</p>
-            <p className="font-medium">{guide.frost_hardy ? 'Ja' : 'Nej'}</p>
           </div>
-        </Card>
+        )}
+        <div className="flex items-center gap-2.5 p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/20">
+          <Snowflake className="h-5 w-5 text-cyan-500" />
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Frost</p>
+            <p className="text-sm font-medium">{guide.frost_hardy ? 'Tåler frost' : 'Frostfølsom'}</p>
+          </div>
+        </div>
         {guide.spacing_cm && (
-          <Card className="flex items-center gap-2 text-sm">
-            <Ruler className="h-4 w-4 text-gray-500" />
+          <div className="flex items-center gap-2.5 p-3 rounded-lg bg-gray-50 dark:bg-gray-950/20">
+            <Ruler className="h-5 w-5 text-gray-500" />
             <div>
-              <p className="text-xs text-muted-foreground">Afstand</p>
-              <p className="font-medium">{guide.spacing_cm} cm</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Afstand</p>
+              <p className="text-sm font-medium">{guide.spacing_cm} cm</p>
             </div>
-          </Card>
+          </div>
         )}
       </div>
 
       {guide.depth_cm != null && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground flex items-center gap-2">
           <ArrowDown className="h-3.5 w-3.5" />
           Sådybde: {guide.depth_cm} cm
-        </div>
+        </p>
       )}
 
+      {/* ========== Kalender / Tidslinje ========== */}
       {timeline.length > 0 && (
-        <Card>
-          <CardHeader><CardTitle>Kalender</CardTitle></CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {timeline.map((t) => (
-                <div key={t.label} className="flex items-center gap-3 text-sm">
-                  <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
-                  <span className="font-medium text-foreground w-32">{t.label}</span>
-                  <span className="text-muted-foreground">{t.period}</span>
+        <Section icon={<Calendar className="h-4 w-4 text-primary" />} title="Årskalender">
+          <div className="space-y-3">
+            {timeline.map((t, i) => (
+              <div key={t.label} className="flex items-center gap-4">
+                <div className="flex flex-col items-center">
+                  <span className={`w-3 h-3 rounded-full ${i === timeline.length - 1 ? 'bg-green-500' : 'bg-primary'}`} />
+                  {i < timeline.length - 1 && <span className="w-0.5 h-6 bg-border" />}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                <div className="flex-1 flex items-center justify-between py-1">
+                  <span className="text-sm font-medium text-foreground">{t.label}</span>
+                  <span className="text-sm text-muted-foreground">{t.period}</span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {(guide.days_to_germination_min || guide.days_to_harvest_min) && (
-        <Card>
-          <CardHeader><CardTitle>Tidslinje</CardTitle></CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm">
+          {(guide.days_to_germination_min || guide.days_to_harvest_min) && (
+            <div className="flex gap-6 mt-4 pt-3 border-t border-border text-sm text-muted-foreground">
               {guide.days_to_germination_min && (
-                <p>
-                  <span className="text-muted-foreground">Spiretid:</span>{' '}
-                  {guide.days_to_germination_min}–{guide.days_to_germination_max} dage
-                </p>
+                <span>Spiretid: <strong className="text-foreground">{guide.days_to_germination_min}–{guide.days_to_germination_max} dage</strong></span>
               )}
               {guide.days_to_harvest_min && (
-                <p>
-                  <span className="text-muted-foreground">Tid til høst:</span>{' '}
-                  {guide.days_to_harvest_min}–{guide.days_to_harvest_max} dage
-                </p>
+                <span>Tid til høst: <strong className="text-foreground">{guide.days_to_harvest_min}–{guide.days_to_harvest_max} dage</strong></span>
               )}
             </div>
-          </CardContent>
-        </Card>
+          )}
+        </Section>
       )}
 
-      {guide.tips && (
-        <Card>
-          <CardHeader><CardTitle>Tips & Råd</CardTitle></CardHeader>
-          <CardContent>
-            <p className="text-sm text-foreground whitespace-pre-line">{guide.tips}</p>
-          </CardContent>
-        </Card>
+      {/* ========== Såning og Etablering ========== */}
+      {guide.sowing_info && (
+        <Section icon={<Sprout className="h-4 w-4 text-green-600" />} title="Såning og etablering">
+          <Prose text={guide.sowing_info} />
+        </Section>
       )}
 
-      {guide.companion_plants && guide.companion_plants.length > 0 && (
-        <Card>
-          <CardHeader><CardTitle>Gode naboer</CardTitle></CardHeader>
-          <CardContent>
-            <div className="flex gap-2 flex-wrap">
-              {guide.companion_plants.map((slug: string) => (
-                <Link key={slug} href={`/guides/${slug}`}>
-                  <Badge className="bg-accent text-foreground hover:bg-primary/10 cursor-pointer">{slug}</Badge>
-                </Link>
-              ))}
+      {/* ========== Ompotning ========== */}
+      {guide.repotting_info && (
+        <Section icon={<Flower2 className="h-4 w-4 text-purple-600" />} title="Ompotning">
+          <Prose text={guide.repotting_info} />
+        </Section>
+      )}
+
+      {/* ========== Udplantning ========== */}
+      {guide.planting_out_info && (
+        <Section icon={<TreePine className="h-4 w-4 text-emerald-600" />} title="Udplantning">
+          <Prose text={guide.planting_out_info} />
+        </Section>
+      )}
+
+      {/* ========== Vækst og Pasning ========== */}
+      {guide.care_info && (
+        <Section icon={<Scissors className="h-4 w-4 text-orange-600" />} title="Vækst og pasning">
+          <Prose text={guide.care_info} />
+        </Section>
+      )}
+
+      {/* ========== Miljø ========== */}
+      {guide.environment_info && (
+        <Section icon={<Sun className="h-4 w-4 text-amber-600" />} title="Miljø og voksested">
+          <Prose text={guide.environment_info} />
+        </Section>
+      )}
+
+      {/* ========== Biologi og Relationer ========== */}
+      {hasBiology && (
+        <Section icon={<Bug className="h-4 w-4 text-rose-600" />} title="Biologi og relationer">
+          {guide.biology_info && <Prose text={guide.biology_info} />}
+          {guide.companion_plants && guide.companion_plants.length > 0 && (
+            <div className="mt-3">
+              <p className="text-sm font-medium text-foreground mb-2">Gode naboer (companion planting)</p>
+              <div className="flex gap-2 flex-wrap">
+                {guide.companion_plants.map((cp: string) => (
+                  <Link key={cp} href={`/guides/${cp}`}>
+                    <Badge className="bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer transition-colors">{cp}</Badge>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          )}
+        </Section>
       )}
-    </div>
+
+      {/* ========== Frøinformation ========== */}
+      {(guide.seed_type || guide.seed_harvest_possible != null) && (
+        <Section icon={<Sprout className="h-4 w-4 text-teal-600" />} title="Frøinformation">
+          <div className="text-sm space-y-1">
+            {guide.seed_type && <p><span className="text-muted-foreground">Frøtype:</span> {guide.seed_type}</p>}
+            {guide.seed_harvest_possible != null && (
+              <p><span className="text-muted-foreground">Frøhøst mulig:</span> {guide.seed_harvest_possible ? 'Ja' : 'Nej'}</p>
+            )}
+          </div>
+        </Section>
+      )}
+
+      {/* ========== Callouts: Tips, Advarsler, Fejl ========== */}
+      {guide.tips && (
+        <Callout type="tip">{guide.tips}</Callout>
+      )}
+
+      {guide.warnings && (
+        <Callout type="warning">{guide.warnings}</Callout>
+      )}
+
+      {guide.common_mistakes && (
+        <Callout type="mistake">{guide.common_mistakes}</Callout>
+      )}
+
+      {/* ========== Fallback hvis ingen sektioner er udfyldt ========== */}
+      {!hasGrowingInfo && !hasBiology && !guide.tips && !guide.warnings && !guide.common_mistakes && (
+        <div className="text-center py-8 text-muted-foreground">
+          <p className="text-sm">Denne guide har endnu ikke detaljerede sektioner.</p>
+          <p className="text-xs mt-1">Kalender og basisdata er tilgængelige ovenfor.</p>
+        </div>
+      )}
+    </article>
   )
 }

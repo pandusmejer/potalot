@@ -34,6 +34,17 @@ export interface PlantGuide {
   frost_hardy: boolean
   tips: string | null
   companion_plants: string[] | null
+  sowing_info: string | null
+  repotting_info: string | null
+  planting_out_info: string | null
+  care_info: string | null
+  environment_info: string | null
+  biology_info: string | null
+  seed_type: string | null
+  seed_harvest_possible: boolean | null
+  common_mistakes: string | null
+  warnings: string | null
+  image_url: string | null
   created_at: string
 }
 
