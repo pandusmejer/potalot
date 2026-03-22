@@ -8,7 +8,7 @@ export default async function FroebankPage() {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
 
-  const [seedsRes, guidesRes, subcategoriesRes] = await Promise.all([
+  const [seedsRes, guidesRes] = await Promise.all([
     supabase
       .from('seeds')
       .select('*, guide:plant_guides(name_da)')
@@ -18,12 +18,20 @@ export default async function FroebankPage() {
       .from('plant_guides')
       .select('*')
       .order('name_da'),
-    supabase
+  ])
+
+  // Subcategories table may not exist yet — fail gracefully
+  let customSubcategories: Array<{ id: string; user_id: string; primary_category: string; name: string; created_at: string }> = []
+  try {
+    const subcategoriesRes = await supabase
       .from('seed_subcategories')
       .select('*')
       .eq('user_id', userId)
-      .order('name'),
-  ])
+      .order('name')
+    if (subcategoriesRes.data) customSubcategories = subcategoriesRes.data
+  } catch {
+    // Table doesn't exist yet — that's fine
+  }
 
   return (
     <div className="space-y-6">
@@ -34,7 +42,7 @@ export default async function FroebankPage() {
       <SeedBank
         seeds={seedsRes.data ?? []}
         guides={guidesRes.data ?? []}
-        customSubcategories={subcategoriesRes.data ?? []}
+        customSubcategories={customSubcategories}
       />
     </div>
   )

@@ -25,6 +25,7 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [dateError, setDateError] = useState<string | null>(null)
+  const [quantityError, setQuantityError] = useState<string | null>(null)
   const [category, setCategory] = useState(seed?.primary_category ?? defaultCategory ?? 'froe')
 
   // Compute seeds remaining
@@ -46,11 +47,20 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
   function handleSubmit(formData: FormData) {
     setError(null)
     setDateError(null)
+    setQuantityError(null)
 
     // Validate Danish date format if provided
     const expiryDateVal = formData.get('expiry_date') as string
     if (expiryDateVal && !validateDanishDate(expiryDateVal)) {
       setDateError('Ugyldig dato — brug format DD.MM.ÅÅÅÅ')
+      return
+    }
+
+    // Validate seeds_sown <= seeds_total
+    const totalVal = formData.get('seeds_total') ? Number(formData.get('seeds_total')) : null
+    const sownVal = formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0
+    if (totalVal != null && sownVal > totalVal) {
+      setQuantityError('Antal sået kan ikke være større end antal total')
       return
     }
 
@@ -187,6 +197,8 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
             </div>
           </div>
         </div>
+
+        {quantityError && <p className="text-xs text-destructive -mt-2">{quantityError}</p>}
 
         {/* Purchase Year & Expiry Date */}
         <div className="grid grid-cols-2 gap-3">
