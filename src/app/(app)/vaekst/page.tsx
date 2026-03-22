@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { DEMO_USER_ID } from '@/lib/demo'
 import { createClient } from '@/lib/supabase/server'
-import { InventoryList } from '@/components/inventory/inventory-list'
+import { VaekstDashboard } from '@/components/vaekst/vaekst-dashboard'
 
 export default async function VaekstPage() {
   const supabase = await createClient()
@@ -31,7 +31,7 @@ export default async function VaekstPage() {
         <h1 className="text-xl font-bold text-foreground">Vækst</h1>
         <p className="text-sm text-muted-foreground">Dine aktive planter og dyrkningsstatus</p>
       </div>
-      <InventoryList
+      <VaekstDashboard
         plants={plantsRes.data ?? []}
         guides={guidesRes.data ?? []}
         seeds={seedsRes.data ?? []}
