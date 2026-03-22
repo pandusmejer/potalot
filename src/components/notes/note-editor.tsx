@@ -5,10 +5,34 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
+import { LOG_TYPES, type LogType } from '@/lib/constants'
 import type { Note } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Eye, Apple, AlertTriangle, Lightbulb, Flag, Cloud, PenLine } from 'lucide-react'
+
+const LOG_ICONS: Record<string, React.ReactNode> = {
+  observation: <Eye className="h-3.5 w-3.5" />,
+  harvest: <Apple className="h-3.5 w-3.5" />,
+  problem: <AlertTriangle className="h-3.5 w-3.5" />,
+  learning: <Lightbulb className="h-3.5 w-3.5" />,
+  milestone: <Flag className="h-3.5 w-3.5" />,
+  weather: <Cloud className="h-3.5 w-3.5" />,
+  other: <PenLine className="h-3.5 w-3.5" />,
+}
+
+function getLogTypeFromTags(tags: string[] | null): LogType | '' {
+  if (!tags) return ''
+  for (const tag of tags) {
+    if (tag in LOG_TYPES) return tag as LogType
+  }
+  return ''
+}
+
+function getOtherTags(tags: string[] | null): string {
+  if (!tags) return ''
+  return tags.filter(t => !(t in LOG_TYPES)).join(', ')
+}
 
 interface NoteEditorProps {
   note?: Note | null
@@ -20,9 +44,21 @@ export function NoteEditor({ note, plants, basePath = '/dyrkningslog' }: NoteEdi
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [logType, setLogType] = useState<LogType | ''>(getLogTypeFromTags(note?.tags ?? null))
 
   function handleSubmit(formData: FormData) {
     setError(null)
+
+    // Merge log type into tags
+    const tagsRaw = formData.get('tags') as string
+    const userTags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
+    if (logType) {
+      userTags.unshift(logType)
+    }
+
+    // Replace tags in formData
+    formData.set('tags', userTags.join(', '))
+
     startTransition(async () => {
       const result = note
         ? await updateNote(note.id, formData)
@@ -45,9 +81,31 @@ export function NoteEditor({ note, plants, basePath = '/dyrkningslog' }: NoteEdi
 
   return (
     <form action={handleSubmit} className="space-y-4">
+      {/* Log type quick-select */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Type</label>
+        <div className="flex gap-1.5 flex-wrap">
+          {Object.entries(LOG_TYPES).map(([key, meta]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setLogType(logType === key ? '' : key as LogType)}
+              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+                logType === key
+                  ? `${meta.color} border-current`
+                  : 'bg-muted/50 text-muted-foreground border-transparent hover:bg-muted'
+              }`}
+            >
+              {LOG_ICONS[key]}
+              {meta.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-medium mb-1">Titel</label>
-        <Input name="title" required defaultValue={note?.title ?? ''} placeholder="Titel på noten" />
+        <Input name="title" required defaultValue={note?.title ?? ''} placeholder="Hvad observerede du?" />
       </div>
 
       <div>
@@ -57,7 +115,7 @@ export function NoteEditor({ note, plants, basePath = '/dyrkningslog' }: NoteEdi
           required
           rows={8}
           defaultValue={note?.content ?? ''}
-          placeholder="Skriv din observation, læring eller note..."
+          placeholder="Beskriv din observation, læring eller bemærkning..."
         />
       </div>
 
@@ -82,11 +140,11 @@ export function NoteEditor({ note, plants, basePath = '/dyrkningslog' }: NoteEdi
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Tags (kommasepareret)</label>
+        <label className="block text-sm font-medium mb-1">Ekstra tags (kommasepareret)</label>
         <Input
           name="tags"
-          defaultValue={note?.tags?.join(', ') ?? ''}
-          placeholder="fx. tomat, drivhus, 2026"
+          defaultValue={getOtherTags(note?.tags ?? null)}
+          placeholder="fx. drivhus, 2026"
         />
       </div>
 

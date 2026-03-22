@@ -61,6 +61,18 @@ export const PRIMARY_CATEGORIES = {
 
 export type PrimaryCategory = keyof typeof PRIMARY_CATEGORIES
 
+export const LOG_TYPES = {
+  observation: { label: 'Observation', color: 'bg-blue-100 text-blue-800', icon: 'Eye' },
+  harvest: { label: 'Høst', color: 'bg-red-100 text-red-800', icon: 'Apple' },
+  problem: { label: 'Problem', color: 'bg-amber-100 text-amber-800', icon: 'AlertTriangle' },
+  learning: { label: 'Læring', color: 'bg-purple-100 text-purple-800', icon: 'Lightbulb' },
+  milestone: { label: 'Milepæl', color: 'bg-green-100 text-green-800', icon: 'Flag' },
+  weather: { label: 'Vejr', color: 'bg-cyan-100 text-cyan-800', icon: 'Cloud' },
+  other: { label: 'Andet', color: 'bg-gray-100 text-gray-800', icon: 'PenLine' },
+} as const
+
+export type LogType = keyof typeof LOG_TYPES
+
 export const DEFAULT_SUBCATEGORIES = [
   'Grøntsager',
   'Blomster (1-årige)',
