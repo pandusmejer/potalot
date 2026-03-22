@@ -33,6 +33,7 @@ export const SEED_STATUSES = {
   in_stock: { label: 'På lager', color: 'bg-green-100 text-green-800' },
   sown: { label: 'Sået', color: 'bg-blue-100 text-blue-800' },
   depleted: { label: 'Opbrugt', color: 'bg-gray-100 text-gray-600' },
+  expired: { label: 'Udløbet', color: 'bg-red-100 text-red-800' },
 } as const
 
 export const GUIDE_CATEGORIES = {

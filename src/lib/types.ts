@@ -53,8 +53,13 @@ export interface Seed {
   primary_category: string
   subcategory: string | null
   plant_type: string | null
+  botanical_name: string | null
+  purchase_url: string | null
+  location: string | null
+  germination_rate: number | null
+  image_url: string | null
   notes: string | null
-  status: 'in_stock' | 'sown' | 'depleted'
+  status: 'in_stock' | 'sown' | 'depleted' | 'expired'
   created_at: string
   updated_at: string
   guide?: PlantGuide | null

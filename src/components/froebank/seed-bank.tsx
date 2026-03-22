@@ -8,27 +8,15 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { SeedForm } from '@/components/inventory/seed-form'
 import { SeedUploadDialog } from '@/components/inventory/seed-upload-dialog'
 import { BulkEditDialog } from '@/components/froebank/bulk-edit-dialog'
-import { SEED_STATUSES, PRIMARY_CATEGORIES, DEFAULT_SUBCATEGORIES } from '@/lib/constants'
+import { SEED_STATUSES, DEFAULT_SUBCATEGORIES } from '@/lib/constants'
 import type { Seed, PlantGuide, SeedSubcategory } from '@/lib/types'
 import { formatDanishDate } from '@/lib/date-utils'
 import { bulkDeleteSeeds } from '@/actions/inventory'
 import {
   Package, Plus, Upload, Search, X, CheckSquare, Square,
-  Trash2, Edit3, Sprout, Flower2, CircleDot, Droplets,
-  TreePine, Trees, Flower, ShoppingCart
+  Trash2, Edit3, ExternalLink
 } from 'lucide-react'
 import { useState, useMemo, useTransition } from 'react'
-
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  froe: <Sprout className="h-4 w-4" />,
-  aktive_planter: <Flower2 className="h-4 w-4" />,
-  loeg: <CircleDot className="h-4 w-4" />,
-  knolde: <Droplets className="h-4 w-4" />,
-  buske: <TreePine className="h-4 w-4" />,
-  traeer: <Trees className="h-4 w-4" />,
-  stauder: <Flower className="h-4 w-4" />,
-  indkoebsliste: <ShoppingCart className="h-4 w-4" />,
-}
 
 interface SeedBankProps {
   seeds: Seed[]
@@ -41,65 +29,53 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
   const [editingSeed, setEditingSeed] = useState<Seed | null>(null)
   const [uploadOpen, setUploadOpen] = useState(false)
 
-  // Hierarchy state
-  const [selectedCategory, setSelectedCategory] = useState<string>('froe')
+  // Filtering
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
-
-  // Filtering state (Level 3)
-  const [typeFilter, setTypeFilter] = useState<string>('')
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [nameSearch, setNameSearch] = useState<string>('')
 
-  // Bulk selection state
+  // Bulk selection
   const [bulkMode, setBulkMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkEditOpen, setBulkEditOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  // Compute subcategories for current category (defaults + custom)
+  // Subcategories: defaults + custom
   const subcategories = useMemo(() => {
-    const customs = customSubcategories
-      .filter(sc => sc.primary_category === selectedCategory)
-      .map(sc => sc.name)
+    const customs = customSubcategories.map(sc => sc.name)
     return [...DEFAULT_SUBCATEGORIES, ...customs]
-  }, [selectedCategory, customSubcategories])
+  }, [customSubcategories])
 
-  // Get unique plant_type values for L3 type filter dropdown
-  const availableTypes = useMemo(() => {
-    const types = seeds
-      .filter(s => s.primary_category === selectedCategory)
-      .map(s => s.plant_type)
-      .filter((t): t is string => !!t)
-    return [...new Set(types)].sort()
-  }, [seeds, selectedCategory])
-
-  // Filter seeds through all 3 levels
+  // Filter seeds
   const filteredSeeds = useMemo(() => {
-    let result = seeds.filter(s => s.primary_category === selectedCategory)
+    let result = [...seeds]
 
     if (selectedSubcategory) {
       result = result.filter(s => s.subcategory === selectedSubcategory)
     }
 
-    if (typeFilter) {
-      result = result.filter(s => s.plant_type === typeFilter)
+    if (selectedStatus) {
+      result = result.filter(s => s.status === selectedStatus)
     }
 
     if (nameSearch.trim()) {
       const search = nameSearch.toLowerCase().trim()
       result = result.filter(s =>
         s.name.toLowerCase().includes(search) ||
-        (s.variety && s.variety.toLowerCase().includes(search))
+        (s.variety && s.variety.toLowerCase().includes(search)) ||
+        (s.botanical_name && s.botanical_name.toLowerCase().includes(search)) ||
+        (s.brand && s.brand.toLowerCase().includes(search))
       )
     }
 
     return result
-  }, [seeds, selectedCategory, selectedSubcategory, typeFilter, nameSearch])
+  }, [seeds, selectedSubcategory, selectedStatus, nameSearch])
 
-  // Category counts
-  const categoryCounts = useMemo(() => {
+  // Status counts for filter badges
+  const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {}
     for (const s of seeds) {
-      counts[s.primary_category] = (counts[s.primary_category] || 0) + 1
+      counts[s.status] = (counts[s.status] || 0) + 1
     }
     return counts
   }, [seeds])
@@ -129,7 +105,6 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
   function handleBulkDelete() {
     if (selectedIds.size === 0) return
     if (!confirm(`Slet ${selectedIds.size} frø? Dette kan ikke fortrydes.`)) return
-
     startTransition(async () => {
       await bulkDeleteSeeds([...selectedIds])
       exitBulkMode()
@@ -138,57 +113,47 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
 
   function clearFilters() {
     setSelectedSubcategory(null)
-    setTypeFilter('')
+    setSelectedStatus(null)
     setNameSearch('')
   }
 
-  const hasActiveFilters = !!selectedSubcategory || !!typeFilter || !!nameSearch
+  const hasActiveFilters = !!selectedSubcategory || !!selectedStatus || !!nameSearch
 
   return (
     <div className="space-y-4">
-      {/* ========== Level 1: Primary Categories ========== */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
-        {Object.entries(PRIMARY_CATEGORIES).map(([key, { label }]) => {
-          const count = categoryCounts[key] || 0
-          const isActive = selectedCategory === key
+      {/* ========== Status Filter Pills ========== */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <button
+          onClick={() => setSelectedStatus(null)}
+          className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
+            !selectedStatus
+              ? 'bg-primary/10 text-primary border border-primary/30'
+              : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+          }`}
+        >
+          Alle ({seeds.length})
+        </button>
+        {Object.entries(SEED_STATUSES).map(([key, { label, color }]) => {
+          const count = statusCounts[key] || 0
+          if (count === 0) return null
           return (
             <button
               key={key}
-              onClick={() => {
-                setSelectedCategory(key)
-                clearFilters()
-                exitBulkMode()
-              }}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors shrink-0 ${
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-accent'
+              onClick={() => setSelectedStatus(selectedStatus === key ? null : key)}
+              className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
+                selectedStatus === key
+                  ? color
+                  : 'bg-muted/60 text-muted-foreground hover:bg-muted'
               }`}
             >
-              {CATEGORY_ICONS[key]}
-              {label}
-              {count > 0 && (
-                <span className={`text-xs ml-1 ${isActive ? 'opacity-80' : 'opacity-60'}`}>
-                  ({count})
-                </span>
-              )}
+              {label} ({count})
             </button>
           )
         })}
       </div>
 
-      {/* ========== Level 2: Subcategories ========== */}
-      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
-        <button
-          onClick={() => setSelectedSubcategory(null)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
-            !selectedSubcategory
-              ? 'bg-primary/10 text-primary border border-primary/30'
-              : 'bg-muted/60 text-muted-foreground hover:bg-muted'
-          }`}
-        >
-          Alle
-        </button>
+      {/* ========== Subcategory Chips ========== */}
+      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
         {subcategories.map(sub => {
           const isActive = selectedSubcategory === sub
           return (
@@ -207,14 +172,14 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         })}
       </div>
 
-      {/* ========== Level 3: Search & Type Filter ========== */}
+      {/* ========== Search ========== */}
       <div className="flex gap-2 items-center">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             value={nameSearch}
             onChange={e => setNameSearch(e.target.value)}
-            placeholder="Søg på navn eller sort..."
+            placeholder="Søg på navn, sort, mærke..."
             className="pl-8 h-9 text-sm"
           />
           {nameSearch && (
@@ -226,18 +191,6 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
             </button>
           )}
         </div>
-        {availableTypes.length > 0 && (
-          <select
-            value={typeFilter}
-            onChange={e => setTypeFilter(e.target.value)}
-            className="h-9 rounded-lg border border-border bg-card px-2 text-sm text-foreground"
-          >
-            <option value="">Alle typer</option>
-            {availableTypes.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-        )}
         {hasActiveFilters && (
           <button onClick={clearFilters} className="text-xs text-muted-foreground hover:text-foreground whitespace-nowrap">
             Ryd filtre
@@ -248,7 +201,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
       {/* ========== Action Bar ========== */}
       <div className="flex items-center gap-2">
         <div className="flex-1 text-xs text-muted-foreground">
-          {filteredSeeds.length} {filteredSeeds.length === 1 ? 'element' : 'elementer'}
+          {filteredSeeds.length} {filteredSeeds.length === 1 ? 'frø' : 'frø'}
         </div>
 
         {bulkMode ? (
@@ -257,21 +210,11 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
               {selectedIds.size === filteredSeeds.length ? 'Fravælg alle' : 'Vælg alle'}
             </button>
             <span className="text-xs text-muted-foreground">{selectedIds.size} valgt</span>
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={selectedIds.size === 0}
-              onClick={() => setBulkEditOpen(true)}
-            >
+            <Button size="sm" variant="secondary" disabled={selectedIds.size === 0} onClick={() => setBulkEditOpen(true)}>
               <Edit3 className="h-3.5 w-3.5 mr-1" />
               Rediger
             </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              disabled={selectedIds.size === 0 || isPending}
-              onClick={handleBulkDelete}
-            >
+            <Button size="sm" variant="destructive" disabled={selectedIds.size === 0 || isPending} onClick={handleBulkDelete}>
               <Trash2 className="h-3.5 w-3.5 mr-1" />
               Slet
             </Button>
@@ -297,20 +240,20 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         )}
       </div>
 
-      {/* ========== Seed Grid ========== */}
+      {/* ========== Seed List ========== */}
       {filteredSeeds.length === 0 ? (
         <EmptyState
           icon={<Package className="h-10 w-10" />}
-          title={hasActiveFilters ? 'Ingen resultater' : 'Ingen elementer endnu'}
+          title={hasActiveFilters ? 'Ingen resultater' : 'Ingen frø endnu'}
           description={
             hasActiveFilters
               ? 'Prøv at ændre dine filtre.'
-              : `Tilføj dine ${PRIMARY_CATEGORIES[selectedCategory as keyof typeof PRIMARY_CATEGORIES]?.label.toLowerCase() ?? 'elementer'} for at komme i gang.`
+              : 'Tilføj dine frø for at holde styr på din frøbank.'
           }
           action={
             hasActiveFilters
               ? <Button size="sm" variant="secondary" onClick={clearFilters}>Ryd filtre</Button>
-              : <Button size="sm" onClick={() => setSeedFormOpen(true)}>Tilføj</Button>
+              : <Button size="sm" onClick={() => setSeedFormOpen(true)}>Tilføj frø</Button>
           }
         />
       ) : (
@@ -326,17 +269,11 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
               <Card
                 key={seed.id}
                 className={`cursor-pointer transition-colors ${
-                  isSelected
-                    ? 'border-primary bg-primary/5'
-                    : 'hover:border-primary/30'
+                  isSelected ? 'border-primary bg-primary/5' : 'hover:border-primary/30'
                 }`}
                 onClick={() => {
-                  if (bulkMode) {
-                    toggleSelect(seed.id)
-                  } else {
-                    setEditingSeed(seed)
-                    setSeedFormOpen(true)
-                  }
+                  if (bulkMode) toggleSelect(seed.id)
+                  else { setEditingSeed(seed); setSeedFormOpen(true) }
                 }}
               >
                 <div className="flex items-start gap-2">
@@ -352,22 +289,19 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{seed.name}</p>
-                        {seed.variety && (
-                          <p className="text-xs text-muted-foreground truncate">{seed.variety}</p>
-                        )}
+                        {seed.variety && <p className="text-xs text-muted-foreground truncate">{seed.variety}</p>}
+                        {seed.botanical_name && <p className="text-xs text-muted-foreground/60 truncate italic">{seed.botanical_name}</p>}
                       </div>
                       {statusMeta && <Badge className={`shrink-0 ${statusMeta.color}`}>{statusMeta.label}</Badge>}
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                      {/* Seed quantity tracking */}
+                      {/* Quantity tracking */}
                       {remaining != null ? (
                         <span className="flex items-center gap-1">
                           <span className="font-medium text-foreground">{remaining}</span>
                           <span>tilbage</span>
-                          <span className="text-muted-foreground/60">
-                            ({seed.seeds_sown}/{seed.seeds_total} sået)
-                          </span>
+                          <span className="text-muted-foreground/60">({seed.seeds_sown}/{seed.seeds_total})</span>
                         </span>
                       ) : seed.seeds_total != null ? (
                         <span>{seed.seeds_total} stk</span>
@@ -376,6 +310,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
                       ) : null}
 
                       {seed.brand && <span>{seed.brand}</span>}
+                      {seed.location && <span>📍 {seed.location}</span>}
 
                       {seed.expiry_date ? (
                         <span>Udløb: {formatDanishDate(seed.expiry_date)}</span>
@@ -383,10 +318,19 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
                         <span>Udløb: {seed.expiry_year}</span>
                       ) : null}
 
+                      {seed.germination_rate != null && (
+                        <span>Spiring: {seed.germination_rate}%</span>
+                      )}
+
+                      {seed.purchase_url && (
+                        <span className="flex items-center gap-0.5 text-primary">
+                          <ExternalLink className="h-3 w-3" />
+                          Link
+                        </span>
+                      )}
+
                       {seed.subcategory && (
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                          {seed.subcategory}
-                        </Badge>
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">{seed.subcategory}</Badge>
                       )}
                     </div>
 
@@ -413,7 +357,6 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         onClose={() => { setSeedFormOpen(false); setEditingSeed(null) }}
         seed={editingSeed}
         guides={guides}
-        defaultCategory={selectedCategory}
         defaultSubcategory={selectedSubcategory}
       />
       <SeedUploadDialog

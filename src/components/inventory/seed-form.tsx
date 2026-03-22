@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
 import { Dialog, DialogTitle } from '@/components/ui/dialog'
-import { PRIMARY_CATEGORIES, DEFAULT_SUBCATEGORIES } from '@/lib/constants'
+import { DEFAULT_SUBCATEGORIES } from '@/lib/constants'
 import { formatDanishDate, validateDanishDate } from '@/lib/date-utils'
 import type { Seed, PlantGuide } from '@/lib/types'
 import { useState, useTransition, useMemo } from 'react'
@@ -17,18 +17,16 @@ interface SeedFormProps {
   onClose: () => void
   seed?: Seed | null
   guides: PlantGuide[]
-  defaultCategory?: string
   defaultSubcategory?: string | null
 }
 
-export function SeedForm({ open, onClose, seed, guides, defaultCategory, defaultSubcategory }: SeedFormProps) {
+export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: SeedFormProps) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [dateError, setDateError] = useState<string | null>(null)
   const [quantityError, setQuantityError] = useState<string | null>(null)
-  const [category, setCategory] = useState(seed?.primary_category ?? defaultCategory ?? 'froe')
 
-  // Compute seeds remaining
+  // Seed quantity tracking
   const [seedsTotal, setSeedsTotal] = useState<string>(seed?.seeds_total?.toString() ?? '')
   const [seedsSown, setSeedsSown] = useState<string>(seed?.seeds_sown?.toString() ?? '0')
 
@@ -39,30 +37,30 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
     return total - (isNaN(sown) ? 0 : sown)
   }, [seedsTotal, seedsSown])
 
-  // Format expiry_date for display
-  const initialExpiryDate = seed?.expiry_date
-    ? formatDanishDate(seed.expiry_date)
-    : ''
+  const initialExpiryDate = seed?.expiry_date ? formatDanishDate(seed.expiry_date) : ''
 
   function handleSubmit(formData: FormData) {
     setError(null)
     setDateError(null)
     setQuantityError(null)
 
-    // Validate Danish date format if provided
+    // Validate date format
     const expiryDateVal = formData.get('expiry_date') as string
     if (expiryDateVal && !validateDanishDate(expiryDateVal)) {
       setDateError('Ugyldig dato — brug format DD.MM.ÅÅÅÅ')
       return
     }
 
-    // Validate seeds_sown <= seeds_total
+    // Validate sown <= total
     const totalVal = formData.get('seeds_total') ? Number(formData.get('seeds_total')) : null
     const sownVal = formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0
     if (totalVal != null && sownVal > totalVal) {
       setQuantityError('Antal sået kan ikke være større end antal total')
       return
     }
+
+    // Always set primary_category to 'froe' for frøbank
+    formData.set('primary_category', 'froe')
 
     startTransition(async () => {
       const result = seed
@@ -90,10 +88,10 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
       <DialogTitle>{seed ? 'Rediger frø' : 'Tilføj frø'}</DialogTitle>
       <form action={handleSubmit} className="space-y-4">
 
-        {/* Name & Variety */}
+        {/* Identitet */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Navn *</label>
+            <label className="block text-sm font-medium mb-1">Dansk navn *</label>
             <Input name="name" required defaultValue={seed?.name ?? ''} placeholder="fx. Tomat" />
           </div>
           <div>
@@ -102,19 +100,10 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
           </div>
         </div>
 
-        {/* Category & Subcategory */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Kategori</label>
-            <Select
-              name="primary_category"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-            >
-              {Object.entries(PRIMARY_CATEGORIES).map(([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </Select>
+            <label className="block text-sm font-medium mb-1">Botanisk navn</label>
+            <Input name="botanical_name" defaultValue={seed?.botanical_name ?? ''} placeholder="fx. Solanum lycopersicum" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Underkategori</label>
@@ -127,14 +116,10 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
           </div>
         </div>
 
-        {/* Type & Guide */}
+        {/* Guide kobling */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Type</label>
-            <Input name="plant_type" defaultValue={seed?.plant_type ?? ''} placeholder="fx. Tomat" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Guide</label>
+            <label className="block text-sm font-medium mb-1">Dyrkningsguide</label>
             <Select name="guide_id" defaultValue={seed?.guide_id ?? ''}>
               <option value="">Ingen</option>
               {guides.map((g) => (
@@ -142,25 +127,18 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
               ))}
             </Select>
           </div>
-        </div>
-
-        {/* Brand & Status */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm font-medium mb-1">Mærke</label>
-            <Input name="brand" defaultValue={seed?.brand ?? ''} placeholder="fx. Impecta" />
-          </div>
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>
             <Select name="status" defaultValue={seed?.status ?? 'in_stock'}>
               <option value="in_stock">På lager</option>
               <option value="sown">Sået</option>
               <option value="depleted">Opbrugt</option>
+              <option value="expired">Udløbet</option>
             </Select>
           </div>
         </div>
 
-        {/* Seed Quantity Tracking */}
+        {/* Lager og køb */}
         <div className="grid grid-cols-3 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Antal frø (total)</label>
@@ -197,31 +175,51 @@ export function SeedForm({ open, onClose, seed, guides, defaultCategory, default
             </div>
           </div>
         </div>
-
         {quantityError && <p className="text-xs text-destructive -mt-2">{quantityError}</p>}
 
-        {/* Purchase Year & Expiry Date */}
         <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">Mærke / leverandør</label>
+            <Input name="brand" defaultValue={seed?.brand ?? ''} placeholder="fx. Impecta" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Købt her (URL)</label>
+            <Input name="purchase_url" type="url" defaultValue={seed?.purchase_url ?? ''} placeholder="https://..." />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Købsår</label>
             <Input name="year_purchased" type="number" defaultValue={seed?.year_purchased ?? new Date().getFullYear()} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Udløbsdato</label>
-            <Input
-              name="expiry_date"
-              defaultValue={initialExpiryDate}
-              placeholder="DD.MM.ÅÅÅÅ"
-              maxLength={10}
-            />
+            <Input name="expiry_date" defaultValue={initialExpiryDate} placeholder="DD.MM.ÅÅÅÅ" maxLength={10} />
             {dateError && <p className="text-xs text-destructive mt-1">{dateError}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Lokation</label>
+            <Input name="location" defaultValue={seed?.location ?? ''} placeholder="fx. Skuffe 2" />
           </div>
         </div>
 
-        {/* Notes */}
+        {/* Performance */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">Spireprocent (%)</label>
+            <Input name="germination_rate" type="number" min="0" max="100" step="0.1" defaultValue={seed?.germination_rate ?? ''} placeholder="fx. 85" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Type</label>
+            <Input name="plant_type" defaultValue={seed?.plant_type ?? ''} placeholder="fx. F1, heirloom" />
+          </div>
+        </div>
+
+        {/* Noter */}
         <div>
           <label className="block text-sm font-medium mb-1">Noter</label>
-          <Textarea name="notes" rows={2} defaultValue={seed?.notes ?? ''} placeholder="Evt. noter om frøet" />
+          <Textarea name="notes" rows={2} defaultValue={seed?.notes ?? ''} placeholder="Kvalitet, afvigelser, erfaringer..." />
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
