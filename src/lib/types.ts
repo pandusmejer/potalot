@@ -45,6 +45,7 @@ export interface PlantGuide {
   common_mistakes: string | null
   warnings: string | null
   image_url: string | null
+  user_notes: string | null
   created_at: string
 }
 

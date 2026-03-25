@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button'
 import { GUIDE_CATEGORIES } from '@/lib/constants'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { GuideUserNotes } from '@/components/guides/guide-user-notes'
+import { CollapsibleSection } from '@/components/guides/collapsible-section'
 import {
   ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown,
   Sprout, Flower2, Scissors, TreePine, Bug, AlertTriangle,
-  Lightbulb, Calendar, Info
+  Lightbulb, Calendar, Info, BookOpen
 } from 'lucide-react'
 
 interface Props {
@@ -18,18 +20,6 @@ interface Props {
 
 const SUN_LABELS: Record<string, string> = { full_sun: 'Fuld sol', partial_shade: 'Halvskygge', shade: 'Skygge' }
 const WATER_LABELS: Record<string, string> = { low: 'Lavt', medium: 'Medium', high: 'Højt' }
-
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
-  return (
-    <section className="space-y-3">
-      <h2 className="flex items-center gap-2 text-base font-semibold text-foreground border-b border-border pb-2">
-        {icon}
-        {title}
-      </h2>
-      {children}
-    </section>
-  )
-}
 
 function Callout({ type, children }: { type: 'tip' | 'warning' | 'mistake'; children: React.ReactNode }) {
   const styles = {
@@ -145,7 +135,11 @@ export default async function GuideDetailPage({ params }: Props) {
 
       {/* ========== Kalender / Tidslinje ========== */}
       {timeline.length > 0 && (
-        <Section icon={<Calendar className="h-4 w-4 text-primary" />} title="Årskalender">
+        <section className="space-y-3">
+          <h2 className="flex items-center gap-2 text-base font-semibold text-foreground border-b border-border pb-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Årskalender
+          </h2>
           <div className="space-y-3">
             {timeline.map((t, i) => (
               <div key={t.label} className="flex items-center gap-4">
@@ -171,47 +165,61 @@ export default async function GuideDetailPage({ params }: Props) {
               )}
             </div>
           )}
-        </Section>
+        </section>
       )}
 
-      {/* ========== Såning og Etablering ========== */}
+      {/* ========== Collapsible Prose Sections ========== */}
       {guide.sowing_info && (
-        <Section icon={<Sprout className="h-4 w-4 text-green-600" />} title="Såning og etablering">
+        <CollapsibleSection
+          icon={<Sprout className="h-4 w-4 text-green-600" />}
+          title="Såning og etablering"
+          defaultOpen
+        >
           <Prose text={guide.sowing_info} />
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Ompotning ========== */}
       {guide.repotting_info && (
-        <Section icon={<Flower2 className="h-4 w-4 text-purple-600" />} title="Ompotning">
+        <CollapsibleSection
+          icon={<Flower2 className="h-4 w-4 text-purple-600" />}
+          title="Ompotning"
+        >
           <Prose text={guide.repotting_info} />
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Udplantning ========== */}
       {guide.planting_out_info && (
-        <Section icon={<TreePine className="h-4 w-4 text-emerald-600" />} title="Udplantning">
+        <CollapsibleSection
+          icon={<TreePine className="h-4 w-4 text-emerald-600" />}
+          title="Udplantning"
+        >
           <Prose text={guide.planting_out_info} />
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Vækst og Pasning ========== */}
       {guide.care_info && (
-        <Section icon={<Scissors className="h-4 w-4 text-orange-600" />} title="Vækst og pasning">
+        <CollapsibleSection
+          icon={<Scissors className="h-4 w-4 text-orange-600" />}
+          title="Vækst og pasning"
+        >
           <Prose text={guide.care_info} />
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Miljø ========== */}
       {guide.environment_info && (
-        <Section icon={<Sun className="h-4 w-4 text-amber-600" />} title="Miljø og voksested">
+        <CollapsibleSection
+          icon={<Sun className="h-4 w-4 text-amber-600" />}
+          title="Miljø og voksested"
+        >
           <Prose text={guide.environment_info} />
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Biologi og Relationer ========== */}
       {hasBiology && (
-        <Section icon={<Bug className="h-4 w-4 text-rose-600" />} title="Biologi og relationer">
+        <CollapsibleSection
+          icon={<Bug className="h-4 w-4 text-rose-600" />}
+          title="Biologi og relationer"
+        >
           {guide.biology_info && <Prose text={guide.biology_info} />}
           {guide.companion_plants && guide.companion_plants.length > 0 && (
             <div className="mt-3">
@@ -225,35 +233,42 @@ export default async function GuideDetailPage({ params }: Props) {
               </div>
             </div>
           )}
-        </Section>
+        </CollapsibleSection>
       )}
 
       {/* ========== Frøinformation ========== */}
       {(guide.seed_type || guide.seed_harvest_possible != null) && (
-        <Section icon={<Sprout className="h-4 w-4 text-teal-600" />} title="Frøinformation">
+        <CollapsibleSection
+          icon={<Sprout className="h-4 w-4 text-teal-600" />}
+          title="Frøinformation"
+        >
           <div className="text-sm space-y-1">
             {guide.seed_type && <p><span className="text-muted-foreground">Frøtype:</span> {guide.seed_type}</p>}
             {guide.seed_harvest_possible != null && (
               <p><span className="text-muted-foreground">Frøhøst mulig:</span> {guide.seed_harvest_possible ? 'Ja' : 'Nej'}</p>
             )}
           </div>
-        </Section>
+        </CollapsibleSection>
       )}
 
-      {/* ========== Callouts: Tips, Advarsler, Fejl ========== */}
-      {guide.tips && (
-        <Callout type="tip">{guide.tips}</Callout>
-      )}
+      {/* ========== Callouts ========== */}
+      {guide.tips && <Callout type="tip">{guide.tips}</Callout>}
+      {guide.warnings && <Callout type="warning">{guide.warnings}</Callout>}
+      {guide.common_mistakes && <Callout type="mistake">{guide.common_mistakes}</Callout>}
 
-      {guide.warnings && (
-        <Callout type="warning">{guide.warnings}</Callout>
-      )}
+      {/* ========== Brugernoter ========== */}
+      <section className="space-y-3 pt-4 border-t border-border">
+        <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+          <BookOpen className="h-4 w-4 text-primary" />
+          Mine noter
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          Tilføj dine egne erfaringer og observationer. Disse noter er adskilt fra guiden og overskriver ikke AI-genereret indhold.
+        </p>
+        <GuideUserNotes guideId={guide.id} initialNotes={guide.user_notes ?? ''} />
+      </section>
 
-      {guide.common_mistakes && (
-        <Callout type="mistake">{guide.common_mistakes}</Callout>
-      )}
-
-      {/* ========== Fallback hvis ingen sektioner er udfyldt ========== */}
+      {/* ========== Fallback ========== */}
       {!hasGrowingInfo && !hasBiology && !guide.tips && !guide.warnings && !guide.common_mistakes && (
         <div className="text-center py-8 text-muted-foreground">
           <p className="text-sm">Denne guide har endnu ikke detaljerede sektioner.</p>
