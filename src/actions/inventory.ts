@@ -23,15 +23,21 @@ export async function createSeed(formData: FormData) {
     ? parseInt(expiryDateIso.split('-')[0], 10)
     : formData.get('expiry_year') ? Number(formData.get('expiry_year')) : null
 
-  const { error } = await supabase.from('seeds').insert({
+  const seedsSown = formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0
+  const name = formData.get('name') as string
+  const variety = (formData.get('variety') as string) || null
+  const guideId = (formData.get('guide_id') as string) || null
+  const status = (formData.get('status') as string) || 'in_stock'
+
+  const { data: newSeed, error } = await supabase.from('seeds').insert({
     user_id: userId,
-    name: formData.get('name') as string,
-    variety: (formData.get('variety') as string) || null,
+    name,
+    variety,
     brand: (formData.get('brand') as string) || null,
-    guide_id: (formData.get('guide_id') as string) || null,
+    guide_id: guideId,
     quantity: formData.get('quantity') ? Number(formData.get('quantity')) : null,
     seeds_total: formData.get('seeds_total') ? Number(formData.get('seeds_total')) : null,
-    seeds_sown: formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0,
+    seeds_sown: seedsSown,
     year_purchased: formData.get('year_purchased') ? Number(formData.get('year_purchased')) : null,
     expiry_year: expiryYear,
     expiry_date: expiryDateIso,
@@ -43,17 +49,34 @@ export async function createSeed(formData: FormData) {
     location: (formData.get('location') as string) || null,
     germination_rate: formData.get('germination_rate') ? Number(formData.get('germination_rate')) : null,
     image_url: (formData.get('image_url') as string) || null,
+    extra_images: formData.get('extra_images') ? JSON.parse(formData.get('extra_images') as string) : [],
     notes: (formData.get('notes') as string) || null,
-    status: (formData.get('status') as string) || 'in_stock',
-  })
+    status,
+  }).select('id').single()
 
   if (error) return { error: error.message }
+
+  // Auto-create Vækst post when seeds are sown
+  if (seedsSown > 0 && (status === 'sown' || status === 'in_stock')) {
+    await supabase.from('plants').insert({
+      user_id: userId,
+      seed_id: newSeed.id,
+      guide_id: guideId,
+      name,
+      variety,
+      status: 'sown',
+      quantity: seedsSown,
+      sow_date: new Date().toISOString().split('T')[0],
+    })
+  }
+
   revalidateAll()
-  return { success: true }
+  return { success: true, seedId: newSeed.id }
 }
 
 export async function updateSeed(seedId: string, formData: FormData) {
   const supabase = await createClient()
+  const userId = DEMO_USER_ID
 
   const expiryDateRaw = formData.get('expiry_date') as string
   const expiryDateIso = expiryDateRaw ? parseDanishDate(expiryDateRaw) : null
@@ -61,16 +84,29 @@ export async function updateSeed(seedId: string, formData: FormData) {
     ? parseInt(expiryDateIso.split('-')[0], 10)
     : formData.get('expiry_year') ? Number(formData.get('expiry_year')) : null
 
+  // Get old seed data to detect sown changes
+  const { data: oldSeed } = await supabase
+    .from('seeds')
+    .select('seeds_sown')
+    .eq('id', seedId)
+    .single()
+
+  const oldSown = oldSeed?.seeds_sown ?? 0
+  const newSown = formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0
+  const name = formData.get('name') as string
+  const variety = (formData.get('variety') as string) || null
+  const guideId = (formData.get('guide_id') as string) || null
+
   const { error } = await supabase
     .from('seeds')
     .update({
-      name: formData.get('name') as string,
-      variety: (formData.get('variety') as string) || null,
+      name,
+      variety,
       brand: (formData.get('brand') as string) || null,
-      guide_id: (formData.get('guide_id') as string) || null,
+      guide_id: guideId,
       quantity: formData.get('quantity') ? Number(formData.get('quantity')) : null,
       seeds_total: formData.get('seeds_total') ? Number(formData.get('seeds_total')) : null,
-      seeds_sown: formData.get('seeds_sown') ? Number(formData.get('seeds_sown')) : 0,
+      seeds_sown: newSown,
       year_purchased: formData.get('year_purchased') ? Number(formData.get('year_purchased')) : null,
       expiry_year: expiryYear,
       expiry_date: expiryDateIso,
@@ -82,6 +118,7 @@ export async function updateSeed(seedId: string, formData: FormData) {
       location: (formData.get('location') as string) || null,
       germination_rate: formData.get('germination_rate') ? Number(formData.get('germination_rate')) : null,
       image_url: (formData.get('image_url') as string) || null,
+      extra_images: formData.get('extra_images') ? JSON.parse(formData.get('extra_images') as string) : [],
       notes: (formData.get('notes') as string) || null,
       status: (formData.get('status') as string) || 'in_stock',
       updated_at: new Date().toISOString(),
@@ -89,6 +126,31 @@ export async function updateSeed(seedId: string, formData: FormData) {
     .eq('id', seedId)
 
   if (error) return { error: error.message }
+
+  // Auto-create Vækst post when seeds_sown increases from 0
+  if (oldSown === 0 && newSown > 0) {
+    // Check no existing plant linked to this seed
+    const { data: existingPlant } = await supabase
+      .from('plants')
+      .select('id')
+      .eq('seed_id', seedId)
+      .limit(1)
+      .single()
+
+    if (!existingPlant) {
+      await supabase.from('plants').insert({
+        user_id: userId,
+        seed_id: seedId,
+        guide_id: guideId,
+        name,
+        variety,
+        status: 'sown',
+        quantity: newSown,
+        sow_date: new Date().toISOString().split('T')[0],
+      })
+    }
+  }
+
   revalidateAll()
   return { success: true }
 }

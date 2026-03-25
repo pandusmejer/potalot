@@ -1,6 +1,7 @@
 'use client'
 
 import { createSeed, updateSeed, deleteSeed } from '@/actions/inventory'
+import { createGuideFromAI } from '@/actions/guides'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -36,10 +37,12 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
   const [seedsTotal, setSeedsTotal] = useState<string>(seed?.seeds_total?.toString() ?? '')
   const [seedsSown, setSeedsSown] = useState<string>(seed?.seeds_sown?.toString() ?? '0')
 
-  // Image upload
+  // Image upload (primary + extra)
   const [imagePreview, setImagePreview] = useState<string | null>(seed?.image_url ?? null)
   const [imageData, setImageData] = useState<string | null>(null)
+  const [extraImages, setExtraImages] = useState<string[]>(seed?.extra_images ?? [])
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const extraFileRef = useRef<HTMLInputElement>(null)
 
   const seedsRemaining = useMemo(() => {
     const total = parseInt(seedsTotal, 10)
@@ -54,16 +57,30 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Preview
     const url = URL.createObjectURL(file)
     setImagePreview(url)
 
-    // Convert to base64 for storage
     const reader = new FileReader()
     reader.onload = () => {
       setImageData(reader.result as string)
     }
     reader.readAsDataURL(file)
+  }
+
+  function handleExtraImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setExtraImages(prev => [...prev, reader.result as string])
+    }
+    reader.readAsDataURL(file)
+    if (extraFileRef.current) extraFileRef.current.value = ''
+  }
+
+  function removeExtraImage(index: number) {
+    setExtraImages(prev => prev.filter((_, i) => i !== index))
   }
 
   function handleSubmit(formData: FormData) {
@@ -91,6 +108,11 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
       formData.set('image_url', imageData)
     }
 
+    // Set extra images as JSON
+    if (extraImages.length > 0) {
+      formData.set('extra_images', JSON.stringify(extraImages))
+    }
+
     startTransition(async () => {
       const result = seed
         ? await updateSeed(seed.id, formData)
@@ -98,9 +120,29 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
       if (result?.error) {
         setError(result.error)
       } else {
+        // Auto-generate guide for new seeds without a guide
+        if (!seed && !formData.get('guide_id') && seedName.trim()) {
+          autoGenerateGuide(seedName.trim())
+        }
         onClose()
       }
     })
+  }
+
+  // Fire-and-forget: generate guide in background after seed creation
+  function autoGenerateGuide(name: string) {
+    fetch('/api/ai/generate-guide', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, category: 'vegetable' }),
+    })
+      .then(res => res.json())
+      .then(aiData => {
+        if (!aiData.error) {
+          createGuideFromAI(name, 'vegetable', aiData)
+        }
+      })
+      .catch(() => { /* silent fail — guide generation is best-effort */ })
   }
 
   function handleDelete() {
@@ -191,16 +233,12 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
 
         {/* Billede upload */}
         <div>
-          <label className="block text-sm font-medium mb-1">Billede</label>
-          <div className="flex items-center gap-3">
-            {imagePreview ? (
+          <label className="block text-sm font-medium mb-1">Billeder</label>
+          <div className="flex items-center gap-2 flex-wrap">
+            {imagePreview && (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="h-20 w-20 object-cover rounded-lg border border-border"
-                />
+                <img src={imagePreview} alt="Primært" className="h-16 w-16 object-cover rounded-lg border border-border" />
                 <button
                   type="button"
                   onClick={() => { setImagePreview(null); setImageData(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
@@ -209,18 +247,31 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
-            ) : null}
+            )}
+            {extraImages.map((img, i) => (
+              <div key={i} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img} alt={`Billede ${i + 2}`} className="h-16 w-16 object-cover rounded-lg border border-border" />
+                <button
+                  type="button"
+                  onClick={() => removeExtraImage(i)}
+                  className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
             <label className="flex items-center gap-2 px-3 py-2 border border-dashed border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
               <Camera className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                {imagePreview ? 'Skift billede' : 'Vælg billede'}
+                {imagePreview ? '+ Billede' : 'Vælg billede'}
               </span>
               <input
-                ref={fileInputRef}
+                ref={imagePreview ? extraFileRef : fileInputRef}
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageChange}
+                onChange={imagePreview ? handleExtraImage : handleImageChange}
               />
             </label>
           </div>

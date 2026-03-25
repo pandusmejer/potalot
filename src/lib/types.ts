@@ -70,6 +70,7 @@ export interface Seed {
   location: string | null
   germination_rate: number | null
   image_url: string | null
+  extra_images: string[]
   is_favorite: boolean
   is_pinned: boolean
   notes: string | null
