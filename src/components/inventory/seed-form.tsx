@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
 import { Dialog, DialogTitle } from '@/components/ui/dialog'
-import { DEFAULT_SUBCATEGORIES } from '@/lib/constants'
+import { DEFAULT_SUBCATEGORIES, PRIMARY_CATEGORIES } from '@/lib/constants'
 import { formatDanishDate, validateDanishDate } from '@/lib/date-utils'
 import type { Seed, PlantGuide } from '@/lib/types'
-import { useState, useTransition, useMemo } from 'react'
-import { Trash2 } from 'lucide-react'
+import { useState, useTransition, useMemo, useRef } from 'react'
+import { Trash2, Camera } from 'lucide-react'
 
 interface SeedFormProps {
   open: boolean
@@ -18,9 +18,10 @@ interface SeedFormProps {
   seed?: Seed | null
   guides: PlantGuide[]
   defaultSubcategory?: string | null
+  defaultCategory?: string
 }
 
-export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: SeedFormProps) {
+export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defaultCategory = 'froe' }: SeedFormProps) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [dateError, setDateError] = useState<string | null>(null)
@@ -30,6 +31,11 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
   const [seedsTotal, setSeedsTotal] = useState<string>(seed?.seeds_total?.toString() ?? '')
   const [seedsSown, setSeedsSown] = useState<string>(seed?.seeds_sown?.toString() ?? '0')
 
+  // Image upload
+  const [imagePreview, setImagePreview] = useState<string | null>(seed?.image_url ?? null)
+  const [imageData, setImageData] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const seedsRemaining = useMemo(() => {
     const total = parseInt(seedsTotal, 10)
     const sown = parseInt(seedsSown, 10)
@@ -38,6 +44,22 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
   }, [seedsTotal, seedsSown])
 
   const initialExpiryDate = seed?.expiry_date ? formatDanishDate(seed.expiry_date) : ''
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Preview
+    const url = URL.createObjectURL(file)
+    setImagePreview(url)
+
+    // Convert to base64 for storage
+    const reader = new FileReader()
+    reader.onload = () => {
+      setImageData(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
 
   function handleSubmit(formData: FormData) {
     setError(null)
@@ -59,8 +81,10 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
       return
     }
 
-    // Always set primary_category to 'froe' for frøbank
-    formData.set('primary_category', 'froe')
+    // Set image_url if we have new image data
+    if (imageData) {
+      formData.set('image_url', imageData)
+    }
 
     startTransition(async () => {
       const result = seed
@@ -76,7 +100,7 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
 
   function handleDelete() {
     if (!seed) return
-    if (!confirm('Slet dette frø?')) return
+    if (!confirm('Slet dette element?')) return
     startTransition(async () => {
       await deleteSeed(seed.id)
       onClose()
@@ -85,8 +109,18 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{seed ? 'Rediger frø' : 'Tilføj frø'}</DialogTitle>
+      <DialogTitle>{seed ? 'Rediger' : 'Tilføj'}</DialogTitle>
       <form action={handleSubmit} className="space-y-4">
+
+        {/* Primær kategori */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Kategori *</label>
+          <Select name="primary_category" defaultValue={seed?.primary_category ?? defaultCategory}>
+            {Object.entries(PRIMARY_CATEGORIES).map(([key, { label }]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </Select>
+        </div>
 
         {/* Identitet */}
         <div className="grid grid-cols-2 gap-3">
@@ -138,10 +172,47 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory }: Se
           </div>
         </div>
 
+        {/* Billede upload */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Billede</label>
+          <div className="flex items-center gap-3">
+            {imagePreview ? (
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-20 w-20 object-cover rounded-lg border border-border"
+                />
+                <button
+                  type="button"
+                  onClick={() => { setImagePreview(null); setImageData(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
+                  className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            ) : null}
+            <label className="flex items-center gap-2 px-3 py-2 border border-dashed border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                {imagePreview ? 'Skift billede' : 'Vælg billede'}
+              </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
+        </div>
+
         {/* Lager og køb */}
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Antal frø (total)</label>
+            <label className="block text-sm font-medium mb-1">Antal (total)</label>
             <Input
               name="seeds_total"
               type="number"

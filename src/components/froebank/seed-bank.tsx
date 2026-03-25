@@ -8,15 +8,27 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { SeedForm } from '@/components/inventory/seed-form'
 import { SeedUploadDialog } from '@/components/inventory/seed-upload-dialog'
 import { BulkEditDialog } from '@/components/froebank/bulk-edit-dialog'
-import { SEED_STATUSES, DEFAULT_SUBCATEGORIES } from '@/lib/constants'
+import { SEED_STATUSES, DEFAULT_SUBCATEGORIES, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Seed, PlantGuide, SeedSubcategory } from '@/lib/types'
 import { formatDanishDate } from '@/lib/date-utils'
-import { bulkDeleteSeeds } from '@/actions/inventory'
+import { bulkDeleteSeeds, toggleFavorite, togglePin } from '@/actions/inventory'
 import {
   Package, Plus, Upload, Search, X, CheckSquare, Square,
-  Trash2, Edit3, ExternalLink
+  Trash2, Edit3, ExternalLink, Star, Pin, Sprout, CircleDot,
+  Droplets, TreePine, Trees, Flower, ShoppingCart
 } from 'lucide-react'
 import { useState, useMemo, useTransition } from 'react'
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  froe: <Sprout className="h-4 w-4" />,
+  loeg: <CircleDot className="h-4 w-4" />,
+  knolde: <Droplets className="h-4 w-4" />,
+  buske: <TreePine className="h-4 w-4" />,
+  traeer: <Trees className="h-4 w-4" />,
+  stauder: <Flower className="h-4 w-4" />,
+  indkoebsliste: <ShoppingCart className="h-4 w-4" />,
+  favoritter: <Star className="h-4 w-4" />,
+}
 
 interface SeedBankProps {
   seeds: Seed[]
@@ -29,6 +41,9 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
   const [editingSeed, setEditingSeed] = useState<Seed | null>(null)
   const [uploadOpen, setUploadOpen] = useState(false)
 
+  // Niveau 1: Primary category
+  const [selectedCategory, setSelectedCategory] = useState<string>('froe')
+
   // Filtering
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
@@ -40,15 +55,42 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
   const [bulkEditOpen, setBulkEditOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  // Subcategories: defaults + custom
+  // Subcategories: defaults + custom for current category
   const subcategories = useMemo(() => {
-    const customs = customSubcategories.map(sc => sc.name)
+    const customs = customSubcategories
+      .filter(sc => sc.primary_category === selectedCategory)
+      .map(sc => sc.name)
     return [...DEFAULT_SUBCATEGORIES, ...customs]
-  }, [customSubcategories])
+  }, [customSubcategories, selectedCategory])
 
-  // Filter seeds
+  // Category counts
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const s of seeds) {
+      counts[s.primary_category] = (counts[s.primary_category] || 0) + 1
+    }
+    counts['favoritter'] = seeds.filter(s => s.is_favorite).length
+    return counts
+  }, [seeds])
+
+  // Seeds for current category (niveau 1 filter)
+  const categorySeeds = useMemo(() => {
+    if (selectedCategory === 'favoritter') {
+      return seeds.filter(s => s.is_favorite)
+    }
+    return seeds.filter(s => s.primary_category === selectedCategory)
+  }, [seeds, selectedCategory])
+
+  // Filter seeds (niveau 2 + status + search)
   const filteredSeeds = useMemo(() => {
-    let result = [...seeds]
+    let result = [...categorySeeds]
+
+    // Pinned first
+    result.sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1
+      if (!a.is_pinned && b.is_pinned) return 1
+      return 0
+    })
 
     if (selectedSubcategory) {
       result = result.filter(s => s.subcategory === selectedSubcategory)
@@ -69,16 +111,16 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
     }
 
     return result
-  }, [seeds, selectedSubcategory, selectedStatus, nameSearch])
+  }, [categorySeeds, selectedSubcategory, selectedStatus, nameSearch])
 
-  // Status counts for filter badges
+  // Status counts for current category
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {}
-    for (const s of seeds) {
+    for (const s of categorySeeds) {
       counts[s.status] = (counts[s.status] || 0) + 1
     }
     return counts
-  }, [seeds])
+  }, [categorySeeds])
 
   function toggleSelect(id: string) {
     setSelectedIds(prev => {
@@ -111,16 +153,86 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
     })
   }
 
+  function handleToggleFavorite(e: React.MouseEvent, seed: Seed) {
+    e.stopPropagation()
+    startTransition(async () => {
+      await toggleFavorite(seed.id, !seed.is_favorite)
+    })
+  }
+
+  function handleTogglePin(e: React.MouseEvent, seed: Seed) {
+    e.stopPropagation()
+    startTransition(async () => {
+      await togglePin(seed.id, !seed.is_pinned)
+    })
+  }
+
   function clearFilters() {
     setSelectedSubcategory(null)
     setSelectedStatus(null)
     setNameSearch('')
   }
 
+  function handleCategoryChange(cat: string) {
+    setSelectedCategory(cat)
+    setSelectedSubcategory(null)
+    setSelectedStatus(null)
+    setNameSearch('')
+    exitBulkMode()
+  }
+
   const hasActiveFilters = !!selectedSubcategory || !!selectedStatus || !!nameSearch
 
   return (
     <div className="space-y-4">
+      {/* ========== Niveau 1: Primary Categories ========== */}
+      <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+        {Object.entries(PRIMARY_CATEGORIES).map(([key, { label }]) => {
+          const count = categoryCounts[key] || 0
+          const isActive = selectedCategory === key
+          return (
+            <button
+              key={key}
+              onClick={() => handleCategoryChange(key)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              {CATEGORY_ICONS[key]}
+              <span>{label}</span>
+              {count > 0 && (
+                <span className={`text-[10px] px-1 rounded-full ${
+                  isActive ? 'bg-primary-foreground/20' : 'bg-muted-foreground/20'
+                }`}>
+                  {count}
+                </span>
+              )}
+            </button>
+          )
+        })}
+        {/* Favoritter (dynamisk visning) */}
+        <button
+          onClick={() => handleCategoryChange('favoritter')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
+            selectedCategory === 'favoritter'
+              ? 'bg-amber-500 text-white shadow-sm'
+              : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <Star className={`h-4 w-4 ${selectedCategory === 'favoritter' ? 'fill-white' : ''}`} />
+          <span>Favoritter</span>
+          {(categoryCounts['favoritter'] || 0) > 0 && (
+            <span className={`text-[10px] px-1 rounded-full ${
+              selectedCategory === 'favoritter' ? 'bg-white/20' : 'bg-muted-foreground/20'
+            }`}>
+              {categoryCounts['favoritter']}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* ========== Status Filter Pills ========== */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <button
@@ -131,7 +243,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
               : 'bg-muted/60 text-muted-foreground hover:bg-muted'
           }`}
         >
-          Alle ({seeds.length})
+          Alle ({categorySeeds.length})
         </button>
         {Object.entries(SEED_STATUSES).map(([key, { label, color }]) => {
           const count = statusCounts[key] || 0
@@ -152,7 +264,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         })}
       </div>
 
-      {/* ========== Subcategory Chips ========== */}
+      {/* ========== Niveau 2: Subcategory Chips ========== */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
         {subcategories.map(sub => {
           const isActive = selectedSubcategory === sub
@@ -201,7 +313,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
       {/* ========== Action Bar ========== */}
       <div className="flex items-center gap-2">
         <div className="flex-1 text-xs text-muted-foreground">
-          {filteredSeeds.length} {filteredSeeds.length === 1 ? 'frø' : 'frø'}
+          {filteredSeeds.length} {filteredSeeds.length === 1 ? 'element' : 'elementer'}
         </div>
 
         {bulkMode ? (
@@ -240,20 +352,23 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         )}
       </div>
 
-      {/* ========== Seed List ========== */}
+      {/* ========== Niveau 3: Seed List ========== */}
       {filteredSeeds.length === 0 ? (
         <EmptyState
           icon={<Package className="h-10 w-10" />}
-          title={hasActiveFilters ? 'Ingen resultater' : 'Ingen frø endnu'}
+          title={hasActiveFilters ? 'Ingen resultater' : `Ingen elementer i ${
+            selectedCategory === 'favoritter' ? 'Favoritter' :
+            PRIMARY_CATEGORIES[selectedCategory as keyof typeof PRIMARY_CATEGORIES]?.label ?? selectedCategory
+          }`}
           description={
             hasActiveFilters
               ? 'Prøv at ændre dine filtre.'
-              : 'Tilføj dine frø for at holde styr på din frøbank.'
+              : 'Tilføj elementer for at komme i gang.'
           }
           action={
             hasActiveFilters
               ? <Button size="sm" variant="secondary" onClick={clearFilters}>Ryd filtre</Button>
-              : <Button size="sm" onClick={() => setSeedFormOpen(true)}>Tilføj frø</Button>
+              : <Button size="sm" onClick={() => setSeedFormOpen(true)}>Tilføj</Button>
           }
         />
       ) : (
@@ -269,6 +384,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
               <Card
                 key={seed.id}
                 className={`cursor-pointer transition-colors ${
+                  seed.is_pinned ? 'border-amber-300 bg-amber-50/30' :
                   isSelected ? 'border-primary bg-primary/5' : 'hover:border-primary/30'
                 }`}
                 onClick={() => {
@@ -288,11 +404,36 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{seed.name}</p>
+                        <div className="flex items-center gap-1">
+                          {seed.is_pinned && <Pin className="h-3 w-3 text-amber-500 shrink-0" />}
+                          <p className="text-sm font-medium text-foreground truncate">{seed.name}</p>
+                        </div>
                         {seed.variety && <p className="text-xs text-muted-foreground truncate">{seed.variety}</p>}
                         {seed.botanical_name && <p className="text-xs text-muted-foreground/60 truncate italic">{seed.botanical_name}</p>}
                       </div>
-                      {statusMeta && <Badge className={`shrink-0 ${statusMeta.color}`}>{statusMeta.label}</Badge>}
+                      <div className="flex items-center gap-1 shrink-0">
+                        {/* Favorite toggle */}
+                        <button
+                          onClick={(e) => handleToggleFavorite(e, seed)}
+                          className="p-1 rounded hover:bg-muted transition-colors"
+                          title={seed.is_favorite ? 'Fjern fra favoritter' : 'Tilføj til favoritter'}
+                        >
+                          <Star className={`h-3.5 w-3.5 ${
+                            seed.is_favorite ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/40'
+                          }`} />
+                        </button>
+                        {/* Pin toggle */}
+                        <button
+                          onClick={(e) => handleTogglePin(e, seed)}
+                          className="p-1 rounded hover:bg-muted transition-colors"
+                          title={seed.is_pinned ? 'Fjern pin' : 'Fastgør'}
+                        >
+                          <Pin className={`h-3.5 w-3.5 ${
+                            seed.is_pinned ? 'text-amber-500' : 'text-muted-foreground/40'
+                          }`} />
+                        </button>
+                        {statusMeta && <Badge className={`${statusMeta.color}`}>{statusMeta.label}</Badge>}
+                      </div>
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -358,6 +499,7 @@ export function SeedBank({ seeds, guides, customSubcategories }: SeedBankProps) 
         seed={editingSeed}
         guides={guides}
         defaultSubcategory={selectedSubcategory}
+        defaultCategory={selectedCategory !== 'favoritter' ? selectedCategory : 'froe'}
       />
       <SeedUploadDialog
         open={uploadOpen}

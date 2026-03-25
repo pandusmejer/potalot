@@ -69,6 +69,8 @@ export interface Seed {
   location: string | null
   germination_rate: number | null
   image_url: string | null
+  is_favorite: boolean
+  is_pinned: boolean
   notes: string | null
   status: 'in_stock' | 'sown' | 'depleted' | 'expired'
   created_at: string

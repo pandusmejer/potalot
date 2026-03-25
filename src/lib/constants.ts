@@ -50,7 +50,6 @@ export const MONTHS_DA = [
 
 export const PRIMARY_CATEGORIES = {
   froe: { label: 'Frø', icon: 'Sprout' },
-  aktive_planter: { label: 'Aktive planter', icon: 'Flower2' },
   loeg: { label: 'Løg', icon: 'CircleDot' },
   knolde: { label: 'Knolde', icon: 'Droplets' },
   buske: { label: 'Buske', icon: 'TreePine' },
@@ -81,4 +80,5 @@ export const DEFAULT_SUBCATEGORIES = [
   'Græsser',
   'Bær',
   'Frugt',
+  'Pryd',
 ] as const

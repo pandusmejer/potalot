@@ -97,23 +97,24 @@ export function SeedImageUpload({ onExtracted, onBack }: SeedImageUploadProps) {
       </p>
 
       {!preview && !loading && (
-        <label className="flex flex-col items-center justify-center gap-3 p-8 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
-          <Camera className="h-10 w-10 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            Tag billede eller vælg fra galleri
-          </span>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              if (file) handleImage(file)
-            }}
-          />
-        </label>
+        <div className="flex flex-col gap-3">
+          <label className="flex flex-col items-center justify-center gap-3 p-8 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
+            <Camera className="h-10 w-10 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              Tag billede eller vælg fra galleri
+            </span>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) handleImage(file)
+              }}
+            />
+          </label>
+        </div>
       )}
 
       {preview && (

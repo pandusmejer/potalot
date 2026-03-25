@@ -42,6 +42,7 @@ export async function createSeed(formData: FormData) {
     purchase_url: (formData.get('purchase_url') as string) || null,
     location: (formData.get('location') as string) || null,
     germination_rate: formData.get('germination_rate') ? Number(formData.get('germination_rate')) : null,
+    image_url: (formData.get('image_url') as string) || null,
     notes: (formData.get('notes') as string) || null,
     status: (formData.get('status') as string) || 'in_stock',
   })
@@ -80,6 +81,7 @@ export async function updateSeed(seedId: string, formData: FormData) {
       purchase_url: (formData.get('purchase_url') as string) || null,
       location: (formData.get('location') as string) || null,
       germination_rate: formData.get('germination_rate') ? Number(formData.get('germination_rate')) : null,
+      image_url: (formData.get('image_url') as string) || null,
       notes: (formData.get('notes') as string) || null,
       status: (formData.get('status') as string) || 'in_stock',
       updated_at: new Date().toISOString(),
@@ -186,6 +188,34 @@ export async function bulkUpdateSeeds(
   if (error) return { error: error.message }
   revalidateAll()
   return { success: true, count: seedIds.length }
+}
+
+// ============================================
+// FAVORITE / PIN
+// ============================================
+
+export async function toggleFavorite(seedId: string, isFavorite: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('seeds')
+    .update({ is_favorite: isFavorite, updated_at: new Date().toISOString() })
+    .eq('id', seedId)
+
+  if (error) return { error: error.message }
+  revalidateAll()
+  return { success: true }
+}
+
+export async function togglePin(seedId: string, isPinned: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('seeds')
+    .update({ is_pinned: isPinned, updated_at: new Date().toISOString() })
+    .eq('id', seedId)
+
+  if (error) return { error: error.message }
+  revalidateAll()
+  return { success: true }
 }
 
 // ============================================
