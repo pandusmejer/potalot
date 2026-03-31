@@ -284,7 +284,7 @@ export async function executeAdminTool(toolName: string, input: ToolInput): Prom
           'name_en', 'description', 'sow_indoor_start', 'sow_indoor_end',
           'sow_outdoor_start', 'sow_outdoor_end', 'plant_out_start', 'plant_out_end',
           'harvest_start', 'harvest_end', 'days_to_germination_min', 'days_to_germination_max',
-          'days_to_harvest_min', 'days_to_harvest_max', 'spacing_cm', 'depth_cm',
+          'days_to_harvest_min', 'days_to_harvest_max', 'spacing_cm', 'depth_mm',
           'sun_requirement', 'water_need', 'frost_hardy', 'tips', 'companion_plants',
         ]
         for (const field of optionalFields) {

@@ -96,6 +96,13 @@ export function GuideForm({ open, onClose, guide }: GuideFormProps) {
             <label className="block text-xs font-medium mb-1">Intro / beskrivelse</label>
             <Textarea name="description" rows={3} defaultValue={guide?.description ?? ''} placeholder="Kort, levende intro om planten" />
           </div>
+          {!isEdit && (
+            <div>
+              <label className="block text-xs font-medium mb-1">Sådybde (mm) *</label>
+              <Input name="depth_mm" type="number" min="0" step="1" required defaultValue={0} placeholder="0 = overfladen" />
+              <p className="text-[10px] text-muted-foreground mt-0.5">0 mm = sås på overfladen</p>
+            </div>
+          )}
         </Section>
 
         {/* === Quick Reference === */}
@@ -134,8 +141,9 @@ export function GuideForm({ open, onClose, guide }: GuideFormProps) {
                 <Input name="spacing_cm" type="number" defaultValue={guide?.spacing_cm ?? ''} />
               </div>
               <div>
-                <label className="block text-xs font-medium mb-1">Sådybde (cm)</label>
-                <Input name="depth_cm" type="number" step="0.1" defaultValue={guide?.depth_cm ?? ''} />
+                <label className="block text-xs font-medium mb-1">Sådybde (mm) *</label>
+                <Input name="depth_mm" type="number" min="0" step="1" required defaultValue={guide?.depth_mm ?? 0} placeholder="0 = overfladen" />
+                <p className="text-[10px] text-muted-foreground mt-0.5">0 mm = sås på overfladen</p>
               </div>
             </div>
           </Section>

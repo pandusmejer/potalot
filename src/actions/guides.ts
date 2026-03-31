@@ -59,7 +59,7 @@ export async function createGuideFromAI(
       water_need: (aiData.water_need as string) || null,
       frost_hardy: aiData.frost_hardy as boolean ?? false,
       spacing_cm: (aiData.spacing_cm as number) || null,
-      depth_cm: (aiData.depth_cm as number) || null,
+      depth_mm: (aiData.depth_mm as number) ?? 0,
       sow_indoor_start: (aiData.sow_indoor_start as string) || null,
       sow_indoor_end: (aiData.sow_indoor_end as string) || null,
       sow_outdoor_start: (aiData.sow_outdoor_start as string) || null,
@@ -111,7 +111,7 @@ export async function updateGuideFromAI(
       water_need: (aiData.water_need as string) || null,
       frost_hardy: aiData.frost_hardy as boolean ?? false,
       spacing_cm: (aiData.spacing_cm as number) || null,
-      depth_cm: (aiData.depth_cm as number) || null,
+      depth_mm: (aiData.depth_mm as number) ?? 0,
       sow_indoor_start: (aiData.sow_indoor_start as string) || null,
       sow_indoor_end: (aiData.sow_indoor_end as string) || null,
       sow_outdoor_start: (aiData.sow_outdoor_start as string) || null,
@@ -171,8 +171,9 @@ export async function createGuideManual(formData: FormData) {
       name_da: name.trim(),
       name_en: (formData.get('name_en') as string)?.trim() || null,
       botanical_name: (formData.get('botanical_name') as string)?.trim() || null,
-      category: (formData.get('category') as string) || 'vegetable',
+      category: (formData.get('category') as string) || 'groentsager',
       description: (formData.get('description') as string)?.trim() || null,
+      depth_mm: Number(formData.get('depth_mm')) || 0,
       created_automatically: false,
     })
     .select('slug')
@@ -205,14 +206,15 @@ export async function updateGuideManual(guideId: string, formData: FormData) {
       name_da: name.trim(),
       name_en: txt('name_en'),
       botanical_name: txt('botanical_name'),
-      category: (formData.get('category') as string) || 'vegetable',
+      category: (formData.get('category') as string) || 'groentsager',
       description: txt('description'),
       // Quick reference
+      depth_mm: Number(formData.get('depth_mm')) || 0,
       sun_requirement: txt('sun_requirement'),
       water_need: txt('water_need'),
       frost_hardy: formData.get('frost_hardy') === 'true',
       spacing_cm: num('spacing_cm'),
-      depth_cm: num('depth_cm'),
+      // depth_mm is set above in the update object
       // Calendar
       sow_indoor_start: txt('sow_indoor_start'),
       sow_indoor_end: txt('sow_indoor_end'),

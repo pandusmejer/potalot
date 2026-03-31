@@ -86,8 +86,7 @@ export function GenerateGuideButton({ name, variety, category, onGuideCreated }:
 }
 
 function mapToGuideCategory(category?: string): string {
-  // If already a valid primary category key, use it directly
-  const validKeys = ['froe', 'loeg', 'knolde', 'buske', 'traeer', 'stauder']
+  const validKeys = ['groentsager', 'stauder', 'krydderurter', 'graesser', 'traeer', 'buske', 'frugt', 'baer', 'blomster_1aarige', 'blomster_fleraarige']
   if (category && validKeys.includes(category)) return category
-  return 'froe'
+  return 'groentsager'
 }

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
-    const { name, variety, category } = await req.json()
+    const { name, variety, category, sourceUrl } = await req.json()
 
     if (!name) {
       return NextResponse.json({ error: 'Plantenavn er påkrævet' }, { status: 400 })
@@ -11,8 +11,37 @@ export async function POST(req: Request) {
 
     const client = getAnthropicClient()
 
+    // If a source URL is provided, fetch its content
+    let externalContent = ''
+    if (sourceUrl) {
+      try {
+        const res = await fetch(sourceUrl, {
+          headers: { 'User-Agent': 'PotAlot/1.0 (plant guide generator)' },
+          signal: AbortSignal.timeout(10000),
+        })
+        if (res.ok) {
+          const html = await res.text()
+          // Strip HTML tags, keep text content (max 8000 chars to fit in context)
+          const textOnly = html
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 8000)
+          externalContent = textOnly
+        }
+      } catch {
+        // Silent fail — we'll generate without external source
+      }
+    }
+
     const plantDescription = variety ? `${name} (sort: ${variety})` : name
     const categoryLabel = category || 'ukendt'
+
+    const externalSourceInstruction = externalContent
+      ? `\n\nEKSTERN KILDE — brug denne som primær kilde til information:\n"""\n${externalContent}\n"""\n\nHvis information mangler i kilden, supplér med din generelle viden om planten.`
+      : '\n\nBrug din generelle viden om planten til at udfylde alle felter.'
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
@@ -21,8 +50,15 @@ export async function POST(req: Request) {
         {
           role: 'user',
           content: `Du er en erfaren dansk haveekspert. Generér en komplet dyrkningsguide for "${plantDescription}" (kategori: ${categoryLabel}).
+${externalSourceInstruction}
 
-Svar KUN med valid JSON i følgende format. Udfyld alle felter du kan med fagligt korrekte data for danske dyrkningsforhold. Brug null for felter du ikke kan udfylde.
+Svar KUN med valid JSON i følgende format. Udfyld ALLE felter du kan med fagligt korrekte data for danske dyrkningsforhold. Brug null for felter du absolut ikke kan udfylde.
+
+VIGTIGT om sådybde (depth_mm):
+- Feltet er OBLIGATORISK og skal ALTID udfyldes
+- Angiv i millimeter (mm)
+- Hvis frø skal sås på overfladen (fx basilikum, salat), sæt depth_mm til 0
+- Aldrig null
 
 Intro-teksten (description) skal være kort, konkret og levende. Eksempel:
 "Tidlig sommergulerod med lange, slanke rødder. Sorten er beregnet til at spises frisk eller blancheres og fryses. Høstes tidligt, ikke egnet til vinterlagring. Trives i stenfri, muldrig og veldrænet jord."
@@ -34,7 +70,7 @@ Intro-teksten (description) skal være kort, konkret og levende. Eksempel:
   "water_need": "low" | "medium" | "high",
   "frost_hardy": true | false,
   "spacing_cm": tal | null,
-  "depth_cm": tal | null,
+  "depth_mm": tal (ALTID udfyldt, 0 = overfladen),
   "sow_indoor_start": "måned (fx mar)" | null,
   "sow_indoor_end": "måned (fx apr)" | null,
   "sow_outdoor_start": "måned" | null,
@@ -68,6 +104,8 @@ Vigtige regler:
 - Brug danske måneder (jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec)
 - Sektioner med tekst skal skrives som prosa — ikke lister eller felter
 - Vær fagligt korrekt med fokus på danske dyrkningsforhold (zone 7-8)
+- depth_mm er ALDRIG null — brug 0 for overfladen
+- Forsøg at udfylde ALLE felter — jo mere komplet, jo bedre
 - Inkludér kun sektioner der er relevante for planten`,
         },
       ],
@@ -81,6 +119,8 @@ Vigtige regler:
 
     try {
       const parsed = JSON.parse(cleaned)
+      // Ensure depth_mm is always a number
+      if (parsed.depth_mm == null) parsed.depth_mm = 0
       return NextResponse.json(parsed)
     } catch {
       return NextResponse.json(

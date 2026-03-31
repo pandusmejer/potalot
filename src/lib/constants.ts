@@ -37,12 +37,16 @@ export const SEED_STATUSES = {
 } as const
 
 export const GUIDE_CATEGORIES = {
-  froe: { label: 'Frø', color: 'bg-green-100 text-green-800' },
-  loeg: { label: 'Løg', color: 'bg-amber-100 text-amber-800' },
-  knolde: { label: 'Knolde', color: 'bg-orange-100 text-orange-800' },
-  buske: { label: 'Buske', color: 'bg-emerald-100 text-emerald-800' },
-  traeer: { label: 'Træer', color: 'bg-teal-100 text-teal-800' },
+  groentsager: { label: 'Grøntsager', color: 'bg-green-100 text-green-800' },
   stauder: { label: 'Stauder', color: 'bg-pink-100 text-pink-800' },
+  krydderurter: { label: 'Krydderurter', color: 'bg-lime-100 text-lime-800' },
+  graesser: { label: 'Græsser', color: 'bg-emerald-100 text-emerald-800' },
+  traeer: { label: 'Træer', color: 'bg-teal-100 text-teal-800' },
+  buske: { label: 'Buske', color: 'bg-cyan-100 text-cyan-800' },
+  frugt: { label: 'Frugt', color: 'bg-orange-100 text-orange-800' },
+  baer: { label: 'Bær', color: 'bg-red-100 text-red-800' },
+  blomster_1aarige: { label: 'Blomster 1-årige', color: 'bg-fuchsia-100 text-fuchsia-800' },
+  blomster_fleraarige: { label: 'Blomster flerårige', color: 'bg-purple-100 text-purple-800' },
 } as const
 
 export const MONTHS_DA = [

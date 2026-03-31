@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { updateGuideFromAI } from '@/actions/guides'
-import { Sparkles, Loader2, Check } from 'lucide-react'
+import { Sparkles, Loader2, Check, Link as LinkIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -16,6 +17,8 @@ export function GenerateGuideContentButton({ guideId, guideName, guideCategory }
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [sourceUrl, setSourceUrl] = useState('')
+  const [showUrlInput, setShowUrlInput] = useState(false)
   const router = useRouter()
 
   async function handleGenerate() {
@@ -26,7 +29,11 @@ export function GenerateGuideContentButton({ guideId, guideName, guideCategory }
       const response = await fetch('/api/ai/generate-guide', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: guideName, category: guideCategory }),
+        body: JSON.stringify({
+          name: guideName,
+          category: guideCategory,
+          sourceUrl: sourceUrl.trim() || undefined,
+        }),
       })
 
       const aiData = await response.json()
@@ -60,19 +67,44 @@ export function GenerateGuideContentButton({ guideId, guideName, guideCategory }
   }
 
   return (
-    <div>
-      <Button
-        onClick={handleGenerate}
-        disabled={loading}
-        variant="secondary"
-        size="sm"
-      >
-        {loading ? (
-          <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Genererer indhold...</>
-        ) : (
-          <><Sparkles className="h-4 w-4 mr-1.5" /> Generér indhold med AI</>
+    <div className="space-y-2">
+      {showUrlInput && (
+        <div className="flex items-center gap-2">
+          <LinkIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+          <Input
+            type="url"
+            value={sourceUrl}
+            onChange={e => setSourceUrl(e.target.value)}
+            placeholder="Link til ekstern kilde (valgfrit)"
+            className="text-sm"
+          />
+        </div>
+      )}
+      <div className="flex items-center gap-2">
+        <Button
+          onClick={handleGenerate}
+          disabled={loading}
+          variant="secondary"
+          size="sm"
+        >
+          {loading ? (
+            <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Genererer indhold...</>
+          ) : (
+            <><Sparkles className="h-4 w-4 mr-1.5" /> Generér indhold med AI</>
+          )}
+        </Button>
+        {!showUrlInput && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowUrlInput(true)}
+          >
+            <LinkIcon className="h-4 w-4 mr-1" />
+            Tilføj kilde-link
+          </Button>
         )}
-      </Button>
+      </div>
       {error && <p className="text-xs text-destructive mt-1">{error}</p>}
     </div>
   )

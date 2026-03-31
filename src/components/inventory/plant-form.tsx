@@ -38,40 +38,42 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
         // Auto-generate guide for new plants without a guide
         if (!plant && !formData.get('guide_id') && plantName.trim()) {
           const plantId = 'plantId' in result ? (result as { plantId: string }).plantId : null
-          autoGenerateGuide(plantName.trim(), plantId)
+          const variety = (formData.get('variety') as string)?.trim() || undefined
+          await autoGenerateGuide(plantName.trim(), plantId, variety)
         }
         onClose()
       }
     })
   }
 
-  // Fire-and-forget: generate guide + image in background, then link to plant
-  function autoGenerateGuide(name: string, plantId: string | null) {
-    fetch('/api/ai/generate-guide', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category: 'froe' }),
-    })
-      .then(res => res.json())
-      .then(async aiData => {
-        if (!aiData.error) {
-          const result = await createGuideFromAI(name, 'froe', aiData)
-          if (result.guideId) {
-            if (plantId) await linkGuideToPlant(plantId, result.guideId)
-            // Generate Flora Danica-style profile image
-            fetch('/api/ai/generate-guide-image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                guideId: result.guideId,
-                plantName: name,
-                botanicalName: aiData.botanical_name || null,
-              }),
-            }).catch(() => { /* silent fail */ })
-          }
-        }
+  // Generate guide synchronously, then fire-and-forget image generation
+  async function autoGenerateGuide(name: string, plantId: string | null, variety?: string) {
+    try {
+      const res = await fetch('/api/ai/generate-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, variety, category: 'groentsager' }),
       })
-      .catch(() => { /* silent fail — guide generation is best-effort */ })
+      const aiData = await res.json()
+      if (!aiData.error) {
+        const result = await createGuideFromAI(name, 'groentsager', aiData)
+        if (result.guideId) {
+          if (plantId) await linkGuideToPlant(plantId, result.guideId)
+          // Fire-and-forget: Flora Danica profile image
+          fetch('/api/ai/generate-guide-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              guideId: result.guideId,
+              plantName: name,
+              botanicalName: aiData.botanical_name || null,
+            }),
+          }).catch(() => {})
+        }
+      }
+    } catch {
+      // Guide generation failed — plant is still created
+    }
   }
 
   function handleDelete() {

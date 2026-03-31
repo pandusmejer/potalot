@@ -122,43 +122,49 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
         // Auto-generate guide for new seeds without a guide
         if (!seed && !formData.get('guide_id') && seedName.trim()) {
           const seedId = 'seedId' in result ? (result as { seedId: string }).seedId : null
-          const rawCat = (formData.get('primary_category') as string) || 'froe'
-          // indkoebsliste is not a valid guide category — fall back to froe
-          const guideCat = rawCat === 'indkoebsliste' ? 'froe' : rawCat
-          autoGenerateGuide(seedName.trim(), guideCat, seedId)
+          const rawCat = (formData.get('primary_category') as string) || 'groentsager'
+          const guideCat = rawCat === 'indkoebsliste' ? 'groentsager' : rawCat
+          const variety = (formData.get('variety') as string)?.trim() || undefined
+          const botanicalName = (formData.get('botanical_name') as string)?.trim() || undefined
+          await autoGenerateGuide(seedName.trim(), guideCat, seedId, variety, botanicalName)
         }
         onClose()
       }
     })
   }
 
-  // Fire-and-forget: generate guide + image in background, then link to seed
-  function autoGenerateGuide(name: string, primaryCategory: string, seedId: string | null) {
-    fetch('/api/ai/generate-guide', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category: primaryCategory }),
-    })
-      .then(res => res.json())
-      .then(async aiData => {
-        if (!aiData.error) {
-          const result = await createGuideFromAI(name, primaryCategory, aiData)
-          if (result.guideId) {
-            if (seedId) await linkGuideToSeed(seedId, result.guideId)
-            // Generate Flora Danica-style profile image
-            fetch('/api/ai/generate-guide-image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                guideId: result.guideId,
-                plantName: name,
-                botanicalName: aiData.botanical_name || null,
-              }),
-            }).catch(() => { /* silent fail */ })
-          }
-        }
+  // Generate guide synchronously, then fire-and-forget image generation
+  async function autoGenerateGuide(name: string, primaryCategory: string, seedId: string | null, variety?: string, botanicalName?: string) {
+    try {
+      const res = await fetch('/api/ai/generate-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, variety, category: primaryCategory }),
       })
-      .catch(() => { /* silent fail — guide generation is best-effort */ })
+      const aiData = await res.json()
+      if (!aiData.error) {
+        // Use botanical name from form if AI didn't provide one
+        if (!aiData.botanical_name && botanicalName) {
+          aiData.botanical_name = botanicalName
+        }
+        const result = await createGuideFromAI(name, primaryCategory, aiData)
+        if (result.guideId) {
+          if (seedId) await linkGuideToSeed(seedId, result.guideId)
+          // Fire-and-forget: Flora Danica profile image
+          fetch('/api/ai/generate-guide-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              guideId: result.guideId,
+              plantName: name,
+              botanicalName: aiData.botanical_name || botanicalName || null,
+            }),
+          }).catch(() => {})
+        }
+      }
+    } catch {
+      // Guide generation failed — seed is still created
+    }
   }
 
   function handleDelete() {

@@ -12,7 +12,7 @@ export interface PlantGuide {
   slug: string
   name_da: string
   name_en: string | null
-  category: 'froe' | 'loeg' | 'knolde' | 'buske' | 'traeer' | 'stauder'
+  category: 'groentsager' | 'stauder' | 'krydderurter' | 'graesser' | 'traeer' | 'buske' | 'frugt' | 'baer' | 'blomster_1aarige' | 'blomster_fleraarige'
   description: string | null
   sow_indoor_start: string | null
   sow_indoor_end: string | null
@@ -28,7 +28,7 @@ export interface PlantGuide {
   days_to_harvest_min: number | null
   days_to_harvest_max: number | null
   spacing_cm: number | null
-  depth_cm: number | null
+  depth_mm: number
   sun_requirement: 'full_sun' | 'partial_shade' | 'shade' | null
   water_need: 'low' | 'medium' | 'high' | null
   frost_hardy: boolean
