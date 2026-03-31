@@ -104,7 +104,7 @@ export default async function GuideDetailPage({ params }: Props) {
             <img
               src={guide.image_url}
               alt={guide.name_da}
-              className="w-full h-48 sm:h-64 object-cover"
+              className="w-full object-contain bg-amber-50/30"
             />
           </div>
         ) : (
