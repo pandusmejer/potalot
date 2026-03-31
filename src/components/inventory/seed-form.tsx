@@ -132,7 +132,7 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
     })
   }
 
-  // Fire-and-forget: generate guide in background, then link to seed
+  // Fire-and-forget: generate guide + image in background, then link to seed
   function autoGenerateGuide(name: string, primaryCategory: string, seedId: string | null) {
     fetch('/api/ai/generate-guide', {
       method: 'POST',
@@ -143,8 +143,18 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
       .then(async aiData => {
         if (!aiData.error) {
           const result = await createGuideFromAI(name, primaryCategory, aiData)
-          if (result.guideId && seedId) {
-            await linkGuideToSeed(seedId, result.guideId)
+          if (result.guideId) {
+            if (seedId) await linkGuideToSeed(seedId, result.guideId)
+            // Generate Flora Danica-style profile image
+            fetch('/api/ai/generate-guide-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                guideId: result.guideId,
+                plantName: name,
+                botanicalName: aiData.botanical_name || null,
+              }),
+            }).catch(() => { /* silent fail */ })
           }
         }
       })

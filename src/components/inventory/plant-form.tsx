@@ -45,7 +45,7 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
     })
   }
 
-  // Fire-and-forget: generate guide in background, then link to plant
+  // Fire-and-forget: generate guide + image in background, then link to plant
   function autoGenerateGuide(name: string, plantId: string | null) {
     fetch('/api/ai/generate-guide', {
       method: 'POST',
@@ -56,8 +56,18 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
       .then(async aiData => {
         if (!aiData.error) {
           const result = await createGuideFromAI(name, 'froe', aiData)
-          if (result.guideId && plantId) {
-            await linkGuideToPlant(plantId, result.guideId)
+          if (result.guideId) {
+            if (plantId) await linkGuideToPlant(plantId, result.guideId)
+            // Generate Flora Danica-style profile image
+            fetch('/api/ai/generate-guide-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                guideId: result.guideId,
+                plantName: name,
+                botanicalName: aiData.botanical_name || null,
+              }),
+            }).catch(() => { /* silent fail */ })
           }
         }
       })

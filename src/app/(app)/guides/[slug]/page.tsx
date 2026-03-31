@@ -11,6 +11,7 @@ import { CollapsibleSection } from '@/components/guides/collapsible-section'
 import { GenerateGuideContentButton } from '@/components/guides/generate-guide-content-button'
 import { GuideActions } from '@/components/guides/guide-actions'
 import { GuideImages } from '@/components/guides/guide-images'
+import { GenerateImageButton } from '@/components/guides/generate-image-button'
 import {
   ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown,
   Sprout, Flower2, Scissors, TreePine, Bug, AlertTriangle,
@@ -97,13 +98,21 @@ export default async function GuideDetailPage({ params }: Props) {
         </div>
 
         {/* Profile image */}
-        {guide.image_url && (
+        {guide.image_url ? (
           <div className="mt-4 rounded-xl overflow-hidden border border-border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={guide.image_url}
               alt={guide.name_da}
               className="w-full h-48 sm:h-64 object-cover"
+            />
+          </div>
+        ) : (
+          <div className="mt-4">
+            <GenerateImageButton
+              guideId={guide.id}
+              plantName={guide.name_da}
+              botanicalName={guide.botanical_name}
             />
           </div>
         )}
