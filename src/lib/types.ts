@@ -12,7 +12,7 @@ export interface PlantGuide {
   slug: string
   name_da: string
   name_en: string | null
-  category: 'froe' | 'loeg' | 'knolde' | 'buske' | 'traeer' | 'stauder' | 'indkoebsliste'
+  category: 'froe' | 'loeg' | 'knolde' | 'buske' | 'traeer' | 'stauder'
   description: string | null
   sow_indoor_start: string | null
   sow_indoor_end: string | null

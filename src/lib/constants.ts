@@ -43,7 +43,6 @@ export const GUIDE_CATEGORIES = {
   buske: { label: 'Buske', color: 'bg-emerald-100 text-emerald-800' },
   traeer: { label: 'Træer', color: 'bg-teal-100 text-teal-800' },
   stauder: { label: 'Stauder', color: 'bg-pink-100 text-pink-800' },
-  indkoebsliste: { label: 'Indkøbs- og ønskeliste', color: 'bg-gray-100 text-gray-800' },
 } as const
 
 export const MONTHS_DA = [

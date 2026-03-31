@@ -122,8 +122,10 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
         // Auto-generate guide for new seeds without a guide
         if (!seed && !formData.get('guide_id') && seedName.trim()) {
           const seedId = 'seedId' in result ? (result as { seedId: string }).seedId : null
-          const primaryCat = (formData.get('primary_category') as string) || 'froe'
-          autoGenerateGuide(seedName.trim(), primaryCat, seedId)
+          const rawCat = (formData.get('primary_category') as string) || 'froe'
+          // indkoebsliste is not a valid guide category — fall back to froe
+          const guideCat = rawCat === 'indkoebsliste' ? 'froe' : rawCat
+          autoGenerateGuide(seedName.trim(), guideCat, seedId)
         }
         onClose()
       }
