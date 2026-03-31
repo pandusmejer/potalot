@@ -96,8 +96,20 @@ export default async function GuideDetailPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Profile image */}
+        {guide.image_url && (
+          <div className="mt-4 rounded-xl overflow-hidden border border-border">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={guide.image_url}
+              alt={guide.name_da}
+              className="w-full h-48 sm:h-64 object-cover"
+            />
+          </div>
+        )}
+
         {guide.description && (
-          <p className="text-base text-foreground/80 leading-relaxed">{guide.description}</p>
+          <p className="text-base text-foreground/80 leading-relaxed mt-4">{guide.description}</p>
         )}
 
         {/* Edit / Delete */}

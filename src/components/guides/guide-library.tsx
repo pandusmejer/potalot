@@ -20,6 +20,7 @@ export function GuideLibrary({ guides }: Props) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('')
   const [typeFilter, setTypeFilter] = useState<string>('')
+  const [growFilter, setGrowFilter] = useState<string>('')
   const [showForm, setShowForm] = useState(false)
 
   // Unique seed types across all guides
@@ -41,6 +42,26 @@ export function GuideLibrary({ guides }: Props) {
   }, [guides])
 
   const SUN_LABELS: Record<string, string> = { full_sun: 'Fuld sol', partial_shade: 'Halvskygge', shade: 'Skygge' }
+
+  const GROW_KEYWORDS: Record<string, string[]> = {
+    friland: ['friland', 'udendørs', 'direkte såning'],
+    drivhus: ['drivhus'],
+    krukke: ['krukke', 'potte', 'altan', 'balkon'],
+    indendørs: ['indendørs', 'vindueskarm'],
+  }
+  const GROW_LABELS: Record<string, string> = {
+    friland: 'Friland',
+    drivhus: 'Drivhus',
+    krukke: 'Krukke / altan',
+    indendørs: 'Indendørs',
+  }
+
+  function guideMatchesGrow(g: PlantGuide, grow: string): boolean {
+    const keywords = GROW_KEYWORDS[grow]
+    if (!keywords) return false
+    const text = [g.environment_info, g.care_info, g.description].filter(Boolean).join(' ').toLowerCase()
+    return keywords.some(kw => text.includes(kw))
+  }
 
   const filtered = useMemo(() => {
     let result = guides
@@ -67,8 +88,12 @@ export function GuideLibrary({ guides }: Props) {
       result = result.filter(g => g.seed_type === typeFilter)
     }
 
+    if (growFilter) {
+      result = result.filter(g => guideMatchesGrow(g, growFilter))
+    }
+
     return result
-  }, [guides, search, categoryFilter, typeFilter])
+  }, [guides, search, categoryFilter, typeFilter, growFilter])
 
   // Group by category
   const grouped = useMemo(() => {
@@ -127,6 +152,16 @@ export function GuideLibrary({ guides }: Props) {
             <option value="manual">Manuelt oprettet</option>
             {seedTypes.map(t => (
               <option key={t} value={t}>{t}</option>
+            ))}
+          </Select>
+          <Select
+            value={growFilter}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setGrowFilter(e.target.value)}
+            className="sm:w-40"
+          >
+            <option value="">Dyrkningstype</option>
+            {Object.entries(GROW_LABELS).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
             ))}
           </Select>
         </div>

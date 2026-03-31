@@ -170,6 +170,8 @@ export async function createSeedsBatch(
     primary_category?: string
     subcategory?: string | null
     plant_type?: string | null
+    botanical_name?: string | null
+    germination_rate?: number | null
     notes?: string | null
     status?: string
   }>
@@ -192,6 +194,8 @@ export async function createSeedsBatch(
     primary_category: s.primary_category || 'froe',
     subcategory: s.subcategory || null,
     plant_type: s.plant_type || null,
+    botanical_name: s.botanical_name || null,
+    germination_rate: s.germination_rate || null,
     notes: s.notes || null,
     status: s.status || 'in_stock',
   }))

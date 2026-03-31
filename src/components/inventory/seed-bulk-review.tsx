@@ -16,6 +16,11 @@ export interface ParsedSeed {
   expiry_year: number | null
   notes: string | null
   guide_id: string | null
+  // Extended fields from multi-image scan
+  botanical_name?: string | null
+  subcategory?: string | null
+  plant_type?: string | null
+  germination_rate?: number | null
 }
 
 interface SeedBulkReviewProps {
