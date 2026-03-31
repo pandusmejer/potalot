@@ -1,6 +1,6 @@
 'use client'
 
-import { createSeed, updateSeed, deleteSeed } from '@/actions/inventory'
+import { createSeed, updateSeed, deleteSeed, linkGuideToSeed } from '@/actions/inventory'
 import { createGuideFromAI } from '@/actions/guides'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -122,27 +122,47 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
       } else {
         // Auto-generate guide for new seeds without a guide
         if (!seed && !formData.get('guide_id') && seedName.trim()) {
-          autoGenerateGuide(seedName.trim())
+          const seedId = 'seedId' in result ? (result as { seedId: string }).seedId : null
+          const subcategory = formData.get('subcategory') as string
+          autoGenerateGuide(seedName.trim(), subcategory, seedId)
         }
         onClose()
       }
     })
   }
 
-  // Fire-and-forget: generate guide in background after seed creation
-  function autoGenerateGuide(name: string) {
+  // Fire-and-forget: generate guide in background, then link to seed
+  function autoGenerateGuide(name: string, subcategory: string | null, seedId: string | null) {
+    const guideCategory = mapSubcategoryToGuideCategory(subcategory)
+
     fetch('/api/ai/generate-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category: 'vegetable' }),
+      body: JSON.stringify({ name, category: guideCategory }),
     })
       .then(res => res.json())
-      .then(aiData => {
+      .then(async aiData => {
         if (!aiData.error) {
-          createGuideFromAI(name, 'vegetable', aiData)
+          const result = await createGuideFromAI(name, guideCategory, aiData)
+          // Link the new guide to the seed
+          if (result.guideId && seedId) {
+            await linkGuideToSeed(seedId, result.guideId)
+          }
         }
       })
       .catch(() => { /* silent fail — guide generation is best-effort */ })
+  }
+
+  function mapSubcategoryToGuideCategory(sub: string | null): string {
+    switch (sub) {
+      case 'Grøntsager': return 'vegetable'
+      case 'Krydderurter': return 'herb'
+      case 'Blomster (1-årige)':
+      case 'Blomster (flerårige)': return 'flower'
+      case 'Frugt':
+      case 'Bær': return 'fruit'
+      default: return 'vegetable'
+    }
   }
 
   function handleDelete() {

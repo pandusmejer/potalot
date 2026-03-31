@@ -323,7 +323,7 @@ export async function createPlant(formData: FormData) {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
 
-  const { error } = await supabase.from('plants').insert({
+  const { data: newPlant, error } = await supabase.from('plants').insert({
     user_id: userId,
     name: formData.get('name') as string,
     variety: (formData.get('variety') as string) || null,
@@ -334,11 +334,11 @@ export async function createPlant(formData: FormData) {
     sow_date: (formData.get('sow_date') as string) || null,
     quantity: formData.get('quantity') ? Number(formData.get('quantity')) : 1,
     notes: (formData.get('notes') as string) || null,
-  })
+  }).select('id').single()
 
   if (error) return { error: error.message }
   revalidateAll()
-  return { success: true }
+  return { success: true, plantId: newPlant.id }
 }
 
 export async function updatePlant(plantId: string, formData: FormData) {
@@ -370,6 +370,30 @@ export async function updatePlant(plantId: string, formData: FormData) {
 export async function deletePlant(plantId: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('plants').delete().eq('id', plantId)
+
+  if (error) return { error: error.message }
+  revalidateAll()
+  return { success: true }
+}
+
+export async function linkGuideToSeed(seedId: string, guideId: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('seeds')
+    .update({ guide_id: guideId })
+    .eq('id', seedId)
+
+  if (error) return { error: error.message }
+  revalidateAll()
+  return { success: true }
+}
+
+export async function linkGuideToPlant(plantId: string, guideId: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('plants')
+    .update({ guide_id: guideId })
+    .eq('id', plantId)
 
   if (error) return { error: error.message }
   revalidateAll()

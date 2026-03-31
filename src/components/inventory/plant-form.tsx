@@ -1,6 +1,6 @@
 'use client'
 
-import { createPlant, updatePlant, deletePlant } from '@/actions/inventory'
+import { createPlant, updatePlant, deletePlant, linkGuideToPlant } from '@/actions/inventory'
 import { createGuideFromAI } from '@/actions/guides'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -38,23 +38,29 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
       } else {
         // Auto-generate guide for new plants without a guide
         if (!plant && !formData.get('guide_id') && plantName.trim()) {
-          autoGenerateGuide(plantName.trim())
+          const plantId = 'plantId' in result ? (result as { plantId: string }).plantId : null
+          autoGenerateGuide(plantName.trim(), plantId)
         }
         onClose()
       }
     })
   }
 
-  function autoGenerateGuide(name: string) {
+  // Fire-and-forget: generate guide in background, then link to plant
+  function autoGenerateGuide(name: string, plantId: string | null) {
     fetch('/api/ai/generate-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, category: 'vegetable' }),
     })
       .then(res => res.json())
-      .then(aiData => {
+      .then(async aiData => {
         if (!aiData.error) {
-          createGuideFromAI(name, 'vegetable', aiData)
+          const result = await createGuideFromAI(name, 'vegetable', aiData)
+          // Link the new guide to the plant
+          if (result.guideId && plantId) {
+            await linkGuideToPlant(plantId, result.guideId)
+          }
         }
       })
       .catch(() => { /* silent fail — guide generation is best-effort */ })
