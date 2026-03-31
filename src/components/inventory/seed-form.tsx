@@ -122,8 +122,8 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
         // Auto-generate guide for new seeds without a guide
         if (!seed && !formData.get('guide_id') && seedName.trim()) {
           const seedId = 'seedId' in result ? (result as { seedId: string }).seedId : null
-          const subcategory = formData.get('subcategory') as string
-          autoGenerateGuide(seedName.trim(), subcategory, seedId)
+          const primaryCat = (formData.get('primary_category') as string) || 'froe'
+          autoGenerateGuide(seedName.trim(), primaryCat, seedId)
         }
         onClose()
       }
@@ -131,37 +131,22 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
   }
 
   // Fire-and-forget: generate guide in background, then link to seed
-  function autoGenerateGuide(name: string, subcategory: string | null, seedId: string | null) {
-    const guideCategory = mapSubcategoryToGuideCategory(subcategory)
-
+  function autoGenerateGuide(name: string, primaryCategory: string, seedId: string | null) {
     fetch('/api/ai/generate-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category: guideCategory }),
+      body: JSON.stringify({ name, category: primaryCategory }),
     })
       .then(res => res.json())
       .then(async aiData => {
         if (!aiData.error) {
-          const result = await createGuideFromAI(name, guideCategory, aiData)
-          // Link the new guide to the seed
+          const result = await createGuideFromAI(name, primaryCategory, aiData)
           if (result.guideId && seedId) {
             await linkGuideToSeed(seedId, result.guideId)
           }
         }
       })
       .catch(() => { /* silent fail — guide generation is best-effort */ })
-  }
-
-  function mapSubcategoryToGuideCategory(sub: string | null): string {
-    switch (sub) {
-      case 'Grøntsager': return 'vegetable'
-      case 'Krydderurter': return 'herb'
-      case 'Blomster (1-årige)':
-      case 'Blomster (flerårige)': return 'flower'
-      case 'Frugt':
-      case 'Bær': return 'fruit'
-      default: return 'vegetable'
-    }
   }
 
   function handleDelete() {

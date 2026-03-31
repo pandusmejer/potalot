@@ -50,13 +50,12 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
     fetch('/api/ai/generate-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category: 'vegetable' }),
+      body: JSON.stringify({ name, category: 'froe' }),
     })
       .then(res => res.json())
       .then(async aiData => {
         if (!aiData.error) {
-          const result = await createGuideFromAI(name, 'vegetable', aiData)
-          // Link the new guide to the plant
+          const result = await createGuideFromAI(name, 'froe', aiData)
           if (result.guideId && plantId) {
             await linkGuideToPlant(plantId, result.guideId)
           }
