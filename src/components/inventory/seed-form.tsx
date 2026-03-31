@@ -12,7 +12,6 @@ import { formatDanishDate, validateDanishDate } from '@/lib/date-utils'
 import type { Seed, PlantGuide } from '@/lib/types'
 import { useState, useTransition, useMemo, useRef } from 'react'
 import { Trash2, Camera } from 'lucide-react'
-import { GenerateGuideButton } from '@/components/guides/generate-guide-button'
 
 interface SeedFormProps {
   open: boolean
@@ -221,24 +220,16 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Dyrkningsguide</label>
-            <div className="flex gap-2">
-              <Select
-                name="guide_id"
-                value={selectedGuideId}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGuideId(e.target.value)}
-                className="flex-1"
-              >
-                <option value="">Ingen</option>
-                {guides.map((g) => (
-                  <option key={g.id} value={g.id}>{g.name_da}</option>
-                ))}
-              </Select>
-              <GenerateGuideButton
-                name={seedName}
-                category={undefined}
-                onGuideCreated={(guideId) => setSelectedGuideId(guideId)}
-              />
-            </div>
+            <Select
+              name="guide_id"
+              value={selectedGuideId}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGuideId(e.target.value)}
+            >
+              <option value="">Oprettes automatisk</option>
+              {guides.map((g) => (
+                <option key={g.id} value={g.id}>{g.name_da}</option>
+              ))}
+            </Select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>

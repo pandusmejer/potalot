@@ -11,7 +11,6 @@ import { PLANT_STATUSES } from '@/lib/constants'
 import type { Plant, PlantGuide, Seed } from '@/lib/types'
 import { useState, useTransition } from 'react'
 import { Trash2 } from 'lucide-react'
-import { GenerateGuideButton } from '@/components/guides/generate-guide-button'
 
 interface PlantFormProps {
   open: boolean
@@ -92,24 +91,16 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Guide</label>
-            <div className="flex gap-2">
-              <Select
-                name="guide_id"
-                value={selectedGuideId}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGuideId(e.target.value)}
-                className="flex-1"
-              >
-                <option value="">Ingen</option>
-                {guides.map((g) => (
-                  <option key={g.id} value={g.id}>{g.name_da}</option>
-                ))}
-              </Select>
-              <GenerateGuideButton
-                name={plantName}
-                category={undefined}
-                onGuideCreated={(guideId) => setSelectedGuideId(guideId)}
-              />
-            </div>
+            <Select
+              name="guide_id"
+              value={selectedGuideId}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGuideId(e.target.value)}
+            >
+              <option value="">Oprettes automatisk</option>
+              {guides.map((g) => (
+                <option key={g.id} value={g.id}>{g.name_da}</option>
+              ))}
+            </Select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Fra frø</label>

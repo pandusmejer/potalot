@@ -190,14 +190,57 @@ export async function updateGuideManual(guideId: string, formData: FormData) {
   const name = formData.get('name_da') as string
   if (!name?.trim()) return { error: 'Navn er påkrævet' }
 
+  function txt(key: string): string | null {
+    const v = (formData.get(key) as string)?.trim()
+    return v || null
+  }
+  function num(key: string): number | null {
+    const v = formData.get(key) as string
+    return v ? Number(v) : null
+  }
+
   const { error } = await supabase
     .from('plant_guides')
     .update({
       name_da: name.trim(),
-      name_en: (formData.get('name_en') as string)?.trim() || null,
-      botanical_name: (formData.get('botanical_name') as string)?.trim() || null,
+      name_en: txt('name_en'),
+      botanical_name: txt('botanical_name'),
       category: (formData.get('category') as string) || 'vegetable',
-      description: (formData.get('description') as string)?.trim() || null,
+      description: txt('description'),
+      // Quick reference
+      sun_requirement: txt('sun_requirement'),
+      water_need: txt('water_need'),
+      frost_hardy: formData.get('frost_hardy') === 'true',
+      spacing_cm: num('spacing_cm'),
+      depth_cm: num('depth_cm'),
+      // Calendar
+      sow_indoor_start: txt('sow_indoor_start'),
+      sow_indoor_end: txt('sow_indoor_end'),
+      sow_outdoor_start: txt('sow_outdoor_start'),
+      sow_outdoor_end: txt('sow_outdoor_end'),
+      prick_out_weeks_after_sow: num('prick_out_weeks_after_sow'),
+      plant_out_start: txt('plant_out_start'),
+      plant_out_end: txt('plant_out_end'),
+      harvest_start: txt('harvest_start'),
+      harvest_end: txt('harvest_end'),
+      days_to_germination_min: num('days_to_germination_min'),
+      days_to_germination_max: num('days_to_germination_max'),
+      days_to_harvest_min: num('days_to_harvest_min'),
+      days_to_harvest_max: num('days_to_harvest_max'),
+      // Prose sections
+      sowing_info: txt('sowing_info'),
+      repotting_info: txt('repotting_info'),
+      planting_out_info: txt('planting_out_info'),
+      care_info: txt('care_info'),
+      environment_info: txt('environment_info'),
+      biology_info: txt('biology_info'),
+      // Seed info
+      seed_type: txt('seed_type'),
+      seed_harvest_possible: formData.has('seed_harvest_possible') ? formData.get('seed_harvest_possible') === 'true' : null,
+      // Callouts
+      tips: txt('tips'),
+      warnings: txt('warnings'),
+      common_mistakes: txt('common_mistakes'),
     })
     .eq('id', guideId)
 
