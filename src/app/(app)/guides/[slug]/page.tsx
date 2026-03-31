@@ -165,10 +165,12 @@ export default async function GuideDetailPage({ params }: Props) {
         )}
       </div>
 
-      <p className="text-sm text-muted-foreground flex items-center gap-2">
-        <ArrowDown className="h-3.5 w-3.5" />
-        Sådybde: {guide.depth_mm === 0 ? '0 mm (overfladen)' : `${guide.depth_mm} mm`}
-      </p>
+      {guide.depth_mm != null && (
+        <p className="text-sm text-muted-foreground flex items-center gap-2">
+          <ArrowDown className="h-3.5 w-3.5" />
+          Sådybde: {guide.depth_mm === 0 ? '0 mm (overfladen)' : `${guide.depth_mm} mm`}
+        </p>
+      )}
 
       {/* ========== Kalender / Tidslinje ========== */}
       {timeline.length > 0 && (
