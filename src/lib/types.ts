@@ -46,6 +46,9 @@ export interface PlantGuide {
   warnings: string | null
   image_url: string | null
   user_notes: string | null
+  botanical_name: string | null
+  user_images: string[]
+  created_automatically: boolean
   created_at: string
 }
 

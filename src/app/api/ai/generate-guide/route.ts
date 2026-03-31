@@ -24,8 +24,12 @@ export async function POST(req: Request) {
 
 Svar KUN med valid JSON i følgende format. Udfyld alle felter du kan med fagligt korrekte data for danske dyrkningsforhold. Brug null for felter du ikke kan udfylde.
 
+Intro-teksten (description) skal være kort, konkret og levende. Eksempel:
+"Tidlig sommergulerod med lange, slanke rødder. Sorten er beregnet til at spises frisk eller blancheres og fryses. Høstes tidligt, ikke egnet til vinterlagring. Trives i stenfri, muldrig og veldrænet jord."
+
 {
-  "description": "Kort beskrivelse af planten (1-2 sætninger)",
+  "botanical_name": "Latinsk navn (fx Solanum lycopersicum)" | null,
+  "description": "Kort, levende intro-tekst om planten (2-4 sætninger)",
   "sun_requirement": "full_sun" | "partial_shade" | "shade",
   "water_need": "low" | "medium" | "high",
   "frost_hardy": true | false,

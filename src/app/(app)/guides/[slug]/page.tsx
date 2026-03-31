@@ -8,10 +8,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { GuideUserNotes } from '@/components/guides/guide-user-notes'
 import { CollapsibleSection } from '@/components/guides/collapsible-section'
+import { GenerateGuideContentButton } from '@/components/guides/generate-guide-content-button'
+import { GuideActions } from '@/components/guides/guide-actions'
+import { GuideImages } from '@/components/guides/guide-images'
 import {
   ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown,
   Sprout, Flower2, Scissors, TreePine, Bug, AlertTriangle,
-  Lightbulb, Calendar, Info, BookOpen
+  Lightbulb, Calendar, Info, BookOpen, Camera, Sparkles
 } from 'lucide-react'
 
 interface Props {
@@ -78,14 +81,29 @@ export default async function GuideDetailPage({ params }: Props) {
           </Link>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-foreground">{guide.name_da}</h1>
-            {guide.name_en && <p className="text-sm text-muted-foreground italic mt-0.5">{guide.name_en}</p>}
+            {guide.botanical_name && (
+              <p className="text-sm text-muted-foreground italic mt-0.5">{guide.botanical_name}</p>
+            )}
+            {!guide.botanical_name && guide.name_en && (
+              <p className="text-sm text-muted-foreground italic mt-0.5">{guide.name_en}</p>
+            )}
           </div>
-          {catMeta && <Badge className={catMeta.color}>{catMeta.label}</Badge>}
+          <div className="flex items-center gap-2">
+            {catMeta && <Badge className={catMeta.color}>{catMeta.label}</Badge>}
+            {guide.created_automatically && (
+              <Sparkles className="h-4 w-4 text-amber-500" />
+            )}
+          </div>
         </div>
 
         {guide.description && (
           <p className="text-base text-foreground/80 leading-relaxed">{guide.description}</p>
         )}
+
+        {/* Edit / Delete */}
+        <div className="mt-3">
+          <GuideActions guide={guide} />
+        </div>
       </div>
 
       {/* ========== Quick Reference ========== */}
@@ -256,6 +274,18 @@ export default async function GuideDetailPage({ params }: Props) {
       {guide.warnings && <Callout type="warning">{guide.warnings}</Callout>}
       {guide.common_mistakes && <Callout type="mistake">{guide.common_mistakes}</Callout>}
 
+      {/* ========== Billeder ========== */}
+      <section className="space-y-3 pt-4 border-t border-border">
+        <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+          <Camera className="h-4 w-4 text-primary" />
+          Billeder
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          Tilføj egne billeder — spiringsstadier, sygdomme, høst, referencefotos.
+        </p>
+        <GuideImages guideId={guide.id} images={guide.user_images ?? []} />
+      </section>
+
       {/* ========== Brugernoter ========== */}
       <section className="space-y-3 pt-4 border-t border-border">
         <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
@@ -268,11 +298,15 @@ export default async function GuideDetailPage({ params }: Props) {
         <GuideUserNotes guideId={guide.id} initialNotes={guide.user_notes ?? ''} />
       </section>
 
-      {/* ========== Fallback ========== */}
+      {/* ========== Fallback / Generate ========== */}
       {!hasGrowingInfo && !hasBiology && !guide.tips && !guide.warnings && !guide.common_mistakes && (
-        <div className="text-center py-8 text-muted-foreground">
-          <p className="text-sm">Denne guide har endnu ikke detaljerede sektioner.</p>
-          <p className="text-xs mt-1">Kalender og basisdata er tilgængelige ovenfor.</p>
+        <div className="text-center py-8 space-y-3">
+          <p className="text-sm text-muted-foreground">Denne guide har endnu ikke detaljerede sektioner.</p>
+          <GenerateGuideContentButton
+            guideId={guide.id}
+            guideName={guide.name_da}
+            guideCategory={guide.category}
+          />
         </div>
       )}
     </article>

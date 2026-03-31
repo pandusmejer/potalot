@@ -1,6 +1,7 @@
 'use client'
 
 import { createPlant, updatePlant, deletePlant } from '@/actions/inventory'
+import { createGuideFromAI } from '@/actions/guides'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,6 +11,7 @@ import { PLANT_STATUSES } from '@/lib/constants'
 import type { Plant, PlantGuide, Seed } from '@/lib/types'
 import { useState, useTransition } from 'react'
 import { Trash2 } from 'lucide-react'
+import { GenerateGuideButton } from '@/components/guides/generate-guide-button'
 
 interface PlantFormProps {
   open: boolean
@@ -22,6 +24,8 @@ interface PlantFormProps {
 export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProps) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [plantName, setPlantName] = useState<string>(plant?.name ?? '')
+  const [selectedGuideId, setSelectedGuideId] = useState<string>(plant?.guide_id ?? '')
 
   function handleSubmit(formData: FormData) {
     setError(null)
@@ -32,9 +36,28 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
       if (result?.error) {
         setError(result.error)
       } else {
+        // Auto-generate guide for new plants without a guide
+        if (!plant && !formData.get('guide_id') && plantName.trim()) {
+          autoGenerateGuide(plantName.trim())
+        }
         onClose()
       }
     })
+  }
+
+  function autoGenerateGuide(name: string) {
+    fetch('/api/ai/generate-guide', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, category: 'vegetable' }),
+    })
+      .then(res => res.json())
+      .then(aiData => {
+        if (!aiData.error) {
+          createGuideFromAI(name, 'vegetable', aiData)
+        }
+      })
+      .catch(() => { /* silent fail — guide generation is best-effort */ })
   }
 
   function handleDelete() {
@@ -52,7 +75,7 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Navn *</label>
-            <Input name="name" required defaultValue={plant?.name ?? ''} placeholder="fx. Tomat" />
+            <Input name="name" required defaultValue={plant?.name ?? ''} placeholder="fx. Tomat" onChange={e => setPlantName(e.target.value)} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Sort</label>
@@ -63,12 +86,24 @@ export function PlantForm({ open, onClose, plant, guides, seeds }: PlantFormProp
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Guide</label>
-            <Select name="guide_id" defaultValue={plant?.guide_id ?? ''}>
-              <option value="">Ingen</option>
-              {guides.map((g) => (
-                <option key={g.id} value={g.id}>{g.name_da}</option>
-              ))}
-            </Select>
+            <div className="flex gap-2">
+              <Select
+                name="guide_id"
+                value={selectedGuideId}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGuideId(e.target.value)}
+                className="flex-1"
+              >
+                <option value="">Ingen</option>
+                {guides.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name_da}</option>
+                ))}
+              </Select>
+              <GenerateGuideButton
+                name={plantName}
+                category={undefined}
+                onGuideCreated={(guideId) => setSelectedGuideId(guideId)}
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Fra frø</label>
