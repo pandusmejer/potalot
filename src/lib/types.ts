@@ -56,6 +56,9 @@ export interface Seed {
   id: string
   user_id: string
   guide_id: string | null
+  // Phase 1 (relaunch): variety_id supersedes inline name/variety/botanical_name
+  variety_id: string | null
+  parent_plant_id: string | null
   name: string
   variety: string | null
   brand: string | null
@@ -81,6 +84,7 @@ export interface Seed {
   created_at: string
   updated_at: string
   guide?: PlantGuide | null
+  variety_ref?: Variety | null
 }
 
 export interface SeedSubcategory {
@@ -96,6 +100,11 @@ export interface Plant {
   user_id: string
   seed_id: string | null
   guide_id: string | null
+  // Phase 1 (relaunch): variety_id, garden_id, placering_id, livscyklus
+  variety_id: string | null
+  garden_id: string | null
+  placering_id: string | null
+  livscyklus: Livscyklus
   name: string
   variety: string | null
   status: 'planned' | 'sown' | 'germinated' | 'pricked' | 'hardening' | 'planted_out' | 'growing' | 'flowering' | 'harvesting' | 'done' | 'dead'
@@ -112,6 +121,110 @@ export interface Plant {
   updated_at: string
   guide?: PlantGuide | null
   seed?: Seed | null
+  variety_ref?: Variety | null
+  garden?: Garden | null
+  placering?: Placering | null
+  events?: PlantEvent[]
+}
+
+// ============================================
+// Phase 1 (relaunch): Foundation entities
+// ============================================
+
+export type Livscyklus =
+  | 'i_froebank'
+  | 'planlagt'
+  | 'soet'
+  | 'spiret'
+  | 'priklet'
+  | 'udplantet'
+  | 'i_vaekst'
+  | 'afsluttet'
+
+export type Exposure = 'indendoers' | 'altan' | 'friland' | 'drivhus' | 'tunnel' | 'andet'
+export type LightLevel = 'lidt' | 'noget' | 'meget'
+
+export type EventType =
+  | 'soet'
+  | 'spiret'
+  | 'priklet'
+  | 'udplantet'
+  | 'vandet'
+  | 'goedet'
+  | 'flyttet'
+  | 'beskaaret'
+  | 'hoestet'
+  | 'afsluttet'
+  | 'note'
+  | 'foto'
+
+export type AfsluttetAarsag =
+  | 'frost'
+  | 'sygdom'
+  | 'toerke'
+  | 'skadedyr'
+  | 'faerdig'
+  | 'gemt_til_froe'
+  | 'ukendt'
+
+export type IllustrationSource = 'flora_danica' | 'ai_generated' | 'user_upload'
+
+export interface Garden {
+  id: string
+  user_id: string
+  name: string
+  latitude: number | null
+  longitude: number | null
+  is_default: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Placering {
+  id: string
+  garden_id: string
+  user_id: string
+  name: string
+  template: string | null
+  exposure: Exposure | null
+  heated: boolean
+  min_temp_c: number | null
+  light_level: LightLevel | null
+  sheltered: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Variety {
+  id: string
+  user_id: string | null
+  species_name: string
+  variety_name: string | null
+  botanical_name: string | null
+  guide_id: string | null
+  illustration_url: string | null
+  illustration_source: IllustrationSource | null
+  illustration_approved: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+  guide?: PlantGuide | null
+}
+
+export interface PlantEvent {
+  id: string
+  plant_id: string
+  user_id: string
+  event_type: EventType
+  event_date: string
+  event_time: string
+  data: Record<string, unknown>
+  notes: string | null
+  photo_urls: string[] | null
+  auto_generated: boolean
+  created_at: string
 }
 
 export interface Task {
