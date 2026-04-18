@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, Sprout, Wheat, TreePine, ListFilter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { LIVSCYKLUS_LABEL } from '@/lib/livscyklus/state-machine'
+import { livscyklusVenligt } from '@/lib/sprog'
+import { EMPTY_STATES } from '@/lib/sprog'
 import type { Seed, Plant, Variety, Placering, Garden, PlantGuide, Livscyklus } from '@/lib/types'
 
 type Filter = 'alle' | 'froebank' | 'planlagt' | 'i_jord' | 'i_vaekst' | 'afsluttet'
@@ -195,7 +196,9 @@ export function HaveView({
       {filteredItems.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <ListFilter className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Intet at vise her.</p>
+          <p className="text-sm">
+            {search.trim() ? EMPTY_STATES.ingen_resultater : EMPTY_STATES.ingen_planter}
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -246,7 +249,7 @@ export function HaveView({
                   </p>
                 </div>
                 <Badge className="bg-green-100 text-green-800">
-                  {LIVSCYKLUS_LABEL[p.livscyklus as Livscyklus] ?? p.livscyklus}
+                  {livscyklusVenligt(p.livscyklus as Livscyklus)}
                 </Badge>
               </Link>
             )

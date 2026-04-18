@@ -8,6 +8,7 @@ import type { Task } from '@/lib/types'
 import { formatDate, isOverdue } from '@/lib/utils'
 import { Check, Circle, AlertTriangle } from 'lucide-react'
 import { useTransition } from 'react'
+import { EMPTY_STATES } from '@/lib/sprog'
 
 interface TodaysTasksProps {
   tasks: Task[]
@@ -15,13 +16,16 @@ interface TodaysTasksProps {
 }
 
 export function TodaysTasks({ tasks, title = 'Dagens opgaver' }: TodaysTasksProps) {
+  const isToday = title.toLowerCase().includes('dag')
   return (
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       {tasks.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-2">Ingen opgaver</p>
+        <p className="text-sm text-muted-foreground py-2">
+          {isToday ? EMPTY_STATES.ingen_opgaver_i_dag : EMPTY_STATES.ingen_kommende_opgaver}
+        </p>
       ) : (
         <div className="space-y-2">
           {tasks.map((task) => (

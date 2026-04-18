@@ -37,9 +37,9 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Overblik</h1>
+        <h1 className="text-2xl font-bold text-foreground">Hjem</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {season.charAt(0).toUpperCase() + season.slice(1)} {new Date().getFullYear()} — {seeds.length} frø, {activePlants} aktive planter
+          {season.charAt(0).toUpperCase() + season.slice(1)} {new Date().getFullYear()}{seeds.length > 0 ? ` — ${seeds.length} frø, ${activePlants} planter i vækst` : ''}
         </p>
       </div>
 
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
             </Link>
           </CardHeader>
           {recentSeeds.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-2">Ingen frø endnu</p>
+            <p className="text-sm text-muted-foreground py-2">Frøbanken er tom. Tilføj din første pose.</p>
           ) : (
             <div className="space-y-2">
               {recentSeeds.map((seed) => {
