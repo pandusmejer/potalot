@@ -1,44 +1,189 @@
 @import "tailwindcss";
 
+/* ============================================
+ * PotAlot Visual Identity (relaunch fase 5)
+ *
+ * Mood: Flora Danica møder moderne redaktionel tech.
+ * Palet: pergament, dyb botanisk grøn, salvie, delft, rust, kobber.
+ * Typografi: Cormorant Garamond (serif overskrifter) + Inter (UI/brød).
+ * ============================================ */
+
 :root {
-  --background: #f8faf5;
-  --foreground: #1a2e05;
-  --card: #ffffff;
-  --card-foreground: #1a2e05;
-  --primary: #2d5016;
-  --primary-foreground: #f8faf5;
-  --muted: #f0f4e8;
-  --muted-foreground: #5a6d4a;
-  --border: #d4ddc8;
-  --accent: #e8f0d8;
-  --destructive: #dc2626;
+  /* Pergament cream — varm, ikke rent hvid */
+  --background:           #F5EFE3;
+  --foreground:           #2B2520;       /* varm sortbrun */
+
+  /* Kort: lidt lysere end baggrund for blød kontrast */
+  --card:                 #FBF7ED;
+  --card-foreground:      #2B2520;
+
+  /* Primær: dyb botanisk grøn (Flora Danica kobberstuk-tusch) */
+  --primary:              #2C4A3A;
+  --primary-foreground:   #F5EFE3;
+
+  /* Sekundær: salvie, støvet — til subtile accenter */
+  --secondary:            #8FA68E;
+  --secondary-foreground: #2B2520;
+
+  /* Muted: papirfarvet bagside */
+  --muted:                #ECE3D0;
+  --muted-foreground:     #6B6055;       /* varm grålig brun */
+
+  /* Border: tonet pergament-kant */
+  --border:               #E0D4BB;
+  --input:                #E0D4BB;
+  --ring:                 #2C4A3A;
+
+  /* Accenter */
+  --accent:               #ECE3D0;
+  --accent-foreground:    #2B2520;
+  --accent-blue:          #3B5C7A;       /* Delft blå */
+  --accent-rust:          #B5602F;       /* terracotta/rust */
+  --accent-copper:        #A87C3B;       /* kobber-gylden, dekorative linjer */
+
+  /* Destructive: rolig rust i stedet for skrigende rødt */
+  --destructive:          #B5602F;
+  --destructive-foreground: #FBF7ED;
+
+  /* Radius — bløde hjørner */
+  --radius:               10px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-destructive: var(--destructive);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-accent-blue:          var(--accent-blue);
+  --color-accent-rust:          var(--accent-rust);
+  --color-accent-copper:        var(--accent-copper);
+  --color-destructive:          var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --font-sans:    var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif:   var(--font-cormorant), 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
+  --font-mono:    var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius:       var(--radius);
 }
 
+/* ============================================
+ * Base typografi
+ * ============================================ */
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01", "cv02";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Overskrifter bruger Cormorant Garamond — generøs, redaktionel */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;          /* lettere weight for klassisk look */
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+h1 { font-size: 2rem; line-height: 1.15; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+/* Brødtekst og UI bevarer Inter */
+p, button, input, textarea, select, label, span, div, a {
+  font-family: var(--font-sans);
+}
+
+/* Citat / dekorativ brug af serif */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* ============================================
+ * Komponent-overrides — bløde Flora Danica-vibes
+ * ============================================ */
+
+/* Kort: blød skygge, varm kant */
+.bg-card {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+/* Inputs: varm kant, ingen skarp blå ring */
+input, textarea, select {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+  border-color: var(--ring);
+}
+
+/* Knap-skygge: papirløft, ikke neon */
+button {
+  transition: all 250ms ease-out;
+}
+
+/* ============================================
+ * Animationer — rolige, ikke snappy
+ * ============================================ */
+* {
+  transition-duration: 300ms;
+  transition-timing-function: ease-out;
+}
+
+/* Sideovergange: fade i stedet for slide */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: ease-out;
+}
+
+/* ============================================
+ * Subtile botaniske mønstre (kan tilføjes senere som baggrunde)
+ * ============================================ */
+.bg-pattern-vinrank {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5 Q35 15 30 25 Q25 35 30 45 Q35 50 30 55' stroke='%23A87C3B' stroke-width='0.3' fill='none' opacity='0.15'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ============================================
+ * Utility: skjul scrollbar
+ * ============================================ */
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* ============================================
+ * Print-venligt
+ * ============================================ */
+@media print {
+  body {
+    background: white;
+    color: black;
   }
 }
