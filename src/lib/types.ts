@@ -300,6 +300,61 @@ export interface AiMessage {
   timestamp: string
 }
 
+// ============================================
+// Phase 8 (relaunch): Community
+// ============================================
+
+export interface CommunityProfile {
+  id: string
+  user_id: string
+  display_name: string
+  bio: string | null
+  location_general: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CommunityGroup {
+  id: string
+  variety_id: string | null
+  species_name: string
+  variety_name: string | null
+  title: string
+  description: string | null
+  member_count: number
+  threshold_reached: boolean
+  is_read_only: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CommunityMembership {
+  id: string
+  group_id: string
+  user_id: string
+  role: 'member' | 'moderator'
+  invited_at: string
+  joined_at: string | null
+  declined_at: string | null
+  created_at: string
+}
+
+export interface CommunityPost {
+  id: string
+  group_id: string
+  user_id: string
+  title: string | null
+  content: string
+  photo_urls: string[] | null
+  post_type: 'text' | 'question' | 'tip' | 'photo' | 'info'
+  is_hidden: boolean
+  pinned: boolean
+  references_plant_id: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface ChangeRequest {
   id: string
   description: string
