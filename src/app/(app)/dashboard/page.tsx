@@ -6,26 +6,31 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SEED_STATUSES, GUIDE_CATEGORIES } from '@/lib/constants'
 import { getCurrentSeason } from '@/lib/utils'
-import type { Task, Seed, PlantGuide } from '@/lib/types'
+import type { Task, Seed, PlantGuide, Variety, Placering } from '@/lib/types'
 import Link from 'next/link'
 import { Package, BookOpen, ArrowRight } from 'lucide-react'
+import { SowButton } from '@/components/actions/sow-button'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
 
-  const [seedsRes, plantsRes, tasksRes, notesRes, guidesRes] = await Promise.all([
+  const [seedsRes, plantsRes, tasksRes, notesRes, guidesRes, varietiesRes, placeringerRes] = await Promise.all([
     supabase.from('seeds').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
     supabase.from('plants').select('*').eq('user_id', userId),
     supabase.from('tasks').select('*, plant:plants(name, variety)').eq('user_id', userId).is('completed_at', null).order('due_date', { ascending: true }).limit(10),
     supabase.from('notes').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('season_year', new Date().getFullYear()),
     supabase.from('plant_guides').select('*').order('name_da', { ascending: true }),
+    supabase.from('varieties').select('*').or(`user_id.eq.${userId},user_id.is.null`).order('species_name'),
+    supabase.from('placeringer').select('*').eq('user_id', userId).order('name'),
   ])
 
   const seeds = (seedsRes.data || []) as Seed[]
   const plants = plantsRes.data || []
   const tasks = (tasksRes.data || []) as Task[]
   const guides = (guidesRes.data || []) as PlantGuide[]
+  const varieties = (varietiesRes.data || []) as Variety[]
+  const placeringer = (placeringerRes.data || []) as Placering[]
 
   const activePlants = plants.filter(p => !['done', 'dead'].includes(p.status)).length
   const seedsInStock = seeds.filter(s => s.status === 'in_stock').length
@@ -36,11 +41,14 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Hjem</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {season.charAt(0).toUpperCase() + season.slice(1)} {new Date().getFullYear()}{seeds.length > 0 ? ` — ${seeds.length} frø, ${activePlants} planter i vækst` : ''}
-        </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Hjem</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {season.charAt(0).toUpperCase() + season.slice(1)} {new Date().getFullYear()}{seeds.length > 0 ? ` — ${seeds.length} frø, ${activePlants} planter i vækst` : ''}
+          </p>
+        </div>
+        <SowButton seeds={seeds} varieties={varieties} placeringer={placeringer} />
       </div>
 
       <StatusCards

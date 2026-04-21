@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { livscyklusVenligt } from '@/lib/sprog'
 import { EMPTY_STATES } from '@/lib/sprog'
+import { SowButton } from '@/components/actions/sow-button'
 import type { Seed, Plant, Variety, Placering, Garden, PlantGuide, Livscyklus } from '@/lib/types'
 
 type Filter = 'alle' | 'froebank' | 'planlagt' | 'i_jord' | 'i_vaekst' | 'afsluttet'
@@ -36,6 +37,7 @@ const FILTER_LABELS: Record<Filter, string> = {
 export function HaveView({
   seeds,
   plants,
+  varieties,
   placeringer,
   guides,
   initialFilter = 'alle',
@@ -129,11 +131,18 @@ export function HaveView({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Have</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Alt fra frøbank til høst — samlet ét sted.
-        </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Have</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Alt fra frøbank til høst — samlet ét sted.
+          </p>
+        </div>
+        <SowButton
+          seeds={seeds}
+          varieties={varieties}
+          placeringer={placeringer}
+        />
       </div>
 
       {/* Filter-tabs */}
