@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { udfoerHandling } from '@/lib/livscyklus/cascade'
 import { findOrCreateVariety } from './varieties'
 import { getDefaultGarden } from './gardens'
+import { autoInviterTilGruppe } from './community'
 import { createClient } from '@/lib/supabase/server'
 import { DEMO_USER_ID } from '@/lib/demo'
 import type { AfsluttetAarsag } from '@/lib/types'
@@ -119,6 +120,20 @@ export async function saaFroe(input: {
   })
 
   if ('error' in result) return { error: result.error }
+
+  // 6. Auto-invitér til community-gruppe hvis profil er aktiv
+  //    (mest specifikke først — variety_name først, species_name som fallback)
+  if (name) {
+    try {
+      await autoInviterTilGruppe({
+        variety_id,
+        species_name: name,
+        variety_name,
+      })
+    } catch {
+      // Community-fejl må ikke blokere såning
+    }
+  }
 
   revalidatePath('/')
   return { success: true, plantId: plant.id }

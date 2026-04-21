@@ -213,3 +213,62 @@ export async function getMyMemberships(): Promise<Array<CommunityMembership & { 
     .order('invited_at', { ascending: false })
   return (data as Array<CommunityMembership & { group: CommunityGroup }>) ?? []
 }
+
+/**
+ * Kun pending invitations (joined_at = null, declined_at = null).
+ */
+export async function getPendingInvitations(): Promise<Array<CommunityMembership & { group: CommunityGroup }>> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('community_memberships')
+    .select('*, group:community_groups(*)')
+    .eq('user_id', DEMO_USER_ID)
+    .is('joined_at', null)
+    .is('declined_at', null)
+    .order('invited_at', { ascending: false })
+  return (data as Array<CommunityMembership & { group: CommunityGroup }>) ?? []
+}
+
+/**
+ * Kun aktivt medlemskab (joined_at != null).
+ */
+export async function getActiveMemberships(): Promise<Array<CommunityMembership & { group: CommunityGroup }>> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('community_memberships')
+    .select('*, group:community_groups(*)')
+    .eq('user_id', DEMO_USER_ID)
+    .not('joined_at', 'is', null)
+    .is('declined_at', null)
+    .order('joined_at', { ascending: false })
+  return (data as Array<CommunityMembership & { group: CommunityGroup }>) ?? []
+}
+
+/**
+ * Opdater community-profil (display_name, bio, location, is_active).
+ */
+export async function opdaterCommunityProfile(input: {
+  display_name?: string
+  bio?: string | null
+  location_general?: string | null
+  is_active?: boolean
+}): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+
+  const updates: Record<string, unknown> = {}
+  if (input.display_name !== undefined) updates.display_name = input.display_name.trim()
+  if (input.bio !== undefined) updates.bio = input.bio?.trim() || null
+  if (input.location_general !== undefined) updates.location_general = input.location_general?.trim() || null
+  if (input.is_active !== undefined) updates.is_active = input.is_active
+  updates.updated_at = new Date().toISOString()
+
+  const { error } = await supabase
+    .from('community_profiles')
+    .update(updates)
+    .eq('user_id', DEMO_USER_ID)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/community')
+  return { success: true }
+}
