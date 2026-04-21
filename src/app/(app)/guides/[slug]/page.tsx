@@ -12,6 +12,7 @@ import { GenerateGuideContentButton } from '@/components/guides/generate-guide-c
 import { GuideActions } from '@/components/guides/guide-actions'
 import { GuideImages } from '@/components/guides/guide-images'
 import { GenerateImageButton } from '@/components/guides/generate-image-button'
+import { CardViewButton } from '@/components/guides/view-toggle'
 import {
   ArrowLeft, Sun, Droplets, Snowflake, Ruler, ArrowDown,
   Sprout, Flower2, Scissors, TreePine, Bug, AlertTriangle,
@@ -121,8 +122,9 @@ export default async function GuideDetailPage({ params }: Props) {
           <p className="text-base text-foreground/80 leading-relaxed mt-4">{guide.description}</p>
         )}
 
-        {/* Edit / Delete */}
-        <div className="mt-3">
+        {/* Actions: Bilkort + Edit + Delete */}
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <CardViewButton guide={guide} />
           <GuideActions guide={guide} />
         </div>
       </div>

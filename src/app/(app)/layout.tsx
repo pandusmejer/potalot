@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { Sidebar } from '@/components/layout/sidebar'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { Header } from '@/components/layout/header'
+import { OnboardingGate } from '@/components/onboarding/onboarding-gate'
 import { createClient } from '@/lib/supabase/server'
 import { ensureDemoUser } from '@/lib/demo'
 
@@ -20,6 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </main>
       </div>
       <BottomNav />
+      <OnboardingGate />
     </div>
   )
 }

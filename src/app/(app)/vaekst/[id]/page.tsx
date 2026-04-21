@@ -69,7 +69,7 @@ export default async function PlantDetailPage({ params }: Props) {
     <article className="space-y-6 max-w-2xl">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/have">
+        <Link href="/have" aria-label="Tilbage til Mine planter">
           <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4" /></Button>
         </Link>
         <div className="flex-1 min-w-0">

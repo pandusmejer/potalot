@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DEMO_USER_ID } from '@/lib/demo'
 import { hentForecast } from './weather'
 import { evaluerRegler, type PlanteKontekst, type ForslagTilOpgave } from './regler'
+import { hentModeIndstillinger } from '@/lib/user-modes'
 import type { Plant, Placering, Garden, Livscyklus } from '@/lib/types'
 
 /**
@@ -27,6 +28,18 @@ import type { Plant, Placering, Garden, Livscyklus } from '@/lib/types'
 export async function koerMotor(): Promise<{ forslag_oprettet: number; skippet: number }> {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
+
+  // 0. Respektér brugerens mode — Minimal-mode = ingen forslag
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('user_mode')
+    .eq('id', userId)
+    .maybeSingle()
+
+  const modeIndstillinger = hentModeIndstillinger(profile?.user_mode)
+  if (modeIndstillinger.maxMotorForslag === 0) {
+    return { forslag_oprettet: 0, skippet: 0 }
+  }
 
   // 1. Hent default-have for vejr
   const { data: garden } = await supabase
@@ -82,8 +95,9 @@ export async function koerMotor(): Promise<{ forslag_oprettet: number; skippet: 
     })
   }
 
-  // 4. Evaluér regler
-  const forslag = evaluerRegler(contexts, forecast)
+  // 4. Evaluér regler — begræns antal iht. brugerens mode
+  const allForslag = evaluerRegler(contexts, forecast)
+  const forslag = allForslag.slice(0, modeIndstillinger.maxMotorForslag)
 
   // 5. Opret tasks (med dedup mod eksisterende opgaver)
   let oprettet = 0

@@ -164,6 +164,65 @@ export async function accepterInvitation(groupId: string): Promise<{ success: tr
 }
 
 /**
+ * Opret gruppe + accepter selv invitation fra community-popup.
+ * Bruges når brugeren aktivt siger "ja, opret gruppen" i popup.
+ * Niveau: 'variety' = specifik sort, 'species' = plantekategori
+ */
+export async function oprettOgAccepterGruppe(params: {
+  species_name: string
+  variety_name?: string | null
+  niveau: 'variety' | 'species'
+}): Promise<{ success: true; group: CommunityGroup } | { error: string }> {
+  const supabase = await createClient()
+
+  // Tjek om profil findes - hvis ikke, kan brugeren ikke joine
+  const { data: profile } = await supabase
+    .from('community_profiles')
+    .select('is_active')
+    .eq('user_id', DEMO_USER_ID)
+    .maybeSingle()
+
+  if (!profile?.is_active) {
+    return { error: 'Du skal have en aktiv community-profil for at oprette grupper' }
+  }
+
+  const groupParams = {
+    species_name: params.species_name,
+    variety_name: params.niveau === 'variety' ? (params.variety_name ?? null) : null,
+  }
+
+  const group = await findOrOpretGruppe(groupParams)
+  if (!group) return { error: 'Kunne ikke oprette gruppen' }
+
+  // Indmeld bruger (opret eller opdatér invitation)
+  const { data: existing } = await supabase
+    .from('community_memberships')
+    .select('id, joined_at, declined_at')
+    .eq('group_id', group.id)
+    .eq('user_id', DEMO_USER_ID)
+    .maybeSingle()
+
+  if (!existing) {
+    await supabase.from('community_memberships').insert({
+      group_id: group.id,
+      user_id: DEMO_USER_ID,
+      role: 'member',
+      joined_at: new Date().toISOString(),
+    })
+  } else if (!existing.joined_at) {
+    await supabase
+      .from('community_memberships')
+      .update({ joined_at: new Date().toISOString(), declined_at: null })
+      .eq('id', existing.id)
+  }
+
+  await opdaterGruppeTaeller(group.id)
+
+  revalidatePath('/community')
+  return { success: true, group }
+}
+
+/**
  * Bruger afviser invitation.
  */
 export async function afvisInvitation(groupId: string): Promise<{ success: true } | { error: string }> {

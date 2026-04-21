@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Sprout, Check } from 'lucide-react'
 import { saaFroe } from '@/actions/lifecycle'
+import { CreateGroupPrompt } from '@/components/community/create-group-prompt'
 import type { Seed, Variety, Placering } from '@/lib/types'
 
 interface Props {
@@ -33,6 +34,11 @@ export function SowDialog({
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const [communityPrompt, setCommunityPrompt] = useState<{
+    speciesName: string
+    varietyName: string | null
+    hasProfile: boolean
+  } | null>(null)
 
   // Mode: pick from frøbank (seed) eller bare sort-reference (variety)
   const [mode, setMode] = useState<'seed' | 'variety' | 'new'>(preSelectedSeedId ? 'seed' : preSelectedVarietyId ? 'variety' : 'seed')
@@ -104,12 +110,32 @@ export function SowDialog({
       setDone(true)
       router.refresh()
 
-      // Luk dialog efter kort pause så brugeren ser bekræftelsen
+      // Vis community-prompt efter bekræftelse (hvis relevant)
       setTimeout(() => {
-        setDone(false)
-        onClose()
-      }, 1200)
+        if (result.communityPrompt) {
+          setDone(false)
+          setCommunityPrompt(result.communityPrompt)
+        } else {
+          setDone(false)
+          onClose()
+        }
+      }, 1000)
     })
+  }
+
+  if (communityPrompt) {
+    return (
+      <CreateGroupPrompt
+        open={true}
+        onClose={() => {
+          setCommunityPrompt(null)
+          onClose()
+        }}
+        speciesName={communityPrompt.speciesName}
+        varietyName={communityPrompt.varietyName}
+        hasProfile={communityPrompt.hasProfile}
+      />
+    )
   }
 
   return (

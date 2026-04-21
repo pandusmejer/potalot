@@ -9,20 +9,23 @@ import { Select } from '@/components/ui/select'
 import { Dialog, DialogTitle } from '@/components/ui/dialog'
 import { DEFAULT_SUBCATEGORIES, PRIMARY_CATEGORIES } from '@/lib/constants'
 import { formatDanishDate, validateDanishDate } from '@/lib/date-utils'
-import type { Seed, PlantGuide } from '@/lib/types'
+import type { Seed, PlantGuide, Placering, Variety } from '@/lib/types'
 import { useState, useTransition, useMemo, useRef } from 'react'
-import { Trash2, Camera } from 'lucide-react'
+import { Trash2, Camera, Sprout } from 'lucide-react'
+import { SowDialog } from '@/components/actions/sow-dialog'
 
 interface SeedFormProps {
   open: boolean
   onClose: () => void
   seed?: Seed | null
   guides: PlantGuide[]
+  placeringer?: Placering[]
+  varieties?: Variety[]
   defaultSubcategory?: string | null
   defaultCategory?: string
 }
 
-export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defaultCategory = 'froe' }: SeedFormProps) {
+export function SeedForm({ open, onClose, seed, guides, placeringer = [], varieties = [], defaultSubcategory, defaultCategory = 'froe' }: SeedFormProps) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [dateError, setDateError] = useState<string | null>(null)
@@ -40,6 +43,7 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
   const [imagePreview, setImagePreview] = useState<string | null>(seed?.image_url ?? null)
   const [imageData, setImageData] = useState<string | null>(null)
   const [extraImages, setExtraImages] = useState<string[]>(seed?.extra_images ?? [])
+  const [sowDialogOpen, setSowDialogOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const extraFileRef = useRef<HTMLInputElement>(null)
 
@@ -377,11 +381,22 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <div className="flex items-center justify-between pt-2">
-          <div>
+        <div className="flex items-center justify-between pt-2 flex-wrap gap-2">
+          <div className="flex gap-2">
             {seed && (
               <Button type="button" variant="destructive" size="sm" onClick={handleDelete} disabled={isPending}>
                 <Trash2 className="h-4 w-4 mr-1" /> Slet
+              </Button>
+            )}
+            {seed && seed.status !== 'depleted' && seed.status !== 'expired' && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setSowDialogOpen(true)}
+                disabled={isPending}
+              >
+                <Sprout className="h-4 w-4 mr-1" /> Så nu
               </Button>
             )}
           </div>
@@ -393,6 +408,20 @@ export function SeedForm({ open, onClose, seed, guides, defaultSubcategory, defa
           </div>
         </div>
       </form>
+
+      {seed && (
+        <SowDialog
+          open={sowDialogOpen}
+          onClose={() => {
+            setSowDialogOpen(false)
+            onClose()
+          }}
+          seeds={[seed]}
+          varieties={varieties}
+          placeringer={placeringer}
+          preSelectedSeedId={seed.id}
+        />
+      )}
     </Dialog>
   )
 }

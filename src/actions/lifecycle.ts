@@ -44,7 +44,18 @@ export async function saaFroe(input: {
   gardenId?: string | null
   dato?: string
   notes?: string
-}): Promise<{ success: true; plantId: string } | { error: string }> {
+}): Promise<
+  | {
+      success: true
+      plantId: string
+      communityPrompt?: {
+        speciesName: string
+        varietyName: string | null
+        hasProfile: boolean
+      }
+    }
+  | { error: string }
+> {
   const supabase = await createClient()
 
   // 1. Sikr vi har en variety_id
@@ -123,6 +134,7 @@ export async function saaFroe(input: {
 
   // 6. Auto-invitér til community-gruppe hvis profil er aktiv
   //    (mest specifikke først — variety_name først, species_name som fallback)
+  let hasProfile = false
   if (name) {
     try {
       await autoInviterTilGruppe({
@@ -130,13 +142,29 @@ export async function saaFroe(input: {
         species_name: name,
         variety_name,
       })
+
+      // Tjek om bruger har aktiv community-profil
+      const { data: profile } = await supabase
+        .from('community_profiles')
+        .select('is_active')
+        .eq('user_id', DEMO_USER_ID)
+        .maybeSingle()
+      hasProfile = !!profile?.is_active
     } catch {
       // Community-fejl må ikke blokere såning
     }
   }
 
   revalidatePath('/')
-  return { success: true, plantId: plant.id }
+  return {
+    success: true,
+    plantId: plant.id,
+    communityPrompt: name ? {
+      speciesName: name,
+      varietyName: variety_name,
+      hasProfile,
+    } : undefined,
+  }
 }
 
 // ============================================

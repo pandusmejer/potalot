@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation'
 
 const navItems = [
   { href: '/dashboard', label: 'Hjem', icon: Home, alias: ['/dashboard', '/'] },
-  { href: '/have', label: 'Have', icon: Sprout, alias: ['/have', '/froebank', '/vaekst', '/inventory', '/dyrkningslog'] },
+  { href: '/have', label: 'Mine planter', icon: Sprout, alias: ['/have', '/froebank', '/vaekst', '/inventory', '/dyrkningslog'] },
   { href: '/calendar', label: 'Kalender', icon: CalendarDays, alias: ['/calendar'] },
   { href: '/viden', label: 'Viden', icon: BookOpen, alias: ['/viden', '/guides', '/community', '/ai'] },
 ]
