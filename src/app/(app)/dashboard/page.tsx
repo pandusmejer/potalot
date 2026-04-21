@@ -10,10 +10,15 @@ import type { Task, Seed, PlantGuide, Variety, Placering } from '@/lib/types'
 import Link from 'next/link'
 import { Package, BookOpen, ArrowRight } from 'lucide-react'
 import { SowButton } from '@/components/actions/sow-button'
+import { MotorForslag } from '@/components/dashboard/motor-forslag'
+import { koerMotor } from '@/lib/motor/engine'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const userId = DEMO_USER_ID
+
+  // Kør motoren først (silent if error — vi bruger eksisterende data alligevel)
+  try { await koerMotor() } catch { /* motor kan køre videre næste gang */ }
 
   const [seedsRes, plantsRes, tasksRes, notesRes, guidesRes, varietiesRes, placeringerRes] = await Promise.all([
     supabase.from('seeds').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
@@ -37,7 +42,12 @@ export default async function DashboardPage() {
   const notesSeason = notesRes.count || 0
   const season = getCurrentSeason()
   const recentSeeds = seeds.slice(0, 6)
-  const upcomingTasks = tasks.slice(0, 5)
+
+  // Motor-forslag = tasks med description (motor-rationale)
+  // Brugerskabte opgaver har typisk ingen description
+  const motorForslag = tasks.filter(t => t.description && t.description.trim().length > 0).slice(0, 5)
+  const almindeligeOpgaver = tasks.filter(t => !t.description || t.description.trim().length === 0).slice(0, 5)
+  const upcomingTasks = almindeligeOpgaver
 
   return (
     <div className="space-y-6">
@@ -54,9 +64,11 @@ export default async function DashboardPage() {
       <StatusCards
         activePlants={activePlants}
         seedsInStock={seedsInStock}
-        tasksThisWeek={upcomingTasks.length}
+        tasksThisWeek={upcomingTasks.length + motorForslag.length}
         notesSeason={notesSeason}
       />
+
+      {motorForslag.length > 0 && <MotorForslag tasks={motorForslag} />}
 
       <div className="grid lg:grid-cols-2 gap-6">
         <TodaysTasks tasks={upcomingTasks} title="Kommende opgaver" />
