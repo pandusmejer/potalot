@@ -160,3 +160,36 @@ export async function hentAfventendeAssets(): Promise<Variety[]> {
     .order('updated_at', { ascending: false })
   return (data as Variety[]) ?? []
 }
+
+/**
+ * List alle godkendte assets (seneste først).
+ */
+export async function hentGodkendteAssets(limit = 20): Promise<Variety[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('varieties')
+    .select('*')
+    .eq('illustration_approved', true)
+    .not('illustration_url', 'is', null)
+    .order('updated_at', { ascending: false })
+    .limit(limit)
+  return (data as Variety[]) ?? []
+}
+
+/**
+ * Afvis et AI-asset — fjern illustration_url så der kan genereres en ny.
+ */
+export async function afvisAsset(varietyId: string): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('varieties')
+    .update({
+      illustration_url: null,
+      illustration_source: null,
+      illustration_approved: false,
+    })
+    .eq('id', varietyId)
+
+  if (error) return { error: error.message }
+  return { success: true }
+}
