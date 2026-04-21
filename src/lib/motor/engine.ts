@@ -136,8 +136,8 @@ async function erForslagAlleredeAktivt(f: ForslagTilOpgave): Promise<boolean> {
     .eq('plant_id', f.plant_id)
     .eq('task_type', f.task_type)
     .is('completed_at', null)
-    .maybeSingle()
-  return !!data
+    .limit(1)
+  return (data?.length ?? 0) > 0
 }
 
 /**

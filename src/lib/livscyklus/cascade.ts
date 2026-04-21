@@ -222,7 +222,7 @@ async function opdaterOpgaver(
   // Map handling-type til task-typer der skal lukkes
   const taskTypesAtLukke: string[] = (() => {
     switch (handling.type) {
-      case 'spiret':   return ['pest_check'] // ingen direkte spire-task
+      case 'spiret':   return ['custom'] // lukker spire-tjek opgaver
       case 'prikle':   return ['prick_out']
       case 'plant_ud': return ['plant_out', 'harden_off']
       case 'vand':     return ['water']
@@ -266,7 +266,7 @@ async function opdaterOpgaver(
       checkDate.setDate(checkDate.getDate() + guide.days_to_germination_min)
       await opretOpgaveHvisIkkeFindes(plantId, {
         title: `Tjek spiring på ${guide.name_da}`,
-        task_type: 'pest_check',
+        task_type: 'custom',
         due_date: checkDate.toISOString().split('T')[0],
         guide_id: guide.id,
       })
@@ -298,9 +298,9 @@ async function opretOpgaveHvisIkkeFindes(
     .eq('plant_id', plantId)
     .eq('task_type', task.task_type)
     .is('completed_at', null)
-    .maybeSingle()
+    .limit(1)
 
-  if (existing) return
+  if (existing && existing.length > 0) return
 
   await supabase.from('tasks').insert({
     user_id: DEMO_USER_ID,

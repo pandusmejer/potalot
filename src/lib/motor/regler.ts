@@ -193,7 +193,7 @@ function tjekSpireRegel(ctx: PlanteKontekst): ForslagTilOpgave[] {
     regel_id: 'tjek-spiring',
     titel: `Tjek spiring på ${ctx.plant.name}`,
     forklaring: `Sået for ${ctx.dageSidenSidsteEvent} dage siden — de fleste frø er oppe nu.`,
-    task_type: 'pest_check',
+    task_type: 'custom',
     due_date: dueDate.toISOString().split('T')[0],
     priority: 'low',
     haster: false,
