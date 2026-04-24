@@ -1,0 +1,187 @@
+/**
+ * System-konstanter for PotAlot.
+ * Kategorier, labels, ikoner — alt statisk der ikke kommer fra DB.
+ */
+
+import type {
+  PrimaryCategory, PrimaryCategoryId, Subcategory, UserMode,
+  PlantStatus, InventoryStatus, TaskType, TaskPriority,
+  Difficulty, Light, Water, GrowingLocation,
+} from './types'
+
+// ============================================
+// Primære kategorier (Niveau 1)
+// ============================================
+
+export const PRIMARY_CATEGORIES: Record<PrimaryCategoryId, PrimaryCategory> = {
+  fro:            { id: 'fro',            name: 'Frø',                    icon: 'Sprout',      isSystem: true },
+  loeg:           { id: 'loeg',           name: 'Løg',                    icon: 'CircleDot',   isSystem: true },
+  knolde:         { id: 'knolde',         name: 'Knolde',                 icon: 'Gem',         isSystem: true },
+  buske:          { id: 'buske',          name: 'Buske',                  icon: 'TreeDeciduous', isSystem: true },
+  traeer:         { id: 'traeer',         name: 'Træer',                  icon: 'Trees',       isSystem: true },
+  stauder:        { id: 'stauder',        name: 'Stauder',                icon: 'Flower2',     isSystem: true },
+  indkoebsliste:  { id: 'indkoebsliste',  name: 'Indkøbs- og ønskeliste', icon: 'ShoppingCart', isSystem: true },
+  favoritter:     { id: 'favoritter',     name: 'Favoritter',             icon: 'Star',        isSystem: true, isDynamic: true },
+}
+
+export const PRIMARY_CATEGORY_IDS: PrimaryCategoryId[] = [
+  'fro', 'loeg', 'knolde', 'buske', 'traeer', 'stauder', 'indkoebsliste', 'favoritter',
+]
+
+// ============================================
+// System-underkategorier (Niveau 2)
+// ============================================
+
+export const SYSTEM_SUBCATEGORIES: Subcategory[] = [
+  { id: 'groentsager',        name: 'Grøntsager',         parentCategoryIds: ['fro', 'loeg', 'knolde'], isSystem: true },
+  { id: 'blomster_1aarige',   name: 'Blomster, 1-årige',  parentCategoryIds: ['fro'],                    isSystem: true },
+  { id: 'blomster_fleraarige',name: 'Blomster, flerårige', parentCategoryIds: ['fro', 'stauder', 'loeg', 'knolde'], isSystem: true },
+  { id: 'krydderurter',       name: 'Krydderurter',       parentCategoryIds: ['fro', 'stauder'],         isSystem: true },
+  { id: 'graesser',           name: 'Græsser',            parentCategoryIds: ['stauder', 'fro'],         isSystem: true },
+  { id: 'baer',               name: 'Bær',                parentCategoryIds: ['buske', 'stauder'],       isSystem: true },
+  { id: 'frugt',              name: 'Frugt',              parentCategoryIds: ['traeer', 'buske'],        isSystem: true },
+  { id: 'pryd',               name: 'Pryd',               parentCategoryIds: ['stauder', 'buske', 'traeer'], isSystem: true },
+]
+
+// ============================================
+// User modes
+// ============================================
+
+export const USER_MODES: Record<UserMode, { label: string; tagline: string; description: string }> = {
+  maalrettet: {
+    label: 'Målrettet',
+    tagline: 'For den ambitiøse dyrker',
+    description: 'Flere påmindelser, flere forslag, alt info synligt. Du vil gerne have optimeret hvert bed og hver plante.',
+  },
+  afslappet: {
+    label: 'Afslappet',
+    tagline: 'For hobbygartneren',
+    description: 'Roligt tempo, kun vigtige opgaver fremhæves. Haven er glæde, ikke et KPI-projekt.',
+  },
+  minimal: {
+    label: 'Minimal',
+    tagline: 'Uden notifikationer',
+    description: 'Ingen påmindelser. Ingen forslag. Du åbner appen når du vil vide noget, ikke når den vil have din opmærksomhed.',
+  },
+}
+
+// ============================================
+// Status-labels og farver
+// ============================================
+
+export const PLANT_STATUS_META: Record<PlantStatus, { label: string; badgeVariant: string; description: string }> = {
+  planlagt:             { label: 'Planlagt',             badgeVariant: 'muted',   description: 'Klar til at blive sået eller plantet' },
+  saaet:                { label: 'Sået',                 badgeVariant: 'info',    description: 'Frø i jorden, venter på spiring' },
+  spirer:               { label: 'Spirer',               badgeVariant: 'success', description: 'Nye skud er oppe' },
+  i_vaekst:             { label: 'I vækst',              badgeVariant: 'success', description: 'Vokser aktivt' },
+  klar_til_udplantning: { label: 'Klar til udplantning', badgeVariant: 'warning', description: 'Kan rykkes ud i haven' },
+  udplantet:            { label: 'Udplantet',            badgeVariant: 'info',    description: 'Står i sit blivende bed' },
+  hoestklar:            { label: 'Høstklar',             badgeVariant: 'warning', description: 'Kan høstes snart' },
+  afsluttet:            { label: 'Afsluttet',            badgeVariant: 'muted',   description: 'Sæsonen er slut' },
+}
+
+export const INVENTORY_STATUS_META: Record<InventoryStatus, { label: string; badgeVariant: string }> = {
+  i_froebank:  { label: 'I frøbank',  badgeVariant: 'muted' },
+  planlagt:    { label: 'Planlagt',   badgeVariant: 'outline' },
+  saaet:       { label: 'Sået',       badgeVariant: 'info' },
+  i_jord:      { label: 'I jord',     badgeVariant: 'info' },
+  i_vaekst:    { label: 'I vækst',    badgeVariant: 'success' },
+  afsluttet:   { label: 'Afsluttet',  badgeVariant: 'muted' },
+  arkiveret:   { label: 'Arkiveret',  badgeVariant: 'muted' },
+}
+
+// ============================================
+// Opgave-typer
+// ============================================
+
+export const TASK_TYPE_META: Record<TaskType, { label: string; icon: string }> = {
+  pre_sow:     { label: 'Forspir',       icon: 'Sprout' },
+  sowing:      { label: 'Så',            icon: 'Sprout' },
+  repot:       { label: 'Omplant',       icon: 'ArrowUpRight' },
+  plant_out:   { label: 'Udplant',       icon: 'TreePine' },
+  watering:    { label: 'Vand',          icon: 'Droplets' },
+  fertilizing: { label: 'Gød',           icon: 'Leaf' },
+  pruning:     { label: 'Beskær',        icon: 'Scissors' },
+  pest_check:  { label: 'Skadedyr-tjek', icon: 'Bug' },
+  harvest:     { label: 'Høst',          icon: 'Wheat' },
+  weeding:     { label: 'Luge',          icon: 'Trash2' },
+  maintenance: { label: 'Vedligehold',   icon: 'Wrench' },
+  planning:    { label: 'Planlæg',       icon: 'ClipboardList' },
+  custom:      { label: 'Opgave',        icon: 'ListTodo' },
+}
+
+export const TASK_PRIORITY_META: Record<TaskPriority, { label: string; badgeVariant: string }> = {
+  low:      { label: 'Lav',     badgeVariant: 'muted' },
+  medium:   { label: 'Medium',  badgeVariant: 'outline' },
+  high:     { label: 'Høj',     badgeVariant: 'warning' },
+  critical: { label: 'Kritisk', badgeVariant: 'destructive' },
+}
+
+// ============================================
+// Dyrkningsinfo
+// ============================================
+
+export const DIFFICULTY_META: Record<Difficulty, { label: string; stars: number }> = {
+  easy:   { label: 'Nem',        stars: 1 },
+  medium: { label: 'Mellem',     stars: 2 },
+  hard:   { label: 'Udfordrende', stars: 3 },
+}
+
+export const LIGHT_META: Record<Light, { label: string; icon: string }> = {
+  full_sun:      { label: 'Fuld sol',   icon: 'Sun' },
+  partial_shade: { label: 'Halvskygge', icon: 'CloudSun' },
+  shade:         { label: 'Skygge',     icon: 'Cloud' },
+}
+
+export const WATER_META: Record<Water, { label: string; icon: string }> = {
+  low:     { label: 'Lidt',       icon: 'Droplet' },
+  regular: { label: 'Regelmæssig', icon: 'Droplets' },
+  high:    { label: 'Meget',      icon: 'CloudRain' },
+}
+
+export const GROWING_LOCATION_META: Record<GrowingLocation, { label: string; icon: string }> = {
+  vindueskarm: { label: 'Vindueskarm',   icon: 'Home' },
+  drivhus:     { label: 'Drivhus',       icon: 'Warehouse' },
+  hoejbed:     { label: 'Højbed',        icon: 'Box' },
+  friland:     { label: 'Friland',       icon: 'Mountain' },
+  krukke:      { label: 'Krukke',        icon: 'Flower' },
+  custom:      { label: 'Egen placering', icon: 'MapPin' },
+}
+
+// ============================================
+// Måneder
+// ============================================
+
+export const MONTHS_DA = [
+  { num: 1, short: 'jan', full: 'Januar' },
+  { num: 2, short: 'feb', full: 'Februar' },
+  { num: 3, short: 'mar', full: 'Marts' },
+  { num: 4, short: 'apr', full: 'April' },
+  { num: 5, short: 'maj', full: 'Maj' },
+  { num: 6, short: 'jun', full: 'Juni' },
+  { num: 7, short: 'jul', full: 'Juli' },
+  { num: 8, short: 'aug', full: 'August' },
+  { num: 9, short: 'sep', full: 'September' },
+  { num: 10, short: 'okt', full: 'Oktober' },
+  { num: 11, short: 'nov', full: 'November' },
+  { num: 12, short: 'dec', full: 'December' },
+] as const
+
+// ============================================
+// Navigation
+// ============================================
+
+export const PRIMARY_NAV = [
+  { href: '/', label: 'Overblik', icon: 'LayoutDashboard' },
+  { href: '/mine-planter', label: 'Mine planter', icon: 'Sprout' },
+  { href: '/froebank', label: 'Frøbank', icon: 'Package', isHero: true },   // Visuelt dominerende
+  { href: '/kalender', label: 'Havekalender', icon: 'CalendarDays' },
+  { href: '/guides', label: 'Dyrkningsguides', icon: 'BookOpen' },
+] as const
+
+export const SECONDARY_NAV = [
+  { href: '/profil', label: 'Min profil', icon: 'User' },
+  { href: '/grupper', label: 'Mine grupper', icon: 'Users' },
+  { href: '/idetavle', label: 'Min idétavle', icon: 'Lightbulb' },
+  { href: '/indstillinger', label: 'Indstillinger', icon: 'Settings' },
+] as const
