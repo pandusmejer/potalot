@@ -1,1 +1,136 @@
 @import "tailwindcss";
+
+/* ============================================
+ * PotAlot visuel identitet
+ *
+ * Palet: varmt pergament-cream (#F5EFE3) + dyb botanisk grøn (#2C4A3A)
+ * Typografi: Cormorant Garamond (serif headings) + Inter (UI/brødtekst)
+ * Radius: bløde 12-16px hjørner, ikke helt flat
+ * ============================================ */
+
+:root {
+  /* Baggrund */
+  --background:            #F5EFE3;     /* pergament-cream */
+  --foreground:            #2B2520;     /* varm sortbrun */
+
+  /* Kort / overflader */
+  --card:                  #FBF7ED;
+  --card-foreground:       #2B2520;
+
+  /* Primær: botanisk grøn (Flora Danica kobberstuk-tusch) */
+  --primary:               #2C4A3A;
+  --primary-foreground:    #F5EFE3;
+
+  /* Sekundær: salvie, støvet grøn */
+  --secondary:             #E4EADF;
+  --secondary-foreground:  #2B2520;
+
+  /* Muted: bleget pergament bagside */
+  --muted:                 #ECE3D0;
+  --muted-foreground:      #6B6055;
+
+  /* Accent */
+  --accent:                #ECE3D0;
+  --accent-foreground:     #2B2520;
+
+  /* Kanter og inputs */
+  --border:                #E0D4BB;
+  --input:                 #E0D4BB;
+  --ring:                  #2C4A3A;
+
+  /* Destructive: rolig rust, ikke skrigende rødt */
+  --destructive:           #B5602F;
+  --destructive-foreground:#FBF7ED;
+
+  /* Dekorative accenter */
+  --accent-blue:           #3B5C7A;    /* Flora Danica delft */
+  --accent-rust:           #B5602F;    /* terracotta */
+  --accent-copper:         #A87C3B;    /* kobber-gylden */
+  --accent-sage:           #8FA68E;    /* salvie */
+
+  /* Radius */
+  --radius:                12px;
+}
+
+@theme inline {
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+  --color-destructive:          var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-blue:          var(--accent-blue);
+  --color-accent-rust:          var(--accent-rust);
+  --color-accent-copper:        var(--accent-copper);
+  --color-accent-sage:          var(--accent-sage);
+
+  --font-sans:  var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
+
+  --radius:     var(--radius);
+}
+
+/* ============================================
+ * Base
+ * ============================================ */
+* {
+  border-color: var(--border);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv01", "cv02";
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+/* ============================================
+ * Mobile safe-area
+ * ============================================ */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================
+ * Scrollbar utility
+ * ============================================ */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================
+ * Subtil botanisk baggrund til empty states
+ * ============================================ */
+.bg-pattern-botanical {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 10 Q45 25 40 40 Q35 55 40 70' stroke='%23A87C3B' stroke-width='0.4' fill='none' opacity='0.12'/%3E%3Cpath d='M20 40 Q30 35 40 40 Q50 45 60 40' stroke='%23A87C3B' stroke-width='0.4' fill='none' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
