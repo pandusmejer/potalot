@@ -1,11 +1,15 @@
 import { Button } from '@/components/ui/button'
 import { PlantList } from '@/components/mine-planter/plant-list'
-import { MOCK_PLANTS, MOCK_CALENDAR_TASKS } from '@/lib/mock-data'
+import { getAllPlants } from '@/actions/mine-planter'
+import { MOCK_CALENDAR_TASKS } from '@/lib/mock-data'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
-// TODO (database): Hent fra Supabase
-export default function MinePlanterPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function MinePlanterPage() {
+  const plants = await getAllPlants()
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -23,7 +27,7 @@ export default function MinePlanterPage() {
         </Button>
       </div>
 
-      <PlantList plants={MOCK_PLANTS} tasks={MOCK_CALENDAR_TASKS} />
+      <PlantList plants={plants} tasks={MOCK_CALENDAR_TASKS} />
     </div>
   )
 }

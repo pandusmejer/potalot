@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger, DialogFooter,
 } from '@/components/ui/dialog'
@@ -11,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Plus, Camera } from 'lucide-react'
 import type { PlantLogType } from '@/lib/types'
 import { idag } from '@/lib/datetime'
+import { createPlantLog } from '@/actions/mine-planter'
 
 const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
   { value: 'note', label: 'Note' },
@@ -33,7 +35,10 @@ interface Props {
  * TODO (database): Server action der gemmer til Supabase.
  */
 export function LogForm({ plantId }: Props) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
+  const [pending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
   const [type, setType] = useState<PlantLogType>('note')
   const [date, setDate] = useState(idag())
   const [title, setTitle] = useState('')
@@ -41,13 +46,27 @@ export function LogForm({ plantId }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // TODO (database): kald server action createLog({ plantId, type, date, title, note })
-    console.log('Log submitted:', { plantId, type, date, title, note })
-    setOpen(false)
-    setTitle('')
-    setNote('')
-    setType('note')
-    setDate(idag())
+    setError(null)
+
+    startTransition(async () => {
+      const res = await createPlantLog({
+        plantId,
+        date,
+        type,
+        title: title.trim() || undefined,
+        note: note.trim() || undefined,
+      })
+      if ('error' in res) {
+        setError(res.error)
+        return
+      }
+      setOpen(false)
+      setTitle('')
+      setNote('')
+      setType('note')
+      setDate(idag())
+      router.refresh()
+    })
   }
 
   return (
@@ -117,11 +136,15 @@ export function LogForm({ plantId }: Props) {
             Tilføj foto (TODO)
           </Button>
 
+          {error && <p className="text-sm text-destructive">{error}</p>}
+
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               Annullér
             </Button>
-            <Button type="submit">Gem</Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? 'Gemmer…' : 'Gem'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

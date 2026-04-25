@@ -6,9 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { NextAction } from '@/components/mine-planter/next-action'
 import { Timeline } from '@/components/mine-planter/timeline'
 import { LogForm } from '@/components/mine-planter/log-form'
-import {
-  MOCK_PLANTS, MOCK_LOGS, MOCK_CALENDAR_TASKS, MOCK_GUIDES, MOCK_INVENTORY,
-} from '@/lib/mock-data'
+import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { getInventoryItem } from '@/actions/froebank'
+import { MOCK_CALENDAR_TASKS, MOCK_GUIDES } from '@/lib/mock-data'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoMedAar } from '@/lib/datetime'
 import {
@@ -20,27 +20,31 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-// TODO (database): Hent fra Supabase
+export const dynamic = 'force-dynamic'
+
 export default async function PlanteDetailPage({ params }: Props) {
   const { id } = await params
 
-  const plant = MOCK_PLANTS.find(p => p.id === id)
+  const plant = await getPlant(id)
   if (!plant) notFound()
 
-  const logs   = MOCK_LOGS.filter(l => l.plantId === plant.id)
-  const tasks  = MOCK_CALENDAR_TASKS.filter(t => t.linkedPlantId === plant.id)
+  const logs = await getPlantLogs(plant.id)
+
+  // TODO (database): Tasks og Guides skal også migreres
+  const tasks = MOCK_CALENDAR_TASKS.filter(t => t.linkedPlantId === plant.id)
   const aabneOpgaver = tasks.filter(t => t.status === 'open').sort((a, b) => a.date.localeCompare(b.date))
   const naesteOpgave = aabneOpgaver[0] ?? null
 
   const guide = plant.guideId ? MOCK_GUIDES.find(g => g.id === plant.guideId) : null
-  const inventoryItem = plant.sourceElementId ? MOCK_INVENTORY.find(i => i.id === plant.sourceElementId) : null
+  const inventoryItem = plant.sourceElementId
+    ? await getInventoryItem(plant.sourceElementId)
+    : null
 
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
 
   return (
     <article className="space-y-5 max-w-3xl">
-      {/* Header med tilbage-knap */}
       <div className="flex items-center gap-3">
         <Button asChild variant="ghost" size="icon">
           <Link href="/mine-planter" aria-label="Tilbage">
@@ -62,7 +66,6 @@ export default async function PlanteDetailPage({ params }: Props) {
         </Badge>
       </div>
 
-      {/* Quick info */}
       <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
         {plant.location && (
           <span className="inline-flex items-center gap-1.5">
@@ -87,10 +90,8 @@ export default async function PlanteDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* Næste handling - sticky øverst (kun når ikke arkiveret) */}
       {!plant.isArchived && <NextAction task={naesteOpgave} />}
 
-      {/* Tidslinje */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -104,7 +105,6 @@ export default async function PlanteDetailPage({ params }: Props) {
         </CardContent>
       </Card>
 
-      {/* Linket guide */}
       {guide && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -127,7 +127,6 @@ export default async function PlanteDetailPage({ params }: Props) {
         </Card>
       )}
 
-      {/* Linket frøbank-element */}
       {inventoryItem && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
@@ -154,7 +153,6 @@ export default async function PlanteDetailPage({ params }: Props) {
         </Card>
       )}
 
-      {/* AI-rådgiver kontekstuelt */}
       {!plant.isArchived && (
         <Card className="bg-gradient-to-br from-secondary/30 to-card border-secondary">
           <CardContent className="flex items-center gap-3 py-3">
@@ -170,7 +168,6 @@ export default async function PlanteDetailPage({ params }: Props) {
         </Card>
       )}
 
-      {/* Arkiv-info */}
       {plant.isArchived && (
         <Card className="bg-muted/40">
           <CardContent className="py-3">

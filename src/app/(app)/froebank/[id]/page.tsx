@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
+import { SowDialog } from '@/components/froebank/sow-dialog'
 import { getInventoryItem } from '@/actions/froebank'
-import { MOCK_PLANTS, MOCK_GUIDES } from '@/lib/mock-data'
+import { getAllPlants } from '@/actions/mine-planter'
+import { MOCK_GUIDES } from '@/lib/mock-data'
 import {
   PRIMARY_CATEGORIES, INVENTORY_STATUS_META, MONTHS_DA,
   LIGHT_META, WATER_META, GROWING_LOCATION_META, SYSTEM_SUBCATEGORIES,
@@ -27,11 +29,14 @@ export const dynamic = 'force-dynamic'
 
 export default async function InventoryDetailPage({ params }: Props) {
   const { id } = await params
-  const item = await getInventoryItem(id)
+  const [item, allPlants] = await Promise.all([
+    getInventoryItem(id),
+    getAllPlants(),
+  ])
   if (!item) notFound()
 
-  // TODO (database): Mine planter og Guides skal også migreres til Supabase
-  const linkedPlants = MOCK_PLANTS.filter(p => p.sourceElementId === item.id)
+  const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
+  // TODO (database): Guides skal også migreres til Supabase
   const guide = item.guideId ? MOCK_GUIDES.find(g => g.id === item.guideId) : null
 
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
@@ -78,12 +83,15 @@ export default async function InventoryDetailPage({ params }: Props) {
 
       {/* Hovedhandlinger */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <Button asChild variant="default">
-          <Link href={`/mine-planter?fromInventory=${item.id}`}>
+        <SowDialog
+          inventoryItemId={item.id}
+          suggestedLocations={item.growingLocations}
+        >
+          <Button>
             <Sprout className="h-4 w-4" />
             Så et frø
-          </Link>
-        </Button>
+          </Button>
+        </SowDialog>
         <Button asChild variant="outline">
           <Link href="#">
             <Calendar className="h-4 w-4" />
