@@ -1,24 +1,29 @@
-import { Card } from '@/components/ui/card'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Sprout } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { PlantList } from '@/components/mine-planter/plant-list'
+import { MOCK_PLANTS, MOCK_CALENDAR_TASKS } from '@/lib/mock-data'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
 
-// TODO: Mine planter-modulet
+// TODO (database): Hent fra Supabase
 export default function MinePlanterPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-serif text-foreground">Mine planter</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Aktive dyrkninger — det du har gang i lige nu.
-        </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-serif text-foreground">Mine planter</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Aktive dyrkninger — det du har gang i lige nu.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/froebank">
+            <Plus className="h-4 w-4" />
+            Tilføj plante
+          </Link>
+        </Button>
       </div>
-      <Card className="p-8">
-        <EmptyState
-          icon={<Sprout className="h-10 w-10" />}
-          title="Mine planter bygges snart"
-          description="Plantekort med status, næste opgave, placering og alder. Detaljeside med tidslinje og dyrkningslog."
-        />
-      </Card>
+
+      <PlantList plants={MOCK_PLANTS} tasks={MOCK_CALENDAR_TASKS} />
     </div>
   )
 }
