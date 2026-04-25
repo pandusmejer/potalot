@@ -32,6 +32,7 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
   const [quantity, setQuantity] = useState('1')
   const [location, setLocation] = useState(suggestedLocations[0] ? GROWING_LOCATION_META[suggestedLocations[0]].label : '')
   const [note, setNote] = useState('')
+  const [success, setSuccess] = useState<{ plantId: string; tasksCreated: number } | null>(null)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -57,8 +58,17 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
         return
       }
 
-      setOpen(false)
-      router.push(`/mine-planter/${res.id}`)
+      // Vis kort success-feedback hvis opgaver blev genereret
+      if (res.tasksCreated > 0) {
+        setSuccess({ plantId: res.id, tasksCreated: res.tasksCreated })
+        setTimeout(() => {
+          setOpen(false)
+          router.push(`/mine-planter/${res.id}`)
+        }, 1500)
+      } else {
+        setOpen(false)
+        router.push(`/mine-planter/${res.id}`)
+      }
     })
   }
 
@@ -73,9 +83,24 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
         )}
       </DialogTrigger>
       <DialogContent>
+        {success ? (
+          <div className="flex flex-col items-center gap-3 py-8 text-center">
+            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
+              <Sprout className="h-7 w-7 text-primary" />
+            </div>
+            <div>
+              <p className="font-serif text-xl text-foreground">Plante oprettet</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {success.tasksCreated} {success.tasksCreated === 1 ? 'opgave er' : 'opgaver er'} lagt i kalenderen.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
         <DialogTitle>Så et frø</DialogTitle>
         <DialogDescription>
           Opretter en aktiv plante i Mine planter med en initial log-entry.
+          Hvis der er en tilknyttet guide, oprettes også relevante opgaver i kalenderen.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -153,6 +178,8 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
             </Button>
           </DialogFooter>
         </form>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   )

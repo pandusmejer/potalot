@@ -3,6 +3,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { DEMO_USER_ID } from '@/lib/demo'
 import { revalidatePath } from 'next/cache'
+import {
+  generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
+} from '@/lib/task-generation'
+import { MOCK_GUIDES } from '@/lib/mock-data'
 import type { Plant, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
@@ -146,8 +150,12 @@ export interface SaaFroeInput {
 /**
  * Sår fra et frøbank-element. Opretter plante + initial 'sowing' log.
  * Opdaterer også inventory item status til 'saaet'.
+ * Auto-genererer opgaver i kalenderen baseret på guidens calendarRules.
  */
-export async function saaFroeFraInventory(input: SaaFroeInput): Promise<{ id: string } | { error: string }> {
+export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
+  | { id: string; tasksCreated: number }
+  | { error: string }
+> {
   const supabase = createClient()
 
   // Hent inventory item
@@ -200,11 +208,54 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<{ id: st
       .eq('id', invItem.id)
   }
 
+  // Auto-genér opgaver fra guide
+  // TODO: Når guides er i Supabase, hent fra DB i stedet for MOCK_GUIDES
+  let tasksCreated = 0
+  const guide = resolveGuideForInventory(
+    { guideId: invItem.guide_id, name: invItem.name },
+    MOCK_GUIDES
+  )
+
+  if (guide) {
+    const generated = filterRelevantTasks(generateTasksFromGuide({
+      guide,
+      sowDate: input.date,
+      plantId: plant.id as string,
+      inventoryItemId: invItem.id as string,
+    }))
+
+    if (generated.length > 0) {
+      const taskRows = generated.map(t => ({
+        user_id: DEMO_USER_ID,
+        title: t.title,
+        date: t.date,
+        task_type: t.taskType,
+        priority: t.priority,
+        status: 'open',
+        source: t.source,
+        source_id: t.sourceId,
+        linked_plant_id: t.linkedPlantId,
+        linked_inventory_item_id: t.linkedInventoryItemId,
+        linked_guide_id: t.linkedGuideId,
+        is_recurring: false,
+      }))
+
+      const { error: taskErr } = await supabase
+        .from('calendar_tasks')
+        .insert(taskRows)
+
+      if (!taskErr) tasksCreated = taskRows.length
+      else console.error('Task auto-generate fejlede:', taskErr)
+    }
+  }
+
   revalidatePath('/froebank')
   revalidatePath(`/froebank/${invItem.id}`)
   revalidatePath('/mine-planter')
+  revalidatePath('/kalender')
+  revalidatePath('/')
 
-  return { id: plant.id as string }
+  return { id: plant.id as string, tasksCreated }
 }
 
 export async function createPlantLog(input: {
