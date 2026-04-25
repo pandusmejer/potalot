@@ -233,10 +233,10 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
         priority: t.priority,
         status: 'open',
         source: t.source,
-        source_id: t.sourceId,
-        linked_plant_id: t.linkedPlantId,
-        linked_inventory_item_id: t.linkedInventoryItemId,
-        linked_guide_id: t.linkedGuideId,
+        source_id: t.sourceId,                  // TEXT — ok med mock guide_id
+        linked_plant_id: t.linkedPlantId,       // UUID — fra DB
+        linked_inventory_item_id: t.linkedInventoryItemId, // UUID — fra DB
+        linked_guide_id: null,                  // TODO: når guides er i Supabase, sæt fra t.linkedGuideId
         is_recurring: false,
       }))
 
