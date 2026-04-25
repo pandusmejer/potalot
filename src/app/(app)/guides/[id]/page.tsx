@@ -4,11 +4,12 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
+import { FloraDanicaImage } from '@/components/guides/flora-danica-image'
 import { mergeGuide } from '@/lib/guide-merge'
 import { MOCK_GUIDES, MOCK_INVENTORY, MOCK_PLANTS } from '@/lib/mock-data'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
-  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight, Image as ImageIcon,
+  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
 } from 'lucide-react'
 
 interface Props {
@@ -68,16 +69,12 @@ export default async function GuideDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Flora Danica-illustration placeholder */}
-      <div className="aspect-[2/1] rounded-2xl border border-border bg-secondary/30 bg-pattern-botanical flex items-center justify-center">
-        <div className="text-center">
-          <ImageIcon className="h-10 w-10 text-muted-foreground/50 mx-auto" />
-          <p className="text-xs text-muted-foreground italic mt-2">
-            Flora Danica-illustration kommer her
-          </p>
-        </div>
-        {/* TODO (Flora Danica): AI-genereret eller kurateret illustration */}
-      </div>
+      {/* Flora Danica-illustration */}
+      <FloraDanicaImage
+        plantName={effective.plantName}
+        variety={effective.variety}
+        latinName={effective.latinName}
+      />
 
       {/* Hvis sortsguide: link tilbage til artsguide */}
       {parent && (
