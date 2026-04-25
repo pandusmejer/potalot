@@ -1,0 +1,285 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { DEMO_USER_ID } from '@/lib/demo'
+import { revalidatePath } from 'next/cache'
+import type {
+  CalendarTask, TaskType, TaskPriority, TaskStatus, TaskSource, PlantLogType,
+} from '@/lib/types'
+
+// ============================================
+// Mappers
+// ============================================
+
+interface TaskRow {
+  id: string
+  user_id: string
+  title: string
+  description: string | null
+  date: string
+  due_date: string | null
+  task_type: string
+  priority: string
+  status: string
+  source: string
+  source_id: string | null
+  linked_plant_id: string | null
+  linked_inventory_item_id: string | null
+  linked_guide_id: string | null
+  is_recurring: boolean
+  recurrence_rule: string | null
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+function rowToTask(row: TaskRow): CalendarTask {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    title: row.title,
+    description: row.description,
+    date: row.date,
+    dueDate: row.due_date,
+    taskType: row.task_type as TaskType,
+    priority: row.priority as TaskPriority,
+    status: row.status as TaskStatus,
+    source: row.source as TaskSource,
+    sourceId: row.source_id,
+    linkedPlantId: row.linked_plant_id,
+    linkedInventoryItemId: row.linked_inventory_item_id,
+    linkedGuideId: row.linked_guide_id,
+    isRecurring: row.is_recurring,
+    recurrenceRule: row.recurrence_rule,
+    completedAt: row.completed_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }
+}
+
+// ============================================
+// Read
+// ============================================
+
+export async function getAllTasks(): Promise<CalendarTask[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('calendar_tasks')
+    .select('*')
+    .eq('user_id', DEMO_USER_ID)
+    .order('date', { ascending: true })
+
+  if (error) {
+    console.error('getAllTasks error:', error)
+    return []
+  }
+  return (data as TaskRow[]).map(rowToTask)
+}
+
+export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('calendar_tasks')
+    .select('*')
+    .eq('user_id', DEMO_USER_ID)
+    .eq('linked_plant_id', plantId)
+    .order('date', { ascending: true })
+
+  if (error) return []
+  return (data as TaskRow[]).map(rowToTask)
+}
+
+// ============================================
+// Mutations
+// ============================================
+
+export interface CreateTaskInput {
+  title: string
+  description?: string
+  date: string                   // YYYY-MM-DD
+  dueDate?: string
+  taskType?: TaskType
+  priority?: TaskPriority
+  source?: TaskSource
+  sourceId?: string
+  linkedPlantId?: string
+  linkedInventoryItemId?: string
+  linkedGuideId?: string
+  isRecurring?: boolean
+  recurrenceRule?: string
+}
+
+export async function createTask(input: CreateTaskInput): Promise<{ id: string } | { error: string }> {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('calendar_tasks')
+    .insert({
+      user_id: DEMO_USER_ID,
+      title: input.title.trim(),
+      description: input.description?.trim() || null,
+      date: input.date,
+      due_date: input.dueDate || null,
+      task_type: input.taskType ?? 'custom',
+      priority: input.priority ?? 'medium',
+      status: 'open',
+      source: input.source ?? 'manual',
+      source_id: input.sourceId || null,
+      linked_plant_id: input.linkedPlantId || null,
+      linked_inventory_item_id: input.linkedInventoryItemId || null,
+      linked_guide_id: input.linkedGuideId || null,
+      is_recurring: input.isRecurring ?? false,
+      recurrence_rule: input.recurrenceRule || null,
+    })
+    .select('id')
+    .single()
+
+  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+
+  revalidatePath('/kalender')
+  revalidatePath('/')
+  if (input.linkedPlantId) revalidatePath(`/mine-planter/${input.linkedPlantId}`)
+  return { id: data.id as string }
+}
+
+/**
+ * Markér opgave som udført. Returnerer plant-info hvis linket, så
+ * UI kan prompt'e om at oprette en log-entry.
+ */
+export async function completeTask(id: string): Promise<
+  | { ok: true; linkedPlantId: string | null; suggestedLogType: PlantLogType | null; taskTitle: string }
+  | { error: string }
+> {
+  const supabase = createClient()
+
+  const { data: task, error: fetchErr } = await supabase
+    .from('calendar_tasks')
+    .select('id, title, task_type, linked_plant_id')
+    .eq('id', id)
+    .eq('user_id', DEMO_USER_ID)
+    .single()
+
+  if (fetchErr || !task) return { error: 'Opgave ikke fundet' }
+
+  const { error: updErr } = await supabase
+    .from('calendar_tasks')
+    .update({
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .eq('user_id', DEMO_USER_ID)
+
+  if (updErr) return { error: updErr.message }
+
+  revalidatePath('/kalender')
+  revalidatePath('/')
+  if (task.linked_plant_id) revalidatePath(`/mine-planter/${task.linked_plant_id}`)
+
+  return {
+    ok: true,
+    linkedPlantId: task.linked_plant_id,
+    suggestedLogType: mapTaskTypeToLogType(task.task_type as TaskType),
+    taskTitle: task.title,
+  }
+}
+
+/**
+ * Markér som udført + opret en log-entry på den linkede plante.
+ */
+export async function completeTaskWithLog(input: {
+  taskId: string
+  plantId: string
+  logType: PlantLogType
+  logTitle?: string
+  logNote?: string
+  logDate?: string
+}): Promise<{ ok: true } | { error: string }> {
+  const supabase = createClient()
+
+  // 1. Markér opgave som udført
+  const { error: updErr } = await supabase
+    .from('calendar_tasks')
+    .update({
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', input.taskId)
+    .eq('user_id', DEMO_USER_ID)
+
+  if (updErr) return { error: updErr.message }
+
+  // 2. Opret log-entry
+  const { error: logErr } = await supabase
+    .from('plant_logs_v2')
+    .insert({
+      plant_id: input.plantId,
+      user_id: DEMO_USER_ID,
+      date: input.logDate ?? new Date().toISOString().split('T')[0],
+      type: input.logType,
+      title: input.logTitle || null,
+      note: input.logNote || null,
+      linked_task_id: input.taskId,
+    })
+
+  if (logErr) return { error: `Opgave markeret udført, men log-entry fejlede: ${logErr.message}` }
+
+  revalidatePath('/kalender')
+  revalidatePath('/')
+  revalidatePath(`/mine-planter/${input.plantId}`)
+  return { ok: true }
+}
+
+export async function uncompleteTask(id: string): Promise<{ ok: true } | { error: string }> {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('calendar_tasks')
+    .update({
+      status: 'open',
+      completed_at: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .eq('user_id', DEMO_USER_ID)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/kalender')
+  revalidatePath('/')
+  return { ok: true }
+}
+
+export async function deleteTask(id: string): Promise<{ ok: true } | { error: string }> {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('calendar_tasks')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', DEMO_USER_ID)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/kalender')
+  return { ok: true }
+}
+
+// ============================================
+// Mapping: opgave-type → log-type
+// ============================================
+
+function mapTaskTypeToLogType(taskType: TaskType): PlantLogType | null {
+  switch (taskType) {
+    case 'sowing':       return 'sowing'
+    case 'pre_sow':      return 'sowing'
+    case 'repot':        return 'repotting'
+    case 'plant_out':    return 'planting_out'
+    case 'watering':     return 'watering'
+    case 'fertilizing':  return 'fertilizing'
+    case 'pruning':      return 'pruning'
+    case 'pest_check':   return 'pest_disease'
+    case 'harvest':      return 'harvest'
+    default:             return null
+  }
+}

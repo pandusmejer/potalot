@@ -6,24 +6,30 @@ import { PlantMiniCard } from '@/components/overblik/plant-mini-card'
 import { ProgressCard } from '@/components/overblik/progress-card'
 import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
-import {
-  MOCK_PLANTS, MOCK_CALENDAR_TASKS, MOCK_PROGRESS, MOCK_GENERAL_TASKS,
-} from '@/lib/mock-data'
+import { getAllTasks } from '@/actions/havekalender'
+import { getAllPlants } from '@/actions/mine-planter'
+import { MOCK_PROGRESS, MOCK_GENERAL_TASKS } from '@/lib/mock-data'
 import { erForsinket, erIDag, aktuelMaaned, maanedNavn } from '@/lib/datetime'
 import { AlertCircle, CalendarClock, Sprout, ArrowRight, Lightbulb } from 'lucide-react'
 
-// TODO (database): Udskift MOCK_* imports med Supabase queries.
-export default function OverblikPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function OverblikPage() {
+  const [tasks, plants] = await Promise.all([
+    getAllTasks(),
+    getAllPlants(),
+  ])
+
   // Dagens opgaver
-  const idagsOpgaver = MOCK_CALENDAR_TASKS.filter(t => erIDag(t.date) && t.status === 'open')
+  const idagsOpgaver = tasks.filter(t => erIDag(t.date) && t.status === 'open')
   const kritiske = idagsOpgaver.filter(t => t.priority === 'critical' || t.priority === 'high')
   const oevrigeIdag = idagsOpgaver.filter(t => t.priority !== 'critical' && t.priority !== 'high')
 
   // Forsinkede opgaver
-  const forsinkede = MOCK_CALENDAR_TASKS.filter(t => erForsinket(t.date) && t.status === 'open')
+  const forsinkede = tasks.filter(t => erForsinket(t.date) && t.status === 'open')
 
   // Aktive planter (ikke arkiverede)
-  const aktivePlanter = MOCK_PLANTS.filter(p => !p.isArchived).slice(0, 4)
+  const aktivePlanter = plants.filter(p => !p.isArchived).slice(0, 4)
 
   // Månedens sæsonbaserede inspiration fra årshjul
   const nu = aktuelMaaned()
@@ -32,7 +38,6 @@ export default function OverblikPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-serif text-foreground">Overblik</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -40,7 +45,6 @@ export default function OverblikPage() {
         </p>
       </div>
 
-      {/* Forsinkede opgaver — øverst hvis der er nogen */}
       {forsinkede.length > 0 && (
         <Card className="border-destructive/30 bg-destructive/5">
           <CardHeader>
@@ -55,7 +59,6 @@ export default function OverblikPage() {
         </Card>
       )}
 
-      {/* Dagens kritiske opgaver */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -82,7 +85,6 @@ export default function OverblikPage() {
         </CardContent>
       </Card>
 
-      {/* Progress + Quick actions side by side */}
       <div className="grid gap-4 sm:grid-cols-2">
         <ProgressCard progress={MOCK_PROGRESS} />
         <Card>
@@ -95,14 +97,13 @@ export default function OverblikPage() {
         </Card>
       </div>
 
-      {/* Aktive planter */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Sprout className="h-4 w-4 text-primary" />
             Aktive planter
             <span className="text-sm font-normal text-muted-foreground">
-              ({MOCK_PLANTS.filter(p => !p.isArchived).length})
+              ({plants.filter(p => !p.isArchived).length})
             </span>
           </CardTitle>
           <Button asChild variant="ghost" size="sm">
@@ -126,7 +127,6 @@ export default function OverblikPage() {
         </CardContent>
       </Card>
 
-      {/* Sæsonbaseret inspiration */}
       {sæsonInspiration.length > 0 && (
         <Card className="bg-gradient-to-br from-secondary/30 to-card">
           <CardHeader>

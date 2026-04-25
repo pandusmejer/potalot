@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogTrigger,
 } from '@/components/ui/dialog'
@@ -11,35 +12,61 @@ import { Label } from '@/components/ui/label'
 import { Plus } from 'lucide-react'
 import { idag } from '@/lib/datetime'
 import { TASK_TYPE_META } from '@/lib/constants'
-import type { TaskType, TaskPriority } from '@/lib/types'
+import { createTask } from '@/actions/havekalender'
+import type { TaskType, TaskPriority, Plant } from '@/lib/types'
 
 interface Props {
   children?: React.ReactNode
+  /** Hvis sat: pre-link opgaven til en plante */
+  defaultPlantId?: string
+  /** Liste af aktive planter til at koble opgaven til */
+  plants?: Pick<Plant, 'id' | 'name' | 'variety'>[]
 }
 
-/**
- * Manuel opgave-oprettelse.
- *
- * TODO (database): Server action createTask
- */
-export function AddTaskDialog({ children }: Props) {
+export function AddTaskDialog({ children, defaultPlantId, plants = [] }: Props) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
+  const [pending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(idag())
   const [taskType, setTaskType] = useState<TaskType>('custom')
   const [priority, setPriority] = useState<TaskPriority>('medium')
+  const [linkedPlantId, setLinkedPlantId] = useState(defaultPlantId ?? '')
+
+  function reset() {
+    setTitle(''); setDescription(''); setDate(idag())
+    setTaskType('custom'); setPriority('medium')
+    setLinkedPlantId(defaultPlantId ?? '')
+    setError(null)
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // TODO (database): Server action createTask(...)
-    console.log('Create task:', { title, description, date, taskType, priority })
-    setOpen(false)
-    reset()
-  }
+    setError(null)
 
-  function reset() {
-    setTitle(''); setDescription(''); setDate(idag()); setTaskType('custom'); setPriority('medium')
+    startTransition(async () => {
+      const res = await createTask({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        date,
+        taskType,
+        priority,
+        linkedPlantId: linkedPlantId || undefined,
+        source: linkedPlantId ? 'plant' : 'manual',
+      })
+
+      if ('error' in res) {
+        setError(res.error)
+        return
+      }
+
+      setOpen(false)
+      reset()
+      router.refresh()
+    })
   }
 
   return (
@@ -104,25 +131,48 @@ export function AddTaskDialog({ children }: Props) {
             </div>
           </div>
 
-          <div>
-            <Label>Prioritet</Label>
-            <select
-              value={priority}
-              onChange={e => setPriority(e.target.value as TaskPriority)}
-              className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
-            >
-              <option value="low">Lav</option>
-              <option value="medium">Medium</option>
-              <option value="high">Høj</option>
-              <option value="critical">Kritisk</option>
-            </select>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Prioritet</Label>
+              <select
+                value={priority}
+                onChange={e => setPriority(e.target.value as TaskPriority)}
+                className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+              >
+                <option value="low">Lav</option>
+                <option value="medium">Medium</option>
+                <option value="high">Høj</option>
+                <option value="critical">Kritisk</option>
+              </select>
+            </div>
+            {plants.length > 0 && (
+              <div>
+                <Label>Linket plante</Label>
+                <select
+                  value={linkedPlantId}
+                  onChange={e => setLinkedPlantId(e.target.value)}
+                  className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+                >
+                  <option value="">Ingen</option>
+                  {plants.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}{p.variety ? ` — ${p.variety}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               Annullér
             </Button>
-            <Button type="submit">Opret</Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? 'Opretter…' : 'Opret'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
