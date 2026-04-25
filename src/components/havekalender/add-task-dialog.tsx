@@ -1,0 +1,131 @@
+'use client'
+
+import { useState } from 'react'
+import {
+  Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogTrigger,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Plus } from 'lucide-react'
+import { idag } from '@/lib/datetime'
+import { TASK_TYPE_META } from '@/lib/constants'
+import type { TaskType, TaskPriority } from '@/lib/types'
+
+interface Props {
+  children?: React.ReactNode
+}
+
+/**
+ * Manuel opgave-oprettelse.
+ *
+ * TODO (database): Server action createTask
+ */
+export function AddTaskDialog({ children }: Props) {
+  const [open, setOpen] = useState(false)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [date, setDate] = useState(idag())
+  const [taskType, setTaskType] = useState<TaskType>('custom')
+  const [priority, setPriority] = useState<TaskPriority>('medium')
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // TODO (database): Server action createTask(...)
+    console.log('Create task:', { title, description, date, taskType, priority })
+    setOpen(false)
+    reset()
+  }
+
+  function reset() {
+    setTitle(''); setDescription(''); setDate(idag()); setTaskType('custom'); setPriority('medium')
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children ?? (
+          <Button>
+            <Plus className="h-4 w-4" />
+            Ny opgave
+          </Button>
+        )}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Ny opgave</DialogTitle>
+        <DialogDescription>Tilføj en opgave til din kalender.</DialogDescription>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <Label>Titel *</Label>
+            <Input
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Fx. Køb planteskilte"
+              required
+              className="mt-1.5"
+            />
+          </div>
+
+          <div>
+            <Label>Beskrivelse</Label>
+            <Textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Mere kontekst (valgfrit)"
+              rows={2}
+              className="mt-1.5"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Dato</Label>
+              <Input
+                type="date"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                required
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label>Type</Label>
+              <select
+                value={taskType}
+                onChange={e => setTaskType(e.target.value as TaskType)}
+                className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+              >
+                {Object.entries(TASK_TYPE_META).map(([k, v]) => (
+                  <option key={k} value={k}>{v.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <Label>Prioritet</Label>
+            <select
+              value={priority}
+              onChange={e => setPriority(e.target.value as TaskPriority)}
+              className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+            >
+              <option value="low">Lav</option>
+              <option value="medium">Medium</option>
+              <option value="high">Høj</option>
+              <option value="critical">Kritisk</option>
+            </select>
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
+              Annullér
+            </Button>
+            <Button type="submit">Opret</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
