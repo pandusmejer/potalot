@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter,
   DialogTrigger,
@@ -13,20 +14,17 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Camera, FileText, Sparkles, Plus } from 'lucide-react'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
+import { createInventoryItem } from '@/actions/froebank'
 
 interface Props {
   children: React.ReactNode
 }
 
-/**
- * Tilføj nyt element i frøbank — 3 måder: scan, manuel, fra ønskeliste.
- *
- * TODO (database): Server actions for createInventoryItem
- * TODO (storage): Multi-image upload (kamerarulle eller drag/drop)
- * TODO (AI): OCR / felt-extrahering fra frøposebillede
- */
 export function AddInventoryDialog({ children }: Props) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
+  const [pending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
 
   // Manuel form state
   const [name, setName] = useState('')
@@ -37,24 +35,36 @@ export function AddInventoryDialog({ children }: Props) {
   const [quantity, setQuantity] = useState('')
   const [notes, setNotes] = useState('')
 
-  function handleManualSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    // TODO (database): Server action
-    console.log('Create inventory item:', {
-      name, variety, supplier, primaryCat, subcat, quantity, notes,
-    })
-    setOpen(false)
-    resetForm()
+  function reset() {
+    setName(''); setVariety(''); setSupplier(''); setPrimaryCat('fro')
+    setSubcat(''); setQuantity(''); setNotes(''); setError(null)
   }
 
-  function resetForm() {
-    setName('')
-    setVariety('')
-    setSupplier('')
-    setPrimaryCat('fro')
-    setSubcat('')
-    setQuantity('')
-    setNotes('')
+  function handleManualSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+
+    startTransition(async () => {
+      const res = await createInventoryItem({
+        name: name.trim(),
+        variety: variety.trim() || undefined,
+        supplier: supplier.trim() || undefined,
+        primaryCategoryId: primaryCat,
+        subcategoryId: subcat || undefined,
+        quantity: quantity ? parseInt(quantity, 10) : undefined,
+        notes: notes.trim() || undefined,
+      })
+
+      if ('error' in res) {
+        setError(res.error)
+        return
+      }
+
+      setOpen(false)
+      reset()
+      router.refresh()
+      router.push(`/froebank/${res.id}`)
+    })
   }
 
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
@@ -84,7 +94,7 @@ export function AddInventoryDialog({ children }: Props) {
             </TabsTrigger>
           </TabsList>
 
-          {/* SCAN */}
+          {/* SCAN — placeholder */}
           <TabsContent value="scan">
             <div className="text-center py-8 space-y-3 bg-pattern-botanical rounded-2xl">
               <Camera className="h-10 w-10 text-muted-foreground mx-auto" />
@@ -104,7 +114,7 @@ export function AddInventoryDialog({ children }: Props) {
             </div>
           </TabsContent>
 
-          {/* MANUEL */}
+          {/* MANUEL — gemmer rigtigt nu */}
           <TabsContent value="manuel">
             <form onSubmit={handleManualSubmit} className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -190,25 +200,27 @@ export function AddInventoryDialog({ children }: Props) {
                 />
               </div>
 
-              {/* TODO (storage): Multi-image upload */}
               <Button type="button" variant="outline" className="w-full" disabled>
                 <Camera className="h-4 w-4" />
                 Tilføj billede(r) (TODO storage)
               </Button>
 
+              {error && (
+                <p className="text-sm text-destructive">{error}</p>
+              )}
+
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                   Annullér
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={pending}>
                   <Plus className="h-4 w-4" />
-                  Opret
+                  {pending ? 'Opretter…' : 'Opret'}
                 </Button>
               </DialogFooter>
             </form>
           </TabsContent>
 
-          {/* ØNSKELISTE */}
           <TabsContent value="oenskeliste">
             <div className="text-center py-8 space-y-3 bg-pattern-botanical rounded-2xl">
               <Sparkles className="h-10 w-10 text-muted-foreground mx-auto" />

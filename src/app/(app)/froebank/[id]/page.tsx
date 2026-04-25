@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  MOCK_INVENTORY, MOCK_PLANTS, MOCK_GUIDES,
-} from '@/lib/mock-data'
+import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
+import { DeleteInventoryButton } from '@/components/froebank/delete-button'
+import { getInventoryItem } from '@/actions/froebank'
+import { MOCK_PLANTS, MOCK_GUIDES } from '@/lib/mock-data'
 import {
   PRIMARY_CATEGORIES, INVENTORY_STATUS_META, MONTHS_DA,
   LIGHT_META, WATER_META, GROWING_LOCATION_META, SYSTEM_SUBCATEGORIES,
 } from '@/lib/constants'
 import { formatDatoMedAar } from '@/lib/datetime'
 import {
-  ArrowLeft, Star, Pin, Package, Calendar, BookOpen, Sprout, ArrowRight,
+  ArrowLeft, Package, Calendar, BookOpen, Sprout, ArrowRight,
   Sparkles, MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
@@ -22,14 +23,17 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-// TODO (database): Supabase
+export const dynamic = 'force-dynamic'
+
 export default async function InventoryDetailPage({ params }: Props) {
   const { id } = await params
-  const item = MOCK_INVENTORY.find(i => i.id === id)
+  const item = await getInventoryItem(id)
   if (!item) notFound()
 
+  // TODO (database): Mine planter og Guides skal også migreres til Supabase
   const linkedPlants = MOCK_PLANTS.filter(p => p.sourceElementId === item.id)
   const guide = item.guideId ? MOCK_GUIDES.find(g => g.id === item.guideId) : null
+
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
   const subcat = SYSTEM_SUBCATEGORIES.find(s => s.id === item.subcategoryId)
   const statusMeta = INVENTORY_STATUS_META[item.status]
@@ -61,16 +65,11 @@ export default async function InventoryDetailPage({ params }: Props) {
           )}
         </div>
         <div className="flex items-center gap-2">
-          {item.isPinned && (
-            <span className="h-8 w-8 rounded-full bg-card border border-border flex items-center justify-center" title="Fastgjort">
-              <Pin className="h-3.5 w-3.5" style={{ color: 'var(--accent-copper)', fill: 'var(--accent-copper)' }} />
-            </span>
-          )}
-          {item.isFavorite && (
-            <span className="h-8 w-8 rounded-full bg-card border border-border flex items-center justify-center" title="Favorit">
-              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-            </span>
-          )}
+          <FavoritePinButtons
+            id={item.id}
+            isFavorite={item.isFavorite}
+            isPinned={item.isPinned}
+          />
           <Badge variant={(statusMeta.badgeVariant as 'muted' | 'info' | 'success' | 'warning' | 'outline') ?? 'muted'}>
             {statusMeta.label}
           </Badge>
@@ -80,7 +79,6 @@ export default async function InventoryDetailPage({ params }: Props) {
       {/* Hovedhandlinger */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <Button asChild variant="default">
-          {/* TODO: åbn dialog der opretter aktiv plante */}
           <Link href={`/mine-planter?fromInventory=${item.id}`}>
             <Sprout className="h-4 w-4" />
             Så et frø
@@ -225,6 +223,11 @@ export default async function InventoryDetailPage({ params }: Props) {
           </CardContent>
         </Card>
       )}
+
+      {/* Slet */}
+      <div className="flex justify-end pt-4">
+        <DeleteInventoryButton id={item.id} name={item.name} />
+      </div>
     </article>
   )
 }

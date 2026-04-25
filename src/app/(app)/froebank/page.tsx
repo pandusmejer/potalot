@@ -1,8 +1,14 @@
 import { InventoryListView } from '@/components/froebank/inventory-list'
-import { MOCK_INVENTORY } from '@/lib/mock-data'
+import { getAllInventoryItems, getCustomSubcategories } from '@/actions/froebank'
 
-// TODO (database): Hent fra Supabase
-export default function FroebankPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function FroebankPage() {
+  const [inventory, customSubcategories] = await Promise.all([
+    getAllInventoryItems(),
+    getCustomSubcategories(),
+  ])
+
   return (
     <div className="space-y-6">
       <div>
@@ -12,7 +18,7 @@ export default function FroebankPage() {
         </p>
       </div>
 
-      <InventoryListView inventory={MOCK_INVENTORY} />
+      <InventoryListView inventory={inventory} customSubcategories={customSubcategories} />
     </div>
   )
 }
