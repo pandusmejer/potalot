@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { ImageUpload } from '@/components/ui/image-upload'
 import { Camera, FileText, Sparkles, Plus } from 'lucide-react'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
@@ -34,10 +35,11 @@ export function AddInventoryDialog({ children }: Props) {
   const [subcat, setSubcat] = useState('')
   const [quantity, setQuantity] = useState('')
   const [notes, setNotes] = useState('')
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
 
   function reset() {
     setName(''); setVariety(''); setSupplier(''); setPrimaryCat('fro')
-    setSubcat(''); setQuantity(''); setNotes(''); setError(null)
+    setSubcat(''); setQuantity(''); setNotes(''); setImageUrl(null); setError(null)
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -53,6 +55,8 @@ export function AddInventoryDialog({ children }: Props) {
         subcategoryId: subcat || undefined,
         quantity: quantity ? parseInt(quantity, 10) : undefined,
         notes: notes.trim() || undefined,
+        imageUrls: imageUrl ? [imageUrl] : undefined,
+        primaryImageUrl: imageUrl ?? undefined,
       })
 
       if ('error' in res) {
@@ -200,10 +204,12 @@ export function AddInventoryDialog({ children }: Props) {
                 />
               </div>
 
-              <Button type="button" variant="outline" className="w-full" disabled>
-                <Camera className="h-4 w-4" />
-                Tilføj billede(r) (TODO storage)
-              </Button>
+              <ImageUpload
+                value={imageUrl}
+                onChange={setImageUrl}
+                folder="froebank"
+                label="Tilføj billede"
+              />
 
               {error && (
                 <p className="text-sm text-destructive">{error}</p>
