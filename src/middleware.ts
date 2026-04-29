@@ -26,7 +26,16 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
+
+  // Safety-net: hvis magic-link rammer / eller /login med ?code= (Supabase Site URL fallback)
+  // forward til /auth/callback så code-exchange sker korrekt.
+  const code = searchParams.get('code')
+  if (code && (pathname === '/' || pathname === '/login')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/callback'
+    return NextResponse.redirect(url)
+  }
   const isPublic =
     pathname === '/login' ||
     pathname.startsWith('/auth/') ||
