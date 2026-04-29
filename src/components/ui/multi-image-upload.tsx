@@ -55,29 +55,41 @@ export function MultiImageUpload({
 
     startTransition(async () => {
       const newUrls: string[] = []
+      const errors: string[] = []
       for (const file of toUpload) {
-        let blob: Blob = file
         try {
-          blob = await resizeImage(file, maxDimension)
-        } catch {
-          // brug original
+          // Resize konverterer altid til JPEG, så HEIC og andre formater virker
+          // hvis browseren overhovedet kan tegne dem på canvas.
+          let blob: Blob
+          try {
+            blob = await resizeImage(file, maxDimension)
+          } catch (e) {
+            errors.push(`Kunne ikke læse "${file.name}". Prøv et andet billede.`)
+            continue
+          }
+          const fd = new FormData()
+          fd.append(
+            'file',
+            new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
+          )
+          fd.append('folder', folder)
+          const res = await uploadImage(fd)
+          if ('error' in res) {
+            errors.push(res.error)
+            continue
+          }
+          newUrls.push(res.url)
+        } catch (e: unknown) {
+          const msg = e instanceof Error ? e.message : 'ukendt fejl'
+          errors.push(`Upload fejlede: ${msg}`)
         }
-        const fd = new FormData()
-        fd.append(
-          'file',
-          new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
-        )
-        fd.append('folder', folder)
-        const res = await uploadImage(fd)
-        if ('error' in res) {
-          setError(res.error)
-          continue
-        }
-        newUrls.push(res.url)
       }
       if (newUrls.length > 0) {
         const updated = [...value, ...newUrls]
         onChange(updated, primary ?? updated[0])
+      }
+      if (errors.length > 0) {
+        setError(errors.join(' · '))
       }
     })
   }
@@ -98,7 +110,7 @@ export function MultiImageUpload({
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/*"
         multiple
         onChange={handleFiles}
         className="hidden"

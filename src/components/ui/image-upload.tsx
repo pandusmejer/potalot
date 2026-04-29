@@ -31,26 +31,30 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
     setError(null)
     const file = e.target.files?.[0]
     if (!file) return
-    e.target.value = '' // tillad samme fil igen
-
-    let blob: Blob = file
-    try {
-      blob = await resizeImage(file, maxDimension)
-    } catch {
-      // brug original fil hvis resize fejler
-    }
-
-    const fd = new FormData()
-    fd.append('file', new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
-    fd.append('folder', folder)
+    e.target.value = ''
 
     startTransition(async () => {
-      const res = await uploadImage(fd)
-      if ('error' in res) {
-        setError(res.error)
-        return
+      try {
+        let blob: Blob
+        try {
+          blob = await resizeImage(file, maxDimension)
+        } catch {
+          setError('Kunne ikke læse billedet. Prøv et andet.')
+          return
+        }
+        const fd = new FormData()
+        fd.append('file', new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
+        fd.append('folder', folder)
+        const res = await uploadImage(fd)
+        if ('error' in res) {
+          setError(res.error)
+          return
+        }
+        onChange(res.url)
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : 'ukendt fejl'
+        setError(`Upload fejlede: ${msg}`)
       }
-      onChange(res.url)
     })
   }
 
@@ -84,7 +88,7 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/*"
         onChange={handleFile}
         className="hidden"
       />
