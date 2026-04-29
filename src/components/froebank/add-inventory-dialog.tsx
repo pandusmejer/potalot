@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ImageUpload } from '@/components/ui/image-upload'
+import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import { Camera, FileText, Sparkles, Plus } from 'lucide-react'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
@@ -40,14 +40,21 @@ export function AddInventoryDialog({ children }: Props) {
   const [purchaseUrl, setPurchaseUrl] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
   const [notes, setNotes] = useState('')
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [images, setImages] = useState<string[]>([])
+  const [primaryImage, setPrimaryImage] = useState<string | null>(null)
+
+  // Scan-tab state — minimum: navn + billeder
+  const [scanName, setScanName] = useState('')
+  const [scanImages, setScanImages] = useState<string[]>([])
+  const [scanPrimary, setScanPrimary] = useState<string | null>(null)
 
   const isFroe = primaryCat === 'fro'
 
   function reset() {
     setName(''); setLatinName(''); setVariety(''); setSupplier(''); setPrimaryCat('fro')
     setSubcat(''); setQuantity(''); setSeedCount(''); setPurchaseYear(''); setPurchaseUrl('')
-    setExpiryDate(''); setNotes(''); setImageUrl(null); setError(null)
+    setExpiryDate(''); setNotes(''); setImages([]); setPrimaryImage(null); setError(null)
+    setScanName(''); setScanImages([]); setScanPrimary(null)
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -68,8 +75,8 @@ export function AddInventoryDialog({ children }: Props) {
         purchaseUrl: purchaseUrl.trim() || undefined,
         expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
-        imageUrls: imageUrl ? [imageUrl] : undefined,
-        primaryImageUrl: imageUrl ?? undefined,
+        imageUrls: images,
+        primaryImageUrl: primaryImage ?? undefined,
       })
 
       if ('error' in res) {
@@ -77,6 +84,31 @@ export function AddInventoryDialog({ children }: Props) {
         return
       }
 
+      setOpen(false)
+      reset()
+      router.refresh()
+      router.push(`/froebank/${res.id}`)
+    })
+  }
+
+  function handleScanSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    if (!scanName.trim()) {
+      setError('Navn er påkrævet')
+      return
+    }
+    startTransition(async () => {
+      const res = await createInventoryItem({
+        name: scanName.trim(),
+        primaryCategoryId: 'fro',
+        imageUrls: scanImages,
+        primaryImageUrl: scanPrimary ?? undefined,
+      })
+      if ('error' in res) {
+        setError(res.error)
+        return
+      }
       setOpen(false)
       reset()
       router.refresh()
@@ -111,24 +143,47 @@ export function AddInventoryDialog({ children }: Props) {
             </TabsTrigger>
           </TabsList>
 
-          {/* SCAN — placeholder */}
+          {/* SCAN — billeder + navn */}
           <TabsContent value="scan">
-            <div className="text-center py-8 space-y-3 bg-pattern-botanical rounded-2xl">
-              <Camera className="h-10 w-10 text-muted-foreground mx-auto" />
+            <form onSubmit={handleScanSubmit} className="space-y-3">
               <div>
-                <p className="font-medium text-foreground">Scan frøpose</p>
-                <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-                  Tag et eller flere fotos af frøposen. Billederne gemmes som dokumentation.
+                <Label>Navn *</Label>
+                <Input
+                  value={scanName}
+                  onChange={e => setScanName(e.target.value)}
+                  placeholder="Fx. Tomat, San Marzano"
+                  required
+                  className="mt-1.5"
+                />
+              </div>
+
+              <div>
+                <Label>Billeder af frøposen (forside, bagside)</Label>
+                <div className="mt-1.5">
+                  <MultiImageUpload
+                    value={scanImages}
+                    primary={scanPrimary}
+                    onChange={(imgs, p) => { setScanImages(imgs); setScanPrimary(p) }}
+                    folder="froebank"
+                    maxImages={6}
+                    label="Tag eller vælg billeder"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Billederne gemmes som dokumentation. Du kan udfylde resten af felterne senere via Rediger.
                 </p>
               </div>
-              <Button disabled>
-                <Camera className="h-4 w-4" />
-                Tag foto (TODO storage)
-              </Button>
-              <p className="text-xs text-muted-foreground italic">
-                AI-foreslåede felter kommer senere — i første version kun billede-upload.
-              </p>
-            </div>
+
+              {error && <p className="text-sm text-destructive">{error}</p>}
+
+              <DialogFooter>
+                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
+                <Button type="submit" disabled={pending}>
+                  <Plus className="h-4 w-4" />
+                  {pending ? 'Opretter…' : 'Opret'}
+                </Button>
+              </DialogFooter>
+            </form>
           </TabsContent>
 
           {/* MANUEL — gemmer rigtigt nu */}
@@ -260,11 +315,12 @@ export function AddInventoryDialog({ children }: Props) {
                 />
               </div>
 
-              <ImageUpload
-                value={imageUrl}
-                onChange={setImageUrl}
+              <MultiImageUpload
+                value={images}
+                primary={primaryImage}
+                onChange={(imgs, p) => { setImages(imgs); setPrimaryImage(p) }}
                 folder="froebank"
-                label="Tilføj billede"
+                label="Tilføj billede(r)"
               />
 
               {error && (

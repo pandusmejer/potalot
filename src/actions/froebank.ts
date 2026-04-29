@@ -82,7 +82,7 @@ function rowToItem(row: InventoryRow, counts?: { seedsSown?: number; seedsRemain
     status: row.status as InventoryStatus,
     isFavorite: row.is_favorite,
     isPinned: row.is_pinned,
-    imageIds: [],
+    imageIds: row.image_urls ?? [],
     primaryImageId: row.primary_image_url,
     guideId: row.guide_id,
     linkedPlantIds: [],

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { ImageUpload } from '@/components/ui/image-upload'
+import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import { Pencil } from 'lucide-react'
 import type { InventoryItem, PrimaryCategoryId } from '@/lib/types'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
@@ -37,7 +37,8 @@ export function EditInventoryDialog({ item }: Props) {
   const [purchaseUrl, setPurchaseUrl] = useState(item.purchaseUrl ?? '')
   const [expiryDate, setExpiryDate] = useState(item.expiryDate ?? '')
   const [notes, setNotes] = useState(item.notes ?? '')
-  const [imageUrl, setImageUrl] = useState<string | null>(item.primaryImageId ?? null)
+  const [images, setImages] = useState<string[]>(item.imageIds.length > 0 ? item.imageIds : item.primaryImageId ? [item.primaryImageId] : [])
+  const [primaryImage, setPrimaryImage] = useState<string | null>(item.primaryImageId ?? null)
 
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
@@ -60,8 +61,8 @@ export function EditInventoryDialog({ item }: Props) {
         purchaseUrl: purchaseUrl.trim() || undefined,
         expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
-        imageUrls: imageUrl ? [imageUrl] : [],
-        primaryImageUrl: imageUrl ?? undefined,
+        imageUrls: images,
+        primaryImageUrl: primaryImage ?? undefined,
       })
       if ('error' in res) {
         setError(res.error)
@@ -167,13 +168,14 @@ export function EditInventoryDialog({ item }: Props) {
           </div>
 
           <div>
-            <Label>Billede</Label>
+            <Label>Billeder</Label>
             <div className="mt-1.5">
-              <ImageUpload
-                value={imageUrl}
-                onChange={setImageUrl}
+              <MultiImageUpload
+                value={images}
+                primary={primaryImage}
+                onChange={(imgs, p) => { setImages(imgs); setPrimaryImage(p) }}
                 folder="froebank"
-                label="Tilføj billede"
+                label="Tilføj billede(r)"
               />
             </div>
           </div>

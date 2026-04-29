@@ -82,6 +82,20 @@ export default async function InventoryDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Billed-galleri */}
+      {item.imageIds.length > 0 && (
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          {[item.primaryImageId, ...item.imageIds.filter(u => u !== item.primaryImageId)]
+            .filter((u): u is string => !!u)
+            .map((url, i) => (
+              <div key={url} className="aspect-square rounded-lg overflow-hidden border border-border bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt={`${item.name} billede ${i + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+        </div>
+      )}
+
       {/* Hovedhandlinger */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <SowDialog
