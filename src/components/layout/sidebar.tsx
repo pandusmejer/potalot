@@ -7,19 +7,20 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const ITEMS = [
+interface Props {
+  heroHref: '/froebank' | '/mine-planter'
+  criticalTaskCount: number
+}
+
+const BASE_ITEMS = [
   { href: '/', label: 'Overblik', icon: LayoutDashboard },
   { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
-  { href: '/froebank', label: 'Frøbank', icon: Package, isHero: true },
+  { href: '/froebank', label: 'Frøbank', icon: Package },
   { href: '/kalender', label: 'Havekalender', icon: CalendarDays },
   { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
-]
+] as const
 
-/**
- * Desktop sidebar — nav + mini-logo + spacing.
- * Frøbank vises som hero-item (fuld bredde, fremhævet).
- */
-export function Sidebar() {
+export function Sidebar({ heroHref, criticalTaskCount }: Props) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -35,11 +36,13 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {ITEMS.map((item) => {
+        {BASE_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
+          const isHero = item.href === heroHref
+          const showBadge = item.href === '/kalender' && criticalTaskCount > 0
 
-          if (item.isHero) {
+          if (isHero) {
             return (
               <Link
                 key={item.href}
@@ -69,7 +72,12 @@ export function Sidebar() {
               )}
             >
               <Icon className="h-4 w-4" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {showBadge && (
+                <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-[10px] font-medium rounded-full bg-destructive text-destructive-foreground">
+                  {criticalTaskCount}
+                </span>
+              )}
             </Link>
           )
         })}

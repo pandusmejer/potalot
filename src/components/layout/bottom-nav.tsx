@@ -7,20 +7,25 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-/**
- * Mobile bottom-nav. Frøbank centralt og visuelt dominerende (spec-krav).
- * 5 destinationer. Ingen "mere"-menu — profil findes i topbar.
- */
+interface Props {
+  heroHref: '/froebank' | '/mine-planter'
+  criticalTaskCount: number
+}
 
-const ITEMS = [
+const BASE_ITEMS = [
   { href: '/', label: 'Overblik', icon: LayoutDashboard },
   { href: '/mine-planter', label: 'Planter', icon: Sprout },
-  { href: '/froebank', label: 'Frøbank', icon: Package, isHero: true },
+  { href: '/froebank', label: 'Frøbank', icon: Package },
   { href: '/kalender', label: 'Kalender', icon: CalendarDays },
   { href: '/guides', label: 'Guides', icon: BookOpen },
-]
+] as const
 
-export function BottomNav() {
+/**
+ * Mobile bottom-nav. Hero-item bestemmes dynamisk: nye brugere uden planter
+ * får Frøbank fremhævet, brugere med aktive planter får Mine planter.
+ * Kalender får badge med antal kritiske/forsinkede opgaver.
+ */
+export function BottomNav({ heroHref, criticalTaskCount }: Props) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -31,11 +36,13 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md safe-area-pb">
       <div className="flex items-stretch justify-around h-16 relative">
-        {ITEMS.map((item) => {
+        {BASE_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
+          const isHero = item.href === heroHref
+          const showBadge = item.href === '/kalender' && criticalTaskCount > 0
 
-          if (item.isHero) {
+          if (isHero) {
             return (
               <Link
                 key={item.href}
@@ -70,12 +77,17 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex flex-col items-center justify-center gap-0.5 flex-1 text-xs transition-colors',
+                'flex flex-col items-center justify-center gap-0.5 flex-1 text-xs transition-colors relative',
                 active ? 'text-primary' : 'text-muted-foreground'
               )}
             >
               <Icon className={cn('h-5 w-5', active && 'stroke-[2.5]')} />
               <span className={cn('text-[11px]', active && 'font-medium')}>{item.label}</span>
+              {showBadge && (
+                <span className="absolute top-1 right-2 inline-flex items-center justify-center h-4 min-w-4 px-1 text-[9px] font-medium rounded-full bg-destructive text-destructive-foreground">
+                  {criticalTaskCount}
+                </span>
+              )}
             </Link>
           )
         })}
