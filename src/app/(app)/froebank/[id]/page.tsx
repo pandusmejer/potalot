@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
+import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog'
 import { SowDialog } from '@/components/froebank/sow-dialog'
 import { getInventoryItem } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
@@ -250,8 +251,9 @@ export default async function InventoryDetailPage({ params }: Props) {
         </Card>
       )}
 
-      {/* Slet */}
-      <div className="flex justify-end pt-4">
+      {/* Rediger / slet */}
+      <div className="flex items-center justify-end gap-2 pt-4">
+        <EditInventoryDialog item={item} />
         <DeleteInventoryButton id={item.id} name={item.name} />
       </div>
     </article>
