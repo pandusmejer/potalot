@@ -20,7 +20,6 @@ export function GuideCard({ guide }: { guide: Guide }) {
       <div className="flex">
         {/* Thumbnail / placeholder */}
         <div className="w-24 sm:w-32 shrink-0 bg-pattern-botanical bg-secondary/30 flex items-center justify-center">
-          {/* TODO (Flora Danica): faktisk plante-illustration */}
           <BookOpen className="h-8 w-8 text-primary/40" />
         </div>
 

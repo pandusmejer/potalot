@@ -4,7 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
-import { FloraDanicaImage } from '@/components/guides/flora-danica-image'
 import { mergeGuide } from '@/lib/guide-merge'
 import { MOCK_GUIDES, MOCK_INVENTORY, MOCK_PLANTS } from '@/lib/mock-data'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
@@ -68,13 +67,6 @@ export default async function GuideDetailPage({ params }: Props) {
           )}
         </div>
       </div>
-
-      {/* Flora Danica-illustration */}
-      <FloraDanicaImage
-        plantName={effective.plantName}
-        variety={effective.variety}
-        latinName={effective.latinName}
-      />
 
       {/* Hvis sortsguide: link tilbage til artsguide */}
       {parent && (

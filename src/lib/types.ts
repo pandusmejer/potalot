@@ -393,11 +393,10 @@ export interface Idea {
 export interface MediaAsset {
   id: string
   userId?: string | null
-  url: string                        // data-URI eller Supabase Storage URL
+  url: string                        // Supabase Storage URL
   altText?: string | null
   mimeType: string
-  sourceType: 'user_upload' | 'ai_generated' | 'flora_danica' | 'seed_packet_scan'
-  approved: boolean                  // Flora Danica: kræver kurator-godkendelse
+  sourceType: 'user_upload' | 'system_placeholder' | 'seed_packet_scan'
   createdAt: string
 }
 
