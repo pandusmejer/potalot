@@ -99,7 +99,6 @@ export function MultiImageUpload({
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        capture="environment"
         multiple
         onChange={handleFiles}
         className="hidden"

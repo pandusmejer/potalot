@@ -85,7 +85,6 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        capture="environment"
         onChange={handleFile}
         className="hidden"
       />
