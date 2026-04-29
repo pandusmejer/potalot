@@ -163,6 +163,10 @@ export interface CreateInventoryInput {
   harvestMonths?: number[]
   light?: 'full_sun' | 'partial_shade' | 'shade'
   water?: 'low' | 'regular' | 'high'
+  germinationDays?: string
+  germinationTemperature?: string
+  plantSpacing?: string
+  rowSpacing?: string
   growingLocations?: GrowingLocation[]
   imageUrls?: string[]
   primaryImageUrl?: string
@@ -196,6 +200,10 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
       harvest_months: input.harvestMonths ?? [],
       light: input.light ?? null,
       water: input.water ?? null,
+      germination_days: input.germinationDays ?? null,
+      germination_temperature: input.germinationTemperature ?? null,
+      plant_spacing: input.plantSpacing ?? null,
+      row_spacing: input.rowSpacing ?? null,
       growing_locations: input.growingLocations ?? [],
       status: 'i_froebank',
       image_urls: input.imageUrls ?? [],

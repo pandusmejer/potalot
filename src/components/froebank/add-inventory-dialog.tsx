@@ -12,10 +12,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
-import { Camera, FileText, Sparkles, Plus } from 'lucide-react'
+import { Camera, FileText, Sparkles, Plus, Loader2 } from 'lucide-react'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
+import { extractSeedPacketFields, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
 
 interface Props {
   children: React.ReactNode
@@ -47,6 +48,8 @@ export function AddInventoryDialog({ children }: Props) {
   const [scanName, setScanName] = useState('')
   const [scanImages, setScanImages] = useState<string[]>([])
   const [scanPrimary, setScanPrimary] = useState<string | null>(null)
+  const [scanExtracting, setScanExtracting] = useState(false)
+  const [scanExtracted, setScanExtracted] = useState<ExtractedSeedFields | null>(null)
 
   const isFroe = primaryCat === 'fro'
 
@@ -55,6 +58,31 @@ export function AddInventoryDialog({ children }: Props) {
     setSubcat(''); setQuantity(''); setSeedCount(''); setPurchaseYear(''); setPurchaseUrl('')
     setExpiryDate(''); setNotes(''); setImages([]); setPrimaryImage(null); setError(null)
     setScanName(''); setScanImages([]); setScanPrimary(null)
+    setScanExtracting(false); setScanExtracted(null)
+  }
+
+  async function runScanExtraction(images: string[]) {
+    if (images.length === 0) return
+    setScanExtracting(true)
+    setError(null)
+    const res = await extractSeedPacketFields(images)
+    setScanExtracting(false)
+    if ('error' in res) {
+      setError(`AI kunne ikke læse frøposen: ${res.error}`)
+      return
+    }
+    setScanExtracted(res.fields)
+    if (res.fields.name && !scanName) setScanName(res.fields.name)
+  }
+
+  function handleScanImagesChange(imgs: string[], p: string | null) {
+    const newImage = imgs.find(u => !scanImages.includes(u))
+    setScanImages(imgs)
+    setScanPrimary(p)
+    // Auto-trigger AI når første billede tilføjes
+    if (newImage && scanImages.length === 0) {
+      runScanExtraction(imgs)
+    }
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -98,10 +126,26 @@ export function AddInventoryDialog({ children }: Props) {
       setError('Navn er påkrævet')
       return
     }
+    const ex = scanExtracted ?? {}
     startTransition(async () => {
       const res = await createInventoryItem({
         name: scanName.trim(),
-        primaryCategoryId: 'fro',
+        latinName: ex.latinName,
+        variety: ex.variety,
+        supplier: ex.supplier,
+        primaryCategoryId: ex.primaryCategoryId ?? 'fro',
+        seedCount: ex.seedCount,
+        sowingMonths: ex.sowingMonths,
+        sowingDepthMm: ex.sowingDepthMm,
+        plantingOutMonths: ex.plantingOutMonths,
+        harvestMonths: ex.harvestMonths,
+        light: ex.light,
+        water: ex.water,
+        germinationDays: ex.germinationDays,
+        germinationTemperature: ex.germinationTemperature,
+        plantSpacing: ex.plantSpacing,
+        rowSpacing: ex.rowSpacing,
+        notes: ex.notes,
         imageUrls: scanImages,
         primaryImageUrl: scanPrimary ?? undefined,
       })
@@ -143,34 +187,58 @@ export function AddInventoryDialog({ children }: Props) {
             </TabsTrigger>
           </TabsList>
 
-          {/* SCAN — billeder + navn */}
+          {/* SCAN — billeder + AI auto-udfyldning */}
           <TabsContent value="scan">
             <form onSubmit={handleScanSubmit} className="space-y-3">
-              <div>
-                <Label>Navn *</Label>
-                <Input
-                  value={scanName}
-                  onChange={e => setScanName(e.target.value)}
-                  placeholder="Fx. Tomat, San Marzano"
-                  required
-                  className="mt-1.5"
-                />
-              </div>
-
               <div>
                 <Label>Billeder af frøposen (forside, bagside)</Label>
                 <div className="mt-1.5">
                   <MultiImageUpload
                     value={scanImages}
                     primary={scanPrimary}
-                    onChange={(imgs, p) => { setScanImages(imgs); setScanPrimary(p) }}
+                    onChange={handleScanImagesChange}
                     folder="froebank"
                     maxImages={6}
                     label="Tag eller vælg billeder"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  Billederne gemmes som dokumentation. Du kan udfylde resten af felterne senere via Rediger.
+              </div>
+
+              {scanExtracting && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary/30 rounded-lg p-3">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Læser frøposen med AI…
+                </div>
+              )}
+
+              {scanExtracted && !scanExtracting && (
+                <div className="bg-secondary/30 rounded-lg p-3 space-y-2 text-sm">
+                  <div className="flex items-center gap-2 text-foreground font-medium">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    Felter fra frøposen
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
+                    {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
+                    {scanExtracted.supplier && <Field label="Leverandør" value={scanExtracted.supplier} />}
+                    {scanExtracted.seedCount != null && <Field label="Antal frø" value={String(scanExtracted.seedCount)} />}
+                    {scanExtracted.sowingMonths?.length ? <Field label="Sås" value={scanExtracted.sowingMonths.join(', ')} /> : null}
+                    {scanExtracted.harvestMonths?.length ? <Field label="Høst" value={scanExtracted.harvestMonths.join(', ')} /> : null}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label>Navn *</Label>
+                <Input
+                  value={scanName}
+                  onChange={e => setScanName(e.target.value)}
+                  placeholder="Fx. Tomat"
+                  required
+                  className="mt-1.5"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {scanExtracted ? 'Tjek og rediger om nødvendigt.' : 'Bliver auto-udfyldt når billede uploades.'}
                 </p>
               </div>
 
@@ -178,7 +246,7 @@ export function AddInventoryDialog({ children }: Props) {
 
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
-                <Button type="submit" disabled={pending}>
+                <Button type="submit" disabled={pending || scanExtracting}>
                   <Plus className="h-4 w-4" />
                   {pending ? 'Opretter…' : 'Opret'}
                 </Button>
@@ -352,5 +420,14 @@ export function AddInventoryDialog({ children }: Props) {
         </Tabs>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <p className="text-foreground">{value}</p>
+    </div>
   )
 }
