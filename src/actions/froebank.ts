@@ -279,6 +279,56 @@ export async function deleteInventoryItem(id: string): Promise<{ ok: true } | { 
   return { ok: true }
 }
 
+export async function bulkDeleteInventoryItems(ids: string[]): Promise<{ deleted: number } | { error: string }> {
+  const { id: userId } = await requireUser()
+  if (ids.length === 0) return { deleted: 0 }
+  const supabase = await createClient()
+
+  const { error, count } = await supabase
+    .from('inventory_items')
+    .delete({ count: 'exact' })
+    .in('id', ids)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+  revalidatePath('/froebank')
+  return { deleted: count ?? 0 }
+}
+
+export interface BulkUpdateInput {
+  supplier?: string | null
+  purchaseYear?: number | null
+  isFavorite?: boolean
+  isPinned?: boolean
+  guideId?: string | null
+}
+
+export async function bulkUpdateInventoryItems(
+  ids: string[],
+  input: BulkUpdateInput,
+): Promise<{ updated: number } | { error: string }> {
+  const { id: userId } = await requireUser()
+  if (ids.length === 0) return { updated: 0 }
+  const supabase = await createClient()
+
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  if (input.supplier !== undefined)     update.supplier = input.supplier || null
+  if (input.purchaseYear !== undefined) update.purchase_year = input.purchaseYear ?? null
+  if (input.isFavorite !== undefined)   update.is_favorite = input.isFavorite
+  if (input.isPinned !== undefined)     update.is_pinned = input.isPinned
+  if (input.guideId !== undefined)      update.guide_id = input.guideId
+
+  const { error, count } = await supabase
+    .from('inventory_items')
+    .update(update, { count: 'exact' })
+    .in('id', ids)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+  revalidatePath('/froebank')
+  return { updated: count ?? 0 }
+}
+
 export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite: boolean } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()

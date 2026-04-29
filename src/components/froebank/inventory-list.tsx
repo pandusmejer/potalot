@@ -1,71 +1,148 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { CategoryTabs } from './category-tabs'
 import { InventoryCard } from './inventory-card'
 import { AddInventoryDialog } from './add-inventory-dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
-import { Search, Filter, Star, Pin, Plus, Package } from 'lucide-react'
+import {
+  Search, Filter, Star, Plus, Package, X, Trash2, CheckSquare,
+  Image as ImageIcon, BookOpen, Clock, AlertTriangle,
+} from 'lucide-react'
 import { SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import { MOCK_CUSTOM_SUBCATEGORIES } from '@/lib/mock-data'
 import type { InventoryItem, PrimaryCategoryId, Subcategory } from '@/lib/types'
+import { bulkDeleteInventoryItems, bulkUpdateInventoryItems } from '@/actions/froebank'
+import { cn } from '@/lib/utils'
 
 interface Props {
   inventory: InventoryItem[]
   customSubcategories?: Subcategory[]
 }
 
+type SmartFilter = 'mangler-guide' | 'udloeber-snart' | 'mangler-billede' | 'naesten-tom'
+
 export function InventoryListView({ inventory, customSubcategories = MOCK_CUSTOM_SUBCATEGORIES }: Props) {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
   const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')
   const [search, setSearch] = useState('')
   const [subcat, setSubcat] = useState<string>('alle')
-  const [favoritFilter, setFavoritFilter] = useState(false)
-  const [pinFilter, setPinFilter] = useState(false)
+  const [smartFilters, setSmartFilters] = useState<Set<SmartFilter>>(new Set())
+  const [selectMode, setSelectMode] = useState(false)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
 
-  // Vis underkategorier kun for valgte primær (system + brugerskabte)
   const tilgaengeligeSubs = useMemo(() => {
     const all: Subcategory[] = [...SYSTEM_SUBCATEGORIES, ...customSubcategories]
     return all.filter(s => s.parentCategoryIds.includes(activeCategory))
   }, [activeCategory, customSubcategories])
 
+  function toggleSmart(f: SmartFilter) {
+    setSmartFilters(prev => {
+      const next = new Set(prev)
+      if (next.has(f)) next.delete(f)
+      else next.add(f)
+      return next
+    })
+  }
+
+  function toggleSelected(id: string) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  function exitSelectMode() {
+    setSelectMode(false)
+    setSelected(new Set())
+  }
+
   const filtered = useMemo(() => {
     let list = inventory
 
-    // Niveau 1
     if (activeCategory === 'favoritter') {
       list = list.filter(i => i.isFavorite)
     } else {
       list = list.filter(i => i.primaryCategoryId === activeCategory)
     }
 
-    // Niveau 2
-    if (subcat !== 'alle') {
-      list = list.filter(i => i.subcategoryId === subcat)
+    if (subcat !== 'alle') list = list.filter(i => i.subcategoryId === subcat)
+
+    // Smart filters
+    if (smartFilters.has('mangler-guide')) list = list.filter(i => !i.guideId)
+    if (smartFilters.has('mangler-billede')) list = list.filter(i => i.imageIds.length === 0)
+    if (smartFilters.has('udloeber-snart')) {
+      const cutoff = new Date()
+      cutoff.setDate(cutoff.getDate() + 90)
+      const cutoffStr = cutoff.toISOString().split('T')[0]
+      list = list.filter(i => i.expiryDate && i.expiryDate <= cutoffStr)
+    }
+    if (smartFilters.has('naesten-tom')) {
+      list = list.filter(i =>
+        i.seedCount != null && (i.seedsRemaining ?? i.seedCount) <= 5
+      )
     }
 
-    if (favoritFilter) list = list.filter(i => i.isFavorite)
-    if (pinFilter) list = list.filter(i => i.isPinned)
-
-    // Søgning
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(i =>
         i.name.toLowerCase().includes(q) ||
+        i.latinName?.toLowerCase().includes(q) ||
         i.variety?.toLowerCase().includes(q) ||
         i.supplier?.toLowerCase().includes(q) ||
         i.notes?.toLowerCase().includes(q)
       )
     }
 
-    // Sortering: pinnede først, så favoritter, så alfabetisk
     return [...list].sort((a, b) => {
       if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
       return a.name.localeCompare(b.name, 'da')
     })
-  }, [inventory, activeCategory, subcat, search, favoritFilter, pinFilter])
+  }, [inventory, activeCategory, subcat, search, smartFilters])
+
+  const allFilteredSelected = filtered.length > 0 && filtered.every(i => selected.has(i.id))
+
+  function selectAll() {
+    if (allFilteredSelected) {
+      setSelected(prev => {
+        const next = new Set(prev)
+        filtered.forEach(i => next.delete(i.id))
+        return next
+      })
+    } else {
+      setSelected(prev => {
+        const next = new Set(prev)
+        filtered.forEach(i => next.add(i.id))
+        return next
+      })
+    }
+  }
+
+  function handleBulkDelete() {
+    if (selected.size === 0) return
+    if (!confirm(`Slet ${selected.size} elementer? Dette kan ikke fortrydes.`)) return
+    startTransition(async () => {
+      await bulkDeleteInventoryItems(Array.from(selected))
+      exitSelectMode()
+      router.refresh()
+    })
+  }
+
+  function handleBulkFavorite(value: boolean) {
+    if (selected.size === 0) return
+    startTransition(async () => {
+      await bulkUpdateInventoryItems(Array.from(selected), { isFavorite: value })
+      exitSelectMode()
+      router.refresh()
+    })
+  }
 
   return (
     <div className="space-y-4">
@@ -78,7 +155,7 @@ export function InventoryListView({ inventory, customSubcategories = MOCK_CUSTOM
           <Input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Søg navn, sort eller leverandør"
+            placeholder="Søg navn, latinsk, sort, leverandør, noter"
             className="pl-9"
           />
         </div>
@@ -99,46 +176,145 @@ export function InventoryListView({ inventory, customSubcategories = MOCK_CUSTOM
         )}
 
         <Button
-          variant={favoritFilter ? 'default' : 'outline'}
+          variant={selectMode ? 'default' : 'outline'}
           size="default"
-          onClick={() => setFavoritFilter(v => !v)}
-          aria-label="Vis kun favoritter"
+          onClick={() => selectMode ? exitSelectMode() : setSelectMode(true)}
+          aria-label="Vælg flere"
         >
-          <Star className="h-4 w-4" />
-        </Button>
-        <Button
-          variant={pinFilter ? 'default' : 'outline'}
-          size="default"
-          onClick={() => setPinFilter(v => !v)}
-          aria-label="Vis kun fastgjorte"
-        >
-          <Pin className="h-4 w-4" />
+          <CheckSquare className="h-4 w-4" />
         </Button>
 
-        <AddInventoryDialog>
-          <Button>
-            <Plus className="h-4 w-4" />
-            Tilføj
-          </Button>
-        </AddInventoryDialog>
+        {!selectMode && (
+          <AddInventoryDialog>
+            <Button>
+              <Plus className="h-4 w-4" />
+              Tilføj
+            </Button>
+          </AddInventoryDialog>
+        )}
       </div>
+
+      {/* Smart-filter chips */}
+      <div className="flex gap-2 flex-wrap">
+        <FilterChip
+          icon={<BookOpen className="h-3 w-3" />}
+          label="Mangler guide"
+          active={smartFilters.has('mangler-guide')}
+          onClick={() => toggleSmart('mangler-guide')}
+        />
+        <FilterChip
+          icon={<Clock className="h-3 w-3" />}
+          label="Udløber snart"
+          active={smartFilters.has('udloeber-snart')}
+          onClick={() => toggleSmart('udloeber-snart')}
+        />
+        <FilterChip
+          icon={<ImageIcon className="h-3 w-3" />}
+          label="Mangler billede"
+          active={smartFilters.has('mangler-billede')}
+          onClick={() => toggleSmart('mangler-billede')}
+        />
+        <FilterChip
+          icon={<AlertTriangle className="h-3 w-3" />}
+          label="Næsten tom"
+          active={smartFilters.has('naesten-tom')}
+          onClick={() => toggleSmart('naesten-tom')}
+        />
+        {smartFilters.size > 0 && (
+          <button
+            type="button"
+            onClick={() => setSmartFilters(new Set())}
+            className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          >
+            <X className="h-3 w-3" /> Ryd
+          </button>
+        )}
+      </div>
+
+      {/* Bulk action-bar */}
+      {selectMode && (
+        <div className="flex items-center gap-2 flex-wrap p-3 bg-secondary/40 rounded-xl border border-border">
+          <span className="text-sm font-medium">
+            {selected.size} valgt
+          </span>
+          <Button variant="ghost" size="sm" onClick={selectAll}>
+            {allFilteredSelected ? 'Fjern valg' : 'Vælg alle synlige'}
+          </Button>
+          <div className="flex-1" />
+          <Button variant="outline" size="sm" disabled={selected.size === 0 || pending} onClick={() => handleBulkFavorite(true)}>
+            <Star className="h-3.5 w-3.5" />
+            Favorit
+          </Button>
+          <Button variant="outline" size="sm" disabled={selected.size === 0 || pending} onClick={() => handleBulkFavorite(false)}>
+            Fjern favorit
+          </Button>
+          <Button variant="destructive" size="sm" disabled={selected.size === 0 || pending} onClick={handleBulkDelete}>
+            <Trash2 className="h-3.5 w-3.5" />
+            Slet
+          </Button>
+        </div>
+      )}
 
       {/* Liste */}
       {filtered.length === 0 ? (
         <EmptyState
-          icon={search.trim() ? <Filter className="h-8 w-8" /> : <Package className="h-8 w-8" />}
-          title={search.trim() ? 'Ingen resultater' : 'Ingen elementer her endnu'}
+          icon={search.trim() || smartFilters.size > 0 ? <Filter className="h-8 w-8" /> : <Package className="h-8 w-8" />}
+          title={search.trim() || smartFilters.size > 0 ? 'Ingen resultater' : 'Ingen elementer her endnu'}
           description={
-            search.trim()
-              ? 'Prøv et andet søgeord.'
+            search.trim() || smartFilters.size > 0
+              ? 'Prøv at justere søgning eller filtre.'
               : 'Brug "Tilføj" knappen for at lægge noget i frøbanken.'
           }
         />
       ) : (
         <div className="space-y-3">
-          {filtered.map(item => <InventoryCard key={item.id} item={item} />)}
+          {filtered.map(item => (
+            <div key={item.id} className="flex items-center gap-2">
+              {selectMode && (
+                <button
+                  type="button"
+                  onClick={() => toggleSelected(item.id)}
+                  className={cn(
+                    'h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
+                    selected.has(item.id) ? 'bg-primary border-primary text-primary-foreground' : 'border-border'
+                  )}
+                  aria-label={selected.has(item.id) ? 'Fjern fra valg' : 'Vælg'}
+                >
+                  {selected.has(item.id) && <CheckSquare className="h-3.5 w-3.5" />}
+                </button>
+              )}
+              <div className="flex-1 min-w-0">
+                <InventoryCard item={item} />
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
+  )
+}
+
+function FilterChip({
+  icon, label, active, onClick,
+}: {
+  icon: React.ReactNode
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-colors',
+        active
+          ? 'bg-primary text-primary-foreground border-primary'
+          : 'bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'
+      )}
+    >
+      {icon}
+      {label}
+    </button>
   )
 }
