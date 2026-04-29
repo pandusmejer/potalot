@@ -29,17 +29,25 @@ export function AddInventoryDialog({ children }: Props) {
 
   // Manuel form state
   const [name, setName] = useState('')
+  const [latinName, setLatinName] = useState('')
   const [variety, setVariety] = useState('')
   const [supplier, setSupplier] = useState('')
   const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>('fro')
   const [subcat, setSubcat] = useState('')
   const [quantity, setQuantity] = useState('')
+  const [seedCount, setSeedCount] = useState('')
+  const [purchaseYear, setPurchaseYear] = useState('')
+  const [purchaseUrl, setPurchaseUrl] = useState('')
+  const [expiryDate, setExpiryDate] = useState('')
   const [notes, setNotes] = useState('')
   const [imageUrl, setImageUrl] = useState<string | null>(null)
 
+  const isFroe = primaryCat === 'fro'
+
   function reset() {
-    setName(''); setVariety(''); setSupplier(''); setPrimaryCat('fro')
-    setSubcat(''); setQuantity(''); setNotes(''); setImageUrl(null); setError(null)
+    setName(''); setLatinName(''); setVariety(''); setSupplier(''); setPrimaryCat('fro')
+    setSubcat(''); setQuantity(''); setSeedCount(''); setPurchaseYear(''); setPurchaseUrl('')
+    setExpiryDate(''); setNotes(''); setImageUrl(null); setError(null)
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -49,11 +57,16 @@ export function AddInventoryDialog({ children }: Props) {
     startTransition(async () => {
       const res = await createInventoryItem({
         name: name.trim(),
+        latinName: latinName.trim() || undefined,
         variety: variety.trim() || undefined,
         supplier: supplier.trim() || undefined,
         primaryCategoryId: primaryCat,
         subcategoryId: subcat || undefined,
-        quantity: quantity ? parseInt(quantity, 10) : undefined,
+        quantity: !isFroe && quantity ? parseInt(quantity, 10) : undefined,
+        seedCount: isFroe && seedCount ? parseInt(seedCount, 10) : undefined,
+        purchaseYear: purchaseYear ? parseInt(purchaseYear, 10) : undefined,
+        purchaseUrl: purchaseUrl.trim() || undefined,
+        expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
         imageUrls: imageUrl ? [imageUrl] : undefined,
         primaryImageUrl: imageUrl ?? undefined,
@@ -143,6 +156,16 @@ export function AddInventoryDialog({ children }: Props) {
                 </div>
               </div>
 
+              <div>
+                <Label>Latinsk navn</Label>
+                <Input
+                  value={latinName}
+                  onChange={e => setLatinName(e.target.value)}
+                  placeholder="Fx. Solanum lycopersicum"
+                  className="mt-1.5"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Primær kategori</Label>
@@ -182,15 +205,48 @@ export function AddInventoryDialog({ children }: Props) {
                   />
                 </div>
                 <div>
-                  <Label>Antal</Label>
+                  <Label>{isFroe ? 'Antal frø' : 'Antal'}</Label>
                   <Input
                     type="number"
-                    value={quantity}
-                    onChange={e => setQuantity(e.target.value)}
+                    value={isFroe ? seedCount : quantity}
+                    onChange={e => isFroe ? setSeedCount(e.target.value) : setQuantity(e.target.value)}
                     placeholder="0"
                     className="mt-1.5"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Købsår</Label>
+                  <Input
+                    type="number"
+                    value={purchaseYear}
+                    onChange={e => setPurchaseYear(e.target.value)}
+                    placeholder="Fx. 2026"
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label>Udløb</Label>
+                  <Input
+                    type="date"
+                    value={expiryDate}
+                    onChange={e => setExpiryDate(e.target.value)}
+                    className="mt-1.5"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label>Købt her</Label>
+                <Input
+                  type="url"
+                  value={purchaseUrl}
+                  onChange={e => setPurchaseUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="mt-1.5"
+                />
               </div>
 
               <div>

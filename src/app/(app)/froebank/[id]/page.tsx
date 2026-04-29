@@ -166,10 +166,28 @@ export default async function InventoryDetailPage({ params }: Props) {
           <CardTitle>Detaljer</CardTitle>
         </CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-3">
+          {item.latinName && <Fact label="Latinsk navn" value={item.latinName} />}
           {item.supplier && <Fact label="Leverandør" value={item.supplier} />}
-          {item.quantity != null && <Fact label="Antal" value={`${item.quantity} stk`} />}
-          {item.purchaseDate && <Fact label="Indkøbsdato" value={formatDatoMedAar(item.purchaseDate)} />}
+          {item.seedCount != null && (
+            <Fact
+              label="Frø"
+              value={`${item.seedCount} (${item.seedsSown ?? 0} sået, ${item.seedsRemaining ?? item.seedCount} tilbage)`}
+            />
+          )}
+          {item.seedCount == null && item.quantity != null && <Fact label="Antal" value={`${item.quantity} stk`} />}
+          {item.purchaseYear && <Fact label="Købsår" value={String(item.purchaseYear)} />}
+          {item.purchaseDate && !item.purchaseYear && <Fact label="Indkøbsdato" value={formatDatoMedAar(item.purchaseDate)} />}
           {item.expiryDate && <Fact label="Udløber" value={formatDatoMedAar(item.expiryDate)} />}
+          {item.purchaseUrl && (
+            <Fact
+              label="Købt her"
+              value={
+                <a href={item.purchaseUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline truncate block">
+                  {item.purchaseUrl}
+                </a>
+              }
+            />
+          )}
         </CardContent>
         {item.notes && (
           <CardContent>
@@ -240,14 +258,14 @@ export default async function InventoryDetailPage({ params }: Props) {
   )
 }
 
-function Fact({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function Fact({ label, value, icon }: { label: string; value: React.ReactNode; icon?: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5 min-w-0">
       <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
         {icon}
         {label}
       </span>
-      <span className="text-sm text-foreground font-medium">{value || '—'}</span>
+      <span className="text-sm text-foreground font-medium break-words">{value || '—'}</span>
     </div>
   )
 }

@@ -30,14 +30,13 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
 
   const [date, setDate] = useState(idag())
   const [quantity, setQuantity] = useState('1')
+  const [containerType, setContainerType] = useState('')
   const [location, setLocation] = useState(suggestedLocations[0] ? GROWING_LOCATION_META[suggestedLocations[0]].label : '')
   const [note, setNote] = useState('')
-  const [success, setSuccess] = useState<{ plantId: string; tasksCreated: number } | null>(null)
+  const [success, setSuccess] = useState<{ plantId: string; tasksCreated: number; merged: boolean } | null>(null)
+  const [mergePrompt, setMergePrompt] = useState<{ existingPlantId: string } | null>(null)
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-
+  function submit(strategy?: 'merge' | 'new') {
     const qty = parseInt(quantity, 10)
     if (isNaN(qty) || qty < 1) {
       setError('Antal skal være et positivt tal')
@@ -49,8 +48,10 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
         inventoryItemId,
         date,
         quantity: qty,
+        containerType: containerType.trim() || undefined,
         location: location.trim() || undefined,
         note: note.trim() || undefined,
+        mergeStrategy: strategy,
       })
 
       if ('error' in res) {
@@ -58,18 +59,23 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
         return
       }
 
-      // Vis kort success-feedback hvis opgaver blev genereret
-      if (res.tasksCreated > 0) {
-        setSuccess({ plantId: res.id, tasksCreated: res.tasksCreated })
-        setTimeout(() => {
-          setOpen(false)
-          router.push(`/mine-planter/${res.id}`)
-        }, 1500)
-      } else {
+      if ('needsMergeChoice' in res) {
+        setMergePrompt({ existingPlantId: res.existingPlantId })
+        return
+      }
+
+      setSuccess({ plantId: res.id, tasksCreated: res.tasksCreated, merged: res.mergedIntoExisting })
+      setTimeout(() => {
         setOpen(false)
         router.push(`/mine-planter/${res.id}`)
-      }
+      }, 1800)
     })
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    submit()
   }
 
   return (
@@ -89,10 +95,33 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
               <Sprout className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <p className="font-serif text-xl text-foreground">Plante oprettet</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {success.tasksCreated} {success.tasksCreated === 1 ? 'opgave er' : 'opgaver er'} lagt i kalenderen.
+              <p className="font-serif text-xl text-foreground">
+                {success.merged ? 'Såning tilføjet' : 'Plante oprettet'}
               </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {success.merged
+                  ? 'Føjet til din eksisterende dyrkning af samme sort.'
+                  : `${success.tasksCreated} ${success.tasksCreated === 1 ? 'opgave er' : 'opgaver er'} lagt i kalenderen.`}
+              </p>
+            </div>
+          </div>
+        ) : mergePrompt ? (
+          <div className="space-y-4 py-2">
+            <DialogTitle>Eksisterende dyrkning fundet</DialogTitle>
+            <DialogDescription>
+              Du har allerede en aktiv dyrkning af denne sort i {parseInt(date.split('-')[0], 10)}.
+              Vil du tilføje denne såning til samme dyrkning, eller oprette et nyt hold?
+            </DialogDescription>
+            <div className="flex flex-col gap-2">
+              <Button onClick={() => { setMergePrompt(null); submit('merge') }} disabled={pending}>
+                Tilføj til eksisterende dyrkning
+              </Button>
+              <Button variant="outline" onClick={() => { setMergePrompt(null); submit('new') }} disabled={pending}>
+                Opret nyt hold
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setMergePrompt(null)} disabled={pending}>
+                Annullér
+              </Button>
             </div>
           </div>
         ) : (
@@ -126,6 +155,24 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
                 className="mt-1.5"
               />
             </div>
+          </div>
+
+          <div>
+            <Label>Sået i</Label>
+            <select
+              value={containerType}
+              onChange={e => setContainerType(e.target.value)}
+              className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+            >
+              <option value="">Vælg…</option>
+              <option value="Såbakke">Såbakke</option>
+              <option value="Potte">Potte</option>
+              <option value="Plugbox">Plugbox</option>
+              <option value="Direkte friland">Direkte friland</option>
+              <option value="Drivhus">Drivhus</option>
+              <option value="Højbed">Højbed</option>
+              <option value="Andet">Andet</option>
+            </select>
           </div>
 
           <div>

@@ -143,20 +143,29 @@ export interface SaaFroeInput {
   inventoryItemId: string
   date: string                      // YYYY-MM-DD
   quantity: number
+  containerType?: string
   location?: string
   note?: string
+  /** Hvis sat: tilføj til denne eksisterende plante. Hvis udeladt og en findes for år+inventory, tilbydes valg via mergeStrategy. */
+  attachToPlantId?: string
+  /** 'merge' = tilføj til eksisterende plante for samme år, 'new' = opret nyt hold */
+  mergeStrategy?: 'merge' | 'new'
 }
 
 /**
- * Sår fra et frøbank-element. Opretter plante + initial 'sowing' log.
- * Opdaterer også inventory item status til 'saaet'.
- * Auto-genererer opgaver i kalenderen baseret på guidens calendarRules.
+ * Sår fra et frøbank-element. Per spec sektion 13:
+ * - Find eksisterende plante med samme inventory_item + growing_year
+ * - Hvis findes og mergeStrategy != 'new': tilføj sowing_event til eksisterende plante
+ * - Hvis ikke: opret ny plante + sowing_event
+ * Returnerer mergeOption hvis valg skal tages.
  */
 export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
-  | { id: string; tasksCreated: number }
+  | { id: string; tasksCreated: number; mergedIntoExisting: boolean }
+  | { needsMergeChoice: true; existingPlantId: string }
   | { error: string }
 > {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   // Hent inventory item
   const { data: invItem, error: invErr } = await supabase
@@ -167,95 +176,143 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
     .single()
 
   if (invErr || !invItem) return { error: 'Frøbank-element ikke fundet' }
+  const inv = invItem as { id: string; name: string; variety: string | null; guide_id: string | null; status: string }
 
-  // Opret plante
-  const { data: plant, error: plantErr } = await supabase
+  const growingYear = parseInt(input.date.split('-')[0], 10)
+
+  // Find eksisterende plante for samme år
+  const { data: existing } = await supabase
     .from('plants_v2')
-    .insert({
-      user_id: userId,
-      source_inventory_id: invItem.id,
-      name: invItem.name,
-      variety: invItem.variety,
-      status: 'saaet',
-      location: input.location || null,
-      sow_date: input.date,
-      quantity: input.quantity,
-      guide_id: invItem.guide_id,
-      is_archived: false,
-    })
     .select('id')
-    .single()
+    .eq('user_id', userId)
+    .eq('source_inventory_id', inv.id)
+    .eq('growing_year', growingYear)
+    .eq('is_archived', false)
+    .limit(1)
+    .maybeSingle()
 
-  if (plantErr || !plant) return { error: plantErr?.message ?? 'Kunne ikke oprette plante' }
+  // Beslut: merge til eksisterende eller opret ny
+  let plantId: string
+  let mergedIntoExisting = false
 
-  // Opret initial log
+  if (input.attachToPlantId) {
+    plantId = input.attachToPlantId
+    mergedIntoExisting = true
+  } else if (existing && input.mergeStrategy === 'new') {
+    // Brugeren har valgt "opret nyt hold"
+    const { data: newPlant, error: plantErr } = await createNewPlantEntry()
+    if (plantErr || !newPlant) return { error: plantErr ?? 'Kunne ikke oprette plante' }
+    plantId = newPlant.id
+  } else if (existing && !input.mergeStrategy) {
+    // Eksisterer og brugeren har ikke valgt — bed UI om valg
+    return { needsMergeChoice: true, existingPlantId: existing.id }
+  } else if (existing && input.mergeStrategy === 'merge') {
+    plantId = existing.id
+    mergedIntoExisting = true
+  } else {
+    // Ingen eksisterende — opret ny
+    const { data: newPlant, error: plantErr } = await createNewPlantEntry()
+    if (plantErr || !newPlant) return { error: plantErr ?? 'Kunne ikke oprette plante' }
+    plantId = newPlant.id
+  }
+
+  // Opret sowing_event uanset
   await supabase
-    .from('plant_logs_v2')
+    .from('sowing_events')
     .insert({
-      plant_id: plant.id,
       user_id: userId,
-      date: input.date,
-      type: 'sowing',
-      title: 'Sået',
-      note: input.note || `${input.quantity} ${input.quantity === 1 ? 'frø' : 'frø'} sået` + (input.location ? ` i ${input.location}` : ''),
+      plant_id: plantId,
+      inventory_item_id: inv.id,
+      sown_count: input.quantity,
+      sowing_date: input.date,
+      container_type: input.containerType || null,
+      location: input.location || null,
+      notes: input.note || null,
     })
 
-  // Opdater inventory status til 'saaet' hvis 'i_froebank'
-  if (invItem.status === 'i_froebank') {
+  // Opdater plantens samlede quantity
+  const { data: total } = await supabase
+    .from('sowing_events')
+    .select('sown_count')
+    .eq('plant_id', plantId)
+  const totalQty = (total ?? []).reduce((sum, r) => sum + (r as { sown_count: number }).sown_count, 0)
+  await supabase
+    .from('plants_v2')
+    .update({ quantity: totalQty, updated_at: new Date().toISOString() })
+    .eq('id', plantId)
+
+  // Opdater inventory status hvis 'i_froebank'
+  if (inv.status === 'i_froebank') {
     await supabase
       .from('inventory_items')
       .update({ status: 'saaet', updated_at: new Date().toISOString() })
-      .eq('id', invItem.id)
+      .eq('id', inv.id)
   }
 
-  // Auto-genér opgaver fra guide
-  // TODO: Når guides er i Supabase, hent fra DB i stedet for MOCK_GUIDES
+  // Tasks: kun for nye planter (eksisterende har dem allerede)
   let tasksCreated = 0
-  const guide = resolveGuideForInventory(
-    { guideId: invItem.guide_id, name: invItem.name },
-    MOCK_GUIDES
-  )
-
-  if (guide) {
-    const generated = filterRelevantTasks(generateTasksFromGuide({
-      guide,
-      sowDate: input.date,
-      plantId: plant.id as string,
-      inventoryItemId: invItem.id as string,
-    }))
-
-    if (generated.length > 0) {
-      const taskRows = generated.map(t => ({
-        user_id: userId,
-        title: t.title,
-        date: t.date,
-        task_type: t.taskType,
-        priority: t.priority,
-        status: 'open',
-        source: t.source,
-        source_id: t.sourceId,                  // TEXT — ok med mock guide_id
-        linked_plant_id: t.linkedPlantId,       // UUID — fra DB
-        linked_inventory_item_id: t.linkedInventoryItemId, // UUID — fra DB
-        linked_guide_id: null,                  // TODO: når guides er i Supabase, sæt fra t.linkedGuideId
-        is_recurring: false,
+  if (!mergedIntoExisting) {
+    const guide = resolveGuideForInventory(
+      { guideId: inv.guide_id, name: inv.name },
+      MOCK_GUIDES
+    )
+    if (guide) {
+      const generated = filterRelevantTasks(generateTasksFromGuide({
+        guide,
+        sowDate: input.date,
+        plantId,
+        inventoryItemId: inv.id as string,
       }))
-
-      const { error: taskErr } = await supabase
-        .from('calendar_tasks')
-        .insert(taskRows)
-
-      if (!taskErr) tasksCreated = taskRows.length
-      else console.error('Task auto-generate fejlede:', taskErr)
+      if (generated.length > 0) {
+        const taskRows = generated.map(t => ({
+          user_id: userId,
+          title: t.title,
+          date: t.date,
+          task_type: t.taskType,
+          priority: t.priority,
+          status: 'open',
+          source: t.source,
+          source_id: t.sourceId,
+          linked_plant_id: t.linkedPlantId,
+          linked_inventory_item_id: t.linkedInventoryItemId,
+          linked_guide_id: null,
+          is_recurring: false,
+        }))
+        const { error: taskErr } = await supabase.from('calendar_tasks').insert(taskRows)
+        if (!taskErr) tasksCreated = taskRows.length
+      }
     }
   }
 
   revalidatePath('/froebank')
-  revalidatePath(`/froebank/${invItem.id}`)
+  revalidatePath(`/froebank/${inv.id}`)
   revalidatePath('/mine-planter')
+  revalidatePath(`/mine-planter/${plantId}`)
   revalidatePath('/kalender')
   revalidatePath('/')
 
-  return { id: plant.id as string, tasksCreated }
+  return { id: plantId, tasksCreated, mergedIntoExisting }
+
+  async function createNewPlantEntry(): Promise<{ data: { id: string } | null; error: string | null }> {
+    const { data, error } = await supabase
+      .from('plants_v2')
+      .insert({
+        user_id: userId,
+        source_inventory_id: inv.id,
+        name: inv.name,
+        variety: inv.variety,
+        status: 'saaet',
+        location: input.location || null,
+        sow_date: input.date,
+        quantity: 0, // bliver opdateret efter sowing_event er sat
+        growing_year: growingYear,
+        guide_id: inv.guide_id,
+        is_archived: false,
+      })
+      .select('id')
+      .single()
+    return { data: data as { id: string } | null, error: error?.message ?? null }
+  }
 }
 
 export async function createPlantLog(input: {

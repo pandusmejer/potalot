@@ -9,12 +9,16 @@ interface InventoryRow {
   id: string
   user_id: string
   name: string
+  latin_name: string | null
   variety: string | null
   supplier: string | null
   primary_category_id: string
   subcategory_id: string | null
   quantity: number | null
+  seed_count: number | null
   purchase_date: string | null
+  purchase_year: number | null
+  purchase_url: string | null
   expiry_date: string | null
   notes: string | null
   sowing_months: number[]
@@ -40,17 +44,26 @@ interface InventoryRow {
   updated_at: string
 }
 
-function rowToItem(row: InventoryRow): InventoryItem {
+function rowToItem(row: InventoryRow, counts?: { seedsSown?: number; seedsRemaining?: number }): InventoryItem {
+  const seedCount = row.seed_count
+  const seedsSown = counts?.seedsSown ?? 0
+  const seedsRemaining = seedCount != null ? Math.max(seedCount - seedsSown, 0) : undefined
   return {
     id: row.id,
     userId: row.user_id,
     name: row.name,
+    latinName: row.latin_name,
     variety: row.variety,
     supplier: row.supplier,
     primaryCategoryId: row.primary_category_id as PrimaryCategoryId,
     subcategoryId: row.subcategory_id,
     quantity: row.quantity,
+    seedCount: row.seed_count,
+    seedsSown,
+    seedsRemaining,
     purchaseDate: row.purchase_date,
+    purchaseYear: row.purchase_year,
+    purchaseUrl: row.purchase_url,
     expiryDate: row.expiry_date,
     notes: row.notes,
     sowingMonths: row.sowing_months ?? [],
@@ -93,7 +106,19 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
     console.error('getAllInventoryItems error:', error)
     return []
   }
-  return (data as InventoryRow[]).map(rowToItem)
+
+  const rows = data as InventoryRow[]
+  // Hent counts samlet
+  const { data: counts } = await supabase
+    .from('inventory_seed_counts')
+    .select('inventory_item_id, seeds_sown, seeds_remaining')
+    .eq('user_id', userId)
+  const countMap = new Map(
+    (counts ?? []).map((c: { inventory_item_id: string; seeds_sown: number; seeds_remaining: number }) =>
+      [c.inventory_item_id, { seedsSown: c.seeds_sown, seedsRemaining: c.seeds_remaining }]
+    )
+  )
+  return rows.map(r => rowToItem(r, countMap.get(r.id)))
 }
 
 export async function getInventoryItem(id: string): Promise<InventoryItem | null> {
@@ -107,17 +132,28 @@ export async function getInventoryItem(id: string): Promise<InventoryItem | null
     .single()
 
   if (error || !data) return null
-  return rowToItem(data as InventoryRow)
+
+  const { data: counts } = await supabase
+    .from('inventory_seed_counts')
+    .select('seeds_sown, seeds_remaining')
+    .eq('inventory_item_id', id)
+    .maybeSingle()
+  const c = counts as { seeds_sown: number; seeds_remaining: number } | null
+  return rowToItem(data as InventoryRow, c ? { seedsSown: c.seeds_sown, seedsRemaining: c.seeds_remaining } : undefined)
 }
 
 export interface CreateInventoryInput {
   name: string
+  latinName?: string
   variety?: string
   supplier?: string
   primaryCategoryId: PrimaryCategoryId
   subcategoryId?: string
   quantity?: number
+  seedCount?: number
   purchaseDate?: string
+  purchaseYear?: number
+  purchaseUrl?: string
   expiryDate?: string
   notes?: string
   sowingMonths?: number[]
@@ -141,12 +177,16 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
     .insert({
       user_id: userId,
       name: input.name,
+      latin_name: input.latinName || null,
       variety: input.variety || null,
       supplier: input.supplier || null,
       primary_category_id: input.primaryCategoryId,
       subcategory_id: input.subcategoryId || null,
       quantity: input.quantity ?? null,
+      seed_count: input.seedCount ?? null,
       purchase_date: input.purchaseDate || null,
+      purchase_year: input.purchaseYear ?? null,
+      purchase_url: input.purchaseUrl || null,
       expiry_date: input.expiryDate || null,
       notes: input.notes || null,
       sowing_months: input.sowingMonths ?? [],
@@ -179,12 +219,16 @@ export async function updateInventoryItem(
 
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (input.name !== undefined) update.name = input.name
+  if (input.latinName !== undefined) update.latin_name = input.latinName || null
   if (input.variety !== undefined) update.variety = input.variety || null
   if (input.supplier !== undefined) update.supplier = input.supplier || null
   if (input.primaryCategoryId !== undefined) update.primary_category_id = input.primaryCategoryId
   if (input.subcategoryId !== undefined) update.subcategory_id = input.subcategoryId || null
   if (input.quantity !== undefined) update.quantity = input.quantity
+  if (input.seedCount !== undefined) update.seed_count = input.seedCount
   if (input.purchaseDate !== undefined) update.purchase_date = input.purchaseDate || null
+  if (input.purchaseYear !== undefined) update.purchase_year = input.purchaseYear
+  if (input.purchaseUrl !== undefined) update.purchase_url = input.purchaseUrl || null
   if (input.expiryDate !== undefined) update.expiry_date = input.expiryDate || null
   if (input.notes !== undefined) update.notes = input.notes || null
   if (input.sowingMonths !== undefined) update.sowing_months = input.sowingMonths

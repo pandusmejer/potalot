@@ -80,13 +80,22 @@ export interface InventoryItem {
   userId: string
 
   // Basis
-  name: string
+  name: string                          // dansk navn
+  latinName?: string | null             // latinsk/botanisk navn
   variety?: string | null
   supplier?: string | null
   primaryCategoryId: PrimaryCategoryId
   subcategoryId?: string | null
-  quantity?: number | null
+  quantity?: number | null              // legacy: stadig brugt for løg/knolde/stk.
+
+  // Frø-specifikke felter (sektion 12)
+  seedCount?: number | null             // antal frø i posen
+  seedsSown?: number                    // computed fra sowing_events
+  seedsRemaining?: number               // computed: seedCount - seedsSown
+
   purchaseDate?: string | null
+  purchaseYear?: number | null          // ÅÅÅÅ — bruges typisk for frøposer
+  purchaseUrl?: string | null           // "købt her"
   expiryDate?: string | null
   notes?: string | null
 
@@ -138,6 +147,7 @@ export interface Plant {
   id: string
   userId: string
   sourceElementId?: string | null    // InventoryItem der blev sået
+  growingYear?: number | null        // bruges til at samle såninger pr. år
 
   name: string
   variety?: string | null
@@ -149,7 +159,7 @@ export interface Plant {
   plantingOutDate?: string | null
   firstHarvestDate?: string | null
 
-  quantity: number
+  quantity: number                   // total fra alle sowing_events
 
   // Medier og relationer
   imageIds: string[]
@@ -162,6 +172,24 @@ export interface Plant {
   archivedAt?: string | null
   archivedYear?: number | null
 
+  createdAt: string
+  updatedAt: string
+}
+
+// ============================================
+// SOWING EVENTS — flere såninger pr. plante (sektion 13)
+// ============================================
+
+export interface SowingEvent {
+  id: string
+  userId: string
+  plantId: string
+  inventoryItemId?: string | null
+  sownCount: number
+  sowingDate: string                   // YYYY-MM-DD
+  containerType?: string | null       // Såbakke, Potte, Plugbox, Direkte friland osv.
+  location?: string | null
+  notes?: string | null
   createdAt: string
   updatedAt: string
 }

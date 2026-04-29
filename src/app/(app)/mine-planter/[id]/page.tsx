@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { NextAction } from '@/components/mine-planter/next-action'
 import { Timeline } from '@/components/mine-planter/timeline'
 import { LogForm } from '@/components/mine-planter/log-form'
+import { SowingsList } from '@/components/mine-planter/sowings-list'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { getSowingEventsForPlant } from '@/actions/sowing-events'
 import { getInventoryItem } from '@/actions/froebank'
 import { MOCK_CALENDAR_TASKS, MOCK_GUIDES } from '@/lib/mock-data'
 import { PLANT_STATUS_META } from '@/lib/constants'
@@ -28,7 +30,10 @@ export default async function PlanteDetailPage({ params }: Props) {
   const plant = await getPlant(id)
   if (!plant) notFound()
 
-  const logs = await getPlantLogs(plant.id)
+  const [logs, sowings] = await Promise.all([
+    getPlantLogs(plant.id),
+    getSowingEventsForPlant(plant.id),
+  ])
 
   // TODO (database): Tasks og Guides skal også migreres
   const tasks = MOCK_CALENDAR_TASKS.filter(t => t.linkedPlantId === plant.id)
@@ -91,6 +96,8 @@ export default async function PlanteDetailPage({ params }: Props) {
       </div>
 
       {!plant.isArchived && <NextAction task={naesteOpgave} />}
+
+      <SowingsList events={sowings} />
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
