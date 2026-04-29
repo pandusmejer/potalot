@@ -2,11 +2,11 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { Topbar } from '@/components/layout/topbar'
 import { OnboardingGate } from '@/components/onboarding/onboarding-gate'
+import { getProfile } from '@/actions/profil'
 import { MOCK_PROFILE } from '@/lib/mock-data'
 
-// TODO (database): Hent profil fra Supabase via session.
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const profile = MOCK_PROFILE
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const profile = (await getProfile()) ?? MOCK_PROFILE
 
   return (
     <div className="min-h-screen bg-background">

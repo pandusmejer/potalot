@@ -1,7 +1,7 @@
 'use client'
 
 import { MONTHS_DA } from '@/lib/constants'
-import { aktuelMaaned, aktuelAar } from '@/lib/datetime'
+import { aktuelMaaned, aktuelAar, saeson } from '@/lib/datetime'
 import type { CalendarTask, GeneralGardenTask } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -52,17 +52,17 @@ export function Aarshjul({ active, onChange, tasks, generelle }: Props) {
                 )}
               >
                 <span className="text-[10px] uppercase tracking-wider opacity-70">
-                  {m.short}
+                  {saeson(m.num)}
                 </span>
-                <span className="text-sm font-medium">{m.full.slice(0, 3)}</span>
-                {total > 0 && (
-                  <span className={cn(
-                    'text-[10px] mt-0.5',
-                    isActive ? 'opacity-80' : 'text-muted-foreground'
-                  )}>
-                    {total}
-                  </span>
-                )}
+                <span className="text-sm font-medium">
+                  {m.short.charAt(0).toUpperCase() + m.short.slice(1)}
+                </span>
+                <span className={cn(
+                  'text-[10px] mt-0.5',
+                  isActive ? 'opacity-80' : 'text-muted-foreground'
+                )}>
+                  ({total})
+                </span>
               </button>
             )
           })}

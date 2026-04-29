@@ -78,3 +78,18 @@ export function maanedNavn(num: number, kort = false): string {
 export function aktuelAar(): number {
   return new Date().getFullYear()
 }
+
+/** Returner sæson-label baseret på måned-nummer (1-12). Vinter=12,1,2 osv. */
+export function saeson(maaned: number): 'Vinter' | 'Forår' | 'Sommer' | 'Efterår' {
+  if (maaned === 12 || maaned <= 2) return 'Vinter'
+  if (maaned <= 5) return 'Forår'
+  if (maaned <= 8) return 'Sommer'
+  return 'Efterår'
+}
+
+/** Kalender-label format: "Forår - Apr - (14)". Måned med stort begyndelsesbogstav. */
+export function formatPeriodeLabel(maaned: number, antalOpgaver: number): string {
+  const kort = MAANED_KORT[maaned - 1] ?? ''
+  const maanedLabel = kort.charAt(0).toUpperCase() + kort.slice(1)
+  return `${saeson(maaned)} - ${maanedLabel} - (${antalOpgaver})`
+}
