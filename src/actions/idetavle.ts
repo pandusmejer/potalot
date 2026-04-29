@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { DEMO_USER_ID } from '@/lib/demo'
+import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { Idea } from '@/lib/types'
 
@@ -35,11 +35,12 @@ function rowToIdea(row: IdeaRow): Idea {
 }
 
 export async function getAllIdeas(): Promise<Idea[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('ideas')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -59,11 +60,12 @@ export interface CreateIdeaInput {
 }
 
 export async function createIdea(input: CreateIdeaInput): Promise<{ id: string } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('ideas')
     .insert({
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       title: input.title,
       description: input.description || null,
       status: input.status ?? 'idea',
@@ -85,7 +87,8 @@ export async function updateIdea(
   id: string,
   input: Partial<CreateIdeaInput>
 ): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (input.title !== undefined) update.title = input.title
   if (input.description !== undefined) update.description = input.description || null
@@ -101,7 +104,7 @@ export async function updateIdea(
     .from('ideas')
     .update(update)
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
   revalidatePath('/idetavle')
@@ -109,12 +112,13 @@ export async function updateIdea(
 }
 
 export async function deleteIdea(id: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { error } = await supabase
     .from('ideas')
     .delete()
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
   revalidatePath('/idetavle')

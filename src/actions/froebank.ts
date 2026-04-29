@@ -1,13 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { DEMO_USER_ID } from '@/lib/demo'
+import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { InventoryItem, PrimaryCategoryId, InventoryStatus, GrowingLocation } from '@/lib/types'
-
-// ============================================
-// Mappers (snake_case DB ↔ camelCase TypeScript)
-// ============================================
 
 interface InventoryRow {
   id: string
@@ -73,7 +69,7 @@ function rowToItem(row: InventoryRow): InventoryItem {
     status: row.status as InventoryStatus,
     isFavorite: row.is_favorite,
     isPinned: row.is_pinned,
-    imageIds: [], // legacy felt, ikke brugt
+    imageIds: [],
     primaryImageId: row.primary_image_url,
     guideId: row.guide_id,
     linkedPlantIds: [],
@@ -82,16 +78,13 @@ function rowToItem(row: InventoryRow): InventoryItem {
   }
 }
 
-// ============================================
-// Read
-// ============================================
-
 export async function getAllInventoryItems(): Promise<InventoryItem[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('inventory_items')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('is_pinned', { ascending: false })
     .order('is_favorite', { ascending: false })
     .order('name', { ascending: true })
@@ -104,21 +97,18 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
 }
 
 export async function getInventoryItem(id: string): Promise<InventoryItem | null> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('inventory_items')
     .select('*')
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (error || !data) return null
   return rowToItem(data as InventoryRow)
 }
-
-// ============================================
-// Mutations
-// ============================================
 
 export interface CreateInventoryInput {
   name: string
@@ -143,12 +133,13 @@ export interface CreateInventoryInput {
 }
 
 export async function createInventoryItem(input: CreateInventoryInput): Promise<{ id: string } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('inventory_items')
     .insert({
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       name: input.name,
       variety: input.variety || null,
       supplier: input.supplier || null,
@@ -183,7 +174,8 @@ export async function updateInventoryItem(
   id: string,
   input: Partial<CreateInventoryInput>
 ): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (input.name !== undefined) update.name = input.name
@@ -210,7 +202,7 @@ export async function updateInventoryItem(
     .from('inventory_items')
     .update(update)
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -220,13 +212,14 @@ export async function updateInventoryItem(
 }
 
 export async function deleteInventoryItem(id: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('inventory_items')
     .delete()
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -235,14 +228,14 @@ export async function deleteInventoryItem(id: string): Promise<{ ok: true } | { 
 }
 
 export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite: boolean } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
-  // Hent nuværende værdi
   const { data: current } = await supabase
     .from('inventory_items')
     .select('is_favorite')
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (!current) return { error: 'Element ikke fundet' }
@@ -252,7 +245,7 @@ export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite
     .from('inventory_items')
     .update({ is_favorite: newValue, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -262,13 +255,14 @@ export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite
 }
 
 export async function togglePinned(id: string): Promise<{ ok: true; isPinned: boolean } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   const { data: current } = await supabase
     .from('inventory_items')
     .select('is_pinned')
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (!current) return { error: 'Element ikke fundet' }
@@ -278,7 +272,7 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
     .from('inventory_items')
     .update({ is_pinned: newValue, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -287,16 +281,13 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
   return { ok: true, isPinned: newValue }
 }
 
-// ============================================
-// Custom subcategories
-// ============================================
-
 export async function getCustomSubcategories() {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('custom_subcategories')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('name')
 
   return (data ?? []).map(r => ({
@@ -313,12 +304,13 @@ export async function createCustomSubcategory(input: {
   name: string
   parentCategoryIds: PrimaryCategoryId[]
 }): Promise<{ id: string } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('custom_subcategories')
     .insert({
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       name: input.name,
       parent_category_ids: input.parentCategoryIds,
     })

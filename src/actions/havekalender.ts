@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { DEMO_USER_ID } from '@/lib/demo'
+import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type {
   CalendarTask, TaskType, TaskPriority, TaskStatus, TaskSource, PlantLogType,
@@ -62,11 +62,11 @@ function rowToTask(row: TaskRow): CalendarTask {
 // ============================================
 
 export async function getAllTasks(): Promise<CalendarTask[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { data, error } = await supabase
     .from('calendar_tasks')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('date', { ascending: true })
 
   if (error) {
@@ -77,11 +77,11 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
 }
 
 export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { data, error } = await supabase
     .from('calendar_tasks')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .eq('linked_plant_id', plantId)
     .order('date', { ascending: true })
 
@@ -110,12 +110,12 @@ export interface CreateTaskInput {
 }
 
 export async function createTask(input: CreateTaskInput): Promise<{ id: string } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('calendar_tasks')
     .insert({
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       title: input.title.trim(),
       description: input.description?.trim() || null,
       date: input.date,
@@ -150,13 +150,13 @@ export async function completeTask(id: string): Promise<
   | { ok: true; linkedPlantId: string | null; suggestedLogType: PlantLogType | null; taskTitle: string }
   | { error: string }
 > {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   const { data: task, error: fetchErr } = await supabase
     .from('calendar_tasks')
     .select('id, title, task_type, linked_plant_id')
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (fetchErr || !task) return { error: 'Opgave ikke fundet' }
@@ -169,7 +169,7 @@ export async function completeTask(id: string): Promise<
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (updErr) return { error: updErr.message }
 
@@ -196,7 +196,7 @@ export async function completeTaskWithLog(input: {
   logNote?: string
   logDate?: string
 }): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   // 1. Markér opgave som udført
   const { error: updErr } = await supabase
@@ -207,7 +207,7 @@ export async function completeTaskWithLog(input: {
       updated_at: new Date().toISOString(),
     })
     .eq('id', input.taskId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (updErr) return { error: updErr.message }
 
@@ -216,7 +216,7 @@ export async function completeTaskWithLog(input: {
     .from('plant_logs_v2')
     .insert({
       plant_id: input.plantId,
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       date: input.logDate ?? new Date().toISOString().split('T')[0],
       type: input.logType,
       title: input.logTitle || null,
@@ -233,7 +233,7 @@ export async function completeTaskWithLog(input: {
 }
 
 export async function uncompleteTask(id: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { error } = await supabase
     .from('calendar_tasks')
     .update({
@@ -242,7 +242,7 @@ export async function uncompleteTask(id: string): Promise<{ ok: true } | { error
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -252,12 +252,12 @@ export async function uncompleteTask(id: string): Promise<{ ok: true } | { error
 }
 
 export async function deleteTask(id: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { error } = await supabase
     .from('calendar_tasks')
     .delete()
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 

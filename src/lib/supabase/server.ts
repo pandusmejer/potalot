@@ -1,21 +1,36 @@
-import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 /**
- * Server-side Supabase client.
+ * Server-side Supabase client for Server Components, Route Handlers, and Server Actions.
  *
- * Bruger service role key i demo-mode (bypasser RLS, single-user).
- * TODO (auth): Når rigtig auth implementeres, switch til @supabase/ssr med
- * cookie-baseret session.
+ * Bruger cookies til session — dvs. RLS-policies (auth.uid() = user_id) håndhæves
+ * automatisk pr. logged-in user. Anvend altid denne i stedet for service-role.
  */
-export function createClient(): SupabaseClient {
+export async function createClient(): Promise<SupabaseClient> {
+  const cookieStore = await cookies()
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  if (!url || !key) {
-    throw new Error('Supabase env vars mangler. Tjek NEXT_PUBLIC_SUPABASE_URL og SUPABASE_SERVICE_ROLE_KEY.')
+  if (!url || !anonKey) {
+    throw new Error('Supabase env vars mangler. Tjek NEXT_PUBLIC_SUPABASE_URL og NEXT_PUBLIC_SUPABASE_ANON_KEY.')
   }
 
-  return createSupabaseClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
+  return createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
+        } catch {
+          // Server Components kan ikke sætte cookies — middleware/route handlers gør det
+        }
+      },
+    },
   })
 }

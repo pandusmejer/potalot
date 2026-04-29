@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { DEMO_USER_ID } from '@/lib/demo'
+import { requireUser } from '@/lib/auth'
 
 const BUCKET = 'media'
 const MAX_BYTES = 5 * 1024 * 1024
@@ -12,6 +12,8 @@ export type UploadFolder = 'froebank' | 'planter' | 'log' | 'profil' | 'idetavle
 export async function uploadImage(
   formData: FormData
 ): Promise<{ url: string } | { error: string }> {
+  const { id: userId } = await requireUser()
+
   const file = formData.get('file')
   const folder = formData.get('folder') as UploadFolder | null
 
@@ -21,9 +23,9 @@ export async function uploadImage(
   if (!ALLOWED.includes(file.type)) return { error: 'Ugyldig filtype' }
 
   const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
-  const path = `${DEMO_USER_ID}/${folder}/${crypto.randomUUID()}.${ext}`
+  const path = `${userId}/${folder}/${crypto.randomUUID()}.${ext}`
 
-  const supabase = createClient()
+  const supabase = await createClient()
   const { error } = await supabase.storage
     .from(BUCKET)
     .upload(path, file, { contentType: file.type, upsert: false })
@@ -35,7 +37,8 @@ export async function uploadImage(
 }
 
 export async function deleteImage(url: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  await requireUser()
+  const supabase = await createClient()
   const marker = `/${BUCKET}/`
   const idx = url.indexOf(marker)
   if (idx === -1) return { error: 'Ugyldig URL' }

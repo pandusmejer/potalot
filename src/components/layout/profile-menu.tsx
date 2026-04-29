@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User, Users, Lightbulb, Settings } from 'lucide-react'
+import { User, Users, Lightbulb, Settings, LogOut } from 'lucide-react'
 import type { Profile } from '@/lib/types'
+import { signOut } from '@/actions/auth'
 
 /**
  * Sekundær menu — profil, grupper, idétavle, indstillinger.
@@ -54,6 +55,12 @@ export function ProfileMenu({ profile }: { profile: Profile }) {
         <DropdownMenuItem asChild>
           <Link href="/indstillinger"><Settings className="h-4 w-4" /> Indstillinger</Link>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <form action={signOut}>
+          <button type="submit" className="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded hover:bg-accent">
+            <LogOut className="h-4 w-4" /> Log ud
+          </button>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   )

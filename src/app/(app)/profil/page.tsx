@@ -1,11 +1,12 @@
 import { getProfile } from '@/actions/profil'
 import { ProfilForm } from '@/components/profil/profil-form'
-import { MOCK_PROFILE } from '@/lib/mock-data'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ProfilPage() {
-  const profile = (await getProfile()) ?? MOCK_PROFILE
+  const profile = await getProfile()
+  if (!profile) redirect('/login')
 
   return (
     <div className="space-y-6 max-w-xl">

@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { DEMO_USER_ID } from '@/lib/demo'
+import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
@@ -95,11 +95,11 @@ function rowToLog(row: PlantLogRow): PlantLog {
 // ============================================
 
 export async function getAllPlants(): Promise<Plant[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { data, error } = await supabase
     .from('plants_v2')
     .select('*')
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -110,12 +110,12 @@ export async function getAllPlants(): Promise<Plant[]> {
 }
 
 export async function getPlant(id: string): Promise<Plant | null> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { data, error } = await supabase
     .from('plants_v2')
     .select('*')
     .eq('id', id)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (error || !data) return null
@@ -123,12 +123,12 @@ export async function getPlant(id: string): Promise<Plant | null> {
 }
 
 export async function getPlantLogs(plantId: string): Promise<PlantLog[]> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { data, error } = await supabase
     .from('plant_logs_v2')
     .select('*')
     .eq('plant_id', plantId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .order('date', { ascending: false })
 
   if (error) return []
@@ -156,14 +156,14 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   | { id: string; tasksCreated: number }
   | { error: string }
 > {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   // Hent inventory item
   const { data: invItem, error: invErr } = await supabase
     .from('inventory_items')
     .select('id, name, variety, guide_id, status')
     .eq('id', input.inventoryItemId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
     .single()
 
   if (invErr || !invItem) return { error: 'Frøbank-element ikke fundet' }
@@ -172,7 +172,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   const { data: plant, error: plantErr } = await supabase
     .from('plants_v2')
     .insert({
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       source_inventory_id: invItem.id,
       name: invItem.name,
       variety: invItem.variety,
@@ -193,7 +193,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
     .from('plant_logs_v2')
     .insert({
       plant_id: plant.id,
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       date: input.date,
       type: 'sowing',
       title: 'Sået',
@@ -226,7 +226,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
 
     if (generated.length > 0) {
       const taskRows = generated.map(t => ({
-        user_id: DEMO_USER_ID,
+        user_id: userId,
         title: t.title,
         date: t.date,
         task_type: t.taskType,
@@ -265,13 +265,13 @@ export async function createPlantLog(input: {
   title?: string
   note?: string
 }): Promise<{ id: string } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('plant_logs_v2')
     .insert({
       plant_id: input.plantId,
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       date: input.date,
       type: input.type,
       title: input.title || null,
@@ -290,13 +290,13 @@ export async function updatePlantStatus(
   plantId: string,
   status: PlantStatus
 ): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
 
   const { error } = await supabase
     .from('plants_v2')
     .update({ status, updated_at: new Date().toISOString() })
     .eq('id', plantId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
@@ -305,7 +305,7 @@ export async function updatePlantStatus(
     .from('plant_logs_v2')
     .insert({
       plant_id: plantId,
-      user_id: DEMO_USER_ID,
+      user_id: userId,
       date: new Date().toISOString().split('T')[0],
       type: 'status_change',
       note: `Status ændret til "${status}"`,
@@ -316,7 +316,7 @@ export async function updatePlantStatus(
 }
 
 export async function archivePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const now = new Date()
 
   const { error } = await supabase
@@ -329,13 +329,13 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
       updated_at: now.toISOString(),
     })
     .eq('id', plantId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 
   await supabase.from('plant_logs_v2').insert({
     plant_id: plantId,
-    user_id: DEMO_USER_ID,
+    user_id: userId,
     date: now.toISOString().split('T')[0],
     type: 'archive',
     title: 'Arkiveret',
@@ -348,12 +348,12 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
 }
 
 export async function deletePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
-  const supabase = createClient()
+  const { id: userId } = await requireUser(); const supabase = await createClient()
   const { error } = await supabase
     .from('plants_v2')
     .delete()
     .eq('id', plantId)
-    .eq('user_id', DEMO_USER_ID)
+    .eq('user_id', userId)
 
   if (error) return { error: error.message }
 

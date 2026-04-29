@@ -1,12 +1,13 @@
 import { Sidebar } from '@/components/layout/sidebar'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { Topbar } from '@/components/layout/topbar'
-import { OnboardingGate } from '@/components/onboarding/onboarding-gate'
 import { getProfile } from '@/actions/profil'
-import { MOCK_PROFILE } from '@/lib/mock-data'
+import { redirect } from 'next/navigation'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const profile = (await getProfile()) ?? MOCK_PROFILE
+  const profile = await getProfile()
+  if (!profile) redirect('/login')
+  if (!profile.onboarded) redirect('/onboarding')
 
   return (
     <div className="min-h-screen bg-background">
@@ -18,7 +19,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </main>
       </div>
       <BottomNav />
-      <OnboardingGate profile={profile} />
     </div>
   )
 }
