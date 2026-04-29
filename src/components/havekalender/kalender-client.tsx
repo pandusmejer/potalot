@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
 import { TodoTabs } from '@/components/havekalender/todo-tabs'
 import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
-import { HavensGoeremaal } from '@/components/havekalender/havens-goeremaal'
+import { YearWheelSection } from '@/components/havekalender/year-wheel-section'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { ListChecks } from 'lucide-react'
@@ -59,7 +59,10 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, guides 
         </div>
       </Card>
 
-      <HavensGoeremaal month={valgtMaaned} tasks={generalTasks} />
+      <YearWheelSection
+        existingTasks={tasks}
+        year={new Date().getFullYear()}
+      />
 
       <DetKanDuNu
         month={valgtMaaned}
