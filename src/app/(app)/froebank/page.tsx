@@ -1,5 +1,4 @@
 import { InventoryListView } from '@/components/froebank/inventory-list'
-import { ImportDialog } from '@/components/froebank/import-dialog'
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import { getAllInventoryItems, getCustomSubcategories } from '@/actions/froebank'
@@ -22,7 +21,6 @@ export default async function FroebankPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <ImportDialog />
           <Button asChild variant="outline">
             <a href="/api/inventory/export">
               <Download className="h-4 w-4" />

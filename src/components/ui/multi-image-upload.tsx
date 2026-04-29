@@ -17,6 +17,8 @@ interface Props {
   /** Max antal billeder (default 8). */
   maxImages?: number
   label?: string
+  /** "environment" tvinger bagkamera, undlad for OS-picker (kamera + bibliotek). */
+  capture?: 'user' | 'environment'
 }
 
 /**
@@ -31,6 +33,7 @@ export function MultiImageUpload({
   maxDimension = 1600,
   maxImages = 8,
   label = 'Tilføj billede',
+  capture,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [pending, startTransition] = useTransition()
@@ -111,6 +114,7 @@ export function MultiImageUpload({
         ref={inputRef}
         type="file"
         accept="image/*"
+        capture={capture}
         multiple
         onChange={handleFiles}
         className="hidden"
