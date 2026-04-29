@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
 import { mergeGuide } from '@/lib/guide-merge'
 import { MOCK_GUIDES, MOCK_INVENTORY, MOCK_PLANTS } from '@/lib/mock-data'
+import { getGuide } from '@/actions/guides'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
   ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
@@ -18,7 +19,9 @@ interface Props {
 // TODO (database): Supabase
 export default async function GuideDetailPage({ params }: Props) {
   const { id } = await params
-  const original = MOCK_GUIDES.find(g => g.id === id)
+  // Først DB (UUID), så mock (string-id) som fallback
+  const dbGuide = await getGuide(id)
+  const original = dbGuide ?? MOCK_GUIDES.find(g => g.id === id)
   if (!original) notFound()
 
   // Merge med parent hvis sortsguide

@@ -7,9 +7,10 @@ import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
 import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog'
 import { SowDialog } from '@/components/froebank/sow-dialog'
+import { GuideLink } from '@/components/froebank/guide-link'
 import { getInventoryItem } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
-import { MOCK_GUIDES } from '@/lib/mock-data'
+import { getAllGuides, getGuide } from '@/actions/guides'
 import {
   PRIMARY_CATEGORIES, INVENTORY_STATUS_META, MONTHS_DA,
   LIGHT_META, WATER_META, GROWING_LOCATION_META, SYSTEM_SUBCATEGORIES,
@@ -37,8 +38,10 @@ export default async function InventoryDetailPage({ params }: Props) {
   if (!item) notFound()
 
   const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
-  // TODO (database): Guides skal også migreres til Supabase
-  const guide = item.guideId ? MOCK_GUIDES.find(g => g.id === item.guideId) : null
+  const [guide, allGuides] = await Promise.all([
+    item.guideId ? getGuide(item.guideId) : Promise.resolve(null),
+    getAllGuides(),
+  ])
 
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
   const subcat = SYSTEM_SUBCATEGORIES.find(s => s.id === item.subcategoryId)
@@ -245,25 +248,8 @@ export default async function InventoryDetailPage({ params }: Props) {
         </Card>
       )}
 
-      {/* Linket guide */}
-      {guide && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-primary" />
-              Dyrkningsguide
-            </CardTitle>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={`/guides/${guide.id}`}>
-                Åbn <ExternalLink className="h-3 w-3" />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-foreground/80">{guide.summary}</p>
-          </CardContent>
-        </Card>
-      )}
+      {/* Dyrkningsguide */}
+      <GuideLink item={item} currentGuide={guide} allGuides={allGuides} />
 
       {/* Rediger / slet */}
       <div className="flex items-center justify-end gap-2 pt-4">
