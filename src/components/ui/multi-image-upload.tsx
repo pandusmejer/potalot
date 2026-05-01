@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
-import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2, Star } from 'lucide-react'
 import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
 import { cn } from '@/lib/utils'
@@ -38,15 +37,16 @@ export function MultiImageUpload({
   const inputRef = useRef<HTMLInputElement>(null)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-
-  function handlePick() {
-    inputRef.current?.click()
-  }
+  const [debug, setDebug] = useState<string | null>(null)
 
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
     const files = e.target.files
-    if (!files || files.length === 0) return
+    setDebug(`Modtog ${files?.length ?? 0} fil(er)…`)
+    if (!files || files.length === 0) {
+      setDebug('Ingen fil valgt.')
+      return
+    }
     e.target.value = ''
 
     const remaining = maxImages - value.length
@@ -61,38 +61,41 @@ export function MultiImageUpload({
       const errors: string[] = []
       for (const file of toUpload) {
         try {
-          // Resize konverterer altid til JPEG, så HEIC og andre formater virker
-          // hvis browseren overhovedet kan tegne dem på canvas.
-          let blob: Blob
+          setDebug(`Behandler "${file.name}" (${Math.round(file.size / 1024)} KB, ${file.type || 'ukendt type'})…`)
+          // Forsøg resize → JPEG. Hvis canvas ikke kan tegne (fx HEIC i Chrome)
+          // sender vi originalen — serveren accepterer alle image/* MIME-typer.
+          let blob: Blob = file
+          let outName = file.name
+          let outType = file.type
           try {
             blob = await resizeImage(file, maxDimension)
-          } catch (e) {
-            errors.push(`Kunne ikke læse "${file.name}". Prøv et andet billede.`)
-            continue
+            outName = file.name.replace(/\.[^.]+$/, '.jpg')
+            outType = 'image/jpeg'
+          } catch {
+            // Brug original — server håndterer evt. HEIC
           }
           const fd = new FormData()
-          fd.append(
-            'file',
-            new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
-          )
+          fd.append('file', new File([blob], outName, { type: outType || 'image/jpeg' }))
           fd.append('folder', folder)
           const res = await uploadImage(fd)
           if ('error' in res) {
-            errors.push(res.error)
+            errors.push(`${file.name}: ${res.error}`)
             continue
           }
           newUrls.push(res.url)
         } catch (e: unknown) {
           const msg = e instanceof Error ? e.message : 'ukendt fejl'
-          errors.push(`Upload fejlede: ${msg}`)
+          errors.push(`${file.name}: ${msg}`)
         }
       }
       if (newUrls.length > 0) {
         const updated = [...value, ...newUrls]
         onChange(updated, primary ?? updated[0])
+        setDebug(null)
       }
       if (errors.length > 0) {
         setError(errors.join(' · '))
+        setDebug(null)
       }
     })
   }
@@ -110,15 +113,7 @@ export function MultiImageUpload({
 
   return (
     <div className="space-y-2">
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        capture={capture}
-        multiple
-        onChange={handleFiles}
-        className="hidden"
-      />
+      {/* Skjult input refereres af label nedenfor — mere pålideligt på iOS Safari end programmatisk .click() */}
 
       {value.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
@@ -167,13 +162,35 @@ export function MultiImageUpload({
       )}
 
       {value.length < maxImages && (
-        <Button type="button" variant="outline" className="w-full" onClick={handlePick} disabled={pending}>
+        <label
+          className={cn(
+            'inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium cursor-pointer hover:bg-accent transition-colors',
+            pending && 'opacity-60 pointer-events-none'
+          )}
+        >
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            capture={capture}
+            multiple
+            onChange={handleFiles}
+            disabled={pending}
+            className="sr-only"
+          />
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
           {pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}
-        </Button>
+        </label>
       )}
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {debug && !error && (
+        <p className="text-xs text-muted-foreground">{debug}</p>
+      )}
+      {error && (
+        <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
+          {error}
+        </div>
+      )}
     </div>
   )
 }

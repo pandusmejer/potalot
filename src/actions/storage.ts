@@ -4,8 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 
 const BUCKET = 'media'
-const MAX_BYTES = 5 * 1024 * 1024
-const ALLOWED = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_BYTES = 10 * 1024 * 1024
+// Accept all common image formats. iPhone-kamera leverer ofte HEIC/HEIF.
+// Vi afviser stadig non-image typer.
+const ALLOWED_PREFIX = 'image/'
 
 export type UploadFolder = 'froebank' | 'planter' | 'log' | 'profil' | 'idetavle'
 
@@ -19,10 +21,14 @@ export async function uploadImage(
 
   if (!(file instanceof File)) return { error: 'Ingen fil' }
   if (!folder) return { error: 'Mangler folder' }
-  if (file.size > MAX_BYTES) return { error: 'Billede for stort (max 5MB)' }
-  if (!ALLOWED.includes(file.type)) return { error: 'Ugyldig filtype' }
+  if (file.size > MAX_BYTES) return { error: `Billede for stort (max ${MAX_BYTES / 1024 / 1024}MB)` }
+  if (!file.type.startsWith(ALLOWED_PREFIX)) return { error: `Ugyldig filtype: ${file.type || 'ukendt'}` }
 
-  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+  const ext =
+    file.type === 'image/png' ? 'png' :
+    file.type === 'image/webp' ? 'webp' :
+    file.type === 'image/heic' ? 'heic' :
+    file.type === 'image/heif' ? 'heif' : 'jpg'
   const path = `${userId}/${folder}/${crypto.randomUUID()}.${ext}`
 
   const supabase = await createClient()
