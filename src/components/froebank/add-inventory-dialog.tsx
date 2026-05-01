@@ -20,6 +20,7 @@ import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { extractSeedPacketFields, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
 import { parseInventoryFile, confirmImportInventory, type ImportRow } from '@/actions/inventory-import'
+import { cn } from '@/lib/utils'
 
 type Mode = 'select' | 'camera' | 'library' | 'excel' | 'manuel' | 'oenskeliste'
 
@@ -54,8 +55,10 @@ export function AddInventoryDialog({ children }: Props) {
   const [scanName, setScanName] = useState('')
   const [scanImages, setScanImages] = useState<string[]>([])
   const [scanPrimary, setScanPrimary] = useState<string | null>(null)
-  const [scanExtracting, setScanExtracting] = useState(false)
+  const [scanStage, setScanStage] = useState<'idle' | 'reading' | 'creating' | 'done'>('idle')
   const [scanExtracted, setScanExtracted] = useState<ExtractedSeedFields | null>(null)
+  const [scanTarget, setScanTarget] = useState<'froebank' | 'oenskeliste'>('froebank')
+  const [scanCreatedId, setScanCreatedId] = useState<string | null>(null)
 
   // Excel-flow
   const excelInputRef = useRef<HTMLInputElement>(null)
@@ -74,7 +77,7 @@ export function AddInventoryDialog({ children }: Props) {
     setSubcat(''); setQuantity(''); setSeedCount(''); setPurchaseYear(''); setPurchaseUrl('')
     setExpiryDate(''); setNotes(''); setImages([]); setPrimaryImage(null)
     setScanName(''); setScanImages([]); setScanPrimary(null)
-    setScanExtracting(false); setScanExtracted(null)
+    setScanStage('idle'); setScanExtracted(null); setScanTarget('froebank'); setScanCreatedId(null)
     setExcelStep('upload'); setExcelRows([]); setExcelUnmapped([]); setExcelResult(null)
   }
 
@@ -83,65 +86,64 @@ export function AddInventoryDialog({ children }: Props) {
     if (!o) reset()
   }
 
-  async function runScanExtraction(imgs: string[]) {
-    if (imgs.length === 0) return
-    setScanExtracting(true)
+  async function runScanAndCreate(imgs: string[], primary: string | null, target: 'froebank' | 'oenskeliste') {
     setError(null)
-    const res = await extractSeedPacketFields(imgs)
-    setScanExtracting(false)
+    setScanStage('reading')
+    const ext = await extractSeedPacketFields(imgs)
+    let fields: ExtractedSeedFields = {}
+    if ('fields' in ext) {
+      fields = ext.fields
+      setScanExtracted(fields)
+    } else {
+      // AI fejlede — opret alligevel med fallback-navn så billedet ikke går tabt
+      console.warn('AI extraction failed:', ext.error)
+    }
+
+    setScanStage('creating')
+    const fallbackName = `Frøpose – ${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}`
+    const finalName = (fields.name?.trim() || scanName.trim() || fallbackName)
+
+    const res = await createInventoryItem({
+      name: finalName,
+      latinName: fields.latinName,
+      variety: fields.variety,
+      supplier: fields.supplier,
+      primaryCategoryId: target === 'oenskeliste' ? 'indkoebsliste' : (fields.primaryCategoryId ?? 'fro'),
+      seedCount: fields.seedCount,
+      sowingMonths: fields.sowingMonths,
+      sowingDepthMm: fields.sowingDepthMm,
+      plantingOutMonths: fields.plantingOutMonths,
+      harvestMonths: fields.harvestMonths,
+      light: fields.light,
+      water: fields.water,
+      germinationDays: fields.germinationDays,
+      germinationTemperature: fields.germinationTemperature,
+      plantSpacing: fields.plantSpacing,
+      rowSpacing: fields.rowSpacing,
+      notes: fields.notes,
+      imageUrls: imgs,
+      primaryImageUrl: primary ?? undefined,
+    })
+
     if ('error' in res) {
-      setError(`AI kunne ikke læse frøposen: ${res.error}`)
+      setError(`Kunne ikke oprette: ${res.error}`)
+      setScanStage('idle')
       return
     }
-    setScanExtracted(res.fields)
-    if (res.fields.name && !scanName) setScanName(res.fields.name)
+    setScanCreatedId(res.id)
+    setScanStage('done')
+    setScanName(finalName)
+    router.refresh()
   }
 
   function handleScanImagesChange(imgs: string[], p: string | null) {
     const isFirst = scanImages.length === 0 && imgs.length > 0
     setScanImages(imgs)
     setScanPrimary(p)
-    if (isFirst) runScanExtraction(imgs)
-  }
-
-  function handleScanSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    if (!scanName.trim()) {
-      setError('Navn er påkrævet')
-      return
+    if (isFirst) {
+      // Auto-kør hele flowet: AI læser → opretter
+      startTransition(() => runScanAndCreate(imgs, p, scanTarget))
     }
-    const ex = scanExtracted ?? {}
-    startTransition(async () => {
-      const res = await createInventoryItem({
-        name: scanName.trim(),
-        latinName: ex.latinName,
-        variety: ex.variety,
-        supplier: ex.supplier,
-        primaryCategoryId: ex.primaryCategoryId ?? 'fro',
-        seedCount: ex.seedCount,
-        sowingMonths: ex.sowingMonths,
-        sowingDepthMm: ex.sowingDepthMm,
-        plantingOutMonths: ex.plantingOutMonths,
-        harvestMonths: ex.harvestMonths,
-        light: ex.light,
-        water: ex.water,
-        germinationDays: ex.germinationDays,
-        germinationTemperature: ex.germinationTemperature,
-        plantSpacing: ex.plantSpacing,
-        rowSpacing: ex.rowSpacing,
-        notes: ex.notes,
-        imageUrls: scanImages,
-        primaryImageUrl: scanPrimary ?? undefined,
-      })
-      if ('error' in res) {
-        setError(res.error)
-        return
-      }
-      handleOpenChange(false)
-      router.refresh()
-      router.push(`/froebank/${res.id}`)
-    })
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -280,12 +282,38 @@ export function AddInventoryDialog({ children }: Props) {
         {/* Foto-flows (camera + library) */}
         {(mode === 'camera' || mode === 'library') && (
           <div className="pt-6">
-            <DialogTitle>{mode === 'camera' ? 'Tag billede af frøpose' : 'Upload billede af frøpose'}</DialogTitle>
+            <DialogTitle>{mode === 'camera' ? 'Tag billede' : 'Upload billede'}</DialogTitle>
             <DialogDescription>
-              AI læser frøposen og auto-udfylder felterne.
+              AI læser billedet og opretter automatisk i {scanTarget === 'oenskeliste' ? 'din ønskeliste' : 'frøbanken'}.
             </DialogDescription>
 
-            <form onSubmit={handleScanSubmit} className="space-y-3 mt-3">
+            <div className="space-y-4 mt-3">
+              {/* Mål: Frøbank eller Ønskeliste */}
+              {scanStage === 'idle' && scanImages.length === 0 && (
+                <div className="flex gap-2 p-1 bg-muted rounded-lg">
+                  <button
+                    type="button"
+                    onClick={() => setScanTarget('froebank')}
+                    className={cn(
+                      'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors',
+                      scanTarget === 'froebank' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
+                    )}
+                  >
+                    Frøbank
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setScanTarget('oenskeliste')}
+                    className={cn(
+                      'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors',
+                      scanTarget === 'oenskeliste' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
+                    )}
+                  >
+                    Ønskeliste
+                  </button>
+                </div>
+              )}
+
               <MultiImageUpload
                 value={scanImages}
                 primary={scanPrimary}
@@ -296,50 +324,64 @@ export function AddInventoryDialog({ children }: Props) {
                 label={mode === 'camera' ? 'Tag billede' : 'Vælg billede(r)'}
               />
 
-              {scanExtracting && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary/30 rounded-lg p-3">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Læser frøposen med AI…
-                </div>
-              )}
-
-              {scanExtracted && !scanExtracting && (
-                <div className="bg-secondary/30 rounded-lg p-3 space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-foreground font-medium">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
-                    Felter fra frøposen
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
-                    {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
-                    {scanExtracted.supplier && <Field label="Leverandør" value={scanExtracted.supplier} />}
-                    {scanExtracted.seedCount != null && <Field label="Antal frø" value={String(scanExtracted.seedCount)} />}
-                    {scanExtracted.sowingMonths?.length ? <Field label="Sås" value={scanExtracted.sowingMonths.join(', ')} /> : null}
-                    {scanExtracted.harvestMonths?.length ? <Field label="Høst" value={scanExtracted.harvestMonths.join(', ')} /> : null}
+              {(scanStage === 'reading' || scanStage === 'creating') && (
+                <div className="flex items-center gap-3 text-sm bg-secondary/40 rounded-lg p-4">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">
+                      {scanStage === 'reading' ? 'Læser billedet med AI…' : 'Opretter…'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {scanStage === 'reading' ? 'Genkender navn, sort, leverandør, antal frø osv.' : 'Gemmer i ' + (scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank')}
+                    </p>
                   </div>
                 </div>
               )}
 
-              <div>
-                <Label>Navn *</Label>
-                <Input
-                  value={scanName}
-                  onChange={e => setScanName(e.target.value)}
-                  placeholder="Fx. Tomat"
-                  required
-                  className="mt-1.5"
-                />
-              </div>
+              {scanStage === 'done' && scanCreatedId && (
+                <div className="bg-primary/5 border border-primary/30 rounded-lg p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Check className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-serif text-lg text-foreground">Oprettet i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}</p>
+                      <p className="text-sm text-muted-foreground">{scanName}</p>
+                    </div>
+                  </div>
+                  {scanExtracted && (
+                    <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-primary/20">
+                      {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
+                      {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
+                      {scanExtracted.supplier && <Field label="Leverandør" value={scanExtracted.supplier} />}
+                      {scanExtracted.seedCount != null && <Field label="Antal frø" value={String(scanExtracted.seedCount)} />}
+                    </div>
+                  )}
+                  <div className="flex gap-2 flex-wrap">
+                    <Button
+                      onClick={() => {
+                        handleOpenChange(false)
+                        router.push(`/froebank/${scanCreatedId}`)
+                      }}
+                    >
+                      Se i frøbank
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        // Reset til at scanne én mere
+                        setScanImages([]); setScanPrimary(null)
+                        setScanStage('idle'); setScanExtracted(null); setScanCreatedId(null); setScanName('')
+                      }}
+                    >
+                      Scan en til
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               {error && <p className="text-sm text-destructive">{error}</p>}
-
-              <DialogFooter>
-                <Button type="submit" disabled={pending || scanExtracting}>
-                  <Plus className="h-4 w-4" />
-                  {pending ? 'Opretter…' : 'Opret'}
-                </Button>
-              </DialogFooter>
-            </form>
+            </div>
           </div>
         )}
 
