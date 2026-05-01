@@ -270,7 +270,11 @@ export function AddInventoryDialog({ children }: Props) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent
+        className="max-w-2xl"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <button
           type="button"
           onClick={() => { reset(); setMode('select') }}

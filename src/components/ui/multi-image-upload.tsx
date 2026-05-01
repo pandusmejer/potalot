@@ -162,25 +162,27 @@ export function MultiImageUpload({
       )}
 
       {value.length < maxImages && (
-        <label
+        <div
           className={cn(
-            'inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium cursor-pointer hover:bg-accent transition-colors',
-            pending && 'opacity-60 pointer-events-none'
+            'relative inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium hover:bg-accent transition-colors',
+            pending && 'opacity-60'
           )}
         >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            capture={capture}
-            multiple
-            onChange={handleFiles}
-            disabled={pending}
-            className="sr-only"
-          />
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-          {pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}
-        </label>
+          <span>{pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}</span>
+          {!pending && (
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              capture={capture}
+              multiple={!capture}
+              onChange={handleFiles}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              aria-label={value.length === 0 ? label : 'Tilføj flere billeder'}
+            />
+          )}
+        </div>
       )}
 
       {debug && !error && (
