@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
+import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2, Star } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { cn } from '@/lib/utils'
@@ -35,18 +36,10 @@ export function MultiImageUpload({
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [debug, setDebug] = useState<string | null>(null)
-  const [log, setLog] = useState<string[]>([])
-
-  function addLog(msg: string) {
-    const t = new Date().toLocaleTimeString('da-DK')
-    setLog(prev => [...prev.slice(-9), `[${t}] ${msg}`])
-  }
 
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    addLog('change-event fyret')
     setError(null)
     const files = e.target.files
-    addLog(`files = ${files?.length ?? 0}`)
     setDebug(`Modtog ${files?.length ?? 0} fil(er)…`)
     if (!files || files.length === 0) {
       setDebug('Ingen fil valgt.')
@@ -66,24 +59,19 @@ export function MultiImageUpload({
       const errors: string[] = []
       for (const file of toUpload) {
         try {
-          addLog(`upload start: ${file.name} ${Math.round(file.size / 1024)}KB ${file.type || '?'}`)
           setDebug(`Uploader "${file.name}" (${Math.round(file.size / 1024)} KB)…`)
           const fd = new FormData()
           fd.append('file', file)
           fd.append('folder', folder)
           const response = await fetch('/api/images/upload', { method: 'POST', body: fd })
-          addLog(`response status: ${response.status}`)
           const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
           if (!response.ok) {
-            addLog(`fejl: ${json.error ?? 'no message'}`)
             errors.push(`${file.name}: ${json.error ?? 'Upload fejlede'}`)
             continue
           }
-          addLog(`upload OK: ${(json.url as string).slice(-30)}`)
           newUrls.push(json.url as string)
         } catch (e: unknown) {
           const msg = e instanceof Error ? e.message : 'netværksfejl'
-          addLog(`exception: ${msg}`)
           errors.push(`${file.name}: ${msg}`)
         }
       }
@@ -161,27 +149,27 @@ export function MultiImageUpload({
       )}
 
       {value.length < maxImages && (
-        <div
-          className={cn(
-            'relative inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium hover:bg-accent transition-colors',
-            pending && 'opacity-60'
-          )}
-        >
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-          <span>{pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}</span>
-          {!pending && (
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              capture={capture}
-              multiple={!capture}
-              onChange={handleFiles}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              aria-label={value.length === 0 ? label : 'Tilføj flere billeder'}
-            />
-          )}
-        </div>
+        <>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            capture={capture}
+            multiple={!capture}
+            onChange={handleFiles}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => inputRef.current?.click()}
+            disabled={pending}
+          >
+            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+            {pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}
+          </Button>
+        </>
       )}
 
       {debug && !error && (
@@ -193,24 +181,6 @@ export function MultiImageUpload({
         </div>
       )}
 
-      {/* Debug-log: midlertidig synlig event-log mens vi diagnosticerer */}
-      {log.length > 0 && (
-        <details className="text-[10px] text-muted-foreground mt-2" open>
-          <summary className="cursor-pointer select-none">Debug ({log.length})</summary>
-          <pre className="bg-muted/50 rounded p-2 mt-1 overflow-x-auto whitespace-pre-wrap break-words">
-            {log.join('\n')}
-          </pre>
-        </details>
-      )}
-
-      {/* Tap-tracking: viser om browseren overhovedet registrerer klik på input-området */}
-      <button
-        type="button"
-        onClick={() => addLog(`tap registreret · userAgent: ${navigator.userAgent.slice(0, 60)}…`)}
-        className="text-[10px] text-muted-foreground/70 underline"
-      >
-        Tjek om tap virker
-      </button>
     </div>
   )
 }

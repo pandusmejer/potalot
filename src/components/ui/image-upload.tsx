@@ -1,25 +1,33 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
+import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2 } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
-import { cn } from '@/lib/utils'
 
 interface Props {
   value: string | null
   onChange: (url: string | null) => void
   folder: UploadFolder
   label?: string
+  capture?: 'user' | 'environment'
 }
 
 /**
  * Upload ét billede. Sender rå fil til /api/images/upload som
  * håndterer HEIC→JPEG, EXIF-rotation, resize og thumbnail.
+ *
+ * Bruger samme button + hidden input + programmatic .click() pattern
+ * som tidligere fik profilbillede-upload til at virke.
  */
-export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede' }: Props) {
+export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede', capture }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+
+  function handlePick() {
+    inputRef.current?.click()
+  }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
@@ -72,25 +80,18 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
 
   return (
     <div className="space-y-1.5">
-      <div
-        className={cn(
-          'relative inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium hover:bg-accent transition-colors',
-          pending && 'opacity-60'
-        )}
-      >
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        capture={capture}
+        onChange={handleFile}
+        className="hidden"
+      />
+      <Button type="button" variant="outline" className="w-full" onClick={handlePick} disabled={pending}>
         {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-        <span>{pending ? 'Uploader…' : label}</span>
-        {!pending && (
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFile}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            aria-label={label}
-          />
-        )}
-      </div>
+        {pending ? 'Uploader…' : label}
+      </Button>
       {error && (
         <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
           {error}

@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
+import { ImageUpload } from '@/components/ui/image-upload'
 import {
   Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles,
   Plus, Loader2, ArrowLeft, Upload, Download, Check,
@@ -123,6 +124,20 @@ export function TilfoejFlow({ initialMode }: Props) {
     }
   }
 
+  // Bruges af single-image ImageUpload i camera/library mode (samme pattern
+  // som det fik profilbillede-upload til at virke tidligere).
+  function handleSingleImageChange(url: string | null) {
+    if (!url) {
+      setScanImages([])
+      setScanPrimary(null)
+      return
+    }
+    const imgs = [url]
+    setScanImages(imgs)
+    setScanPrimary(url)
+    startTransition(() => runScanAndCreate(imgs, url, scanTarget))
+  }
+
   function handleManualSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -234,14 +249,14 @@ export function TilfoejFlow({ initialMode }: Props) {
               </div>
             )}
 
-            <MultiImageUpload
-              value={scanImages}
-              primary={scanPrimary}
-              onChange={handleScanImagesChange}
+            {/* Single-image ImageUpload (button + .click()-pattern) er det
+                der virkede i tidligere version (profilbillede-upload). */}
+            <ImageUpload
+              value={scanImages[0] ?? null}
+              onChange={handleSingleImageChange}
               folder="froebank"
-              maxImages={6}
               capture={mode === 'camera' ? 'environment' : undefined}
-              label={mode === 'camera' ? 'Tag billede' : 'Vælg billede(r)'}
+              label={mode === 'camera' ? 'Tag billede' : 'Vælg billede'}
             />
 
             {(scanStage === 'reading' || scanStage === 'creating') && (
