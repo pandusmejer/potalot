@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2 } from 'lucide-react'
-import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
+import { deleteImage, type UploadFolder } from '@/actions/storage'
 
 interface Props {
   value: string | null
@@ -38,14 +38,15 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         const fd = new FormData()
         fd.append('file', file)
         fd.append('folder', folder)
-        const res = await uploadImage(fd)
-        if ('error' in res) {
-          setError(res.error)
+        const response = await fetch('/api/upload', { method: 'POST', body: fd })
+        const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+        if (!response.ok) {
+          setError(json.error ?? `HTTP ${response.status}`)
           return
         }
-        onChange(res.url)
+        onChange(json.url as string)
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'ukendt fejl'
+        const msg = e instanceof Error ? e.message : 'netværksfejl'
         setError(`Upload fejlede: ${msg}`)
       }
     })

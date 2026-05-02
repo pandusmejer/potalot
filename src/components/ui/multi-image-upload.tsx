@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2, Star } from 'lucide-react'
-import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
+import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -63,12 +63,13 @@ export function MultiImageUpload({
           const fd = new FormData()
           fd.append('file', file)
           fd.append('folder', folder)
-          const res = await uploadImage(fd)
-          if ('error' in res) {
-            errors.push(`${file.name}: ${res.error}`)
+          const response = await fetch('/api/upload', { method: 'POST', body: fd })
+          const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+          if (!response.ok) {
+            errors.push(`${file.name}: ${json.error ?? `HTTP ${response.status}`}`)
             continue
           }
-          newUrls.push(res.url)
+          newUrls.push(json.url as string)
         } catch (e: unknown) {
           const msg = e instanceof Error ? e.message : 'ukendt fejl'
           errors.push(`${file.name}: ${msg}`)
