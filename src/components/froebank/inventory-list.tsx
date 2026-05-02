@@ -2,9 +2,9 @@
 
 import { useState, useMemo, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { CategoryTabs } from './category-tabs'
 import { InventoryCard } from './inventory-card'
-import { AddInventoryDialog } from './add-inventory-dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -185,12 +185,12 @@ export function InventoryListView({ inventory, customSubcategories = MOCK_CUSTOM
         </Button>
 
         {!selectMode && (
-          <AddInventoryDialog>
-            <Button>
+          <Button asChild>
+            <Link href="/froebank/tilfoej">
               <Plus className="h-4 w-4" />
               Tilføj
-            </Button>
-          </AddInventoryDialog>
+            </Link>
+          </Button>
         )}
       </div>
 
