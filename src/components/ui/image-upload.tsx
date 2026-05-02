@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2 } from 'lucide-react'
-import { deleteImage, type UploadFolder } from '@/actions/storage'
+import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
 
 interface Props {
   value: string | null
@@ -14,11 +14,9 @@ interface Props {
 }
 
 /**
- * Upload ét billede. Sender rå fil til /api/images/upload som
- * håndterer HEIC→JPEG, EXIF-rotation, resize og thumbnail.
- *
- * Bruger samme button + hidden input + programmatic .click() pattern
- * som tidligere fik profilbillede-upload til at virke.
+ * Upload ét billede via uploadImage server action — samme pattern som
+ * fik profilbillede-upload til at virke. Sender rå fil til Supabase
+ * Storage uden server-side billedprocessering.
  */
 export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede', capture }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -40,15 +38,14 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         const fd = new FormData()
         fd.append('file', file)
         fd.append('folder', folder)
-        const response = await fetch('/api/images/upload', { method: 'POST', body: fd })
-        const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
-        if (!response.ok) {
-          setError(json.error ?? 'Upload fejlede')
+        const res = await uploadImage(fd)
+        if ('error' in res) {
+          setError(res.error)
           return
         }
-        onChange(json.url as string)
+        onChange(res.url)
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'netværksfejl'
+        const msg = e instanceof Error ? e.message : 'ukendt fejl'
         setError(`Upload fejlede: ${msg}`)
       }
     })
