@@ -1,31 +1,25 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
-import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2 } from 'lucide-react'
-import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
+import { deleteImage, type UploadFolder } from '@/actions/storage'
+import { cn } from '@/lib/utils'
 
 interface Props {
   value: string | null
   onChange: (url: string | null) => void
   folder: UploadFolder
   label?: string
-  /** Max billed-bredde/-højde efter resize (default 1600). */
-  maxDimension?: number
 }
 
 /**
- * Upload ét billede. Resizer client-side til JPEG max-dimension før upload
- * for at spare båndbredde og storage.
+ * Upload ét billede. Sender rå fil til /api/images/upload som
+ * håndterer HEIC→JPEG, EXIF-rotation, resize og thumbnail.
  */
-export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede', maxDimension = 1600 }: Props) {
+export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede' }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-
-  function handlePick() {
-    inputRef.current?.click()
-  }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
@@ -35,24 +29,18 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
 
     startTransition(async () => {
       try {
-        let blob: Blob
-        try {
-          blob = await resizeImage(file, maxDimension)
-        } catch {
-          setError('Kunne ikke læse billedet. Prøv et andet.')
-          return
-        }
         const fd = new FormData()
-        fd.append('file', new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
+        fd.append('file', file)
         fd.append('folder', folder)
-        const res = await uploadImage(fd)
-        if ('error' in res) {
-          setError(res.error)
+        const response = await fetch('/api/images/upload', { method: 'POST', body: fd })
+        const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+        if (!response.ok) {
+          setError(json.error ?? 'Upload fejlede')
           return
         }
-        onChange(res.url)
+        onChange(json.url as string)
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'ukendt fejl'
+        const msg = e instanceof Error ? e.message : 'netværksfejl'
         setError(`Upload fejlede: ${msg}`)
       }
     })
@@ -62,7 +50,6 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
     if (!value) return
     const oldUrl = value
     onChange(null)
-    // best-effort sletning
     deleteImage(oldUrl).catch(() => {})
   }
 
@@ -85,50 +72,30 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
 
   return (
     <div className="space-y-1.5">
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFile}
-        className="hidden"
-      />
-      <Button type="button" variant="outline" className="w-full" onClick={handlePick} disabled={pending}>
+      <div
+        className={cn(
+          'relative inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg border border-input bg-card text-sm font-medium hover:bg-accent transition-colors',
+          pending && 'opacity-60'
+        )}
+      >
         {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-        {pending ? 'Uploader…' : label}
-      </Button>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+        <span>{pending ? 'Uploader…' : label}</span>
+        {!pending && (
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFile}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            aria-label={label}
+          />
+        )}
+      </div>
+      {error && (
+        <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
+          {error}
+        </div>
+      )}
     </div>
   )
-}
-
-async function resizeImage(file: File, maxDim: number): Promise<Blob> {
-  const url = URL.createObjectURL(file)
-  try {
-    const img = await loadImage(url)
-    const ratio = Math.min(1, maxDim / Math.max(img.width, img.height))
-    const w = Math.round(img.width * ratio)
-    const h = Math.round(img.height * ratio)
-
-    const canvas = document.createElement('canvas')
-    canvas.width = w
-    canvas.height = h
-    const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Canvas not supported')
-    ctx.drawImage(img, 0, 0, w, h)
-
-    return await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/jpeg', 0.85)
-    })
-  } finally {
-    URL.revokeObjectURL(url)
-  }
-}
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = reject
-    img.src = src
-  })
 }

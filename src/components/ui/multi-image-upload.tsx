@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from 'react'
 import { Camera, X, Loader2, Star } from 'lucide-react'
-import { uploadImage, deleteImage, type UploadFolder } from '@/actions/storage'
+import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -11,8 +11,6 @@ interface Props {
   primary: string | null
   onChange: (images: string[], primary: string | null) => void
   folder: UploadFolder
-  /** Max billed-bredde/-højde efter resize (default 1600). */
-  maxDimension?: number
   /** Max antal billeder (default 8). */
   maxImages?: number
   label?: string
@@ -21,15 +19,14 @@ interface Props {
 }
 
 /**
- * Upload flere billeder med valg af primært. Resizer client-side til
- * JPEG max-dimension før upload.
+ * Upload flere billeder. Sender rå fil til /api/images/upload som
+ * håndterer HEIC→JPEG-konvertering, EXIF-rotation, resize og thumbnail.
  */
 export function MultiImageUpload({
   value,
   primary,
   onChange,
   folder,
-  maxDimension = 1600,
   maxImages = 8,
   label = 'Tilføj billede',
   capture,
@@ -61,30 +58,19 @@ export function MultiImageUpload({
       const errors: string[] = []
       for (const file of toUpload) {
         try {
-          setDebug(`Behandler "${file.name}" (${Math.round(file.size / 1024)} KB, ${file.type || 'ukendt type'})…`)
-          // Forsøg resize → JPEG. Hvis canvas ikke kan tegne (fx HEIC i Chrome)
-          // sender vi originalen — serveren accepterer alle image/* MIME-typer.
-          let blob: Blob = file
-          let outName = file.name
-          let outType = file.type
-          try {
-            blob = await resizeImage(file, maxDimension)
-            outName = file.name.replace(/\.[^.]+$/, '.jpg')
-            outType = 'image/jpeg'
-          } catch {
-            // Brug original — server håndterer evt. HEIC
-          }
+          setDebug(`Uploader "${file.name}" (${Math.round(file.size / 1024)} KB)…`)
           const fd = new FormData()
-          fd.append('file', new File([blob], outName, { type: outType || 'image/jpeg' }))
+          fd.append('file', file)
           fd.append('folder', folder)
-          const res = await uploadImage(fd)
-          if ('error' in res) {
-            errors.push(`${file.name}: ${res.error}`)
+          const response = await fetch('/api/images/upload', { method: 'POST', body: fd })
+          const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+          if (!response.ok) {
+            errors.push(`${file.name}: ${json.error ?? 'Upload fejlede'}`)
             continue
           }
-          newUrls.push(res.url)
+          newUrls.push(json.url as string)
         } catch (e: unknown) {
-          const msg = e instanceof Error ? e.message : 'ukendt fejl'
+          const msg = e instanceof Error ? e.message : 'netværksfejl'
           errors.push(`${file.name}: ${msg}`)
         }
       }
@@ -197,34 +183,3 @@ export function MultiImageUpload({
   )
 }
 
-async function resizeImage(file: File, maxDim: number): Promise<Blob> {
-  const url = URL.createObjectURL(file)
-  try {
-    const img = await loadImage(url)
-    const ratio = Math.min(1, maxDim / Math.max(img.width, img.height))
-    const w = Math.round(img.width * ratio)
-    const h = Math.round(img.height * ratio)
-
-    const canvas = document.createElement('canvas')
-    canvas.width = w
-    canvas.height = h
-    const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Canvas not supported')
-    ctx.drawImage(img, 0, 0, w, h)
-
-    return await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/jpeg', 0.85)
-    })
-  } finally {
-    URL.revokeObjectURL(url)
-  }
-}
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = reject
-    img.src = src
-  })
-}
