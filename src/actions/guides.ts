@@ -305,3 +305,66 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
   revalidatePath('/guides')
   return { id: data.id as string }
 }
+
+/**
+ * Sikrer at et inventory item har en guide tilknyttet:
+ *  1. Hvis allerede tilknyttet → ingen handling
+ *  2. Hvis et andet item med samme plantName har en guide → genbrug
+ *  3. Ellers AI-generér ny guide og tilknyt
+ *
+ * Tænkt brugt som baggrundsjob via Next.js after() efter createInventoryItem.
+ */
+export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
+  { ok: true; guideId: string; reused: boolean; generated: boolean }
+  | { ok: true; alreadyAttached: true }
+  | { error: string }
+> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const { data: item } = await supabase
+    .from('inventory_items')
+    .select('id, name, latin_name, variety, primary_category_id, guide_id')
+    .eq('id', inventoryId)
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (!item) return { error: 'Item not found' }
+  if (item.guide_id) return { ok: true, alreadyAttached: true }
+
+  const plantName = (item.name as string).trim()
+
+  // Find eksisterende guide for samme plantName (case-insensitive)
+  const { data: existing } = await supabase
+    .from('guides')
+    .select('id')
+    .ilike('plant_name', plantName)
+    .order('created_at', { ascending: true })
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    const guideId = existing[0].id as string
+    await supabase
+      .from('inventory_items')
+      .update({ guide_id: guideId, updated_at: new Date().toISOString() })
+      .eq('id', inventoryId)
+      .eq('user_id', userId)
+    revalidatePath(`/froebank/${inventoryId}`)
+    return { ok: true, guideId, reused: true, generated: false }
+  }
+
+  const gen = await generateGuideWithAI({
+    plantName,
+    latinName: (item.latin_name as string | null) ?? undefined,
+    variety: (item.variety as string | null) ?? undefined,
+    primaryCategoryId: item.primary_category_id as PrimaryCategoryId,
+  })
+  if ('error' in gen) return { error: gen.error }
+
+  await supabase
+    .from('inventory_items')
+    .update({ guide_id: gen.id, updated_at: new Date().toISOString() })
+    .eq('id', inventoryId)
+    .eq('user_id', userId)
+  revalidatePath(`/froebank/${inventoryId}`)
+  return { ok: true, guideId: gen.id, reused: false, generated: true }
+}

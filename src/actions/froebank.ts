@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
+import { ensureGuideForInventoryItem } from '@/actions/guides'
 import type { InventoryItem, PrimaryCategoryId, InventoryStatus, GrowingLocation } from '@/lib/types'
 
 interface InventoryRow {
@@ -214,8 +216,20 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
 
   if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
 
+  const newId = data.id as string
   revalidatePath('/froebank')
-  return { id: data.id as string }
+
+  // Baggrund: tilknyt eksisterende guide eller AI-generér en ny.
+  // Køres efter response så bruger ikke skal vente.
+  after(async () => {
+    try {
+      await ensureGuideForInventoryItem(newId)
+    } catch (e) {
+      console.error('[ensureGuideForInventoryItem] fejl:', e)
+    }
+  })
+
+  return { id: newId }
 }
 
 export async function updateInventoryItem(
