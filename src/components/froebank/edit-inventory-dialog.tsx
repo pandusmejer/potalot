@@ -10,10 +10,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
-import { Pencil } from 'lucide-react'
+import { Pencil, Wand2, Loader2 } from 'lucide-react'
 import type { InventoryItem, PrimaryCategoryId } from '@/lib/types'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import { updateInventoryItem } from '@/actions/froebank'
+import { extractSeedPacketFields } from '@/actions/seed-packet-extract'
 
 interface Props {
   item: InventoryItem
@@ -40,8 +41,38 @@ export function EditInventoryDialog({ item }: Props) {
   const [images, setImages] = useState<string[]>(item.imageIds.length > 0 ? item.imageIds : item.primaryImageId ? [item.primaryImageId] : [])
   const [primaryImage, setPrimaryImage] = useState<string | null>(item.primaryImageId ?? null)
 
+  const [aiPending, setAiPending] = useState(false)
+  const [aiInfo, setAiInfo] = useState<string | null>(null)
+
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
+
+  async function handleReadWithAI() {
+    if (images.length === 0) return
+    setError(null)
+    setAiInfo(null)
+    setAiPending(true)
+    try {
+      const res = await extractSeedPacketFields(images)
+      if ('error' in res) {
+        setError(`AI: ${res.error}`)
+        return
+      }
+      const f = res.fields
+      const filled: string[] = []
+      if (!name.trim() && f.name)              { setName(f.name); filled.push('navn') }
+      if (!latinName.trim() && f.latinName)    { setLatinName(f.latinName); filled.push('latinsk navn') }
+      if (!variety.trim() && f.variety)        { setVariety(f.variety); filled.push('sort') }
+      if (!supplier.trim() && f.supplier)      { setSupplier(f.supplier); filled.push('leverandør') }
+      if (isFroe && !seedCount && f.seedCount != null) { setSeedCount(String(f.seedCount)); filled.push('antal frø') }
+      if (!notes.trim() && f.notes)            { setNotes(f.notes); filled.push('noter') }
+      setAiInfo(filled.length > 0
+        ? `Udfyldte: ${filled.join(', ')}. Klik Gem for at gemme.`
+        : 'AI fandt ikke ny info som ikke allerede er udfyldt.')
+    } finally {
+      setAiPending(false)
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -169,7 +200,7 @@ export function EditInventoryDialog({ item }: Props) {
 
           <div>
             <Label>Billeder</Label>
-            <div className="mt-1.5">
+            <div className="mt-1.5 space-y-2">
               <MultiImageUpload
                 value={images}
                 primary={primaryImage}
@@ -177,6 +208,13 @@ export function EditInventoryDialog({ item }: Props) {
                 folder="froebank"
                 label="Tilføj billede(r)"
               />
+              {images.length > 0 && (
+                <Button type="button" variant="outline" className="w-full" onClick={handleReadWithAI} disabled={aiPending}>
+                  {aiPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                  {aiPending ? 'Læser…' : 'Genlæs billeder med AI'}
+                </Button>
+              )}
+              {aiInfo && <p className="text-xs text-muted-foreground">{aiInfo}</p>}
             </div>
           </div>
 

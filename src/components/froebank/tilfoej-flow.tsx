@@ -10,19 +10,18 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
-import { ImageUpload } from '@/components/ui/image-upload'
 import {
-  Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles,
-  Plus, Loader2, ArrowLeft, Upload, Download, Check,
+  Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles, Link2,
+  Plus, Loader2, ArrowLeft, Upload, Download, Check, Wand2,
 } from 'lucide-react'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
-import { extractSeedPacketFields, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
+import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
 import { parseInventoryFile, confirmImportInventory, type ImportRow } from '@/actions/inventory-import'
 import { cn } from '@/lib/utils'
 
-type Mode = 'select' | 'camera' | 'library' | 'excel' | 'manuel' | 'oenskeliste'
+type Mode = 'select' | 'camera' | 'library' | 'link' | 'excel' | 'manuel' | 'oenskeliste'
 
 interface Props {
   initialMode: Mode
@@ -58,6 +57,9 @@ export function TilfoejFlow({ initialMode }: Props) {
   const [scanExtracted, setScanExtracted] = useState<ExtractedSeedFields | null>(null)
   const [scanTarget, setScanTarget] = useState<'froebank' | 'oenskeliste'>('froebank')
   const [scanCreatedId, setScanCreatedId] = useState<string | null>(null)
+
+  // Link
+  const [linkUrl, setLinkUrl] = useState('')
 
   // Excel
   const excelInputRef = useRef<HTMLInputElement>(null)
@@ -116,26 +118,69 @@ export function TilfoejFlow({ initialMode }: Props) {
   }
 
   function handleScanImagesChange(imgs: string[], p: string | null) {
-    const isFirst = scanImages.length === 0 && imgs.length > 0
     setScanImages(imgs)
     setScanPrimary(p)
-    if (isFirst) {
-      startTransition(() => runScanAndCreate(imgs, p, scanTarget))
-    }
   }
 
-  // Bruges af single-image ImageUpload i camera/library mode (samme pattern
-  // som det fik profilbillede-upload til at virke tidligere).
-  function handleSingleImageChange(url: string | null) {
-    if (!url) {
-      setScanImages([])
-      setScanPrimary(null)
+  function handleScanStart() {
+    if (scanImages.length === 0) return
+    startTransition(() => runScanAndCreate(scanImages, scanPrimary, scanTarget))
+  }
+
+  async function runLinkAndCreate(url: string, target: 'froebank' | 'oenskeliste') {
+    setError(null)
+    setScanStage('reading')
+    const ext = await extractSeedFromUrl(url)
+    if ('error' in ext) {
+      setError(ext.error)
+      setScanStage('idle')
       return
     }
-    const imgs = [url]
-    setScanImages(imgs)
-    setScanPrimary(url)
-    startTransition(() => runScanAndCreate(imgs, url, scanTarget))
+    setScanExtracted(ext.fields)
+    setScanStage('creating')
+    const fallbackName = `Link – ${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}`
+    const finalName = (ext.fields.name?.trim() || fallbackName)
+    const imgs = ext.primaryImageUrl ? [ext.primaryImageUrl] : []
+
+    const res = await createInventoryItem({
+      name: finalName,
+      latinName: ext.fields.latinName,
+      variety: ext.fields.variety,
+      supplier: ext.fields.supplier,
+      primaryCategoryId: target === 'oenskeliste' ? 'indkoebsliste' : (ext.fields.primaryCategoryId ?? 'fro'),
+      seedCount: ext.fields.seedCount,
+      sowingMonths: ext.fields.sowingMonths,
+      sowingDepthMm: ext.fields.sowingDepthMm,
+      plantingOutMonths: ext.fields.plantingOutMonths,
+      harvestMonths: ext.fields.harvestMonths,
+      light: ext.fields.light,
+      water: ext.fields.water,
+      germinationDays: ext.fields.germinationDays,
+      germinationTemperature: ext.fields.germinationTemperature,
+      plantSpacing: ext.fields.plantSpacing,
+      rowSpacing: ext.fields.rowSpacing,
+      notes: ext.fields.notes,
+      purchaseUrl: ext.sourceUrl,
+      imageUrls: imgs,
+      primaryImageUrl: imgs[0],
+    })
+
+    if ('error' in res) {
+      setError(`Kunne ikke oprette: ${res.error}`)
+      setScanStage('idle')
+      return
+    }
+    setScanCreatedId(res.id)
+    setScanStage('done')
+    setScanName(finalName)
+    router.refresh()
+  }
+
+  function handleLinkSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = linkUrl.trim()
+    if (!trimmed) return
+    startTransition(() => runLinkAndCreate(trimmed, scanTarget))
   }
 
   function handleManualSubmit(e: React.FormEvent) {
@@ -209,6 +254,7 @@ export function TilfoejFlow({ initialMode }: Props) {
           {mode === 'select' && 'Tilføj til frøbank'}
           {mode === 'camera' && 'Tag billede'}
           {mode === 'library' && 'Upload billede'}
+          {mode === 'link' && 'Indsæt link'}
           {mode === 'excel' && 'Importér Excel'}
           {mode === 'manuel' && 'Opret manuelt'}
           {mode === 'oenskeliste' && 'Hent fra ønskeliste'}
@@ -220,6 +266,7 @@ export function TilfoejFlow({ initialMode }: Props) {
         <div className="grid grid-cols-2 gap-2">
           <ChoiceCard icon={<Camera className="h-5 w-5" />} title="Tag billede" subtitle="Brug kamera" onClick={() => setMode('camera')} />
           <ChoiceCard icon={<ImageIcon className="h-5 w-5" />} title="Upload billede" subtitle="Fra kamerarulle" onClick={() => setMode('library')} />
+          <ChoiceCard icon={<Link2 className="h-5 w-5" />} title="Indsæt link" subtitle="Webshop-side" onClick={() => setMode('link')} />
           <ChoiceCard icon={<FileSpreadsheet className="h-5 w-5" />} title="Excel" subtitle="Importér fil" onClick={() => setMode('excel')} />
           <ChoiceCard icon={<FileText className="h-5 w-5" />} title="Manuel" subtitle="Indtast selv" onClick={() => setMode('manuel')} />
           <ChoiceCard icon={<Sparkles className="h-5 w-5" />} title="Ønskeliste" subtitle="Hent gemte" onClick={() => setMode('oenskeliste')} fullWidth />
@@ -249,15 +296,25 @@ export function TilfoejFlow({ initialMode }: Props) {
               </div>
             )}
 
-            {/* Single-image ImageUpload (button + .click()-pattern) er det
-                der virkede i tidligere version (profilbillede-upload). */}
-            <ImageUpload
-              value={scanImages[0] ?? null}
-              onChange={handleSingleImageChange}
-              folder="froebank"
-              capture={mode === 'camera' ? 'environment' : undefined}
-              label={mode === 'camera' ? 'Tag billede' : 'Vælg billede'}
-            />
+            {scanStage === 'idle' && (
+              <>
+                <MultiImageUpload
+                  value={scanImages}
+                  primary={scanPrimary}
+                  onChange={handleScanImagesChange}
+                  folder="froebank"
+                  maxImages={4}
+                  capture={mode === 'camera' ? 'environment' : undefined}
+                  label={mode === 'camera' ? 'Tag billede' : 'Vælg billede(r)'}
+                />
+                {scanImages.length > 0 && (
+                  <Button onClick={handleScanStart} disabled={pending} className="w-full">
+                    <Wand2 className="h-4 w-4" />
+                    Læs {scanImages.length} billede{scanImages.length > 1 ? 'r' : ''} med AI
+                  </Button>
+                )}
+              </>
+            )}
 
             {(scanStage === 'reading' || scanStage === 'creating') && (
               <div className="flex items-center gap-3 text-sm bg-secondary/40 rounded-lg p-4">
@@ -301,6 +358,106 @@ export function TilfoejFlow({ initialMode }: Props) {
                     setScanExtracted(null); setScanCreatedId(null); setScanName('')
                   }}>
                     Scan en til
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-3">
+                {error}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* LINK */}
+      {mode === 'link' && (
+        <Card>
+          <CardContent className="space-y-4 py-5">
+            <p className="text-sm text-muted-foreground">
+              Indsæt link til en webshop-side med frø — fx Impecta, Nelson Garden, Solhatt. AI læser siden og opretter automatisk i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbanken'}.
+            </p>
+
+            {scanStage === 'idle' && (
+              <>
+                <div className="flex gap-2 p-1 bg-muted rounded-lg">
+                  <button type="button" onClick={() => setScanTarget('froebank')}
+                    className={cn('flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors',
+                      scanTarget === 'froebank' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground')}>
+                    Frøbank
+                  </button>
+                  <button type="button" onClick={() => setScanTarget('oenskeliste')}
+                    className={cn('flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors',
+                      scanTarget === 'oenskeliste' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground')}>
+                    Ønskeliste
+                  </button>
+                </div>
+
+                <form onSubmit={handleLinkSubmit} className="space-y-3">
+                  <div>
+                    <Label>URL</Label>
+                    <Input
+                      type="url"
+                      value={linkUrl}
+                      onChange={e => setLinkUrl(e.target.value)}
+                      placeholder="https://impecta.dk/..."
+                      required
+                      autoFocus
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <Button type="submit" disabled={pending || !linkUrl.trim()} className="w-full">
+                    <Wand2 className="h-4 w-4" />
+                    Læs link med AI
+                  </Button>
+                </form>
+              </>
+            )}
+
+            {(scanStage === 'reading' || scanStage === 'creating') && (
+              <div className="flex items-center gap-3 text-sm bg-secondary/40 rounded-lg p-4">
+                <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
+                <div>
+                  <p className="font-medium text-foreground">
+                    {scanStage === 'reading' ? 'Læser siden med AI…' : 'Opretter…'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {scanStage === 'reading' ? 'Henter side, billede og data.' : `Gemmer i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {scanStage === 'done' && scanCreatedId && (
+              <div className="bg-primary/5 border border-primary/30 rounded-lg p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-serif text-lg text-foreground">Oprettet i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}</p>
+                    <p className="text-sm text-muted-foreground">{scanName}</p>
+                  </div>
+                </div>
+                {scanExtracted && (
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-primary/20">
+                    {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
+                    {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
+                    {scanExtracted.supplier && <Field label="Leverandør" value={scanExtracted.supplier} />}
+                    {scanExtracted.seedCount != null && <Field label="Antal frø" value={String(scanExtracted.seedCount)} />}
+                  </div>
+                )}
+                <div className="flex gap-2 flex-wrap">
+                  <Button asChild>
+                    <Link href={`/froebank/${scanCreatedId}`}>Se i frøbank</Link>
+                  </Button>
+                  <Button variant="outline" onClick={() => {
+                    setLinkUrl(''); setScanStage('idle')
+                    setScanExtracted(null); setScanCreatedId(null); setScanName('')
+                  }}>
+                    Tilføj endnu et link
                   </Button>
                 </div>
               </div>

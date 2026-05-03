@@ -8,7 +8,7 @@ interface Props {
 
 export default async function TilfoejPage({ searchParams }: Props) {
   const { mode } = await searchParams
-  const initialMode = (mode === 'camera' || mode === 'library' || mode === 'manuel' || mode === 'oenskeliste' || mode === 'excel')
+  const initialMode = (mode === 'camera' || mode === 'library' || mode === 'link' || mode === 'manuel' || mode === 'oenskeliste' || mode === 'excel')
     ? mode
     : 'select'
   return <TilfoejFlow initialMode={initialMode} />
