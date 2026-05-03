@@ -1,14 +1,17 @@
 import { Button } from '@/components/ui/button'
 import { PlantList } from '@/components/mine-planter/plant-list'
 import { getAllPlants } from '@/actions/mine-planter'
-import { MOCK_CALENDAR_TASKS } from '@/lib/mock-data'
+import { getAllTasks } from '@/actions/havekalender'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 export default async function MinePlanterPage() {
-  const plants = await getAllPlants()
+  const [plants, tasks] = await Promise.all([
+    getAllPlants(),
+    getAllTasks(),
+  ])
 
   return (
     <div className="space-y-6">
@@ -27,7 +30,7 @@ export default async function MinePlanterPage() {
         </Button>
       </div>
 
-      <PlantList plants={plants} tasks={MOCK_CALENDAR_TASKS} />
+      <PlantList plants={plants} tasks={tasks} />
     </div>
   )
 }

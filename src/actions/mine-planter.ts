@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
 } from '@/lib/task-generation'
-import { MOCK_GUIDES } from '@/lib/mock-data'
+import { getAllGuides } from '@/actions/guides'
 import type { Plant, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
@@ -252,9 +252,10 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   // Tasks: kun for nye planter (eksisterende har dem allerede)
   let tasksCreated = 0
   if (!mergedIntoExisting) {
+    const allGuides = await getAllGuides()
     const guide = resolveGuideForInventory(
       { guideId: inv.guide_id, name: inv.name },
-      MOCK_GUIDES
+      allGuides
     )
     if (guide) {
       const generated = filterRelevantTasks(generateTasksFromGuide({

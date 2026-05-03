@@ -2,15 +2,17 @@ import { KalenderClient } from '@/components/havekalender/kalender-client'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
-import { MOCK_GENERAL_TASKS, MOCK_GUIDES } from '@/lib/mock-data'
+import { getAllGuides } from '@/actions/guides'
+import { GENERAL_GARDEN_TASKS } from '@/lib/curated-data'
 
 export const dynamic = 'force-dynamic'
 
 export default async function KalenderPage() {
-  const [tasks, plants, inventory] = await Promise.all([
+  const [tasks, plants, inventory, guides] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
+    getAllGuides(),
   ])
 
   return (
@@ -18,8 +20,8 @@ export default async function KalenderPage() {
       tasks={tasks}
       plants={plants}
       inventory={inventory}
-      generalTasks={MOCK_GENERAL_TASKS}
-      guides={MOCK_GUIDES}
+      generalTasks={GENERAL_GARDEN_TASKS}
+      guides={guides}
     />
   )
 }

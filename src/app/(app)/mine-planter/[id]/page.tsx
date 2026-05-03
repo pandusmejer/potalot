@@ -10,7 +10,8 @@ import { SowingsList } from '@/components/mine-planter/sowings-list'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import { getSowingEventsForPlant } from '@/actions/sowing-events'
 import { getInventoryItem } from '@/actions/froebank'
-import { MOCK_CALENDAR_TASKS, MOCK_GUIDES } from '@/lib/mock-data'
+import { getTasksForPlant } from '@/actions/havekalender'
+import { getGuide } from '@/actions/guides'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoMedAar } from '@/lib/datetime'
 import {
@@ -30,20 +31,16 @@ export default async function PlanteDetailPage({ params }: Props) {
   const plant = await getPlant(id)
   if (!plant) notFound()
 
-  const [logs, sowings] = await Promise.all([
+  const [logs, sowings, tasks, guide, inventoryItem] = await Promise.all([
     getPlantLogs(plant.id),
     getSowingEventsForPlant(plant.id),
+    getTasksForPlant(plant.id),
+    plant.guideId ? getGuide(plant.guideId) : Promise.resolve(null),
+    plant.sourceElementId ? getInventoryItem(plant.sourceElementId) : Promise.resolve(null),
   ])
 
-  // TODO (database): Tasks og Guides skal også migreres
-  const tasks = MOCK_CALENDAR_TASKS.filter(t => t.linkedPlantId === plant.id)
   const aabneOpgaver = tasks.filter(t => t.status === 'open').sort((a, b) => a.date.localeCompare(b.date))
   const naesteOpgave = aabneOpgaver[0] ?? null
-
-  const guide = plant.guideId ? MOCK_GUIDES.find(g => g.id === plant.guideId) : null
-  const inventoryItem = plant.sourceElementId
-    ? await getInventoryItem(plant.sourceElementId)
-    : null
 
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null

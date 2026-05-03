@@ -13,7 +13,6 @@ import {
   Image as ImageIcon, BookOpen, Clock, AlertTriangle,
 } from 'lucide-react'
 import { SYSTEM_SUBCATEGORIES } from '@/lib/constants'
-import { MOCK_CUSTOM_SUBCATEGORIES } from '@/lib/mock-data'
 import type { InventoryItem, PrimaryCategoryId, Subcategory } from '@/lib/types'
 import { bulkDeleteInventoryItems, bulkUpdateInventoryItems } from '@/actions/froebank'
 import { cn } from '@/lib/utils'
@@ -25,7 +24,7 @@ interface Props {
 
 type SmartFilter = 'mangler-guide' | 'udloeber-snart' | 'mangler-billede' | 'naesten-tom'
 
-export function InventoryListView({ inventory, customSubcategories = MOCK_CUSTOM_SUBCATEGORIES }: Props) {
+export function InventoryListView({ inventory, customSubcategories = [] }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')

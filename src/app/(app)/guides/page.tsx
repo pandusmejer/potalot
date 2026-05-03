@@ -1,20 +1,14 @@
 import { GuideList } from '@/components/guides/guide-list'
-import { MOCK_GUIDES } from '@/lib/mock-data'
 import { getAllGuides } from '@/actions/guides'
 import { getAllInventoryItems } from '@/actions/froebank'
 
 export const dynamic = 'force-dynamic'
 
 export default async function GuidesPage() {
-  const [dbGuides, inventory] = await Promise.all([
+  const [guides, inventory] = await Promise.all([
     getAllGuides(),
     getAllInventoryItems(),
   ])
-
-  // Vis DB-guides (brugerens egne + AI-genererede) + system mock-guides indtil de
-  // også migreres til DB. Dedup på id.
-  const seen = new Set(dbGuides.map(g => g.id))
-  const all = [...dbGuides, ...MOCK_GUIDES.filter(g => !seen.has(g.id))]
 
   const inFroebank = new Set(
     inventory.filter(i => i.guideId).map(i => i.guideId as string)
@@ -29,7 +23,7 @@ export default async function GuidesPage() {
         </p>
       </div>
 
-      <GuideList guides={all} inFroebank={inFroebank} />
+      <GuideList guides={guides} inFroebank={inFroebank} />
     </div>
   )
 }

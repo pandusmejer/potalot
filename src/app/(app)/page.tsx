@@ -8,9 +8,10 @@ import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
-import { MOCK_PROGRESS, MOCK_GENERAL_TASKS } from '@/lib/mock-data'
+import { GENERAL_GARDEN_TASKS } from '@/lib/curated-data'
 import { erForsinket, erIDag, aktuelMaaned, maanedNavn } from '@/lib/datetime'
 import { AlertCircle, CalendarClock, Sprout, ArrowRight, Lightbulb } from 'lucide-react'
+import type { ProgressState } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,7 +35,28 @@ export default async function OverblikPage() {
   // Månedens sæsonbaserede inspiration fra årshjul
   const nu = aktuelMaaned()
   const maanedenNavn = maanedNavn(nu)
-  const sæsonInspiration = MOCK_GENERAL_TASKS.filter(t => t.month === nu).slice(0, 3)
+  const sæsonInspiration = GENERAL_GARDEN_TASKS.filter(t => t.month === nu).slice(0, 3)
+
+  // Beregn månedens fremgang fra rigtige tasks
+  const yyyymm = new Date().toISOString().slice(0, 7)
+  const monthTasks = tasks.filter(t => t.date.startsWith(yyyymm))
+  const completedTasks = monthTasks.filter(t => t.status === 'completed').length
+  const totalTasks = monthTasks.length
+  const criticalMonth = monthTasks.filter(t => t.priority === 'critical' || t.priority === 'high')
+  const ratio = totalTasks > 0 ? completedTasks / totalTasks : 0
+  const visualState = ratio >= 0.8 ? 'basket_80_percent'
+    : ratio >= 0.5 ? 'basket_60_percent'
+    : ratio >= 0.2 ? 'basket_20_percent'
+    : 'basket_empty'
+  const progress: ProgressState = {
+    userId: '',
+    period: yyyymm,
+    completedTasks,
+    totalTasks,
+    criticalTasksCompleted: criticalMonth.filter(t => t.status === 'completed').length,
+    criticalTasksTotal: criticalMonth.length,
+    visualState,
+  }
 
   return (
     <div className="space-y-6">
@@ -86,7 +108,7 @@ export default async function OverblikPage() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <ProgressCard progress={MOCK_PROGRESS} />
+        <ProgressCard progress={progress} />
         <Card>
           <CardHeader className="pb-0">
             <CardTitle>Hurtige handlinger</CardTitle>

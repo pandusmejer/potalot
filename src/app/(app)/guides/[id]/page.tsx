@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
 import { mergeGuide } from '@/lib/guide-merge'
-import { MOCK_GUIDES, MOCK_INVENTORY, MOCK_PLANTS } from '@/lib/mock-data'
-import { getGuide } from '@/actions/guides'
+import { getGuide, getAllGuides } from '@/actions/guides'
+import { getAllInventoryItems } from '@/actions/froebank'
+import { getAllPlants } from '@/actions/mine-planter'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
   ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
@@ -16,27 +17,27 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-// TODO (database): Supabase
 export default async function GuideDetailPage({ params }: Props) {
   const { id } = await params
-  // Først DB (UUID), så mock (string-id) som fallback
-  const dbGuide = await getGuide(id)
-  const original = dbGuide ?? MOCK_GUIDES.find(g => g.id === id)
+  const original = await getGuide(id)
   if (!original) notFound()
 
-  // Merge med parent hvis sortsguide
-  const { effective, inheritedFromParent, parent } = mergeGuide(original, MOCK_GUIDES)
+  const [allGuides, inventory, plants] = await Promise.all([
+    getAllGuides(),
+    getAllInventoryItems(),
+    getAllPlants(),
+  ])
 
-  // Sortsvarianter af denne arts-guide
+  const { effective, inheritedFromParent, parent } = mergeGuide(original, allGuides)
+
   const sortsvarianter = original.guideLevel === 'species'
-    ? MOCK_GUIDES.filter(g => g.parentGuideId === original.id)
+    ? allGuides.filter(g => g.parentGuideId === original.id)
     : []
 
-  // Linkede frøbank-elementer + planter
-  const linkedInventory = MOCK_INVENTORY.filter(i =>
+  const linkedInventory = inventory.filter(i =>
     i.guideId === effective.id || i.guideId === parent?.id
   )
-  const linkedPlants = MOCK_PLANTS.filter(p =>
+  const linkedPlants = plants.filter(p =>
     p.guideId === effective.id || p.guideId === parent?.id
   )
 

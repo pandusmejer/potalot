@@ -7,12 +7,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
-import { MOCK_NOTIFICATION_PREFS } from '@/lib/mock-data'
+import type { NotificationPreference } from '@/lib/types'
 import { ChevronRight, User, Bell, Sparkles, Globe, Lock } from 'lucide-react'
 
-// TODO (database): Supabase
+const DEFAULT_PREFS: NotificationPreference = {
+  userId: '',
+  pushEnabled: true,
+  dailyDigestEnabled: true,
+  criticalOnly: false,
+  quietHours: { start: '20:00', end: '08:00' },
+}
+
 export default function IndstillingerPage() {
-  const [prefs, setPrefs] = useState(MOCK_NOTIFICATION_PREFS)
+  const [prefs, setPrefs] = useState(DEFAULT_PREFS)
 
   function update<K extends keyof typeof prefs>(key: K, value: (typeof prefs)[K]) {
     setPrefs(p => ({ ...p, [key]: value }))
