@@ -2,50 +2,64 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { LogIn } from 'lucide-react'
+import { Mail, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-export function LoginForm() {
-  const router = useRouter()
+export function ForgotPasswordForm() {
   const [pending, startTransition] = useTransition()
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [sent, setSent] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (!password) {
-      setError('Indtast kodeord')
-      return
-    }
     startTransition(async () => {
       const supabase = createClient()
-      const { error: err } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
+      const redirectTo = `${window.location.origin}/auth/callback?next=/nulstil-kode`
+      const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo,
       })
       if (err) {
-        const msg = /Invalid login credentials/i.test(err.message)
-          ? 'Forkert mail eller kodeord. Brug "Glemt kodeord" hvis du ikke har sat et endnu.'
-          : err.message
-        setError(msg)
+        setError(err.message)
         return
       }
-      router.push('/')
-      router.refresh()
+      setSent(true)
     })
+  }
+
+  if (sent) {
+    return (
+      <Card>
+        <CardContent className="space-y-3 py-6 text-center">
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <Check className="h-6 w-6 text-primary" />
+          </div>
+          <p className="font-serif text-lg text-foreground">Tjek din mail</p>
+          <p className="text-sm text-muted-foreground">
+            Hvis <strong>{email}</strong> er knyttet til en konto, har vi
+            sendt et link til at vælge nyt kodeord.
+          </p>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">Tilbage til login</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
     <Card>
       <CardContent className="py-5">
         <form onSubmit={handleSubmit} className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Indtast din mail. Vi sender et link, hvor du kan vælge nyt kodeord.
+          </p>
+
           <div>
             <Label>E-mail</Label>
             <Input
@@ -60,23 +74,6 @@ export function LoginForm() {
             />
           </div>
 
-          <div>
-            <div className="flex items-center justify-between">
-              <Label>Kodeord</Label>
-              <Link href="/glemt-kode" className="text-xs text-primary hover:underline">
-                Glemt kodeord?
-              </Link>
-            </div>
-            <Input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              className="mt-1.5"
-            />
-          </div>
-
           {error && (
             <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
               {error}
@@ -84,13 +81,12 @@ export function LoginForm() {
           )}
 
           <Button type="submit" disabled={pending} className="w-full">
-            <LogIn className="h-4 w-4" />
-            {pending ? 'Logger ind…' : 'Log ind'}
+            <Mail className="h-4 w-4" />
+            {pending ? 'Sender…' : 'Send nulstillings-link'}
           </Button>
 
           <p className="text-xs text-center text-muted-foreground pt-1">
-            Har du ikke en konto?{' '}
-            <Link href="/opret" className="text-primary hover:underline">Opret bruger</Link>
+            <Link href="/login" className="text-primary hover:underline">Tilbage til login</Link>
           </p>
         </form>
       </CardContent>

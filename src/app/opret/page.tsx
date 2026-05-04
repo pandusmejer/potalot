@@ -1,9 +1,9 @@
-import { LoginForm } from '@/components/auth/login-form'
+import { SignupForm } from '@/components/auth/signup-form'
 import { Sprout } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-background">
       <div className="w-full max-w-sm space-y-6">
@@ -17,7 +17,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <LoginForm />
+        <SignupForm />
       </div>
     </div>
   )
