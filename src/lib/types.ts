@@ -18,6 +18,7 @@ export interface Profile {
   avatarUrl?: string | null
   userMode: UserMode
   onboarded: boolean
+  isAdmin: boolean
   createdAt: string
   updatedAt: string
 }

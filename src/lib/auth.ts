@@ -19,3 +19,29 @@ export async function getCurrentUser(): Promise<{ id: string; email: string | nu
   if (!user) return null
   return { id: user.id, email: user.email ?? null }
 }
+
+/** Sikrer at den loggede-ind bruger er admin. Smider redirect til '/' ellers. */
+export async function requireAdmin(): Promise<{ id: string; email: string | null }> {
+  const user = await requireUser()
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .maybeSingle()
+  if (!data?.is_admin) redirect('/')
+  return user
+}
+
+/** True hvis logged-in bruger er admin. False ellers (også hvis ikke logged in). */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  const user = await getCurrentUser()
+  if (!user) return false
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .maybeSingle()
+  return data?.is_admin === true
+}

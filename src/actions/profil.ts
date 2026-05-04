@@ -12,6 +12,7 @@ interface ProfileRow {
   avatar_url: string | null
   user_mode: string | null
   onboarded: boolean | null
+  is_admin: boolean | null
   created_at: string
   updated_at: string
 }
@@ -24,6 +25,7 @@ function rowToProfile(row: ProfileRow, email: string | null): Profile {
     avatarUrl: row.avatar_url,
     userMode: (row.user_mode ?? 'afslappet') as UserMode,
     onboarded: row.onboarded ?? false,
+    isAdmin: row.is_admin ?? false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
