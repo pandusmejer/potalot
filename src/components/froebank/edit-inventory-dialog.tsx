@@ -15,6 +15,7 @@ import type { InventoryItem, PrimaryCategoryId } from '@/lib/types'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import { updateInventoryItem } from '@/actions/froebank'
 import { extractSeedPacketFields } from '@/actions/seed-packet-extract'
+import { DyrkningsfaktaFields, type DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
 
 interface Props {
   item: InventoryItem
@@ -41,6 +42,20 @@ export function EditInventoryDialog({ item }: Props) {
   const [images, setImages] = useState<string[]>(item.imageIds.length > 0 ? item.imageIds : item.primaryImageId ? [item.primaryImageId] : [])
   const [primaryImage, setPrimaryImage] = useState<string | null>(item.primaryImageId ?? null)
 
+  const [dyrkning, setDyrkning] = useState<DyrkningsfaktaState>({
+    sowingMonths: item.sowingMonths ?? [],
+    sowingDepthMm: item.sowingDepthMm ?? null,
+    preCultivation: item.preCultivation ?? null,
+    plantingOutMonths: item.plantingOutMonths ?? [],
+    harvestMonths: item.harvestMonths ?? [],
+    light: item.light ?? null,
+    water: item.water ?? null,
+    germinationDays: item.germinationDays ?? '',
+    germinationTemperature: item.germinationTemperature ?? '',
+    plantSpacing: item.plantSpacing ?? '',
+    rowSpacing: item.rowSpacing ?? '',
+  })
+
   const [aiPending, setAiPending] = useState(false)
   const [aiInfo, setAiInfo] = useState<string | null>(null)
 
@@ -66,6 +81,22 @@ export function EditInventoryDialog({ item }: Props) {
       if (!supplier.trim() && f.supplier)      { setSupplier(f.supplier); filled.push('leverandør') }
       if (isFroe && !seedCount && f.seedCount != null) { setSeedCount(String(f.seedCount)); filled.push('antal frø') }
       if (!notes.trim() && f.notes)            { setNotes(f.notes); filled.push('noter') }
+
+      const nextDyrkning: DyrkningsfaktaState = { ...dyrkning }
+      let dyrkChanged = false
+      if (dyrkning.sowingMonths.length === 0 && f.sowingMonths?.length) { nextDyrkning.sowingMonths = f.sowingMonths; filled.push('Sås'); dyrkChanged = true }
+      if (dyrkning.sowingDepthMm == null && f.sowingDepthMm != null)    { nextDyrkning.sowingDepthMm = f.sowingDepthMm; filled.push('Sådybde'); dyrkChanged = true }
+      if (dyrkning.preCultivation == null && f.preCultivation != null)  { nextDyrkning.preCultivation = f.preCultivation; filled.push('Forspiring'); dyrkChanged = true }
+      if (dyrkning.plantingOutMonths.length === 0 && f.plantingOutMonths?.length) { nextDyrkning.plantingOutMonths = f.plantingOutMonths; filled.push('Plant ud'); dyrkChanged = true }
+      if (dyrkning.harvestMonths.length === 0 && f.harvestMonths?.length) { nextDyrkning.harvestMonths = f.harvestMonths; filled.push('Høst'); dyrkChanged = true }
+      if (dyrkning.light == null && f.light)                            { nextDyrkning.light = f.light; filled.push('Lys'); dyrkChanged = true }
+      if (dyrkning.water == null && f.water)                            { nextDyrkning.water = f.water; filled.push('Vand'); dyrkChanged = true }
+      if (!dyrkning.germinationDays && f.germinationDays)               { nextDyrkning.germinationDays = f.germinationDays; filled.push('Spiretid'); dyrkChanged = true }
+      if (!dyrkning.germinationTemperature && f.germinationTemperature) { nextDyrkning.germinationTemperature = f.germinationTemperature; filled.push('Spiretemp'); dyrkChanged = true }
+      if (!dyrkning.plantSpacing && f.plantSpacing)                     { nextDyrkning.plantSpacing = f.plantSpacing; filled.push('Planteafstand'); dyrkChanged = true }
+      if (!dyrkning.rowSpacing && f.rowSpacing)                         { nextDyrkning.rowSpacing = f.rowSpacing; filled.push('Rækkeafstand'); dyrkChanged = true }
+      if (dyrkChanged) setDyrkning(nextDyrkning)
+
       setAiInfo(filled.length > 0
         ? `Udfyldte: ${filled.join(', ')}. Klik Gem for at gemme.`
         : 'AI fandt ikke ny info som ikke allerede er udfyldt.')
@@ -92,6 +123,17 @@ export function EditInventoryDialog({ item }: Props) {
         purchaseUrl: purchaseUrl.trim() || undefined,
         expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
+        sowingMonths: dyrkning.sowingMonths,
+        sowingDepthMm: dyrkning.sowingDepthMm ?? undefined,
+        preCultivation: dyrkning.preCultivation ?? undefined,
+        plantingOutMonths: dyrkning.plantingOutMonths,
+        harvestMonths: dyrkning.harvestMonths,
+        light: dyrkning.light ?? undefined,
+        water: dyrkning.water ?? undefined,
+        germinationDays: dyrkning.germinationDays.trim() || undefined,
+        germinationTemperature: dyrkning.germinationTemperature.trim() || undefined,
+        plantSpacing: dyrkning.plantSpacing.trim() || undefined,
+        rowSpacing: dyrkning.rowSpacing.trim() || undefined,
         imageUrls: images,
         primaryImageUrl: primaryImage ?? undefined,
       })
@@ -191,6 +233,11 @@ export function EditInventoryDialog({ item }: Props) {
           <div>
             <Label>Købt her</Label>
             <Input type="url" value={purchaseUrl} onChange={e => setPurchaseUrl(e.target.value)} className="mt-1.5" />
+          </div>
+
+          <div className="border-t border-border pt-3">
+            <p className="font-serif text-base text-foreground mb-2">Dyrkningsfakta</p>
+            <DyrkningsfaktaFields value={dyrkning} onChange={setDyrkning} />
           </div>
 
           <div>

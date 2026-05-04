@@ -261,6 +261,10 @@ export async function updateInventoryItem(
   if (input.light !== undefined) update.light = input.light
   if (input.water !== undefined) update.water = input.water
   if (input.growingLocations !== undefined) update.growing_locations = input.growingLocations
+  if (input.germinationDays !== undefined) update.germination_days = input.germinationDays || null
+  if (input.germinationTemperature !== undefined) update.germination_temperature = input.germinationTemperature || null
+  if (input.plantSpacing !== undefined) update.plant_spacing = input.plantSpacing || null
+  if (input.rowSpacing !== undefined) update.row_spacing = input.rowSpacing || null
   if (input.imageUrls !== undefined) update.image_urls = input.imageUrls
   if (input.primaryImageUrl !== undefined) update.primary_image_url = input.primaryImageUrl
 
