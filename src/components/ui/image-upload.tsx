@@ -39,12 +39,18 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         fd.append('file', file)
         fd.append('folder', folder)
         const response = await fetch('/api/upload', { method: 'POST', body: fd })
-        const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+        const text = await response.text()
+        let parsed: { url?: string; error?: string } = {}
+        try { parsed = JSON.parse(text) } catch { /* not JSON */ }
         if (!response.ok) {
-          setError(json.error ?? `HTTP ${response.status}`)
+          setError(parsed.error ?? `Upload fejlede (HTTP ${response.status}): ${text.slice(0, 100)}`)
           return
         }
-        onChange(json.url as string)
+        if (!parsed.url) {
+          setError(`Upload fejlede: serveren returnerede ikke en URL`)
+          return
+        }
+        onChange(parsed.url)
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'netværksfejl'
         setError(`Upload fejlede: ${msg}`)

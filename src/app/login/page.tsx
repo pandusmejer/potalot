@@ -13,7 +13,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-3xl font-serif text-foreground">PotAlot</h1>
           <p className="text-sm text-muted-foreground">
-            Dit digitale haveredskab.
+            Dit digitale haveredskab
           </p>
         </div>
 

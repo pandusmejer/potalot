@@ -14,10 +14,10 @@ interface Props {
 
 const BASE_ITEMS = [
   { href: '/', label: 'Overblik', icon: LayoutDashboard },
-  { href: '/mine-planter', label: 'Planter', icon: Sprout },
   { href: '/froebank', label: 'Frøbank', icon: Package },
+  { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
   { href: '/kalender', label: 'Kalender', icon: CalendarDays },
-  { href: '/guides', label: 'Guides', icon: BookOpen },
+  { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
 ] as const
 
 /**
@@ -81,8 +81,11 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
                 active ? 'text-primary' : 'text-muted-foreground'
               )}
             >
+              {active && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-primary" />
+              )}
               <Icon className={cn('h-5 w-5', active && 'stroke-[2.5]')} />
-              <span className={cn('text-[11px]', active && 'font-medium')}>{item.label}</span>
+              <span className={cn('text-[11px]', active && 'font-semibold')}>{item.label}</span>
               {showBadge && (
                 <span className="absolute top-1 right-2 inline-flex items-center justify-center h-4 min-w-4 px-1 text-[9px] font-medium rounded-full bg-destructive text-destructive-foreground">
                   {criticalTaskCount}

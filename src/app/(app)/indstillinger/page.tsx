@@ -107,17 +107,17 @@ export default function IndstillingerPage() {
         </CardContent>
       </Card>
 
-      {/* AI-rådgiver */}
+      {/* AI gartner */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            AI-rådgiver
+            AI gartner
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            AI-rådgiveren er ikke aktiveret endnu. Kommer i en senere version.
+            AI gartner er ikke aktiveret endnu. Kommer i en senere version.
           </p>
         </CardContent>
       </Card>

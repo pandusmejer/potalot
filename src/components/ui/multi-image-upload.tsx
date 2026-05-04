@@ -68,12 +68,18 @@ export function MultiImageUpload({
           fd.append('file', file)
           fd.append('folder', folder)
           const response = await fetch('/api/upload', { method: 'POST', body: fd })
-          const json = await response.json().catch(() => ({ error: 'Ugyldigt svar fra server' }))
+          const text = await response.text()
+          let parsed: { url?: string; error?: string } = {}
+          try { parsed = JSON.parse(text) } catch { /* not JSON */ }
           if (!response.ok) {
-            errors.push(`${file.name}: ${json.error ?? `HTTP ${response.status}`}`)
+            errors.push(`${file.name}: ${parsed.error ?? `HTTP ${response.status} ${text.slice(0, 80)}`}`)
             continue
           }
-          newUrls.push(json.url as string)
+          if (!parsed.url) {
+            errors.push(`${file.name}: serveren returnerede ikke en URL`)
+            continue
+          }
+          newUrls.push(parsed.url)
         } catch (e: unknown) {
           const msg = e instanceof Error ? e.message : 'ukendt fejl'
           errors.push(`${file.name}: ${msg}`)

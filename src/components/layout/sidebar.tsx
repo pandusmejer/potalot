@@ -14,8 +14,8 @@ interface Props {
 
 const BASE_ITEMS = [
   { href: '/', label: 'Overblik', icon: LayoutDashboard },
-  { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
   { href: '/froebank', label: 'Frøbank', icon: Package },
+  { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
   { href: '/kalender', label: 'Havekalender', icon: CalendarDays },
   { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
 ] as const
@@ -65,13 +65,16 @@ export function Sidebar({ heroHref, criticalTaskCount }: Props) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                'relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 active
-                  ? 'bg-primary/10 text-primary'
+                  ? 'bg-primary/10 text-primary font-semibold'
                   : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
               )}
             >
-              <Icon className="h-4 w-4" />
+              {active && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-primary" />
+              )}
+              <Icon className={cn('h-4 w-4', active && 'stroke-[2.5]')} />
               <span className="flex-1">{item.label}</span>
               {showBadge && (
                 <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-[10px] font-medium rounded-full bg-destructive text-destructive-foreground">

@@ -162,7 +162,7 @@ export default async function PlanteDetailPage({ params }: Props) {
           <CardContent className="flex items-center gap-3 py-3">
             <Sparkles className="h-4 w-4 text-primary" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">Spørg AI om denne plante</p>
+              <p className="text-sm font-medium text-foreground">Spørg AI gartner om denne plante</p>
               <p className="text-xs text-muted-foreground">Få råd baseret på guide, log og status.</p>
             </div>
             <Button variant="outline" size="sm" disabled>

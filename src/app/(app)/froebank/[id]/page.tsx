@@ -128,7 +128,7 @@ export default async function InventoryDetailPage({ params }: Props) {
         )}
         <Button variant="outline" disabled>
           <Sparkles className="h-4 w-4" />
-          Spørg AI
+          AI gartner
         </Button>
       </div>
 
