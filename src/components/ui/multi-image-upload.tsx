@@ -39,20 +39,20 @@ export function MultiImageUpload({
 
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
+    setDebug(null)
     const files = e.target.files
-    setDebug(`Modtog ${files?.length ?? 0} fil(er)…`)
     if (!files || files.length === 0) {
-      setDebug('Ingen fil valgt.')
       return
     }
     e.target.value = ''
 
-    const remaining = maxImages - value.length
+    const remaining = Math.max(0, maxImages - value.length)
     const toUpload = Array.from(files).slice(0, remaining)
     if (toUpload.length === 0) {
-      setError(`Maksimalt ${maxImages} billeder.`)
+      setError(`Du har allerede ${value.length} af max ${maxImages} billeder. Fjern et eksisterende først.`)
       return
     }
+    setDebug(`Uploader ${toUpload.length} billede(r)…`)
 
     startTransition(async () => {
       const newUrls: string[] = []

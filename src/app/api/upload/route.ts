@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import sharp from 'sharp'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 
@@ -11,8 +10,8 @@ const MAX_BYTES = 20 * 1024 * 1024
 const VALID_FOLDERS = new Set(['froebank', 'planter', 'log', 'profil', 'idetavle'])
 
 /**
- * Upload-endpoint. iPhone HEIC/HEIF konverteres til JPEG server-side så Claude
- * Vision og almindelige browsere kan læse dem. JPG/PNG/WebP gemmes uændret.
+ * Upload-endpoint. iPhone HEIC/HEIF konverteres til JPEG via heic-convert
+ * (pure JS, virker uden libheif). JPG/PNG/WebP gemmes uændret.
  */
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser()
@@ -56,25 +55,29 @@ export async function POST(request: NextRequest) {
 
   try {
     const arrayBuffer = await file.arrayBuffer()
-    const inputBuf = Buffer.from(arrayBuffer)
 
     if (isHeic) {
-      // Konvertér HEIC/HEIF → JPEG (kvalitet 88, EXIF-rotation respekteres)
-      const jpeg = await sharp(inputBuf).rotate().jpeg({ quality: 88 }).toBuffer()
-      body = new Uint8Array(jpeg)
+      const heicConvert = (await import('heic-convert')).default
+      const inputBuffer = Buffer.from(arrayBuffer)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const jpegBuffer = await (heicConvert as any)({
+        buffer: inputBuffer,
+        format: 'JPEG',
+        quality: 0.88,
+      })
+      body = new Uint8Array(jpegBuffer)
       ext = 'jpg'
       contentType = 'image/jpeg'
     } else if (nameLower.endsWith('.png') || file.type === 'image/png') {
-      body = new Uint8Array(inputBuf)
+      body = new Uint8Array(arrayBuffer)
       ext = 'png'
       contentType = 'image/png'
     } else if (nameLower.endsWith('.webp') || file.type === 'image/webp') {
-      body = new Uint8Array(inputBuf)
+      body = new Uint8Array(arrayBuffer)
       ext = 'webp'
       contentType = 'image/webp'
     } else {
-      // JPG/JPEG eller ukendt → behandl som JPEG
-      body = new Uint8Array(inputBuf)
+      body = new Uint8Array(arrayBuffer)
       ext = 'jpg'
       contentType = file.type || 'image/jpeg'
     }
