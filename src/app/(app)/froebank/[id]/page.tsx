@@ -12,11 +12,13 @@ import { GuideLink } from '@/components/froebank/guide-link'
 import { getInventoryItem } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllGuides, getGuide } from '@/actions/guides'
+import { getAllTasks } from '@/actions/havekalender'
 import {
   PRIMARY_CATEGORIES, INVENTORY_STATUS_META, MONTHS_DA,
   LIGHT_META, WATER_META, GROWING_LOCATION_META, SYSTEM_SUBCATEGORIES,
 } from '@/lib/constants'
 import { formatDatoMedAar } from '@/lib/datetime'
+import { cn } from '@/lib/utils'
 import {
   ArrowLeft, Package, Calendar, BookOpen, Sprout, ArrowRight,
   Sparkles, MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
@@ -32,13 +34,17 @@ export const dynamic = 'force-dynamic'
 
 export default async function InventoryDetailPage({ params }: Props) {
   const { id } = await params
-  const [item, allPlants] = await Promise.all([
+  const [item, allPlants, allTasks] = await Promise.all([
     getInventoryItem(id),
     getAllPlants(),
+    getAllTasks(),
   ])
   if (!item) notFound()
 
   const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
+  const linkedTasks = allTasks
+    .filter(t => t.linkedInventoryItemId === item.id)
+    .sort((a, b) => a.date.localeCompare(b.date))
   const [guide, allGuides] = await Promise.all([
     item.guideId ? getGuide(item.guideId) : Promise.resolve(null),
     getAllGuides(),
@@ -211,6 +217,53 @@ export default async function InventoryDetailPage({ params }: Props) {
           </CardContent>
         )}
       </Card>
+
+      {/* Opgaver knyttet til dette frø */}
+      {linkedTasks.length > 0 && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              Opgaver
+              <span className="text-sm font-normal text-muted-foreground">
+                ({linkedTasks.filter(t => t.status === 'open').length} åbne)
+              </span>
+            </CardTitle>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/kalender">
+                Se kalender <ArrowRight className="h-3 w-3" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {linkedTasks.map(t => (
+              <div
+                key={t.id}
+                className={cn(
+                  'flex items-start gap-3 p-2 rounded-lg',
+                  t.status === 'completed' && 'opacity-60'
+                )}
+              >
+                <div className={cn(
+                  'h-2 w-2 rounded-full mt-2 shrink-0',
+                  t.status === 'completed' ? 'bg-muted-foreground'
+                    : t.priority === 'high' || t.priority === 'critical' ? 'bg-destructive'
+                    : 'bg-primary'
+                )} />
+                <div className="flex-1 min-w-0">
+                  <p className={cn('text-sm text-foreground', t.status === 'completed' && 'line-through')}>
+                    {t.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDatoMedAar(t.date)}
+                    {t.status === 'completed' && ' · Udført'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Linkede planter */}
       {linkedPlants.length > 0 && (
