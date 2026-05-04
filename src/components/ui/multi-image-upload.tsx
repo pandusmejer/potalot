@@ -40,14 +40,18 @@ export function MultiImageUpload({
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
     setDebug(null)
-    const files = e.target.files
-    if (!files || files.length === 0) {
+    const fileList = e.target.files
+    if (!fileList || fileList.length === 0) {
       return
     }
+    // VIGTIGT: kopier filerne ud af FileList FØR vi rydder input — på iOS
+    // WebKit (Safari + Chrome) tømmer e.target.value også e.target.files,
+    // hvilket gjorde at Array.from(files) blev tomt.
+    const filesArr = Array.from(fileList)
     e.target.value = ''
 
     const remaining = Math.max(0, maxImages - value.length)
-    const toUpload = Array.from(files).slice(0, remaining)
+    const toUpload = filesArr.slice(0, remaining)
     if (toUpload.length === 0) {
       setError(`Du har allerede ${value.length} af max ${maxImages} billeder. Fjern et eksisterende først.`)
       return
