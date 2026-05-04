@@ -93,6 +93,7 @@ export function TilfoejFlow({ initialMode }: Props) {
       seedCount: fields.seedCount,
       sowingMonths: fields.sowingMonths,
       sowingDepthMm: fields.sowingDepthMm,
+      preCultivation: fields.preCultivation,
       plantingOutMonths: fields.plantingOutMonths,
       harvestMonths: fields.harvestMonths,
       light: fields.light,
@@ -151,6 +152,7 @@ export function TilfoejFlow({ initialMode }: Props) {
       seedCount: ext.fields.seedCount,
       sowingMonths: ext.fields.sowingMonths,
       sowingDepthMm: ext.fields.sowingDepthMm,
+      preCultivation: ext.fields.preCultivation,
       plantingOutMonths: ext.fields.plantingOutMonths,
       harvestMonths: ext.fields.harvestMonths,
       light: ext.fields.light,
@@ -252,8 +254,8 @@ export function TilfoejFlow({ initialMode }: Props) {
         )}
         <h1 className="text-2xl font-serif text-foreground">
           {mode === 'select' && 'Tilføj til frøbank'}
-          {mode === 'camera' && 'Tag billede'}
-          {mode === 'library' && 'Upload billede'}
+          {mode === 'camera' && 'Scan frøpose'}
+          {mode === 'library' && 'Scan frøpose'}
           {mode === 'link' && 'Indsæt link'}
           {mode === 'excel' && 'Importér Excel'}
           {mode === 'manuel' && 'Opret manuelt'}
@@ -278,7 +280,7 @@ export function TilfoejFlow({ initialMode }: Props) {
         <Card>
           <CardContent className="space-y-4 py-5">
             <p className="text-sm text-muted-foreground">
-              AI læser billedet og opretter automatisk i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbanken'}.
+              {mode === 'camera' ? 'Tag billede' : 'Upload billeder'} af frøposens forside og bagside, så PotAlot kan udfylde {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbanken'} automatisk.
             </p>
 
             {scanStage === 'idle' && scanImages.length === 0 && (

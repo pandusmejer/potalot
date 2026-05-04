@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import sharp from 'sharp'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 
@@ -10,9 +11,8 @@ const MAX_BYTES = 20 * 1024 * 1024
 const VALID_FOLDERS = new Set(['froebank', 'planter', 'log', 'profil', 'idetavle'])
 
 /**
- * Simpel upload-endpoint. Tager rå fil → Supabase Storage → returnerer URL.
- * Ingen server-side billedprocessering (HEIC accepteres som-er nu hvor
- * bucket har allowed_mime_types = NULL).
+ * Upload-endpoint. iPhone HEIC/HEIF konverteres til JPEG server-side så Claude
+ * Vision og almindelige browsere kan læse dem. JPG/PNG/WebP gemmes uændret.
  */
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser()
@@ -43,25 +43,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `Billede for stort (max ${MAX_BYTES / 1024 / 1024}MB)` }, { status: 400 })
   }
 
-  // Bestem extension fra filnavn først, så MIME — iPhone HEIC kan have tom MIME.
   const nameLower = file.name.toLowerCase()
+  const isHeic =
+    nameLower.endsWith('.heic') ||
+    nameLower.endsWith('.heif') ||
+    file.type === 'image/heic' ||
+    file.type === 'image/heif'
+
+  let body: Uint8Array
   let ext = 'jpg'
-  if (nameLower.endsWith('.png')) ext = 'png'
-  else if (nameLower.endsWith('.webp')) ext = 'webp'
-  else if (nameLower.endsWith('.heic')) ext = 'heic'
-  else if (nameLower.endsWith('.heif')) ext = 'heif'
-  else if (file.type === 'image/png') ext = 'png'
-  else if (file.type === 'image/webp') ext = 'webp'
-  else if (file.type === 'image/heic') ext = 'heic'
-  else if (file.type === 'image/heif') ext = 'heif'
+  let contentType = 'image/jpeg'
+
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    const inputBuf = Buffer.from(arrayBuffer)
+
+    if (isHeic) {
+      // Konvertér HEIC/HEIF → JPEG (kvalitet 88, EXIF-rotation respekteres)
+      const jpeg = await sharp(inputBuf).rotate().jpeg({ quality: 88 }).toBuffer()
+      body = new Uint8Array(jpeg)
+      ext = 'jpg'
+      contentType = 'image/jpeg'
+    } else if (nameLower.endsWith('.png') || file.type === 'image/png') {
+      body = new Uint8Array(inputBuf)
+      ext = 'png'
+      contentType = 'image/png'
+    } else if (nameLower.endsWith('.webp') || file.type === 'image/webp') {
+      body = new Uint8Array(inputBuf)
+      ext = 'webp'
+      contentType = 'image/webp'
+    } else {
+      // JPG/JPEG eller ukendt → behandl som JPEG
+      body = new Uint8Array(inputBuf)
+      ext = 'jpg'
+      contentType = file.type || 'image/jpeg'
+    }
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'ukendt fejl'
+    return NextResponse.json({ error: `Billedbehandling fejlede: ${msg}` }, { status: 400 })
+  }
 
   const path = `${user.id}/${folder}/${crypto.randomUUID()}.${ext}`
 
   const supabase = await createClient()
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, {
-      contentType: file.type || `image/${ext}`,
+    .upload(path, body, {
+      contentType,
       upsert: false,
     })
 

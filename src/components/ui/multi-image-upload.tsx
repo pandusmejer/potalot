@@ -167,7 +167,13 @@ export function MultiImageUpload({
             disabled={pending}
           >
             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-            {pending ? 'Uploader…' : value.length === 0 ? label : `Tilføj flere (${value.length}/${maxImages})`}
+            {pending
+              ? 'Uploader…'
+              : value.length === 0
+                ? label
+                : capture
+                  ? `Tag endnu et billede (${value.length}/${maxImages})`
+                  : `Tilføj flere (${value.length}/${maxImages})`}
           </Button>
         </>
       )}

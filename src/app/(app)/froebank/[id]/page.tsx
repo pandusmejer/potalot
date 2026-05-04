@@ -7,6 +7,7 @@ import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
 import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog'
 import { SowDialog } from '@/components/froebank/sow-dialog'
+import { CreateTaskDialog } from '@/components/froebank/create-task-dialog'
 import { GuideLink } from '@/components/froebank/guide-link'
 import { getInventoryItem } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
@@ -110,15 +111,10 @@ export default async function InventoryDetailPage({ params }: Props) {
             Så et frø
           </Button>
         </SowDialog>
-        <Button asChild variant="outline">
-          <Link href="#">
-            <Calendar className="h-4 w-4" />
-            Opret opgave
-          </Link>
-        </Button>
+        <CreateTaskDialog inventoryItemId={item.id} itemName={item.name} />
         {guide && (
           <Button asChild variant="outline">
-            <Link href={`/guides/${guide.id}`}>
+            <Link href={`/guides/${guide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
               <BookOpen className="h-4 w-4" />
               Se guide
             </Link>

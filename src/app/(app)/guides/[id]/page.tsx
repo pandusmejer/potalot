@@ -15,12 +15,19 @@ import {
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ returnTo?: string }>
 }
 
-export default async function GuideDetailPage({ params }: Props) {
+export default async function GuideDetailPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { returnTo } = await searchParams
   const original = await getGuide(id)
   if (!original) notFound()
+
+  // returnTo skal være en intern path (sikkerhed: aldrig redirect til ekstern URL)
+  const safeReturnTo = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')
+    ? returnTo
+    : '/guides'
 
   const [allGuides, inventory, plants] = await Promise.all([
     getAllGuides(),
@@ -48,7 +55,7 @@ export default async function GuideDetailPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button asChild variant="ghost" size="icon">
-          <Link href="/guides" aria-label="Tilbage">
+          <Link href={safeReturnTo} aria-label="Tilbage">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>

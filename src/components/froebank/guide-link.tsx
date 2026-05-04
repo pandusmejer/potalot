@@ -115,7 +115,7 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
           </div>
           <div className="flex flex-col gap-1 shrink-0">
             <Button asChild variant="ghost" size="sm">
-              <Link href={`/guides/${currentGuide.id}`}>
+              <Link href={`/guides/${currentGuide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
                 Åbn <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>

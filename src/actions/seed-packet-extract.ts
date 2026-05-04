@@ -15,6 +15,7 @@ export interface ExtractedSeedFields {
   plantingOutMonths?: number[]
   harvestMonths?: number[]
   sowingDepthMm?: number
+  preCultivation?: boolean
   germinationDays?: string
   germinationTemperature?: string
   plantSpacing?: string
@@ -38,7 +39,8 @@ Felter at udtrække:
 - sowingMonths: array af måned-numre (1-12) hvor frøet sås
 - plantingOutMonths: array af måned-numre (1-12) hvor det udplantes
 - harvestMonths: array af måned-numre (1-12) hvor det høstes
-- sowingDepthMm: sådybde i mm
+- sowingDepthMm: sådybde i mm. **VIGTIGT: 0 mm er en gyldig værdi (overflade-såning, fx for basilikum og salat). Brug 0, ikke null, hvis frøet skal lægges på overfladen.**
+- preCultivation: true hvis posen anbefaler forspiring/indendørs forspiring/forkultivering, false hvis direkte såning anbefales, null hvis ikke nævnt
 - germinationDays: spiretid som tekst (fx "7-14 dage")
 - germinationTemperature: spiretemperatur som tekst (fx "18-22°C")
 - plantSpacing: planteafstand (fx "40-60 cm")
@@ -129,6 +131,7 @@ function parseFieldsFromJson(parsed: Record<string, unknown>): ExtractedSeedFiel
   if (Array.isArray(parsed.plantingOutMonths))   fields.plantingOutMonths = parsed.plantingOutMonths.filter((m): m is number => typeof m === 'number')
   if (Array.isArray(parsed.harvestMonths))       fields.harvestMonths = parsed.harvestMonths.filter((m): m is number => typeof m === 'number')
   if (typeof parsed.sowingDepthMm === 'number')  fields.sowingDepthMm = parsed.sowingDepthMm
+  if (typeof parsed.preCultivation === 'boolean') fields.preCultivation = parsed.preCultivation
   if (typeof parsed.germinationDays === 'string')        fields.germinationDays = parsed.germinationDays
   if (typeof parsed.germinationTemperature === 'string') fields.germinationTemperature = parsed.germinationTemperature
   if (typeof parsed.plantSpacing === 'string')   fields.plantSpacing = parsed.plantSpacing
