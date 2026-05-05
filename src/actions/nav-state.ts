@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 export interface NavState {
   /** Hvilket nav-item skal være "hero" (visuelt dominerende). */
@@ -11,7 +11,11 @@ export interface NavState {
 }
 
 export async function getNavState(): Promise<NavState> {
-  const { id: userId } = await requireUser()
+  const user = await getCurrentUser()
+  if (!user) {
+    return { heroHref: '/froebank', criticalTaskCount: 0 }
+  }
+  const userId = user.id
   const supabase = await createClient()
 
   const today = new Date().toISOString().split('T')[0]

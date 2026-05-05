@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type {
   CalendarTask, TaskType, TaskPriority, TaskStatus, TaskSource, PlantLogType,
@@ -62,11 +62,13 @@ function rowToTask(row: TaskRow): CalendarTask {
 // ============================================
 
 export async function getAllTasks(): Promise<CalendarTask[]> {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const user = await getCurrentUser()
+  if (!user) return []
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('calendar_tasks')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('date', { ascending: true })
 
   if (error) {
@@ -77,11 +79,13 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
 }
 
 export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]> {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const user = await getCurrentUser()
+  if (!user) return []
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('calendar_tasks')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .eq('linked_plant_id', plantId)
     .order('date', { ascending: true })
 

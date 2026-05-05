@@ -2,11 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Middleware: refresher Supabase-session-cookies på hver request, så de
- * ikke udløber mid-navigation. Beskytter også (app)-ruter ved at redirecte
- * til /login hvis ingen session.
+ * Proxy (tidligere middleware): refresher Supabase-session-cookies på hver
+ * request og redirecter anonyme brugere væk fra beskyttede ruter.
+ * Offentlige ruter (overblik, frøbank, mine-planter, kalender, guides) lader
+ * vi passere — anonyme brugere ser tom data + demo-banner.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  console.log('[MW-V2]', request.nextUrl.pathname)
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -36,25 +38,34 @@ export async function middleware(request: NextRequest) {
     url.pathname = '/auth/callback'
     return NextResponse.redirect(url)
   }
-  const isPublic =
-    pathname === '/login' ||
-    pathname.startsWith('/auth/') ||
-    pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico' ||
-    pathname.endsWith('.png') ||
-    pathname.endsWith('.svg') ||
-    pathname.endsWith('.jpg') ||
-    pathname === '/manifest.json' ||
-    pathname === '/sw.js'
+  // Beskyttede ruter (kun for logged-in brugere): profil, indstillinger, onboarding,
+  // grupper, idétavle, og alle administrations-ruter.
+  // Resten (overblik, frøbank, mine-planter, kalender, guides) er offentligt
+  // tilgængelige som demo-visning — skrive-handlinger gates separat i actions.
+  const isProtectedAuth =
+    pathname === '/profil' ||
+    pathname.startsWith('/profil/') ||
+    pathname === '/indstillinger' ||
+    pathname.startsWith('/indstillinger/') ||
+    pathname === '/onboarding' ||
+    pathname.startsWith('/onboarding/') ||
+    pathname === '/grupper' ||
+    pathname.startsWith('/grupper/') ||
+    pathname === '/idetavle' ||
+    pathname.startsWith('/idetavle/') ||
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/') ||
+    pathname === '/nulstil-kode' ||
+    pathname.startsWith('/nulstil-kode/')
 
-  if (!user && !isPublic) {
+  if (!user && isProtectedAuth) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Logged-in users på /login → home
-  if (user && pathname === '/login') {
+  // Logged-in users på /login eller /opret → home
+  if (user && (pathname === '/login' || pathname === '/opret')) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)

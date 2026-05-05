@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
@@ -95,11 +95,13 @@ function rowToLog(row: PlantLogRow): PlantLog {
 // ============================================
 
 export async function getAllPlants(): Promise<Plant[]> {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const user = await getCurrentUser()
+  if (!user) return []
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('plants_v2')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -110,12 +112,14 @@ export async function getAllPlants(): Promise<Plant[]> {
 }
 
 export async function getPlant(id: string): Promise<Plant | null> {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const user = await getCurrentUser()
+  if (!user) return null
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('plants_v2')
     .select('*')
     .eq('id', id)
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .single()
 
   if (error || !data) return null
@@ -123,12 +127,14 @@ export async function getPlant(id: string): Promise<Plant | null> {
 }
 
 export async function getPlantLogs(plantId: string): Promise<PlantLog[]> {
-  const { id: userId } = await requireUser(); const supabase = await createClient()
+  const user = await getCurrentUser()
+  if (!user) return []
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('plant_logs_v2')
     .select('*')
     .eq('plant_id', plantId)
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('date', { ascending: false })
 
   if (error) return []

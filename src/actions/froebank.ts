@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
 import { ensureGuideForInventoryItem } from '@/actions/guides'
@@ -94,7 +94,9 @@ function rowToItem(row: InventoryRow, counts?: { seedsSown?: number; seedsRemain
 }
 
 export async function getAllInventoryItems(): Promise<InventoryItem[]> {
-  const { id: userId } = await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return []
+  const userId = user.id
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('inventory_items')
@@ -124,7 +126,9 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
 }
 
 export async function getInventoryItem(id: string): Promise<InventoryItem | null> {
-  const { id: userId } = await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return null
+  const userId = user.id
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('inventory_items')
@@ -402,12 +406,13 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
 }
 
 export async function getCustomSubcategories() {
-  const { id: userId } = await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return []
   const supabase = await createClient()
   const { data } = await supabase
     .from('custom_subcategories')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('name')
 
   return (data ?? []).map(r => ({

@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { SowingEvent } from '@/lib/types'
 
@@ -36,13 +36,14 @@ function rowToEvent(row: SowingEventRow): SowingEvent {
 }
 
 export async function getSowingEventsForPlant(plantId: string): Promise<SowingEvent[]> {
-  const { id: userId } = await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return []
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('sowing_events')
     .select('*')
     .eq('plant_id', plantId)
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('sowing_date', { ascending: false })
 
   if (error) return []

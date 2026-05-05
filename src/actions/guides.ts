@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
+import { requireUser, getCurrentUser } from '@/lib/auth'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { revalidatePath } from 'next/cache'
 import type {
@@ -79,7 +79,8 @@ function rowToGuide(row: GuideRow): Guide {
 }
 
 export async function getAllGuides(): Promise<Guide[]> {
-  await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return []
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('guides')
@@ -93,7 +94,8 @@ export async function getAllGuides(): Promise<Guide[]> {
 }
 
 export async function getGuide(id: string): Promise<Guide | null> {
-  await requireUser()
+  const user = await getCurrentUser()
+  if (!user) return null
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('guides')
