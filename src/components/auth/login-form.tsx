@@ -61,12 +61,7 @@ export function LoginForm() {
           </div>
 
           <div>
-            <div className="flex items-center justify-between">
-              <Label>Kodeord</Label>
-              <Link href="/glemt-kode" className="text-xs text-primary hover:underline">
-                Glemt kodeord?
-              </Link>
-            </div>
+            <Label>Kodeord</Label>
             <Input
               type="password"
               value={password}
@@ -75,6 +70,12 @@ export function LoginForm() {
               autoComplete="current-password"
               className="mt-1.5"
             />
+            <Link
+              href="/glemt-kode"
+              className="block mt-2 text-sm text-primary hover:underline py-1"
+            >
+              Glemt kodeord?
+            </Link>
           </div>
 
           {error && (
