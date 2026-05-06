@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User, Users, Lightbulb, Settings, LogOut } from 'lucide-react'
+import { User, Users, Lightbulb, Settings, LogOut, ShieldCheck } from 'lucide-react'
 import type { Profile } from '@/lib/types'
 import { signOut } from '@/actions/auth'
 
@@ -55,6 +55,11 @@ export function ProfileMenu({ profile }: { profile: Profile }) {
         <DropdownMenuItem asChild>
           <Link href="/indstillinger"><Settings className="h-4 w-4" /> Indstillinger</Link>
         </DropdownMenuItem>
+        {profile.isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link href="/admin"><ShieldCheck className="h-4 w-4" /> Admin</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <form action={signOut}>
           <button type="submit" className="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded hover:bg-accent">
