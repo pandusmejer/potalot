@@ -8,7 +8,7 @@ import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
-import { GENERAL_GARDEN_TASKS } from '@/lib/curated-data'
+import { getGeneralGardenTasks } from '@/actions/aarshjul'
 import { erForsinket, erIDag, aktuelMaaned, maanedNavn } from '@/lib/datetime'
 import { AlertCircle, CalendarClock, Sprout, ArrowRight, Lightbulb } from 'lucide-react'
 import type { ProgressState } from '@/lib/types'
@@ -16,9 +16,10 @@ import type { ProgressState } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 export default async function OverblikPage() {
-  const [tasks, plants] = await Promise.all([
+  const [tasks, plants, generalTasks] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
+    getGeneralGardenTasks(),
   ])
 
   // Dagens opgaver
@@ -32,10 +33,12 @@ export default async function OverblikPage() {
   // Aktive planter (ikke arkiverede)
   const aktivePlanter = plants.filter(p => !p.isArchived).slice(0, 4)
 
-  // Månedens sæsonbaserede inspiration fra årshjul
+  // Månedens sæsonbaserede inspiration fra årshjul (filtrér skjulte væk)
   const nu = aktuelMaaned()
   const maanedenNavn = maanedNavn(nu)
-  const sæsonInspiration = GENERAL_GARDEN_TASKS.filter(t => t.month === nu).slice(0, 3)
+  const sæsonInspiration = generalTasks
+    .filter(t => t.month === nu && !t.isHiddenByMe)
+    .slice(0, 3)
 
   // Beregn månedens fremgang fra rigtige tasks
   const yyyymm = new Date().toISOString().slice(0, 7)

@@ -271,18 +271,40 @@ export interface CalendarTask {
   updatedAt: string
 }
 
-/** Generelle haveopgaver (årshjul, ikke brugerspecifikke) */
+/** Generelle haveopgaver (årshjul, globale på tværs af brugere — admin-styret) */
 export interface GeneralGardenTask {
   id: string
   title: string
   description: string
   month: number                      // 1-12
-  week?: number | null               // 1-53, valgfri
+  season?: string | null
   category: string
   priority: TaskPriority
+  timeWindow?: string | null
+  tip?: string | null
+  risk?: string | null
   recurrence: 'yearly' | 'monthly' | 'weekly'
-  sourceType: 'curated' | 'external'
+  isActive: boolean
   linkedGuideIds: string[]
+  /** True hvis nuværende bruger har skjult denne globale opgave */
+  isHiddenByMe?: boolean
+  createdAt: string
+  updatedAt: string
+  // Bagudkompatibilitet med tidligere felter
+  sourceType?: 'curated' | 'external'
+}
+
+/** Brugerens egne gøremål i årshjulet — kun synlige for brugeren */
+export interface UserGardenTask {
+  id: string
+  userId: string
+  title: string
+  description: string
+  month: number                      // 1-12
+  category: string
+  priority: TaskPriority
+  timeWindow?: string | null
+  notifyEnabled: boolean
   createdAt: string
   updatedAt: string
 }
