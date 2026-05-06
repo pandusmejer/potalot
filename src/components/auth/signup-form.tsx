@@ -30,7 +30,8 @@ export function SignupForm() {
     }
     startTransition(async () => {
       const supabase = createClient()
-      const redirectTo = `${window.location.origin}/auth/callback`
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
+      const redirectTo = `${baseUrl}/auth/callback`
       const { error: err } = await supabase.auth.signUp({
         email: email.trim(),
         password,

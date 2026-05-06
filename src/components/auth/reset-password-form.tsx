@@ -1,30 +1,68 @@
 'use client'
 
 import { useState, useTransition, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Lock, Check } from 'lucide-react'
+import { Lock, Check, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export function ResetPasswordForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [pending, startTransition] = useTransition()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
-  const [hasSession, setHasSession] = useState<boolean | null>(null)
+  const [phase, setPhase] = useState<'init' | 'ready' | 'invalid'>('init')
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getSession().then(({ data }) => {
-      setHasSession(!!data.session)
-    })
-  }, [])
+    let cancelled = false
+
+    async function init() {
+      // Listener registreres FØR vi tjekker noget — så vi fanger
+      // PASSWORD_RECOVERY-eventet uanset rækkefølge.
+      const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+        if (cancelled) return
+        if (event === 'PASSWORD_RECOVERY' || session) {
+          setPhase('ready')
+        }
+      })
+
+      // Forsøg at bytte ?code=... for en session (PKCE-flow)
+      const code = searchParams.get('code')
+      if (code) {
+        const { error: exErr } = await supabase.auth.exchangeCodeForSession(code)
+        if (!cancelled) {
+          if (exErr) {
+            setPhase('invalid')
+          } else {
+            setPhase('ready')
+          }
+        }
+        return () => sub.subscription.unsubscribe()
+      }
+
+      // Hvis token ligger i URL'ens hash (implicit-flow eller ældre links),
+      // har Supabase JS-klienten allerede sat session via detectSessionInUrl.
+      // Vent kort og tjek getSession.
+      await new Promise(r => setTimeout(r, 400))
+      const { data } = await supabase.auth.getSession()
+      if (!cancelled) {
+        setPhase(data.session ? 'ready' : 'invalid')
+      }
+
+      return () => sub.subscription.unsubscribe()
+    }
+
+    init()
+    return () => { cancelled = true }
+  }, [searchParams])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -49,7 +87,18 @@ export function ResetPasswordForm() {
     })
   }
 
-  if (hasSession === false) {
+  if (phase === 'init') {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center gap-3 py-8 text-center">
+          <Loader2 className="h-7 w-7 text-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">Validerer link…</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (phase === 'invalid') {
     return (
       <Card>
         <CardContent className="space-y-3 py-6 text-center">
@@ -119,7 +168,7 @@ export function ResetPasswordForm() {
             </div>
           )}
 
-          <Button type="submit" disabled={pending || hasSession !== true} className="w-full">
+          <Button type="submit" disabled={pending} className="w-full">
             <Lock className="h-4 w-4" />
             {pending ? 'Gemmer…' : 'Vælg kodeord'}
           </Button>

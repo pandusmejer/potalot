@@ -54,9 +54,7 @@ export async function proxy(request: NextRequest) {
     pathname === '/idetavle' ||
     pathname.startsWith('/idetavle/') ||
     pathname === '/admin' ||
-    pathname.startsWith('/admin/') ||
-    pathname === '/nulstil-kode' ||
-    pathname.startsWith('/nulstil-kode/')
+    pathname.startsWith('/admin/')
 
   if (!user && isProtectedAuth) {
     const url = request.nextUrl.clone()

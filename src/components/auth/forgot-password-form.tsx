@@ -20,7 +20,10 @@ export function ForgotPasswordForm() {
     setError(null)
     startTransition(async () => {
       const supabase = createClient()
-      const redirectTo = `${window.location.origin}/auth/callback?next=/nulstil-kode`
+      // Brug canonical produktions-URL hvis sat — ellers nuværende origin.
+      // Det sikrer reset-links altid peger på potalot.app, ikke deploy-previews.
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
+      const redirectTo = `${baseUrl}/nulstil-kode`
       const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo,
       })
