@@ -9,72 +9,44 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Plus, Pencil, Trash2, Wand2, Loader2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { SectionsEditor } from '@/components/guides/sections-editor'
-import {
-  createMasterGuide, updateMasterGuide, deleteMasterGuide, generateMasterDraftWithAI,
-  type MasterGuideInput,
-} from '@/actions/guides-admin'
+import { updateUserGuide, deleteGuide, type UpdateUserGuideInput } from '@/actions/guides'
 import type {
-  PrimaryCategoryId, Difficulty, GuideQuickFacts, GuideSection, GuideCalendarRule,
+  Guide, PrimaryCategoryId, Difficulty,
+  GuideQuickFacts, GuideSection, GuideCalendarRule,
 } from '@/lib/types'
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS } from '@/lib/constants'
 
-interface ExistingGuide {
-  id: string
-  plantName: string
-  variety: string | null
-  latinName: string | null
-  primaryCategoryId: PrimaryCategoryId
-  summary: string
-  difficulty?: Difficulty
-  tags?: string[]
-  quickFacts?: GuideQuickFacts
-  sections?: GuideSection[]
-  calendarRules?: GuideCalendarRule[]
-  sourceLinks?: string[]
-}
-
 interface Props {
-  guide?: ExistingGuide
-  triggerLabel?: string
-  /** Forudfyldte felter når ny master oprettes ud fra en bruger-guide. */
-  prefill?: Partial<MasterGuideInput>
+  guide: Guide
 }
 
-export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
+/**
+ * Redigér en bruger-ejet guide. RLS sørger for at kun ejeren kan
+ * faktisk gemme — knappen vises kun når bruger ejer guiden (visibility
+ * === 'private').
+ */
+export function UserGuideEditDialog({ guide }: Props) {
   const router = useRouter()
-  const isEdit = !!guide
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
-  const [aiPending, setAiPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [aiInfo, setAiInfo] = useState<string | null>(null)
 
-  const [plantName, setPlantName] = useState(guide?.plantName ?? prefill?.plantName ?? '')
-  const [variety, setVariety] = useState(guide?.variety ?? prefill?.variety ?? '')
-  const [latinName, setLatinName] = useState(guide?.latinName ?? prefill?.latinName ?? '')
-  const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>(
-    guide?.primaryCategoryId ?? prefill?.primaryCategoryId ?? 'fro'
-  )
-  const [summary, setSummary] = useState(guide?.summary ?? prefill?.summary ?? '')
-  const [difficulty, setDifficulty] = useState<Difficulty | ''>(
-    guide?.difficulty ?? prefill?.difficulty ?? ''
-  )
-  const [tagsInput, setTagsInput] = useState(
-    (guide?.tags ?? prefill?.tags ?? []).join(', ')
-  )
-  const [sourceLinksInput, setSourceLinksInput] = useState(
-    (guide?.sourceLinks ?? prefill?.sourceLinks ?? []).join('\n')
-  )
+  const [plantName, setPlantName] = useState(guide.plantName)
+  const [variety, setVariety] = useState(guide.variety ?? '')
+  const [latinName, setLatinName] = useState(guide.latinName ?? '')
+  const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>(guide.primaryCategoryId)
+  const [summary, setSummary] = useState(guide.summary)
+  const [difficulty, setDifficulty] = useState<Difficulty | ''>(guide.difficulty || '')
+  const [tagsInput, setTagsInput] = useState(guide.tags.join(', '))
+  const [sourceLinksInput, setSourceLinksInput] = useState(guide.sourceLinks.join('\n'))
+  const [sections, setSections] = useState<GuideSection[]>(guide.sections)
   const [quickFactsJson, setQuickFactsJson] = useState(
-    JSON.stringify(guide?.quickFacts ?? prefill?.quickFacts ?? {}, null, 2)
-  )
-  const [sections, setSections] = useState<GuideSection[]>(
-    guide?.sections ?? prefill?.sections ?? []
+    JSON.stringify(guide.quickFacts ?? {}, null, 2)
   )
   const [calendarRulesJson, setCalendarRulesJson] = useState(
-    JSON.stringify(guide?.calendarRules ?? prefill?.calendarRules ?? [], null, 2)
+    JSON.stringify(guide.calendarRules ?? [], null, 2)
   )
 
   function parseJson<T>(label: string, raw: string, fallback: T): T | { error: string } {
@@ -87,42 +59,6 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
     }
   }
 
-  async function handleGenerate() {
-    if (!plantName.trim()) {
-      setError('Skriv plantenavn først så AI ved hvad der skal genereres.')
-      return
-    }
-    setError(null)
-    setAiInfo(null)
-    setAiPending(true)
-    try {
-      const res = await generateMasterDraftWithAI({
-        plantName: plantName.trim(),
-        latinName: latinName.trim() || undefined,
-        variety: variety.trim() || undefined,
-        primaryCategoryId: primaryCat,
-      })
-      if ('error' in res) {
-        setError(res.error)
-        return
-      }
-      const f = res.fields
-      if (f.plantName && !guide) setPlantName(f.plantName)
-      if (f.latinName != null) setLatinName(f.latinName ?? '')
-      if (f.variety != null) setVariety(f.variety ?? '')
-      if (f.primaryCategoryId) setPrimaryCat(f.primaryCategoryId)
-      if (f.summary) setSummary(f.summary)
-      if (f.difficulty) setDifficulty(f.difficulty)
-      if (f.tags) setTagsInput(f.tags.join(', '))
-      if (f.quickFacts) setQuickFactsJson(JSON.stringify(f.quickFacts, null, 2))
-      if (f.sections) setSections(f.sections)
-      if (f.calendarRules) setCalendarRulesJson(JSON.stringify(f.calendarRules, null, 2))
-      setAiInfo('AI-udkast indsat. Tjek og redigér før du gemmer.')
-    } finally {
-      setAiPending(false)
-    }
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -130,7 +66,6 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
       setError('Plantenavn er påkrævet.')
       return
     }
-
     const emptyQf: GuideQuickFacts = {
       sowingMonths: [], directSowingMonths: [], plantingOutMonths: [], harvestMonths: [],
     }
@@ -143,7 +78,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
     const tags = tagsInput.split(',').map(s => s.trim()).filter(Boolean)
     const sourceLinks = sourceLinksInput.split('\n').map(s => s.trim()).filter(Boolean)
 
-    const input: MasterGuideInput = {
+    const input: UpdateUserGuideInput = {
       plantName: plantName.trim(),
       variety: variety.trim() || null,
       latinName: latinName.trim() || null,
@@ -158,9 +93,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
     }
 
     startTransition(async () => {
-      const res = isEdit
-        ? await updateMasterGuide(guide!.id, input)
-        : await createMasterGuide(input)
+      const res = await updateUserGuide(guide.id, input)
       if ('error' in res) {
         setError(res.error)
         return
@@ -171,37 +104,30 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
   }
 
   function handleDelete() {
-    if (!guide) return
-    if (!confirm(`Slet master-guide for "${guide.plantName}"? Brugere mister adgang til denne guide.`)) return
+    if (!confirm(`Slet din kopi af "${guide.plantName}"? Dine private noter forsvinder også.`)) return
     startTransition(async () => {
-      const res = await deleteMasterGuide(guide.id)
+      const res = await deleteGuide(guide.id)
       if ('error' in res) {
         setError(res.error)
         return
       }
       setOpen(false)
-      router.refresh()
+      router.push('/guides')
     })
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {isEdit ? (
-          <Button variant="ghost" size="sm" aria-label="Redigér">
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
-        ) : (
-          <Button>
-            <Plus className="h-4 w-4" />
-            {triggerLabel ?? 'Ny master-guide'}
-          </Button>
-        )}
+        <Button variant="outline" size="sm">
+          <Pencil className="h-3.5 w-3.5" />
+          Redigér
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogTitle>{isEdit ? `Redigér ${guide!.plantName}` : 'Ny master-guide'}</DialogTitle>
+        <DialogTitle>Redigér min guide</DialogTitle>
         <DialogDescription>
-          Master-guides er synlige for alle brugere og kan kun ændres af admin.
+          Din private kopi. Ændringer påvirker ikke andre brugere eller eventuel master-guide.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -256,12 +182,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
 
           <div>
             <Label>Tags (komma-separeret)</Label>
-            <Input
-              value={tagsInput}
-              onChange={e => setTagsInput(e.target.value)}
-              placeholder="drivhus, varmekrævende"
-              className="mt-1.5"
-            />
+            <Input value={tagsInput} onChange={e => setTagsInput(e.target.value)} className="mt-1.5" />
           </div>
 
           <div>
@@ -280,21 +201,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
           </div>
 
           <div className="border-t border-border pt-3 space-y-3">
-            <div className="flex items-center justify-between gap-2">
-              <p className="font-serif text-base text-foreground">Avanceret indhold (JSON)</p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleGenerate}
-                disabled={aiPending || !plantName.trim()}
-              >
-                {aiPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                {aiPending ? 'Genererer…' : 'Generér med AI'}
-              </Button>
-            </div>
-            {aiInfo && <p className="text-xs text-muted-foreground">{aiInfo}</p>}
-
+            <p className="font-serif text-base text-foreground">Avanceret (JSON)</p>
             <div>
               <Label>Quick facts</Label>
               <Textarea
@@ -305,13 +212,12 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
                 spellCheck={false}
               />
             </div>
-
             <div>
               <Label>Kalender-regler</Label>
               <Textarea
                 value={calendarRulesJson}
                 onChange={e => setCalendarRulesJson(e.target.value)}
-                rows={6}
+                rows={5}
                 className="mt-1.5 font-mono text-xs"
                 spellCheck={false}
               />
@@ -321,15 +227,13 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <DialogFooter className="gap-2">
-            {isEdit && (
-              <Button type="button" variant="ghost" onClick={handleDelete} disabled={pending} className="mr-auto">
-                <Trash2 className="h-4 w-4" />
-                Slet
-              </Button>
-            )}
+            <Button type="button" variant="ghost" onClick={handleDelete} disabled={pending} className="mr-auto">
+              <Trash2 className="h-4 w-4" />
+              Slet
+            </Button>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : 'Opret master'}
+              {pending ? 'Gemmer…' : 'Gem ændringer'}
             </Button>
           </DialogFooter>
         </form>

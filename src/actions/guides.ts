@@ -204,6 +204,55 @@ export async function cloneGuideToOwn(
   return { id: data.id as string }
 }
 
+export interface UpdateUserGuideInput {
+  plantName: string
+  variety?: string | null
+  latinName?: string | null
+  primaryCategoryId: PrimaryCategoryId
+  summary?: string
+  difficulty?: Difficulty
+  tags?: string[]
+  quickFacts?: GuideQuickFacts
+  sections?: GuideSection[]
+  calendarRules?: GuideCalendarRule[]
+  sourceLinks?: string[]
+}
+
+/**
+ * Opdatér en bruger-ejet guide. RLS sikrer at kun ejeren kan ændre.
+ */
+export async function updateUserGuide(
+  id: string,
+  input: UpdateUserGuideInput
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('guides')
+    .update({
+      plant_name: input.plantName.trim(),
+      variety: input.variety?.trim() || null,
+      latin_name: input.latinName?.trim() || null,
+      primary_category_id: input.primaryCategoryId,
+      summary: input.summary?.trim() || null,
+      difficulty: input.difficulty ?? null,
+      tags: input.tags ?? [],
+      quick_facts: input.quickFacts ?? {},
+      sections: input.sections ?? [],
+      calendar_rules: input.calendarRules ?? [],
+      source_links: input.sourceLinks ?? [],
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+  revalidatePath('/guides')
+  revalidatePath(`/guides/${id}`)
+  return { ok: true }
+}
+
 export async function deleteGuide(id: string): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()

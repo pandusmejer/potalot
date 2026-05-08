@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
 import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { CloneMasterButton } from '@/components/guides/clone-master-button'
+import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -85,6 +86,9 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             <p className="text-xs italic text-muted-foreground/80 truncate">{effective.latinName}</p>
           )}
         </div>
+        {!isMaster && currentUser && (
+          <UserGuideEditDialog guide={original} />
+        )}
       </div>
 
       {/* Hvis sortsguide: link tilbage til artsguide */}
