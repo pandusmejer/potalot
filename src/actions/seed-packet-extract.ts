@@ -153,7 +153,10 @@ function parseFieldsFromJson(parsed: Record<string, unknown>): ExtractedSeedFiel
  * Hent en URL → udtræk produktbillede + tekst → kør AI for at få frøinfo.
  * Downloader og:image til Supabase Storage så billedet er persistent.
  */
-export async function extractSeedFromUrl(url: string): Promise<
+export async function extractSeedFromUrl(
+  url: string,
+  options?: { skipImageDownload?: boolean }
+): Promise<
   | { fields: ExtractedSeedFields; primaryImageUrl: string | null; sourceUrl: string }
   | { error: string }
 > {
@@ -243,7 +246,7 @@ export async function extractSeedFromUrl(url: string): Promise<
   }
 
   let primaryImageUrl: string | null = null
-  if (absoluteImageUrl) {
+  if (absoluteImageUrl && !options?.skipImageDownload) {
     try {
       const imgRes = await fetch(absoluteImageUrl, { signal: AbortSignal.timeout(10000) })
       if (imgRes.ok) {

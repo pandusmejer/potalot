@@ -10,12 +10,35 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
-import { Pencil, Wand2, Loader2 } from 'lucide-react'
+import { Pencil, Wand2, Loader2, Link as LinkIcon, Check, X } from 'lucide-react'
 import type { InventoryItem, PrimaryCategoryId } from '@/lib/types'
-import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
+import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES, MONTHS_DA } from '@/lib/constants'
 import { updateInventoryItem } from '@/actions/froebank'
-import { extractSeedPacketFields } from '@/actions/seed-packet-extract'
+import { extractSeedPacketFields, extractSeedFromUrl } from '@/actions/seed-packet-extract'
 import { DyrkningsfaktaFields, type DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
+
+interface Suggestion {
+  key: string
+  label: string
+  current: string
+  suggested: string
+  apply: () => void
+}
+
+const LIGHT_LABEL: Record<NonNullable<DyrkningsfaktaState['light']>, string> = {
+  full_sun: 'Fuld sol',
+  partial_shade: 'Halvskygge',
+  shade: 'Skygge',
+}
+const WATER_LABEL: Record<NonNullable<DyrkningsfaktaState['water']>, string> = {
+  low: 'Lidt',
+  regular: 'Regelmæssig',
+  high: 'Meget',
+}
+const monthsLabel = (months: number[]): string =>
+  months.length === 0 ? '—' : months.map(m => MONTHS_DA.find(x => x.num === m)?.short ?? m).join(', ')
+const arraysEqual = (a: number[], b: number[]): boolean =>
+  a.length === b.length && [...a].sort().join(',') === [...b].sort().join(',')
 
 interface Props {
   item: InventoryItem
@@ -58,6 +81,11 @@ export function EditInventoryDialog({ item }: Props) {
 
   const [aiPending, setAiPending] = useState(false)
   const [aiInfo, setAiInfo] = useState<string | null>(null)
+
+  const [urlAiPending, setUrlAiPending] = useState(false)
+  const [urlAiInfo, setUrlAiInfo] = useState<string | null>(null)
+  const [urlAiError, setUrlAiError] = useState<string | null>(null)
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
 
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
@@ -102,6 +130,201 @@ export function EditInventoryDialog({ item }: Props) {
         : 'AI fandt ikke ny info som ikke allerede er udfyldt.')
     } finally {
       setAiPending(false)
+    }
+  }
+
+  function dismissSuggestion(key: string) {
+    setSuggestions(s => s.filter(x => x.key !== key))
+  }
+
+  async function handleFillFromLink() {
+    const url = purchaseUrl.trim()
+    if (!url) return
+    setUrlAiError(null)
+    setUrlAiInfo(null)
+    setSuggestions([])
+    setUrlAiPending(true)
+    try {
+      const res = await extractSeedFromUrl(url, { skipImageDownload: true })
+      if ('error' in res) {
+        const friendly =
+          res.error === 'Ugyldig URL' || res.error.startsWith('Kun http')
+            ? res.error
+            : res.error.startsWith('Kunne ikke hente') || res.error.startsWith('Fetch fejlede')
+              ? 'Linket kunne ikke læses. Prøv et andet link eller upload et foto af frøposen.'
+              : res.error
+        setUrlAiError(friendly)
+        return
+      }
+      const f = res.fields
+      const filled: string[] = []
+      const newSuggestions: Suggestion[] = []
+
+      // String-felter (top-level)
+      const stringField = (
+        labelKey: string,
+        currentValue: string,
+        aiValue: string | undefined,
+        setter: (v: string) => void,
+      ) => {
+        if (!aiValue) return
+        if (!currentValue.trim()) {
+          setter(aiValue)
+          filled.push(labelKey)
+        } else if (currentValue.trim().toLowerCase() !== aiValue.trim().toLowerCase()) {
+          newSuggestions.push({
+            key: labelKey,
+            label: labelKey,
+            current: currentValue,
+            suggested: aiValue,
+            apply: () => { setter(aiValue); dismissSuggestion(labelKey) },
+          })
+        }
+      }
+      stringField('Navn', name, f.name, setName)
+      stringField('Latinsk navn', latinName, f.latinName, setLatinName)
+      stringField('Sort', variety, f.variety, setVariety)
+      stringField('Leverandør', supplier, f.supplier, setSupplier)
+      stringField('Noter', notes, f.notes, setNotes)
+
+      // Antal frø — kun hvis kategorien er frø
+      if (isFroe && f.seedCount != null) {
+        if (!seedCount) {
+          setSeedCount(String(f.seedCount))
+          filled.push('Antal frø')
+        } else if (parseInt(seedCount, 10) !== f.seedCount) {
+          const aiVal = String(f.seedCount)
+          newSuggestions.push({
+            key: 'seedCount',
+            label: 'Antal frø',
+            current: seedCount,
+            suggested: aiVal,
+            apply: () => { setSeedCount(aiVal); dismissSuggestion('seedCount') },
+          })
+        }
+      }
+
+      // Dyrkningsfakta — bruges via setDyrkning(prev => ...) så apply-callbacks ser
+      // den seneste state, ikke en stale closure.
+      const dyrkningField = <K extends keyof DyrkningsfaktaState>(
+        labelKey: string,
+        currentValue: DyrkningsfaktaState[K],
+        aiValue: DyrkningsfaktaState[K] | undefined,
+        key: K,
+        currentLabel: string,
+        suggestedLabel: string,
+        equals: (a: DyrkningsfaktaState[K], b: DyrkningsfaktaState[K]) => boolean,
+        isEmpty: (v: DyrkningsfaktaState[K]) => boolean,
+      ) => {
+        if (aiValue === undefined || aiValue === null) return
+        if (isEmpty(currentValue)) {
+          setDyrkning(prev => ({ ...prev, [key]: aiValue }))
+          filled.push(labelKey)
+        } else if (!equals(currentValue, aiValue)) {
+          newSuggestions.push({
+            key: `dyrkning.${key}`,
+            label: labelKey,
+            current: currentLabel,
+            suggested: suggestedLabel,
+            apply: () => {
+              setDyrkning(prev => ({ ...prev, [key]: aiValue }))
+              dismissSuggestion(`dyrkning.${key}`)
+            },
+          })
+        }
+      }
+
+      // Måned-arrays
+      if (f.sowingMonths) dyrkningField(
+        'Sås', dyrkning.sowingMonths, f.sowingMonths, 'sowingMonths',
+        monthsLabel(dyrkning.sowingMonths), monthsLabel(f.sowingMonths),
+        arraysEqual, v => v.length === 0,
+      )
+      if (f.plantingOutMonths) dyrkningField(
+        'Plant ud', dyrkning.plantingOutMonths, f.plantingOutMonths, 'plantingOutMonths',
+        monthsLabel(dyrkning.plantingOutMonths), monthsLabel(f.plantingOutMonths),
+        arraysEqual, v => v.length === 0,
+      )
+      if (f.harvestMonths) dyrkningField(
+        'Høst', dyrkning.harvestMonths, f.harvestMonths, 'harvestMonths',
+        monthsLabel(dyrkning.harvestMonths), monthsLabel(f.harvestMonths),
+        arraysEqual, v => v.length === 0,
+      )
+
+      // Sådybde (number | null)
+      if (f.sowingDepthMm != null) dyrkningField(
+        'Sådybde', dyrkning.sowingDepthMm, f.sowingDepthMm, 'sowingDepthMm',
+        dyrkning.sowingDepthMm == null ? '—' : `${dyrkning.sowingDepthMm} mm`,
+        `${f.sowingDepthMm} mm`,
+        (a, b) => a === b, v => v == null,
+      )
+
+      // Forspiring (boolean | null)
+      if (f.preCultivation != null) dyrkningField(
+        'Forspiring', dyrkning.preCultivation, f.preCultivation, 'preCultivation',
+        dyrkning.preCultivation == null ? '—' : dyrkning.preCultivation ? 'Ja' : 'Nej',
+        f.preCultivation ? 'Ja' : 'Nej',
+        (a, b) => a === b, v => v == null,
+      )
+
+      // Lys / Vand (enum | null)
+      if (f.light) dyrkningField(
+        'Lys', dyrkning.light, f.light, 'light',
+        dyrkning.light ? LIGHT_LABEL[dyrkning.light] : '—',
+        LIGHT_LABEL[f.light],
+        (a, b) => a === b, v => v == null,
+      )
+      if (f.water) dyrkningField(
+        'Vand', dyrkning.water, f.water, 'water',
+        dyrkning.water ? WATER_LABEL[dyrkning.water] : '—',
+        WATER_LABEL[f.water],
+        (a, b) => a === b, v => v == null,
+      )
+
+      // Tekst-felter i dyrkning
+      const dyrkningString = (
+        labelKey: string,
+        key: 'germinationDays' | 'germinationTemperature' | 'plantSpacing' | 'rowSpacing',
+        aiValue: string | undefined,
+      ) => {
+        if (!aiValue) return
+        const current = dyrkning[key]
+        if (!current.trim()) {
+          setDyrkning(prev => ({ ...prev, [key]: aiValue }))
+          filled.push(labelKey)
+        } else if (current.trim().toLowerCase() !== aiValue.trim().toLowerCase()) {
+          newSuggestions.push({
+            key: `dyrkning.${key}`,
+            label: labelKey,
+            current,
+            suggested: aiValue,
+            apply: () => {
+              setDyrkning(prev => ({ ...prev, [key]: aiValue }))
+              dismissSuggestion(`dyrkning.${key}`)
+            },
+          })
+        }
+      }
+      dyrkningString('Spiretid', 'germinationDays', f.germinationDays)
+      dyrkningString('Spiretemp.', 'germinationTemperature', f.germinationTemperature)
+      dyrkningString('Planteafstand', 'plantSpacing', f.plantSpacing)
+      dyrkningString('Rækkeafstand', 'rowSpacing', f.rowSpacing)
+
+      setSuggestions(newSuggestions)
+
+      if (filled.length === 0 && newSuggestions.length === 0) {
+        setUrlAiInfo('AI kunne ikke finde nok information på linket.')
+      } else {
+        const parts: string[] = []
+        if (filled.length > 0) parts.push(`AI udfyldte ${filled.length} ${filled.length === 1 ? 'felt' : 'felter'} (${filled.join(', ')})`)
+        if (newSuggestions.length > 0) parts.push(`${newSuggestions.length} forslag til ændring nedenfor`)
+        setUrlAiInfo(parts.join('. ') + '.')
+      }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'ukendt fejl'
+      setUrlAiError(`AI-fejl: ${msg}`)
+    } finally {
+      setUrlAiPending(false)
     }
   }
 
@@ -233,6 +456,51 @@ export function EditInventoryDialog({ item }: Props) {
           <div>
             <Label>Købt her</Label>
             <Input type="url" value={purchaseUrl} onChange={e => setPurchaseUrl(e.target.value)} className="mt-1.5" />
+            {purchaseUrl.trim() && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2 w-full"
+                onClick={handleFillFromLink}
+                disabled={urlAiPending}
+              >
+                {urlAiPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <LinkIcon className="h-4 w-4" />}
+                {urlAiPending ? 'Læser link…' : 'Autoudfyld med AI fra link'}
+              </Button>
+            )}
+            {urlAiInfo && <p className="mt-2 text-xs text-muted-foreground">{urlAiInfo}</p>}
+            {urlAiError && (
+              <p className="mt-2 text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
+                {urlAiError}
+              </p>
+            )}
+            {suggestions.length > 0 && (
+              <div className="mt-3 space-y-2 border border-border rounded-lg p-3 bg-muted/30">
+                <p className="text-xs font-medium text-foreground">AI-forslag til felter du allerede har udfyldt</p>
+                {suggestions.map(s => (
+                  <div key={s.key} className="flex items-start justify-between gap-2 text-xs">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-foreground">{s.label}</p>
+                      <p className="text-muted-foreground">
+                        Nuværende: <span className="text-foreground">{s.current}</span>
+                      </p>
+                      <p className="text-muted-foreground">
+                        Forslag: <span className="text-foreground">{s.suggested}</span>
+                      </p>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <Button type="button" variant="outline" size="sm" onClick={s.apply} aria-label="Brug forslag">
+                        <Check className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => dismissSuggestion(s.key)} aria-label="Behold nuværende">
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="border-t border-border pt-3">
