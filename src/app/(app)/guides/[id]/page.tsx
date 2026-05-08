@@ -4,10 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
+import { GuideNotesCard } from '@/components/guides/guide-notes-card'
+import { CloneMasterButton } from '@/components/guides/clone-master-button'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
+import { getMyGuideNote } from '@/actions/guide-notes'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
+import { getCurrentUser } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
   ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
@@ -29,11 +33,15 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
     ? returnTo
     : '/guides'
 
-  const [allGuides, inventory, plants] = await Promise.all([
+  const currentUser = await getCurrentUser()
+  const [allGuides, inventory, plants, myNote] = await Promise.all([
     getAllGuides(),
     getAllInventoryItems(),
     getAllPlants(),
+    currentUser ? getMyGuideNote(id) : Promise.resolve(null),
   ])
+
+  const isMaster = original.visibility === 'public'
 
   const { effective, inheritedFromParent, parent } = mergeGuide(original, allGuides)
 
@@ -92,6 +100,19 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
                 Se artsguide <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Master-banner + clone-knap */}
+      {isMaster && (
+        <Card className="bg-secondary/30 border-secondary">
+          <CardContent className="flex items-center gap-3 py-3 flex-wrap">
+            <BookOpen className="h-4 w-4 text-primary shrink-0" />
+            <p className="text-sm flex-1 min-w-[200px]">
+              Master-guide. Du kan ikke redigere indholdet, men du kan tilføje dine egne noter eller lave en personlig kopi.
+            </p>
+            {currentUser && <CloneMasterButton guideId={original.id} />}
           </CardContent>
         </Card>
       )}
@@ -194,6 +215,11 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Mine private noter */}
+      {currentUser && myNote !== null && (
+        <GuideNotesCard guideId={original.id} initialNote={myNote} />
       )}
 
       {/* AI gartner */}

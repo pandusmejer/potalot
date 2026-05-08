@@ -155,6 +155,55 @@ export async function createGuide(input: CreateGuideInput): Promise<{ id: string
   return { id: data.id as string }
 }
 
+/**
+ * Klon en guide (typisk en master) til en bruger-ejet kopi. Bruges når en
+ * bruger vil ændre i en master-guide — kopien bliver privat og kan
+ * frit redigeres uden at påvirke originalen.
+ */
+export async function cloneGuideToOwn(
+  sourceId: string
+): Promise<{ id: string } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const { data: src, error: srcErr } = await supabase
+    .from('guides')
+    .select('*')
+    .eq('id', sourceId)
+    .maybeSingle()
+  if (srcErr || !src) return { error: 'Kunne ikke hente kilde-guide' }
+
+  const { data, error } = await supabase
+    .from('guides')
+    .insert({
+      user_id: userId,
+      plant_name: src.plant_name,
+      variety: src.variety,
+      latin_name: src.latin_name,
+      guide_level: src.guide_level,
+      parent_guide_id: src.parent_guide_id,
+      primary_category_id: src.primary_category_id,
+      subcategory_id: src.subcategory_id,
+      summary: src.summary,
+      difficulty: src.difficulty,
+      tags: src.tags ?? [],
+      quick_facts: src.quick_facts ?? {},
+      sections: src.sections ?? [],
+      calendar_rules: src.calendar_rules ?? [],
+      source_links: src.source_links ?? [],
+      primary_image_url: src.primary_image_url,
+      is_ai_generated: false,
+      status: 'published',
+    })
+    .select('id')
+    .single()
+
+  if (error || !data) return { error: error?.message ?? 'Kunne ikke kopiere guide' }
+
+  revalidatePath('/guides')
+  return { id: data.id as string }
+}
+
 export async function deleteGuide(id: string): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
