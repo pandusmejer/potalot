@@ -9,10 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Plus, Camera } from 'lucide-react'
+import { MultiImageUpload } from '@/components/ui/multi-image-upload'
+import { Plus } from 'lucide-react'
 import type { PlantLogType } from '@/lib/types'
 import { idag } from '@/lib/datetime'
 import { createPlantLog } from '@/actions/mine-planter'
+import { deleteImage } from '@/actions/storage'
 
 const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
   { value: 'note', label: 'Note' },
@@ -43,6 +45,25 @@ export function LogForm({ plantId }: Props) {
   const [date, setDate] = useState(idag())
   const [title, setTitle] = useState('')
   const [note, setNote] = useState('')
+  const [images, setImages] = useState<string[]>([])
+
+  function reset() {
+    setTitle('')
+    setNote('')
+    setType('note')
+    setDate(idag())
+    setImages([])
+    setError(null)
+  }
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next)
+    if (!next) {
+      // Forladte uploads ryddes op så vi ikke efterlader forældreløse filer i Storage.
+      images.forEach(url => { deleteImage(url).catch(() => {}) })
+      reset()
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -55,22 +76,20 @@ export function LogForm({ plantId }: Props) {
         type,
         title: title.trim() || undefined,
         note: note.trim() || undefined,
+        imageUrls: images.length > 0 ? images : undefined,
       })
       if ('error' in res) {
         setError(res.error)
         return
       }
       setOpen(false)
-      setTitle('')
-      setNote('')
-      setType('note')
-      setDate(idag())
+      reset()
       router.refresh()
     })
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Plus className="h-4 w-4" />
@@ -130,16 +149,32 @@ export function LogForm({ plantId }: Props) {
             />
           </div>
 
-          {/* TODO (storage): foto-upload */}
-          <Button type="button" variant="outline" size="sm" className="w-full" disabled>
-            <Camera className="h-4 w-4" />
-            Tilføj foto (TODO)
-          </Button>
+          <div>
+            <Label>Fotos</Label>
+            <div className="mt-1.5">
+              <MultiImageUpload
+                value={images}
+                primary={images[0] ?? null}
+                onChange={(urls, prim) => {
+                  // Logs har ikke et "primary"-koncept — vi fortolker stjernen som
+                  // "flyt forrest" så rækkefølgen i image_urls afspejler valget.
+                  if (prim && urls.includes(prim) && urls[0] !== prim) {
+                    setImages([prim, ...urls.filter(u => u !== prim)])
+                  } else {
+                    setImages(urls)
+                  }
+                }}
+                folder="log"
+                maxImages={6}
+                label="Tilføj foto"
+              />
+            </div>
+          </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
+            <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
               Annullér
             </Button>
             <Button type="submit" disabled={pending}>

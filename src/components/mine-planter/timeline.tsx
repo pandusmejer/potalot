@@ -1,6 +1,6 @@
 import { formatDatoMedAar, venligDato } from '@/lib/datetime'
 import type { Plant, PlantLog } from '@/lib/types'
-import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, Camera, FileText, Droplets, Scissors, Bug } from 'lucide-react'
+import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ComponentType, SVGProps } from 'react'
 
@@ -91,6 +91,22 @@ export function Timeline({ plant, logs }: Props) {
                 </div>
                 {item.log.note && (
                   <p className="text-xs text-muted-foreground mt-0.5">{item.log.note}</p>
+                )}
+                {item.log.imageIds.length > 0 && (
+                  <div className="mt-2 grid grid-cols-3 gap-1.5">
+                    {item.log.imageIds.map(url => (
+                      <a
+                        key={url}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block aspect-square rounded-md overflow-hidden border border-border bg-muted"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      </a>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>

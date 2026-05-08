@@ -328,6 +328,7 @@ export async function createPlantLog(input: {
   type: PlantLogType
   title?: string
   note?: string
+  imageUrls?: string[]
 }): Promise<{ id: string } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
@@ -340,6 +341,7 @@ export async function createPlantLog(input: {
       type: input.type,
       title: input.title || null,
       note: input.note || null,
+      image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
     })
     .select('id')
     .single()
