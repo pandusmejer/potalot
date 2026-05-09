@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { getChatMessages } from '@/actions/group-chat'
+import { getPendingJoinRequests } from '@/actions/group-invitations'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
 import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { ChatPanel } from '@/components/grupper/chat-panel'
@@ -104,9 +105,11 @@ export default async function GroupDetailPage({ params }: Props) {
   }
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
-  const [members, chatMessages] = await Promise.all([
+  const isOwner = group.myRole === 'owner'
+  const [members, chatMessages, pendingRequests] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
+    isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
   ])
 
   return (
@@ -289,6 +292,7 @@ export default async function GroupDetailPage({ params }: Props) {
                 initialMembers={members}
                 myUserId={me.id}
                 myRole={group.myRole ?? 'member'}
+                pendingRequests={pendingRequests}
               />
             </CardContent>
           </Card>

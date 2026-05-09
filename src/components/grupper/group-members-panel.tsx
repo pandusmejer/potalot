@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { UserPlus, X, Loader2, LogOut } from 'lucide-react'
 import { addGroupMember, removeGroupMember, leaveGroup, type GroupMember } from '@/actions/groups'
+import { InviteDialog } from '@/components/grupper/invite-dialog'
+import { PendingRequestsPanel } from '@/components/grupper/pending-requests-panel'
+import type { JoinRequest } from '@/actions/group-invitations'
 
 interface Props {
   groupId: string
@@ -15,9 +18,10 @@ interface Props {
   initialMembers: GroupMember[]
   myUserId: string
   myRole: 'owner' | 'member'
+  pendingRequests?: JoinRequest[]
 }
 
-export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole }: Props) {
+export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole, pendingRequests }: Props) {
   const router = useRouter()
   const [members, setMembers] = useState<GroupMember[]>(initialMembers)
   const [username, setUsername] = useState('')
@@ -76,8 +80,19 @@ export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId
   return (
     <div className="space-y-3">
       {isOwner && (
-        <form onSubmit={handleAdd} className="space-y-2">
-          <Label>Tilføj medlem via brugernavn</Label>
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <p className="text-sm font-medium text-foreground">Invitér medlemmer</p>
+          <InviteDialog groupId={groupId} groupName={groupName} />
+        </div>
+      )}
+
+      {isOwner && pendingRequests && pendingRequests.length > 0 && (
+        <PendingRequestsPanel groupId={groupId} initial={pendingRequests} />
+      )}
+
+      {isOwner && (
+        <form onSubmit={handleAdd} className="space-y-2 border-t border-border pt-3">
+          <Label className="text-xs">Eller tilføj direkte via brugernavn</Label>
           <div className="flex gap-2">
             <Input
               value={username}
