@@ -11,6 +11,8 @@ import { getPendingJoinRequests } from '@/actions/group-invitations'
 import { getForumPosts } from '@/actions/group-forum'
 import { ForumList } from '@/components/grupper/forum-list'
 import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-dialog'
+import { getSwapListings } from '@/actions/seed-swap'
+import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
 import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { ChatPanel } from '@/components/grupper/chat-panel'
@@ -109,11 +111,12 @@ export default async function GroupDetailPage({ params }: Props) {
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
   const isOwner = group.myRole === 'owner'
-  const [members, chatMessages, pendingRequests, forumPosts] = await Promise.all([
+  const [members, chatMessages, pendingRequests, forumPosts, swapListings] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
     isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
     isInterest ? getForumPosts({ groupId: id }) : Promise.resolve([]),
+    getSwapListings({ groupId: id }),
   ])
 
   return (
@@ -152,7 +155,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabsTrigger value="forum">Forum</TabsTrigger>
               <TabsTrigger value="sorter" disabled>Sorter</TabsTrigger>
               <TabsTrigger value="guides" disabled>Guides</TabsTrigger>
-              <TabsTrigger value="froebytte" disabled>Frøbytte</TabsTrigger>
+              <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
               <TabsTrigger value="billeder" disabled>Billeder</TabsTrigger>
             </>
           ) : (
@@ -161,7 +164,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabsTrigger value="ideer">Idéer</TabsTrigger>
               <TabsTrigger value="oenskeliste" disabled>Ønskeliste</TabsTrigger>
               <TabsTrigger value="opgaver" disabled>Opgaver</TabsTrigger>
-              <TabsTrigger value="froebytte" disabled>Frøbytte</TabsTrigger>
+              <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
             </>
           )}
           <TabsTrigger value="medlemmer">Medlemmer ({group.memberCount})</TabsTrigger>
@@ -202,14 +205,12 @@ export default async function GroupDetailPage({ params }: Props) {
               <>
                 <PlaceholderCard icon={<Sprout className="h-4 w-4" />} title="Sorter" desc="Brugere markerer hvilke sorter de dyrker eller har frø af — kommer snart." />
                 <PlaceholderCard icon={<BookOpen className="h-4 w-4" />} title="Guides" desc="Gruppeguides og tråde markeret som læring — kommer snart." />
-                <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Tilbyd og søg frø — kommer snart." />
                 <PlaceholderCard icon={<ImageIcon className="h-4 w-4" />} title="Billeder" desc="Delte fotos fra medlemmernes dyrkning — kommer snart." />
               </>
             ) : (
               <>
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter gruppen vil dyrke — kommer snart." />
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
-                <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Frø I deler internt — kommer snart." />
               </>
             )}
           </div>
@@ -298,6 +299,24 @@ export default async function GroupDetailPage({ params }: Props) {
             </Card>
           </TabsContent>
         )}
+
+        <TabsContent value="froebytte">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Gift className="h-4 w-4" />
+                Frøbytte
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SwapListingsPanel
+                groupId={group.id}
+                listings={swapListings}
+                isMember={isMember}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="medlemmer">
           <Card>
