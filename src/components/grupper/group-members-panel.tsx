@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { UserPlus, X, Loader2, LogOut } from 'lucide-react'
+import { UserPlus, X, Loader2, LogOut, Ban } from 'lucide-react'
 import { addGroupMember, removeGroupMember, leaveGroup, type GroupMember } from '@/actions/groups'
+import { blockUser, unblockUser } from '@/actions/moderation'
 import { InviteDialog } from '@/components/grupper/invite-dialog'
 import { PendingRequestsPanel } from '@/components/grupper/pending-requests-panel'
 import type { JoinRequest } from '@/actions/group-invitations'
@@ -19,9 +20,11 @@ interface Props {
   myUserId: string
   myRole: 'owner' | 'member'
   pendingRequests?: JoinRequest[]
+  initialBlockedIds?: string[]
 }
 
-export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole, pendingRequests }: Props) {
+export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole, pendingRequests, initialBlockedIds }: Props) {
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set(initialBlockedIds ?? []))
   const router = useRouter()
   const [members, setMembers] = useState<GroupMember[]>(initialMembers)
   const [username, setUsername] = useState('')
@@ -57,6 +60,24 @@ export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId
       }
       setMembers(prev => prev.filter(m => m.userId !== member.userId))
       router.refresh()
+    })
+  }
+
+  function handleToggleBlock(member: GroupMember) {
+    const isBlocked = blockedIds.has(member.userId)
+    if (!isBlocked && !confirm(`Blokér ${member.label}? Du vil ikke længere se deres opslag og kommentarer.`)) return
+    setError(null)
+    startTransition(async () => {
+      const res = isBlocked
+        ? await unblockUser(member.userId)
+        : await blockUser(member.userId)
+      if ('error' in res) { setError(res.error); return }
+      setBlockedIds(prev => {
+        const next = new Set(prev)
+        if (isBlocked) next.delete(member.userId)
+        else next.add(member.userId)
+        return next
+      })
     })
   }
 
@@ -127,18 +148,33 @@ export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId
                   <Badge variant="muted" className="text-[10px]">Dig</Badge>
                 )}
               </div>
-              {isOwner && m.userId !== myUserId && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleRemove(m)}
-                  disabled={pending}
-                  aria-label={`Fjern ${m.label}`}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              )}
+              <div className="flex gap-1 shrink-0">
+                {m.userId !== myUserId && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleToggleBlock(m)}
+                    disabled={pending}
+                    aria-label={blockedIds.has(m.userId) ? `Ophæv blokering af ${m.label}` : `Blokér ${m.label}`}
+                    title={blockedIds.has(m.userId) ? 'Ophæv blokering' : 'Blokér bruger'}
+                  >
+                    <Ban className={blockedIds.has(m.userId) ? 'h-3.5 w-3.5 text-destructive' : 'h-3.5 w-3.5 text-muted-foreground'} />
+                  </Button>
+                )}
+                {isOwner && m.userId !== myUserId && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemove(m)}
+                    disabled={pending}
+                    aria-label={`Fjern ${m.label}`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

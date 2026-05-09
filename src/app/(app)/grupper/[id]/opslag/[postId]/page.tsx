@@ -98,7 +98,7 @@ export default async function ForumPostPage({ params }: Props) {
             </div>
           )}
 
-          {(canModerate || canDelete) && (
+          {isMember && (
             <div className="border-t border-border pt-3">
               <ForumPostActions
                 post={post}

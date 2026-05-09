@@ -13,6 +13,9 @@ import { ForumList } from '@/components/grupper/forum-list'
 import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-dialog'
 import { getSwapListings } from '@/actions/seed-swap'
 import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
+import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
+import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
+import { ReportsPanel } from '@/components/grupper/reports-panel'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
 import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { ChatPanel } from '@/components/grupper/chat-panel'
@@ -111,13 +114,21 @@ export default async function GroupDetailPage({ params }: Props) {
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
   const isOwner = group.myRole === 'owner'
-  const [members, chatMessages, pendingRequests, forumPosts, swapListings] = await Promise.all([
+  const [rawMembers, rawChatMessages, pendingRequests, rawForumPosts, rawSwapListings, pendingReports, blockedIds] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
     isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
     isInterest ? getForumPosts({ groupId: id }) : Promise.resolve([]),
     getSwapListings({ groupId: id }),
+    isOwner ? getPendingReports(id) : Promise.resolve([]),
+    getMyBlockedUserIds(),
   ])
+
+  // Filtrér blokerede brugeres indhold væk i visningen
+  const members = rawMembers
+  const chatMessages = rawChatMessages.filter(m => !blockedIds.has(m.userId))
+  const forumPosts = rawForumPosts.filter(p => !blockedIds.has(p.userId))
+  const swapListings = rawSwapListings.filter(l => !blockedIds.has(l.userId))
 
   return (
     <div className="space-y-5 max-w-4xl">
@@ -145,6 +156,18 @@ export default async function GroupDetailPage({ params }: Props) {
             <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
           )}
         </div>
+        {isOwner && (
+          <GroupSettingsDialog
+            groupId={group.id}
+            groupType={group.groupType}
+            initial={{
+              name: group.name,
+              description: group.description,
+              rules: group.rules,
+              visibility: group.visibility,
+            }}
+          />
+        )}
       </div>
 
       <Tabs defaultValue="overblik" className="space-y-4">
@@ -171,6 +194,16 @@ export default async function GroupDetailPage({ params }: Props) {
         </TabsList>
 
         <TabsContent value="overblik">
+          {group.rules && (
+            <Card className="mb-3 bg-amber-50/40 border-amber-200">
+              <CardHeader>
+                <CardTitle className="text-base">Grupperegler</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-foreground/90 whitespace-pre-wrap">{group.rules}</p>
+              </CardContent>
+            </Card>
+          )}
           <div className="grid gap-3 sm:grid-cols-2">
             <Card>
               <CardContent className="py-4 space-y-2">
@@ -327,14 +360,20 @@ export default async function GroupDetailPage({ params }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <GroupMembersPanel
-                groupId={group.id}
-                groupName={group.name}
-                initialMembers={members}
-                myUserId={me.id}
-                myRole={group.myRole ?? 'member'}
-                pendingRequests={pendingRequests}
-              />
+              <div className="space-y-3">
+                {isOwner && pendingReports.length > 0 && (
+                  <ReportsPanel groupId={group.id} initial={pendingReports} />
+                )}
+                <GroupMembersPanel
+                  groupId={group.id}
+                  groupName={group.name}
+                  initialMembers={members}
+                  myUserId={me.id}
+                  myRole={group.myRole ?? 'member'}
+                  pendingRequests={pendingRequests}
+                  initialBlockedIds={Array.from(blockedIds)}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

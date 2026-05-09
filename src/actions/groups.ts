@@ -12,6 +12,7 @@ export interface UserGroup {
   id: string
   name: string
   description: string | null
+  rules: string | null
   groupType: GroupType
   visibility: GroupVisibility
   forumMode: ForumMode
@@ -234,6 +235,7 @@ export async function getMyGroups(): Promise<UserGroup[]> {
     id: g.id as string,
     name: g.name as string,
     description: (g.description as string | null) ?? null,
+    rules: (g.rules as string | null) ?? null,
     groupType: (g.group_type as GroupType | null) ?? 'private',
     visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
     forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
@@ -276,6 +278,7 @@ export async function getGroup(groupId: string): Promise<UserGroup | null> {
     id: g.id as string,
     name: g.name as string,
     description: (g.description as string | null) ?? null,
+    rules: (g.rules as string | null) ?? null,
     groupType: (g.group_type as GroupType | null) ?? 'private',
     visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
     forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
@@ -342,6 +345,7 @@ export async function getDiscoverableGroups(filters?: {
     id: g.id as string,
     name: g.name as string,
     description: (g.description as string | null) ?? null,
+    rules: (g.rules as string | null) ?? null,
     groupType: g.group_type as GroupType,
     visibility: g.visibility as GroupVisibility,
     forumMode: g.forum_mode as ForumMode,

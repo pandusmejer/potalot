@@ -11,6 +11,7 @@ import { CheckCircle2, Trash2, Loader2, Send, MessageSquare } from 'lucide-react
 import {
   postReply, deleteReply, markBestReply, type ForumReply,
 } from '@/actions/group-forum'
+import { ReportButton } from '@/components/grupper/report-button'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -139,6 +140,14 @@ export function ForumRepliesPanel({
                       <Trash2 className="h-3 w-3" />
                       Slet
                     </Button>
+                  )}
+                  {r.userId !== myUserId && (
+                    <ReportButton
+                      groupId={groupId}
+                      targetType="forum_reply"
+                      targetId={r.id}
+                      label="Rapportér"
+                    />
                   )}
                 </div>
               </li>

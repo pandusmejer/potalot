@@ -7,6 +7,7 @@ import { Pin, PinOff, Lock, LockOpen, Trash2, Loader2 } from 'lucide-react'
 import {
   togglePostPinned, togglePostLocked, deleteForumPost, type ForumPost,
 } from '@/actions/group-forum'
+import { ReportButton } from '@/components/grupper/report-button'
 
 interface Props {
   post: ForumPost
@@ -61,6 +62,14 @@ export function ForumPostActions({ post, groupId, canModerate, canDelete }: Prop
           <Trash2 className="h-3.5 w-3.5" />
           Slet
         </Button>
+      )}
+      {!post.isMine && (
+        <ReportButton
+          groupId={groupId}
+          targetType="forum_post"
+          targetId={post.id}
+          label="Rapportér"
+        />
       )}
     </div>
   )
