@@ -34,46 +34,30 @@ function pickLabel(r: UserLabelRow | undefined | null): string {
 }
 
 /**
- * Opret en ny gruppe og tilføj current user som owner.
+ * Opret en ny gruppe og tilføj current user som owner. Bruger en
+ * SECURITY DEFINER-RPC så gruppe + ejer-membership oprettes atomisk
+ * og bypass'er RLS-problemer på første-gang-insert.
  */
 export async function createGroup(input: {
   name: string
   description?: string
 }): Promise<{ id: string } | { error: string }> {
-  const { id: userId } = await requireUser()
+  await requireUser()
   const name = input.name.trim()
   if (!name) return { error: 'Gruppenavn er påkrævet' }
   if (name.length > 100) return { error: 'Gruppenavn er for langt' }
 
   const supabase = await createClient()
-
-  const { data: group, error: groupErr } = await supabase
-    .from('user_groups')
-    .insert({
-      name,
-      description: input.description?.trim() || null,
-      created_by: userId,
+  const { data, error } = await supabase
+    .rpc('create_user_group', {
+      p_name: name,
+      p_description: input.description?.trim() || null,
     })
-    .select('id')
-    .single()
-  if (groupErr || !group) return { error: groupErr?.message ?? 'Kunne ikke oprette gruppe' }
-
-  const groupId = group.id as string
-
-  // Skab owner-membership for skaberen. Bemærk: insert-RLS kræver at man
-  // ER owner — så vi gør det med SECURITY DEFINER. Simplere løsning: brug
-  // service-role her? Nej, det vil exposere mere. I stedet bruger vi en
-  // RPC der kører som owner-bootstrap.
-  const { error: bootstrapErr } = await supabase
-    .rpc('bootstrap_group_owner', { p_group_id: groupId })
-  if (bootstrapErr) {
-    // Cleanup: rul gruppen tilbage så vi ikke efterlader en zombie
-    await supabase.from('user_groups').delete().eq('id', groupId)
-    return { error: `Kunne ikke tilføje dig som ejer: ${bootstrapErr.message}` }
-  }
+  if (error) return { error: error.message }
+  if (!data) return { error: 'Kunne ikke oprette gruppe' }
 
   revalidatePath('/grupper')
-  return { id: groupId }
+  return { id: data as string }
 }
 
 export async function updateGroup(
