@@ -185,3 +185,29 @@ export const SECONDARY_NAV = [
   { href: '/idetavle', label: 'Min idétavle', icon: 'Lightbulb' },
   { href: '/indstillinger', label: 'Indstillinger', icon: 'Settings' },
 ] as const
+
+// ============================================
+// Grupper
+// ============================================
+
+export const INTEREST_CATEGORIES = [
+  { id: 'chili',         label: 'Chili' },
+  { id: 'tomater',       label: 'Tomater' },
+  { id: 'groentsager',   label: 'Grøntsager' },
+  { id: 'blomster',      label: 'Blomster' },
+  { id: 'krydderurter',  label: 'Krydderurter' },
+  { id: 'drivhus',       label: 'Drivhus' },
+  { id: 'altanhave',     label: 'Altanhave' },
+  { id: 'froebytte',     label: 'Frøbytte' },
+  { id: 'bivenlig',      label: 'Bi-venlig have' },
+  { id: 'begyndere',     label: 'Begyndere' },
+  { id: 'oevede',        label: 'Øvede' },
+] as const
+
+export type InterestCategoryId = typeof INTEREST_CATEGORIES[number]['id']
+
+export const VISIBILITY_LABEL: Record<'open' | 'closed' | 'hidden', string> = {
+  open:   'Åben',
+  closed: 'Lukket',
+  hidden: 'Skjult',
+}

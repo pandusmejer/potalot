@@ -3,11 +3,14 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Lightbulb, Users } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
+import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
+import { INTEREST_CATEGORIES, VISIBILITY_LABEL } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,13 +23,61 @@ export default async function GroupDetailPage({ params }: Props) {
   const me = await getCurrentUser()
   if (!me) notFound()
 
-  const [group, members] = await Promise.all([
-    getGroup(id),
-    getGroupMembers(id),
-  ])
+  const group = await getGroup(id)
   if (!group) notFound()
 
-  // Idéer delt med denne gruppe
+  const isMember = group.myRole !== null
+  const isInterest = group.groupType === 'interest'
+  const cat = INTEREST_CATEGORIES.find(c => c.id === group.category)
+
+  // Hvis ikke-medlem ser en lukket interessegruppe: vis kun overblik
+  if (!isMember) {
+    return (
+      <div className="space-y-5 max-w-2xl">
+        <div className="flex items-center gap-3">
+          <Button asChild variant="ghost" size="icon">
+            <Link href="/grupper/udforsk" aria-label="Tilbage">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">{group.name}</h1>
+              <Badge variant="muted" className="text-[10px]">Interesse</Badge>
+              {cat && <Badge variant="outline" className="text-[10px]">{cat.label}</Badge>}
+              <Badge variant={group.visibility === 'open' ? 'success' : 'outline'} className="text-[10px]">
+                {VISIBILITY_LABEL[group.visibility]}
+              </Badge>
+            </div>
+            {group.description && (
+              <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
+            )}
+          </div>
+          <JoinGroupButton groupId={group.id} visibility={group.visibility} myRole={group.myRole} />
+        </div>
+
+        <Card>
+          <CardContent className="py-4 space-y-2">
+            <p className="text-sm text-muted-foreground">
+              <Users className="h-3.5 w-3.5 inline-block mr-1" />
+              {group.memberCount} medlem{group.memberCount === 1 ? '' : 'mer'}
+            </p>
+            {group.visibility === 'closed' ? (
+              <p className="text-sm text-muted-foreground italic">
+                Lukket gruppe — anmod om adgang for at se forum og indhold.
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">
+                Deltag i gruppen for at se forum, sorter og frøbytte.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Medlem — vis fuld view med faner pr. gruppetype
   const supabase = await createClient()
   const { data: groupShares } = await supabase
     .from('idea_group_shares')
@@ -51,8 +102,10 @@ export default async function GroupDetailPage({ params }: Props) {
   }
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
+  const members = await getGroupMembers(id)
+
   return (
-    <div className="space-y-5 max-w-3xl">
+    <div className="space-y-5 max-w-4xl">
       <div className="flex items-center gap-3">
         <Button asChild variant="ghost" size="icon">
           <Link href="/grupper" aria-label="Tilbage">
@@ -60,72 +113,173 @@ export default async function GroupDetailPage({ params }: Props) {
           </Link>
         </Button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">{group.name}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">{group.name}</h1>
+            <Badge variant="muted" className="text-[10px]">
+              {isInterest ? 'Interesse' : 'Privat'}
+            </Badge>
+            {cat && <Badge variant="outline" className="text-[10px]">{cat.label}</Badge>}
+            {isInterest && (
+              <Badge variant={group.visibility === 'open' ? 'success' : 'outline'} className="text-[10px]">
+                {VISIBILITY_LABEL[group.visibility]}
+              </Badge>
+            )}
+            {group.myRole === 'owner' && <Badge variant="outline" className="text-[10px]">Ejer</Badge>}
+          </div>
           {group.description && (
-            <p className="text-sm text-muted-foreground">{group.description}</p>
+            <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
           )}
         </div>
-        {group.myRole === 'owner' && <Badge variant="outline" className="text-[10px]">Ejer</Badge>}
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-[1fr_280px]">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lightbulb className="h-4 w-4" />
-              Delte idéer ({sharedIdeas.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {sharedIdeas.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic py-2">
-                Ingen idéer delt med gruppen endnu. Gå til <Link href="/idetavle" className="underline">idétavlen</Link> og del en idé med gruppen.
-              </p>
-            ) : (
-              <div className="grid gap-2 sm:grid-cols-2">
-                {sharedIdeas.map(s => {
-                  const cover = s.ideas.primary_image_url ?? (s.ideas.image_urls ?? [])[0]
-                  return (
-                    <Card key={s.idea_id} className="overflow-hidden">
-                      <div className="aspect-[3/2] bg-pattern-botanical bg-secondary/20 flex items-center justify-center overflow-hidden">
-                        {cover ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img src={cover} alt={s.ideas.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <Lightbulb className="h-8 w-8 text-muted-foreground/40" />
-                        )}
-                      </div>
-                      <CardContent className="space-y-1 pt-2">
-                        <p className="font-medium text-sm text-foreground line-clamp-1">{s.ideas.title}</p>
-                        {s.ideas.description && (
-                          <p className="text-xs text-muted-foreground line-clamp-2">{s.ideas.description}</p>
-                        )}
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="overblik" className="space-y-4">
+        <TabsList className="flex-wrap h-auto">
+          <TabsTrigger value="overblik">Overblik</TabsTrigger>
+          {isInterest ? (
+            <>
+              <TabsTrigger value="forum" disabled>Forum</TabsTrigger>
+              <TabsTrigger value="sorter" disabled>Sorter</TabsTrigger>
+              <TabsTrigger value="guides" disabled>Guides</TabsTrigger>
+              <TabsTrigger value="froebytte" disabled>Frøbytte</TabsTrigger>
+              <TabsTrigger value="billeder" disabled>Billeder</TabsTrigger>
+            </>
+          ) : (
+            <>
+              <TabsTrigger value="chat" disabled>Chat</TabsTrigger>
+              <TabsTrigger value="ideer">Idéer</TabsTrigger>
+              <TabsTrigger value="oenskeliste" disabled>Ønskeliste</TabsTrigger>
+              <TabsTrigger value="opgaver" disabled>Opgaver</TabsTrigger>
+              <TabsTrigger value="froebytte" disabled>Frøbytte</TabsTrigger>
+            </>
+          )}
+          <TabsTrigger value="medlemmer">Medlemmer ({group.memberCount})</TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Medlemmer
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <GroupMembersPanel
-              groupId={group.id}
-              groupName={group.name}
-              initialMembers={members}
-              myUserId={me.id}
-              myRole={group.myRole}
-            />
-          </CardContent>
-        </Card>
+        <TabsContent value="overblik">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Card>
+              <CardContent className="py-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  {isInterest ? <Globe className="h-4 w-4 text-primary" /> : <Lock className="h-4 w-4 text-primary" />}
+                  <p className="text-sm font-medium text-foreground">
+                    {isInterest ? 'Interessegruppe' : 'Privat gruppe'}
+                  </p>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {isInterest
+                    ? 'For brugere der deler en passion for et emne. Forum, sorter, frøbytte og billeder.'
+                    : 'For familie, venner eller dem du allerede kender. Chat, idéer, ønskeliste, opgaver og frøbytte.'}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-medium text-foreground">{group.memberCount} medlem{group.memberCount === 1 ? '' : 'mer'}</p>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Klik &ldquo;Medlemmer&rdquo;-fanen for at se hvem og {group.myRole === 'owner' ? 'invitere flere.' : 'forlade gruppen.'}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Placeholder-bokse for tabs der kommer senere */}
+          <div className="mt-3 grid gap-2">
+            {isInterest ? (
+              <>
+                <PlaceholderCard icon={<MessagesSquare className="h-4 w-4" />} title="Forum" desc="Spørgsmål, tip, erfaringer — kommer snart." />
+                <PlaceholderCard icon={<Sprout className="h-4 w-4" />} title="Sorter" desc="Brugere markerer hvilke sorter de dyrker eller har frø af — kommer snart." />
+                <PlaceholderCard icon={<BookOpen className="h-4 w-4" />} title="Guides" desc="Gruppeguides og tråde markeret som læring — kommer snart." />
+                <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Tilbyd og søg frø — kommer snart." />
+                <PlaceholderCard icon={<ImageIcon className="h-4 w-4" />} title="Billeder" desc="Delte fotos fra medlemmernes dyrkning — kommer snart." />
+              </>
+            ) : (
+              <>
+                <PlaceholderCard icon={<MessageCircle className="h-4 w-4" />} title="Chat" desc="Simpelt chatforum med billeder og opret-opgave-fra-besked — kommer snart." />
+                <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter gruppen vil dyrke — kommer snart." />
+                <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
+                <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Frø I deler internt — kommer snart." />
+              </>
+            )}
+          </div>
+        </TabsContent>
+
+        {!isInterest && (
+          <TabsContent value="ideer">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4" />
+                  Delte idéer ({sharedIdeas.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {sharedIdeas.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic py-2">
+                    Ingen idéer delt med gruppen endnu. Gå til <Link href="/idetavle" className="underline">idétavlen</Link> og del en idé med gruppen.
+                  </p>
+                ) : (
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {sharedIdeas.map(s => {
+                      const cover = s.ideas.primary_image_url ?? (s.ideas.image_urls ?? [])[0]
+                      return (
+                        <Card key={s.idea_id} className="overflow-hidden">
+                          <div className="aspect-[3/2] bg-pattern-botanical bg-secondary/20 flex items-center justify-center overflow-hidden">
+                            {cover ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img src={cover} alt={s.ideas.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <Lightbulb className="h-8 w-8 text-muted-foreground/40" />
+                            )}
+                          </div>
+                          <CardContent className="space-y-1 pt-2">
+                            <p className="font-medium text-sm text-foreground line-clamp-1">{s.ideas.title}</p>
+                            {s.ideas.description && (
+                              <p className="text-xs text-muted-foreground line-clamp-2">{s.ideas.description}</p>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        <TabsContent value="medlemmer">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Medlemmer
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <GroupMembersPanel
+                groupId={group.id}
+                groupName={group.name}
+                initialMembers={members}
+                myUserId={me.id}
+                myRole={group.myRole ?? 'member'}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+
+function PlaceholderCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className="flex items-start gap-3 p-3 rounded-lg border border-dashed border-border bg-muted/20">
+      <div className="text-muted-foreground mt-0.5">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
     </div>
   )

@@ -4,14 +4,23 @@ import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
+export type GroupType = 'private' | 'interest'
+export type GroupVisibility = 'open' | 'closed' | 'hidden'
+export type ForumMode = 'simple_chat' | 'structured_forum'
+
 export interface UserGroup {
   id: string
   name: string
   description: string | null
+  groupType: GroupType
+  visibility: GroupVisibility
+  forumMode: ForumMode
+  category: string | null
+  icon: string | null
   createdBy: string
   createdAt: string
   updatedAt: string
-  myRole: 'owner' | 'member'
+  myRole: 'owner' | 'member' | null  // null = not a member (kun discoverable)
   memberCount: number
 }
 
@@ -41,6 +50,9 @@ function pickLabel(r: UserLabelRow | undefined | null): string {
 export async function createGroup(input: {
   name: string
   description?: string
+  groupType: GroupType
+  visibility?: GroupVisibility
+  category?: string
 }): Promise<{ id: string } | { error: string }> {
   await requireUser()
   const name = input.name.trim()
@@ -52,12 +64,31 @@ export async function createGroup(input: {
     .rpc('create_user_group', {
       p_name: name,
       p_description: input.description?.trim() || null,
+      p_group_type: input.groupType,
+      p_visibility: input.visibility ?? null,
+      p_category: input.category ?? null,
+      p_forum_mode: null, // bruger default ud fra type
     })
   if (error) return { error: error.message }
   if (!data) return { error: 'Kunne ikke oprette gruppe' }
 
   revalidatePath('/grupper')
+  revalidatePath('/grupper/udforsk')
   return { id: data as string }
+}
+
+/**
+ * Tilslut en åben interessegruppe direkte (ingen invitation nødvendig).
+ */
+export async function joinOpenGroup(groupId: string): Promise<{ ok: true } | { error: string }> {
+  await requireUser()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('join_open_group', { p_group_id: groupId })
+  if (error) return { error: error.message }
+  revalidatePath('/grupper')
+  revalidatePath('/grupper/udforsk')
+  revalidatePath(`/grupper/${groupId}`)
+  return { ok: true }
 }
 
 export async function updateGroup(
@@ -203,6 +234,11 @@ export async function getMyGroups(): Promise<UserGroup[]> {
     id: g.id as string,
     name: g.name as string,
     description: (g.description as string | null) ?? null,
+    groupType: (g.group_type as GroupType | null) ?? 'private',
+    visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
+    forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
+    category: (g.category as string | null) ?? null,
+    icon: (g.icon as string | null) ?? null,
     createdBy: g.created_by as string,
     createdAt: g.created_at as string,
     updatedAt: g.updated_at as string,
@@ -222,13 +258,14 @@ export async function getGroup(groupId: string): Promise<UserGroup | null> {
     .maybeSingle()
   if (!g) return null
 
+  // Hent membership (kan være null for ikke-medlemmer der ser åbne/closed
+  // interessegrupper via discoverable-policy).
   const { data: myRow } = await supabase
     .from('user_group_memberships')
     .select('role')
     .eq('group_id', groupId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!myRow) return null  // bruger er ikke medlem
 
   const { count } = await supabase
     .from('user_group_memberships')
@@ -239,12 +276,83 @@ export async function getGroup(groupId: string): Promise<UserGroup | null> {
     id: g.id as string,
     name: g.name as string,
     description: (g.description as string | null) ?? null,
+    groupType: (g.group_type as GroupType | null) ?? 'private',
+    visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
+    forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
+    category: (g.category as string | null) ?? null,
+    icon: (g.icon as string | null) ?? null,
     createdBy: g.created_by as string,
     createdAt: g.created_at as string,
     updatedAt: g.updated_at as string,
-    myRole: myRow.role as 'owner' | 'member',
+    myRole: myRow ? (myRow.role as 'owner' | 'member') : null,
     memberCount: count ?? 0,
   }
+}
+
+/**
+ * Discoverable interessegrupper (open + closed). Til /grupper/udforsk.
+ * Filtrér på kategori og søgning.
+ */
+export async function getDiscoverableGroups(filters?: {
+  category?: string
+  search?: string
+}): Promise<UserGroup[]> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  let q = supabase
+    .from('user_groups')
+    .select('*')
+    .eq('group_type', 'interest')
+    .in('visibility', ['open', 'closed'])
+    .order('name', { ascending: true })
+
+  if (filters?.category) q = q.eq('category', filters.category)
+  if (filters?.search?.trim()) {
+    const s = filters.search.trim()
+    q = q.or(`name.ilike.%${s}%,description.ilike.%${s}%`)
+  }
+
+  const { data: groups } = await q
+  if (!groups || groups.length === 0) return []
+
+  const groupIds = groups.map(g => g.id as string)
+
+  // Tæl medlemmer
+  const { data: allMembers } = await supabase
+    .from('user_group_memberships')
+    .select('group_id, user_id')
+    .in('group_id', groupIds)
+  const counts = new Map<string, number>()
+  const myRoleByGroup = new Map<string, 'owner' | 'member'>()
+  for (const m of (allMembers ?? []) as { group_id: string; user_id: string }[]) {
+    counts.set(m.group_id, (counts.get(m.group_id) ?? 0) + 1)
+  }
+  // Min rolle (sub-query: vi kan kun se egne memberships med RLS, så vi henter dem separat)
+  const { data: myMemberships } = await supabase
+    .from('user_group_memberships')
+    .select('group_id, role')
+    .eq('user_id', userId)
+    .in('group_id', groupIds)
+  for (const m of (myMemberships ?? []) as { group_id: string; role: string }[]) {
+    myRoleByGroup.set(m.group_id, m.role as 'owner' | 'member')
+  }
+
+  return groups.map(g => ({
+    id: g.id as string,
+    name: g.name as string,
+    description: (g.description as string | null) ?? null,
+    groupType: g.group_type as GroupType,
+    visibility: g.visibility as GroupVisibility,
+    forumMode: g.forum_mode as ForumMode,
+    category: (g.category as string | null) ?? null,
+    icon: (g.icon as string | null) ?? null,
+    createdBy: g.created_by as string,
+    createdAt: g.created_at as string,
+    updatedAt: g.updated_at as string,
+    myRole: myRoleByGroup.get(g.id as string) ?? null,
+    memberCount: counts.get(g.id as string) ?? 0,
+  }))
 }
 
 export async function getGroupMembers(groupId: string): Promise<GroupMember[]> {

@@ -9,32 +9,49 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Plus } from 'lucide-react'
-import { createGroup } from '@/actions/groups'
+import { Plus, Lock, Globe } from 'lucide-react'
+import { createGroup, type GroupType, type GroupVisibility } from '@/actions/groups'
+import { INTEREST_CATEGORIES } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 export function CreateGroupDialog() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
+  const [groupType, setGroupType] = useState<GroupType>('private')
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [visibility, setVisibility] = useState<GroupVisibility>('hidden')
+  const [category, setCategory] = useState<string>('')
+
+  function handleTypeChange(t: GroupType) {
+    setGroupType(t)
+    // Skift default-visibility ved type-skift
+    setVisibility(t === 'private' ? 'hidden' : 'open')
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    if (groupType === 'interest' && !category) {
+      setError('Vælg en kategori for interessegruppen')
+      return
+    }
     startTransition(async () => {
       const res = await createGroup({
         name: name.trim(),
         description: description.trim() || undefined,
+        groupType,
+        visibility,
+        category: groupType === 'interest' ? category : undefined,
       })
       if ('error' in res) {
         setError(res.error)
         return
       }
       setOpen(false)
-      setName('')
-      setDescription('')
       router.push(`/grupper/${res.id}`)
     })
   }
@@ -47,33 +64,110 @@ export function CreateGroupDialog() {
           Ny gruppe
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogTitle>Opret gruppe</DialogTitle>
         <DialogDescription>
-          Privat gruppe til at dele idéer med familie eller venner. Du kan invitere medlemmer bagefter.
+          Vælg type og giv den et navn. Du kan invitere medlemmer bagefter.
         </DialogDescription>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label className="mb-2 block">Type *</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleTypeChange('private')}
+                className={cn(
+                  'rounded-xl border p-3 text-left transition',
+                  groupType === 'private'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:bg-accent/30'
+                )}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <Lock className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-foreground text-sm">Privat gruppe</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  For familie, venner, naboer eller andre du allerede kender.
+                </p>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTypeChange('interest')}
+                className={cn(
+                  'rounded-xl border p-3 text-left transition',
+                  groupType === 'interest'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:bg-accent/30'
+                )}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-foreground text-sm">Interessegruppe</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  For brugere der deler en passion, fx chili eller bi-venlig have.
+                </p>
+              </button>
+            </div>
+          </div>
+
           <div>
             <Label>Navn *</Label>
             <Input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="Fx. Familien Mejer"
+              placeholder={groupType === 'private' ? 'Fx. Familien Mejer' : 'Fx. Chili-elskere DK'}
               required
               className="mt-1.5"
             />
           </div>
+
           <div>
             <Label>Beskrivelse</Label>
             <Textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              placeholder="Hvem er gruppen for og hvad bruger I den til?"
+              placeholder={groupType === 'private'
+                ? 'Hvem er gruppen for og hvad bruger I den til?'
+                : 'Hvad handler gruppen om? Hvilken type indhold må forventes?'}
               rows={2}
               className="mt-1.5"
             />
           </div>
+
+          {groupType === 'interest' && (
+            <>
+              <div>
+                <Label>Kategori *</Label>
+                <select
+                  value={category}
+                  onChange={e => setCategory(e.target.value)}
+                  className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+                  required
+                >
+                  <option value="">— vælg kategori —</option>
+                  {INTEREST_CATEGORIES.map(c => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label>Synlighed</Label>
+                <select
+                  value={visibility}
+                  onChange={e => setVisibility(e.target.value as GroupVisibility)}
+                  className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+                >
+                  <option value="open">Åben — alle kan se og deltage</option>
+                  <option value="closed">Lukket — alle kan se gruppen, men skal anmode</option>
+                  <option value="hidden">Skjult — kun synlig for inviterede</option>
+                </select>
+              </div>
+            </>
+          )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
