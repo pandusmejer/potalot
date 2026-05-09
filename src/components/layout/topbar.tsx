@@ -2,9 +2,12 @@ import Link from 'next/link'
 import { Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
+import { NotificationBell } from './notification-bell'
+import { getUnreadCount } from '@/actions/notifications'
 import type { Profile } from '@/lib/types'
 
-export function Topbar({ profile }: { profile: Profile | null }) {
+export async function Topbar({ profile }: { profile: Profile | null }) {
+  const unreadCount = profile ? await getUnreadCount() : 0
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-3 border-b border-border bg-card/95 backdrop-blur-md">
       <Link href="/" className="flex items-center gap-2 lg:invisible">
@@ -12,7 +15,10 @@ export function Topbar({ profile }: { profile: Profile | null }) {
         <span className="font-serif text-xl text-foreground">PotAlot</span>
       </Link>
       {profile ? (
-        <ProfileMenu profile={profile} />
+        <div className="flex items-center gap-1">
+          <NotificationBell initialUnreadCount={unreadCount} />
+          <ProfileMenu profile={profile} />
+        </div>
       ) : (
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm">
