@@ -8,6 +8,9 @@ import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListC
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { getChatMessages } from '@/actions/group-chat'
 import { getPendingJoinRequests } from '@/actions/group-invitations'
+import { getForumPosts } from '@/actions/group-forum'
+import { ForumList } from '@/components/grupper/forum-list'
+import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-dialog'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
 import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { ChatPanel } from '@/components/grupper/chat-panel'
@@ -106,10 +109,11 @@ export default async function GroupDetailPage({ params }: Props) {
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
   const isOwner = group.myRole === 'owner'
-  const [members, chatMessages, pendingRequests] = await Promise.all([
+  const [members, chatMessages, pendingRequests, forumPosts] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
     isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
+    isInterest ? getForumPosts({ groupId: id }) : Promise.resolve([]),
   ])
 
   return (
@@ -145,7 +149,7 @@ export default async function GroupDetailPage({ params }: Props) {
           <TabsTrigger value="overblik">Overblik</TabsTrigger>
           {isInterest ? (
             <>
-              <TabsTrigger value="forum" disabled>Forum</TabsTrigger>
+              <TabsTrigger value="forum">Forum</TabsTrigger>
               <TabsTrigger value="sorter" disabled>Sorter</TabsTrigger>
               <TabsTrigger value="guides" disabled>Guides</TabsTrigger>
               <TabsTrigger value="froebytte" disabled>Frøbytte</TabsTrigger>
@@ -196,7 +200,6 @@ export default async function GroupDetailPage({ params }: Props) {
           <div className="mt-3 grid gap-2">
             {isInterest ? (
               <>
-                <PlaceholderCard icon={<MessagesSquare className="h-4 w-4" />} title="Forum" desc="Spørgsmål, tip, erfaringer — kommer snart." />
                 <PlaceholderCard icon={<Sprout className="h-4 w-4" />} title="Sorter" desc="Brugere markerer hvilke sorter de dyrker eller har frø af — kommer snart." />
                 <PlaceholderCard icon={<BookOpen className="h-4 w-4" />} title="Guides" desc="Gruppeguides og tråde markeret som læring — kommer snart." />
                 <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Tilbyd og søg frø — kommer snart." />
@@ -211,6 +214,25 @@ export default async function GroupDetailPage({ params }: Props) {
             )}
           </div>
         </TabsContent>
+
+        {isInterest && (
+          <TabsContent value="forum">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <CardTitle className="flex items-center gap-2">
+                    <MessagesSquare className="h-4 w-4" />
+                    Forum ({forumPosts.length})
+                  </CardTitle>
+                  <CreateForumPostDialog groupId={group.id} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ForumList posts={forumPosts} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {!isInterest && (
           <TabsContent value="chat">

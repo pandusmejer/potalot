@@ -211,3 +211,29 @@ export const VISIBILITY_LABEL: Record<'open' | 'closed' | 'hidden', string> = {
   closed: 'Lukket',
   hidden: 'Skjult',
 }
+
+export const FORUM_POST_TYPES = [
+  { id: 'question',   label: 'Spørgsmål',   icon: 'HelpCircle' },
+  { id: 'tip',        label: 'Tip',         icon: 'Sparkles' },
+  { id: 'experience', label: 'Erfaring',    icon: 'BookOpen' },
+  { id: 'problem',    label: 'Problem',     icon: 'AlertTriangle' },
+  { id: 'seed_swap',  label: 'Frøbytte',    icon: 'Gift' },
+  { id: 'image',      label: 'Billede',     icon: 'Image' },
+  { id: 'guide',      label: 'Guide',       icon: 'BookMarked' },
+] as const
+
+export type ForumPostType = typeof FORUM_POST_TYPES[number]['id']
+
+export const FORUM_CATEGORIES = [
+  { id: 'generelt',     label: 'Generelt' },
+  { id: 'begyndere',    label: 'Begynderspørgsmål' },
+  { id: 'spiring',      label: 'Spiring' },
+  { id: 'lys_varme',    label: 'Lys og varme' },
+  { id: 'sorter',       label: 'Sorter' },
+  { id: 'sygdomme',     label: 'Sygdomme og skadedyr' },
+  { id: 'froebytte',    label: 'Frøbytte' },
+  { id: 'vis_dyrkning', label: 'Vis din dyrkning' },
+  { id: 'hoest',        label: 'Høst og brug' },
+] as const
+
+export type ForumCategoryId = typeof FORUM_CATEGORIES[number]['id']
