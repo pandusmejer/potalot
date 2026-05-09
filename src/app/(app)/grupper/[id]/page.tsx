@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
+import { getChatMessages } from '@/actions/group-chat'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
 import { JoinGroupButton } from '@/components/grupper/join-group-button'
+import { ChatPanel } from '@/components/grupper/chat-panel'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { INTEREST_CATEGORIES, VISIBILITY_LABEL } from '@/lib/constants'
@@ -102,7 +104,10 @@ export default async function GroupDetailPage({ params }: Props) {
   }
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
-  const members = await getGroupMembers(id)
+  const [members, chatMessages] = await Promise.all([
+    getGroupMembers(id),
+    !isInterest ? getChatMessages(id) : Promise.resolve([]),
+  ])
 
   return (
     <div className="space-y-5 max-w-4xl">
@@ -145,7 +150,7 @@ export default async function GroupDetailPage({ params }: Props) {
             </>
           ) : (
             <>
-              <TabsTrigger value="chat" disabled>Chat</TabsTrigger>
+              <TabsTrigger value="chat">Chat</TabsTrigger>
               <TabsTrigger value="ideer">Idéer</TabsTrigger>
               <TabsTrigger value="oenskeliste" disabled>Ønskeliste</TabsTrigger>
               <TabsTrigger value="opgaver" disabled>Opgaver</TabsTrigger>
@@ -196,7 +201,6 @@ export default async function GroupDetailPage({ params }: Props) {
               </>
             ) : (
               <>
-                <PlaceholderCard icon={<MessageCircle className="h-4 w-4" />} title="Chat" desc="Simpelt chatforum med billeder og opret-opgave-fra-besked — kommer snart." />
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter gruppen vil dyrke — kommer snart." />
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
                 <PlaceholderCard icon={<Gift className="h-4 w-4" />} title="Frøbytte" desc="Frø I deler internt — kommer snart." />
@@ -204,6 +208,27 @@ export default async function GroupDetailPage({ params }: Props) {
             )}
           </div>
         </TabsContent>
+
+        {!isInterest && (
+          <TabsContent value="chat">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Chat
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChatPanel
+                  groupId={group.id}
+                  groupName={group.name}
+                  messages={chatMessages}
+                  myUserId={me.id}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {!isInterest && (
           <TabsContent value="ideer">
