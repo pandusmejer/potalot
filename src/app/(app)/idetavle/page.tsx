@@ -23,9 +23,10 @@ interface IdeaCardProps {
   idea: Idea
   shareCount?: number
   ownerLabel?: string
+  viaGroupName?: string | null
 }
 
-function IdeaCard({ idea, shareCount, ownerLabel }: IdeaCardProps) {
+function IdeaCard({ idea, shareCount, ownerLabel, viaGroupName }: IdeaCardProps) {
   const cover = idea.imageIds[0]
   return (
     <Card className="overflow-hidden">
@@ -70,7 +71,9 @@ function IdeaCard({ idea, shareCount, ownerLabel }: IdeaCardProps) {
         </div>
         {ownerLabel && (
           <p className="text-xs text-muted-foreground inline-flex items-center gap-1 pt-1">
-            <Users className="h-3 w-3" /> Delt af {ownerLabel}
+            <Users className="h-3 w-3" />
+            Delt af {ownerLabel}
+            {viaGroupName && <span> · via {viaGroupName}</span>}
           </p>
         )}
         {shareCount !== undefined && (
@@ -144,6 +147,7 @@ export default async function IdetavlePage() {
                   key={idea.id}
                   idea={idea}
                   ownerLabel={idea.ownerLabel}
+                  viaGroupName={idea.viaGroupName}
                 />
               ))}
             </div>
