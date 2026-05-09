@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { CreateGroupDialog } from '@/components/grupper/create-group-dialog'
 import { getMyGroups } from '@/actions/groups'
-import { INTEREST_CATEGORIES } from '@/lib/constants'
-import { Users, ArrowRight, Lock, Globe, Compass } from 'lucide-react'
+import { TAG_LABEL_BY_ID } from '@/lib/constants'
+import { Users, ArrowRight, Lock, Globe, Compass, Sprout } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,7 +42,8 @@ export default async function GrupperPage() {
       ) : (
         <div className="space-y-2">
           {groups.map(g => {
-            const cat = INTEREST_CATEGORIES.find(c => c.id === g.category)
+            const headlinePlant = g.focusPlants[0]
+            const headlineTag = !headlinePlant && g.tags.length > 0 ? TAG_LABEL_BY_ID[g.tags[0]] : null
             return (
               <Card key={g.id}>
                 <Link
@@ -60,7 +61,15 @@ export default async function GrupperPage() {
                       <Badge variant="muted" className="text-[10px]">
                         {g.groupType === 'private' ? 'Privat' : 'Interesse'}
                       </Badge>
-                      {cat && <Badge variant="outline" className="text-[10px]">{cat.label}</Badge>}
+                      {headlinePlant && (
+                        <Badge variant="success" className="text-[10px] gap-0.5">
+                          <Sprout className="h-2.5 w-2.5" />
+                          {headlinePlant}
+                        </Badge>
+                      )}
+                      {headlineTag && (
+                        <Badge variant="outline" className="text-[10px]">{headlineTag}</Badge>
+                      )}
                       {g.myRole === 'owner' && (
                         <Badge variant="outline" className="text-[10px]">Ejer</Badge>
                       )}

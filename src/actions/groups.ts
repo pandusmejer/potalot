@@ -16,7 +16,10 @@ export interface UserGroup {
   groupType: GroupType
   visibility: GroupVisibility
   forumMode: ForumMode
+  /** @deprecated bruges ikke længere — bevares kun for migration-compat */
   category: string | null
+  tags: string[]
+  focusPlants: string[]
   icon: string | null
   createdBy: string
   createdAt: string
@@ -53,12 +56,19 @@ export async function createGroup(input: {
   description?: string
   groupType: GroupType
   visibility?: GroupVisibility
-  category?: string
+  tags?: string[]
+  focusPlants?: string[]
 }): Promise<{ id: string } | { error: string }> {
   await requireUser()
   const name = input.name.trim()
   if (!name) return { error: 'Gruppenavn er påkrævet' }
   if (name.length > 100) return { error: 'Gruppenavn er for langt' }
+  if (input.tags && input.tags.length > 5) return { error: 'Maks. 5 tags pr. gruppe' }
+  if (input.focusPlants && input.focusPlants.length > 5) return { error: 'Maks. 5 fokusplanter pr. gruppe' }
+
+  const cleanFocusPlants = (input.focusPlants ?? [])
+    .map(s => s.trim())
+    .filter(Boolean)
 
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -67,8 +77,10 @@ export async function createGroup(input: {
       p_description: input.description?.trim() || null,
       p_group_type: input.groupType,
       p_visibility: input.visibility ?? null,
-      p_category: input.category ?? null,
-      p_forum_mode: null, // bruger default ud fra type
+      p_category: null,
+      p_forum_mode: null,
+      p_tags: input.tags ?? [],
+      p_focus_plants: cleanFocusPlants,
     })
   if (error) return { error: error.message }
   if (!data) return { error: 'Kunne ikke oprette gruppe' }
@@ -76,6 +88,18 @@ export async function createGroup(input: {
   revalidatePath('/grupper')
   revalidatePath('/grupper/udforsk')
   return { id: data as string }
+}
+
+/**
+ * Autocomplete: foreslå plantenavne fra master-/bruger-guides matchende
+ * en søgestreng. Bruges i create-group-dialog og settings-dialog.
+ */
+export async function suggestFocusPlants(query: string): Promise<string[]> {
+  await requireUser()
+  const supabase = await createClient()
+  const { data } = await supabase
+    .rpc('suggest_focus_plants', { p_query: query.trim(), p_limit: 10 })
+  return ((data as { plant_name: string }[] | null) ?? []).map(r => r.plant_name)
 }
 
 /**
@@ -240,6 +264,8 @@ export async function getMyGroups(): Promise<UserGroup[]> {
     visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
     forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
     category: (g.category as string | null) ?? null,
+    tags: (g.tags as string[] | null) ?? [],
+    focusPlants: (g.focus_plants as string[] | null) ?? [],
     icon: (g.icon as string | null) ?? null,
     createdBy: g.created_by as string,
     createdAt: g.created_at as string,
@@ -283,6 +309,8 @@ export async function getGroup(groupId: string): Promise<UserGroup | null> {
     visibility: (g.visibility as GroupVisibility | null) ?? 'hidden',
     forumMode: (g.forum_mode as ForumMode | null) ?? 'simple_chat',
     category: (g.category as string | null) ?? null,
+    tags: (g.tags as string[] | null) ?? [],
+    focusPlants: (g.focus_plants as string[] | null) ?? [],
     icon: (g.icon as string | null) ?? null,
     createdBy: g.created_by as string,
     createdAt: g.created_at as string,
@@ -294,10 +322,11 @@ export async function getGroup(groupId: string): Promise<UserGroup | null> {
 
 /**
  * Discoverable interessegrupper (open + closed). Til /grupper/udforsk.
- * Filtrér på kategori og søgning.
+ * Filtrér på tags, fokusplante og fritekst-søgning.
  */
 export async function getDiscoverableGroups(filters?: {
-  category?: string
+  tags?: string[]
+  focusPlant?: string
   search?: string
 }): Promise<UserGroup[]> {
   const { id: userId } = await requireUser()
@@ -310,7 +339,15 @@ export async function getDiscoverableGroups(filters?: {
     .in('visibility', ['open', 'closed'])
     .order('name', { ascending: true })
 
-  if (filters?.category) q = q.eq('category', filters.category)
+  if (filters?.tags && filters.tags.length > 0) {
+    // Overlap: gruppen har mindst én af de valgte tags
+    q = q.overlaps('tags', filters.tags)
+  }
+  if (filters?.focusPlant?.trim()) {
+    // Match hvis fokusplante-arrayet har et element der ILIKE'r søgningen
+    const fp = filters.focusPlant.trim()
+    q = q.contains('focus_plants', [fp])
+  }
   if (filters?.search?.trim()) {
     const s = filters.search.trim()
     q = q.or(`name.ilike.%${s}%,description.ilike.%${s}%`)
@@ -350,6 +387,8 @@ export async function getDiscoverableGroups(filters?: {
     visibility: g.visibility as GroupVisibility,
     forumMode: g.forum_mode as ForumMode,
     category: (g.category as string | null) ?? null,
+    tags: (g.tags as string[] | null) ?? [],
+    focusPlants: (g.focus_plants as string[] | null) ?? [],
     icon: (g.icon as string | null) ?? null,
     createdBy: g.created_by as string,
     createdAt: g.created_at as string,

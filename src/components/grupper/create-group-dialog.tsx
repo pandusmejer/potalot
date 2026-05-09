@@ -11,7 +11,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Plus, Lock, Globe } from 'lucide-react'
 import { createGroup, type GroupType, type GroupVisibility } from '@/actions/groups'
-import { INTEREST_CATEGORIES } from '@/lib/constants'
+import { TagPicker } from '@/components/grupper/tag-picker'
+import { FocusPlantsInput } from '@/components/grupper/focus-plants-input'
 import { cn } from '@/lib/utils'
 
 export function CreateGroupDialog() {
@@ -24,28 +25,25 @@ export function CreateGroupDialog() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [visibility, setVisibility] = useState<GroupVisibility>('hidden')
-  const [category, setCategory] = useState<string>('')
+  const [tags, setTags] = useState<string[]>([])
+  const [focusPlants, setFocusPlants] = useState<string[]>([])
 
   function handleTypeChange(t: GroupType) {
     setGroupType(t)
-    // Skift default-visibility ved type-skift
     setVisibility(t === 'private' ? 'hidden' : 'open')
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (groupType === 'interest' && !category) {
-      setError('Vælg en kategori for interessegruppen')
-      return
-    }
     startTransition(async () => {
       const res = await createGroup({
         name: name.trim(),
         description: description.trim() || undefined,
         groupType,
         visibility,
-        category: groupType === 'interest' ? category : undefined,
+        tags: groupType === 'interest' ? tags : undefined,
+        focusPlants: groupType === 'interest' ? focusPlants : undefined,
       })
       if ('error' in res) {
         setError(res.error)
@@ -64,7 +62,7 @@ export function CreateGroupDialog() {
           Ny gruppe
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogTitle>Opret gruppe</DialogTitle>
         <DialogDescription>
           Vælg type og giv den et navn. Du kan invitere medlemmer bagefter.
@@ -79,9 +77,7 @@ export function CreateGroupDialog() {
                 onClick={() => handleTypeChange('private')}
                 className={cn(
                   'rounded-xl border p-3 text-left transition',
-                  groupType === 'private'
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:bg-accent/30'
+                  groupType === 'private' ? 'border-primary bg-primary/5' : 'border-border hover:bg-accent/30',
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -97,9 +93,7 @@ export function CreateGroupDialog() {
                 onClick={() => handleTypeChange('interest')}
                 className={cn(
                   'rounded-xl border p-3 text-left transition',
-                  groupType === 'interest'
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:bg-accent/30'
+                  groupType === 'interest' ? 'border-primary bg-primary/5' : 'border-border hover:bg-accent/30',
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -107,7 +101,7 @@ export function CreateGroupDialog() {
                   <span className="font-medium text-foreground text-sm">Interessegruppe</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  For brugere der deler en passion, fx chili eller bi-venlig have.
+                  For brugere der deler en passion, fx selvforsyning eller bi-venlig have.
                 </p>
               </button>
             </div>
@@ -118,7 +112,7 @@ export function CreateGroupDialog() {
             <Input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder={groupType === 'private' ? 'Fx. Familien Mejer' : 'Fx. Chili-elskere DK'}
+              placeholder={groupType === 'private' ? 'Fx. Familien Mejer' : 'Fx. Permakultur i villahaven'}
               required
               className="mt-1.5"
             />
@@ -139,19 +133,20 @@ export function CreateGroupDialog() {
 
           {groupType === 'interest' && (
             <>
+              <div className="border-t border-border pt-4">
+                <Label className="mb-2 block">Tags</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Vælg op til 5 tags der beskriver gruppen.
+                </p>
+                <TagPicker value={tags} onChange={setTags} maxTags={5} />
+              </div>
+
               <div>
-                <Label>Kategori *</Label>
-                <select
-                  value={category}
-                  onChange={e => setCategory(e.target.value)}
-                  className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
-                  required
-                >
-                  <option value="">— vælg kategori —</option>
-                  {INTEREST_CATEGORIES.map(c => (
-                    <option key={c.id} value={c.id}>{c.label}</option>
-                  ))}
-                </select>
+                <Label className="mb-2 block">Fokusplanter (valgfrit)</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Hvis gruppen handler om bestemte planter — fx Chili, Tomater, Æbletræer.
+                </p>
+                <FocusPlantsInput value={focusPlants} onChange={setFocusPlants} />
               </div>
 
               <div>

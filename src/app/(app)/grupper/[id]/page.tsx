@@ -21,7 +21,7 @@ import { JoinGroupButton } from '@/components/grupper/join-group-button'
 import { ChatPanel } from '@/components/grupper/chat-panel'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
-import { INTEREST_CATEGORIES, VISIBILITY_LABEL } from '@/lib/constants'
+import { TAG_LABEL_BY_ID, VISIBILITY_LABEL } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,7 +39,10 @@ export default async function GroupDetailPage({ params }: Props) {
 
   const isMember = group.myRole !== null
   const isInterest = group.groupType === 'interest'
-  const cat = INTEREST_CATEGORIES.find(c => c.id === group.category)
+  const headlinePlant = group.focusPlants[0]
+  const headlineTagLabel = !headlinePlant && group.tags.length > 0
+    ? TAG_LABEL_BY_ID[group.tags[0]]
+    : null
 
   // Hvis ikke-medlem ser en lukket interessegruppe: vis kun overblik
   if (!isMember) {
@@ -55,11 +58,26 @@ export default async function GroupDetailPage({ params }: Props) {
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">{group.name}</h1>
               <Badge variant="muted" className="text-[10px]">Interesse</Badge>
-              {cat && <Badge variant="outline" className="text-[10px]">{cat.label}</Badge>}
+              {headlinePlant && (
+                <Badge variant="success" className="text-[10px]">{headlinePlant}</Badge>
+              )}
+              {headlineTagLabel && (
+                <Badge variant="outline" className="text-[10px]">{headlineTagLabel}</Badge>
+              )}
               <Badge variant={group.visibility === 'open' ? 'success' : 'outline'} className="text-[10px]">
                 {VISIBILITY_LABEL[group.visibility]}
               </Badge>
             </div>
+            {(group.tags.length > 0 || group.focusPlants.length > 0) && (
+              <div className="flex flex-wrap gap-1 mt-1">
+                {group.focusPlants.slice(headlinePlant ? 1 : 0).map(p => (
+                  <Badge key={p} variant="success" className="text-[9px]">{p}</Badge>
+                ))}
+                {group.tags.slice(headlineTagLabel ? 1 : 0).map(t => (
+                  <Badge key={t} variant="muted" className="text-[9px]">{TAG_LABEL_BY_ID[t] ?? t}</Badge>
+                ))}
+              </div>
+            )}
             {group.description && (
               <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
             )}
@@ -144,7 +162,12 @@ export default async function GroupDetailPage({ params }: Props) {
             <Badge variant="muted" className="text-[10px]">
               {isInterest ? 'Interesse' : 'Privat'}
             </Badge>
-            {cat && <Badge variant="outline" className="text-[10px]">{cat.label}</Badge>}
+            {headlinePlant && (
+              <Badge variant="success" className="text-[10px]">{headlinePlant}</Badge>
+            )}
+            {headlineTagLabel && (
+              <Badge variant="outline" className="text-[10px]">{headlineTagLabel}</Badge>
+            )}
             {isInterest && (
               <Badge variant={group.visibility === 'open' ? 'success' : 'outline'} className="text-[10px]">
                 {VISIBILITY_LABEL[group.visibility]}
@@ -152,6 +175,16 @@ export default async function GroupDetailPage({ params }: Props) {
             )}
             {group.myRole === 'owner' && <Badge variant="outline" className="text-[10px]">Ejer</Badge>}
           </div>
+          {isInterest && (group.tags.length > 0 || group.focusPlants.length > 0) && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {group.focusPlants.slice(headlinePlant ? 1 : 0).map(p => (
+                <Badge key={p} variant="success" className="text-[9px]">{p}</Badge>
+              ))}
+              {group.tags.slice(headlineTagLabel ? 1 : 0).map(t => (
+                <Badge key={t} variant="muted" className="text-[9px]">{TAG_LABEL_BY_ID[t] ?? t}</Badge>
+              ))}
+            </div>
+          )}
           {group.description && (
             <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
           )}
@@ -165,6 +198,8 @@ export default async function GroupDetailPage({ params }: Props) {
               description: group.description,
               rules: group.rules,
               visibility: group.visibility,
+              tags: group.tags,
+              focusPlants: group.focusPlants,
             }}
           />
         )}

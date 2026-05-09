@@ -11,6 +11,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Settings } from 'lucide-react'
 import { updateGroupSettings } from '@/actions/moderation'
+import { TagPicker } from '@/components/grupper/tag-picker'
+import { FocusPlantsInput } from '@/components/grupper/focus-plants-input'
 import type { GroupVisibility, GroupType } from '@/actions/groups'
 
 interface Props {
@@ -21,6 +23,8 @@ interface Props {
     description: string | null
     rules: string | null
     visibility: GroupVisibility
+    tags: string[]
+    focusPlants: string[]
   }
 }
 
@@ -34,6 +38,8 @@ export function GroupSettingsDialog({ groupId, groupType, initial }: Props) {
   const [description, setDescription] = useState(initial.description ?? '')
   const [rules, setRules] = useState(initial.rules ?? '')
   const [visibility, setVisibility] = useState<GroupVisibility>(initial.visibility)
+  const [tags, setTags] = useState<string[]>(initial.tags)
+  const [focusPlants, setFocusPlants] = useState<string[]>(initial.focusPlants)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -45,6 +51,8 @@ export function GroupSettingsDialog({ groupId, groupType, initial }: Props) {
         description,
         rules,
         visibility: groupType === 'interest' ? visibility : undefined,
+        tags: groupType === 'interest' ? tags : undefined,
+        focusPlants: groupType === 'interest' ? focusPlants : undefined,
       })
       if ('error' in res) { setError(res.error); return }
       setOpen(false)
@@ -60,13 +68,13 @@ export function GroupSettingsDialog({ groupId, groupType, initial }: Props) {
           Indstillinger
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogTitle>Gruppe-indstillinger</DialogTitle>
         <DialogDescription>
-          Redigér gruppens navn, beskrivelse og regler.
+          Redigér gruppens navn, beskrivelse, tags og regler.
         </DialogDescription>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>Navn *</Label>
             <Input value={name} onChange={e => setName(e.target.value)} required className="mt-1.5" />
@@ -77,34 +85,46 @@ export function GroupSettingsDialog({ groupId, groupType, initial }: Props) {
             <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} className="mt-1.5" />
           </div>
 
-          <div>
+          {groupType === 'interest' && (
+            <>
+              <div className="border-t border-border pt-4">
+                <Label className="mb-2 block">Tags</Label>
+                <TagPicker value={tags} onChange={setTags} maxTags={5} />
+              </div>
+
+              <div>
+                <Label className="mb-2 block">Fokusplanter</Label>
+                <FocusPlantsInput value={focusPlants} onChange={setFocusPlants} />
+              </div>
+
+              <div>
+                <Label>Synlighed</Label>
+                <select
+                  value={visibility}
+                  onChange={e => setVisibility(e.target.value as GroupVisibility)}
+                  className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
+                >
+                  <option value="open">Åben — alle kan se og deltage</option>
+                  <option value="closed">Lukket — alle kan se gruppen, men skal anmode</option>
+                  <option value="hidden">Skjult — kun synlig for inviterede</option>
+                </select>
+              </div>
+            </>
+          )}
+
+          <div className="border-t border-border pt-4">
             <Label>Grupperegler (valgfrit)</Label>
             <Textarea
               value={rules}
               onChange={e => setRules(e.target.value)}
               rows={5}
-              placeholder="Fx.&#10;1. Hold debatten venlig.&#10;2. Ingen spam eller reklame.&#10;3. Tag billeder af dine egne planter."
+              placeholder="Fx.&#10;1. Hold debatten venlig.&#10;2. Ingen spam eller reklame."
               className="mt-1.5"
             />
             <p className="text-[10px] text-muted-foreground mt-1">
-              Vises øverst på Overblik-fanen for alle medlemmer.
+              Vises øverst på Overblik for alle medlemmer.
             </p>
           </div>
-
-          {groupType === 'interest' && (
-            <div>
-              <Label>Synlighed</Label>
-              <select
-                value={visibility}
-                onChange={e => setVisibility(e.target.value as GroupVisibility)}
-                className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
-              >
-                <option value="open">Åben — alle kan se og deltage</option>
-                <option value="closed">Lukket — alle kan se gruppen, men skal anmode</option>
-                <option value="hidden">Skjult — kun synlig for inviterede</option>
-              </select>
-            </div>
-          )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 

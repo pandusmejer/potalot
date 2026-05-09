@@ -190,21 +190,83 @@ export const SECONDARY_NAV = [
 // Grupper
 // ============================================
 
-export const INTEREST_CATEGORIES = [
-  { id: 'chili',         label: 'Chili' },
-  { id: 'tomater',       label: 'Tomater' },
-  { id: 'groentsager',   label: 'Grøntsager' },
-  { id: 'blomster',      label: 'Blomster' },
-  { id: 'krydderurter',  label: 'Krydderurter' },
-  { id: 'drivhus',       label: 'Drivhus' },
-  { id: 'altanhave',     label: 'Altanhave' },
-  { id: 'froebytte',     label: 'Frøbytte' },
-  { id: 'bivenlig',      label: 'Bi-venlig have' },
-  { id: 'begyndere',     label: 'Begyndere' },
-  { id: 'oevede',        label: 'Øvede' },
+// Lukket tag-vokabular til interessegrupper, organiseret i tre akser.
+// Plantefokus håndteres i et separat felt (focus_plants) — ikke som tag.
+export const TAG_AXES = [
+  {
+    id: 'sted',
+    label: 'Sted',
+    tags: [
+      { id: 'drivhus',       label: 'Drivhus' },
+      { id: 'altan',         label: 'Altan' },
+      { id: 'koekkenhave',   label: 'Køkkenhave' },
+      { id: 'kolonihave',    label: 'Kolonihave' },
+      { id: 'sommerhushave', label: 'Sommerhushave' },
+      { id: 'indendoers',    label: 'Indendørs' },
+      { id: 'vinduskarm',    label: 'Vinduskarm' },
+      { id: 'tagterrasse',   label: 'Tagterrasse' },
+      { id: 'hydroponics',   label: 'Hydroponics' },
+    ],
+  },
+  {
+    id: 'stil',
+    label: 'Stil',
+    tags: [
+      { id: 'oekologisk',     label: 'Økologisk' },
+      { id: 'permakultur',    label: 'Permakultur' },
+      { id: 'no_dig',         label: 'No-dig' },
+      { id: 'vild_med_vilje', label: 'Vild med vilje' },
+      { id: 'bivenlig',       label: 'Bi-venlig' },
+      { id: 'selvforsyning',  label: 'Selvforsyning' },
+      { id: 'skaerehave',     label: 'Skærehave' },
+      { id: 'hoejbede',       label: 'Højbede' },
+      { id: 'samdyrkning',    label: 'Samdyrkning' },
+      { id: 'skovhave',       label: 'Skovhave' },
+      { id: 'biodynamisk',    label: 'Biodynamisk' },
+    ],
+  },
+  {
+    id: 'niveau_emne',
+    label: 'Niveau & emne',
+    tags: [
+      { id: 'begyndere',         label: 'Begyndere' },
+      { id: 'oevede',            label: 'Øvede' },
+      { id: 'boernevenlig',      label: 'Børnevenlig' },
+      { id: 'froebytte',         label: 'Frøbytte' },
+      { id: 'froesamling',       label: 'Frøsamling' },
+      { id: 'sjaeldne_sorter',   label: 'Sjældne sorter' },
+      { id: 'gamle_sorter',      label: 'Gamle sorter' },
+      { id: 'plantesygdomme',    label: 'Plantesygdomme' },
+      { id: 'kompost_jord',      label: 'Kompost & jord' },
+      { id: 'forspiring',        label: 'Forspiring' },
+      { id: 'beskaering',        label: 'Beskæring' },
+      { id: 'krukker',           label: 'Krukke-dyrkning' },
+      { id: 'vintergroent',      label: 'Vintergrønt' },
+      { id: 'hoest_madlavning',  label: 'Høst & madlavning' },
+      { id: 'haveprojekter',     label: 'Haveprojekter' },
+    ],
+  },
 ] as const
 
-export type InterestCategoryId = typeof INTEREST_CATEGORIES[number]['id']
+export type TagAxisId = typeof TAG_AXES[number]['id']
+export type TagId = typeof TAG_AXES[number]['tags'][number]['id']
+
+// Flat lookup-map for label → tag-id, så vi kan vise label uden at iterere
+export const TAG_LABEL_BY_ID: Record<string, string> = TAG_AXES.reduce<Record<string, string>>(
+  (acc, axis) => {
+    for (const t of axis.tags) acc[t.id] = t.label
+    return acc
+  },
+  {},
+)
+
+export const TAG_AXIS_BY_TAG_ID: Record<string, TagAxisId> = TAG_AXES.reduce<Record<string, TagAxisId>>(
+  (acc, axis) => {
+    for (const t of axis.tags) acc[t.id] = axis.id
+    return acc
+  },
+  {},
+)
 
 export const VISIBILITY_LABEL: Record<'open' | 'closed' | 'hidden', string> = {
   open:   'Åben',

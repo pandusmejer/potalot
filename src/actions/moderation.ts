@@ -183,9 +183,14 @@ export async function updateGroupSettings(input: {
   description?: string
   rules?: string
   visibility?: 'open' | 'closed' | 'hidden'
+  tags?: string[]
+  focusPlants?: string[]
 }): Promise<{ ok: true } | { error: string }> {
   await requireUser()
   const supabase = await createClient()
+
+  if (input.tags && input.tags.length > 5) return { error: 'Maks. 5 tags pr. gruppe' }
+  if (input.focusPlants && input.focusPlants.length > 5) return { error: 'Maks. 5 fokusplanter pr. gruppe' }
 
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (input.name !== undefined) {
@@ -196,6 +201,10 @@ export async function updateGroupSettings(input: {
   if (input.description !== undefined) update.description = input.description.trim() || null
   if (input.rules !== undefined) update.rules = input.rules.trim() || null
   if (input.visibility !== undefined) update.visibility = input.visibility
+  if (input.tags !== undefined) update.tags = input.tags
+  if (input.focusPlants !== undefined) {
+    update.focus_plants = input.focusPlants.map(s => s.trim()).filter(Boolean)
+  }
 
   const { error } = await supabase
     .from('user_groups')
@@ -203,5 +212,6 @@ export async function updateGroupSettings(input: {
     .eq('id', input.groupId)
   if (error) return { error: error.message }
   revalidatePath(`/grupper/${input.groupId}`)
+  revalidatePath('/grupper/udforsk')
   return { ok: true }
 }
