@@ -192,15 +192,15 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
       supplier: input.supplier || null,
       primary_category_id: input.primaryCategoryId,
       subcategory_id: input.subcategoryId || null,
-      quantity: input.quantity ?? null,
-      seed_count: input.seedCount ?? null,
+      quantity: input.quantity != null ? Math.round(input.quantity) : null,
+      seed_count: input.seedCount != null ? Math.round(input.seedCount) : null,
       purchase_date: input.purchaseDate || null,
-      purchase_year: input.purchaseYear ?? null,
+      purchase_year: input.purchaseYear != null ? Math.round(input.purchaseYear) : null,
       purchase_url: input.purchaseUrl || null,
       expiry_date: input.expiryDate || null,
       notes: input.notes || null,
       sowing_months: input.sowingMonths ?? [],
-      sowing_depth_mm: input.sowingDepthMm ?? 0,
+      sowing_depth_mm: input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : 0,
       pre_cultivation: input.preCultivation ?? null,
       planting_out_months: input.plantingOutMonths ?? [],
       harvest_months: input.harvestMonths ?? [],
@@ -250,15 +250,15 @@ export async function updateInventoryItem(
   if (input.supplier !== undefined) update.supplier = input.supplier || null
   if (input.primaryCategoryId !== undefined) update.primary_category_id = input.primaryCategoryId
   if (input.subcategoryId !== undefined) update.subcategory_id = input.subcategoryId || null
-  if (input.quantity !== undefined) update.quantity = input.quantity
-  if (input.seedCount !== undefined) update.seed_count = input.seedCount
+  if (input.quantity !== undefined) update.quantity = input.quantity != null ? Math.round(input.quantity) : null
+  if (input.seedCount !== undefined) update.seed_count = input.seedCount != null ? Math.round(input.seedCount) : null
   if (input.purchaseDate !== undefined) update.purchase_date = input.purchaseDate || null
-  if (input.purchaseYear !== undefined) update.purchase_year = input.purchaseYear
+  if (input.purchaseYear !== undefined) update.purchase_year = input.purchaseYear != null ? Math.round(input.purchaseYear) : null
   if (input.purchaseUrl !== undefined) update.purchase_url = input.purchaseUrl || null
   if (input.expiryDate !== undefined) update.expiry_date = input.expiryDate || null
   if (input.notes !== undefined) update.notes = input.notes || null
   if (input.sowingMonths !== undefined) update.sowing_months = input.sowingMonths
-  if (input.sowingDepthMm !== undefined) update.sowing_depth_mm = input.sowingDepthMm
+  if (input.sowingDepthMm !== undefined) update.sowing_depth_mm = input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : 0
   if (input.preCultivation !== undefined) update.pre_cultivation = input.preCultivation
   if (input.plantingOutMonths !== undefined) update.planting_out_months = input.plantingOutMonths
   if (input.harvestMonths !== undefined) update.harvest_months = input.harvestMonths
