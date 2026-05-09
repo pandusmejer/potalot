@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Trash2, X, Loader2, Flag } from 'lucide-react'
-import { resolveReport, REASON_LABEL, type ContentReport, type ReportTarget } from '@/actions/moderation'
+import { resolveReport, type ContentReport } from '@/actions/moderation'
+import { REASON_LABEL, type ReportTarget } from '@/lib/moderation-shared'
 
 const TARGET_LABEL: Record<ReportTarget, string> = {
   forum_post: 'Forum-opslag',

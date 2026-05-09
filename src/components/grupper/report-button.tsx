@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Flag, Loader2 } from 'lucide-react'
-import { reportContent, REASON_LABEL, type ReportTarget, type ReportReason } from '@/actions/moderation'
+import { reportContent } from '@/actions/moderation'
+import { REASON_LABEL, type ReportTarget, type ReportReason } from '@/lib/moderation-shared'
 
 interface Props {
   groupId: string

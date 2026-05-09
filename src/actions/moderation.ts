@@ -14,9 +14,8 @@ function pickLabel(r: UserLabelRow | undefined | null): string {
   return r.display_name?.trim() || r.username || 'Ukendt bruger'
 }
 
-export type ReportTarget = 'forum_post' | 'forum_reply' | 'swap_listing' | 'chat_message'
-export type ReportReason = 'spam' | 'irrelevant' | 'rude' | 'misleading' | 'other'
-export type ReportStatus = 'pending' | 'resolved' | 'dismissed'
+import type { ReportTarget, ReportReason, ReportStatus } from '@/lib/moderation-shared'
+export type { ReportTarget, ReportReason, ReportStatus } from '@/lib/moderation-shared'
 
 export interface ContentReport {
   id: string
@@ -30,14 +29,6 @@ export interface ContentReport {
   status: ReportStatus
   createdAt: string
   resolvedAt: string | null
-}
-
-export const REASON_LABEL: Record<ReportReason, string> = {
-  spam: 'Spam / reklame',
-  irrelevant: 'Irrelevant for gruppen',
-  rude: 'Stødende / uvenligt',
-  misleading: 'Vildledende',
-  other: 'Andet',
 }
 
 export async function reportContent(input: {
