@@ -152,7 +152,9 @@ export function EditInventoryDialog({ item }: Props) {
             ? res.error
             : res.error.startsWith('Kunne ikke hente') || res.error.startsWith('Fetch fejlede')
               ? 'Linket kunne ikke læses. Prøv et andet link eller upload et foto af frøposen.'
-              : res.error
+              : res.error.startsWith('AI-fejl') || res.error.startsWith('AI returnerede')
+                ? 'AI kunne ikke læse siden. Prøv et andet link eller upload et foto af frøposen.'
+                : res.error
         setUrlAiError(friendly)
         return
       }

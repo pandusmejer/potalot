@@ -213,7 +213,10 @@ export async function extractSeedFromUrl(
     | { type: 'text'; text: string }
   > = []
 
-  if (absoluteImageUrl) {
+  // Anthropic-API tager kun https URLs for image-blocks. Hvis siden's
+  // og:image er http (eller protokol-relativ der opløser til http),
+  // skipper vi billedet — tekstindholdet alene giver typisk nok info.
+  if (absoluteImageUrl && absoluteImageUrl.startsWith('https://')) {
     userBlocks.push({ type: 'image', source: { type: 'url', url: absoluteImageUrl } })
   }
   userBlocks.push({
