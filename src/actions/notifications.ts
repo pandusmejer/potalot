@@ -61,6 +61,29 @@ export async function getUnreadCount(): Promise<number> {
   return count ?? 0
 }
 
+/**
+ * Antal ulæste pr. gruppe — bruges til badge på gruppe-kort.
+ * Returnerer Map<groupId, count> for ulæste notifikationer der har
+ * en group_id reference.
+ */
+export async function getUnreadCountsByGroup(): Promise<Map<string, number>> {
+  const me = await getCurrentUser()
+  if (!me) return new Map()
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('notifications')
+    .select('group_id')
+    .eq('user_id', me.id)
+    .eq('is_read', false)
+    .not('group_id', 'is', null)
+
+  const counts = new Map<string, number>()
+  for (const r of (data ?? []) as { group_id: string }[]) {
+    counts.set(r.group_id, (counts.get(r.group_id) ?? 0) + 1)
+  }
+  return counts
+}
+
 export async function markNotificationRead(id: string): Promise<{ ok: true } | { error: string }> {
   await requireUser()
   const supabase = await createClient()
@@ -69,6 +92,7 @@ export async function markNotificationRead(id: string): Promise<{ ok: true } | {
     .update({ is_read: true })
     .eq('id', id)
   if (error) return { error: error.message }
+  revalidatePath('/grupper')
   return { ok: true }
 }
 
@@ -82,6 +106,26 @@ export async function markAllNotificationsRead(): Promise<{ ok: true } | { error
     .eq('is_read', false)
   if (error) return { error: error.message }
   revalidatePath('/')
+  revalidatePath('/grupper')
+  return { ok: true }
+}
+
+/**
+ * Markér alle ulæste notifikationer for en specifik gruppe som læst.
+ * Bruges når brugeren navigerer ind i gruppen — så kort-badgen ikke
+ * vedbliver med at blinke efter at indholdet er set.
+ */
+export async function markGroupNotificationsRead(groupId: string): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('notifications')
+    .update({ is_read: true })
+    .eq('user_id', userId)
+    .eq('is_read', false)
+    .eq('group_id', groupId)
+  if (error) return { error: error.message }
+  revalidatePath('/grupper')
   return { ok: true }
 }
 

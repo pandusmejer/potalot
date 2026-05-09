@@ -14,6 +14,7 @@ import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-di
 import { getSwapListings } from '@/actions/seed-swap'
 import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
+import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
 import { ReportsPanel } from '@/components/grupper/reports-panel'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
@@ -147,6 +148,12 @@ export default async function GroupDetailPage({ params }: Props) {
   const chatMessages = rawChatMessages.filter(m => !blockedIds.has(m.userId))
   const forumPosts = rawForumPosts.filter(p => !blockedIds.has(p.userId))
   const swapListings = rawSwapListings.filter(l => !blockedIds.has(l.userId))
+
+  // Markér gruppens notifikationer læst når brugeren ser indholdet
+  // (kun for medlemmer; ikke-medlemmer ser uanset kun overblik)
+  if (isMember) {
+    markGroupNotificationsRead(id).catch(() => {})
+  }
 
   return (
     <div className="space-y-5 max-w-4xl">
