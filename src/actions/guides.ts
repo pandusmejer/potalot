@@ -29,6 +29,9 @@ interface GuideRow {
   source_links: string[]
   status: string
   is_ai_generated: boolean
+  flagged_at: string | null
+  flagged_reason: string | null
+  delete_at: string | null
   created_at: string
   updated_at: string
 }
@@ -73,6 +76,9 @@ function rowToGuide(row: GuideRow): Guide {
     status: row.status as GuideStatus,
     visibility: (row.user_id ? 'private' : 'public') as GuideVisibility,
     reviewStatus: 'approved' as GuideReviewStatus,
+    flaggedAt: row.flagged_at ?? null,
+    flaggedReason: row.flagged_reason ?? null,
+    deleteAt: row.delete_at ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }

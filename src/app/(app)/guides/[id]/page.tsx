@@ -8,6 +8,8 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { CloneMasterButton } from '@/components/guides/clone-master-button'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
+import { FlagBanner } from '@/components/guides/flag-banner'
+import { FlagGuideDialog } from '@/components/admin/flag-guide-dialog'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -95,11 +97,23 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
               <DeleteGuideButton guideId={original.id} guideTitle={original.plantName} isMaster={false} />
             </>
           )}
+          {!isMaster && isAdmin && !original.flaggedAt && (
+            <FlagGuideDialog guideId={original.id} guideTitle={original.plantName} />
+          )}
           {isMaster && isAdmin && (
             <DeleteGuideButton guideId={original.id} guideTitle={original.plantName} isMaster={true} />
           )}
         </div>
       </div>
+
+      {original.flaggedAt && (
+        <FlagBanner
+          flaggedAt={original.flaggedAt}
+          reason={original.flaggedReason ?? null}
+          deleteAt={original.deleteAt ?? null}
+          asAdmin={!!isAdmin && !isMaster}
+        />
+      )}
 
       {/* Hvis sortsguide: link tilbage til artsguide */}
       {parent && (

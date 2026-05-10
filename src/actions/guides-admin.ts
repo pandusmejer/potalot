@@ -134,11 +134,15 @@ export interface AdminGuideRow {
   isMaster: boolean
   isAiGenerated: boolean
   ownerLabel: string | null
+  ownerId: string | null
+  flaggedAt: string | null
+  flaggedReason: string | null
+  deleteAt: string | null
   createdAt: string
   updatedAt: string
 }
 
-const COLS = 'id, plant_name, variety, latin_name, primary_category_id, summary, difficulty, tags, quick_facts, sections, calendar_rules, source_links, is_ai_generated, user_id, created_at, updated_at'
+const COLS = 'id, plant_name, variety, latin_name, primary_category_id, summary, difficulty, tags, quick_facts, sections, calendar_rules, source_links, is_ai_generated, user_id, flagged_at, flagged_reason, delete_at, created_at, updated_at'
 
 interface RawGuideRow {
   id: string
@@ -155,6 +159,9 @@ interface RawGuideRow {
   source_links: string[] | null
   is_ai_generated: boolean | null
   user_id: string | null
+  flagged_at: string | null
+  flagged_reason: string | null
+  delete_at: string | null
   created_at: string
   updated_at: string
 }
@@ -197,6 +204,10 @@ function mapRow(r: RawGuideRow, ownerLabel: string | null): AdminGuideRow {
     isMaster: r.user_id === null,
     isAiGenerated: !!r.is_ai_generated,
     ownerLabel,
+    ownerId: r.user_id,
+    flaggedAt: r.flagged_at,
+    flaggedReason: r.flagged_reason,
+    deleteAt: r.delete_at,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   }
@@ -252,6 +263,83 @@ export async function getRecentUserGuides(
     }
   }
 
+  return rows.map(r => mapRow(r, labelById.get(r.user_id ?? '') ?? null))
+}
+
+/**
+ * Flag en bruger-guide. Skjuler den for andre + sætter delete_at = nu+5 dage.
+ * Owner ser banner med begrundelse + nedtælling.
+ */
+export async function flagUserGuide(
+  guideId: string,
+  reason: string
+): Promise<{ ok: true } | { error: string }> {
+  const { id: adminId } = await requireAdmin()
+  if (!reason.trim()) return { error: 'Begrundelse er påkrævet' }
+
+  const supabase = await createClient()
+  const flaggedAt = new Date()
+  const deleteAt = new Date(flaggedAt.getTime() + 5 * 24 * 60 * 60 * 1000)
+
+  const { error } = await supabase
+    .from('guides')
+    .update({
+      flagged_at: flaggedAt.toISOString(),
+      flagged_reason: reason.trim(),
+      flagged_by: adminId,
+      delete_at: deleteAt.toISOString(),
+    })
+    .eq('id', guideId)
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/guides')
+  revalidatePath(`/guides/${guideId}`)
+  return { ok: true }
+}
+
+export async function unflagGuide(guideId: string): Promise<{ ok: true } | { error: string }> {
+  await requireAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('guides')
+    .update({
+      flagged_at: null,
+      flagged_reason: null,
+      flagged_by: null,
+      delete_at: null,
+    })
+    .eq('id', guideId)
+  if (error) return { error: error.message }
+  revalidatePath('/admin/guides')
+  revalidatePath(`/guides/${guideId}`)
+  return { ok: true }
+}
+
+/**
+ * Hent alle flagede guides (bruges i admin-oversigten).
+ */
+export async function getFlaggedGuides(): Promise<AdminGuideRow[]> {
+  await requireAdmin()
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('guides')
+    .select(COLS)
+    .not('flagged_at', 'is', null)
+    .order('flagged_at', { ascending: true })
+
+  if (!data || data.length === 0) return []
+  const rows = data as unknown as RawGuideRow[]
+  const userIds = Array.from(new Set(rows.map(r => r.user_id).filter((x): x is string => !!x)))
+  const labelById = new Map<string, string | null>()
+  if (userIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, display_name, username')
+      .in('id', userIds)
+    for (const p of (profiles ?? []) as { id: string; display_name: string | null; username: string | null }[]) {
+      labelById.set(p.id, p.display_name ?? p.username ?? null)
+    }
+  }
   return rows.map(r => mapRow(r, labelById.get(r.user_id ?? '') ?? null))
 }
 

@@ -385,6 +385,11 @@ export interface Guide {
   visibility: GuideVisibility
   reviewStatus: GuideReviewStatus
 
+  // Moderation
+  flaggedAt?: string | null
+  flaggedReason?: string | null
+  deleteAt?: string | null
+
   createdAt: string
   updatedAt: string
 }

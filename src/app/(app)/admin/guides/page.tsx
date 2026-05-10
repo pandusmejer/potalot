@@ -3,10 +3,13 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, BookOpen, Sparkles } from 'lucide-react'
+import { ArrowLeft, BookOpen, Sparkles, AlertTriangle, Clock } from 'lucide-react'
 import { isCurrentUserAdmin } from '@/lib/auth'
-import { getMasterGuides, getRecentUserGuides, type AdminGuideRow } from '@/actions/guides-admin'
+import { getMasterGuides, getRecentUserGuides, getFlaggedGuides, type AdminGuideRow } from '@/actions/guides-admin'
 import { MasterGuideForm } from '@/components/admin/master-guide-form'
+import { FlagGuideDialog } from '@/components/admin/flag-guide-dialog'
+import { UnflagGuideButton } from '@/components/admin/unflag-guide-button'
+import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
@@ -20,14 +23,17 @@ export default async function AdminGuidesPage() {
   const isAdmin = await isCurrentUserAdmin()
   if (!isAdmin) redirect('/')
 
-  const [masters, userGuides] = await Promise.all([
+  const [masters, userGuides, flagged] = await Promise.all([
     getMasterGuides(),
     getRecentUserGuides({ sinceDays: 30 }),
+    getFlaggedGuides(),
   ])
 
   // Bruger-guides hvis plante-navn ikke findes som master — kandidater til ny master
   const masterNames = new Set(masters.map(m => m.plantName.trim().toLowerCase()))
-  const candidates = userGuides.filter(g => !masterNames.has(g.plantName.trim().toLowerCase()))
+  const candidates = userGuides
+    .filter(g => !g.flaggedAt) // skjul flagede fra kandidat-listen
+    .filter(g => !masterNames.has(g.plantName.trim().toLowerCase()))
 
   return (
     <div className="space-y-5 max-w-4xl">
@@ -60,6 +66,56 @@ export default async function AdminGuidesPage() {
             </p>
             <div className="space-y-2">
               {candidates.slice(0, 8).map(c => <CandidateRow key={c.id} candidate={c} />)}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {flagged.length > 0 && (
+        <Card className="bg-amber-50/40 border-amber-300">
+          <CardContent className="py-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-700" />
+              <p className="font-medium text-amber-900">
+                {flagged.length} guide{flagged.length === 1 ? '' : 's'} flaget for moderation
+              </p>
+            </div>
+            <div className="space-y-2">
+              {flagged.map(g => {
+                const days = g.deleteAt ? Math.max(0, Math.ceil((new Date(g.deleteAt).getTime() - Date.now()) / 86400000)) : null
+                return (
+                  <div key={g.id} className="flex items-start gap-3 p-3 rounded-lg border border-amber-200 bg-card">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Link href={`/guides/${g.id}`} className="font-medium text-foreground hover:underline">
+                          {g.plantName}
+                        </Link>
+                        {g.variety && <span className="text-xs text-muted-foreground">· {g.variety}</span>}
+                        {!g.isMaster && (
+                          <Badge variant="outline" className="text-[10px]">{g.ownerLabel ?? 'Bruger'}</Badge>
+                        )}
+                        {g.isMaster && <Badge variant="success" className="text-[10px]">Master</Badge>}
+                      </div>
+                      {g.flaggedReason && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">
+                          &ldquo;{g.flaggedReason}&rdquo;
+                        </p>
+                      )}
+                      {g.deleteAt && (
+                        <p className="text-[10px] text-amber-800 mt-1 inline-flex items-center gap-1">
+                          <Clock className="h-2.5 w-2.5" />
+                          {days === 0 ? 'Frist udløbet' : `${days} dag${days === 1 ? '' : 'e'} tilbage`}
+                          {' · slettes manuelt af admin'}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-1.5 shrink-0">
+                      <UnflagGuideButton guideId={g.id} guideTitle={g.plantName} />
+                      <DeleteGuideButton guideId={g.id} guideTitle={g.plantName} isMaster={g.isMaster} />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </CardContent>
         </Card>
@@ -124,22 +180,25 @@ function CandidateRow({ candidate }: { candidate: AdminGuideRow }) {
           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{candidate.summary}</p>
         )}
       </div>
-      <MasterGuideForm
-        triggerLabel="Lav master"
-        prefill={{
-          plantName: candidate.plantName,
-          variety: candidate.variety,
-          latinName: candidate.latinName,
-          primaryCategoryId: candidate.primaryCategoryId,
-          summary: candidate.summary,
-          difficulty: candidate.difficulty,
-          tags: candidate.tags,
-          quickFacts: candidate.quickFacts,
-          sections: candidate.sections,
-          calendarRules: candidate.calendarRules,
-          sourceLinks: candidate.sourceLinks,
-        }}
-      />
+      <div className="flex flex-col gap-1.5 shrink-0">
+        <MasterGuideForm
+          triggerLabel="Lav master"
+          prefill={{
+            plantName: candidate.plantName,
+            variety: candidate.variety,
+            latinName: candidate.latinName,
+            primaryCategoryId: candidate.primaryCategoryId,
+            summary: candidate.summary,
+            difficulty: candidate.difficulty,
+            tags: candidate.tags,
+            quickFacts: candidate.quickFacts,
+            sections: candidate.sections,
+            calendarRules: candidate.calendarRules,
+            sourceLinks: candidate.sourceLinks,
+          }}
+        />
+        <FlagGuideDialog guideId={candidate.id} guideTitle={candidate.plantName} />
+      </div>
     </div>
   )
 }
