@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { DIFFICULTY_META, MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
-import { BookOpen, Star } from 'lucide-react'
+import { BookOpen, Star, ShieldCheck, User } from 'lucide-react'
 import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 
 /**
@@ -18,16 +18,20 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
     <div className="relative">
       <Link
         href={`/guides/${guide.id}`}
-        className="block rounded-2xl border border-border bg-card overflow-hidden hover:shadow-md transition-shadow"
+        className={`block rounded-2xl border overflow-hidden hover:shadow-md transition-shadow ${
+          isMaster ? 'border-green-200 bg-card' : 'border-border bg-card'
+        }`}
       >
         <div className="flex">
           {/* Thumbnail / placeholder */}
-          <div className="w-24 sm:w-32 shrink-0 bg-pattern-botanical bg-secondary/30 flex items-center justify-center">
-            <BookOpen className="h-8 w-8 text-primary/40" />
+          <div className={`w-24 sm:w-32 shrink-0 flex items-center justify-center ${
+            isMaster ? 'bg-pattern-botanical bg-green-50' : 'bg-pattern-botanical bg-secondary/30'
+          }`}>
+            <BookOpen className={`h-8 w-8 ${isMaster ? 'text-green-700/60' : 'text-primary/40'}`} />
           </div>
 
           <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col gap-1.5">
-            <div className="flex items-start gap-2 flex-wrap">
+            <div className="flex items-start gap-1.5 flex-wrap">
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-foreground truncate">{guide.plantName}</p>
                 {guide.variety && (
@@ -36,8 +40,19 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
                   </p>
                 )}
               </div>
+              {isMaster ? (
+                <Badge variant="success" className="text-[10px] shrink-0 gap-0.5">
+                  <ShieldCheck className="h-2.5 w-2.5" />
+                  Master
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="text-[10px] shrink-0 gap-0.5">
+                  <User className="h-2.5 w-2.5" />
+                  Min
+                </Badge>
+              )}
               <Badge variant="muted" className="text-[10px] shrink-0">{cat.name}</Badge>
-              {/* Plads-holder så Slet-knappen ikke overlapper kategori-badgen */}
+              {/* Plads-holder så Slet-knappen ikke overlapper badges */}
               {canDelete && <span className="block w-16 shrink-0" aria-hidden="true" />}
             </div>
 

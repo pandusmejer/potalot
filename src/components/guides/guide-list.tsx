@@ -7,7 +7,7 @@ import { GuideCard } from './guide-card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide, PrimaryCategoryId } from '@/lib/types'
-import { Search, BookOpen } from 'lucide-react'
+import { Search, BookOpen, ShieldCheck, User } from 'lucide-react'
 
 interface Props {
   guides: Guide[]
@@ -15,8 +15,7 @@ interface Props {
   inFroebank?: Set<string>
   /** Når true: vis Slet-knap på master-guides også */
   isAdmin?: boolean
-  /** True hvis brugeren er logget ind (private guides ses kun af ejer pga RLS,
-   * så når synlighed='private' i en logged-in brugers liste = ejer = kan slette) */
+  /** True hvis brugeren er logget ind (private guides ses kun af ejer pga RLS) */
   canDeleteOwnGuides?: boolean
 }
 
@@ -26,11 +25,9 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
 
   const filtered = useMemo(() => {
     let list = guides
-
     if (filterCat !== 'alle') {
       list = list.filter(g => g.primaryCategoryId === filterCat)
     }
-
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(g =>
@@ -41,16 +38,17 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
         g.tags.some(t => t.toLowerCase().includes(q))
       )
     }
-
     return list.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
   }, [guides, search, filterCat])
 
+  const masters = useMemo(() => filtered.filter(g => g.visibility === 'public'), [filtered])
+  const mine = useMemo(() => filtered.filter(g => g.visibility === 'private'), [filtered])
   const linkedToFroebank = useMemo(() => {
     if (!inFroebank) return []
     return filtered.filter(g => inFroebank.has(g.id))
   }, [filtered, inFroebank])
 
-  function renderList(list: Guide[]) {
+  function renderCards(list: Guide[]) {
     if (list.length === 0) {
       return (
         <EmptyState
@@ -67,6 +65,44 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
           const canDelete = isMaster ? isAdmin : canDeleteOwnGuides
           return <GuideCard key={g.id} guide={g} canDelete={canDelete} />
         })}
+      </div>
+    )
+  }
+
+  function renderAlleSplit() {
+    if (filtered.length === 0) {
+      return (
+        <EmptyState
+          icon={<BookOpen className="h-8 w-8" />}
+          title={search ? 'Ingen resultater' : 'Ingen guides her'}
+          description={search ? 'Prøv et andet søgeord.' : ''}
+        />
+      )
+    }
+    return (
+      <div className="space-y-5">
+        {masters.length > 0 && (
+          <section className="space-y-2">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-green-700" />
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                Master-guides ({masters.length})
+              </p>
+            </div>
+            {renderCards(masters)}
+          </section>
+        )}
+        {mine.length > 0 && (
+          <section className="space-y-2">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-primary" />
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                Mine guides ({mine.length})
+              </p>
+            </div>
+            {renderCards(mine)}
+          </section>
+        )}
       </div>
     )
   }
@@ -98,19 +134,29 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
       </div>
 
       <Tabs defaultValue="alle">
-        <TabsList>
+        <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="alle">
             Alle <span className="ml-1.5 text-xs opacity-60">({filtered.length})</span>
           </TabsTrigger>
+          <TabsTrigger value="master">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Master <span className="ml-1.5 text-xs opacity-60">({masters.length})</span>
+          </TabsTrigger>
+          <TabsTrigger value="mine">
+            <User className="h-3.5 w-3.5" />
+            Mine <span className="ml-1.5 text-xs opacity-60">({mine.length})</span>
+          </TabsTrigger>
           {inFroebank && (
             <TabsTrigger value="dine">
-              Til din frøbank <span className="ml-1.5 text-xs opacity-60">({linkedToFroebank.length})</span>
+              Til min frøbank <span className="ml-1.5 text-xs opacity-60">({linkedToFroebank.length})</span>
             </TabsTrigger>
           )}
         </TabsList>
 
-        <TabsContent value="alle">{renderList(filtered)}</TabsContent>
-        {inFroebank && <TabsContent value="dine">{renderList(linkedToFroebank)}</TabsContent>}
+        <TabsContent value="alle">{renderAlleSplit()}</TabsContent>
+        <TabsContent value="master">{renderCards(masters)}</TabsContent>
+        <TabsContent value="mine">{renderCards(mine)}</TabsContent>
+        {inFroebank && <TabsContent value="dine">{renderCards(linkedToFroebank)}</TabsContent>}
       </Tabs>
     </div>
   )
