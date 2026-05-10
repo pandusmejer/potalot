@@ -121,10 +121,10 @@ export const TASK_PRIORITY_META: Record<TaskPriority, { label: string; badgeVari
 // Dyrkningsinfo
 // ============================================
 
-export const DIFFICULTY_META: Record<Difficulty, { label: string; stars: number }> = {
-  easy:   { label: 'Nem',        stars: 1 },
-  medium: { label: 'Mellem',     stars: 2 },
-  hard:   { label: 'Udfordrende', stars: 3 },
+export const DIFFICULTY_META: Record<Difficulty, { label: string; chipClass: string }> = {
+  easy:   { label: 'Nem',       chipClass: 'bg-green-100 text-green-800 border-green-200' },
+  medium: { label: 'Mellem',    chipClass: 'bg-amber-100 text-amber-800 border-amber-200' },
+  hard:   { label: 'Krævende',  chipClass: 'bg-orange-100 text-orange-900 border-orange-200' },
 }
 
 export const LIGHT_META: Record<Light, { label: string; icon: string }> = {

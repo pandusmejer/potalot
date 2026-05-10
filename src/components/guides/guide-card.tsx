@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { DIFFICULTY_META, MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
-import { BookOpen, Star, ShieldCheck, User } from 'lucide-react'
+import { BookOpen, ShieldCheck, User } from 'lucide-react'
 import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 
 /**
@@ -60,22 +60,16 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
               {guide.summary}
             </p>
 
-            <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap mt-auto pt-1">
-              <span className="inline-flex items-center gap-0.5">
-                {Array.from({ length: difficultyMeta.stars }).map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
-                ))}
-                {Array.from({ length: 3 - difficultyMeta.stars }).map((_, i) => (
-                  <Star key={`e${i}`} className="h-3 w-3 text-muted-foreground/30" />
-                ))}
-              </span>
-              <span>·</span>
-              <span>{difficultyMeta.label}</span>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap mt-auto pt-1">
+              {guide.difficulty && (
+                <span className={`inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
+                  {difficultyMeta.label}
+                </span>
+              )}
               {sowingPeriod && (
-                <>
-                  <span>·</span>
-                  <span>Sås {sowingPeriod}</span>
-                </>
+                <span className="inline-flex items-center text-[10px] px-2 py-0.5 rounded-full border border-border bg-card">
+                  Sås {sowingPeriod}
+                </span>
               )}
             </div>
           </div>

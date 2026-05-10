@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { LIGHT_META, WATER_META, DIFFICULTY_META, MONTHS_DA } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
 import {
-  Sun, Droplets, Snowflake, Ruler, ArrowDown, Calendar, Star,
+  Sun, Droplets, Snowflake, Ruler, ArrowDown, Calendar,
   ThermometerSun, Sprout, TreePine, Wheat,
 } from 'lucide-react'
 
@@ -26,17 +26,11 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle>Hurtigt overblik</CardTitle>
-          <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">{difficultyMeta.label}</span>
-            <span className="inline-flex">
-              {Array.from({ length: difficultyMeta.stars }).map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              ))}
-              {Array.from({ length: 3 - difficultyMeta.stars }).map((_, i) => (
-                <Star key={`e${i}`} className="h-3.5 w-3.5 text-muted-foreground/30" />
-              ))}
+          {guide.difficulty && (
+            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${difficultyMeta.chipClass}`}>
+              {difficultyMeta.label}
             </span>
-          </div>
+          )}
         </div>
       </CardHeader>
       <CardContent>

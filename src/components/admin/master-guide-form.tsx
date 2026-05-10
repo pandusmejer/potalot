@@ -244,7 +244,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
                 <option value="">—</option>
                 <option value="easy">Nem</option>
                 <option value="medium">Mellem</option>
-                <option value="hard">Svær</option>
+                <option value="hard">Krævende</option>
               </select>
             </div>
           </div>
