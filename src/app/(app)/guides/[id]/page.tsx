@@ -7,12 +7,13 @@ import { QuickFactsCard } from '@/components/guides/quick-facts'
 import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { CloneMasterButton } from '@/components/guides/clone-master-button'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
+import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, isCurrentUserAdmin } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
   ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
@@ -35,11 +36,12 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
     : '/guides'
 
   const currentUser = await getCurrentUser()
-  const [allGuides, inventory, plants, myNote] = await Promise.all([
+  const [allGuides, inventory, plants, myNote, isAdmin] = await Promise.all([
     getAllGuides(),
     getAllInventoryItems(),
     getAllPlants(),
     currentUser ? getMyGuideNote(id) : Promise.resolve(null),
+    currentUser ? isCurrentUserAdmin() : Promise.resolve(false),
   ])
 
   const isMaster = original.visibility === 'public'
@@ -86,9 +88,17 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             <p className="text-xs italic text-muted-foreground/80 truncate">{effective.latinName}</p>
           )}
         </div>
-        {!isMaster && currentUser && (
-          <UserGuideEditDialog guide={original} />
-        )}
+        <div className="flex items-center gap-1 shrink-0">
+          {!isMaster && currentUser && (
+            <>
+              <UserGuideEditDialog guide={original} />
+              <DeleteGuideButton guideId={original.id} guideTitle={original.plantName} isMaster={false} />
+            </>
+          )}
+          {isMaster && isAdmin && (
+            <DeleteGuideButton guideId={original.id} guideTitle={original.plantName} isMaster={true} />
+          )}
+        </div>
       </div>
 
       {/* Hvis sortsguide: link tilbage til artsguide */}
