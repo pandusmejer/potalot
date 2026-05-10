@@ -13,6 +13,9 @@ import { ForumList } from '@/components/grupper/forum-list'
 import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-dialog'
 import { getSwapListings } from '@/actions/seed-swap'
 import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
+import { getGuidesForGroup, getGroupImages } from '@/actions/group-content'
+import { GroupGuidesTab } from '@/components/grupper/group-guides-tab'
+import { GroupImagesTab } from '@/components/grupper/group-images-tab'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
 import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
@@ -133,7 +136,7 @@ export default async function GroupDetailPage({ params }: Props) {
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
   const isOwner = group.myRole === 'owner'
-  const [rawMembers, rawChatMessages, pendingRequests, rawForumPosts, rawSwapListings, pendingReports, blockedIds] = await Promise.all([
+  const [rawMembers, rawChatMessages, pendingRequests, rawForumPosts, rawSwapListings, pendingReports, blockedIds, groupGuides, groupImages] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
     isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
@@ -141,6 +144,8 @@ export default async function GroupDetailPage({ params }: Props) {
     getSwapListings({ groupId: id }),
     isOwner ? getPendingReports(id) : Promise.resolve([]),
     getMyBlockedUserIds(),
+    isInterest ? getGuidesForGroup(id) : Promise.resolve([]),
+    isInterest ? getGroupImages(id) : Promise.resolve([]),
   ])
 
   // Filtrér blokerede brugeres indhold væk i visningen
@@ -219,9 +224,9 @@ export default async function GroupDetailPage({ params }: Props) {
             <>
               <TabsTrigger value="forum">Forum</TabsTrigger>
               <TabsTrigger value="sorter" disabled>Sorter</TabsTrigger>
-              <TabsTrigger value="guides" disabled>Guides</TabsTrigger>
+              <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
-              <TabsTrigger value="billeder" disabled>Billeder</TabsTrigger>
+              <TabsTrigger value="billeder">Billeder</TabsTrigger>
             </>
           ) : (
             <>
@@ -279,8 +284,6 @@ export default async function GroupDetailPage({ params }: Props) {
             {isInterest ? (
               <>
                 <PlaceholderCard icon={<Sprout className="h-4 w-4" />} title="Sorter" desc="Brugere markerer hvilke sorter de dyrker eller har frø af — kommer snart." />
-                <PlaceholderCard icon={<BookOpen className="h-4 w-4" />} title="Guides" desc="Gruppeguides og tråde markeret som læring — kommer snart." />
-                <PlaceholderCard icon={<ImageIcon className="h-4 w-4" />} title="Billeder" desc="Delte fotos fra medlemmernes dyrkning — kommer snart." />
               </>
             ) : (
               <>
@@ -370,6 +373,38 @@ export default async function GroupDetailPage({ params }: Props) {
                     })}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {isInterest && (
+          <TabsContent value="guides">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Guides
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GroupGuidesTab guides={groupGuides} focusPlants={group.focusPlants} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {isInterest && (
+          <TabsContent value="billeder">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4" />
+                  Billeder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GroupImagesTab groupId={group.id} images={groupImages} />
               </CardContent>
             </Card>
           </TabsContent>
