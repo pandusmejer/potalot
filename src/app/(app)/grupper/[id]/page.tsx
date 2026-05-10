@@ -13,9 +13,10 @@ import { ForumList } from '@/components/grupper/forum-list'
 import { CreateForumPostDialog } from '@/components/grupper/create-forum-post-dialog'
 import { getSwapListings } from '@/actions/seed-swap'
 import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
-import { getGuidesForGroup, getGroupImages } from '@/actions/group-content'
+import { getGuidesForGroup, getGroupImages, getGroupStatistics } from '@/actions/group-content'
 import { GroupGuidesTab } from '@/components/grupper/group-guides-tab'
 import { GroupImagesTab } from '@/components/grupper/group-images-tab'
+import { GroupStatisticsCard } from '@/components/grupper/group-statistics-card'
 import { getGroupVarieties } from '@/actions/group-varieties'
 import { VarietiesTab } from '@/components/grupper/varieties-tab'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
@@ -151,6 +152,8 @@ export default async function GroupDetailPage({ params }: Props) {
     isInterest ? getGroupVarieties(id) : Promise.resolve([]),
   ])
 
+  const groupStats = await getGroupStatistics(id)
+
   // Filtrér blokerede brugeres indhold væk i visningen
   const members = rawMembers
   const chatMessages = rawChatMessages.filter(m => !blockedIds.has(m.userId))
@@ -254,6 +257,9 @@ export default async function GroupDetailPage({ params }: Props) {
               </CardContent>
             </Card>
           )}
+          <div className="mb-3">
+            <GroupStatisticsCard stats={groupStats} isInterest={isInterest} />
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Card>
               <CardContent className="py-4 space-y-2">

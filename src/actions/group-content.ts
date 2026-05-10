@@ -13,6 +13,90 @@ function pickLabel(r: UserLabelRow | undefined | null): string {
   return r.display_name?.trim() || r.username || 'Ukendt bruger'
 }
 
+export interface GroupStatistics {
+  members: number
+  varieties: number
+  forumPosts: number
+  forumReplies: number
+  swapListingsActive: number
+  swapsCompleted: number
+  imagesShared: number
+  /** Antal nye posts + replies + sorter de seneste 7 dage */
+  activityLast7Days: number
+  /** Mest aktive medlem (sum af posts+replies de sidste 30 dage) */
+  topContributor: { userId: string; label: string; count: number } | null
+}
+
+/**
+ * Aggregér statistik for en gruppe — bruges på Overblik-fanen.
+ */
+export async function getGroupStatistics(groupId: string): Promise<GroupStatistics> {
+  await requireUser()
+  const supabase = await createClient()
+  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+
+  const [members, varieties, posts, replies, listingsActive, listingsClosed, recentPosts, recentReplies, recentVarieties, contributorPosts, contributorReplies] = await Promise.all([
+    supabase.from('user_group_memberships').select('user_id', { count: 'exact', head: true }).eq('group_id', groupId),
+    supabase.from('group_varieties').select('id', { count: 'exact', head: true }).eq('group_id', groupId),
+    supabase.from('forum_posts').select('id, image_urls', { count: 'exact' }).eq('group_id', groupId),
+    supabase.from('forum_replies').select('id, image_url, forum_posts!inner(group_id)', { count: 'exact', head: true }).eq('forum_posts.group_id', groupId),
+    supabase.from('seed_swap_listings').select('id', { count: 'exact', head: true }).eq('group_id', groupId).eq('status', 'active'),
+    supabase.from('seed_swap_listings').select('id', { count: 'exact', head: true }).eq('group_id', groupId).eq('status', 'closed'),
+    supabase.from('forum_posts').select('id', { count: 'exact', head: true }).eq('group_id', groupId).gte('created_at', since7d),
+    supabase.from('forum_replies').select('id, forum_posts!inner(group_id)', { count: 'exact', head: true }).eq('forum_posts.group_id', groupId).gte('created_at', since7d),
+    supabase.from('group_varieties').select('id', { count: 'exact', head: true }).eq('group_id', groupId).gte('created_at', since7d),
+    supabase.from('forum_posts').select('user_id').eq('group_id', groupId).gte('created_at', since30d),
+    supabase.from('forum_replies').select('user_id, forum_posts!inner(group_id)').eq('forum_posts.group_id', groupId).gte('created_at', since30d),
+  ])
+
+  // Tæl billeder fra forum-opslag
+  let postImagesCount = 0
+  for (const p of (posts.data ?? []) as { image_urls: string[] | null }[]) {
+    postImagesCount += (p.image_urls ?? []).length
+  }
+  // Forum-replies med billeder
+  const { data: repliesWithImg } = await supabase
+    .from('forum_replies')
+    .select('image_url, forum_posts!inner(group_id)')
+    .eq('forum_posts.group_id', groupId)
+    .not('image_url', 'is', null)
+  const replyImagesCount = (repliesWithImg ?? []).length
+
+  // Top-contributor de sidste 30 dage
+  const counts = new Map<string, number>()
+  for (const r of (contributorPosts.data ?? []) as { user_id: string }[]) {
+    counts.set(r.user_id, (counts.get(r.user_id) ?? 0) + 1)
+  }
+  for (const r of (contributorReplies.data ?? []) as { user_id: string }[]) {
+    counts.set(r.user_id, (counts.get(r.user_id) ?? 0) + 1)
+  }
+  let topContributor: GroupStatistics['topContributor'] = null
+  if (counts.size > 0) {
+    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1])
+    const [topId, topCount] = sorted[0]
+    const { data: labels } = await supabase.rpc('get_user_labels_by_ids', { p_ids: [topId] })
+    const label = (labels as UserLabelRow[] | null)?.[0]
+    topContributor = {
+      userId: topId,
+      label: pickLabel(label),
+      count: topCount,
+    }
+  }
+
+  return {
+    members: members.count ?? 0,
+    varieties: varieties.count ?? 0,
+    forumPosts: posts.count ?? 0,
+    forumReplies: replies.count ?? 0,
+    swapListingsActive: listingsActive.count ?? 0,
+    swapsCompleted: listingsClosed.count ?? 0,
+    imagesShared: postImagesCount + replyImagesCount,
+    activityLast7Days: (recentPosts.count ?? 0) + (recentReplies.count ?? 0) + (recentVarieties.count ?? 0),
+    topContributor,
+  }
+}
+
 export interface GroupGuide {
   id: string
   plantName: string
