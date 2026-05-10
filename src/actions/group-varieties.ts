@@ -229,6 +229,8 @@ export async function createVariety(input: {
     return { error: error?.message ?? 'Kunne ikke oprette sort' }
   }
   revalidatePath(`/grupper/${input.groupId}`)
+  const { maybeAwardCurator } = await import('@/actions/badges')
+  maybeAwardCurator(userId).catch(() => {})
   return { id: data.id as string }
 }
 
@@ -262,6 +264,10 @@ export async function setVarietyStatus(input: {
       .from('user_variety_status')
       .insert({ user_id: userId, variety_id: input.varietyId, status: input.status })
     if (error && error.code !== '23505') return { error: error.message }
+    if (input.status === 'dyrker') {
+      const { maybeAwardGreenThumb } = await import('@/actions/badges')
+      maybeAwardGreenThumb(userId).catch(() => {})
+    }
   } else {
     const { error } = await supabase
       .from('user_variety_status')

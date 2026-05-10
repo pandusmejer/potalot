@@ -11,7 +11,9 @@ import { addGroupMember, removeGroupMember, leaveGroup, type GroupMember } from 
 import { blockUser, unblockUser } from '@/actions/moderation'
 import { InviteDialog } from '@/components/grupper/invite-dialog'
 import { PendingRequestsPanel } from '@/components/grupper/pending-requests-panel'
+import { BadgeChips } from '@/components/grupper/badge-chips'
 import type { JoinRequest } from '@/actions/group-invitations'
+import type { BadgeId } from '@/lib/badges-shared'
 
 interface Props {
   groupId: string
@@ -21,9 +23,10 @@ interface Props {
   myRole: 'owner' | 'member'
   pendingRequests?: JoinRequest[]
   initialBlockedIds?: string[]
+  badgesByUser?: Record<string, BadgeId[]>
 }
 
-export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole, pendingRequests, initialBlockedIds }: Props) {
+export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId, myRole, pendingRequests, initialBlockedIds, badgesByUser }: Props) {
   const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set(initialBlockedIds ?? []))
   const router = useRouter()
   const [members, setMembers] = useState<GroupMember[]>(initialMembers)
@@ -139,13 +142,16 @@ export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId
         <ul className="space-y-1.5">
           {members.map(m => (
             <li key={m.userId} className="flex items-center justify-between gap-2 text-sm">
-              <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
                 <span className="text-foreground">{m.label}</span>
                 {m.role === 'owner' && (
                   <Badge variant="outline" className="text-[10px]">Ejer</Badge>
                 )}
                 {m.userId === myUserId && (
                   <Badge variant="muted" className="text-[10px]">Dig</Badge>
+                )}
+                {badgesByUser?.[m.userId] && badgesByUser[m.userId].length > 0 && (
+                  <BadgeChips badgeIds={badgesByUser[m.userId]} size="sm" />
                 )}
               </div>
               <div className="flex gap-1 shrink-0">

@@ -19,6 +19,8 @@ import { GroupImagesTab } from '@/components/grupper/group-images-tab'
 import { GroupStatisticsCard } from '@/components/grupper/group-statistics-card'
 import { getGroupVarieties } from '@/actions/group-varieties'
 import { VarietiesTab } from '@/components/grupper/varieties-tab'
+import { getBadgesForUsers } from '@/actions/badges'
+import type { BadgeId } from '@/lib/badges-shared'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
 import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
@@ -153,6 +155,14 @@ export default async function GroupDetailPage({ params }: Props) {
   ])
 
   const groupStats = await getGroupStatistics(id)
+
+  // Hent badges for medlemmerne
+  const memberIds = rawMembers.map(m => m.userId)
+  const badgesMap = await getBadgesForUsers(memberIds)
+  const badgesByUser: Record<string, BadgeId[]> = {}
+  for (const [userId, badges] of badgesMap.entries()) {
+    badgesByUser[userId] = badges.map(b => b.badgeId)
+  }
 
   // Filtrér blokerede brugeres indhold væk i visningen
   const members = rawMembers
@@ -470,6 +480,7 @@ export default async function GroupDetailPage({ params }: Props) {
                   myRole={group.myRole ?? 'member'}
                   pendingRequests={pendingRequests}
                   initialBlockedIds={Array.from(blockedIds)}
+                  badgesByUser={badgesByUser}
                 />
               </div>
             </CardContent>

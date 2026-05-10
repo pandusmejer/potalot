@@ -199,6 +199,9 @@ export async function createForumPost(input: {
 
   if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette opslag' }
   revalidatePath(`/grupper/${input.groupId}`)
+  // Fire-and-forget badge-tildeling
+  const { maybeAwardFirstPost } = await import('@/actions/badges')
+  maybeAwardFirstPost(userId).catch(() => {})
   return { id: data.id as string }
 }
 
@@ -320,5 +323,18 @@ export async function markBestReply(
     .eq('id', postId)
     .maybeSingle()
   if (post) revalidatePath(`/grupper/${post.group_id}`)
+
+  // Fire-and-forget: hvis der blev sat et bedste-svar, tildel helpful-badge
+  if (replyId) {
+    const { data: reply } = await supabase
+      .from('forum_replies')
+      .select('user_id')
+      .eq('id', replyId)
+      .maybeSingle()
+    if (reply?.user_id) {
+      const { maybeAwardHelpful } = await import('@/actions/badges')
+      maybeAwardHelpful(reply.user_id as string).catch(() => {})
+    }
+  }
   return { ok: true }
 }

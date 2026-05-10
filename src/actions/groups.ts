@@ -87,6 +87,10 @@ export async function createGroup(input: {
 
   revalidatePath('/grupper')
   revalidatePath('/grupper/udforsk')
+  // Fire-and-forget badge
+  const { id: userId } = await requireUser()
+  const { maybeAwardCommunityStarter } = await import('@/actions/badges')
+  maybeAwardCommunityStarter(userId).catch(() => {})
   return { id: data as string }
 }
 

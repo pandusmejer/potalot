@@ -140,6 +140,10 @@ export async function createSwapListing(input: {
 
   if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette opslag' }
   revalidatePath(`/grupper/${input.groupId}`)
+  if (input.kind === 'offer') {
+    const { maybeAwardSeedKeeper } = await import('@/actions/badges')
+    maybeAwardSeedKeeper(userId).catch(() => {})
+  }
   return { id: data.id as string }
 }
 
