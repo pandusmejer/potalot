@@ -129,6 +129,92 @@ export async function markGroupNotificationsRead(groupId: string): Promise<{ ok:
   return { ok: true }
 }
 
+// ============================================================
+// Pr. tab-kategori inde i en gruppe
+// ============================================================
+
+export type NotificationTabCategory =
+  | 'chat'
+  | 'forum'
+  | 'ideas'
+  | 'swap'
+  | 'challenges'
+  | 'members'
+
+const TYPE_TO_CATEGORY: Record<string, NotificationTabCategory> = {
+  group_chat: 'chat',
+  forum_reply: 'forum',
+  idea_group_shared: 'ideas',
+  swap_request: 'swap',
+  swap_accepted: 'swap',
+  swap_declined: 'swap',
+  challenge_started: 'challenges',
+  group_join_request: 'members',
+}
+
+const CATEGORY_TO_TYPES: Record<NotificationTabCategory, string[]> = {
+  chat: ['group_chat'],
+  forum: ['forum_reply'],
+  ideas: ['idea_group_shared'],
+  swap: ['swap_request', 'swap_accepted', 'swap_declined'],
+  challenges: ['challenge_started'],
+  members: ['group_join_request'],
+}
+
+/**
+ * Returnér ulæst-tæller pr. tab-kategori for en gruppe.
+ * Bruges til badges på tab-triggers inde i gruppen.
+ */
+export async function getUnreadByCategoryForGroup(
+  groupId: string
+): Promise<Record<NotificationTabCategory, number>> {
+  const me = await getCurrentUser()
+  const empty: Record<NotificationTabCategory, number> = {
+    chat: 0, forum: 0, ideas: 0, swap: 0, challenges: 0, members: 0,
+  }
+  if (!me) return empty
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('notifications')
+    .select('type')
+    .eq('user_id', me.id)
+    .eq('is_read', false)
+    .eq('group_id', groupId)
+
+  const counts = { ...empty }
+  for (const r of (data ?? []) as { type: string }[]) {
+    const cat = TYPE_TO_CATEGORY[r.type]
+    if (cat) counts[cat] += 1
+  }
+  return counts
+}
+
+/**
+ * Markér alle ulæste notifikationer af en bestemt tab-kategori i en
+ * gruppe som læst. Kaldes når brugeren klikker den fane.
+ */
+export async function markGroupCategoryNotificationsRead(
+  groupId: string,
+  category: NotificationTabCategory,
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const types = CATEGORY_TO_TYPES[category]
+  if (!types || types.length === 0) return { ok: true }
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('notifications')
+    .update({ is_read: true })
+    .eq('user_id', userId)
+    .eq('is_read', false)
+    .eq('group_id', groupId)
+    .in('type', types)
+  if (error) return { error: error.message }
+  revalidatePath('/grupper')
+  revalidatePath(`/grupper/${groupId}`)
+  return { ok: true }
+}
+
 export async function deleteNotification(id: string): Promise<{ ok: true } | { error: string }> {
   await requireUser()
   const supabase = await createClient()

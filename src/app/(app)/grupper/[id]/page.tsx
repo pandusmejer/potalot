@@ -31,7 +31,8 @@ import { WeeklyDigestCard } from '@/components/grupper/weekly-digest-card'
 import { CurrentlyActiveCard } from '@/components/grupper/currently-active-card'
 import { UnansweredCard } from '@/components/grupper/unanswered-card'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
-import { markGroupNotificationsRead } from '@/actions/notifications'
+import { getUnreadByCategoryForGroup } from '@/actions/notifications'
+import { TabTriggerWithBadge } from '@/components/grupper/tab-trigger-with-badge'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
 import { ReportsPanel } from '@/components/grupper/reports-panel'
 import { GroupMembersPanel } from '@/components/grupper/group-members-panel'
@@ -186,11 +187,10 @@ export default async function GroupDetailPage({ params }: Props) {
   const forumPosts = rawForumPosts.filter(p => !blockedIds.has(p.userId))
   const swapListings = rawSwapListings.filter(l => !blockedIds.has(l.userId))
 
-  // Markér gruppens notifikationer læst når brugeren ser indholdet
-  // (kun for medlemmer; ikke-medlemmer ser uanset kun overblik)
-  if (isMember) {
-    markGroupNotificationsRead(id).catch(() => {})
-  }
+  // Hent ulæste pr. tab-kategori — så vi kan vise badges på tab-triggers
+  const unreadByCategory = isMember
+    ? await getUnreadByCategoryForGroup(id)
+    : { chat: 0, forum: 0, ideas: 0, swap: 0, challenges: 0, members: 0 }
 
   return (
     <div className="space-y-5 max-w-4xl">
@@ -251,27 +251,48 @@ export default async function GroupDetailPage({ params }: Props) {
 
       <Tabs defaultValue="overblik" className="space-y-4">
         <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="overblik">Overblik</TabsTrigger>
+          <TabTriggerWithBadge value="overblik" label="Overblik" unreadCount={0} groupId={group.id} />
           {isInterest ? (
             <>
-              <TabsTrigger value="forum">Forum</TabsTrigger>
-              <TabsTrigger value="sorter">Sorter</TabsTrigger>
-              <TabsTrigger value="guides">Guides</TabsTrigger>
-              <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
-              <TabsTrigger value="billeder">Billeder</TabsTrigger>
-              <TabsTrigger value="challenges">Challenges{challenges.length > 0 ? ` (${challenges.length})` : ''}</TabsTrigger>
+              <TabTriggerWithBadge value="forum" label="Forum" unreadCount={unreadByCategory.forum} category="forum" groupId={group.id} />
+              <TabTriggerWithBadge value="sorter" label="Sorter" unreadCount={0} groupId={group.id} />
+              <TabTriggerWithBadge value="guides" label="Guides" unreadCount={0} groupId={group.id} />
+              <TabTriggerWithBadge value="froebytte" label="Frøbytte" unreadCount={unreadByCategory.swap} category="swap" groupId={group.id} />
+              <TabTriggerWithBadge value="billeder" label="Billeder" unreadCount={0} groupId={group.id} />
+              <TabTriggerWithBadge
+                value="challenges"
+                label="Challenges"
+                unreadCount={unreadByCategory.challenges}
+                category="challenges"
+                groupId={group.id}
+                countSuffix={challenges.length > 0 ? `(${challenges.length})` : undefined}
+              />
             </>
           ) : (
             <>
-              <TabsTrigger value="chat">Chat</TabsTrigger>
-              <TabsTrigger value="ideer">Idéer</TabsTrigger>
+              <TabTriggerWithBadge value="chat" label="Chat" unreadCount={unreadByCategory.chat} category="chat" groupId={group.id} />
+              <TabTriggerWithBadge value="ideer" label="Idéer" unreadCount={unreadByCategory.ideas} category="ideas" groupId={group.id} />
               <TabsTrigger value="oenskeliste" disabled>Ønskeliste</TabsTrigger>
               <TabsTrigger value="opgaver" disabled>Opgaver</TabsTrigger>
-              <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
-              <TabsTrigger value="challenges">Challenges{challenges.length > 0 ? ` (${challenges.length})` : ''}</TabsTrigger>
+              <TabTriggerWithBadge value="froebytte" label="Frøbytte" unreadCount={unreadByCategory.swap} category="swap" groupId={group.id} />
+              <TabTriggerWithBadge
+                value="challenges"
+                label="Challenges"
+                unreadCount={unreadByCategory.challenges}
+                category="challenges"
+                groupId={group.id}
+                countSuffix={challenges.length > 0 ? `(${challenges.length})` : undefined}
+              />
             </>
           )}
-          <TabsTrigger value="medlemmer">Medlemmer ({group.memberCount})</TabsTrigger>
+          <TabTriggerWithBadge
+            value="medlemmer"
+            label="Medlemmer"
+            unreadCount={unreadByCategory.members}
+            category="members"
+            groupId={group.id}
+            countSuffix={`(${group.memberCount})`}
+          />
         </TabsList>
 
         <TabsContent value="overblik">
