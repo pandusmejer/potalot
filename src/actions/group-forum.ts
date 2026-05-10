@@ -49,6 +49,7 @@ export interface ForumReply {
 export async function getForumPosts(input: {
   groupId: string
   category?: ForumCategoryId
+  varietyId?: string
 }): Promise<ForumPost[]> {
   const me = await getCurrentUser()
   const supabase = await createClient()
@@ -62,6 +63,7 @@ export async function getForumPosts(input: {
     .limit(50)
 
   if (input.category) q = q.eq('category', input.category)
+  if (input.varietyId) q = q.eq('variety_id', input.varietyId)
 
   const { data: rows } = await q
   if (!rows || rows.length === 0) return []
@@ -172,6 +174,7 @@ export async function createForumPost(input: {
   title: string
   body?: string
   imageUrls?: string[]
+  varietyId?: string
 }): Promise<{ id: string } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
@@ -189,6 +192,7 @@ export async function createForumPost(input: {
       title,
       body: input.body?.trim() || null,
       image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+      variety_id: input.varietyId ?? null,
     })
     .select('id')
     .single()

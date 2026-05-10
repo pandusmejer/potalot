@@ -16,9 +16,11 @@ import { FORUM_POST_TYPES, FORUM_CATEGORIES, type ForumPostType, type ForumCateg
 
 interface Props {
   groupId: string
+  /** Hvis sat: nye opslag tagges automatisk med denne sort. */
+  initialVarietyId?: string
 }
 
-export function CreateForumPostDialog({ groupId }: Props) {
+export function CreateForumPostDialog({ groupId, initialVarietyId }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -41,6 +43,7 @@ export function CreateForumPostDialog({ groupId }: Props) {
         title: title.trim(),
         body: body.trim() || undefined,
         imageUrls: images.length > 0 ? images : undefined,
+        varietyId: initialVarietyId,
       })
       if ('error' in res) { setError(res.error); return }
       setOpen(false)

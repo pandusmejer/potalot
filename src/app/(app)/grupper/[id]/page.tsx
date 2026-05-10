@@ -16,6 +16,8 @@ import { SwapListingsPanel } from '@/components/grupper/swap-listings-panel'
 import { getGuidesForGroup, getGroupImages } from '@/actions/group-content'
 import { GroupGuidesTab } from '@/components/grupper/group-guides-tab'
 import { GroupImagesTab } from '@/components/grupper/group-images-tab'
+import { getGroupVarieties } from '@/actions/group-varieties'
+import { VarietiesTab } from '@/components/grupper/varieties-tab'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
 import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
@@ -136,7 +138,7 @@ export default async function GroupDetailPage({ params }: Props) {
   const sharedIdeas = (groupShares ?? []) as unknown as SharedIdeaRow[]
 
   const isOwner = group.myRole === 'owner'
-  const [rawMembers, rawChatMessages, pendingRequests, rawForumPosts, rawSwapListings, pendingReports, blockedIds, groupGuides, groupImages] = await Promise.all([
+  const [rawMembers, rawChatMessages, pendingRequests, rawForumPosts, rawSwapListings, pendingReports, blockedIds, groupGuides, groupImages, groupVarieties] = await Promise.all([
     getGroupMembers(id),
     !isInterest ? getChatMessages(id) : Promise.resolve([]),
     isOwner ? getPendingJoinRequests(id) : Promise.resolve([]),
@@ -146,6 +148,7 @@ export default async function GroupDetailPage({ params }: Props) {
     getMyBlockedUserIds(),
     isInterest ? getGuidesForGroup(id) : Promise.resolve([]),
     isInterest ? getGroupImages(id) : Promise.resolve([]),
+    isInterest ? getGroupVarieties(id) : Promise.resolve([]),
   ])
 
   // Filtrér blokerede brugeres indhold væk i visningen
@@ -223,7 +226,7 @@ export default async function GroupDetailPage({ params }: Props) {
           {isInterest ? (
             <>
               <TabsTrigger value="forum">Forum</TabsTrigger>
-              <TabsTrigger value="sorter" disabled>Sorter</TabsTrigger>
+              <TabsTrigger value="sorter">Sorter</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
               <TabsTrigger value="billeder">Billeder</TabsTrigger>
@@ -281,11 +284,7 @@ export default async function GroupDetailPage({ params }: Props) {
           </div>
           {/* Placeholder-bokse for tabs der kommer senere */}
           <div className="mt-3 grid gap-2">
-            {isInterest ? (
-              <>
-                <PlaceholderCard icon={<Sprout className="h-4 w-4" />} title="Sorter" desc="Brugere markerer hvilke sorter de dyrker eller har frø af — kommer snart." />
-              </>
-            ) : (
+            {isInterest ? null : (
               <>
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter gruppen vil dyrke — kommer snart." />
                 <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
@@ -373,6 +372,22 @@ export default async function GroupDetailPage({ params }: Props) {
                     })}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {isInterest && (
+          <TabsContent value="sorter">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sprout className="h-4 w-4" />
+                  Sorter ({groupVarieties.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <VarietiesTab groupId={group.id} varieties={groupVarieties} isMember={isMember} />
               </CardContent>
             </Card>
           </TabsContent>
