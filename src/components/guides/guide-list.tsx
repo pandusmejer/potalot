@@ -13,9 +13,14 @@ interface Props {
   guides: Guide[]
   /** Hvilke guide-IDer er linket til brugerens frøbank */
   inFroebank?: Set<string>
+  /** Når true: vis Slet-knap på master-guides også */
+  isAdmin?: boolean
+  /** True hvis brugeren er logget ind (private guides ses kun af ejer pga RLS,
+   * så når synlighed='private' i en logged-in brugers liste = ejer = kan slette) */
+  canDeleteOwnGuides?: boolean
 }
 
-export function GuideList({ guides, inFroebank }: Props) {
+export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGuides = false }: Props) {
   const [search, setSearch] = useState('')
   const [filterCat, setFilterCat] = useState<PrimaryCategoryId | 'alle'>('alle')
 
@@ -57,7 +62,11 @@ export function GuideList({ guides, inFroebank }: Props) {
     }
     return (
       <div className="space-y-3">
-        {list.map(g => <GuideCard key={g.id} guide={g} />)}
+        {list.map(g => {
+          const isMaster = g.visibility === 'public'
+          const canDelete = isMaster ? isAdmin : canDeleteOwnGuides
+          return <GuideCard key={g.id} guide={g} canDelete={canDelete} />
+        })}
       </div>
     )
   }
