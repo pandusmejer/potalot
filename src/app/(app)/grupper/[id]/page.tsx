@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe } from 'lucide-react'
+import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe, Trophy } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { getChatMessages } from '@/actions/group-chat'
 import { getPendingJoinRequests } from '@/actions/group-invitations'
@@ -21,6 +21,8 @@ import { getGroupVarieties } from '@/actions/group-varieties'
 import { VarietiesTab } from '@/components/grupper/varieties-tab'
 import { getBadgesForUsers } from '@/actions/badges'
 import type { BadgeId } from '@/lib/badges-shared'
+import { getChallenges } from '@/actions/challenges'
+import { ChallengesTab } from '@/components/grupper/challenges-tab'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
 import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
@@ -155,6 +157,7 @@ export default async function GroupDetailPage({ params }: Props) {
   ])
 
   const groupStats = await getGroupStatistics(id)
+  const challenges = await getChallenges(id)
 
   // Hent badges for medlemmerne
   const memberIds = rawMembers.map(m => m.userId)
@@ -243,6 +246,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
               <TabsTrigger value="billeder">Billeder</TabsTrigger>
+              <TabsTrigger value="challenges">Challenges{challenges.length > 0 ? ` (${challenges.length})` : ''}</TabsTrigger>
             </>
           ) : (
             <>
@@ -251,6 +255,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabsTrigger value="oenskeliste" disabled>Ønskeliste</TabsTrigger>
               <TabsTrigger value="opgaver" disabled>Opgaver</TabsTrigger>
               <TabsTrigger value="froebytte">Frøbytte</TabsTrigger>
+              <TabsTrigger value="challenges">Challenges{challenges.length > 0 ? ` (${challenges.length})` : ''}</TabsTrigger>
             </>
           )}
           <TabsTrigger value="medlemmer">Medlemmer ({group.memberCount})</TabsTrigger>
@@ -454,6 +459,25 @@ export default async function GroupDetailPage({ params }: Props) {
                 groupId={group.id}
                 listings={swapListings}
                 isMember={isMember}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="challenges">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-4 w-4" />
+                Challenges
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChallengesTab
+                groupId={group.id}
+                challenges={challenges}
+                isMember={isMember}
+                isOwner={isOwner}
               />
             </CardContent>
           </Card>
