@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Lock, Globe, Trophy } from 'lucide-react'
+import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Trophy } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { getChatMessages } from '@/actions/group-chat'
 import { getPendingJoinRequests } from '@/actions/group-invitations'
@@ -23,6 +23,13 @@ import { getBadgesForUsers } from '@/actions/badges'
 import type { BadgeId } from '@/lib/badges-shared'
 import { getChallenges } from '@/actions/challenges'
 import { ChallengesTab } from '@/components/grupper/challenges-tab'
+import {
+  getGroupTimeline, getWeeklyDigest, getCurrentlyActivePosts, getUnansweredQuestions,
+} from '@/actions/group-timeline'
+import { GroupTimeline } from '@/components/grupper/group-timeline'
+import { WeeklyDigestCard } from '@/components/grupper/weekly-digest-card'
+import { CurrentlyActiveCard } from '@/components/grupper/currently-active-card'
+import { UnansweredCard } from '@/components/grupper/unanswered-card'
 import { getPendingReports, getMyBlockedUserIds } from '@/actions/moderation'
 import { markGroupNotificationsRead } from '@/actions/notifications'
 import { GroupSettingsDialog } from '@/components/grupper/group-settings-dialog'
@@ -156,8 +163,14 @@ export default async function GroupDetailPage({ params }: Props) {
     isInterest ? getGroupVarieties(id) : Promise.resolve([]),
   ])
 
-  const groupStats = await getGroupStatistics(id)
-  const challenges = await getChallenges(id)
+  const [groupStats, challenges, timelineEvents, weeklyDigest, activePosts, unanswered] = await Promise.all([
+    getGroupStatistics(id),
+    getChallenges(id),
+    getGroupTimeline(id, 30),
+    getWeeklyDigest(id),
+    isInterest ? getCurrentlyActivePosts(id) : Promise.resolve([]),
+    isInterest ? getUnansweredQuestions(id) : Promise.resolve([]),
+  ])
 
   // Hent badges for medlemmerne
   const memberIds = rawMembers.map(m => m.userId)
@@ -272,46 +285,33 @@ export default async function GroupDetailPage({ params }: Props) {
               </CardContent>
             </Card>
           )}
-          <div className="mb-3">
-            <GroupStatisticsCard stats={groupStats} isInterest={isInterest} />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Card>
-              <CardContent className="py-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  {isInterest ? <Globe className="h-4 w-4 text-primary" /> : <Lock className="h-4 w-4 text-primary" />}
-                  <p className="text-sm font-medium text-foreground">
-                    {isInterest ? 'Interessegruppe' : 'Privat gruppe'}
-                  </p>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {isInterest
-                    ? 'For brugere der deler en passion for et emne. Forum, sorter, frøbytte og billeder.'
-                    : 'For familie, venner eller dem du allerede kender. Chat, idéer, ønskeliste, opgaver og frøbytte.'}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="py-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <p className="text-sm font-medium text-foreground">{group.memberCount} medlem{group.memberCount === 1 ? '' : 'mer'}</p>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Klik &ldquo;Medlemmer&rdquo;-fanen for at se hvem og {group.myRole === 'owner' ? 'invitere flere.' : 'forlade gruppen.'}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          {/* Placeholder-bokse for tabs der kommer senere */}
-          <div className="mt-3 grid gap-2">
-            {isInterest ? null : (
-              <>
-                <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter gruppen vil dyrke — kommer snart." />
-                <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
-              </>
+          <div className="mb-3 space-y-3">
+            <WeeklyDigestCard digest={weeklyDigest} groupName={group.name} isInterest={isInterest} />
+            {isInterest && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <CurrentlyActiveCard groupId={group.id} posts={activePosts} />
+                <UnansweredCard groupId={group.id} posts={unanswered} />
+              </div>
             )}
+            <GroupStatisticsCard stats={groupStats} isInterest={isInterest} />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessagesSquare className="h-4 w-4" />
+                  Tidslinje
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GroupTimeline events={timelineEvents} />
+              </CardContent>
+            </Card>
           </div>
+          {!isInterest && (
+            <div className="grid gap-2 sm:grid-cols-2">
+              <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Ønskeliste" desc="Fælles ønskeliste over frø og planter — kommer snart." />
+              <PlaceholderCard icon={<ListChecks className="h-4 w-4" />} title="Opgaver" desc="Fælles opgaver gruppen koordinerer — kommer snart." />
+            </div>
+          )}
         </TabsContent>
 
         {isInterest && (
