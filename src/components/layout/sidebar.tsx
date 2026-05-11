@@ -30,10 +30,14 @@ export function Sidebar({ heroHref, criticalTaskCount }: Props) {
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:border-r lg:border-border lg:bg-card lg:h-screen lg:fixed lg:left-0 lg:top-0">
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-border">
+      <Link
+        href="/"
+        className="flex items-center gap-2 px-6 py-5 border-b border-border hover:bg-accent/30 transition-colors"
+        aria-label="Hjem"
+      >
         <Sprout className="h-6 w-6 text-primary" />
         <span className="font-serif text-2xl text-foreground">PotAlot</span>
-      </div>
+      </Link>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
         {BASE_ITEMS.map((item) => {
