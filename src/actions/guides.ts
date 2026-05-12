@@ -260,15 +260,24 @@ export async function updateUserGuide(
 }
 
 export async function deleteGuide(id: string): Promise<{ ok: true } | { error: string }> {
-  const { id: userId } = await requireUser()
+  await requireUser()
   const supabase = await createClient()
-  const { error } = await supabase
+  // Filtrér IKKE på user_id — RLS afgør om brugeren må slette (ejer eller
+  // admin via moderate-policy fra 00044). Vi tjekker bagefter at en row
+  // faktisk blev slettet, så silent failure bliver til explicit fejl.
+  const { data, error } = await supabase
     .from('guides')
     .delete()
     .eq('id', id)
-    .eq('user_id', userId)
+    .select('id')
+    .maybeSingle()
   if (error) return { error: error.message }
+  if (!data) {
+    return { error: 'Kunne ikke slette — kun ejeren eller en administrator kan slette denne guide. (Hvis du er admin: tjek at migration 00044 er kørt.)' }
+  }
   revalidatePath('/guides')
+  revalidatePath('/admin/guides')
+  revalidatePath(`/guides/${id}`)
   return { ok: true }
 }
 

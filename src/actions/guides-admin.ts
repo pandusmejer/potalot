@@ -105,16 +105,22 @@ export async function deleteMasterGuide(
   await requireAdmin()
   const supabase = await createClient()
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('guides')
     .delete()
     .eq('id', id)
     .is('user_id', null)
+    .select('id')
+    .maybeSingle()
 
   if (error) return { error: error.message }
+  if (!data) {
+    return { error: 'Kunne ikke slette master-guide — kontroller at den findes og er en master.' }
+  }
 
   revalidatePath('/admin/guides')
   revalidatePath('/guides')
+  revalidatePath(`/guides/${id}`)
   return { ok: true }
 }
 
