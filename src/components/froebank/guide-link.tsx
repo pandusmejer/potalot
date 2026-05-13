@@ -9,7 +9,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { BookOpen, Sparkles, Search, Plus, Loader2, X, ArrowRight } from 'lucide-react'
+import { BookOpen, Sparkles, Search, Plus, Loader2, X, ArrowRight, ShieldCheck, GitFork, User } from 'lucide-react'
 import type { Guide, InventoryItem } from '@/lib/types'
 import { attachGuideToInventory, generateGuideWithAI } from '@/actions/guides'
 
@@ -93,13 +93,30 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
     })
   }
 
+  // Dedup: hvis brugeren har en privat kopi af samme plant_name+variety
+  // som en master, foretrækker vi den private (brugerens egen tilpasning).
+  // Match case-insensitivt og trimmet, præcis som i guide-listen.
+  const dedupKey = (g: Guide) =>
+    `${g.plantName.toLowerCase().trim()}|${(g.variety ?? '').toLowerCase().trim()}`
+  const privateKeys = new Set(
+    allGuides.filter(g => g.visibility === 'private').map(dedupKey)
+  )
+  const dedupedGuides = allGuides.filter(
+    g => !(g.visibility === 'public' && privateKeys.has(dedupKey(g)))
+  )
+
   const filtered = search
-    ? allGuides.filter(g =>
+    ? dedupedGuides.filter(g =>
         g.plantName.toLowerCase().includes(search.toLowerCase()) ||
         g.variety?.toLowerCase().includes(search.toLowerCase()) ||
         g.latinName?.toLowerCase().includes(search.toLowerCase())
       )
-    : allGuides
+    : dedupedGuides
+
+  // Master-keys bruges til at vise "Tilpasset master"-mærke på private kopier
+  const masterKeys = new Set(
+    allGuides.filter(g => g.visibility === 'public').map(dedupKey)
+  )
 
   // Hvis guide allerede tilknyttet — vis info + skift/fjern
   if (currentGuide) {
@@ -210,23 +227,45 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
               {filtered.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">Ingen guides fundet.</p>
               ) : (
-                filtered.map(g => (
-                  <button
-                    key={g.id}
-                    type="button"
-                    onClick={() => handleAttach(g.id)}
-                    disabled={pending}
-                    className="w-full text-left p-2 rounded-lg hover:bg-accent transition-colors flex items-center gap-2"
-                  >
-                    <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {g.plantName}{g.variety ? ` — ${g.variety}` : ''}
-                      </p>
-                      {g.latinName && <p className="text-xs italic text-muted-foreground truncate">{g.latinName}</p>}
-                    </div>
-                  </button>
-                ))
+                filtered.map(g => {
+                  const isMaster = g.visibility === 'public'
+                  const isTilpasning = !isMaster && masterKeys.has(dedupKey(g))
+                  return (
+                    <button
+                      key={g.id}
+                      type="button"
+                      onClick={() => handleAttach(g.id)}
+                      disabled={pending}
+                      className="w-full text-left p-2 rounded-lg hover:bg-accent transition-colors flex items-center gap-2"
+                    >
+                      <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {g.plantName}{g.variety ? ` — ${g.variety}` : ''}
+                          </p>
+                          {isMaster ? (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-green-700 text-white text-[10px] font-semibold px-1.5 py-0.5 shrink-0">
+                              <ShieldCheck className="h-2.5 w-2.5" />
+                              Master
+                            </span>
+                          ) : isTilpasning ? (
+                            <span className="inline-flex items-center gap-0.5 rounded-full border border-green-300 bg-green-50 text-green-900 text-[10px] font-medium px-1.5 py-0.5 shrink-0">
+                              <GitFork className="h-2.5 w-2.5" />
+                              Tilpasset
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium px-1.5 py-0.5 shrink-0">
+                              <User className="h-2.5 w-2.5" />
+                              Min
+                            </span>
+                          )}
+                        </div>
+                        {g.latinName && <p className="text-xs italic text-muted-foreground truncate">{g.latinName}</p>}
+                      </div>
+                    </button>
+                  )
+                })
               )}
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
