@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, BookOpen, Sparkles, AlertTriangle, Clock } from 'lucide-react'
+import { ArrowLeft, BookOpen, Sparkles, AlertTriangle, Clock, Eye } from 'lucide-react'
 import { isCurrentUserAdmin } from '@/lib/auth'
 import { getMasterGuides, getRecentUserGuides, getFlaggedGuides, type AdminGuideRow } from '@/actions/guides-admin'
 import { MasterGuideForm } from '@/components/admin/master-guide-form'
@@ -153,7 +153,20 @@ export default async function AdminGuidesPage() {
                     )}
                     <p className="text-[10px] text-muted-foreground mt-1">Opdateret {venligDato(m.updatedAt)}</p>
                   </div>
-                  <MasterGuideForm guide={m} />
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <Button asChild variant="ghost" size="sm" title="Åbn i læse-tilstand">
+                      <Link href={`/guides/${m.id}?returnTo=/admin/guides`}>
+                        <Eye className="h-3.5 w-3.5" />
+                      </Link>
+                    </Button>
+                    <MasterGuideForm guide={m} />
+                    <DeleteGuideButton
+                      guideId={m.id}
+                      guideTitle={m.plantName}
+                      isMaster={true}
+                      redirectTo="/admin/guides"
+                    />
+                  </div>
                 </div>
               ))}
             </div>

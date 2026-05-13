@@ -295,6 +295,50 @@ export async function getMasterGuides(): Promise<AdminGuideRow[]> {
 }
 
 /**
+ * Søg blandt ALLE bruger-ejede guides (uden tidsfilter). Bruges når
+ * admin vil importere en eksisterende bruger-guide som skabelon til ny
+ * master via "Opret ny master"-dialogen. Maks 30 resultater.
+ */
+export async function searchUserGuidesForImport(query: string): Promise<AdminGuideRow[]> {
+  await requireAdmin()
+  const supabase = await createClient()
+  const q = query.trim()
+
+  let req = supabase
+    .from('guides')
+    .select(COLS)
+    .not('user_id', 'is', null)
+    .is('flagged_at', null) // skjul anmeldte guides
+    .order('updated_at', { ascending: false })
+    .limit(30)
+
+  if (q) {
+    // Søg i plant_name, variety og latin_name
+    req = req.or(
+      `plant_name.ilike.%${q}%,variety.ilike.%${q}%,latin_name.ilike.%${q}%`
+    )
+  }
+
+  const { data, error } = await req
+  if (error || !data) return []
+  const rows = data as unknown as RawGuideRow[]
+
+  const userIds = Array.from(new Set(rows.map(r => r.user_id).filter((x): x is string => !!x)))
+  const labelById = new Map<string, string | null>()
+  if (userIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, display_name, username')
+      .in('id', userIds)
+    for (const p of (profiles ?? []) as { id: string; display_name: string | null; username: string | null }[]) {
+      labelById.set(p.id, p.display_name ?? p.username ?? null)
+    }
+  }
+
+  return rows.map(r => mapRow(r, labelById.get(r.user_id ?? '') ?? null))
+}
+
+/**
  * Bruger-ejede guides oprettet siden timestamp (default 30 dage). Bruges i
  * admin-oversigten til at se hvilke nye guider brugerne har genereret —
  * særligt AI-auto-genererede via ensureGuideForInventoryItem — så admin

@@ -42,15 +42,21 @@ export function FlagGuideDialog({ guideId, guideTitle }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-amber-700 hover:bg-amber-50">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-amber-700 hover:bg-amber-50"
+          title="Anmeld indholdet til moderation (brugeren får besked + 5 dages frist)"
+        >
           <Flag className="h-3.5 w-3.5" />
-          Flag
+          Anmeld
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Flag &ldquo;{guideTitle}&rdquo;</DialogTitle>
+        <DialogTitle>Anmeld &ldquo;{guideTitle}&rdquo;</DialogTitle>
         <DialogDescription>
-          Brugeren får 5 dage til at revidere. Begrundelsen vises til ejeren som banner på guiden.
+          Anmeld indholdet til moderation. Guiden skjules for andre, og ejeren får 5 dages frist
+          til at rette ind. Begrundelsen vises som banner på guiden.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -70,7 +76,7 @@ export function FlagGuideDialog({ guideId, guideTitle }: Props) {
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
             <Button type="submit" disabled={pending} className="bg-amber-700 hover:bg-amber-800">
               {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Flag className="h-4 w-4" />}
-              Flag og skjul
+              Anmeld og skjul
             </Button>
           </DialogFooter>
         </form>

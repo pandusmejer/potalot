@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Plus, Pencil, Trash2, Wand2, Loader2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, Wand2, Loader2, Search, User } from 'lucide-react'
 import { SectionsEditor } from '@/components/guides/sections-editor'
 import {
   createMasterGuide, updateMasterGuide, deleteMasterGuide, generateMasterDraftWithAI,
-  type MasterGuideInput,
+  searchUserGuidesForImport,
+  type MasterGuideInput, type AdminGuideRow,
 } from '@/actions/guides-admin'
 import type {
   PrimaryCategoryId, Difficulty, GuideQuickFacts, GuideSection, GuideCalendarRule,
@@ -76,6 +77,43 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
   const [calendarRulesJson, setCalendarRulesJson] = useState(
     JSON.stringify(guide?.calendarRules ?? prefill?.calendarRules ?? [], null, 2)
   )
+
+  // Import-fra-bruger-guide state (kun relevant ved !isEdit)
+  const [importSearch, setImportSearch] = useState('')
+  const [importResults, setImportResults] = useState<AdminGuideRow[]>([])
+  const [importPending, setImportPending] = useState(false)
+  const [importedFrom, setImportedFrom] = useState<{ id: string; label: string } | null>(null)
+
+  async function handleImportSearch(q: string) {
+    setImportSearch(q)
+    if (q.trim().length < 2 && q.trim().length > 0) return
+    setImportPending(true)
+    try {
+      const results = await searchUserGuidesForImport(q)
+      setImportResults(results)
+    } finally {
+      setImportPending(false)
+    }
+  }
+
+  function applyImport(g: AdminGuideRow) {
+    setPlantName(g.plantName)
+    setVariety(g.variety ?? '')
+    setLatinName(g.latinName ?? '')
+    setPrimaryCat(g.primaryCategoryId)
+    setSummary(g.summary)
+    setDifficulty(g.difficulty ?? '')
+    setTagsInput((g.tags ?? []).join(', '))
+    setSourceLinksInput((g.sourceLinks ?? []).join('\n'))
+    setQuickFactsJson(JSON.stringify(g.quickFacts ?? {}, null, 2))
+    setSections(g.sections ?? [])
+    setCalendarRulesJson(JSON.stringify(g.calendarRules ?? [], null, 2))
+    const label = g.variety ? `${g.plantName} — ${g.variety}` : g.plantName
+    const owner = g.ownerLabel ? ` (af ${g.ownerLabel})` : ''
+    setImportedFrom({ id: g.id, label: label + owner })
+    setImportResults([])
+    setImportSearch('')
+  }
 
   function parseJson<T>(label: string, raw: string, fallback: T): T | { error: string } {
     const trimmed = raw.trim()
@@ -203,6 +241,79 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
         <DialogDescription>
           Master-guides er synlige for alle brugere og kan kun ændres af admin.
         </DialogDescription>
+
+        {!isEdit && (
+          <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 mb-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium text-foreground">
+                Importér fra eksisterende bruger-guide
+              </p>
+            </div>
+            {importedFrom ? (
+              <div className="flex items-center justify-between gap-2 rounded-md bg-green-50 border border-green-200 px-3 py-2">
+                <p className="text-xs text-green-900">
+                  Importeret fra <strong>{importedFrom.label}</strong> — felterne er forudfyldt.
+                </p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setImportedFrom(null)}
+                  className="text-green-900 hover:bg-green-100 h-6 px-2"
+                >
+                  Fjern
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input
+                    value={importSearch}
+                    onChange={e => handleImportSearch(e.target.value)}
+                    placeholder="Søg plantenavn, sort eller latinsk navn…"
+                    className="pl-8 text-sm"
+                  />
+                </div>
+                {importPending && (
+                  <p className="text-xs text-muted-foreground italic">Søger…</p>
+                )}
+                {!importPending && importSearch.trim().length >= 2 && importResults.length === 0 && (
+                  <p className="text-xs text-muted-foreground italic">Ingen bruger-guides matcher.</p>
+                )}
+                {importResults.length > 0 && (
+                  <div className="max-h-40 overflow-y-auto rounded-md border border-border bg-card divide-y divide-border">
+                    {importResults.map(g => (
+                      <button
+                        key={g.id}
+                        type="button"
+                        onClick={() => applyImport(g)}
+                        className="w-full text-left p-2 hover:bg-accent transition-colors"
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {g.plantName}{g.variety ? ` — ${g.variety}` : ''}
+                          </p>
+                          {g.isAiGenerated && (
+                            <span className="text-[9px] uppercase rounded-full bg-secondary px-1.5 py-0.5 text-muted-foreground shrink-0">AI</span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground truncate">
+                          {g.ownerLabel ? `Af ${g.ownerLabel}` : 'Bruger'}
+                          {g.latinName ? ` · ${g.latinName}` : ''}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <p className="text-[10px] text-muted-foreground italic">
+                  Klik et resultat for at fylde formularen — du kan redigere bagefter.
+                </p>
+              </>
+            )}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
