@@ -61,6 +61,39 @@ function rowToTask(row: TaskRow): CalendarTask {
 // Read
 // ============================================
 
+/**
+ * Berig tasks med plante-navn + sort fra linked_plant_id. Bruges af
+ * TaskRow så brugeren ser HVILKEN plante en opgave hører til, frem
+ * for bare 'Til plante'.
+ */
+async function enrichWithPlantNames(
+  tasks: CalendarTask[],
+  supabase: Awaited<ReturnType<typeof createClient>>
+): Promise<CalendarTask[]> {
+  const plantIds = Array.from(new Set(
+    tasks.map(t => t.linkedPlantId).filter((x): x is string => !!x)
+  ))
+  if (plantIds.length === 0) return tasks
+
+  const { data: plants } = await supabase
+    .from('plants_v2')
+    .select('id, name, variety')
+    .in('id', plantIds)
+
+  const byId = new Map<string, { name: string; variety: string | null }>()
+  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null }[]) {
+    byId.set(p.id, { name: p.name, variety: p.variety })
+  }
+
+  return tasks.map(t => {
+    if (!t.linkedPlantId) return t
+    const info = byId.get(t.linkedPlantId)
+    return info
+      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety }
+      : t
+  })
+}
+
 export async function getAllTasks(): Promise<CalendarTask[]> {
   const user = await getCurrentUser()
   if (!user) return []
@@ -75,7 +108,7 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
     console.error('getAllTasks error:', error)
     return []
   }
-  return (data as TaskRow[]).map(rowToTask)
+  return enrichWithPlantNames((data as TaskRow[]).map(rowToTask), supabase)
 }
 
 export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]> {
@@ -90,7 +123,7 @@ export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]>
     .order('date', { ascending: true })
 
   if (error) return []
-  return (data as TaskRow[]).map(rowToTask)
+  return enrichWithPlantNames((data as TaskRow[]).map(rowToTask), supabase)
 }
 
 // ============================================

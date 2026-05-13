@@ -101,9 +101,14 @@ export function TaskRow({ task, compact = false }: { task: CalendarTask; compact
             {task.linkedPlantId && (
               <Link
                 href={`/mine-planter/${task.linkedPlantId}`}
-                className="hover:text-foreground hover:underline"
+                className="inline-flex items-center gap-1 hover:text-foreground hover:underline"
+                title="Gå til plantedetalje"
               >
-                Til plante
+                <LucideIcons.Sprout className="h-3 w-3" />
+                {task.linkedPlantName ?? 'Plante'}
+                {task.linkedPlantVariety && (
+                  <span className="italic opacity-80"> — {task.linkedPlantVariety}</span>
+                )}
               </Link>
             )}
             {task.linkedPlantId && <span>·</span>}

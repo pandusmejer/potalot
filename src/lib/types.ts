@@ -260,6 +260,10 @@ export interface CalendarTask {
   source: TaskSource
   sourceId?: string | null
   linkedPlantId?: string | null
+  /** Den linkede plantes navn, beriget af loaderen så TaskRow kan vise det. */
+  linkedPlantName?: string | null
+  /** Den linkede plantes sort, beriget af loaderen. */
+  linkedPlantVariety?: string | null
   linkedInventoryItemId?: string | null
   linkedGuideId?: string | null
 
