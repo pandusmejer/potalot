@@ -7,7 +7,7 @@ export const maxDuration = 60
 
 const BUCKET = 'media'
 const MAX_BYTES = 20 * 1024 * 1024
-const VALID_FOLDERS = new Set(['froebank', 'planter', 'log', 'profil', 'idetavle', 'chat'])
+const VALID_FOLDERS = new Set(['froebank', 'planter', 'log', 'profil', 'idetavle', 'chat', 'guides'])
 
 /**
  * Upload-endpoint. iPhone HEIC/HEIF konverteres til JPEG via heic-convert
