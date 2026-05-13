@@ -59,9 +59,15 @@ export function Timeline({ plant, logs }: Props) {
     { type: 'harvest', label: 'Første høst', date: plant.firstHarvestDate },
   ].filter(m => m.date) as { type: string; label: string; date: string }[]
 
+  // Filtrer status_change-logs fra — de er infrastruktur til stadie-tracking,
+  // ikke meningsfulde brugerevents. Plantens nuværende stadie er synligt i
+  // StageHeader/StageProgress; de underliggende livscyklus-logs (sowing,
+  // germination, planting_out, harvest) bevarer historikken.
+  const synligeLogs = logs.filter(l => l.type !== 'status_change')
+
   // Sammenflet logs + milepæle, sorteret efter dato (nyeste først)
   const items = [
-    ...logs.map(l => ({ kind: 'log' as const, log: l, date: l.date })),
+    ...synligeLogs.map(l => ({ kind: 'log' as const, log: l, date: l.date })),
     ...milepaele.map(m => ({ kind: 'milestone' as const, milestone: m, date: m.date })),
   ].sort((a, b) => b.date.localeCompare(a.date))
 
