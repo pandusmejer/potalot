@@ -90,6 +90,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         month={valgtMaaned}
         inventory={inventory}
         guides={guides}
+        plants={plants}
       />
     </div>
   )
