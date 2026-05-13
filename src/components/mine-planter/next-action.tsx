@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { TaskActions } from '@/components/havekalender/task-actions'
 import { TASK_TYPE_META, TASK_PRIORITY_META } from '@/lib/constants'
 import { venligDato, erForsinket } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
@@ -52,9 +52,7 @@ export function NextAction({ task }: { task: CalendarTask | null }) {
           )}
           <p className="text-xs text-muted-foreground mt-1">{venligDato(task.date)}</p>
         </div>
-        <Button size="sm" variant="ghost">
-          Senere
-        </Button>
+        <TaskActions task={task} />
       </CardContent>
     </Card>
   )

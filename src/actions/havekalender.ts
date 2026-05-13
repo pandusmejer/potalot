@@ -146,6 +146,44 @@ export async function createTask(input: CreateTaskInput): Promise<{ id: string }
   return { id: data.id as string }
 }
 
+export interface UpdateTaskInput {
+  id: string
+  title: string
+  description?: string
+  date: string
+  taskType?: TaskType
+  priority?: TaskPriority
+  linkedPlantId?: string | null
+}
+
+export async function updateTask(input: UpdateTaskInput): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('calendar_tasks')
+    .update({
+      title: input.title.trim(),
+      description: input.description?.trim() || null,
+      date: input.date,
+      task_type: input.taskType ?? 'custom',
+      priority: input.priority ?? 'medium',
+      linked_plant_id: input.linkedPlantId ?? null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', input.id)
+    .eq('user_id', userId)
+    .select('linked_plant_id')
+    .maybeSingle()
+
+  if (error) return { error: error.message }
+  if (!data) return { error: 'Opgave ikke fundet' }
+
+  revalidatePath('/kalender')
+  revalidatePath('/')
+  if (data.linked_plant_id) revalidatePath(`/mine-planter/${data.linked_plant_id}`)
+  return { ok: true }
+}
+
 /**
  * Markér opgave som udført. Returnerer plant-info hvis linket, så
  * UI kan prompt'e om at oprette en log-entry.

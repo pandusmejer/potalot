@@ -11,7 +11,7 @@ import { GeneralTaskActions } from '@/components/havekalender/general-task-actio
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ListChecks, Calendar, EyeOff, Eye } from 'lucide-react'
+import { ListChecks, Calendar, EyeOff, Eye, Info } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, TASK_PRIORITY_META } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -68,6 +68,12 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           <CardTitle className="flex items-center gap-2">
             <ListChecks className="h-4 w-4 text-primary" />
             Mine opgaver
+            <span
+              className="inline-flex items-center"
+              title="Konkrete to-dos med specifik dato. Auto-genereres fra dine dyrkningsguides (fx 'Udplant 13. maj') eller oprettes manuelt. Modsat 'Gøremål' der er sæsonbestemte ting."
+            >
+              <Info className="h-3 w-3 text-muted-foreground" />
+            </span>
           </CardTitle>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -111,6 +117,12 @@ function MaanedensGoeremaal({
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-primary" />
           Gøremål — {monthName}
+          <span
+            className="inline-flex items-center"
+            title="Sæsonbestemte ting man typisk gør hver måned (fx 'I maj: udplant frostfølsomme planter'). Havens gøremål kommer fra PotAlot — Mine gøremål tilføjer du selv. Modsat 'Mine opgaver' der har specifik dato."
+          >
+            <Info className="h-3 w-3 text-muted-foreground" />
+          </span>
         </CardTitle>
         <UserTaskDialog defaultMonth={month} />
       </CardHeader>

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { CompleteTaskDialog } from '@/components/havekalender/complete-task-dialog'
+import { TaskActions } from '@/components/havekalender/task-actions'
 import { TASK_TYPE_META, TASK_PRIORITY_META } from '@/lib/constants'
 import { formatDatoKort, venligDato, erForsinket } from '@/lib/datetime'
 import { completeTask, uncompleteTask } from '@/actions/havekalender'
@@ -60,7 +61,7 @@ export function TaskRow({ task, compact = false }: { task: CalendarTask; compact
     <>
       <div
         className={cn(
-          'flex items-start gap-3 rounded-xl border bg-card p-3 transition-colors',
+          'group flex items-start gap-3 rounded-xl border bg-card p-3 transition-colors',
           completed && 'opacity-60',
           forsinket && !completed && 'border-destructive/30 bg-destructive/5',
           !forsinket && !completed && 'hover:bg-accent/30'
@@ -111,6 +112,11 @@ export function TaskRow({ task, compact = false }: { task: CalendarTask; compact
             </span>
           </div>
         </div>
+        {!completed && (
+          <div className="opacity-60 group-hover:opacity-100 transition-opacity">
+            <TaskActions task={task} />
+          </div>
+        )}
       </div>
 
       {logPrompt && (

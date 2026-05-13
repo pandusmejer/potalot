@@ -9,38 +9,58 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Plus } from 'lucide-react'
+import { Plus, Pencil } from 'lucide-react'
 import { idag } from '@/lib/datetime'
 import { TASK_TYPE_META } from '@/lib/constants'
-import { createTask } from '@/actions/havekalender'
-import type { TaskType, TaskPriority, Plant } from '@/lib/types'
+import { createTask, updateTask } from '@/actions/havekalender'
+import type { TaskType, TaskPriority, Plant, CalendarTask } from '@/lib/types'
 
 interface Props {
   children?: React.ReactNode
-  /** Hvis sat: pre-link opgaven til en plante */
+  /** Hvis sat: pre-link opgaven til en plante (kun ved create) */
   defaultPlantId?: string
   /** Liste af aktive planter til at koble opgaven til */
   plants?: Pick<Plant, 'id' | 'name' | 'variety'>[]
+  /** Hvis sat: edit-mode. Felter forudfyldes og 'Gem' opdaterer. */
+  task?: CalendarTask
 }
 
-export function AddTaskDialog({ children, defaultPlantId, plants = [] }: Props) {
+export function AddTaskDialog({ children, defaultPlantId, plants = [], task }: Props) {
   const router = useRouter()
+  const isEdit = !!task
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [date, setDate] = useState(idag())
-  const [taskType, setTaskType] = useState<TaskType>('custom')
-  const [priority, setPriority] = useState<TaskPriority>('medium')
-  const [linkedPlantId, setLinkedPlantId] = useState(defaultPlantId ?? '')
+  const [title, setTitle] = useState(task?.title ?? '')
+  const [description, setDescription] = useState(task?.description ?? '')
+  const [date, setDate] = useState(task?.date ?? idag())
+  const [taskType, setTaskType] = useState<TaskType>(task?.taskType ?? 'custom')
+  const [priority, setPriority] = useState<TaskPriority>(task?.priority ?? 'medium')
+  const [linkedPlantId, setLinkedPlantId] = useState(task?.linkedPlantId ?? defaultPlantId ?? '')
 
   function reset() {
-    setTitle(''); setDescription(''); setDate(idag())
-    setTaskType('custom'); setPriority('medium')
-    setLinkedPlantId(defaultPlantId ?? '')
+    if (isEdit && task) {
+      setTitle(task.title)
+      setDescription(task.description ?? '')
+      setDate(task.date)
+      setTaskType(task.taskType)
+      setPriority(task.priority)
+      setLinkedPlantId(task.linkedPlantId ?? '')
+    } else {
+      setTitle('')
+      setDescription('')
+      setDate(idag())
+      setTaskType('custom')
+      setPriority('medium')
+      setLinkedPlantId(defaultPlantId ?? '')
+    }
     setError(null)
+  }
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next)
+    if (!next) reset()
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -48,15 +68,25 @@ export function AddTaskDialog({ children, defaultPlantId, plants = [] }: Props) 
     setError(null)
 
     startTransition(async () => {
-      const res = await createTask({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        date,
-        taskType,
-        priority,
-        linkedPlantId: linkedPlantId || undefined,
-        source: linkedPlantId ? 'plant' : 'manual',
-      })
+      const res = isEdit && task
+        ? await updateTask({
+            id: task.id,
+            title: title.trim(),
+            description: description.trim() || undefined,
+            date,
+            taskType,
+            priority,
+            linkedPlantId: linkedPlantId || null,
+          })
+        : await createTask({
+            title: title.trim(),
+            description: description.trim() || undefined,
+            date,
+            taskType,
+            priority,
+            linkedPlantId: linkedPlantId || undefined,
+            source: linkedPlantId ? 'plant' : 'manual',
+          })
 
       if ('error' in res) {
         setError(res.error)
@@ -64,24 +94,32 @@ export function AddTaskDialog({ children, defaultPlantId, plants = [] }: Props) 
       }
 
       setOpen(false)
-      reset()
+      if (!isEdit) reset()
       router.refresh()
     })
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {children ?? (
-          <Button>
-            <Plus className="h-4 w-4" />
-            Ny opgave
-          </Button>
+          isEdit ? (
+            <Button variant="ghost" size="sm" aria-label="Redigér opgave">
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          ) : (
+            <Button>
+              <Plus className="h-4 w-4" />
+              Ny opgave
+            </Button>
+          )
         )}
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Ny opgave</DialogTitle>
-        <DialogDescription>Tilføj en opgave til din kalender.</DialogDescription>
+        <DialogTitle>{isEdit ? 'Redigér opgave' : 'Ny opgave'}</DialogTitle>
+        <DialogDescription>
+          {isEdit ? 'Ret detaljerne på opgaven.' : 'Tilføj en opgave til din kalender.'}
+        </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
@@ -171,7 +209,7 @@ export function AddTaskDialog({ children, defaultPlantId, plants = [] }: Props) 
               Annullér
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Opretter…' : 'Opret'}
+              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : 'Opret'}
             </Button>
           </DialogFooter>
         </form>
