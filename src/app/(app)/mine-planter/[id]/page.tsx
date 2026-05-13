@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { NextAction } from '@/components/mine-planter/next-action'
+import { StageProgress } from '@/components/mine-planter/stage-progress'
+import { StageHeader } from '@/components/mine-planter/stage-header'
+import { StageTaskList } from '@/components/mine-planter/stage-task-list'
 import { Timeline } from '@/components/mine-planter/timeline'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { SowingsList } from '@/components/mine-planter/sowings-list'
-import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { getPlant, getPlantLogs, getAllPlants } from '@/actions/mine-planter'
 import { getSowingEventsForPlant } from '@/actions/sowing-events'
 import { getInventoryItem } from '@/actions/froebank'
 import { getTasksForPlant } from '@/actions/havekalender'
 import { getGuide } from '@/actions/guides'
-import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoMedAar } from '@/lib/datetime'
 import {
   ArrowLeft, MapPin, Calendar, BookOpen, Package, ArrowRight, Sprout,
@@ -31,18 +32,25 @@ export default async function PlanteDetailPage({ params }: Props) {
   const plant = await getPlant(id)
   if (!plant) notFound()
 
-  const [logs, sowings, tasks, guide, inventoryItem] = await Promise.all([
+  const [logs, sowings, tasks, guide, inventoryItem, allPlants] = await Promise.all([
     getPlantLogs(plant.id),
     getSowingEventsForPlant(plant.id),
     getTasksForPlant(plant.id),
     plant.guideId ? getGuide(plant.guideId) : Promise.resolve(null),
     plant.sourceElementId ? getInventoryItem(plant.sourceElementId) : Promise.resolve(null),
+    getAllPlants(),
   ])
 
-  const aabneOpgaver = tasks.filter(t => t.status === 'open').sort((a, b) => a.date.localeCompare(b.date))
-  const naesteOpgave = aabneOpgaver[0] ?? null
+  const otherActivePlants = allPlants
+    .filter(p => p.id !== plant.id && !p.isArchived)
+    .map(p => ({ id: p.id, name: p.name, variety: p.variety }))
 
-  const statusMeta = PLANT_STATUS_META[plant.status]
+  // Find seneste status-skift-log som proxy for "indgang til nuværende stadie"
+  const lastStatusChange = logs
+    .filter(l => l.type === 'status_change')
+    .sort((a, b) => b.date.localeCompare(a.date))[0]
+  const stageEnteredOn = lastStatusChange?.date ?? plant.sowDate ?? null
+
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
 
   return (
@@ -63,9 +71,6 @@ export default async function PlanteDetailPage({ params }: Props) {
             </p>
           )}
         </div>
-        <Badge variant={(statusMeta.badgeVariant as 'muted' | 'info' | 'success' | 'warning' | 'outline') ?? 'muted'}>
-          {statusMeta.label}
-        </Badge>
       </div>
 
       <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
@@ -92,7 +97,24 @@ export default async function PlanteDetailPage({ params }: Props) {
         )}
       </div>
 
-      {!plant.isArchived && <NextAction task={naesteOpgave} />}
+      {!plant.isArchived && (
+        <>
+          <StageProgress status={plant.status} />
+          <StageHeader
+            plantId={plant.id}
+            status={plant.status}
+            stageEnteredOn={stageEnteredOn}
+          />
+          <StageTaskList
+            plantId={plant.id}
+            plantName={plant.name}
+            plantVariety={plant.variety ?? null}
+            status={plant.status}
+            tasks={tasks}
+            otherPlants={otherActivePlants}
+          />
+        </>
+      )}
 
       <SowingsList events={sowings} />
 
