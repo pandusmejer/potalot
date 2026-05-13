@@ -85,9 +85,10 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
           <section className="space-y-2">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-green-700" />
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wider text-green-800">
                 Master-guides ({masters.length})
               </p>
+              <span className="text-[10px] text-muted-foreground italic">– kuraterede af PotAlot</span>
             </div>
             {renderCards(masters)}
           </section>

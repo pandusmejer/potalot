@@ -19,15 +19,17 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
       <Link
         href={`/guides/${guide.id}`}
         className={`block rounded-2xl border overflow-hidden hover:shadow-md transition-shadow ${
-          isMaster ? 'border-green-200 bg-card' : 'border-border bg-card'
+          isMaster
+            ? 'border-green-300 border-l-[6px] border-l-green-600 bg-green-50/30'
+            : 'border-border bg-card'
         }`}
       >
         <div className="flex">
           {/* Thumbnail / placeholder */}
           <div className={`w-24 sm:w-32 shrink-0 flex items-center justify-center ${
-            isMaster ? 'bg-pattern-botanical bg-green-50' : 'bg-pattern-botanical bg-secondary/30'
+            isMaster ? 'bg-pattern-botanical bg-green-100/70' : 'bg-pattern-botanical bg-secondary/30'
           }`}>
-            <BookOpen className={`h-8 w-8 ${isMaster ? 'text-green-700/60' : 'text-primary/40'}`} />
+            <BookOpen className={`h-8 w-8 ${isMaster ? 'text-green-700' : 'text-primary/40'}`} />
           </div>
 
           <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col gap-1.5">
@@ -41,17 +43,17 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
                 )}
               </div>
               {isMaster ? (
-                <Badge variant="success" className="text-[10px] shrink-0 gap-0.5">
-                  <ShieldCheck className="h-2.5 w-2.5" />
+                <span className="inline-flex items-center gap-1 shrink-0 rounded-full bg-green-700 text-white text-[11px] font-semibold px-2.5 py-1 shadow-sm">
+                  <ShieldCheck className="h-3.5 w-3.5" />
                   Master
-                </Badge>
+                </span>
               ) : (
-                <Badge variant="outline" className="text-[10px] shrink-0 gap-0.5">
+                <Badge variant="muted" className="text-[10px] shrink-0 gap-0.5">
                   <User className="h-2.5 w-2.5" />
                   Min
                 </Badge>
               )}
-              <Badge variant="muted" className="text-[10px] shrink-0">{cat.name}</Badge>
+              <Badge variant="outline" className="text-[10px] shrink-0">{cat.name}</Badge>
               {/* Plads-holder så Slet-knappen ikke overlapper badges */}
               {canDelete && <span className="block w-16 shrink-0" aria-hidden="true" />}
             </div>
