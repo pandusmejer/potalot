@@ -476,9 +476,13 @@ export async function deletePlantLog(
 
 export async function updatePlantStatus(
   plantId: string,
-  status: PlantStatus
+  status: PlantStatus,
+  /** Faktisk dato hvor stadie-skiftet skete (default: i dag). YYYY-MM-DD. */
+  effectiveDate?: string
 ): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  const logDate = effectiveDate ?? new Date().toISOString().split('T')[0]
 
   const { error } = await supabase
     .from('plants_v2')
@@ -488,13 +492,15 @@ export async function updatePlantStatus(
 
   if (error) return { error: error.message }
 
-  // Skriv også en log-entry så historikken er sporet
+  // Skriv også en log-entry så historikken er sporet — brug effective-date
+  // så 'X dage i dette stadie' regnes korrekt selv hvis brugeren logger
+  // skiftet senere
   await supabase
     .from('plant_logs_v2')
     .insert({
       plant_id: plantId,
       user_id: userId,
-      date: new Date().toISOString().split('T')[0],
+      date: logDate,
       type: 'status_change',
       note: `Status ændret til "${status}"`,
     })
