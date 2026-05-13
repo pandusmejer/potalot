@@ -10,6 +10,7 @@ import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 import { FlagBanner } from '@/components/guides/flag-banner'
 import { FlagGuideDialog } from '@/components/admin/flag-guide-dialog'
+import { PromoteToMasterButton } from '@/components/admin/promote-to-master-button'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -96,6 +97,9 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
               <UserGuideEditDialog guide={original} />
               <DeleteGuideButton guideId={original.id} guideTitle={original.plantName} isMaster={false} />
             </>
+          )}
+          {!isMaster && isAdmin && (
+            <PromoteToMasterButton guideId={original.id} guideTitle={original.plantName} />
           )}
           {!isMaster && isAdmin && !original.flaggedAt && (
             <FlagGuideDialog guideId={original.id} guideTitle={original.plantName} />

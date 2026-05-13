@@ -99,6 +99,82 @@ export async function updateMasterGuide(
   return { ok: true }
 }
 
+/**
+ * Promovér en bruger-ejet guide til master ved at sætte user_id = NULL.
+ *
+ * Tjekker først om en master med samme plant_name + variety allerede
+ * eksisterer for at undgå at skabe to konkurrerende masters. Hvis ja:
+ * returnér 'conflict' så UI kan tilbyde "erstat eksisterende master"-flow.
+ *
+ * Med option { replaceExistingMasterId } slettes den gamle master før
+ * promovering, så brugerens version overtager rollen.
+ */
+export async function promoteGuideToMaster(
+  guideId: string,
+  options?: { replaceExistingMasterId?: string | null }
+): Promise<
+  | { ok: true }
+  | { error: string }
+  | { conflict: true; existingMasterId: string; existingMasterLabel: string }
+> {
+  const { id: adminId } = await requireAdmin()
+  const supabase = await createClient()
+
+  const { data: guide, error: guideErr } = await supabase
+    .from('guides')
+    .select('id, plant_name, variety, user_id')
+    .eq('id', guideId)
+    .maybeSingle()
+  if (guideErr || !guide) return { error: 'Guide ikke fundet' }
+  if (guide.user_id === null) return { error: 'Guiden er allerede master' }
+
+  // Tjek for eksisterende master med samme plant_name + variety
+  const variety = guide.variety as string | null
+  let conflictQuery = supabase
+    .from('guides')
+    .select('id, plant_name, variety')
+    .is('user_id', null)
+    .ilike('plant_name', guide.plant_name as string)
+    .neq('id', guideId)
+  conflictQuery = variety === null
+    ? conflictQuery.is('variety', null)
+    : conflictQuery.ilike('variety', variety)
+  const { data: existing } = await conflictQuery.maybeSingle()
+
+  if (existing && existing.id !== options?.replaceExistingMasterId) {
+    const label = existing.variety
+      ? `${existing.plant_name} — ${existing.variety}`
+      : (existing.plant_name as string)
+    return { conflict: true, existingMasterId: existing.id as string, existingMasterLabel: label }
+  }
+
+  // Skal vi erstatte? Slet den gamle master først (vha. delete_guide_with_relink
+  // som re-pointer items til den nye guide INDEN sletningen).
+  if (options?.replaceExistingMasterId && existing) {
+    const { error: relinkErr } = await supabase.rpc('delete_guide_with_relink', {
+      p_guide_id: options.replaceExistingMasterId,
+      p_replacement_guide_id: guideId,
+    })
+    if (relinkErr) return { error: `Kunne ikke erstatte eksisterende master: ${relinkErr.message}` }
+  }
+
+  // Promovér: fjern user_id, marker admin som creator
+  const { error: updErr } = await supabase
+    .from('guides')
+    .update({
+      user_id: null,
+      created_by: adminId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', guideId)
+  if (updErr) return { error: updErr.message }
+
+  revalidatePath('/admin/guides')
+  revalidatePath('/guides')
+  revalidatePath(`/guides/${guideId}`)
+  return { ok: true }
+}
+
 export async function deleteMasterGuide(
   id: string,
   options?: { replacementGuideId?: string | null; notifyAffectedUsers?: boolean }
