@@ -187,7 +187,7 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
           </TabsTrigger>
           {inFroebank && (
             <TabsTrigger value="dine">
-              Til min frøbank <span className="ml-1.5 text-xs opacity-60">({linkedToFroebank.length})</span>
+              I min frøbank <span className="ml-1.5 text-xs opacity-60">({linkedToFroebank.length})</span>
             </TabsTrigger>
           )}
         </TabsList>
