@@ -19,7 +19,7 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser, isCurrentUserAdmin } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
-  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight,
+  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight, Link2, Lock,
 } from 'lucide-react'
 
 interface Props {
@@ -252,6 +252,38 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       {/* Mine private noter */}
       {currentUser && myNote !== null && (
         <GuideNotesCard guideId={original.id} initialNote={myNote} />
+      )}
+
+      {/* Kildelinks — kun synlig for admin (intern reference for moderation) */}
+      {isAdmin && effective.sourceLinks && effective.sourceLinks.length > 0 && (
+        <Card className="bg-muted/40 border-dashed">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>Kilder</span>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-normal">
+                kun admin
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-1.5">
+              {effective.sourceLinks.map((url, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <Link2 className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline break-all"
+                  >
+                    {url}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       )}
 
       {/* AI gartner */}
