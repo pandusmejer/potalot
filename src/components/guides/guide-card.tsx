@@ -2,13 +2,22 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { DIFFICULTY_META, MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
-import { BookOpen, ShieldCheck, User } from 'lucide-react'
+import { BookOpen, ShieldCheck, User, GitFork } from 'lucide-react'
 import { DeleteGuideButton } from '@/components/guides/delete-guide-button'
 
 /**
  * Guide-kort til oversigten.
  */
-export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelete?: boolean }) {
+export function GuideCard({
+  guide,
+  canDelete = false,
+  tilpasningOfMasterId = null,
+}: {
+  guide: Guide
+  canDelete?: boolean
+  /** Hvis sat: denne private guide er en kopi af en master-guide med dette id. */
+  tilpasningOfMasterId?: string | null
+}) {
   const cat = PRIMARY_CATEGORIES[guide.primaryCategoryId]
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
   const sowingPeriod = formatMonths(guide.quickFacts.sowingMonths.length ? guide.quickFacts.sowingMonths : guide.quickFacts.directSowingMonths)
@@ -47,6 +56,11 @@ export function GuideCard({ guide, canDelete = false }: { guide: Guide; canDelet
                   <ShieldCheck className="h-3.5 w-3.5" />
                   Master
                 </span>
+              ) : tilpasningOfMasterId ? (
+                <Badge variant="muted" className="text-[10px] shrink-0 gap-0.5 border-green-300 bg-green-50 text-green-900">
+                  <GitFork className="h-2.5 w-2.5" />
+                  Tilpasset master
+                </Badge>
               ) : (
                 <Badge variant="muted" className="text-[10px] shrink-0 gap-0.5">
                   <User className="h-2.5 w-2.5" />

@@ -19,12 +19,42 @@ interface Props {
   canDeleteOwnGuides?: boolean
 }
 
+/** Nøgle til at matche master + brugerkopi (case-insensitivt, trimmet). */
+function dedupKey(g: Guide): string {
+  return `${g.plantName.toLowerCase().trim()}|${(g.variety ?? '').toLowerCase().trim()}`
+}
+
 export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGuides = false }: Props) {
   const [search, setSearch] = useState('')
   const [filterCat, setFilterCat] = useState<PrimaryCategoryId | 'alle'>('alle')
 
+  // Map: bruger-guide-id → master-guide-id som den er en tilpasning af.
+  // Bruges til (a) at skjule master når brugeren har en kopi og (b) vise
+  // "Tilpasset fra master"-markering på kopien.
+  const cloneOfMaster = useMemo(() => {
+    const mastersByKey = new Map<string, string>()
+    for (const g of guides) {
+      if (g.visibility === 'public') mastersByKey.set(dedupKey(g), g.id)
+    }
+    const map = new Map<string, string>()
+    for (const g of guides) {
+      if (g.visibility === 'private') {
+        const masterId = mastersByKey.get(dedupKey(g))
+        if (masterId) map.set(g.id, masterId)
+      }
+    }
+    return map
+  }, [guides])
+
+  // Sæt af master-IDer som brugeren har en privat kopi af → skjules i master/alle.
+  const hiddenMasterIds = useMemo(() => {
+    return new Set(cloneOfMaster.values())
+  }, [cloneOfMaster])
+
   const filtered = useMemo(() => {
-    let list = guides
+    let list = guides.filter(g =>
+      !(g.visibility === 'public' && hiddenMasterIds.has(g.id))
+    )
     if (filterCat !== 'alle') {
       list = list.filter(g => g.primaryCategoryId === filterCat)
     }
@@ -39,7 +69,7 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
       )
     }
     return list.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
-  }, [guides, search, filterCat])
+  }, [guides, search, filterCat, hiddenMasterIds])
 
   const masters = useMemo(() => filtered.filter(g => g.visibility === 'public'), [filtered])
   const mine = useMemo(() => filtered.filter(g => g.visibility === 'private'), [filtered])
@@ -63,7 +93,15 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
         {list.map(g => {
           const isMaster = g.visibility === 'public'
           const canDelete = isMaster ? isAdmin : canDeleteOwnGuides
-          return <GuideCard key={g.id} guide={g} canDelete={canDelete} />
+          const tilpasningOf = cloneOfMaster.get(g.id) ?? null
+          return (
+            <GuideCard
+              key={g.id}
+              guide={g}
+              canDelete={canDelete}
+              tilpasningOfMasterId={tilpasningOf}
+            />
+          )
         })}
       </div>
     )
