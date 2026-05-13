@@ -34,12 +34,23 @@ export function GuideCard({
         }`}
       >
         <div className="flex">
-          {/* Thumbnail / placeholder */}
-          <div className={`w-24 sm:w-32 shrink-0 flex items-center justify-center ${
-            isMaster ? 'bg-pattern-botanical bg-green-100/70' : 'bg-pattern-botanical bg-secondary/30'
-          }`}>
-            <BookOpen className={`h-8 w-8 ${isMaster ? 'text-green-700' : 'text-primary/40'}`} />
-          </div>
+          {/* Thumbnail: billede hvis tilgængeligt, ellers placeholder-ikon */}
+          {guide.primaryImageId ? (
+            <div className="w-24 sm:w-32 shrink-0 overflow-hidden bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={guide.primaryImageId}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className={`w-24 sm:w-32 shrink-0 flex items-center justify-center ${
+              isMaster ? 'bg-pattern-botanical bg-green-100/70' : 'bg-pattern-botanical bg-secondary/30'
+            }`}>
+              <BookOpen className={`h-8 w-8 ${isMaster ? 'text-green-700' : 'text-primary/40'}`} />
+            </div>
+          )}
 
           <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col gap-1.5">
             <div className="flex items-start gap-1.5 flex-wrap">

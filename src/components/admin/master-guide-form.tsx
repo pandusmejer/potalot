@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Plus, Pencil, Trash2, Wand2, Loader2, Search, User } from 'lucide-react'
+import { ImageUpload } from '@/components/ui/image-upload'
 import { SectionsEditor } from '@/components/guides/sections-editor'
 import {
   createMasterGuide, updateMasterGuide, deleteMasterGuide, generateMasterDraftWithAI,
@@ -34,6 +35,7 @@ interface ExistingGuide {
   sections?: GuideSection[]
   calendarRules?: GuideCalendarRule[]
   sourceLinks?: string[]
+  primaryImageUrl?: string | null
 }
 
 interface Props {
@@ -77,6 +79,9 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
   const [calendarRulesJson, setCalendarRulesJson] = useState(
     JSON.stringify(guide?.calendarRules ?? prefill?.calendarRules ?? [], null, 2)
   )
+  const [primaryImageUrl, setPrimaryImageUrl] = useState<string | null>(
+    guide?.primaryImageUrl ?? prefill?.primaryImageUrl ?? null
+  )
 
   // Import-fra-bruger-guide state (kun relevant ved !isEdit)
   const [importSearch, setImportSearch] = useState('')
@@ -108,6 +113,8 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
     setQuickFactsJson(JSON.stringify(g.quickFacts ?? {}, null, 2))
     setSections(g.sections ?? [])
     setCalendarRulesJson(JSON.stringify(g.calendarRules ?? [], null, 2))
+    // Importér ikke brugerens billede automatisk — admin tager normalt
+    // sit eget billede til master. (Hvis ønsket kan admin uploade efter.)
     const label = g.variety ? `${g.plantName} — ${g.variety}` : g.plantName
     const owner = g.ownerLabel ? ` (af ${g.ownerLabel})` : ''
     setImportedFrom({ id: g.id, label: label + owner })
@@ -193,6 +200,7 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
       sections,
       calendarRules: cal,
       sourceLinks,
+      primaryImageUrl,
     }
 
     startTransition(async () => {
@@ -330,6 +338,21 @@ export function MasterGuideForm({ guide, triggerLabel, prefill }: Props) {
           <div>
             <Label>Latinsk navn</Label>
             <Input value={latinName} onChange={e => setLatinName(e.target.value)} className="mt-1.5" />
+          </div>
+
+          <div>
+            <Label>Hovedbillede</Label>
+            <div className="mt-1.5">
+              <ImageUpload
+                value={primaryImageUrl}
+                onChange={setPrimaryImageUrl}
+                folder="guides"
+                label="Upload hovedbillede"
+              />
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-1 italic">
+              Vises som kortbillede + hero på guide-siden for alle brugere.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

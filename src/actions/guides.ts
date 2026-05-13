@@ -222,6 +222,8 @@ export interface UpdateUserGuideInput {
   sections?: GuideSection[]
   calendarRules?: GuideCalendarRule[]
   sourceLinks?: string[]
+  /** URL til primært billede (Supabase storage). null = fjern. undefined = uændret. */
+  primaryImageUrl?: string | null
 }
 
 /**
@@ -234,22 +236,29 @@ export async function updateUserGuide(
   const { id: userId } = await requireUser()
   const supabase = await createClient()
 
+  // Byg update-objekt; primary_image_url tilføjes kun hvis explicit angivet
+  // (undefined = behold eksisterende, null = ryd, string = sæt)
+  const updatePayload: Record<string, unknown> = {
+    plant_name: input.plantName.trim(),
+    variety: input.variety?.trim() || null,
+    latin_name: input.latinName?.trim() || null,
+    primary_category_id: input.primaryCategoryId,
+    summary: input.summary?.trim() || null,
+    difficulty: input.difficulty ?? null,
+    tags: input.tags ?? [],
+    quick_facts: input.quickFacts ?? {},
+    sections: input.sections ?? [],
+    calendar_rules: input.calendarRules ?? [],
+    source_links: input.sourceLinks ?? [],
+    updated_at: new Date().toISOString(),
+  }
+  if (input.primaryImageUrl !== undefined) {
+    updatePayload.primary_image_url = input.primaryImageUrl
+  }
+
   const { error } = await supabase
     .from('guides')
-    .update({
-      plant_name: input.plantName.trim(),
-      variety: input.variety?.trim() || null,
-      latin_name: input.latinName?.trim() || null,
-      primary_category_id: input.primaryCategoryId,
-      summary: input.summary?.trim() || null,
-      difficulty: input.difficulty ?? null,
-      tags: input.tags ?? [],
-      quick_facts: input.quickFacts ?? {},
-      sections: input.sections ?? [],
-      calendar_rules: input.calendarRules ?? [],
-      source_links: input.sourceLinks ?? [],
-      updated_at: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq('id', id)
     .eq('user_id', userId)
 

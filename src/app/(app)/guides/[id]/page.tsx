@@ -119,6 +119,18 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         />
       )}
 
+      {/* Hovedbillede (hvis admin har uploadet eller bruger har valgt eget) */}
+      {effective.primaryImageId && (
+        <div className="rounded-2xl overflow-hidden border border-border bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={effective.primaryImageId}
+            alt={effective.plantName}
+            className="w-full aspect-[16/9] object-cover"
+          />
+        </div>
+      )}
+
       {/* Hvis sortsguide: link tilbage til artsguide */}
       {parent && (
         <Card className="bg-secondary/30 border-secondary">

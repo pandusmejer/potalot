@@ -199,6 +199,7 @@ export interface AdminGuideRow {
   sections: GuideSection[]
   calendarRules: GuideCalendarRule[]
   sourceLinks: string[]
+  primaryImageUrl: string | null
   isMaster: boolean
   isAiGenerated: boolean
   ownerLabel: string | null
@@ -210,7 +211,7 @@ export interface AdminGuideRow {
   updatedAt: string
 }
 
-const COLS = 'id, plant_name, variety, latin_name, primary_category_id, summary, difficulty, tags, quick_facts, sections, calendar_rules, source_links, is_ai_generated, user_id, flagged_at, flagged_reason, delete_at, created_at, updated_at'
+const COLS = 'id, plant_name, variety, latin_name, primary_category_id, summary, difficulty, tags, quick_facts, sections, calendar_rules, source_links, primary_image_url, is_ai_generated, user_id, flagged_at, flagged_reason, delete_at, created_at, updated_at'
 
 interface RawGuideRow {
   id: string
@@ -225,6 +226,7 @@ interface RawGuideRow {
   sections: unknown[] | null
   calendar_rules: unknown[] | null
   source_links: string[] | null
+  primary_image_url: string | null
   is_ai_generated: boolean | null
   user_id: string | null
   flagged_at: string | null
@@ -269,6 +271,7 @@ function mapRow(r: RawGuideRow, ownerLabel: string | null): AdminGuideRow {
     sections: (r.sections ?? []) as GuideSection[],
     calendarRules: (r.calendar_rules ?? []) as GuideCalendarRule[],
     sourceLinks: r.source_links ?? [],
+    primaryImageUrl: r.primary_image_url,
     isMaster: r.user_id === null,
     isAiGenerated: !!r.is_ai_generated,
     ownerLabel,

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Pencil, Trash2 } from 'lucide-react'
+import { ImageUpload } from '@/components/ui/image-upload'
 import { SectionsEditor } from '@/components/guides/sections-editor'
 import { updateUserGuide, deleteGuide, type UpdateUserGuideInput } from '@/actions/guides'
 import type {
@@ -47,6 +48,9 @@ export function UserGuideEditDialog({ guide }: Props) {
   )
   const [calendarRulesJson, setCalendarRulesJson] = useState(
     JSON.stringify(guide.calendarRules ?? [], null, 2)
+  )
+  const [primaryImageUrl, setPrimaryImageUrl] = useState<string | null>(
+    guide.primaryImageId ?? null
   )
 
   function parseJson<T>(label: string, raw: string, fallback: T): T | { error: string } {
@@ -90,6 +94,7 @@ export function UserGuideEditDialog({ guide }: Props) {
       sections,
       calendarRules: cal,
       sourceLinks,
+      primaryImageUrl, // string = sæt, null = ryd
     }
 
     startTransition(async () => {
@@ -145,6 +150,21 @@ export function UserGuideEditDialog({ guide }: Props) {
           <div>
             <Label>Latinsk navn</Label>
             <Input value={latinName} onChange={e => setLatinName(e.target.value)} className="mt-1.5" />
+          </div>
+
+          <div>
+            <Label>Eget billede <span className="text-xs text-muted-foreground font-normal">(valgfrit)</span></Label>
+            <div className="mt-1.5">
+              <ImageUpload
+                value={primaryImageUrl}
+                onChange={setPrimaryImageUrl}
+                folder="guides"
+                label="Tilføj eget foto"
+              />
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-1 italic">
+              Dit foto vises kun på din egen kopi af guiden — ikke på andres.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

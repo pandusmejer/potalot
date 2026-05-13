@@ -9,7 +9,7 @@ const MAX_BYTES = 10 * 1024 * 1024
 // Vi afviser stadig non-image typer.
 const ALLOWED_PREFIX = 'image/'
 
-export type UploadFolder = 'froebank' | 'planter' | 'log' | 'profil' | 'idetavle' | 'chat'
+export type UploadFolder = 'froebank' | 'planter' | 'log' | 'profil' | 'idetavle' | 'chat' | 'guides'
 
 export async function uploadImage(
   formData: FormData
