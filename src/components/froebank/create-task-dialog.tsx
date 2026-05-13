@@ -9,31 +9,38 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Calendar } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { idag } from '@/lib/datetime'
 import { createTask } from '@/actions/havekalender'
 
 interface Props {
-  /** Frøbank-entry som opgaven knyttes til. */
+  /** Frøbank-entry som remindereren knyttes til. */
   inventoryItemId: string
-  /** Vises som standardtitel-forslag. */
+  /** Bruges som default i title-forslag. */
   itemName: string
 }
 
+/**
+ * Reminder i kalenderen knyttet til en frøpose. Et frø har ingen
+ * gøremål — det ligger og venter. Men brugeren kan have brug for at
+ * minde sig selv om fx 'Så Black Cherry 12. april' eller 'Tjek
+ * lagerstatus før sæsonen'. Det er en bruger-fri OPGAVE, ikke et
+ * system-genereret GØREMÅL.
+ */
 export function CreateTaskDialog({ inventoryItemId, itemName }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const [title, setTitle] = useState(`Opgave for ${itemName}`)
+  const [title, setTitle] = useState(`Så ${itemName}`)
   const [date, setDate] = useState(idag())
   const [description, setDescription] = useState('')
 
   function handleOpenChange(o: boolean) {
     setOpen(o)
     if (o) {
-      setTitle(`Opgave for ${itemName}`)
+      setTitle(`Så ${itemName}`)
       setDate(idag())
       setDescription('')
       setError(null)
@@ -69,14 +76,16 @@ export function CreateTaskDialog({ inventoryItemId, itemName }: Props) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Calendar className="h-4 w-4" />
-          Opret opgave
+          <Bell className="h-4 w-4" />
+          Sæt reminder
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Opret opgave</DialogTitle>
+        <DialogTitle>Sæt reminder</DialogTitle>
         <DialogDescription>
-          Knyttes automatisk til {itemName}.
+          En personlig påmindelse i kalenderen — fx &ldquo;Så {itemName} 12. april&rdquo;
+          eller &ldquo;Tjek lagerstatus før sæsonen&rdquo;. Når du faktisk sår, brug
+          &ldquo;Så et frø&rdquo;-knappen — det aktiverer planten i Mine planter.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -98,7 +107,7 @@ export function CreateTaskDialog({ inventoryItemId, itemName }: Props) {
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Gemmer…' : 'Gem opgave'}
+              {pending ? 'Gemmer…' : 'Sæt reminder'}
             </Button>
           </DialogFooter>
         </form>

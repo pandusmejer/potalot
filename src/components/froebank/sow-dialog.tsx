@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Sprout } from 'lucide-react'
+import { Sprout, Leaf, Flower2 } from 'lucide-react'
 import { saaFroeFraInventory } from '@/actions/mine-planter'
 import { idag } from '@/lib/datetime'
 import { GROWING_LOCATION_META } from '@/lib/constants'
@@ -91,17 +91,55 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
       <DialogContent>
         {success ? (
           <div className="flex flex-col items-center gap-3 py-8 text-center">
-            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
-              <Sprout className="h-7 w-7 text-primary" />
+            <div className="relative h-20 w-20 flex items-center justify-center">
+              {/* Pulserende ring bag ikonet */}
+              <div className="absolute inset-0 rounded-full bg-primary/20 sprout-ring" />
+              {/* Hoved-ikon med bounce */}
+              <div className="relative h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center sprout-celebrate">
+                <Sprout className="h-7 w-7 text-primary" />
+              </div>
+              {/* Konfetti-blade der flyver udad */}
+              <Leaf
+                className="absolute h-4 w-4 text-green-600 sprout-confetti"
+                style={{ ['--end-transform' as string]: 'translate(-60px, -70px) rotate(-45deg)' }}
+              />
+              <Leaf
+                className="absolute h-3 w-3 text-emerald-700 sprout-confetti"
+                style={{
+                  ['--end-transform' as string]: 'translate(70px, -50px) rotate(60deg)',
+                  animationDelay: '0.1s',
+                }}
+              />
+              <Sprout
+                className="absolute h-3 w-3 text-lime-600 sprout-confetti"
+                style={{
+                  ['--end-transform' as string]: 'translate(-50px, 40px) rotate(-30deg)',
+                  animationDelay: '0.15s',
+                }}
+              />
+              <Flower2
+                className="absolute h-3.5 w-3.5 text-rose-400 sprout-confetti"
+                style={{
+                  ['--end-transform' as string]: 'translate(55px, 50px) rotate(90deg)',
+                  animationDelay: '0.05s',
+                }}
+              />
+              <Leaf
+                className="absolute h-3 w-3 text-green-700 sprout-confetti"
+                style={{
+                  ['--end-transform' as string]: 'translate(0, -80px) rotate(180deg)',
+                  animationDelay: '0.2s',
+                }}
+              />
             </div>
             <div>
-              <p className="font-serif text-xl text-foreground">
-                {success.merged ? 'Såning tilføjet' : 'Plante oprettet'}
+              <p className="font-serif text-2xl text-foreground">
+                {success.merged ? 'Såning tilføjet' : 'Plante aktiveret!'}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 {success.merged
                   ? 'Føjet til din eksisterende dyrkning af samme sort.'
-                  : `${success.tasksCreated} ${success.tasksCreated === 1 ? 'opgave er' : 'opgaver er'} lagt i kalenderen.`}
+                  : `Velkommen til Mine planter. ${success.tasksCreated} ${success.tasksCreated === 1 ? 'gøremål er' : 'gøremål er'} lagt i kalenderen.`}
               </p>
             </div>
           </div>

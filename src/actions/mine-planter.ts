@@ -323,6 +323,32 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   }
 }
 
+/**
+ * Map en log-type til det stadie planten BØR være i efter eventet.
+ * Returnerer null hvis loggen ikke afspejler en stadie-overgang.
+ *
+ * Reglen: vi rykker KUN fremad, aldrig tilbage. En 'watering'-log skal
+ * fx ikke flytte en plante fra 'udplantet' tilbage til 'spirer'.
+ */
+const LOG_TO_STAGE: Partial<Record<PlantLogType, PlantStatus>> = {
+  sowing: 'saaet',
+  germination: 'spirer',
+  planting_out: 'udplantet',
+  harvest: 'hoestklar',
+  // watering, fertilizing, pruning, pest_disease, repotting, note → null (intet skifte)
+}
+
+const STAGE_RANK: Record<PlantStatus, number> = {
+  planlagt: 0,
+  saaet: 1,
+  spirer: 2,
+  i_vaekst: 3,
+  klar_til_udplantning: 4,
+  udplantet: 5,
+  hoestklar: 6,
+  afsluttet: 7,
+}
+
 export async function createPlantLog(input: {
   plantId: string
   date: string
@@ -330,7 +356,7 @@ export async function createPlantLog(input: {
   title?: string
   note?: string
   imageUrls?: string[]
-}): Promise<{ id: string } | { error: string }> {
+}): Promise<{ id: string; stageAdvancedTo?: PlantStatus } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -349,8 +375,38 @@ export async function createPlantLog(input: {
 
   if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme log' }
 
+  // Auto-stage-advance: hvis loggen afspejler en livscyklus-event,
+  // ryk plantens status frem (men aldrig tilbage)
+  let stageAdvancedTo: PlantStatus | undefined
+  const targetStage = LOG_TO_STAGE[input.type]
+  if (targetStage) {
+    const { data: plantRow } = await supabase
+      .from('plants_v2')
+      .select('status')
+      .eq('id', input.plantId)
+      .eq('user_id', userId)
+      .maybeSingle()
+    const currentStatus = plantRow?.status as PlantStatus | undefined
+    if (currentStatus && STAGE_RANK[targetStage] > STAGE_RANK[currentStatus]) {
+      await supabase
+        .from('plants_v2')
+        .update({ status: targetStage, updated_at: new Date().toISOString() })
+        .eq('id', input.plantId)
+        .eq('user_id', userId)
+      // Tilføj ekstra status_change-log så historikken er sporet
+      await supabase.from('plant_logs_v2').insert({
+        plant_id: input.plantId,
+        user_id: userId,
+        date: input.date,
+        type: 'status_change',
+        note: `Auto-skift til "${targetStage}" pga. ${input.type}-log`,
+      })
+      stageAdvancedTo = targetStage
+    }
+  }
+
   revalidatePath(`/mine-planter/${input.plantId}`)
-  return { id: data.id as string }
+  return { id: data.id as string, stageAdvancedTo }
 }
 
 export async function updatePlantLog(input: {
