@@ -7,6 +7,7 @@ import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
 } from '@/lib/task-generation'
 import { getAllGuides } from '@/actions/guides'
+import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import type { Plant, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
@@ -350,6 +351,71 @@ export async function createPlantLog(input: {
 
   revalidatePath(`/mine-planter/${input.plantId}`)
   return { id: data.id as string }
+}
+
+export async function updatePlantLog(input: {
+  logId: string
+  date: string
+  type: PlantLogType
+  title?: string
+  note?: string
+  imageUrls?: string[]
+}): Promise<{ ok: true; plantId: string } | { error: string }> {
+  const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('plant_logs_v2')
+    .update({
+      date: input.date,
+      type: input.type,
+      title: input.title || null,
+      note: input.note || null,
+      image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+    })
+    .eq('id', input.logId)
+    .eq('user_id', userId)
+    .select('plant_id')
+    .maybeSingle()
+
+  if (error) return { error: error.message }
+  if (!data) return { error: 'Log ikke fundet eller ingen adgang' }
+
+  const plantId = data.plant_id as string
+  revalidatePath(`/mine-planter/${plantId}`)
+  return { ok: true, plantId }
+}
+
+export async function deletePlantLog(
+  logId: string
+): Promise<{ ok: true; plantId: string } | { error: string }> {
+  const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  // Hent plant_id først så vi kan revalidate korrekt path
+  const { data: row, error: fetchErr } = await supabase
+    .from('plant_logs_v2')
+    .select('plant_id, image_urls')
+    .eq('id', logId)
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (fetchErr) return { error: fetchErr.message }
+  if (!row) return { error: 'Log ikke fundet' }
+
+  const { error: delErr } = await supabase
+    .from('plant_logs_v2')
+    .delete()
+    .eq('id', logId)
+    .eq('user_id', userId)
+  if (delErr) return { error: delErr.message }
+
+  // Ryd op i Storage — best effort, ignorér fejl
+  const urls = (row.image_urls as string[] | null) ?? []
+  await Promise.all(urls.map(url => (async () => {
+    try { await deleteImageFromStorage(url) } catch { /* ignore */ }
+  })()))
+
+  const plantId = row.plant_id as string
+  revalidatePath(`/mine-planter/${plantId}`)
+  return { ok: true, plantId }
 }
 
 export async function updatePlantStatus(

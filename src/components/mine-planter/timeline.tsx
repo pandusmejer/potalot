@@ -2,7 +2,15 @@ import { formatDatoMedAar, venligDato } from '@/lib/datetime'
 import type { Plant, PlantLog } from '@/lib/types'
 import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LogActions } from '@/components/mine-planter/log-actions'
 import type { ComponentType, SVGProps } from 'react'
+
+/** Log-typer som brugeren har oprettet — kan redigeres/slettes.
+ *  Auto-genererede status_change og archive lader vi være. */
+const EDITABLE_TYPES = new Set<string>([
+  'note', 'watering', 'fertilizing', 'pruning', 'pest_disease',
+  'harvest', 'germination', 'repotting', 'planting_out', 'sowing',
+])
 
 const LOG_ICON: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   sowing: Sprout,
@@ -72,8 +80,9 @@ export function Timeline({ plant, logs }: Props) {
         if (item.kind === 'log') {
           const Icon = LOG_ICON[item.log.type] ?? FileText
           const farve = LOG_FARVE[item.log.type] ?? LOG_FARVE.note
+          const editable = EDITABLE_TYPES.has(item.log.type)
           return (
-            <div key={`l${item.log.id}`} className="flex items-start gap-3 relative">
+            <div key={`l${item.log.id}`} className="group flex items-start gap-3 relative">
               <div
                 className={cn(
                   'h-8 w-8 rounded-full border flex items-center justify-center shrink-0 z-10 bg-card',
@@ -109,6 +118,9 @@ export function Timeline({ plant, logs }: Props) {
                   </div>
                 )}
               </div>
+              {editable && (
+                <LogActions plantId={plant.id} log={item.log} />
+              )}
             </div>
           )
         }

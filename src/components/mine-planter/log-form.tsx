@@ -10,10 +10,10 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
-import { Plus } from 'lucide-react'
-import type { PlantLogType } from '@/lib/types'
+import { Plus, Pencil } from 'lucide-react'
+import type { PlantLog, PlantLogType } from '@/lib/types'
 import { idag } from '@/lib/datetime'
-import { createPlantLog } from '@/actions/mine-planter'
+import { createPlantLog, updatePlantLog } from '@/actions/mine-planter'
 import { deleteImage } from '@/actions/storage'
 
 const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
@@ -30,37 +30,51 @@ const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
 
 interface Props {
   plantId: string
+  /** Hvis sat: edit-mode. Felterne forudfyldes fra logget og 'Gem' opdaterer i stedet for at oprette. */
+  log?: PlantLog
+  /** Custom trigger (fx en lille pencil-knap i timeline). Default er stor "Ny lognote"-knap. */
+  trigger?: React.ReactNode
 }
 
 /**
- * Log-form til at tilføje ny dyrkningslog på en plante.
- * TODO (database): Server action der gemmer til Supabase.
+ * Log-form til at oprette/redigere en dyrkningslog.
  */
-export function LogForm({ plantId }: Props) {
+export function LogForm({ plantId, log, trigger }: Props) {
   const router = useRouter()
+  const isEdit = !!log
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [type, setType] = useState<PlantLogType>('note')
-  const [date, setDate] = useState(idag())
-  const [title, setTitle] = useState('')
-  const [note, setNote] = useState('')
-  const [images, setImages] = useState<string[]>([])
+  const [type, setType] = useState<PlantLogType>(log?.type ?? 'note')
+  const [date, setDate] = useState(log?.date ?? idag())
+  const [title, setTitle] = useState(log?.title ?? '')
+  const [note, setNote] = useState(log?.note ?? '')
+  const [images, setImages] = useState<string[]>(log?.imageIds ?? [])
 
   function reset() {
-    setTitle('')
-    setNote('')
-    setType('note')
-    setDate(idag())
-    setImages([])
+    if (isEdit && log) {
+      setTitle(log.title ?? '')
+      setNote(log.note ?? '')
+      setType(log.type)
+      setDate(log.date)
+      setImages(log.imageIds)
+    } else {
+      setTitle('')
+      setNote('')
+      setType('note')
+      setDate(idag())
+      setImages([])
+    }
     setError(null)
   }
 
   function handleOpenChange(next: boolean) {
     setOpen(next)
     if (!next) {
-      // Forladte uploads ryddes op så vi ikke efterlader forældreløse filer i Storage.
-      images.forEach(url => { deleteImage(url).catch(() => {}) })
+      // Ved create-mode: ryd uploadede billeder der ikke blev gemt
+      if (!isEdit) {
+        images.forEach(url => { deleteImage(url).catch(() => {}) })
+      }
       reset()
     }
   }
@@ -70,20 +84,24 @@ export function LogForm({ plantId }: Props) {
     setError(null)
 
     startTransition(async () => {
-      const res = await createPlantLog({
-        plantId,
+      const payload = {
         date,
         type,
         title: title.trim() || undefined,
         note: note.trim() || undefined,
         imageUrls: images.length > 0 ? images : undefined,
-      })
+      }
+
+      const res = isEdit && log
+        ? await updatePlantLog({ logId: log.id, ...payload })
+        : await createPlantLog({ plantId, ...payload })
+
       if ('error' in res) {
         setError(res.error)
         return
       }
       setOpen(false)
-      reset()
+      if (!isEdit) reset()
       router.refresh()
     })
   }
@@ -91,15 +109,25 @@ export function LogForm({ plantId }: Props) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Plus className="h-4 w-4" />
-          Ny lognote
-        </Button>
+        {trigger ?? (
+          isEdit ? (
+            <Button variant="ghost" size="sm" aria-label="Redigér log">
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm">
+              <Plus className="h-4 w-4" />
+              Ny lognote
+            </Button>
+          )
+        )}
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Tilføj til log</DialogTitle>
+        <DialogTitle>{isEdit ? 'Redigér log-event' : 'Tilføj til log'}</DialogTitle>
         <DialogDescription>
-          Skriv en observation eller registrér en handling.
+          {isEdit
+            ? 'Ret detaljerne. Ændringer påvirker historikken på din plante.'
+            : 'Skriv en observation eller registrér en handling.'}
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -156,8 +184,6 @@ export function LogForm({ plantId }: Props) {
                 value={images}
                 primary={images[0] ?? null}
                 onChange={(urls, prim) => {
-                  // Logs har ikke et "primary"-koncept — vi fortolker stjernen som
-                  // "flyt forrest" så rækkefølgen i image_urls afspejler valget.
                   if (prim && urls.includes(prim) && urls[0] !== prim) {
                     setImages([prim, ...urls.filter(u => u !== prim)])
                   } else {
@@ -178,7 +204,7 @@ export function LogForm({ plantId }: Props) {
               Annullér
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Gemmer…' : 'Gem'}
+              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : 'Gem'}
             </Button>
           </DialogFooter>
         </form>
