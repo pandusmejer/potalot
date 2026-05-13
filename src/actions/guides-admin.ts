@@ -100,28 +100,14 @@ export async function updateMasterGuide(
 }
 
 export async function deleteMasterGuide(
-  id: string
-): Promise<{ ok: true } | { error: string }> {
+  id: string,
+  options?: { replacementGuideId?: string | null; notifyAffectedUsers?: boolean }
+): Promise<{ ok: true; affectedUsers: number; relinked: number } | { error: string }> {
   await requireAdmin()
-  const supabase = await createClient()
-
-  const { data, error } = await supabase
-    .from('guides')
-    .delete()
-    .eq('id', id)
-    .is('user_id', null)
-    .select('id')
-    .maybeSingle()
-
-  if (error) return { error: error.message }
-  if (!data) {
-    return { error: 'Kunne ikke slette master-guide — kontroller at den findes og er en master.' }
-  }
-
-  revalidatePath('/admin/guides')
-  revalidatePath('/guides')
-  revalidatePath(`/guides/${id}`)
-  return { ok: true }
+  // Delegér til den fælles deleteGuide-action — den håndterer relink,
+  // notifikationer og autorisations-tjek via SECURITY DEFINER-RPC.
+  const { deleteGuide } = await import('@/actions/guides')
+  return deleteGuide(id, options)
 }
 
 export interface AdminGuideRow {

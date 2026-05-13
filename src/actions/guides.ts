@@ -259,26 +259,95 @@ export async function updateUserGuide(
   return { ok: true }
 }
 
-export async function deleteGuide(id: string): Promise<{ ok: true } | { error: string }> {
+export interface GuideUsageStats {
+  inventoryItems: number
+  plants: number
+  varieties: number
+  affectedUsers: number
+  replacementGuideId: string | null
+  replacementGuideLabel: string | null
+}
+
+export async function getGuideUsageStats(id: string): Promise<GuideUsageStats | { error: string }> {
   await requireUser()
   const supabase = await createClient()
-  // Filtrér IKKE på user_id — RLS afgør om brugeren må slette (ejer eller
-  // admin via moderate-policy fra 00044). Vi tjekker bagefter at en row
-  // faktisk blev slettet, så silent failure bliver til explicit fejl.
-  const { data, error } = await supabase
-    .from('guides')
-    .delete()
-    .eq('id', id)
-    .select('id')
-    .maybeSingle()
+  const { data, error } = await supabase.rpc('guide_usage_stats', { p_guide_id: id })
   if (error) return { error: error.message }
-  if (!data) {
-    return { error: 'Kunne ikke slette — kun ejeren eller en administrator kan slette denne guide. (Hvis du er admin: tjek at migration 00044 er kørt.)' }
+  const raw = data as Record<string, unknown> | null
+  if (!raw) return { error: 'Ingen data' }
+  if (typeof raw.error === 'string') return { error: raw.error }
+  return {
+    inventoryItems: Number(raw.inventory_items) || 0,
+    plants: Number(raw.plants) || 0,
+    varieties: Number(raw.varieties) || 0,
+    affectedUsers: Number(raw.affected_users) || 0,
+    replacementGuideId: (raw.replacement_guide_id as string | null) ?? null,
+    replacementGuideLabel: (raw.replacement_guide_label as string | null) ?? null,
   }
+}
+
+/**
+ * Slet en guide. Hvis options.replacementGuideId angives, re-pointes
+ * alle berørte items/planter/sorter til den replacement INDEN sletning
+ * (bevarer linket, hvor SET NULL ellers ville have ramt). Hvis
+ * options.notifyAffectedUsers er true, sendes notifikationer til alle
+ * brugere hvis indhold blev berørt.
+ */
+export async function deleteGuide(
+  id: string,
+  options?: { replacementGuideId?: string | null; notifyAffectedUsers?: boolean }
+): Promise<{ ok: true; affectedUsers: number; relinked: number } | { error: string }> {
+  const { id: actorId } = await requireUser()
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.rpc('delete_guide_with_relink', {
+    p_guide_id: id,
+    p_replacement_guide_id: options?.replacementGuideId ?? null,
+  })
+  if (error) return { error: error.message }
+  const result = data as {
+    plant_name: string
+    affected_user_ids: string[]
+    relinked_inventory: number
+    relinked_plants: number
+    relinked_varieties: number
+  } | null
+  if (!result) return { error: 'Sletning fejlede' }
+
+  const affectedIds = (result.affected_user_ids ?? []).filter(uid => uid !== actorId)
+  const relinked = (result.relinked_inventory ?? 0) + (result.relinked_plants ?? 0) + (result.relinked_varieties ?? 0)
+
+  // Notificér berørte brugere
+  if (options?.notifyAffectedUsers && affectedIds.length > 0) {
+    const guidanceMsg = relinked > 0
+      ? `Dine items er automatisk re-linket til en anden guide for "${result.plant_name}".`
+      : `Dine items for "${result.plant_name}" har mistet guide-link. Find dem under "Mangler guide" i frøbanken.`
+    await Promise.all(
+      affectedIds.map(async uid => {
+        try {
+          await supabase.rpc('enqueue_notification', {
+            p_user_id: uid,
+            p_type: 'guide_deleted',
+            p_actor_user_id: actorId,
+            p_title: `Guiden "${result.plant_name}" er slettet`,
+            p_body: guidanceMsg,
+            p_link: '/froebank?filter=mangler-guide',
+            p_group_id: null,
+            p_idea_id: null,
+            p_forum_post_id: null,
+            p_swap_listing_id: null,
+          })
+        } catch { /* ignore */ }
+      })
+    )
+  }
+
   revalidatePath('/guides')
   revalidatePath('/admin/guides')
   revalidatePath(`/guides/${id}`)
-  return { ok: true }
+  revalidatePath('/froebank')
+  revalidatePath('/mine-planter')
+  return { ok: true, affectedUsers: affectedIds.length, relinked }
 }
 
 export async function attachGuideToInventory(
