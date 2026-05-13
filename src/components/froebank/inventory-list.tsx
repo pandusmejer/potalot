@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo, useTransition, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CategoryTabs } from './category-tabs'
 import { InventoryCard } from './inventory-card'
@@ -24,15 +24,35 @@ interface Props {
 
 type SmartFilter = 'mangler-guide' | 'udloeber-snart' | 'mangler-billede' | 'naesten-tom'
 
+const VALID_SMART_FILTERS: SmartFilter[] = ['mangler-guide', 'udloeber-snart', 'mangler-billede', 'naesten-tom']
+
 export function InventoryListView({ inventory, customSubcategories = [] }: Props) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [pending, startTransition] = useTransition()
   const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')
   const [search, setSearch] = useState('')
   const [subcat, setSubcat] = useState<string>('alle')
-  const [smartFilters, setSmartFilters] = useState<Set<SmartFilter>>(new Set())
+  const [smartFilters, setSmartFilters] = useState<Set<SmartFilter>>(() => {
+    const f = searchParams.get('filter')
+    if (f && (VALID_SMART_FILTERS as string[]).includes(f)) return new Set([f as SmartFilter])
+    return new Set()
+  })
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  // Reagér hvis filter-query ændres mens komponenten lever (fx fra notifikations-klik)
+  useEffect(() => {
+    const f = searchParams.get('filter')
+    if (f && (VALID_SMART_FILTERS as string[]).includes(f)) {
+      setSmartFilters(prev => {
+        if (prev.has(f as SmartFilter)) return prev
+        const next = new Set(prev)
+        next.add(f as SmartFilter)
+        return next
+      })
+    }
+  }, [searchParams])
 
   const tilgaengeligeSubs = useMemo(() => {
     const all: Subcategory[] = [...SYSTEM_SUBCATEGORIES, ...customSubcategories]
