@@ -4,14 +4,15 @@ import { useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
 import { TodoTabs } from '@/components/havekalender/todo-tabs'
 import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
-import { YearWheelSection } from '@/components/havekalender/year-wheel-section'
+import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
+import { YearWheelDialog } from '@/components/havekalender/year-wheel-dialog'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
 import { GeneralTaskActions } from '@/components/havekalender/general-task-actions'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ListChecks, Calendar, EyeOff, Eye, Info } from 'lucide-react'
+import { ListChecks, Calendar, EyeOff, Eye, Info, Library } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, TASK_PRIORITY_META } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -31,23 +32,26 @@ interface Props {
 export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides }: Props) {
   const [valgtMaaned, setValgtMaaned] = useState(aktuelMaaned())
   const [visSkjulte, setVisSkjulte] = useState(false)
+  const year = new Date().getFullYear()
 
   const aktivePlanter = plants
     .filter(p => !p.isArchived)
     .map(p => ({ id: p.id, name: p.name, variety: p.variety }))
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-serif text-foreground">Havekalender</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Havens gøremål, det kan du så/plante nu og dine opgaver.
+            Sæsonens rytme, dine opgaver og hvad du kan så lige nu.
           </p>
         </div>
         <AddTaskDialog plants={aktivePlanter} />
       </div>
 
+      {/* Årshjul — navigation */}
       <Aarshjul
         active={valgtMaaned}
         onChange={setValgtMaaned}
@@ -55,55 +59,60 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         generelle={generalTasks.filter(g => !g.isHiddenByMe)}
       />
 
-      <MaanedensGoeremaal
-        month={valgtMaaned}
-        generalTasks={generalTasks}
-        userTasks={userTasks}
-        visSkjulte={visSkjulte}
-        onToggleSkjulte={() => setVisSkjulte(v => !v)}
-      />
+      {/* Måneds-hero med stemning */}
+      <MaanedsHero month={valgtMaaned} year={year} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ListChecks className="h-4 w-4 text-primary" />
-            Mine opgaver
-            <span
-              className="inline-flex items-center"
-              title="Konkrete to-dos med specifik dato. Auto-genereres fra dine dyrkningsguides (fx 'Udplant 13. maj') eller oprettes manuelt. Modsat 'Gøremål' der er sæsonbestemte ting."
-            >
-              <Info className="h-3 w-3 text-muted-foreground" />
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <div className="px-5 pb-5">
-          <TodoTabs tasks={tasks} />
-        </div>
-      </Card>
+      {/* Tre-kort grid: Gøremål · Mine opgaver · Det kan du så */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <MaanedensGoeremaal
+          month={valgtMaaned}
+          generalTasks={generalTasks}
+          userTasks={userTasks}
+          visSkjulte={visSkjulte}
+          onToggleSkjulte={() => setVisSkjulte(v => !v)}
+          existingTasks={tasks}
+          year={year}
+        />
 
-      <YearWheelSection
-        existingTasks={tasks}
-        year={new Date().getFullYear()}
-      />
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-primary" />
+              Mine opgaver
+              <span
+                className="inline-flex items-center"
+                title="Konkrete to-dos med specifik dato. Auto-genereres fra dine dyrkningsguides eller oprettes manuelt. Modsat 'Gøremål' der er sæsonbestemte ting."
+              >
+                <Info className="h-3 w-3 text-muted-foreground" />
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <TodoTabs tasks={tasks} />
+          </div>
+        </Card>
 
-      <DetKanDuNu
-        month={valgtMaaned}
-        inventory={inventory}
-        guides={guides}
-        plants={plants}
-      />
+        <DetKanDuNu
+          month={valgtMaaned}
+          inventory={inventory}
+          guides={guides}
+          plants={plants}
+        />
+      </div>
     </div>
   )
 }
 
 function MaanedensGoeremaal({
-  month, generalTasks, userTasks, visSkjulte, onToggleSkjulte,
+  month, generalTasks, userTasks, visSkjulte, onToggleSkjulte, existingTasks, year,
 }: {
   month: number
   generalTasks: GeneralGardenTask[]
   userTasks: UserGardenTask[]
   visSkjulte: boolean
   onToggleSkjulte: () => void
+  existingTasks: CalendarTask[]
+  year: number
 }) {
   const monthName = MONTHS_DA[month - 1].full
   const generelleAlle = generalTasks.filter(g => g.month === month)
@@ -114,13 +123,13 @@ function MaanedensGoeremaal({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
+      <CardHeader className="flex flex-row items-start justify-between gap-2 flex-wrap">
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-primary" />
           Gøremål — {monthName}
           <span
             className="inline-flex items-center"
-            title="Sæsonbestemte ting man typisk gør hver måned (fx 'I maj: udplant frostfølsomme planter'). Havens gøremål kommer fra PotAlot — Mine gøremål tilføjer du selv. Modsat 'Mine opgaver' der har specifik dato."
+            title="Sæsonbestemte ting man typisk gør hver måned. Havens gøremål kommer fra PotAlot — Mine gøremål tilføjer du selv. Modsat 'Mine opgaver' der har specifik dato."
           >
             <Info className="h-3 w-3 text-muted-foreground" />
           </span>
@@ -168,6 +177,16 @@ function MaanedensGoeremaal({
         {generelleSynlige.length === 0 && mine.length === 0 && !harSkjulte && (
           <p className="text-sm text-muted-foreground italic">Ingen gøremål i {monthName.toLowerCase()}.</p>
         )}
+
+        {/* Footer: åbn template-katalog */}
+        <div className="pt-3 mt-3 border-t border-border">
+          <YearWheelDialog existingTasks={existingTasks} year={year}>
+            <Button variant="outline" size="sm" className="w-full">
+              <Library className="h-3.5 w-3.5" />
+              Bladr Havens årshjul-katalog
+            </Button>
+          </YearWheelDialog>
+        </div>
       </CardContent>
     </Card>
   )
