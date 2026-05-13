@@ -19,7 +19,7 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser, isCurrentUserAdmin } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
-  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight, Link2, Lock,
+  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight, Link2, Lock, ShieldCheck,
 } from 'lucide-react'
 
 interface Props {
@@ -65,7 +65,7 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
   const cat = PRIMARY_CATEGORIES[effective.primaryCategoryId]
 
   return (
-    <article className="space-y-5 max-w-3xl">
+    <article className={`space-y-5 max-w-3xl ${isMaster ? 'pl-4 border-l-[6px] border-l-green-600 rounded-l-md' : ''}`}>
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button asChild variant="ghost" size="icon">
@@ -74,12 +74,18 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
           </Link>
         </Button>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
               {cat.name}
               {original.guideLevel === 'variety' && parent && ' · sortsvariant'}
               {original.guideLevel === 'species' && ' · artsguide'}
             </span>
+            {isMaster && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-700 text-white text-[11px] font-semibold px-2.5 py-0.5 shadow-sm">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Master-guide
+              </span>
+            )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">
             {effective.plantName}
@@ -150,12 +156,17 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
 
       {/* Master-banner + clone-knap */}
       {isMaster && (
-        <Card className="bg-secondary/30 border-secondary">
+        <Card className="bg-green-50 border-green-300 border-l-[6px] border-l-green-600">
           <CardContent className="flex items-center gap-3 py-3 flex-wrap">
-            <BookOpen className="h-4 w-4 text-primary shrink-0" />
-            <p className="text-sm flex-1 min-w-[200px]">
-              Master-guide. Du kan ikke redigere indholdet, men du kan tilføje dine egne noter eller lave en personlig kopi.
-            </p>
+            <ShieldCheck className="h-5 w-5 text-green-700 shrink-0" />
+            <div className="flex-1 min-w-[200px]">
+              <p className="text-sm font-medium text-green-900">
+                Master-guide — kurateret af PotAlot
+              </p>
+              <p className="text-xs text-green-900/80 mt-0.5">
+                Du kan ikke redigere indholdet, men du kan tilføje egne noter eller lave en personlig kopi.
+              </p>
+            </div>
             {currentUser && <CloneMasterButton guideId={original.id} />}
           </CardContent>
         </Card>
