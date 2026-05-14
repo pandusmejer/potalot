@@ -1,13 +1,14 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { GeneralTaskForm } from '@/components/admin/general-task-form'
 import { isCurrentUserAdmin } from '@/lib/auth'
 import { getGeneralGardenTasks } from '@/actions/aarshjul'
 import { MONTHS_DA } from '@/lib/constants'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { aktuelMaaned } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -24,6 +25,7 @@ export default async function AdminAarshjulPage() {
   if (!isAdmin) redirect('/')
 
   const tasks = await getGeneralGardenTasks({ includeInactive: true })
+  const currentMonth = aktuelMaaned()
 
   // Grupper per måned
   const byMonth: Record<number, typeof tasks> = {}
@@ -47,49 +49,67 @@ export default async function AdminAarshjulPage() {
         <GeneralTaskForm />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {MONTHS_DA.map(m => {
           const monthTasks = byMonth[m.num]
+          const isCurrent = m.num === currentMonth
           return (
-            <Card key={m.num}>
-              <CardContent className="py-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="font-serif text-lg text-foreground">{m.full}</p>
-                  <span className="text-xs text-muted-foreground">{monthTasks.length} gøremål</span>
-                </div>
+            <Card key={m.num} className={isCurrent ? 'border-primary/30' : undefined}>
+              <details
+                open={isCurrent}
+                className="group"
+              >
+                <summary
+                  className="cursor-pointer list-none px-4 py-3 flex items-center gap-3 hover:bg-accent/30 transition-colors rounded-xl"
+                >
+                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 transition-transform group-open:rotate-90" />
+                  <p className="font-serif text-lg text-foreground flex-1">
+                    {m.full}
+                    {isCurrent && (
+                      <span className="ml-2 text-[10px] uppercase tracking-wider text-primary font-sans font-semibold">
+                        i dag
+                      </span>
+                    )}
+                  </p>
+                  <span className="text-xs text-muted-foreground">
+                    {monthTasks.length} gøremål
+                  </span>
+                </summary>
 
-                {monthTasks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">Ingen gøremål endnu.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {monthTasks.map(t => (
-                      <div
-                        key={t.id}
-                        className={cn(
-                          'flex items-start gap-3 p-3 rounded-lg border',
-                          t.isActive ? 'border-border bg-card' : 'border-dashed border-border bg-muted/30 opacity-70'
-                        )}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-medium text-foreground">{t.title}</p>
-                            {!t.isActive && <Badge variant="muted" className="text-[10px]">Inaktiv</Badge>}
-                            <Badge variant="outline" className="text-[10px]">{PRIORITY_LABEL[t.priority] ?? t.priority}</Badge>
-                            {t.category && <Badge variant="outline" className="text-[10px]">{t.category}</Badge>}
+                <div className="px-4 pb-4 pt-1">
+                  {monthTasks.length === 0 ? (
+                    <p className="text-sm text-muted-foreground italic">Ingen gøremål endnu.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {monthTasks.map(t => (
+                        <div
+                          key={t.id}
+                          className={cn(
+                            'flex items-start gap-3 p-3 rounded-lg border',
+                            t.isActive ? 'border-border bg-card' : 'border-dashed border-border bg-muted/30 opacity-70'
+                          )}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="font-medium text-foreground">{t.title}</p>
+                              {!t.isActive && <Badge variant="muted" className="text-[10px]">Inaktiv</Badge>}
+                              <Badge variant="outline" className="text-[10px]">{PRIORITY_LABEL[t.priority] ?? t.priority}</Badge>
+                              {t.category && <Badge variant="outline" className="text-[10px]">{t.category}</Badge>}
+                            </div>
+                            {t.description && (
+                              <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{t.description}</p>
+                            )}
+                            {t.timeWindow && (
+                              <p className="text-xs text-muted-foreground mt-1 italic">{t.timeWindow}</p>
+                            )}
                           </div>
-                          {t.description && (
-                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{t.description}</p>
-                          )}
-                          {t.timeWindow && (
-                            <p className="text-xs text-muted-foreground mt-1 italic">{t.timeWindow}</p>
-                          )}
+                          <GeneralTaskForm task={t} />
                         </div>
-                        <GeneralTaskForm task={t} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </details>
             </Card>
           )
         })}
