@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Award } from 'lucide-react'
 import { Emblem } from '@/components/ui/emblem'
 import {
-  BADGES, BADGE_LIST, BADGE_CATEGORY_LABELS, type BadgeId, type BadgeMeta,
+  BADGE_LIST, BADGE_CATEGORY_LABELS, type BadgeId, type BadgeMeta,
 } from '@/lib/badges-shared'
 import { cn } from '@/lib/utils'
 
@@ -21,12 +21,16 @@ function formatDate(iso: string): string {
 
 export function BadgeGallery({ earned }: Props) {
   const earnedMap = new Map(earned.map(e => [e.badgeId, e.awardedAt]))
+
+  // Filtrer hemmelige badges fra det synlige katalog medmindre de er optjent.
+  // Det er hele charmen ved hemmelige badges — de skal dukke op som overraskelser.
+  const visibleBadges = BADGE_LIST.filter(b => !b.secret || earnedMap.has(b.id))
   const earnedCount = earnedMap.size
-  const totalCount = BADGE_LIST.length
+  const totalCount = visibleBadges.length
 
   // Gruppér badges efter kategori
   const byCategory: Record<string, BadgeMeta[]> = {}
-  for (const b of BADGE_LIST) {
+  for (const b of visibleBadges) {
     if (!byCategory[b.category]) byCategory[b.category] = []
     byCategory[b.category].push(b)
   }

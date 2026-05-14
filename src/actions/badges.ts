@@ -246,6 +246,259 @@ export async function maybeAwardMasterApprentice(userId: string): Promise<void> 
   if (matches) await awardBadge(userId, 'master_apprentice')
 }
 
+// ============================================
+// Genre-specifikke (sort-baserede) helpers
+// ============================================
+
+const TOMAT_PATTERN = '%tomat%'
+const CHILI_PATTERN = '%chili%'
+
+// Krydderurter — typiske navne på dansk
+const HERB_NAMES = [
+  'basilikum', 'persille', 'mynte', 'oregano', 'timian', 'rosmarin',
+  'salvie', 'dild', 'koriander', 'estragon', 'purløg', 'kørvel',
+  'merian', 'citronmelisse', 'bukketorn',
+]
+
+/**
+ * tomato_master: 3+ unique tomat-sorter (plant_name ILIKE '%tomat%').
+ */
+export async function maybeAwardTomatoMaster(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('name, variety')
+    .eq('user_id', userId)
+    .ilike('name', TOMAT_PATTERN)
+  if (!data) return
+  const unique = new Set((data as { name: string; variety: string | null }[]).map(
+    p => `${p.name.toLowerCase().trim()}|${(p.variety ?? '').toLowerCase().trim()}`
+  ))
+  if (unique.size >= 3) await awardBadge(userId, 'tomato_master')
+}
+
+/**
+ * chili_lord: 3+ unique chili-sorter.
+ */
+export async function maybeAwardChiliLord(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('name, variety')
+    .eq('user_id', userId)
+    .ilike('name', CHILI_PATTERN)
+  if (!data) return
+  const unique = new Set((data as { name: string; variety: string | null }[]).map(
+    p => `${p.name.toLowerCase().trim()}|${(p.variety ?? '').toLowerCase().trim()}`
+  ))
+  if (unique.size >= 3) await awardBadge(userId, 'chili_lord')
+}
+
+/**
+ * herb_keeper: 5+ unique krydderurter (matcher kendte urt-navne).
+ */
+export async function maybeAwardHerbKeeper(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('name')
+    .eq('user_id', userId)
+  if (!data) return
+  const unique = new Set<string>()
+  for (const p of (data as { name: string }[])) {
+    const lower = p.name.toLowerCase()
+    for (const herb of HERB_NAMES) {
+      if (lower.includes(herb)) { unique.add(herb); break }
+    }
+  }
+  if (unique.size >= 5) await awardBadge(userId, 'herb_keeper')
+}
+
+/**
+ * altan_grower: 5+ planter med "altan" eller "balkon" i location-fritekst.
+ */
+export async function maybeAwardAltanGrower(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('id, location')
+    .eq('user_id', userId)
+  if (!data) return
+  const count = (data as { id: string; location: string | null }[]).filter(p => {
+    if (!p.location) return false
+    const l = p.location.toLowerCase()
+    return l.includes('altan') || l.includes('balkon')
+  }).length
+  if (count >= 5) await awardBadge(userId, 'altan_grower')
+}
+
+/**
+ * drivhus_keeper: 5+ planter med "drivhus" i location.
+ */
+export async function maybeAwardDrivhusKeeper(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('id, location')
+    .eq('user_id', userId)
+  if (!data) return
+  const count = (data as { id: string; location: string | null }[]).filter(p => {
+    return !!p.location && p.location.toLowerCase().includes('drivhus')
+  }).length
+  if (count >= 5) await awardBadge(userId, 'drivhus_keeper')
+}
+
+// ============================================
+// Samler / diversitet
+// ============================================
+
+/**
+ * fifty_varieties: 50+ unique items i frøbank (plant_name + variety distinct).
+ */
+export async function maybeAwardFiftyVarieties(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('inventory_items')
+    .select('name, variety')
+    .eq('user_id', userId)
+  if (!data) return
+  const unique = new Set((data as { name: string; variety: string | null }[]).map(
+    i => `${i.name.toLowerCase().trim()}|${(i.variety ?? '').toLowerCase().trim()}`
+  ))
+  if (unique.size >= 50) await awardBadge(userId, 'fifty_varieties')
+}
+
+/**
+ * perennial_keeper: 5+ items i flerårige kategorier (knolde/buske/træer/stauder).
+ */
+export async function maybeAwardPerennialKeeper(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('inventory_items')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .in('primary_category_id', ['knolde', 'buske', 'traeer', 'stauder'])
+  if ((count ?? 0) >= 5) await awardBadge(userId, 'perennial_keeper')
+}
+
+/**
+ * biodiversity_friend: items i 5+ forskellige primary_category_id.
+ */
+export async function maybeAwardBiodiversityFriend(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('inventory_items')
+    .select('primary_category_id')
+    .eq('user_id', userId)
+  if (!data) return
+  const unique = new Set((data as { primary_category_id: string }[]).map(i => i.primary_category_id))
+  unique.delete('favoritter') // ikke en rigtig kategori
+  if (unique.size >= 5) await awardBadge(userId, 'biodiversity_friend')
+}
+
+// ============================================
+// Læring
+// ============================================
+
+/**
+ * monthly_logger: log-aktivitet i alle 12 årets måneder (over alle år).
+ */
+export async function maybeAwardMonthlyLogger(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plant_logs_v2')
+    .select('date')
+    .eq('user_id', userId)
+    .neq('type', 'status_change') // tæl ikke auto-genererede
+  if (!data) return
+  const months = new Set<number>()
+  for (const r of (data as { date: string }[])) {
+    const m = new Date(r.date).getMonth() + 1
+    months.add(m)
+  }
+  if (months.size >= 12) await awardBadge(userId, 'monthly_logger')
+}
+
+/**
+ * autobiograf: 10+ private noter på guides (user_guide_notes).
+ */
+export async function maybeAwardAutobiograf(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('user_guide_notes')
+    .select('guide_id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+  if ((count ?? 0) >= 10) await awardBadge(userId, 'autobiograf')
+}
+
+// ============================================
+// Hemmelige badges (secret: true)
+// ============================================
+
+/**
+ * slagteren: 3+ planter afsluttet under 30 dage. Sjælden indrømmelse om at
+ * dyrkning er svær.
+ */
+export async function maybeAwardSlagteren(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('sow_date, archived_at, status')
+    .eq('user_id', userId)
+    .eq('status', 'afsluttet')
+    .not('archived_at', 'is', null)
+    .not('sow_date', 'is', null)
+  if (!data) return
+  type Row = { sow_date: string | null; archived_at: string | null }
+  const earlyFinished = (data as Row[]).filter(p => {
+    if (!p.sow_date || !p.archived_at) return false
+    const sow = new Date(p.sow_date).getTime()
+    const arch = new Date(p.archived_at).getTime()
+    const days = (arch - sow) / 86400000
+    return days < 30
+  })
+  if (earlyFinished.length >= 3) await awardBadge(userId, 'slagteren')
+}
+
+/**
+ * hasarderen: sået en varmekrævende plante før 1. marts.
+ * Varmekrævende = tomat, chili, peberfrugt, agurk, squash, melon, basilikum.
+ */
+const VARMEKRAEVENDE = ['tomat', 'chili', 'peberfrugt', 'agurk', 'squash', 'melon', 'basilikum', 'aubergine']
+
+export async function maybeAwardHasarderen(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('name, sow_date')
+    .eq('user_id', userId)
+    .not('sow_date', 'is', null)
+  if (!data) return
+  type Row = { name: string; sow_date: string | null }
+  const matches = (data as Row[]).some(p => {
+    if (!p.sow_date) return false
+    const sowDate = new Date(p.sow_date)
+    // Før 1. marts (måned 3, dag 1)
+    if (sowDate.getMonth() > 1) return false  // måneder er 0-indekserede; måned 1 = februar
+    const lower = p.name.toLowerCase()
+    return VARMEKRAEVENDE.some(v => lower.includes(v))
+  })
+  if (matches) await awardBadge(userId, 'hasarderen')
+}
+
+/**
+ * sneglefaelleren: 3+ pest_disease-logs.
+ */
+export async function maybeAwardSneglefaelleren(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('plant_logs_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('type', 'pest_disease')
+  if ((count ?? 0) >= 3) await awardBadge(userId, 'sneglefaelleren')
+}
+
 /**
  * Backfill helper: kør alle badge-check helpers parallelt for en bruger.
  * Bruges på profil-siden så eksisterende brugere får retro-tildelt badges
@@ -253,16 +506,35 @@ export async function maybeAwardMasterApprentice(userId: string): Promise<void> 
  */
 export async function backfillAllBadges(userId: string): Promise<void> {
   await Promise.all([
+    // Sociale
     maybeAwardFirstPost(userId).catch(() => {}),
     maybeAwardHelpful(userId).catch(() => {}),
     maybeAwardSeedKeeper(userId).catch(() => {}),
     maybeAwardCommunityStarter(userId).catch(() => {}),
     maybeAwardGreenThumb(userId).catch(() => {}),
     maybeAwardCurator(userId).catch(() => {}),
+    // Dyrkning lifecycle
     maybeAwardFirstSowing(userId).catch(() => {}),
     maybeAwardFirstHarvest(userId).catch(() => {}),
     maybeAwardSeasonFinisher(userId).catch(() => {}),
     maybeAwardTheCollector(userId).catch(() => {}),
     maybeAwardMasterApprentice(userId).catch(() => {}),
+    // Genre-specifikke
+    maybeAwardTomatoMaster(userId).catch(() => {}),
+    maybeAwardChiliLord(userId).catch(() => {}),
+    maybeAwardHerbKeeper(userId).catch(() => {}),
+    maybeAwardAltanGrower(userId).catch(() => {}),
+    maybeAwardDrivhusKeeper(userId).catch(() => {}),
+    // Samler
+    maybeAwardFiftyVarieties(userId).catch(() => {}),
+    maybeAwardPerennialKeeper(userId).catch(() => {}),
+    maybeAwardBiodiversityFriend(userId).catch(() => {}),
+    // Læring
+    maybeAwardMonthlyLogger(userId).catch(() => {}),
+    maybeAwardAutobiograf(userId).catch(() => {}),
+    // Hemmelige
+    maybeAwardSlagteren(userId).catch(() => {}),
+    maybeAwardHasarderen(userId).catch(() => {}),
+    maybeAwardSneglefaelleren(userId).catch(() => {}),
   ])
 }

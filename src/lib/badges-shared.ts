@@ -8,12 +8,29 @@ export type BadgeId =
   | 'community_starter' // oprettet en gruppe
   | 'green_thumb'       // dyrker mindst 3 sorter
   | 'curator'           // tilføjet 5 sorter til en gruppe
-  // Dyrkning / lifecycle (nye)
+  // Dyrkning / lifecycle (eksisterende)
   | 'first_sowing'      // første plante sået
   | 'first_harvest'     // første høst
   | 'season_finisher'   // første plante med status='afsluttet'
   | 'the_collector'     // 25+ items i frøbank
   | 'master_apprentice' // har klonet en master-guide til personlig version
+  // Genre-specifikke (nye)
+  | 'tomato_master'     // 3+ tomat-sorter
+  | 'chili_lord'        // 3+ chili-sorter
+  | 'herb_keeper'       // 5+ krydderurter
+  | 'altan_grower'      // 5+ planter på altan
+  | 'drivhus_keeper'    // 5+ planter i drivhus
+  // Samler / diversitet (nye)
+  | 'fifty_varieties'   // 50+ items totalt
+  | 'perennial_keeper'  // 5+ flerårige (knolde/buske/træer)
+  | 'biodiversity_friend' // 5+ forskellige plante-kategorier
+  // Læring (nye)
+  | 'monthly_logger'    // log-aktivitet i 12 forskellige måneder
+  | 'autobiograf'       // 10+ private noter på guides
+  // Hemmelige med humor (nye, secret: true)
+  | 'slagteren'         // 3+ planter afsluttet under 30 dage
+  | 'hasarderen'        // sået varmekrævende før 1. marts
+  | 'sneglefaelleren'   // 3+ pest_disease-logs
 
 export interface BadgeMeta {
   id: BadgeId
@@ -23,8 +40,12 @@ export interface BadgeMeta {
   icon:
     | 'Sparkles' | 'Award' | 'Gift' | 'Users' | 'Sprout' | 'BookOpen'
     | 'Leaf' | 'Wheat' | 'Flag' | 'Package' | 'GitFork'
+    | 'Flame' | 'Apple' | 'Home' | 'TreePine' | 'Library' | 'Globe'
+    | 'PencilLine' | 'Skull' | 'Snowflake' | 'Bug'
   color: 'green' | 'amber' | 'blue' | 'purple'
   category: 'social' | 'dyrkning' | 'samler' | 'laering'
+  /** Hemmelige badges vises ikke i låst-tilstand — kun når optjent. */
+  secret?: boolean
 }
 
 export const BADGES: Record<BadgeId, BadgeMeta> = {
@@ -112,8 +133,53 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
     color: 'purple',
     category: 'dyrkning',
   },
+  tomato_master: {
+    id: 'tomato_master',
+    label: 'Tomatekspert',
+    description: 'Dyrker eller har dyrket 3 eller flere tomatsorter.',
+    hint: 'Aktivér 3 forskellige tomat-planter.',
+    icon: 'Apple',
+    color: 'amber',
+    category: 'dyrkning',
+  },
+  chili_lord: {
+    id: 'chili_lord',
+    label: 'Chilihoved',
+    description: 'Dyrker eller har dyrket 3 eller flere chilisorter.',
+    hint: 'Aktivér 3 forskellige chili-planter.',
+    icon: 'Flame',
+    color: 'amber',
+    category: 'dyrkning',
+  },
+  herb_keeper: {
+    id: 'herb_keeper',
+    label: 'Krydderurtevogter',
+    description: 'Har 5 eller flere krydderurter i sit dyrkningsspor.',
+    hint: 'Aktivér 5 forskellige krydderurter (basilikum, persille, mynte, oregano osv.).',
+    icon: 'Leaf',
+    color: 'green',
+    category: 'dyrkning',
+  },
+  altan_grower: {
+    id: 'altan_grower',
+    label: 'Altanbonde',
+    description: 'Dyrker 5 eller flere planter på altan eller balkon.',
+    hint: 'Aktivér planter med "altan" eller "balkon" i placering.',
+    icon: 'Home',
+    color: 'blue',
+    category: 'dyrkning',
+  },
+  drivhus_keeper: {
+    id: 'drivhus_keeper',
+    label: 'Drivhusvogter',
+    description: 'Dyrker 5 eller flere planter i drivhus.',
+    hint: 'Aktivér planter med "drivhus" i placering.',
+    icon: 'TreePine',
+    color: 'green',
+    category: 'dyrkning',
+  },
 
-  // Samler
+  // Samler / diversitet
   the_collector: {
     id: 'the_collector',
     label: 'Frøhamstrer',
@@ -121,6 +187,33 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
     hint: 'Tilføj frøposer, knolde eller stiklinger til frøbanken.',
     icon: 'Package',
     color: 'amber',
+    category: 'samler',
+  },
+  fifty_varieties: {
+    id: 'fifty_varieties',
+    label: 'Sortsamler',
+    description: '50 eller flere sorter i din samling.',
+    hint: 'Voks din frøbank til 50+ unikke sorter.',
+    icon: 'Library',
+    color: 'amber',
+    category: 'samler',
+  },
+  perennial_keeper: {
+    id: 'perennial_keeper',
+    label: 'Knoldsamler',
+    description: '5 eller flere flerårige planter (knolde, buske, træer).',
+    hint: 'Tilføj knolde, buske eller træer til frøbanken.',
+    icon: 'TreePine',
+    color: 'green',
+    category: 'samler',
+  },
+  biodiversity_friend: {
+    id: 'biodiversity_friend',
+    label: 'Biodiversitetsven',
+    description: 'Dyrker eller samler i 5 forskellige plante-kategorier.',
+    hint: 'Variér mellem frø, løg, knolde, buske, stauder osv.',
+    icon: 'Globe',
+    color: 'green',
     category: 'samler',
   },
 
@@ -133,6 +226,53 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
     icon: 'GitFork',
     color: 'blue',
     category: 'laering',
+  },
+  monthly_logger: {
+    id: 'monthly_logger',
+    label: 'Månedlig logfører',
+    description: 'Har logget aktivitet i alle 12 årets måneder.',
+    hint: 'Skriv mindst én log pr. måned gennem et helt år.',
+    icon: 'PencilLine',
+    color: 'blue',
+    category: 'laering',
+  },
+  autobiograf: {
+    id: 'autobiograf',
+    label: 'Autobiograf',
+    description: '10 eller flere private noter på guides.',
+    hint: 'Skriv private noter på dyrkningsguides.',
+    icon: 'BookOpen',
+    color: 'blue',
+    category: 'laering',
+  },
+
+  // Hemmelige med humor (secret: true — vises ikke før de er optjent)
+  slagteren: {
+    id: 'slagteren',
+    label: 'Slagteren',
+    description: 'Tre eller flere planter er gået bort før de nåede 30 dage. Lad det være et hilsen til de faldne.',
+    icon: 'Skull',
+    color: 'purple',
+    category: 'dyrkning',
+    secret: true,
+  },
+  hasarderen: {
+    id: 'hasarderen',
+    label: 'Hasarderen',
+    description: 'Har sået en frostfølsom plante før 1. marts. Mod eller dumdristighed — sjælden grænse.',
+    icon: 'Snowflake',
+    color: 'blue',
+    category: 'dyrkning',
+    secret: true,
+  },
+  sneglefaelleren: {
+    id: 'sneglefaelleren',
+    label: 'Sneglefælleren',
+    description: 'Har logget skadedyr- eller sygdomshændelser 3 eller flere gange. En haveformand kender sin fjende.',
+    icon: 'Bug',
+    color: 'amber',
+    category: 'dyrkning',
+    secret: true,
   },
 }
 

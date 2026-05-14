@@ -1,13 +1,15 @@
 import {
   Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
-  Package, GitFork,
+  Package, GitFork, Flame, Apple, Home, TreePine, Library, Globe,
+  PencilLine, Skull, Snowflake, Bug,
 } from 'lucide-react'
 import { BADGES, type BadgeId } from '@/lib/badges-shared'
 import { cn } from '@/lib/utils'
 
 const ICON_MAP = {
   Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
-  Package, GitFork,
+  Package, GitFork, Flame, Apple, Home, TreePine, Library, Globe,
+  PencilLine, Skull, Snowflake, Bug,
 }
 
 const COLOR_CLASS = {
