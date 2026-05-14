@@ -8,8 +8,10 @@ import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
 import { GardenRoleCard } from '@/components/profil/garden-role-card'
 import { BadgeGallery } from '@/components/profil/badge-gallery'
+import { StartHereCard } from '@/components/overblik/start-here-card'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
+import { getAllInventoryItems } from '@/actions/froebank'
 import { getGeneralGardenTasks } from '@/actions/aarshjul'
 import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
 import { getCurrentUser } from '@/lib/auth'
@@ -24,9 +26,10 @@ export const dynamic = 'force-dynamic'
 export default async function OverblikPage() {
   const me = await getCurrentUser()
 
-  const [tasks, plants, generalTasks, profile, earned] = await Promise.all([
+  const [tasks, plants, inventory, generalTasks, profile, earned] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
+    getAllInventoryItems(),
     getGeneralGardenTasks(),
     getProfile(),
     me ? (async () => {
@@ -34,6 +37,9 @@ export default async function OverblikPage() {
       return getBadgesForUser(me.id)
     })() : Promise.resolve([]),
   ])
+
+  // Helt ny bruger: ingen planter + ingen frøbank-items
+  const isNewUser = me !== null && plants.length === 0 && inventory.length === 0
 
   const roleProgress = computeRole(earned.map(e => e.badgeId))
   const roleLabel = GARDEN_ROLES[roleProgress.currentRole].label
@@ -93,6 +99,9 @@ export default async function OverblikPage() {
           )}
         </p>
       </div>
+
+      {/* Start her-card for helt nye brugere */}
+      {isNewUser && <StartHereCard />}
 
       {/* Forsinkede opgaver - haster */}
       {forsinkede.length > 0 && (
@@ -167,8 +176,22 @@ export default async function OverblikPage() {
           {aktivePlanter.length === 0 ? (
             <EmptyState
               icon={<Sprout className="h-8 w-8" />}
-              title="Ingen aktive planter endnu"
-              description="Start med at tilføje noget til frøbanken og så et frø."
+              title="Endnu ingen i jorden"
+              description={
+                inventory.length === 0
+                  ? 'Tilføj først noget til frøbanken — så kan du aktivere det som plante.'
+                  : 'Aktivér en sort fra din frøbank for at starte en dyrkning.'
+              }
+              action={
+                inventory.length > 0 ? (
+                  <Button asChild variant="outline">
+                    <Link href="/mine-planter">
+                      <Sprout className="h-3.5 w-3.5" />
+                      Aktivér en plante
+                    </Link>
+                  </Button>
+                ) : undefined
+              }
             />
           ) : (
             <div className="space-y-2">

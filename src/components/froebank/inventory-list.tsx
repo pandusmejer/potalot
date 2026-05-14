@@ -278,11 +278,21 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
       {filtered.length === 0 ? (
         <EmptyState
           icon={search.trim() || smartFilters.size > 0 ? <Filter className="h-8 w-8" /> : <Package className="h-8 w-8" />}
-          title={search.trim() || smartFilters.size > 0 ? 'Ingen resultater' : 'Ingen elementer her endnu'}
+          title={search.trim() || smartFilters.size > 0 ? 'Ingen resultater' : 'Din frøbank er tom'}
           description={
             search.trim() || smartFilters.size > 0
               ? 'Prøv at justere søgning eller filtre.'
-              : 'Brug "Tilføj" knappen for at lægge noget i frøbanken.'
+              : 'Læg dit første frø, knold eller stikling i banken — så bygger resten sig op af sig selv.'
+          }
+          action={
+            !search.trim() && smartFilters.size === 0 ? (
+              <Button asChild>
+                <Link href="/froebank/tilfoej">
+                  <Plus className="h-4 w-4" />
+                  Tilføj dit første
+                </Link>
+              </Button>
+            ) : undefined
           }
         />
       ) : (
