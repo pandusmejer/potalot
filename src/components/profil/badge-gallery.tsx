@@ -36,6 +36,25 @@ export function BadgeGallery({ earned }: Props) {
   }
   const categoryOrder: BadgeMeta['category'][] = ['dyrkning', 'samler', 'laering', 'social']
 
+  // Velkomst-tilstand for nye brugere uden optjent badges
+  if (earnedCount === 0) {
+    return (
+      <Card className="bg-muted/30 border-dashed">
+        <CardContent className="py-6 text-center space-y-2">
+          <Award className="h-7 w-7 text-amber-700/60 mx-auto" />
+          <p className="font-medium text-foreground">
+            Dit galleri venter på sit første mærke
+          </p>
+          <p className="text-sm text-muted-foreground italic max-w-md mx-auto">
+            Når du sår dit første frø, tilføjer din første frøpose
+            eller logger den første handling — vil dine badges begynde
+            at samle sig her.
+          </p>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader>

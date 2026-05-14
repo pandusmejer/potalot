@@ -503,8 +503,27 @@ export async function maybeAwardSneglefaelleren(userId: string): Promise<void> {
  * Backfill helper: kør alle badge-check helpers parallelt for en bruger.
  * Bruges på profil-siden så eksisterende brugere får retro-tildelt badges
  * baseret på hvad de allerede har gjort.
+ *
+ * Cached: skipper hvis last_badge_backfill_at er <1 time siden — sparer
+ * 24 queries pr. Havebog-besøg.
  */
+const BACKFILL_TTL_MINUTES = 60
+
 export async function backfillAllBadges(userId: string): Promise<void> {
+  const supabase = await createClient()
+
+  // Tjek cache — skip backfill hvis det er <1 time siden sidst
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('last_badge_backfill_at')
+    .eq('id', userId)
+    .maybeSingle()
+  const lastBackfill = profile?.last_badge_backfill_at as string | null
+  if (lastBackfill) {
+    const elapsed = (Date.now() - new Date(lastBackfill).getTime()) / 60000
+    if (elapsed < BACKFILL_TTL_MINUTES) return  // for nyligt — skip
+  }
+
   await Promise.all([
     // Sociale
     maybeAwardFirstPost(userId).catch(() => {}),
@@ -537,4 +556,10 @@ export async function backfillAllBadges(userId: string): Promise<void> {
     maybeAwardHasarderen(userId).catch(() => {}),
     maybeAwardSneglefaelleren(userId).catch(() => {}),
   ])
+
+  // Opdater cache-timestamp så vi ikke kører backfill igen i den næste time
+  await supabase
+    .from('profiles')
+    .update({ last_badge_backfill_at: new Date().toISOString() })
+    .eq('id', userId)
 }

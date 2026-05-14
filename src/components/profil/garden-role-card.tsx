@@ -3,7 +3,12 @@ import { Emblem } from '@/components/ui/emblem'
 import { GARDEN_ROLES, ROLE_ORDER, type RoleProgress } from '@/lib/garden-roles'
 import { BADGE_CATEGORY_LABELS } from '@/lib/badges-shared'
 import { cn } from '@/lib/utils'
-import { Check } from 'lucide-react'
+import { Check, Sprout, Leaf, TreePine, Package, Shield, Crown } from 'lucide-react'
+import type { ComponentType, SVGProps } from 'react'
+
+const ROLE_ICON_MAP: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  Sprout, Leaf, TreePine, Package, Shield, Crown,
+}
 
 /**
  * Stor præsentations-card til /profil der viser brugerens nuværende
@@ -42,26 +47,29 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
           </div>
         </div>
 
-        {/* Progression-stige */}
+        {/* Progression-stige med rolle-ikoner i stedet for tal */}
         <div className="mt-5 pt-4 border-t border-border/60">
           <div className="flex items-center justify-between gap-2 overflow-x-auto -mx-1 px-1">
             {ROLE_ORDER.map((roleId, i) => {
               const role = GARDEN_ROLES[roleId]
               const currentIdx = ROLE_ORDER.indexOf(progress.currentRole)
-              const passed = i <= currentIdx
+              const passed = i < currentIdx
               const isCurrent = i === currentIdx
               const isNext = next && roleId === next.id
+              const RoleIcon = ROLE_ICON_MAP[role.icon] ?? Sprout
               return (
-                <div key={roleId} className="flex flex-col items-center gap-1 min-w-[56px] shrink-0">
+                <div key={roleId} className="flex flex-col items-center gap-1 min-w-[52px] shrink-0">
                   <div
                     className={cn(
-                      'h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-semibold border transition-colors',
+                      'h-7 w-7 rounded-full flex items-center justify-center border transition-colors',
                       passed && 'bg-green-700 border-green-700 text-white',
-                      !passed && isNext && 'bg-amber-100 border-amber-400 text-amber-900',
-                      !passed && !isNext && 'bg-muted border-border text-muted-foreground',
+                      isCurrent && 'bg-green-100 border-green-600 text-green-800 ring-2 ring-green-200 ring-offset-2 ring-offset-card',
+                      !passed && !isCurrent && isNext && 'bg-amber-50 border-amber-400 text-amber-700',
+                      !passed && !isCurrent && !isNext && 'bg-muted border-border text-muted-foreground/70',
                     )}
+                    title={role.description}
                   >
-                    {passed ? <Check className="h-3 w-3" /> : i + 1}
+                    {passed ? <Check className="h-3.5 w-3.5" /> : <RoleIcon className="h-3.5 w-3.5" />}
                   </div>
                   <span
                     className={cn(
