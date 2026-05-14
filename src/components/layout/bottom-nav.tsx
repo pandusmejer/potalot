@@ -13,11 +13,11 @@ interface Props {
 }
 
 const BASE_ITEMS = [
-  { href: '/', label: 'Min havebog', icon: Notebook },
+  { href: '/', label: 'Havebog', icon: Notebook },
   { href: '/froebank', label: 'Frøbank', icon: Package },
-  { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
+  { href: '/mine-planter', label: 'Planter', icon: Sprout },
   { href: '/kalender', label: 'Kalender', icon: CalendarDays },
-  { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
+  { href: '/guides', label: 'Guides', icon: BookOpen },
 ] as const
 
 /**

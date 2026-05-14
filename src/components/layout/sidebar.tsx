@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  Notebook, Sprout, Package, CalendarDays, BookOpen, Compass,
+  Notebook, Sprout, Package, CalendarDays, BookOpen,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -13,12 +13,11 @@ interface Props {
 }
 
 const BASE_ITEMS = [
-  { href: '/', label: 'Min havebog', icon: Notebook },
+  { href: '/', label: 'Havebog', icon: Notebook },
   { href: '/froebank', label: 'Frøbank', icon: Package },
-  { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
+  { href: '/mine-planter', label: 'Planter', icon: Sprout },
   { href: '/kalender', label: 'Havekalender', icon: CalendarDays },
   { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
-  { href: '/havelandskab', label: 'Havelandskab', icon: Compass },
 ] as const
 
 export function Sidebar({ heroHref, criticalTaskCount }: Props) {
@@ -95,10 +94,9 @@ export function Sidebar({ heroHref, criticalTaskCount }: Props) {
         <p className="text-xs text-muted-foreground italic">
           Havebog = din historie.<br />
           Frøbank = det du har.<br />
-          Mine planter = det du dyrker.<br />
+          Planter = det du dyrker.<br />
           Kalender = det du skal gøre.<br />
-          Guides = hvordan og hvorfor.<br />
-          Havelandskab = den fælles rytme.
+          Guides = hvordan og hvorfor.
         </p>
       </div>
     </aside>
