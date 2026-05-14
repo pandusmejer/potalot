@@ -137,7 +137,7 @@ export function computeRole(earnedBadgeIds: BadgeId[]): RoleProgress {
 
 function countByCategory(ids: BadgeId[]): Record<BadgeMeta['category'], number> {
   const counts: Record<BadgeMeta['category'], number> = {
-    dyrkning: 0, samler: 0, laering: 0, social: 0,
+    dyrkning: 0, samler: 0, laering: 0, social: 0, saeson: 0,
   }
   for (const id of ids) {
     const b = BADGES[id]

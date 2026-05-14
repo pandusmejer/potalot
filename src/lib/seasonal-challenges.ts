@@ -31,6 +31,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Altankassen vågner',
     description: 'April er den måned hvor balkonen og altanen langsomt kommer i drift igen.',
     prompt: 'Del et billede af din altankasse eller balkonhave — gerne med planer for sæsonen.',
+    rewardBadgeId: 's_altankassen_vaagner',
   },
   {
     slug: 'forspirings-marts',
@@ -38,6 +39,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Forspirings-marts',
     description: 'Få 5 sorter forspiret inden månedens udgang.',
     prompt: 'Vis dine forspiringer — billede + sort.',
+    rewardBadgeId: 's_forspirings_marts',
   },
   {
     slug: 'tomatmaj',
@@ -45,6 +47,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Tomatmaj',
     description: 'Maj er tomat-måneden. Få dine tomatplanter ud i drivhus, krukker eller højbed.',
     prompt: 'Del en status på din(e) tomatplante(r) — billede + sort + placering.',
+    rewardBadgeId: 's_tomatmaj',
   },
   {
     slug: 'plant-for-bierne',
@@ -52,6 +55,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Plant for bierne',
     description: 'Sæt et felt eller en krukke af til vilde bestøvere i år.',
     prompt: 'Del hvad du har plantet eller planlægger at plante for bierne.',
+    rewardBadgeId: 's_plant_for_bierne',
   },
   {
     slug: 'foerste-tomat-i-hus',
@@ -59,6 +63,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Første tomat i hus',
     description: 'Sommerens første tomat. Den smager altid lidt af festdag.',
     prompt: 'Foto af dagens første modne tomat.',
+    rewardBadgeId: 's_foerste_tomat_i_hus',
   },
   {
     slug: 'snegle-saesonen',
@@ -66,6 +71,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Overlev sneglesæsonen',
     description: 'Juli er sneglenes festmåned. Hvilken strategi virker for dig?',
     prompt: 'Del din snegle-strategi — kobberkanter, øl-fælder, ænder, eller bare resignation.',
+    rewardBadgeId: 's_snegle_saesonen',
   },
   {
     slug: 'hoest-uge',
@@ -73,6 +79,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Høst fra egen have 7 dage i træk',
     description: 'Plant noget — spis noget. I 7 dage.',
     prompt: 'Del et eller flere billeder af måltider med ingredienser fra haven.',
+    rewardBadgeId: 's_hoest_uge',
   },
   {
     slug: 'efteraarsklargoering',
@@ -80,6 +87,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Efterårsklargøring',
     description: 'Rydning af bede, tækning af skrøbelige, bevaring af frø.',
     prompt: 'Del et billede af din have inden eller efter klargøring.',
+    rewardBadgeId: 's_efteraarsklargoering',
   },
   {
     slug: 'froesamler',
@@ -87,6 +95,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Frø til næste år',
     description: 'Sensommer er frøtid. Gem en sort fra egen have til 2027.',
     prompt: 'Vis hvilke frø du har samlet og hvor de kommer fra.',
+    rewardBadgeId: 's_froesamler',
   },
   {
     slug: 'vinterhvile',
@@ -94,8 +103,18 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     title: 'Vinterhvile',
     description: 'Januar er stille. Hvad drømmer du om for den kommende sæson?',
     prompt: 'Skriv et par sætninger om hvad du vil prøve i 2026.',
+    rewardBadgeId: 's_vinterhvile',
   },
 ]
+
+/**
+ * Find rewardBadgeId for en given seasonal-slug.
+ * Returnerer null hvis sluggen ikke matcher nogen template.
+ */
+export function rewardBadgeForSlug(slug: string): string | null {
+  const t = SEASONAL_CHALLENGES.find(c => c.slug === slug)
+  return t?.rewardBadgeId ?? null
+}
 
 /**
  * Find aktive challenges for en given måned. Et challenge kan have flere

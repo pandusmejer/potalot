@@ -31,6 +31,17 @@ export type BadgeId =
   | 'slagteren'         // 3+ planter afsluttet under 30 dage
   | 'hasarderen'        // sået varmekrævende før 1. marts
   | 'sneglefaelleren'   // 3+ pest_disease-logs
+  // Sæson-deltagelse (secret: true, en pr. challenge-slug)
+  | 's_altankassen_vaagner'
+  | 's_forspirings_marts'
+  | 's_tomatmaj'
+  | 's_plant_for_bierne'
+  | 's_foerste_tomat_i_hus'
+  | 's_snegle_saesonen'
+  | 's_hoest_uge'
+  | 's_efteraarsklargoering'
+  | 's_froesamler'
+  | 's_vinterhvile'
 
 export interface BadgeMeta {
   id: BadgeId
@@ -41,9 +52,9 @@ export interface BadgeMeta {
     | 'Sparkles' | 'Award' | 'Gift' | 'Users' | 'Sprout' | 'BookOpen'
     | 'Leaf' | 'Wheat' | 'Flag' | 'Package' | 'GitFork'
     | 'Flame' | 'Apple' | 'Home' | 'TreePine' | 'Library' | 'Globe'
-    | 'PencilLine' | 'Skull' | 'Snowflake' | 'Bug'
+    | 'PencilLine' | 'Skull' | 'Snowflake' | 'Bug' | 'Flower2'
   color: 'green' | 'amber' | 'blue' | 'purple'
-  category: 'social' | 'dyrkning' | 'samler' | 'laering'
+  category: 'social' | 'dyrkning' | 'samler' | 'laering' | 'saeson'
   /** Hemmelige badges vises ikke i låst-tilstand — kun når optjent. */
   secret?: boolean
 }
@@ -274,11 +285,105 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
     category: 'dyrkning',
     secret: true,
   },
+
+  // Sæson-deltagelse — tildeles ved bidrag til en sæson-challenge.
+  // Alle har secret: true så de kun dukker op i galleri når optjent.
+  s_altankassen_vaagner: {
+    id: 's_altankassen_vaagner',
+    label: 'Altankassen vågner',
+    description: 'Deltog i april-sæsonen — balkonen kom i drift igen.',
+    icon: 'Home',
+    color: 'blue',
+    category: 'saeson',
+    secret: true,
+  },
+  s_forspirings_marts: {
+    id: 's_forspirings_marts',
+    label: 'Forspirings-marts',
+    description: 'Deltog i marts-sæsonen — forspirede mens vinteren slap.',
+    icon: 'Sprout',
+    color: 'green',
+    category: 'saeson',
+    secret: true,
+  },
+  s_tomatmaj: {
+    id: 's_tomatmaj',
+    label: 'Tomatmaj',
+    description: 'Deltog i maj-sæsonen — tomatplanterne ud i frisk jord.',
+    icon: 'Apple',
+    color: 'amber',
+    category: 'saeson',
+    secret: true,
+  },
+  s_plant_for_bierne: {
+    id: 's_plant_for_bierne',
+    label: 'For bierne',
+    description: 'Deltog i maj-sæsonen — gav en plads til de vilde bestøvere.',
+    icon: 'Flower2',
+    color: 'amber',
+    category: 'saeson',
+    secret: true,
+  },
+  s_foerste_tomat_i_hus: {
+    id: 's_foerste_tomat_i_hus',
+    label: 'Første tomat',
+    description: 'Deltog i juli-sæsonen — fejrede sommerens første modne tomat.',
+    icon: 'Apple',
+    color: 'amber',
+    category: 'saeson',
+    secret: true,
+  },
+  s_snegle_saesonen: {
+    id: 's_snegle_saesonen',
+    label: 'Snegleveteran',
+    description: 'Deltog i juli-sæsonen — overlevede sneglenes festmåned.',
+    icon: 'Bug',
+    color: 'green',
+    category: 'saeson',
+    secret: true,
+  },
+  s_hoest_uge: {
+    id: 's_hoest_uge',
+    label: 'Høst-ugen',
+    description: 'Deltog i august-sæsonen — spiste fra haven 7 dage i træk.',
+    icon: 'Wheat',
+    color: 'amber',
+    category: 'saeson',
+    secret: true,
+  },
+  s_efteraarsklargoering: {
+    id: 's_efteraarsklargoering',
+    label: 'Efterårsklargøring',
+    description: 'Deltog i oktober-sæsonen — ryddede, tækkede, bevarede.',
+    icon: 'Leaf',
+    color: 'amber',
+    category: 'saeson',
+    secret: true,
+  },
+  s_froesamler: {
+    id: 's_froesamler',
+    label: 'Frø til næste år',
+    description: 'Deltog i september-sæsonen — gemte frø fra egen høst.',
+    icon: 'Package',
+    color: 'green',
+    category: 'saeson',
+    secret: true,
+  },
+  s_vinterhvile: {
+    id: 's_vinterhvile',
+    label: 'Vinterhvile',
+    description: 'Deltog i januar-sæsonen — drømte næste sæson på plads.',
+    icon: 'Snowflake',
+    color: 'blue',
+    category: 'saeson',
+    secret: true,
+  },
 }
 
 export const BADGE_LIST = Object.values(BADGES)
 
 export const BADGE_CATEGORY_LABELS: Record<BadgeMeta['category'], string> = {
+  saeson: 'Sæson',
   social: 'Fællesskab',
   dyrkning: 'Dyrkning',
   samler: 'Samler',

@@ -244,13 +244,30 @@ export async function submitChallengeEntry(input: {
     .single()
   if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme bidrag' }
 
-  // Find group_id for revalidation
+  // Find challenge-context for revalidation + reward-badge tildeling
   const { data: c } = await supabase
     .from('challenges')
-    .select('group_id')
+    .select('group_id, challenge_type, seasonal_id')
     .eq('id', input.challengeId)
     .maybeSingle()
   if (c?.group_id) revalidatePath(`/grupper/${c.group_id}`)
+
+  // Sæson-challenge: tildel reward-badge baseret på slug (uden års-suffix)
+  if (c?.challenge_type === 'seasonal' && c.seasonal_id) {
+    const slug = (c.seasonal_id as string).replace(/-\d{4}$/, '')
+    const { rewardBadgeForSlug } = await import('@/lib/seasonal-challenges')
+    const badgeId = rewardBadgeForSlug(slug)
+    if (badgeId) {
+      // Brug RPC direkte (genbruger eksisterende award_badge-RPC).
+      // Fire-and-forget — fejl ignoreres så bidraget gemmes uanset.
+      try {
+        await supabase.rpc('award_badge', { p_user_id: userId, p_badge_id: badgeId })
+      } catch { /* ignore */ }
+    }
+    revalidatePath('/havelandskab')
+    revalidatePath('/')  // Havebog viser badges
+  }
+
   return { id: data.id as string }
 }
 

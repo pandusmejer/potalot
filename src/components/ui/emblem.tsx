@@ -11,7 +11,7 @@ import type { ComponentType, SVGProps } from 'react'
  * for alle badges. Farve-variationen via category-prop.
  */
 
-export type EmblemCategory = 'dyrkning' | 'samler' | 'laering' | 'social'
+export type EmblemCategory = 'dyrkning' | 'samler' | 'laering' | 'social' | 'saeson'
 export type EmblemSize = 'xs' | 'sm' | 'md' | 'lg'
 
 const SIZE: Record<EmblemSize, { wrap: string; icon: string }> = {
@@ -26,6 +26,7 @@ const CATEGORY_RING: Record<EmblemCategory, string> = {
   samler: 'from-amber-50 to-amber-100/70',
   laering: 'from-blue-50 to-blue-100/70',
   social: 'from-purple-50 to-purple-100/70',
+  saeson: 'from-rose-50 to-amber-100/70',  // varm sensommer-gradient
 }
 
 const CATEGORY_BORDER: Record<EmblemCategory, string> = {
@@ -33,6 +34,7 @@ const CATEGORY_BORDER: Record<EmblemCategory, string> = {
   samler: 'border-amber-700/60',
   laering: 'border-blue-700/60',
   social: 'border-purple-700/60',
+  saeson: 'border-rose-700/60',
 }
 
 const CATEGORY_ICON: Record<EmblemCategory, string> = {
@@ -40,6 +42,7 @@ const CATEGORY_ICON: Record<EmblemCategory, string> = {
   samler: 'text-amber-800',
   laering: 'text-blue-800',
   social: 'text-purple-800',
+  saeson: 'text-rose-800',
 }
 
 interface Props {

@@ -34,7 +34,7 @@ export function BadgeGallery({ earned }: Props) {
     if (!byCategory[b.category]) byCategory[b.category] = []
     byCategory[b.category].push(b)
   }
-  const categoryOrder: BadgeMeta['category'][] = ['dyrkning', 'samler', 'laering', 'social']
+  const categoryOrder: BadgeMeta['category'][] = ['saeson', 'dyrkning', 'samler', 'laering', 'social']
 
   // Velkomst-tilstand for nye brugere uden optjent badges
   if (earnedCount === 0) {

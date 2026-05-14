@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SubmitChallengeEntryDialog } from '@/components/grupper/submit-challenge-entry-dialog'
+import { ChallengeGalleryDialog } from '@/components/grupper/challenge-gallery-dialog'
 import { Trophy, Calendar, Users, Compass } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -124,11 +125,18 @@ export default async function HavelandskabPage() {
                   </div>
                 )}
 
-                <SubmitChallengeEntryDialog
-                  challengeId={c.id}
-                  prompt={c.prompt}
-                  existingEntry={c.myEntry}
-                />
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  <SubmitChallengeEntryDialog
+                    challengeId={c.id}
+                    prompt={c.prompt}
+                    existingEntry={c.myEntry}
+                  />
+                  <ChallengeGalleryDialog
+                    challengeId={c.id}
+                    challengeTitle={c.title}
+                    entryCount={c.entryCount}
+                  />
+                </div>
               </CardContent>
             </Card>
           ))}

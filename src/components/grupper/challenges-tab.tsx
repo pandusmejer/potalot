@@ -4,6 +4,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Trophy, Calendar, Users } from 'lucide-react'
 import { CreateChallengeDialog } from '@/components/grupper/create-challenge-dialog'
 import { SubmitChallengeEntryDialog } from '@/components/grupper/submit-challenge-entry-dialog'
+import { ChallengeGalleryDialog } from '@/components/grupper/challenge-gallery-dialog'
 import type { Challenge } from '@/actions/challenges'
 
 interface Props {
@@ -118,13 +119,20 @@ function ChallengeCard({ challenge, isMember }: { challenge: Challenge; isMember
           </div>
         )}
 
-        {isMember && challenge.isActive && (
-          <SubmitChallengeEntryDialog
+        <div className="flex items-center gap-2 flex-wrap pt-1">
+          {isMember && challenge.isActive && (
+            <SubmitChallengeEntryDialog
+              challengeId={challenge.id}
+              prompt={challenge.prompt}
+              existingEntry={challenge.myEntry}
+            />
+          )}
+          <ChallengeGalleryDialog
             challengeId={challenge.id}
-            prompt={challenge.prompt}
-            existingEntry={challenge.myEntry}
+            challengeTitle={challenge.title}
+            entryCount={challenge.entryCount}
           />
-        )}
+        </div>
       </CardContent>
     </Card>
   )
