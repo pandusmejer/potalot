@@ -7,7 +7,6 @@ import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
 import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog'
 import { SowDialog } from '@/components/froebank/sow-dialog'
-import { CreateTaskDialog } from '@/components/froebank/create-task-dialog'
 import { GuideLink } from '@/components/froebank/guide-link'
 import { getInventoryItem } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
@@ -21,7 +20,7 @@ import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 import {
   ArrowLeft, Package, Calendar, BookOpen, Sprout, ArrowRight,
-  Sparkles, MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
+  MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import type { ComponentType, SVGProps } from 'react'
@@ -107,7 +106,7 @@ export default async function InventoryDetailPage({ params }: Props) {
       )}
 
       {/* Hovedhandlinger */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <SowDialog
           inventoryItemId={item.id}
           suggestedLocations={item.growingLocations}
@@ -117,7 +116,6 @@ export default async function InventoryDetailPage({ params }: Props) {
             Så et frø
           </Button>
         </SowDialog>
-        <CreateTaskDialog inventoryItemId={item.id} itemName={item.name} />
         {guide && (
           <Button asChild variant="outline">
             <Link href={`/guides/${guide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
@@ -126,10 +124,6 @@ export default async function InventoryDetailPage({ params }: Props) {
             </Link>
           </Button>
         )}
-        <Button variant="outline" disabled>
-          <Sparkles className="h-4 w-4" />
-          AI gartner
-        </Button>
       </div>
 
       {/* Hurtige fakta */}
