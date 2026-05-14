@@ -1,16 +1,16 @@
-import { Button } from '@/components/ui/button'
 import { PlantList } from '@/components/mine-planter/plant-list'
+import { NewPlantDialog } from '@/components/mine-planter/new-plant-dialog'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllTasks } from '@/actions/havekalender'
-import { Plus } from 'lucide-react'
-import Link from 'next/link'
+import { getAllInventoryItems } from '@/actions/froebank'
 
 export const dynamic = 'force-dynamic'
 
 export default async function MinePlanterPage() {
-  const [plants, tasks] = await Promise.all([
+  const [plants, tasks, inventory] = await Promise.all([
     getAllPlants(),
     getAllTasks(),
+    getAllInventoryItems(),
   ])
 
   return (
@@ -22,12 +22,7 @@ export default async function MinePlanterPage() {
             Aktive dyrkninger — det du har gang i lige nu.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/froebank">
-            <Plus className="h-4 w-4" />
-            Tilføj plante
-          </Link>
-        </Button>
+        <NewPlantDialog inventory={inventory} />
       </div>
 
       <PlantList plants={plants} tasks={tasks} />
