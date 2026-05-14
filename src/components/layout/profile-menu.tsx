@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { User, Users, Lightbulb, Settings, LogOut, ShieldCheck } from 'lucide-react'
+import { User, Users, Lightbulb, Settings, LogOut, ShieldCheck, Notebook } from 'lucide-react'
 import type { Profile } from '@/lib/types'
 import { signOut } from '@/actions/auth'
 
@@ -42,6 +42,9 @@ export function ProfileMenu({ profile }: { profile: Profile }) {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>{profile.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/havebog"><Notebook className="h-4 w-4" /> Min havebog</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/profil"><User className="h-4 w-4" /> Min profil</Link>
         </DropdownMenuItem>

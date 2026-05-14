@@ -1,23 +1,15 @@
 import { getProfile } from '@/actions/profil'
 import { ProfilForm } from '@/components/profil/profil-form'
 import { ChangePasswordForm } from '@/components/profil/change-password-form'
-import { BadgeGallery } from '@/components/profil/badge-gallery'
-import { GardenRoleCard } from '@/components/profil/garden-role-card'
-import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
-import { computeRole } from '@/lib/garden-roles'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Notebook, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ProfilPage() {
   const profile = await getProfile()
   if (!profile) redirect('/login')
-
-  // Backfill: kør alle badge-checks så eksisterende handlinger retro-tildeler badges
-  // (idempotent — silent skip ved duplikat). Derefter hent den opdaterede liste.
-  await backfillAllBadges(profile.id)
-  const earned = await getBadgesForUser(profile.id)
-  const roleProgress = computeRole(earned.map(e => e.badgeId))
 
   return (
     <div className="space-y-6 max-w-xl">
@@ -30,9 +22,22 @@ export default async function ProfilPage() {
 
       <ProfilForm initialProfile={profile} />
 
-      <GardenRoleCard progress={roleProgress} />
-
-      <BadgeGallery earned={earned} />
+      {/* Lille henvisning til Havebogen — det grønne, ikke det tekniske */}
+      <Link
+        href="/havebog"
+        className="block rounded-xl border border-border bg-gradient-to-br from-secondary/30 to-card p-4 hover:bg-accent/30 transition-colors group"
+      >
+        <div className="flex items-center gap-3">
+          <Notebook className="h-5 w-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium text-foreground">Min havebog</p>
+            <p className="text-xs text-muted-foreground italic mt-0.5">
+              Din rolle, dine badges, din havehistorie.
+            </p>
+          </div>
+          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+        </div>
+      </Link>
 
       <ChangePasswordForm />
     </div>

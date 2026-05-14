@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, Sprout, Package, CalendarDays, BookOpen,
+  LayoutDashboard, Sprout, Package, CalendarDays, BookOpen, Notebook,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -18,6 +18,7 @@ const BASE_ITEMS = [
   { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
   { href: '/kalender', label: 'Havekalender', icon: CalendarDays },
   { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
+  { href: '/havebog', label: 'Min havebog', icon: Notebook },
 ] as const
 
 export function Sidebar({ heroHref, criticalTaskCount }: Props) {
@@ -95,7 +96,8 @@ export function Sidebar({ heroHref, criticalTaskCount }: Props) {
           Frøbank = det du har.<br />
           Mine planter = det du dyrker.<br />
           Kalender = det du skal gøre.<br />
-          Guides = hvordan og hvorfor.
+          Guides = hvordan og hvorfor.<br />
+          Havebog = din historie.
         </p>
       </div>
     </aside>
