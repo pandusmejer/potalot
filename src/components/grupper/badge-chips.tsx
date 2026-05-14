@@ -1,9 +1,13 @@
-import { Sparkles, Award, Gift, Users, Sprout, BookOpen } from 'lucide-react'
+import {
+  Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
+  Package, GitFork,
+} from 'lucide-react'
 import { BADGES, type BadgeId } from '@/lib/badges-shared'
 import { cn } from '@/lib/utils'
 
 const ICON_MAP = {
-  Sparkles, Award, Gift, Users, Sprout, BookOpen,
+  Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
+  Package, GitFork,
 }
 
 const COLOR_CLASS = {

@@ -206,6 +206,10 @@ export async function cloneGuideToOwn(
 
   if (error || !data) return { error: error?.message ?? 'Kunne ikke kopiere guide' }
 
+  // master_apprentice-badge: brugeren har klonet en master til personlig version
+  const { maybeAwardMasterApprentice } = await import('@/actions/badges')
+  maybeAwardMasterApprentice(userId).catch(() => {})
+
   revalidatePath('/guides')
   return { id: data.id as string }
 }

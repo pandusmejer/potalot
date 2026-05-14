@@ -145,3 +145,124 @@ export async function maybeAwardCurator(userId: string): Promise<void> {
     .eq('created_by', userId)
   if ((count ?? 0) >= 5) await awardBadge(userId, 'curator')
 }
+
+// ============================================
+// Dyrkning / lifecycle helpers
+// ============================================
+
+/**
+ * first_sowing: brugeren har sået sin første plante. Tæller alle planter
+ * der har bevæget sig forbi 'planlagt' (status saaet/spirer/i_vaekst osv.).
+ */
+export async function maybeAwardFirstSowing(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('plants_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .neq('status', 'planlagt')
+  if ((count ?? 0) >= 1) await awardBadge(userId, 'first_sowing')
+}
+
+/**
+ * first_harvest: brugeren har enten en høst-log eller en plante med
+ * status='hoestklar' eller højere.
+ */
+export async function maybeAwardFirstHarvest(userId: string): Promise<void> {
+  const supabase = await createClient()
+  // Tjek logs først (mest direkte signal)
+  const { count: harvestLogs } = await supabase
+    .from('plant_logs_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('type', 'harvest')
+  if ((harvestLogs ?? 0) >= 1) {
+    await awardBadge(userId, 'first_harvest')
+    return
+  }
+  // Fallback: status hoestklar eller afsluttet
+  const { count: harvestStatus } = await supabase
+    .from('plants_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .in('status', ['hoestklar', 'afsluttet'])
+  if ((harvestStatus ?? 0) >= 1) await awardBadge(userId, 'first_harvest')
+}
+
+/**
+ * season_finisher: en plante er ført helt til 'afsluttet' (arkiveret eller
+ * eksplicit sæsonen slut).
+ */
+export async function maybeAwardSeasonFinisher(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('plants_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('status', 'afsluttet')
+  if ((count ?? 0) >= 1) await awardBadge(userId, 'season_finisher')
+}
+
+/**
+ * the_collector: 25+ items i frøbanken (inkluderer alle kategorier).
+ */
+export async function maybeAwardTheCollector(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('inventory_items')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+  if ((count ?? 0) >= 25) await awardBadge(userId, 'the_collector')
+}
+
+/**
+ * master_apprentice: brugeren har en privat guide hvor plantenavn+sort
+ * matcher en eksisterende master — dvs. de har klonet eller lavet egen
+ * version af en kuratet guide.
+ */
+export async function maybeAwardMasterApprentice(userId: string): Promise<void> {
+  const supabase = await createClient()
+  // Hent brugerens private guides
+  const { data: privateGuides } = await supabase
+    .from('guides')
+    .select('plant_name, variety')
+    .eq('user_id', userId)
+  if (!privateGuides || privateGuides.length === 0) return
+  // Hent alle master plant_names (user_id IS NULL)
+  const { data: masters } = await supabase
+    .from('guides')
+    .select('plant_name, variety')
+    .is('user_id', null)
+  if (!masters || masters.length === 0) return
+
+  const masterKeys = new Set(
+    (masters as { plant_name: string; variety: string | null }[]).map(
+      m => `${m.plant_name.toLowerCase().trim()}|${(m.variety ?? '').toLowerCase().trim()}`
+    )
+  )
+  const matches = (privateGuides as { plant_name: string; variety: string | null }[]).some(
+    p => masterKeys.has(`${p.plant_name.toLowerCase().trim()}|${(p.variety ?? '').toLowerCase().trim()}`)
+  )
+  if (matches) await awardBadge(userId, 'master_apprentice')
+}
+
+/**
+ * Backfill helper: kør alle badge-check helpers parallelt for en bruger.
+ * Bruges på profil-siden så eksisterende brugere får retro-tildelt badges
+ * baseret på hvad de allerede har gjort.
+ */
+export async function backfillAllBadges(userId: string): Promise<void> {
+  await Promise.all([
+    maybeAwardFirstPost(userId).catch(() => {}),
+    maybeAwardHelpful(userId).catch(() => {}),
+    maybeAwardSeedKeeper(userId).catch(() => {}),
+    maybeAwardCommunityStarter(userId).catch(() => {}),
+    maybeAwardGreenThumb(userId).catch(() => {}),
+    maybeAwardCurator(userId).catch(() => {}),
+    maybeAwardFirstSowing(userId).catch(() => {}),
+    maybeAwardFirstHarvest(userId).catch(() => {}),
+    maybeAwardSeasonFinisher(userId).catch(() => {}),
+    maybeAwardTheCollector(userId).catch(() => {}),
+    maybeAwardMasterApprentice(userId).catch(() => {}),
+  ])
+}

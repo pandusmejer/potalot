@@ -223,6 +223,10 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
   const newId = data.id as string
   revalidatePath('/froebank')
 
+  // the_collector-badge: tjek om brugeren har nået 25+ items
+  const { maybeAwardTheCollector } = await import('@/actions/badges')
+  maybeAwardTheCollector(userId).catch(() => {})
+
   // Baggrund: tilknyt eksisterende guide eller AI-generér en ny.
   // Køres efter response så bruger ikke skal vente.
   after(async () => {

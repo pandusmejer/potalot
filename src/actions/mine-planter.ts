@@ -8,6 +8,9 @@ import {
 } from '@/lib/task-generation'
 import { getAllGuides } from '@/actions/guides'
 import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
+import {
+  maybeAwardFirstSowing, maybeAwardFirstHarvest, maybeAwardSeasonFinisher,
+} from '@/actions/badges'
 import type { Plant, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
@@ -292,6 +295,9 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
     }
   }
 
+  // first_sowing-badge — såningen er en lifecycle-event
+  maybeAwardFirstSowing(userId).catch(() => {})
+
   revalidatePath('/froebank')
   revalidatePath(`/froebank/${inv.id}`)
   revalidatePath('/mine-planter')
@@ -405,6 +411,14 @@ export async function createPlantLog(input: {
     }
   }
 
+  // Badge-checks (fire-and-forget, ignorér fejl)
+  if (input.type === 'sowing' || input.type === 'germination') {
+    maybeAwardFirstSowing(userId).catch(() => {})
+  }
+  if (input.type === 'harvest') {
+    maybeAwardFirstHarvest(userId).catch(() => {})
+  }
+
   revalidatePath(`/mine-planter/${input.plantId}`)
   return { id: data.id as string, stageAdvancedTo }
 }
@@ -505,6 +519,17 @@ export async function updatePlantStatus(
       note: `Status ændret til "${status}"`,
     })
 
+  // Badge-checks baseret på det nye stadie
+  if (status !== 'planlagt') {
+    maybeAwardFirstSowing(userId).catch(() => {})
+  }
+  if (status === 'hoestklar' || status === 'afsluttet') {
+    maybeAwardFirstHarvest(userId).catch(() => {})
+  }
+  if (status === 'afsluttet') {
+    maybeAwardSeasonFinisher(userId).catch(() => {})
+  }
+
   revalidatePath(`/mine-planter/${plantId}`)
   return { ok: true }
 }
@@ -535,6 +560,9 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
     title: 'Arkiveret',
     note: `Sæson afsluttet ${now.getFullYear()}`,
   })
+
+  // season_finisher-badge
+  maybeAwardSeasonFinisher(userId).catch(() => {})
 
   revalidatePath('/mine-planter')
   revalidatePath(`/mine-planter/${plantId}`)
