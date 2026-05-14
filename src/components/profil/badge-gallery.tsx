@@ -1,24 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
-  Package, GitFork, Lock,
-} from 'lucide-react'
+import { Award } from 'lucide-react'
+import { Emblem } from '@/components/ui/emblem'
 import {
   BADGES, BADGE_LIST, BADGE_CATEGORY_LABELS, type BadgeId, type BadgeMeta,
 } from '@/lib/badges-shared'
 import { cn } from '@/lib/utils'
-
-const ICON_MAP = {
-  Sparkles, Award, Gift, Users, Sprout, BookOpen, Leaf, Wheat, Flag,
-  Package, GitFork,
-}
-
-const COLOR_CLASS = {
-  green: 'bg-green-100 text-green-800 border-green-200',
-  amber: 'bg-amber-100 text-amber-800 border-amber-200',
-  blue: 'bg-blue-100 text-blue-800 border-blue-200',
-  purple: 'bg-purple-100 text-purple-800 border-purple-200',
-}
 
 interface Props {
   /** ID'er + datoer for badges brugeren har optjent */
@@ -51,8 +37,8 @@ export function BadgeGallery({ earned }: Props) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between flex-wrap gap-2">
           <span className="flex items-center gap-2">
-            <Award className="h-4 w-4 text-amber-600" />
-            Mine badges
+            <Award className="h-4 w-4 text-amber-700" />
+            Mit badge-galleri
           </span>
           <span className="text-sm font-normal text-muted-foreground">
             {earnedCount} af {totalCount} optjent
@@ -66,7 +52,7 @@ export function BadgeGallery({ earned }: Props) {
           const earnedInCat = list.filter(b => earnedMap.has(b.id)).length
           return (
             <section key={cat}>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-3">
                 <p className="text-xs uppercase tracking-wider font-semibold text-foreground">
                   {BADGE_CATEGORY_LABELS[cat]}
                 </p>
@@ -74,7 +60,7 @@ export function BadgeGallery({ earned }: Props) {
                   {earnedInCat}/{list.length}
                 </span>
               </div>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {list.map(b => {
                   const isEarned = earnedMap.has(b.id)
                   const awardedAt = earnedMap.get(b.id)
@@ -93,7 +79,7 @@ export function BadgeGallery({ earned }: Props) {
         })}
         <p className="text-[10px] text-muted-foreground italic pt-2 border-t border-border">
           Badges tildeles automatisk når du gør det relevante i appen.
-          Hvis du allerede har gjort noget men ikke ser badge, så genindlæs siden — bagrundsjekket kører ved hvert besøg.
+          Genindlæs siden for at køre baggrundstjek igen.
         </p>
       </CardContent>
     </Card>
@@ -107,7 +93,6 @@ function BadgeRow({
   isEarned: boolean
   awardedAt: string | undefined
 }) {
-  const Icon = ICON_MAP[badge.icon]
   return (
     <div
       className={cn(
@@ -117,19 +102,17 @@ function BadgeRow({
           : 'bg-muted/30 border-dashed border-border'
       )}
     >
-      <div
-        className={cn(
-          'h-9 w-9 rounded-full flex items-center justify-center shrink-0 border',
-          isEarned ? COLOR_CLASS[badge.color] : 'bg-muted text-muted-foreground border-border'
-        )}
-      >
-        {isEarned ? <Icon className="h-4 w-4" /> : <Lock className="h-3.5 w-3.5" />}
-      </div>
+      <Emblem
+        icon={badge.icon}
+        category={badge.category}
+        size="md"
+        locked={!isEarned}
+      />
       <div className="flex-1 min-w-0">
         <p className={cn('text-sm font-medium', isEarned ? 'text-foreground' : 'text-muted-foreground')}>
           {badge.label}
         </p>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
           {isEarned ? badge.description : (badge.hint ?? badge.description)}
         </p>
         {isEarned && awardedAt && (
