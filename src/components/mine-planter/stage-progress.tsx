@@ -12,7 +12,11 @@ export function StageProgress({ status }: { status: PlantStatus }) {
   const currentIdx = stageIndex(status)
 
   return (
-    <div className="overflow-x-auto -mx-2 px-2 pb-1">
+    <div className="space-y-2">
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        Plantens livscyklus
+      </p>
+      <div className="overflow-x-auto -mx-2 px-2 pb-1">
       <div className="flex items-center min-w-fit">
         {STAGE_ORDER.map((stage, i) => {
           const passed = i < currentIdx
@@ -60,6 +64,7 @@ export function StageProgress({ status }: { status: PlantStatus }) {
             </div>
           )
         })}
+      </div>
       </div>
     </div>
   )

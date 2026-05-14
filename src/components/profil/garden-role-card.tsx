@@ -49,6 +49,9 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
 
         {/* Progression-stige med rolle-ikoner i stedet for tal */}
         <div className="mt-5 pt-4 border-t border-border/60">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+            Din udviklings-stige
+          </p>
           <div className="flex items-center justify-between gap-2 overflow-x-auto -mx-1 px-1">
             {ROLE_ORDER.map((roleId, i) => {
               const role = GARDEN_ROLES[roleId]
@@ -61,10 +64,12 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
                 <div key={roleId} className="flex flex-col items-center gap-1 min-w-[52px] shrink-0">
                   <div
                     className={cn(
-                      'h-7 w-7 rounded-full flex items-center justify-center border transition-colors',
-                      passed && 'bg-green-700 border-green-700 text-white',
-                      isCurrent && 'bg-green-100 border-green-600 text-green-800 ring-2 ring-green-200 ring-offset-2 ring-offset-card',
-                      !passed && !isCurrent && isNext && 'bg-amber-50 border-amber-400 text-amber-700',
+                      'h-7 w-7 rounded-full flex items-center justify-center border-2 transition-colors',
+                      // Rolle-stige bruger amber/gylden palette — "diplom"-følelse,
+                      // skiller den visuelt fra plante-stadie-stigen som er grøn (vækst)
+                      passed && 'bg-amber-700 border-amber-700 text-amber-50',
+                      isCurrent && 'bg-amber-100 border-amber-700 text-amber-900 ring-2 ring-amber-300 ring-offset-2 ring-offset-card',
+                      !passed && !isCurrent && isNext && 'bg-amber-50/70 border-amber-400 text-amber-700',
                       !passed && !isCurrent && !isNext && 'bg-muted border-border text-muted-foreground/70',
                     )}
                     title={role.description}
