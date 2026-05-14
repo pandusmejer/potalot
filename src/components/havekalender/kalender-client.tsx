@@ -12,9 +12,11 @@ import { GeneralTaskActions } from '@/components/havekalender/general-task-actio
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ListChecks, Calendar, EyeOff, Eye, Info, Library } from 'lucide-react'
+import Link from 'next/link'
+import { ListChecks, Calendar, EyeOff, Eye, Info, Library, Compass, ArrowRight } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, TASK_PRIORITY_META } from '@/lib/constants'
+import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { cn } from '@/lib/utils'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
@@ -61,6 +63,29 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* Måneds-hero med stemning */}
       <MaanedsHero month={valgtMaaned} year={year} />
+
+      {/* Sæson-challenge promo hvis der er aktive i valgte måned */}
+      {challengesForMonth(valgtMaaned).length > 0 && (
+        <Link
+          href="/havelandskab"
+          className="block rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-50/70 to-card p-3 hover:bg-amber-50 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <Compass className="h-4 w-4 text-amber-700 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">
+                {challengesForMonth(valgtMaaned).length === 1
+                  ? `Én sæson-challenge denne måned: ${challengesForMonth(valgtMaaned)[0].title}`
+                  : `${challengesForMonth(valgtMaaned).length} sæson-challenges denne måned`}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Deltag i den fælles rytme — alle PotAlot-brugere er med.
+              </p>
+            </div>
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+          </div>
+        </Link>
+      )}
 
       {/* Tre-kort grid: Gøremål · Mine opgaver · Det kan du så */}
       <div className="grid gap-4 lg:grid-cols-3">
