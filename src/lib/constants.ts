@@ -175,8 +175,8 @@ export const PRIMARY_NAV = [
   { href: '/', label: 'Havebog', icon: 'Notebook' },
   { href: '/mine-planter', label: 'Planter', icon: 'Sprout' },
   { href: '/froebank', label: 'Frøbank', icon: 'Package', isHero: true },   // Visuelt dominerende
-  { href: '/kalender', label: 'Havekalender', icon: 'CalendarDays' },
-  { href: '/guides', label: 'Dyrkningsguides', icon: 'BookOpen' },
+  { href: '/kalender', label: 'Kalender', icon: 'CalendarDays' },
+  { href: '/guides', label: 'Guides', icon: 'BookOpen' },
 ] as const
 
 export const SECONDARY_NAV = [

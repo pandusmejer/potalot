@@ -17,7 +17,7 @@ export default async function MinePlanterPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-serif text-foreground">Mine planter</h1>
+          <h1 className="text-3xl font-serif text-foreground">Planter</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Aktive dyrkninger — det du har gang i lige nu.
           </p>

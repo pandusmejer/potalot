@@ -101,9 +101,10 @@ export default function IndstillingerPage() {
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <Button disabled>Gem (TODO database)</Button>
-          </div>
+          <p className="text-xs text-muted-foreground italic text-right">
+            Indstillingerne gemmes lokalt for denne session. Tværgående
+            persistens kommer i en senere version.
+          </p>
         </CardContent>
       </Card>
 

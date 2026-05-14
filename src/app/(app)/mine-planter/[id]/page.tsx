@@ -17,7 +17,7 @@ import { getGuide } from '@/actions/guides'
 import { dageSiden, formatDatoMedAar } from '@/lib/datetime'
 import {
   ArrowLeft, MapPin, Calendar, BookOpen, Package, ArrowRight, Sprout,
-  ClipboardList, Sparkles,
+  ClipboardList,
 } from 'lucide-react'
 
 interface Props {
@@ -175,21 +175,6 @@ export default async function PlanteDetailPage({ params }: Props) {
                 {inventoryItem.supplier}
               </p>
             )}
-          </CardContent>
-        </Card>
-      )}
-
-      {!plant.isArchived && (
-        <Card className="bg-gradient-to-br from-secondary/30 to-card border-secondary">
-          <CardContent className="flex items-center gap-3 py-3">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">Spørg AI gartner om denne plante</p>
-              <p className="text-xs text-muted-foreground">Få råd baseret på guide, log og status.</p>
-            </div>
-            <Button variant="outline" size="sm" disabled>
-              Spørg (TODO AI)
-            </Button>
           </CardContent>
         </Card>
       )}

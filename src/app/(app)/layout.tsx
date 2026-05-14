@@ -16,7 +16,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar heroHref={nav.heroHref} criticalTaskCount={nav.criticalTaskCount} />
+      <Sidebar
+        heroHref={nav.heroHref}
+        criticalTaskCount={nav.criticalTaskCount}
+        showFooterLegend={!profile}
+      />
       <div className="lg:ml-64">
         <Topbar profile={profile} />
         {!profile && <DemoBanner />}

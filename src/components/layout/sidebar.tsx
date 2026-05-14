@@ -10,17 +10,19 @@ import { cn } from '@/lib/utils'
 interface Props {
   heroHref: '/froebank' | '/mine-planter'
   criticalTaskCount: number
+  /** True hvis brugeren har bestået onboarding — så footer-legendaen skjules. */
+  showFooterLegend?: boolean
 }
 
 const BASE_ITEMS = [
   { href: '/', label: 'Havebog', icon: Notebook },
   { href: '/froebank', label: 'Frøbank', icon: Package },
   { href: '/mine-planter', label: 'Planter', icon: Sprout },
-  { href: '/kalender', label: 'Havekalender', icon: CalendarDays },
-  { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen },
+  { href: '/kalender', label: 'Kalender', icon: CalendarDays },
+  { href: '/guides', label: 'Guides', icon: BookOpen },
 ] as const
 
-export function Sidebar({ heroHref, criticalTaskCount }: Props) {
+export function Sidebar({ heroHref, criticalTaskCount, showFooterLegend = false }: Props) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -90,15 +92,17 @@ export function Sidebar({ heroHref, criticalTaskCount }: Props) {
         })}
       </nav>
 
-      <div className="px-6 py-4 border-t border-border">
-        <p className="text-xs text-muted-foreground italic">
-          Havebog = din historie.<br />
-          Frøbank = det du har.<br />
-          Planter = det du dyrker.<br />
-          Kalender = det du skal gøre.<br />
-          Guides = hvordan og hvorfor.
-        </p>
-      </div>
+      {showFooterLegend && (
+        <div className="px-6 py-4 border-t border-border">
+          <p className="text-xs text-muted-foreground italic">
+            Havebog = din historie.<br />
+            Frøbank = det du har.<br />
+            Planter = det du dyrker.<br />
+            Kalender = det du skal gøre.<br />
+            Guides = hvordan og hvorfor.
+          </p>
+        </div>
+      )}
     </aside>
   )
 }

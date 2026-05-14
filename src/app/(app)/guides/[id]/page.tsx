@@ -19,7 +19,7 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser, isCurrentUserAdmin } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import {
-  ArrowLeft, BookOpen, Sparkles, Package, Sprout, ArrowRight, Link2, Lock, ShieldCheck,
+  ArrowLeft, BookOpen, Package, Sprout, ArrowRight, Link2, Lock, ShieldCheck,
 } from 'lucide-react'
 
 interface Props {
@@ -309,21 +309,6 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         </Card>
       )}
 
-      {/* AI gartner */}
-      <Card className="bg-gradient-to-br from-secondary/30 to-card">
-        <CardContent className="flex items-center gap-3 py-3">
-          <Sparkles className="h-4 w-4 text-primary" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-foreground">Spørg AI gartner om denne plante</p>
-            <p className="text-xs text-muted-foreground">
-              Få svar baseret på guiden, din frøbank og log-historik.
-            </p>
-          </div>
-          <Button variant="outline" size="sm" disabled>
-            Spørg (TODO AI)
-          </Button>
-        </CardContent>
-      </Card>
     </article>
   )
 }
