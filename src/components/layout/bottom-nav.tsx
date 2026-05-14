@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, Sprout, Package, CalendarDays, BookOpen,
+  Notebook, Sprout, Package, CalendarDays, BookOpen,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const BASE_ITEMS = [
-  { href: '/', label: 'Overblik', icon: LayoutDashboard },
+  { href: '/', label: 'Min havebog', icon: Notebook },
   { href: '/froebank', label: 'Frøbank', icon: Package },
   { href: '/mine-planter', label: 'Mine planter', icon: Sprout },
   { href: '/kalender', label: 'Kalender', icon: CalendarDays },

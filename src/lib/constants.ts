@@ -172,7 +172,7 @@ export const MONTHS_DA = [
 // ============================================
 
 export const PRIMARY_NAV = [
-  { href: '/', label: 'Overblik', icon: 'LayoutDashboard' },
+  { href: '/', label: 'Min havebog', icon: 'Notebook' },
   { href: '/mine-planter', label: 'Mine planter', icon: 'Sprout' },
   { href: '/froebank', label: 'Frøbank', icon: 'Package', isHero: true },   // Visuelt dominerende
   { href: '/kalender', label: 'Havekalender', icon: 'CalendarDays' },
