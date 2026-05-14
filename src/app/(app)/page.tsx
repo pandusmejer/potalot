@@ -6,9 +6,15 @@ import { PlantMiniCard } from '@/components/overblik/plant-mini-card'
 import { ProgressCard } from '@/components/overblik/progress-card'
 import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
+import { GardenRoleCard } from '@/components/profil/garden-role-card'
+import { BadgeGallery } from '@/components/profil/badge-gallery'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getGeneralGardenTasks } from '@/actions/aarshjul'
+import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
+import { getCurrentUser } from '@/lib/auth'
+import { getProfile } from '@/actions/profil'
+import { computeRole, GARDEN_ROLES } from '@/lib/garden-roles'
 import { erForsinket, erIDag, aktuelMaaned, maanedNavn } from '@/lib/datetime'
 import { AlertCircle, CalendarClock, Sprout, ArrowRight, Lightbulb } from 'lucide-react'
 import type { ProgressState } from '@/lib/types'
@@ -16,11 +22,22 @@ import type { ProgressState } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 export default async function OverblikPage() {
-  const [tasks, plants, generalTasks] = await Promise.all([
+  const me = await getCurrentUser()
+
+  const [tasks, plants, generalTasks, profile, earned] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getGeneralGardenTasks(),
+    getProfile(),
+    me ? (async () => {
+      await backfillAllBadges(me.id)
+      return getBadgesForUser(me.id)
+    })() : Promise.resolve([]),
   ])
+
+  const roleProgress = computeRole(earned.map(e => e.badgeId))
+  const roleLabel = GARDEN_ROLES[roleProgress.currentRole].label
+  const greeting = greetingFor(profile?.username ?? null)
 
   // Dagens opgaver
   const idagsOpgaver = tasks.filter(t => erIDag(t.date) && t.status === 'open')
@@ -63,13 +80,21 @@ export default async function OverblikPage() {
 
   return (
     <div className="space-y-6">
+      {/* Personlig velkomst med haverolle-tagline */}
       <div>
-        <h1 className="text-3xl font-serif text-foreground">Overblik</h1>
+        <h1 className="text-3xl font-serif text-foreground">
+          {greeting}{profile?.username ? `, ${profile.username}` : ''}
+        </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Dagens vigtigste — det du skal fokusere på nu.
+          {me ? (
+            <>Du er <strong className="text-foreground">{roleLabel}</strong> · {earned.length} optjent badge{earned.length === 1 ? '' : 's'} · {maanedenNavn}</>
+          ) : (
+            <>Dit grønne overblik.</>
+          )}
         </p>
       </div>
 
+      {/* Forsinkede opgaver - haster */}
       {forsinkede.length > 0 && (
         <Card className="border-destructive/30 bg-destructive/5">
           <CardHeader>
@@ -84,6 +109,7 @@ export default async function OverblikPage() {
         </Card>
       )}
 
+      {/* Praktisk: I dag */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -175,6 +201,31 @@ export default async function OverblikPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Identitet: haverolle + badges (tidligere /havebog) */}
+      {me && (
+        <>
+          <div className="pt-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+              Din havehistorie
+            </p>
+            <div className="space-y-4">
+              <GardenRoleCard progress={roleProgress} />
+              <BadgeGallery earned={earned} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
+}
+
+/**
+ * Tidsspecifik hilsen — Godmorgen / Goddag / Godaften.
+ */
+function greetingFor(_name: string | null): string {
+  const hour = new Date().getHours()
+  if (hour < 10) return 'Godmorgen'
+  if (hour < 17) return 'Goddag'
+  return 'Godaften'
 }
