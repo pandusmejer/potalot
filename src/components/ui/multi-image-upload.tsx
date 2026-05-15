@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2, Star } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
+import { compressImage } from '@/lib/compress-image'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -63,9 +64,13 @@ export function MultiImageUpload({
       const errors: string[] = []
       for (const file of toUpload) {
         try {
-          setDebug(`Uploader "${file.name}" (${Math.round(file.size / 1024)} KB)…`)
+          setDebug(`Forbereder "${file.name}" (${Math.round(file.size / 1024)} KB)…`)
+          // Komprimér klient-side først — sparer båndbredde + sikrer at
+          // server ikke ser tunge filer der kan OOM Netlify Functions
+          const compressed = await compressImage(file)
+          setDebug(`Uploader "${compressed.name}" (${Math.round(compressed.size / 1024)} KB)…`)
           const fd = new FormData()
-          fd.append('file', file)
+          fd.append('file', compressed)
           fd.append('folder', folder)
           const response = await fetch('/api/upload', { method: 'POST', body: fd })
           const text = await response.text()
