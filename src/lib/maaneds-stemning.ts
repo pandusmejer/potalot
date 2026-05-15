@@ -11,20 +11,20 @@ export interface MaanedsStemning {
 
 export const MAANEDS_STEMNING: Record<number, MaanedsStemning> = {
   1: {
-    tagline: 'Vinterhvile',
-    description: 'Haven sover. Tid til frøkataloger, planlægning og at sortere frøposerne.',
+    tagline: 'Drømme, frø og frossen jord',
+    description: 'Haven sover på overfladen, men planerne begynder allerede at spire. Januar handler om frøposer, varme drømme om sommer og små projekter i vindueskarmen, mens verden udenfor mest ligner våd cement.',
   },
   2: {
-    tagline: 'Vinterens slutspil',
-    description: 'Forspiringen begynder for de tidligste sorter. Lyset vender langsomt.',
+    tagline: 'Lyset vender langsomt tilbage',
+    description: 'Dagene bliver længere, og det første forår prikker forsigtigt til haven. Chili, tomater og tidlige blomster kan sås, mens vintergækkerne minder os om, at naturen trods alt stadig gider forsøge.',
   },
   3: {
-    tagline: 'Forspiringens måned',
-    description: 'Tomater, chili og peberfrugt i karme. Tjek varmen — frøene har brug for stabilitet.',
+    tagline: 'Nu vågner haven',
+    description: 'Jorden begynder at løsne sig, drivhuset kalder, og de første rigtige forårstegn vælter frem. Der skal sås, beskæres og ryddes op, mens optimismen stiger hurtigere end temperaturen.',
   },
   4: {
-    tagline: 'Forårets start',
-    description: 'Jorden vågner. Kolde planter kan friland-sås, de varmekrævende klargøres indenfor.',
+    tagline: 'Alt spirer. Også ukrudtet.',
+    description: 'April er lyse aftener, kolde nætter og grønne skud overalt. Køkkenhaven starter for alvor, blomsterne vælter frem, og vejret skifter personlighed flere gange om dagen.',
   },
   5: {
     tagline: 'Sommerens dør står på klem',
