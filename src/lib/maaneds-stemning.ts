@@ -27,8 +27,8 @@ export const MAANEDS_STEMNING: Record<number, MaanedsStemning> = {
     description: 'Jorden vågner. Kolde planter kan friland-sås, de varmekrævende klargøres indenfor.',
   },
   5: {
-    tagline: 'Sommervarslet',
-    description: 'Det vipper nu. Efter isdamerne kan frostfølsomme planter ud, og lugejernet skal i jord.',
+    tagline: 'Sommerens dør står på klem',
+    description: 'Maj er måneden hvor haven går fra håb til handling. Tomaterne vil ud, georginerne vil i jorden, og ukrudtet har allerede lagt aggressive planer. Sol, regn og milde nætter sætter fart på det hele.',
   },
   6: {
     tagline: 'Den frodige måned',
