@@ -3,87 +3,119 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
-import {
-  YEAR_WHEEL_TASKS, type YearWheelTask, type YearWheelCategory, type YearWheelTimeWindow,
-} from '@/lib/year-wheel-library'
 
-const CATEGORY_TO_TASK_TYPE: Record<YearWheelCategory, string> = {
-  jord: 'maintenance',
-  saaning: 'sowing',
-  plantning: 'plant_out',
-  beskaering: 'pruning',
-  vanding: 'watering',
-  goedning: 'fertilizing',
-  plaene: 'maintenance',
-  skadedyr: 'pest_check',
-  hoest: 'harvest',
-  drivhus: 'maintenance',
-  krukker: 'maintenance',
-  'frugt-baer': 'maintenance',
-  pryd: 'maintenance',
-  haek: 'pruning',
-  dyreliv: 'maintenance',
-  vinterklargoering: 'maintenance',
-  planlaegning: 'planning',
+/**
+ * Tilføj generelle haveopgaver til brugerens kalender.
+ *
+ * Trækker template-data direkte fra general_garden_tasks (DB) som
+ * single source of truth. Linker via source='general' og source_id =
+ * general_garden_tasks.id, så det er idempotent (kan ikke tilføjes igen
+ * samme år hvis allerede der).
+ */
+
+function inferDayFromTimeWindow(window: string | null): number {
+  if (!window) return 15
+  const w = window.toLowerCase()
+  if (w.includes('primo') || w.includes('begynd')) return 5
+  if (w.includes('medio') || w.includes('midt')) return 15
+  if (w.includes('slut') || w.includes('sidst')) return 25
+  if (w.includes('før frost')) return 25
+  return 15
 }
 
-function dayOfMonth(window: YearWheelTimeWindow): number {
-  switch (window) {
-    case 'early_month': return 5
-    case 'mid_month': return 15
-    case 'late_month': return 25
-    case 'all_month': return 15
-    case 'after_frost': return 15
-    case 'when_soil_ready': return 15
-    case 'when_growth_starts': return 15
-    case 'before_frost': return 25
-  }
+function inferTaskType(category: string | null): string {
+  if (!category) return 'custom'
+  const c = category.toLowerCase()
+  if (c.includes('såning') || c.includes('forspiring')) return 'sowing'
+  if (c.includes('plantning') || c.includes('udplantning') || c.includes('løgplanter')) return 'plant_out'
+  if (c.includes('beskæring')) return 'pruning'
+  if (c.includes('vanding')) return 'watering'
+  if (c.includes('gødning')) return 'fertilizing'
+  if (c.includes('høst')) return 'harvest'
+  if (c.includes('planlægning') || c.includes('klargøring')) return 'planning'
+  if (c.includes('ukrudt') || c.includes('skadedyr')) return 'pest_check'
+  return 'custom'
 }
 
-function templateDate(t: YearWheelTask, year: number): string {
-  const day = dayOfMonth(t.timeWindow)
-  return `${year}-${String(t.month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+type TaskPriority = 'low' | 'medium' | 'high' | 'critical'
+
+function normalizePriority(p: string | null): TaskPriority {
+  if (p === 'low' || p === 'medium' || p === 'high' || p === 'critical') return p
+  return 'medium'
 }
 
-export interface AddYearWheelInput {
-  templateIds: string[]
+export interface AddGeneralTasksInput {
+  /** UUIDer fra general_garden_tasks (DB) */
+  generalTaskIds: string[]
   year: number
 }
 
-export async function addYearWheelTasks(input: AddYearWheelInput): Promise<
+/**
+ * Tilføj en eller flere general_garden_tasks til brugerens kalender for et
+ * givent år. Idempotent: skipper rækker brugeren allerede har tilføjet.
+ */
+export async function addGeneralTasksToCalendar(input: AddGeneralTasksInput): Promise<
   | { added: number; skipped: number }
   | { error: string }
 > {
   const { id: userId } = await requireUser()
+  if (input.generalTaskIds.length === 0) return { added: 0, skipped: 0 }
+
   const supabase = await createClient()
 
-  const templates = YEAR_WHEEL_TASKS.filter(t => input.templateIds.includes(t.id))
-  if (templates.length === 0) return { added: 0, skipped: 0 }
+  // Hent template-data fra DB
+  const { data: templates, error: templatesErr } = await supabase
+    .from('general_garden_tasks')
+    .select('id, title, description, month, category, priority, time_window')
+    .in('id', input.generalTaskIds)
+    .eq('is_active', true)
 
-  // Skip dem brugeren allerede har tilføjet (samme template_id, samme år)
-  const sourceIds = templates.map(t => t.id)
+  if (templatesErr) return { error: templatesErr.message }
+  if (!templates || templates.length === 0) return { added: 0, skipped: 0 }
+
+  // Skip allerede tilføjede (samme template_id, samme år via source='general')
   const { data: existing } = await supabase
     .from('calendar_tasks')
-    .select('source_id')
+    .select('source_id, date')
     .eq('user_id', userId)
     .eq('source', 'general')
-    .in('source_id', sourceIds)
-  const existingIds = new Set((existing ?? []).map((r: { source_id: string }) => r.source_id))
+    .in('source_id', input.generalTaskIds)
 
-  const toInsert = templates
-    .filter(t => !existingIds.has(t.id))
-    .map(t => ({
-      user_id: userId,
-      title: t.title,
-      description: t.description,
-      date: templateDate(t, input.year),
-      task_type: CATEGORY_TO_TASK_TYPE[t.category],
-      priority: t.priority === 'high' ? 'high' : t.priority === 'low' ? 'low' : 'medium',
-      status: 'open',
-      source: 'general',
-      source_id: t.id,
-      is_recurring: false,
-    }))
+  type ExistingRow = { source_id: string; date: string }
+  const existingThisYear = new Set(
+    ((existing ?? []) as ExistingRow[])
+      .filter(r => r.date.startsWith(String(input.year)))
+      .map(r => r.source_id)
+  )
+
+  type Template = {
+    id: string
+    title: string
+    description: string | null
+    month: number
+    category: string | null
+    priority: string | null
+    time_window: string | null
+  }
+
+  const toInsert = (templates as Template[])
+    .filter(t => !existingThisYear.has(t.id))
+    .map(t => {
+      const day = inferDayFromTimeWindow(t.time_window)
+      const date = `${input.year}-${String(t.month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      return {
+        user_id: userId,
+        title: t.title,
+        description: t.description,
+        date,
+        task_type: inferTaskType(t.category),
+        priority: normalizePriority(t.priority),
+        status: 'open',
+        source: 'general',
+        source_id: t.id,
+        is_recurring: false,
+      }
+    })
 
   if (toInsert.length === 0) {
     return { added: 0, skipped: templates.length }

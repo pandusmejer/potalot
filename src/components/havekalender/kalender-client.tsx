@@ -5,19 +5,16 @@ import { Aarshjul } from '@/components/havekalender/aarshjul'
 import { TodoTabs } from '@/components/havekalender/todo-tabs'
 import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
 import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
-import { YearWheelDialog } from '@/components/havekalender/year-wheel-dialog'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
-import { GeneralTaskActions } from '@/components/havekalender/general-task-actions'
+import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ListChecks, Calendar, EyeOff, Eye, Info, Library, Compass, ArrowRight } from 'lucide-react'
+import { ListChecks, Calendar, EyeOff, Eye, Info, Compass, ArrowRight } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
-import { MONTHS_DA, TASK_PRIORITY_META } from '@/lib/constants'
+import { MONTHS_DA } from '@/lib/constants'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
-import { cn } from '@/lib/utils'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -146,6 +143,14 @@ function MaanedensGoeremaal({
   const mine = userTasks.filter(u => u.month === month)
   const harSkjulte = generelleSkjulte.length > 0
 
+  // Find hvilke general_task_ids brugeren allerede har tilføjet til kalender i indeværende år
+  const yearStr = String(year)
+  const tilfoejedeIds = new Set(
+    existingTasks
+      .filter(t => t.source === 'general' && t.sourceId && t.date.startsWith(yearStr))
+      .map(t => t.sourceId as string)
+  )
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between gap-2 flex-wrap">
@@ -154,7 +159,7 @@ function MaanedensGoeremaal({
           Gøremål — {monthName}
           <span
             className="inline-flex items-center"
-            title="Sæsonbestemte ting man typisk gør hver måned. Havens gøremål kommer fra PotAlot — Mine gøremål tilføjer du selv. Modsat 'Mine opgaver' der har specifik dato."
+            title="Sæsonbestemte ting man typisk gør hver måned. Klik et gøremål for at folde det ud og se detaljer eller tilføje det til Mine opgaver."
           >
             <Info className="h-3 w-3 text-muted-foreground" />
           </span>
@@ -162,11 +167,18 @@ function MaanedensGoeremaal({
         <UserTaskDialog defaultMonth={month} />
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Globale aktive */}
+        {/* Havens gøremål */}
         {generelleSynlige.length > 0 && (
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-wider text-muted-foreground">Havens gøremål</p>
-            {generelleSynlige.map(t => <GeneralTaskRow key={t.id} task={t} />)}
+            {generelleSynlige.map(t => (
+              <GeneralTaskCard
+                key={t.id}
+                task={t}
+                alreadyAdded={tilfoejedeIds.has(t.id)}
+                year={year}
+              />
+            ))}
           </div>
         )}
 
@@ -185,7 +197,14 @@ function MaanedensGoeremaal({
             </Button>
             {visSkjulte && (
               <div className="space-y-2 mt-2">
-                {generelleSkjulte.map(t => <GeneralTaskRow key={t.id} task={t} />)}
+                {generelleSkjulte.map(t => (
+                  <GeneralTaskCard
+                    key={t.id}
+                    task={t}
+                    alreadyAdded={tilfoejedeIds.has(t.id)}
+                    year={year}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -202,45 +221,8 @@ function MaanedensGoeremaal({
         {generelleSynlige.length === 0 && mine.length === 0 && !harSkjulte && (
           <p className="text-sm text-muted-foreground italic">Ingen gøremål i {monthName.toLowerCase()}.</p>
         )}
-
-        {/* Footer: åbn template-katalog */}
-        <div className="pt-3 mt-3 border-t border-border">
-          <YearWheelDialog existingTasks={existingTasks} year={year}>
-            <Button variant="outline" size="sm" className="w-full">
-              <Library className="h-3.5 w-3.5" />
-              Bladr Havens årshjul-katalog
-            </Button>
-          </YearWheelDialog>
-        </div>
       </CardContent>
     </Card>
-  )
-}
-
-function GeneralTaskRow({ task }: { task: GeneralGardenTask }) {
-  const pri = TASK_PRIORITY_META[task.priority]
-  const isHigh = task.priority === 'high' || task.priority === 'critical'
-  return (
-    <div className={cn(
-      'border-l-2 pl-3 py-1 transition-opacity',
-      task.isHiddenByMe ? 'border-muted-foreground/30 opacity-60' : 'border-primary/30'
-    )}>
-      <div className="flex items-start justify-between gap-2 flex-wrap">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-medium text-foreground">{task.title}</p>
-            {isHigh && <Badge variant="warning" className="text-[10px]">{pri.label}</Badge>}
-          </div>
-          {task.description && (
-            <p className="text-sm text-muted-foreground mt-0.5">{task.description}</p>
-          )}
-          {task.timeWindow && (
-            <p className="text-xs text-muted-foreground mt-0.5 italic">{task.timeWindow}</p>
-          )}
-        </div>
-        <GeneralTaskActions taskId={task.id} isHidden={!!task.isHiddenByMe} />
-      </div>
-    </div>
   )
 }
 
