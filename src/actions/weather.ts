@@ -49,6 +49,132 @@ export interface GardenWeather {
   locationName: string
 }
 
+// ============================================
+// Natur-varsler: frost / tørke / skybrud / storm
+// ============================================
+
+export type AlertKind = 'frost' | 'toerke' | 'skybrud' | 'storm'
+
+export interface GardenAlert {
+  kind: AlertKind
+  /** 'warning' = handl nu, 'info' = vær opmærksom */
+  severity: 'warning' | 'info'
+  /** lucide-ikon-navn */
+  icon: 'Snowflake' | 'Sun' | 'CloudRain' | 'Wind'
+  title: string
+  detail: string
+}
+
+/** Dansk dag-label: 'i nat', 'i morgen', 'om 3 dage' osv. */
+function dagLabel(daysAhead: number): string {
+  if (daysAhead === 0) return 'i nat'
+  if (daysAhead === 1) return 'i morgen'
+  if (daysAhead === 2) return 'i overmorgen'
+  return `om ${daysAhead} dage`
+}
+
+/**
+ * Aktive natur-varsler for havens placering.
+ *
+ * - Frost:   min-temp ≤ 2 °C indenfor 3 dage (kritisk for sarte planter)
+ * - Storm:   vindstød ≥ 17 m/s indenfor 2 dage (bind op, sikre krukker)
+ * - Skybrud: ≥ 15 mm nedbør på én time indenfor 2 dage
+ * - Tørke:   < 1 mm samlet nedbør de næste 6 dage (husk at vande)
+ *
+ * Returnerer tom liste hvis lokation ikke sat. Cachet 30 min.
+ */
+export async function getGardenAlerts(): Promise<GardenAlert[]> {
+  const profile = await getProfile()
+  if (!profile?.latitude || !profile?.longitude) return []
+
+  try {
+    const url = new URL('https://api.open-meteo.com/v1/forecast')
+    url.searchParams.set('latitude', String(profile.latitude))
+    url.searchParams.set('longitude', String(profile.longitude))
+    url.searchParams.set('daily', 'temperature_2m_min,precipitation_sum,wind_gusts_10m_max')
+    url.searchParams.set('hourly', 'precipitation')
+    url.searchParams.set('wind_speed_unit', 'ms')
+    url.searchParams.set('timezone', 'Europe/Copenhagen')
+    url.searchParams.set('forecast_days', '7')
+
+    const res = await fetch(url, { next: { revalidate: 1800 } })
+    if (!res.ok) return []
+    const data = await res.json()
+
+    const minTemps: number[] = data.daily?.temperature_2m_min ?? []
+    const precipSum: number[] = data.daily?.precipitation_sum ?? []
+    const gustMax: number[] = data.daily?.wind_gusts_10m_max ?? []
+    const hourlyPrecip: number[] = data.hourly?.precipitation ?? []
+
+    const alerts: GardenAlert[] = []
+
+    // ---- FROST: min ≤ 2°C indenfor de næste 3 dage ----
+    for (let d = 0; d < Math.min(3, minTemps.length); d++) {
+      if (minTemps[d] <= 2) {
+        const t = Math.round(minTemps[d])
+        alerts.push({
+          kind: 'frost',
+          severity: 'warning',
+          icon: 'Snowflake',
+          title: `Nattefrost ${dagLabel(d)}`,
+          detail: `Ned til ${t}°. Dæk sarte planter (tomater, georginer, squash) eller tag dem ind.`,
+        })
+        break // ét frost-varsel er nok
+      }
+    }
+
+    // ---- STORM: vindstød ≥ 17 m/s indenfor 2 dage ----
+    for (let d = 0; d < Math.min(2, gustMax.length); d++) {
+      if (gustMax[d] >= 17) {
+        const ms = Math.round(gustMax[d])
+        alerts.push({
+          kind: 'storm',
+          severity: 'warning',
+          icon: 'Wind',
+          title: `Hård vind ${dagLabel(d)}`,
+          detail: `Vindstød op til ${ms} m/s. Bind høje planter op, sikre krukker og let drivhus-ventilation.`,
+        })
+        break
+      }
+    }
+
+    // ---- SKYBRUD: ≥ 15 mm nedbør på én time indenfor 2 dage (48 timer) ----
+    const maxHour = Math.min(48, hourlyPrecip.length)
+    let skybrud = false
+    for (let h = 0; h < maxHour; h++) {
+      if (hourlyPrecip[h] >= 15) { skybrud = true; break }
+    }
+    if (skybrud) {
+      alerts.push({
+        kind: 'skybrud',
+        severity: 'warning',
+        icon: 'CloudRain',
+        title: 'Skybrud på vej',
+        detail: 'Kraftig regn forventet det næste døgn. Tjek dræn, flyt sarte potter i læ, og vent med at gøde (det skyller væk).',
+      })
+    }
+
+    // ---- TØRKE: < 1 mm samlet de næste 6 dage ----
+    const next6 = precipSum.slice(0, 6)
+    if (next6.length >= 5) {
+      const total = next6.reduce((s, v) => s + (v ?? 0), 0)
+      if (total < 1) {
+        alerts.push({
+          kind: 'toerke',
+          severity: 'info',
+          icon: 'Sun',
+          title: 'Tør periode forude',
+          detail: 'Stort set ingen regn de næste 6 dage. Husk at vande grundigt — særligt krukker, nysåede bede og drivhus.',
+        })
+      }
+    }
+
+    return alerts
+  } catch {
+    return []
+  }
+}
+
 /**
  * Hent vejr for brugerens have-placering. Returnerer null hvis
  * lokation ikke er sat (chip skjules da bare).

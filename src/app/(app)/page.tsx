@@ -9,11 +9,13 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { GardenRoleCard } from '@/components/profil/garden-role-card'
 import { BadgeGallery } from '@/components/profil/badge-gallery'
 import { StartHereCard } from '@/components/overblik/start-here-card'
+import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getGeneralGardenTasks } from '@/actions/aarshjul'
 import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
+import { getGardenAlerts } from '@/actions/weather'
 import { getCurrentUser } from '@/lib/auth'
 import { getProfile } from '@/actions/profil'
 import { computeRole, GARDEN_ROLES } from '@/lib/garden-roles'
@@ -26,7 +28,7 @@ export const dynamic = 'force-dynamic'
 export default async function OverblikPage() {
   const me = await getCurrentUser()
 
-  const [tasks, plants, inventory, generalTasks, profile, earned] = await Promise.all([
+  const [tasks, plants, inventory, generalTasks, profile, earned, alerts] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
@@ -36,6 +38,7 @@ export default async function OverblikPage() {
       await backfillAllBadges(me.id)
       return getBadgesForUser(me.id)
     })() : Promise.resolve([]),
+    getGardenAlerts(),
   ])
 
   // Helt ny bruger: ingen planter + ingen frøbank-items
@@ -99,6 +102,9 @@ export default async function OverblikPage() {
           )}
         </p>
       </div>
+
+      {/* Natur-varsler: frost / storm / skybrud / tørke — kun når aktuelle */}
+      <GardenAlerts alerts={alerts} />
 
       {/* Start her-card for helt nye brugere */}
       {isNewUser && <StartHereCard />}
