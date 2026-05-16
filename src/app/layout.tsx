@@ -31,9 +31,21 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
+/**
+ * Sæson-slug ud fra aktuel måned. Bruges som data-attribut på <html>
+ * så hele UI'ets tone skifter subtilt gennem året (se globals.css).
+ */
+function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
+  const m = new Date().getMonth() + 1
+  if (m === 12 || m <= 2) return 'vinter'
+  if (m <= 5) return 'foraar'
+  if (m <= 8) return 'sommer'
+  return 'efteraar'
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="da">
+    <html lang="da" data-season={aktuelSaesonSlug()}>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
         {children}
       </body>

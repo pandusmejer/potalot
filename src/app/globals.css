@@ -52,6 +52,56 @@
   --radius:                12px;
 }
 
+/* ============================================
+ * Sæson-toner — hele UI'ets atmosfære skifter subtilt
+ * gennem året. KUN baggrunds-/overflade-variabler ændres;
+ * --foreground, --primary og *-foreground røres ALDRIG,
+ * så kontrast og læsbarhed bevares uændret året rundt.
+ *
+ * Forskellene er bevidst små (3-10 punkter pr. kanal):
+ * det skal føles som naturlig variation, ikke farvekodning.
+ * ============================================ */
+
+/* Forår — frisk, lysgrøn pergament (default-nær) */
+html[data-season='foraar'] {
+  --background: #F3F0E5;
+  --card:       #FBF8EE;
+  --secondary:  #E1EBDC;
+  --muted:      #EBE6D3;
+  --accent:     #EBE6D3;
+  --border:     #DFD6BC;
+}
+
+/* Sommer — varmere, dybere, mere mættet */
+html[data-season='sommer'] {
+  --background: #F6F0DF;
+  --card:       #FCF6E9;
+  --secondary:  #DBE6D3;
+  --muted:      #EEE3CC;
+  --accent:     #EEE3CC;
+  --border:     #DCCFB2;
+}
+
+/* Efterår — rav, varm brungrøn */
+html[data-season='efteraar'] {
+  --background: #F5ECDA;
+  --card:       #FBF4E5;
+  --secondary:  #E8E3CF;
+  --muted:      #EEDEC5;
+  --accent:     #EEDEC5;
+  --border:     #DFCFAD;
+}
+
+/* Vinter — støvet, kølig grå-grøn */
+html[data-season='vinter'] {
+  --background: #F1EFE7;
+  --card:       #F8F6EE;
+  --secondary:  #E2E7E1;
+  --muted:      #E8E6DB;
+  --accent:     #E8E6DB;
+  --border:     #DAD6C6;
+}
+
 @theme inline {
   --color-background:           var(--background);
   --color-foreground:           var(--foreground);
