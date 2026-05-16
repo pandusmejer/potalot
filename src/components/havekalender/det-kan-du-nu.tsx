@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { InventoryItem, Guide, Plant } from '@/lib/types'
-import { Sprout, Lightbulb, ArrowRight, Plus, X, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
+import { Sprout, Lightbulb, ArrowRight, X, Eye, EyeOff, CheckCircle2, Leaf } from 'lucide-react'
 
 interface Props {
   month: number
@@ -18,15 +17,14 @@ interface Props {
 }
 
 /**
- * "Det kan du så/plante nu" — månedsbaseret inspiration.
+ * "Det kan du så/plante nu" — visuel carousel-inspiration.
  *
- * Tre sektioner / filter-logikker:
- * - Auto-filter: items hvor brugeren allerede har en aktiv plante med
- *   sourceElementId pegende tilbage på item bliver skjult (du har
- *   allerede startet dyrkningen i år)
- * - Manuel skip: brugeren kan klikke ✕ for at skjule et item resten af
- *   måneden (gemmes i localStorage pr. måned/år, ingen DB)
- * - Vis skjulte: toggle hvis brugeren har skippet noget hun fortryder
+ * Anna's brainstorm: 'Du vil have: uh jeg får lyst til at dyrke den.
+ * Ikke: database-hit fundet.' Derfor billed-cards i horisontal
+ * carousel frem for tabel-rækker.
+ *
+ * Logik bevaret: auto-filter af aktive dyrkninger, manuel skip
+ * (localStorage pr. måned/år), vis-skjulte-toggle.
  */
 export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
   const monthName = MONTHS_DA[month - 1].full
@@ -36,7 +34,6 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
   const [visSkjulte, setVisSkjulte] = useState(false)
 
-  // Læs dismissed fra localStorage ved mount
   useEffect(() => {
     try {
       const raw = localStorage.getItem(dismissKey)
@@ -64,9 +61,6 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
     persist(next)
   }
 
-  // ID-set over inventory-items hvor brugeren allerede har en aktiv plante.
-  // En 'aktiv plante' = !isArchived og sowDate i indeværende år (så vi ikke
-  // permanent skjuler items fordi de blev sået sidste år).
   const activeFromItem = new Set(
     plants
       .filter(p => !p.isArchived && p.sourceElementId)
@@ -74,21 +68,18 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
       .map(p => p.sourceElementId as string)
   )
 
-  // Items i frøbank der matcher måneden
   const allRelevant = inventory.filter(i =>
     i.sowingMonths.includes(month) ||
     i.plantingOutMonths.includes(month) ||
     i.harvestMonths.includes(month)
   )
 
-  // Synlige = ikke aktivt sået + ikke manuelt skippet
   const synlige = allRelevant.filter(i =>
     !activeFromItem.has(i.id) && !dismissed.has(i.id)
   )
   const skjulteFraSkip = allRelevant.filter(i => dismissed.has(i.id))
   const aktivIAar = allRelevant.filter(i => activeFromItem.has(i.id))
 
-  // Inspiration fra guides (filtrer dem hvor brugeren ikke allerede har det i frøbank)
   const navnIFroebank = new Set(inventory.map(i => `${i.name}|${i.variety ?? ''}`))
   const inspiration = guides.filter(g => {
     const key = `${g.plantName}|${g.variety ?? ''}`
@@ -127,31 +118,43 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
                 Ingen elementer i din frøbank passer til {monthName} lige nu.
               </p>
             ) : (
-              <div className="space-y-2">
-                {synlige.map(item => (
-                  <SuggestionRow
-                    key={item.id}
-                    item={item}
-                    month={month}
-                    onSkip={() => skipItem(item.id)}
-                  />
-                ))}
+              <div className="space-y-4">
+                {synlige.length > 0 && (
+                  <Carousel>
+                    {synlige.map(item => (
+                      <FroeCard
+                        key={item.id}
+                        item={item}
+                        month={month}
+                        onSkip={() => skipItem(item.id)}
+                      />
+                    ))}
+                  </Carousel>
+                )}
 
-                {/* Allerede aktiv dyrkning: stadig synlig, men nedtonet med 'Sået'-mærke */}
+                {/* Allerede aktiv dyrkning */}
                 {aktivIAar.length > 0 && (
-                  <div className="pt-3 mt-3 border-t border-border space-y-2">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                  <div className="pt-2">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">
                       Allerede i gang i år ({aktivIAar.length})
                     </p>
-                    {aktivIAar.map(item => (
-                      <AlreadyActiveRow key={item.id} item={item} />
-                    ))}
+                    <div className="flex flex-wrap gap-1.5">
+                      {aktivIAar.map(item => (
+                        <span
+                          key={item.id}
+                          className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground"
+                        >
+                          <CheckCircle2 className="h-3 w-3 text-green-700" />
+                          {item.name}{item.variety ? ` — ${item.variety}` : ''}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {/* Skjulte */}
                 {skjulteFraSkip.length > 0 && (
-                  <div className="pt-3 mt-3 border-t border-border">
+                  <div className="pt-2 border-t border-border">
                     <Button
                       type="button"
                       variant="ghost"
@@ -163,16 +166,18 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
                       {visSkjulte ? 'Skjul' : `Vis ${skjulteFraSkip.length} skippet`}
                     </Button>
                     {visSkjulte && (
-                      <div className="space-y-2 mt-2 opacity-60">
-                        {skjulteFraSkip.map(item => (
-                          <SuggestionRow
-                            key={item.id}
-                            item={item}
-                            month={month}
-                            onUnskip={() => unskipItem(item.id)}
-                            skipped
-                          />
-                        ))}
+                      <div className="opacity-60 mt-2">
+                        <Carousel>
+                          {skjulteFraSkip.map(item => (
+                            <FroeCard
+                              key={item.id}
+                              item={item}
+                              month={month}
+                              onUnskip={() => unskipItem(item.id)}
+                              skipped
+                            />
+                          ))}
+                        </Carousel>
                       </div>
                     )}
                   </div>
@@ -187,38 +192,11 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
                 Ingen inspiration til denne måned.
               </p>
             ) : (
-              <div className="space-y-2">
-                {inspiration.slice(0, 8).map(g => (
-                  <div
-                    key={g.id}
-                    className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:bg-accent/30 transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium text-foreground truncate">{g.plantName}</p>
-                        {g.variety && (
-                          <span className="text-sm italic text-muted-foreground truncate">
-                            {g.variety}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                        {g.summary}
-                      </p>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button asChild size="sm" variant="outline">
-                        <Link href={`/guides/${g.id}`}>
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </Link>
-                      </Button>
-                      <Button size="sm" variant="ghost" disabled>
-                        <Plus className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
+              <Carousel>
+                {inspiration.slice(0, 12).map(g => (
+                  <GuideCard key={g.id} guide={g} />
                 ))}
-              </div>
+              </Carousel>
             )}
           </TabsContent>
         </Tabs>
@@ -227,7 +205,33 @@ export function DetKanDuNu({ month, inventory, guides, plants }: Props) {
   )
 }
 
-function SuggestionRow({
+/** Horisontal scroll-snap container. */
+function Carousel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-hide">
+      {children}
+    </div>
+  )
+}
+
+/** Billed-thumbnail eller botanisk placeholder. */
+function Thumb({ url }: { url?: string | null }) {
+  if (url) {
+    return (
+      <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+      </div>
+    )
+  }
+  return (
+    <div className="aspect-[4/3] w-full bg-pattern-botanical bg-secondary/40 flex items-center justify-center">
+      <Leaf className="h-7 w-7 text-primary/30" />
+    </div>
+  )
+}
+
+function FroeCard({
   item, month, onSkip, onUnskip, skipped = false,
 }: {
   item: InventoryItem
@@ -239,83 +243,90 @@ function SuggestionRow({
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
   const handling = decideHandling(item, month)
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:bg-accent/30 transition-colors">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="font-medium text-foreground truncate">{item.name}</p>
-          {item.variety && (
-            <span className="text-sm italic text-muted-foreground truncate">
-              {item.variety}
-            </span>
-          )}
-          <Badge variant="muted" className="text-[10px]">{cat.name}</Badge>
-        </div>
-        <p className="text-xs text-primary mt-0.5">{handling}</p>
-      </div>
-      {skipped ? (
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={onUnskip}
-          title="Vis forslaget igen"
-        >
-          <Eye className="h-3.5 w-3.5" />
-          Fortryd skip
-        </Button>
-      ) : (
-        <div className="flex items-center gap-1">
-          <Button asChild size="sm" variant="default">
-            <Link href={`/mine-planter?fromInventory=${item.id}`}>
-              <Sprout className="h-3.5 w-3.5" />
-              Så
-            </Link>
-          </Button>
-          <Button
+    <div className="snap-start shrink-0 w-44 rounded-xl border border-border bg-card overflow-hidden flex flex-col">
+      <div className="relative">
+        <Thumb url={item.primaryImageId} />
+        {!skipped && onSkip && (
+          <button
             type="button"
-            size="sm"
-            variant="ghost"
             onClick={onSkip}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-            title="Skip — vis ikke dette forslag i denne måned"
+            className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-background/80 backdrop-blur flex items-center justify-center hover:bg-background transition"
+            title="Skip — vis ikke i denne måned"
             aria-label="Skip forslag"
           >
-            <X className="h-3.5 w-3.5" />
-          </Button>
+            <X className="h-3 w-3" />
+          </button>
+        )}
+      </div>
+      <div className="p-2.5 flex-1 flex flex-col">
+        <p className="text-sm font-medium text-foreground leading-tight line-clamp-1">
+          {item.name}
+        </p>
+        {item.variety && (
+          <p className="text-xs italic text-muted-foreground line-clamp-1">{item.variety}</p>
+        )}
+        <p className="text-[11px] text-primary mt-1">{handling}</p>
+        <span className="text-[9px] uppercase tracking-wide text-muted-foreground mt-0.5">
+          {cat?.name ?? item.primaryCategoryId}
+        </span>
+        <div className="mt-2 pt-2 border-t border-border/60">
+          {skipped ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={onUnskip}
+              className="w-full text-xs h-7"
+            >
+              <Eye className="h-3 w-3" />
+              Fortryd skip
+            </Button>
+          ) : (
+            <Button asChild size="sm" className="w-full text-xs h-7">
+              <Link href={`/mine-planter?fromInventory=${item.id}`}>
+                <Sprout className="h-3 w-3" />
+                Så
+              </Link>
+            </Button>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
 
-function AlreadyActiveRow({ item }: { item: InventoryItem }) {
-  const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
+function GuideCard({ guide }: { guide: Guide }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/30 opacity-80">
-      <CheckCircle2 className="h-4 w-4 text-green-700 shrink-0" />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="font-medium text-foreground truncate">{item.name}</p>
-          {item.variety && (
-            <span className="text-sm italic text-muted-foreground truncate">
-              {item.variety}
-            </span>
-          )}
-          <Badge variant="muted" className="text-[10px]">{cat.name}</Badge>
-        </div>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Du har allerede en aktiv dyrkning af denne i {new Date().getFullYear()}.
+    <Link
+      href={`/guides/${guide.id}`}
+      className="snap-start shrink-0 w-44 rounded-xl border border-border bg-card overflow-hidden flex flex-col hover:shadow-sm transition-shadow group"
+    >
+      <Thumb url={guide.primaryImageId} />
+      <div className="p-2.5 flex-1 flex flex-col">
+        <p className="text-sm font-medium text-foreground leading-tight line-clamp-1">
+          {guide.plantName}
         </p>
+        {guide.variety && (
+          <p className="text-xs italic text-muted-foreground line-clamp-1">{guide.variety}</p>
+        )}
+        {guide.summary && (
+          <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 flex-1">
+            {guide.summary}
+          </p>
+        )}
+        <span className="inline-flex items-center gap-1 text-[11px] text-primary mt-2 pt-2 border-t border-border/60 group-hover:gap-1.5 transition-all">
+          Se guide <ArrowRight className="h-3 w-3" />
+        </span>
       </div>
-    </div>
+    </Link>
   )
 }
 
 function decideHandling(item: InventoryItem, month: number): string {
   if (item.sowingMonths.includes(month)) {
-    return item.preCultivation ? 'Forspires denne måned' : 'Sås denne måned'
+    return item.preCultivation ? 'Forspires nu' : 'Sås nu'
   }
-  if (item.plantingOutMonths.includes(month)) return 'Plantes ud denne måned'
-  if (item.harvestMonths.includes(month)) return 'Kan høstes denne måned'
+  if (item.plantingOutMonths.includes(month)) return 'Plantes ud nu'
+  if (item.harvestMonths.includes(month)) return 'Kan høstes nu'
   return ''
 }
