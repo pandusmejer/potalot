@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Cormorant_Garamond } from 'next/font/google'
+import { Inter, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -8,10 +8,10 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'],
 })
 
-const cormorant = Cormorant_Garamond({
-  variable: '--font-cormorant',
+const dmSerif = DM_Serif_Display({
+  variable: '--font-dm-serif',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: '400',
 })
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} antialiased`}>
         {children}
       </body>
     </html>
