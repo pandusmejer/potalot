@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
+import { LocationSetting } from '@/components/profil/location-setting'
 import type { NotificationPreference } from '@/lib/types'
 import { ChevronRight, User, Bell, Sparkles, Globe, Lock } from 'lucide-react'
 
@@ -47,6 +48,9 @@ export default function IndstillingerPage() {
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       </Card>
+
+      {/* Havens placering */}
+      <LocationSetting />
 
       {/* Notifikationer */}
       <Card>

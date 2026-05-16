@@ -13,6 +13,9 @@ interface ProfileRow {
   user_mode: string | null
   onboarded: boolean | null
   is_admin: boolean | null
+  latitude: number | null
+  longitude: number | null
+  location_name: string | null
   created_at: string
   updated_at: string
 }
@@ -26,6 +29,9 @@ function rowToProfile(row: ProfileRow, email: string | null): Profile {
     userMode: (row.user_mode ?? 'afslappet') as UserMode,
     onboarded: row.onboarded ?? false,
     isAdmin: row.is_admin ?? false,
+    latitude: row.latitude ?? null,
+    longitude: row.longitude ?? null,
+    locationName: row.location_name ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -52,6 +58,9 @@ export interface UpdateProfileInput {
   avatarUrl?: string | null
   userMode?: UserMode
   onboarded?: boolean
+  latitude?: number | null
+  longitude?: number | null
+  locationName?: string | null
 }
 
 export async function updateProfile(input: UpdateProfileInput): Promise<{ ok: true } | { error: string }> {
@@ -64,6 +73,9 @@ export async function updateProfile(input: UpdateProfileInput): Promise<{ ok: tr
   if (input.avatarUrl !== undefined) update.avatar_url = input.avatarUrl
   if (input.userMode !== undefined) update.user_mode = input.userMode
   if (input.onboarded !== undefined) update.onboarded = input.onboarded
+  if (input.latitude !== undefined) update.latitude = input.latitude
+  if (input.longitude !== undefined) update.longitude = input.longitude
+  if (input.locationName !== undefined) update.location_name = input.locationName
 
   const { error } = await supabase
     .from('profiles')

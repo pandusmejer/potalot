@@ -3,11 +3,15 @@ import { Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
+import { WeatherChip } from './weather-chip'
 import { getUnreadCount } from '@/actions/notifications'
+import { getGardenWeather } from '@/actions/weather'
 import type { Profile } from '@/lib/types'
 
 export async function Topbar({ profile }: { profile: Profile | null }) {
-  const unreadCount = profile ? await getUnreadCount() : 0
+  const [unreadCount, weather] = profile
+    ? await Promise.all([getUnreadCount(), getGardenWeather()])
+    : [0, null]
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-3 border-b border-border bg-card/95 backdrop-blur-md">
       <Link href="/" className="flex items-center gap-2 lg:invisible">
@@ -15,7 +19,8 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
         <span className="font-serif text-xl text-foreground">PotAlot</span>
       </Link>
       {profile ? (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
+          <WeatherChip weather={weather} />
           <NotificationBell initialUnreadCount={unreadCount} />
           <ProfileMenu profile={profile} />
         </div>

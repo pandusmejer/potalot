@@ -19,6 +19,10 @@ export interface Profile {
   userMode: UserMode
   onboarded: boolean
   isAdmin: boolean
+  /** Havens placering — til vejr + natur-signaler */
+  latitude?: number | null
+  longitude?: number | null
+  locationName?: string | null
   createdAt: string
   updatedAt: string
 }
