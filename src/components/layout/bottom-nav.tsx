@@ -34,8 +34,8 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
   }
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md safe-area-pb">
-      <div className="flex items-stretch justify-around h-16 relative">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md safe-area-pb">
+      <div className="mx-auto flex w-full max-w-[480px] items-stretch justify-around h-16 relative">
         {BASE_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
@@ -51,12 +51,11 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
               >
                 <span
                   className={cn(
-                    'absolute -top-4 flex items-center justify-center h-14 w-14 rounded-full shadow-lg transition-all',
+                    'absolute -top-4 flex items-center justify-center h-14 w-14 rounded-full shadow-lift transition-all',
                     active
                       ? 'bg-primary text-primary-foreground scale-105'
-                      : 'bg-accent-copper text-white hover:scale-105'
+                      : 'bg-accent-strong text-primary-foreground hover:scale-105'
                   )}
-                  style={{ backgroundColor: active ? 'var(--primary)' : 'var(--accent-copper)' }}
                 >
                   <Icon className="h-6 w-6" />
                 </span>
