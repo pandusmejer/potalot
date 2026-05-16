@@ -183,7 +183,7 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
           <select
             value={subcat}
             onChange={e => setSubcat(e.target.value)}
-            className="h-10 px-3 rounded-lg border border-input bg-card text-sm"
+            className="h-11 px-3 rounded-xl border border-input bg-card text-sm"
           >
             <option value="alle">Alle underkategorier</option>
             {tilgaengeligeSubs.map(s => (
@@ -296,26 +296,15 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
           }
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map(item => (
-            <div key={item.id} className="flex items-center gap-2">
-              {selectMode && (
-                <button
-                  type="button"
-                  onClick={() => toggleSelected(item.id)}
-                  className={cn(
-                    'h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
-                    selected.has(item.id) ? 'bg-primary border-primary text-primary-foreground' : 'border-border'
-                  )}
-                  aria-label={selected.has(item.id) ? 'Fjern fra valg' : 'Vælg'}
-                >
-                  {selected.has(item.id) && <CheckSquare className="h-3.5 w-3.5" />}
-                </button>
-              )}
-              <div className="flex-1 min-w-0">
-                <InventoryCard item={item} />
-              </div>
-            </div>
+            <InventoryCard
+              key={item.id}
+              item={item}
+              selectMode={selectMode}
+              selected={selected.has(item.id)}
+              onToggleSelect={() => toggleSelected(item.id)}
+            />
           ))}
         </div>
       )}

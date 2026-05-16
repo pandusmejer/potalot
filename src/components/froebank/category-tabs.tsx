@@ -35,10 +35,10 @@ export function CategoryTabs({ active, onChange, inventory }: Props) {
               key={id}
               onClick={() => onChange(id)}
               className={cn(
-                'flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl border transition-all min-w-[88px]',
+                'flex min-w-[88px] flex-col items-center gap-1 rounded-2xl border px-4 py-3 transition-all',
                 isActive
-                  ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                  : 'bg-card border-border text-foreground hover:bg-accent/40'
+                  ? 'border-primary bg-primary text-primary-foreground shadow-soft'
+                  : 'border-border bg-card text-foreground hover:bg-secondary'
               )}
             >
               {Icon && <Icon className="h-5 w-5" />}
