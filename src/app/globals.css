@@ -1,105 +1,160 @@
 @import "tailwindcss";
 
 /* ============================================
- * PotAlot visuel identitet
+ * PotAlot visuel identitet — sæsondrevet farvesystem
  *
- * Palet: varmt pergament-cream (#F5EFE3) + dyb botanisk grøn (#2C4A3A)
- * Typografi: Cormorant Garamond (serif headings) + Inter (UI/brødtekst)
- * Radius: bløde 12-16px hjørner, ikke helt flat
+ * Farver er ikke støj; farver ER indhold. Ingen beige
+ * minimalisme. Hele appens stemning skifter subtilt med
+ * årstiden (data-season på <html>) — som naturens lys,
+ * ikke som et "theme".
+ *
+ * Principper:
+ *  - Baggrunde = atmosfærisk lys m. sæsonstik, aldrig #FFF
+ *  - --foreground = altid varm mørk, høj kontrast (aldrig kulsort)
+ *  - Én accent "popper" sparsomt pr. sæson
+ *  - Sikkerhed/status er sæson-konstante (usability > tema)
+ *
+ * Typografi: Cormorant Garamond (serif) + Inter (UI)
+ *  → serif udskiftes til DM Serif Display i Step 2
  * ============================================ */
 
 :root {
-  /* Baggrund */
-  --background:            #F5EFE3;     /* pergament-cream */
-  --foreground:            #2B2520;     /* varm sortbrun */
+  /* ---- Sæson-konstante: sikkerhed, status, form ---- */
+  --destructive:            #B5602F;   /* varm rust */
+  --destructive-foreground: #FBF7ED;
+  --success:                #5B7A4A;   /* rolig løvgrøn */
+  --success-foreground:     #F6F8F0;
+  --radius:                 12px;
 
-  /* Kort / overflader */
-  --card:                  #FBF7ED;
-  --card-foreground:       #2B2520;
+  /* Dekorative accenter (sparsom brug, sæson-konstante) */
+  --accent-blue:            #3B5C7A;
+  --accent-rust:            #B5602F;
+  --accent-copper:          #A87C3B;
+  --accent-sage:            #8FA68E;
 
-  /* Primær: botanisk grøn (Flora Danica kobberstuk-tusch) */
-  --primary:               #2C4A3A;
-  --primary-foreground:    #F5EFE3;
-
-  /* Sekundær: salvie, støvet grøn */
-  --secondary:             #E4EADF;
-  --secondary-foreground:  #2B2520;
-
-  /* Muted: bleget pergament bagside */
-  --muted:                 #ECE3D0;
-  --muted-foreground:      #6B6055;
-
-  /* Accent */
-  --accent:                #ECE3D0;
-  --accent-foreground:     #2B2520;
-
-  /* Kanter og inputs */
-  --border:                #E0D4BB;
-  --input:                 #E0D4BB;
-  --ring:                  #2C4A3A;
-
-  /* Destructive: rolig rust, ikke skrigende rødt */
-  --destructive:           #B5602F;
-  --destructive-foreground:#FBF7ED;
-
-  /* Dekorative accenter */
-  --accent-blue:           #3B5C7A;    /* Flora Danica delft */
-  --accent-rust:           #B5602F;    /* terracotta */
-  --accent-copper:         #A87C3B;    /* kobber-gylden */
-  --accent-sage:           #8FA68E;    /* salvie */
-
-  /* Radius */
-  --radius:                12px;
+  /* ---- Default-sæson = FORÅR (SSR / uden data-season) ---- */
+  --background:             #F2F4E9;
+  --foreground:             #2A3320;
+  --card:                   #FAFBF3;
+  --card-foreground:        #2A3320;
+  --surface-2:              #EDF0DD;
+  --primary:                #506834;
+  --primary-foreground:     #F7F8EF;
+  --secondary:              #E6EDD2;
+  --secondary-foreground:   #2A3320;
+  --muted:                  #E6EDD2;
+  --muted-foreground:       #6E7558;
+  --accent:                 #F1A791;
+  --accent-foreground:      #3A2A20;
+  --accent-strong:          #D77204;
+  --border:                 #DDE2C9;
+  --input:                  #DDE2C9;
+  --ring:                   #506834;
+  --hero-from:              #F2F4E9;
+  --hero-to:                #E6EDD2;
+  --shadow-tint:            55 70 40;  /* rgb: varm grøn skygge */
 }
 
 /* ============================================
- * Sæson-toner — hele UI'ets atmosfære skifter subtilt
- * gennem året. KUN baggrunds-/overflade-variabler ændres;
- * --foreground, --primary og *-foreground røres ALDRIG,
- * så kontrast og læsbarhed bevares uændret året rundt.
- *
- * Forskellene er bevidst små (3-10 punkter pr. kanal):
- * det skal føles som naturlig variation, ikke farvekodning.
+ * Sæson-toner — hele atmosfæren skifter gennem året.
+ * --foreground holdes altid varm/mørk m. stærk kontrast,
+ * så læsbarhed bevares uændret året rundt.
  * ============================================ */
 
-/* Forår — frisk, lysgrøn pergament (default-nær) */
+/* FORÅR — nyt liv, morgensol, lysegrøn vækst */
 html[data-season='foraar'] {
-  --background: #F3F0E5;
-  --card:       #FBF8EE;
-  --secondary:  #E1EBDC;
-  --muted:      #EBE6D3;
-  --accent:     #EBE6D3;
-  --border:     #DFD6BC;
+  --background:             #F2F4E9;
+  --foreground:             #2A3320;
+  --card:                   #FAFBF3;
+  --card-foreground:        #2A3320;
+  --surface-2:              #EDF0DD;
+  --primary:                #506834;
+  --primary-foreground:     #F7F8EF;
+  --secondary:              #E6EDD2;
+  --secondary-foreground:   #2A3320;
+  --muted:                  #E6EDD2;
+  --muted-foreground:       #6E7558;
+  --accent:                 #F1A791;
+  --accent-foreground:      #3A2A20;
+  --accent-strong:          #D77204;
+  --border:                 #DDE2C9;
+  --input:                  #DDE2C9;
+  --ring:                   #506834;
+  --hero-from:              #F2F4E9;
+  --hero-to:                #E6EDD2;
+  --shadow-tint:            55 70 40;
 }
 
-/* Sommer — varmere, dybere, mere mættet */
+/* SOMMER — frodig, høj sol, drivhusvarme */
 html[data-season='sommer'] {
-  --background: #F6F0DF;
-  --card:       #FCF6E9;
-  --secondary:  #DBE6D3;
-  --muted:      #EEE3CC;
-  --accent:     #EEE3CC;
-  --border:     #DCCFB2;
+  --background:             #F6F0DF;
+  --foreground:             #2C3322;
+  --card:                   #FCF7EA;
+  --card-foreground:        #2C3322;
+  --surface-2:              #F0E9D2;
+  --primary:                #586B39;
+  --primary-foreground:     #F8F4E6;
+  --secondary:              #E2E6CC;
+  --secondary-foreground:   #2C3322;
+  --muted:                  #E2E6CC;
+  --muted-foreground:       #6F7355;
+  --accent:                 #F5A9A5;
+  --accent-foreground:      #3A241F;
+  --accent-strong:          #E08A3C;
+  --border:                 #E2D8BC;
+  --input:                  #E2D8BC;
+  --ring:                   #586B39;
+  --hero-from:              #F6F0DF;
+  --hero-to:                #E2E6CC;
+  --shadow-tint:            60 65 40;
 }
 
-/* Efterår — rav, varm brungrøn */
+/* EFTERÅR — høst, modenhed, lav sol (ikke Halloween) */
 html[data-season='efteraar'] {
-  --background: #F5ECDA;
-  --card:       #FBF4E5;
-  --secondary:  #E8E3CF;
-  --muted:      #EEDEC5;
-  --accent:     #EEDEC5;
-  --border:     #DFCFAD;
+  --background:             #F3EBD9;
+  --foreground:             #261A12;
+  --card:                   #FAF3E3;
+  --card-foreground:        #261A12;
+  --surface-2:              #EFE4CB;
+  --primary:                #615429;
+  --primary-foreground:     #F7F1E1;
+  --secondary:              #ECE0C4;
+  --secondary-foreground:   #261A12;
+  --muted:                  #ECE0C4;
+  --muted-foreground:       #7A6B4E;
+  --accent:                 #C76612;
+  --accent-foreground:      #FBF3E4;
+  --accent-strong:          #C76612;
+  --border:                 #E2D4B6;
+  --input:                  #E2D4B6;
+  --ring:                   #615429;
+  --hero-from:              #F3EBD9;
+  --hero-to:                #ECE0C4;
+  --shadow-tint:            70 60 35;
 }
 
-/* Vinter — støvet, kølig grå-grøn */
+/* VINTER — frost, dis, stille lys (varm trods kulde) */
 html[data-season='vinter'] {
-  --background: #F1EFE7;
-  --card:       #F8F6EE;
-  --secondary:  #E2E7E1;
-  --muted:      #E8E6DB;
-  --accent:     #E8E6DB;
-  --border:     #DAD6C6;
+  --background:             #F2EFE9;
+  --foreground:             #36322E;
+  --card:                   #FAF7F1;
+  --card-foreground:        #36322E;
+  --surface-2:              #EAE6DE;
+  --primary:                #5E7081;
+  --primary-foreground:     #F4F2EC;
+  --secondary:              #DDE3E7;
+  --secondary-foreground:   #36322E;
+  --muted:                  #DDE3E7;
+  --muted-foreground:       #7C7468;
+  --accent:                 #BAA49F;
+  --accent-foreground:      #3A322E;
+  --accent-strong:          #A98C84;
+  --border:                 #DCDAD3;
+  --input:                  #DCDAD3;
+  --ring:                   #5E7081;
+  --hero-from:              #F2EFE9;
+  --hero-to:                #DDE3E7;
+  --shadow-tint:            70 65 60;
 }
 
 @theme inline {
@@ -107,6 +162,7 @@ html[data-season='vinter'] {
   --color-foreground:           var(--foreground);
   --color-card:                 var(--card);
   --color-card-foreground:      var(--card-foreground);
+  --color-surface-2:            var(--surface-2);
   --color-primary:              var(--primary);
   --color-primary-foreground:   var(--primary-foreground);
   --color-secondary:            var(--secondary);
@@ -115,15 +171,20 @@ html[data-season='vinter'] {
   --color-muted-foreground:     var(--muted-foreground);
   --color-accent:               var(--accent);
   --color-accent-foreground:    var(--accent-foreground);
+  --color-accent-strong:        var(--accent-strong);
   --color-border:               var(--border);
   --color-input:                var(--input);
   --color-ring:                 var(--ring);
   --color-destructive:          var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success:              var(--success);
+  --color-success-foreground:   var(--success-foreground);
   --color-accent-blue:          var(--accent-blue);
-  --color-accent-rust:          var(--accent-rust);
   --color-accent-copper:        var(--accent-copper);
+  --color-accent-rust:          var(--accent-rust);
   --color-accent-sage:          var(--accent-sage);
+  --color-hero-from:            var(--hero-from);
+  --color-hero-to:              var(--hero-to);
 
   --font-sans:  var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-cormorant), 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
