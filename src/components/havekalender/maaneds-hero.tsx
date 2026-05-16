@@ -5,10 +5,19 @@ import { saeson } from '@/lib/datetime'
 import { Sparkles } from 'lucide-react'
 
 /**
- * Måneds-hero med stemnings-tekst. Står mellem årshjul (navigation)
- * og selve sektionerne, og giver hver måned karakter.
+ * Måneds-hero med stemnings-tekst + fokus-tags. Står mellem årshjul
+ * (navigation) og selve sektionerne, og giver hver måned karakter.
+ *
+ * focusTags = de 3 mest forekommende gøremåls-kategorier for måneden.
+ * De giver et visuelt anker så hero'en ikke kun er tekst.
  */
-export function MaanedsHero({ month, year }: { month: number; year: number }) {
+export function MaanedsHero({
+  month, year, focusTags = [],
+}: {
+  month: number
+  year: number
+  focusTags?: string[]
+}) {
   const monthName = MONTHS_DA[month - 1].full
   const stemning = MAANEDS_STEMNING[month]
   const sa = saeson(month)
@@ -35,6 +44,21 @@ export function MaanedsHero({ month, year }: { month: number; year: number }) {
             <p className="text-sm text-foreground/80 mt-1 leading-relaxed max-w-xl">
               {stemning.description}
             </p>
+            {focusTags.length > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap mt-3">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Månedens fokus:
+                </span>
+                {focusTags.map(tag => (
+                  <span
+                    key={tag}
+                    className="text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 capitalize"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
