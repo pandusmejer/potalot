@@ -209,6 +209,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv01", "cv02";
+  /* DM Serif Display har kun 400 — undgå grim syntetisk fed
+     hvor serif kombineres med font-bold/semibold. Inter har
+     ægte vægte og påvirkes ikke. */
+  font-synthesis-weight: none;
 }
 
 h1, h2, h3, h4 {
@@ -235,6 +239,23 @@ h1, h2, h3, h4 {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* ============================================
+ * Botanisk dybde — varme, sæsontonede skygger.
+ * Bløde og næsten usynlige (papir/fysisk følelse),
+ * aldrig hård corporate-skygge.
+ * ============================================ */
+@utility shadow-soft {
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-tint) / 0.05),
+    0 4px 14px -4px rgb(var(--shadow-tint) / 0.10);
+}
+
+@utility shadow-lift {
+  box-shadow:
+    0 2px 4px rgb(var(--shadow-tint) / 0.06),
+    0 12px 30px -10px rgb(var(--shadow-tint) / 0.16);
 }
 
 /* ============================================

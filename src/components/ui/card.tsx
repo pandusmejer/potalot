@@ -1,16 +1,37 @@
 import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        'rounded-2xl border border-border bg-card text-card-foreground shadow-[0_2px_8px_rgba(43,37,32,0.04),0_1px_3px_rgba(43,37,32,0.06)]',
-        className
-      )}
-      {...props}
-    />
+/**
+ * Kort-varianter — beholdere med forskellig form og dybde,
+ * så skærme kan bygges varieret (papir / løftet fane / flad
+ * note / tonet modul) i stedet for ens hvide bokse.
+ */
+const cardVariants = cva('text-card-foreground transition-shadow', {
+  variants: {
+    variant: {
+      // Standard: roligt papir med varm, blød dybde
+      default: 'rounded-2xl border border-border bg-card shadow-soft',
+      // Løftet: ligger ovenpå/forskudt — "fane" der inviterer
+      elevated: 'rounded-[1.75rem] border border-transparent bg-card shadow-lift',
+      // Flad: stille, ingen skygge — hairline
+      flat: 'rounded-2xl border border-border bg-card',
+      // Nestet/sekundært panel i lagdelt tone
+      surface: 'rounded-xl border border-transparent bg-surface-2 shadow-soft',
+      // Tonet modul — sæsonens bløde flade
+      accent: 'rounded-2xl border border-transparent bg-secondary shadow-soft',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+})
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, ...props }, ref) => (
+    <div ref={ref} className={cn(cardVariants({ variant }), className)} {...props} />
   )
 )
 Card.displayName = 'Card'
@@ -53,3 +74,5 @@ export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<
   )
 )
 CardFooter.displayName = 'CardFooter'
+
+export { cardVariants }
