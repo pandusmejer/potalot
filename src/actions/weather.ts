@@ -7,48 +7,36 @@ export interface LocationHit {
   name: string
   latitude: number
   longitude: number
-  admin: string | null
+  /** Postnummer (4 cifre) */
+  postnr: string
 }
 
 /**
- * By-søgning via Open-Meteo geocoding (gratis, ingen nøgle).
- * Bruges i indstillinger til at sætte havens placering.
+ * Slå et dansk postnummer op via DAWA (Danmarks Adressers Web API —
+ * officielt, gratis, ingen nøgle). Returnerer postnummerets visuelle
+ * center som koordinat. Ingen adresse — kun postnummer-niveau.
  */
-export async function searchLocation(query: string): Promise<LocationHit[]> {
-  const q = query.trim()
-  if (q.length < 2) return []
+export async function lookupPostnummer(postnr: string): Promise<LocationHit | null> {
+  const nr = postnr.trim()
+  if (!/^\d{4}$/.test(nr)) return null
   try {
-    const url = new URL('https://geocoding-api.open-meteo.com/v1/search')
-    url.searchParams.set('name', q)
-    url.searchParams.set('count', '6')
-    url.searchParams.set('language', 'da')
-    // Prioritér Danmark men tillad andre lande
-    const res = await fetch(url, { next: { revalidate: 86400 } })
-    if (!res.ok) return []
+    const res = await fetch(
+      `https://api.dataforsyningen.dk/postnumre/${nr}`,
+      { next: { revalidate: 604800 } } // postnumre ændrer sig stort set aldrig — cache en uge
+    )
+    if (!res.ok) return null
     const data = await res.json()
-    type Result = {
-      name: string
-      latitude: number
-      longitude: number
-      admin1?: string
-      country_code?: string
+    // visueltcenter er [lon, lat]
+    const center: [number, number] | undefined = data.visueltcenter
+    if (!center || center.length !== 2) return null
+    return {
+      name: data.navn ?? nr,
+      postnr: data.nr ?? nr,
+      longitude: center[0],
+      latitude: center[1],
     }
-    const results: Result[] = data.results ?? []
-    // Sortér danske resultater først
-    return results
-      .sort((a, b) => {
-        const aDk = a.country_code === 'DK' ? 0 : 1
-        const bDk = b.country_code === 'DK' ? 0 : 1
-        return aDk - bDk
-      })
-      .map(r => ({
-        name: r.name,
-        latitude: r.latitude,
-        longitude: r.longitude,
-        admin: r.admin1 ?? null,
-      }))
   } catch {
-    return []
+    return null
   }
 }
 
