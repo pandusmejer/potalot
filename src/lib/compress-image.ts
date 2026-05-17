@@ -12,7 +12,7 @@
 interface CompressOptions {
   /** Maks pixel-størrelse på den længste side (default 2400). */
   maxDimension?: number
-  /** JPEG-kvalitet 0-1 (default 0.85). */
+  /** JPEG/WebP-kvalitet 0-1 (default 0.85; ignoreres for PNG). */
   quality?: number
   /** Skip kompression hvis filen er under denne størrelse i bytes (default 500 KB). */
   skipBelowBytes?: number
@@ -84,6 +84,15 @@ function compressViaCanvas(file: File, maxDimension: number, quality: number): P
         }
         ctx.drawImage(img, 0, 0, targetW, targetH)
 
+        // Bevar gennemsigtighed for fritlagte motiver: PNG/WebP
+        // re-encodes i SAMME format (alpha bevares). JPEG ville
+        // fylde transparente områder med sort. Kun ikke-alpha
+        // kilder (JPEG/HEIC m.fl.) ender som JPEG.
+        const isPng = file.type === 'image/png' || /\.png$/i.test(file.name)
+        const isWebp = file.type === 'image/webp' || /\.webp$/i.test(file.name)
+        const outType = isPng ? 'image/png' : isWebp ? 'image/webp' : 'image/jpeg'
+        const outExt = isPng ? '.png' : isWebp ? '.webp' : '.jpg'
+
         canvas.toBlob(
           blob => {
             URL.revokeObjectURL(objectUrl)
@@ -91,10 +100,10 @@ function compressViaCanvas(file: File, maxDimension: number, quality: number): P
               reject(new Error('Canvas toBlob returnerede null'))
               return
             }
-            const newName = file.name.replace(/\.[a-z0-9]+$/i, '.jpg') || 'upload.jpg'
-            resolve(new File([blob], newName, { type: 'image/jpeg' }))
+            const newName = file.name.replace(/\.[a-z0-9]+$/i, outExt) || `upload${outExt}`
+            resolve(new File([blob], newName, { type: outType }))
           },
-          'image/jpeg',
+          outType,
           quality,
         )
       } catch (e) {

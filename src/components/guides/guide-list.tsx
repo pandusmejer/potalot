@@ -2,12 +2,12 @@
 
 import { useState, useMemo } from 'react'
 import { Input } from '@/components/ui/input'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { GuideCard } from './guide-card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide, PrimaryCategoryId } from '@/lib/types'
 import { Search, BookOpen, ShieldCheck, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Props {
   guides: Guide[]
@@ -19,6 +19,8 @@ interface Props {
   canDeleteOwnGuides?: boolean
 }
 
+type TabId = 'alle' | 'master' | 'mine' | 'dine'
+
 /** Nøgle til at matche master + brugerkopi (case-insensitivt, trimmet). */
 function dedupKey(g: Guide): string {
   return `${g.plantName.toLowerCase().trim()}|${(g.variety ?? '').toLowerCase().trim()}`
@@ -27,10 +29,8 @@ function dedupKey(g: Guide): string {
 export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGuides = false }: Props) {
   const [search, setSearch] = useState('')
   const [filterCat, setFilterCat] = useState<PrimaryCategoryId | 'alle'>('alle')
+  const [tab, setTab] = useState<TabId>('alle')
 
-  // Map: bruger-guide-id → master-guide-id som den er en tilpasning af.
-  // Bruges til (a) at skjule master når brugeren har en kopi og (b) vise
-  // "Tilpasset fra master"-markering på kopien.
   const cloneOfMaster = useMemo(() => {
     const mastersByKey = new Map<string, string>()
     for (const g of guides) {
@@ -46,10 +46,7 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
     return map
   }, [guides])
 
-  // Sæt af master-IDer som brugeren har en privat kopi af → skjules i master/alle.
-  const hiddenMasterIds = useMemo(() => {
-    return new Set(cloneOfMaster.values())
-  }, [cloneOfMaster])
+  const hiddenMasterIds = useMemo(() => new Set(cloneOfMaster.values()), [cloneOfMaster])
 
   const filtered = useMemo(() => {
     let list = guides.filter(g =>
@@ -146,57 +143,93 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
     )
   }
 
+  // Side-faner: forskellige palettefarver, stikker ud, overlapper.
+  // "Bryd boksen" — navigationen er fysiske mapper, ikke en tab-bar.
+  const FANER: { id: TabId; label: string; count: number; bg: string; fg: string }[] = [
+    { id: 'alle', label: 'Alle', count: filtered.length, bg: 'var(--primary)', fg: 'var(--primary-foreground)' },
+    { id: 'master', label: 'Master', count: masters.length, bg: 'var(--block-fresh)', fg: 'var(--foreground)' },
+    { id: 'mine', label: 'Mine', count: mine.length, bg: 'var(--block-sun)', fg: 'var(--foreground)' },
+    ...(inFroebank
+      ? [{ id: 'dine' as TabId, label: 'I frøbank', count: linkedToFroebank.length, bg: 'var(--accent)', fg: 'var(--accent-foreground)' }]
+      : []),
+  ]
+
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Søg navn, sort, latinsk navn"
-            className="pl-9"
-          />
-        </div>
-        <select
-          value={filterCat}
-          onChange={e => setFilterCat(e.target.value as PrimaryCategoryId | 'alle')}
-          className="h-10 px-3 rounded-lg border border-input bg-card text-sm"
-        >
-          <option value="alle">Alle kategorier</option>
-          {Object.entries(PRIMARY_CATEGORIES)
-            .filter(([id]) => id !== 'favoritter')
-            .map(([id, cat]) => (
-              <option key={id} value={id}>{cat.name}</option>
-            ))}
-        </select>
+    <div className="flex items-stretch gap-0">
+      {/* Lodret fane-skinne — faner i forskellige farver der stikker ud */}
+      <div className="relative z-10 flex flex-col pt-3 pr-0">
+        {FANER.map((f, i) => {
+          const active = tab === f.id
+          return (
+            <button
+              key={f.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setTab(f.id)}
+              style={{
+                backgroundColor: f.bg,
+                color: f.fg,
+                marginTop: i === 0 ? 0 : -10,
+                // varierede radii + organisk: aldrig ens hjørner
+                borderTopLeftRadius: i % 2 === 0 ? 22 : 14,
+                borderBottomLeftRadius: i % 2 === 0 ? 14 : 22,
+                boxShadow: active ? '-6px 6px 18px -8px rgba(40,50,30,0.45)' : 'none',
+              }}
+              className={cn(
+                'relative flex w-[50px] flex-col items-center gap-2 py-5 transition-all',
+                active
+                  ? 'z-20 translate-x-[1px]'
+                  : 'z-0 -translate-x-1.5 opacity-60 hover:opacity-85 hover:translate-x-0'
+              )}
+            >
+              <span
+                className="font-bold tracking-wide text-[13px] leading-none"
+                style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+              >
+                {f.label}
+              </span>
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-black/10 px-1 text-[10px] font-semibold leading-none">
+                {f.count}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
-      <Tabs defaultValue="alle">
-        <TabsList className="flex-wrap h-auto">
-          <TabsTrigger value="alle">
-            Alle <span className="ml-1.5 text-xs opacity-60">({filtered.length})</span>
-          </TabsTrigger>
-          <TabsTrigger value="master">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Master <span className="ml-1.5 text-xs opacity-60">({masters.length})</span>
-          </TabsTrigger>
-          <TabsTrigger value="mine">
-            <User className="h-3.5 w-3.5" />
-            Mine <span className="ml-1.5 text-xs opacity-60">({mine.length})</span>
-          </TabsTrigger>
-          {inFroebank && (
-            <TabsTrigger value="dine">
-              I min frøbank <span className="ml-1.5 text-xs opacity-60">({linkedToFroebank.length})</span>
-            </TabsTrigger>
-          )}
-        </TabsList>
+      {/* Indholdspanel — organisk: hjørner varierer, fane smelter ind */}
+      <div className="min-w-0 flex-1 rounded-r-[1.75rem] rounded-bl-2xl rounded-tl-none border border-border bg-card px-4 py-4 shadow-soft -ml-px">
+        <div className="flex gap-2 flex-wrap">
+          <div className="relative flex-1 min-w-[160px]">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Søg navn, sort, latinsk"
+              className="pl-9"
+            />
+          </div>
+          <select
+            value={filterCat}
+            onChange={e => setFilterCat(e.target.value as PrimaryCategoryId | 'alle')}
+            className="h-10 rounded-lg border border-input bg-card px-3 text-sm"
+          >
+            <option value="alle">Alle kategorier</option>
+            {Object.entries(PRIMARY_CATEGORIES)
+              .filter(([id]) => id !== 'favoritter')
+              .map(([id, cat]) => (
+                <option key={id} value={id}>{cat.name}</option>
+              ))}
+          </select>
+        </div>
 
-        <TabsContent value="alle">{renderAlleSplit()}</TabsContent>
-        <TabsContent value="master">{renderCards(masters)}</TabsContent>
-        <TabsContent value="mine">{renderCards(mine)}</TabsContent>
-        {inFroebank && <TabsContent value="dine">{renderCards(linkedToFroebank)}</TabsContent>}
-      </Tabs>
+        <div className="mt-4">
+          {tab === 'alle' && renderAlleSplit()}
+          {tab === 'master' && renderCards(masters)}
+          {tab === 'mine' && renderCards(mine)}
+          {tab === 'dine' && renderCards(linkedToFroebank)}
+        </div>
+      </div>
     </div>
   )
 }
