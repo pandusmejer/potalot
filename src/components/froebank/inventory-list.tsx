@@ -41,17 +41,24 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
 
-  // Reagér hvis filter-query ændres mens komponenten lever (fx fra notifikations-klik)
+  // Reagér hvis filter-query ændres mens komponenten lever (fx
+  // fra notifikations-klik). setState sker i et microtask-callback
+  // (ikke synkront i effekten) + cancel-guard, så vi undgår
+  // cascading renders / opdatering efter unmount.
   useEffect(() => {
     const f = searchParams.get('filter')
-    if (f && (VALID_SMART_FILTERS as string[]).includes(f)) {
+    if (!f || !(VALID_SMART_FILTERS as string[]).includes(f)) return
+    let active = true
+    Promise.resolve().then(() => {
+      if (!active) return
       setSmartFilters(prev => {
         if (prev.has(f as SmartFilter)) return prev
         const next = new Set(prev)
         next.add(f as SmartFilter)
         return next
       })
-    }
+    })
+    return () => { active = false }
   }, [searchParams])
 
   const tilgaengeligeSubs = useMemo(() => {
@@ -296,15 +303,20 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
           }
         />
       ) : (
-        <div className="space-y-4">
-          {filtered.map(item => (
-            <InventoryCard
+        <div className="flex flex-col">
+          {filtered.map((item, i) => (
+            <div
               key={item.id}
-              item={item}
-              selectMode={selectMode}
-              selected={selected.has(item.id)}
-              onToggleSelect={() => toggleSelected(item.id)}
-            />
+              className="relative"
+              style={{ marginTop: i === 0 ? 0 : -16, zIndex: i + 1 }}
+            >
+              <InventoryCard
+                item={item}
+                selectMode={selectMode}
+                selected={selected.has(item.id)}
+                onToggleSelect={() => toggleSelected(item.id)}
+              />
+            </div>
           ))}
         </div>
       )}

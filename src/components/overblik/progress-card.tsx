@@ -15,16 +15,16 @@ export function ProgressCard({ progress }: { progress: ProgressState }) {
   const maaned = maanedNavn(aktuelMaaned())
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-secondary/40 to-card">
+    <Card variant="feature" className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs uppercase tracking-wider opacity-70">
             Din fremgang i {maaned}
           </p>
-          <p className="font-serif text-3xl text-foreground mt-1">
-            {progress.completedTasks}<span className="text-muted-foreground text-xl">/{progress.totalTasks}</span>
+          <p className="font-sans font-bold text-3xl mt-1">
+            {progress.completedTasks}<span className="opacity-60 text-xl">/{progress.totalTasks}</span>
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs opacity-70">
             opgaver fuldført
           </p>
         </div>
@@ -32,18 +32,18 @@ export function ProgressCard({ progress }: { progress: ProgressState }) {
         <div className="flex flex-col items-end gap-1">
           <div className="relative h-14 w-14 flex items-center justify-center">
             {procent >= 50 ? (
-              <ShoppingBasket className="h-10 w-10 text-accent-copper" style={{ color: 'var(--accent-copper)' }} />
+              <ShoppingBasket className="h-10 w-10" />
             ) : (
-              <Sprout className="h-10 w-10 text-primary" />
+              <Sprout className="h-10 w-10" />
             )}
           </div>
-          <span className="text-xs font-medium text-foreground">{procent}%</span>
+          <span className="text-xs font-semibold">{procent}%</span>
         </div>
       </div>
 
-      <div className="mt-3 h-1.5 w-full bg-muted rounded-full overflow-hidden">
+      <div className="mt-3 h-1.5 w-full bg-black/10 rounded-full overflow-hidden">
         <div
-          className="h-full bg-primary rounded-full transition-all"
+          className="h-full bg-[var(--primary)] rounded-full transition-all"
           style={{ width: `${procent}%` }}
         />
       </div>

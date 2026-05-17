@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth'
 import { getActiveSeasonalChallenges } from '@/actions/challenges'
 import { Card, CardContent } from '@/components/ui/card'
+import { PageHero } from '@/components/ui/page-hero'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SubmitChallengeEntryDialog } from '@/components/grupper/submit-challenge-entry-dialog'
@@ -37,12 +38,12 @@ export default async function HavelandskabPage() {
 
   return (
     <div className="space-y-5 max-w-3xl">
-      <div>
-        <h1 className="text-3xl font-serif text-foreground">Havelandskab</h1>
-        <p className="text-sm text-muted-foreground mt-1 italic">
-          Sæsonens fælles rytme. Alle PotAlot-brugere kan deltage.
-        </p>
-      </div>
+      <PageHero
+        tone="fresh"
+        kicker="Fællesskab"
+        title="Havelandskab"
+        subtitle="Sæsonens fælles rytme. Alle PotAlot-brugere kan deltage."
+      />
 
       {/* Hero-card der forklarer hvad dette er */}
       <Card className="bg-gradient-to-br from-secondary/30 to-card border-secondary/50 overflow-hidden relative">

@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { PageHero } from '@/components/ui/page-hero'
 import { AddIdeaDialog } from '@/components/idetavle/add-idea-dialog'
 import { ShareIdeaDialog } from '@/components/idetavle/share-idea-dialog'
 import { getAllIdeas } from '@/actions/idetavle'
@@ -97,15 +98,13 @@ export default async function IdetavlePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-serif text-foreground">Idétavle</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Langsigtede projekter og inspiration. Ingen daglige tasks.
-          </p>
-        </div>
-        <AddIdeaDialog />
-      </div>
+      <PageHero
+        tone="strong"
+        kicker="Fri tænkning"
+        title="Idétavle"
+        subtitle="Langsigtede projekter og inspiration. Ingen daglige tasks."
+        actions={<AddIdeaDialog />}
+      />
 
       <Tabs defaultValue="mine" className="space-y-4">
         <TabsList>
