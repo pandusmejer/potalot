@@ -13,8 +13,10 @@
 export interface PlantColor {
   /** Mættet-men-dæmpet basistone */
   field: string
-  /** Let lysere tone (til blød gradient-dybde) */
+  /** Let lysere tone (gradient-top) */
   fieldSoft: string
+  /** Dybere tone (gradient-bund — sikrer læsbar hvid tekst) */
+  fieldDeep: string
 }
 
 /** [hue, saturation%, lightness%] — botanisk-sikre toner */
@@ -62,7 +64,8 @@ function hash(s: string): number {
 }
 
 function hsl([h, s, l]: HSL, dl = 0): string {
-  return `hsl(${h} ${s}% ${Math.min(l + dl, 92)}%)`
+  const clamped = Math.max(28, Math.min(l + dl, 94))
+  return `hsl(${h} ${s}% ${clamped}%)`
 }
 
 /**
@@ -76,5 +79,5 @@ export function plantColor(name: string, variety?: string | null): PlantColor {
     if (re.test(hay)) { base = color; break }
   }
   if (!base) base = FALLBACK[hash(normalize(name)) % FALLBACK.length]
-  return { field: hsl(base), fieldSoft: hsl(base, 9) }
+  return { field: hsl(base), fieldSoft: hsl(base, 9), fieldDeep: hsl(base, -16) }
 }
