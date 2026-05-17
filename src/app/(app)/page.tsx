@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { PageHero } from '@/components/ui/page-hero'
 import { Button } from '@/components/ui/button'
 import { TaskRow } from '@/components/overblik/task-row'
 import { PlantMiniCard } from '@/components/overblik/plant-mini-card'
@@ -90,18 +91,23 @@ export default async function OverblikPage() {
   return (
     <div className="space-y-6">
       {/* Personlig velkomst med haverolle-tagline */}
-      <div>
-        <h1 className="text-3xl font-serif text-foreground">
-          {greeting}{profile?.username ? `, ${profile.username}` : ''}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {me ? (
-            <>Du er <strong className="text-foreground">{roleLabel}</strong> · {earned.length} optjent badge{earned.length === 1 ? '' : 's'} · {maanedenNavn}</>
+      <PageHero
+        kicker={maanedenNavn}
+        title={`${greeting}${profile?.username ? `, ${profile.username}` : ''}`}
+        subtitle={
+          me ? (
+            <>
+              Du er{' '}
+              <strong className="font-semibold text-[var(--primary-foreground)]">
+                {roleLabel}
+              </strong>{' '}
+              · {earned.length} optjent badge{earned.length === 1 ? '' : 's'}
+            </>
           ) : (
             <>Dit grønne overblik.</>
-          )}
-        </p>
-      </div>
+          )
+        }
+      />
 
       {/* Natur-varsler: frost / storm / skybrud / tørke — kun når aktuelle */}
       <GardenAlerts alerts={alerts} />
@@ -208,18 +214,18 @@ export default async function OverblikPage() {
       </Card>
 
       {sæsonInspiration.length > 0 && (
-        <Card className="bg-gradient-to-br from-secondary/30 to-card">
+        <Card variant="feature">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-accent-copper" style={{ color: 'var(--accent-copper)' }} />
+            <CardTitle className="flex items-center gap-2 text-[var(--accent-foreground)]">
+              <Lightbulb className="h-4 w-4" />
               Tid til i {maanedenNavn}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {sæsonInspiration.map(gen => (
               <div key={gen.id}>
-                <p className="font-medium text-foreground text-sm">{gen.title}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{gen.description}</p>
+                <p className="font-semibold text-[var(--accent-foreground)] text-sm">{gen.title}</p>
+                <p className="text-xs text-[var(--accent-foreground)]/75 mt-0.5">{gen.description}</p>
               </div>
             ))}
             <Button asChild variant="ghost" size="sm" className="mt-1">

@@ -9,12 +9,13 @@
  * ikke som et "theme".
  *
  * Principper:
- *  - Baggrunde = atmosfærisk lys m. sæsonstik, aldrig #FFF
+ *  - Flade, mættede farveblokke m. skarpe kanter mellem blokke
+ *    (ingen gradient/glød inde i en blok) — jf. reference
+ *  - Baggrund = rolig flad lys flade
  *  - --foreground = altid varm mørk, høj kontrast (aldrig kulsort)
- *  - Én accent "popper" sparsomt pr. sæson
  *  - Sikkerhed/status er sæson-konstante (usability > tema)
  *
- * Typografi: DM Serif Display (overskrifter/hero) + Inter (UI)
+ * Typografi: fed sans (Inter) på overskrifter — serif droppet
  * ============================================ */
 
 :root {
@@ -52,6 +53,10 @@
   --hero-from:              #F2F4E9;
   --hero-to:                #E6EDD2;
   --shadow-tint:            55 70 40;  /* rgb: varm grøn skygge */
+
+  /* Sæson-accent — bruges til den tynde hårline i topbar/
+     bottom-nav, så chrome får et diskret sæson-stik. */
+  --deco-gold:              #E2A50F;   /* forår: gylden */
 }
 
 /* ============================================
@@ -82,6 +87,7 @@ html[data-season='foraar'] {
   --hero-from:              #F2F4E9;
   --hero-to:                #E6EDD2;
   --shadow-tint:            55 70 40;
+  --deco-gold:              #E2A50F;
 }
 
 /* SOMMER — frodig, høj sol, drivhusvarme */
@@ -106,6 +112,7 @@ html[data-season='sommer'] {
   --hero-from:              #F6F0DF;
   --hero-to:                #E2E6CC;
   --shadow-tint:            60 65 40;
+  --deco-gold:              #E07A3C;   /* solbrændt terracotta */
 }
 
 /* EFTERÅR — høst, modenhed, lav sol (ikke Halloween) */
@@ -130,6 +137,7 @@ html[data-season='efteraar'] {
   --hero-from:              #F3EBD9;
   --hero-to:                #ECE0C4;
   --shadow-tint:            70 60 35;
+  --deco-gold:              #C0531A;   /* brændt orange */
 }
 
 /* VINTER — frost, dis, stille lys (varm trods kulde) */
@@ -154,6 +162,7 @@ html[data-season='vinter'] {
   --hero-from:              #F2EFE9;
   --hero-to:                #DDE3E7;
   --shadow-tint:            70 65 60;
+  --deco-gold:              #93A4B2;   /* frostblå glød */
 }
 
 @theme inline {
@@ -186,41 +195,48 @@ html[data-season='vinter'] {
   --color-hero-to:              var(--hero-to);
 
   --font-sans:  var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-dm-serif), 'DM Serif Display', 'Cormorant Garamond', Garamond, serif;
+  /* Serif-identiteten er droppet: referencen bruger fed sans.
+     --font-serif peger nu på sans, så alle eksisterende
+     font-serif-overskrifter rendres som fed Inter uden at
+     skulle ændre 50+ steder. (Token bevaret af bagud-hensyn.) */
+  --font-serif: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
 
   --radius:     var(--radius);
 }
 
 /* ============================================
- * Base
+ * Base — i @layer base, så Tailwind-utilities (text-*,
+ * font-*) kan overstyre. Uden layer ville disse element-
+ * regler vinde over alle utilities, og hvid serif-titel
+ * på en farveblok ville tvinges tilbage til mørk/sans.
  * ============================================ */
-* {
-  border-color: var(--border);
-}
+@layer base {
+  * {
+    border-color: var(--border);
+  }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "ss01", "cv01", "cv02";
-  /* DM Serif Display har kun 400 — undgå grim syntetisk fed
-     hvor serif kombineres med font-bold/semibold. Inter har
-     ægte vægte og påvirkes ikke. */
-  font-synthesis-weight: none;
-}
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "cv01", "cv02";
+  }
 
-h1, h2, h3, h4 {
-  font-family: var(--font-serif);
-  font-weight: 400; /* DM Serif Display har kun 400 — undgår faux-bold */
-  letter-spacing: -0.005em;
-  line-height: 1.15;
-  color: var(--foreground);
+  /* Overskrifter = fed sans (Inter), matcher reference-designet.
+     Inter har ægte 700, så ingen faux-bold. */
+  h1, h2, h3, h4 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.018em;
+    line-height: 1.12;
+    color: var(--foreground);
+  }
 }
 
 /* ============================================
@@ -256,6 +272,41 @@ h1, h2, h3, h4 {
   box-shadow:
     0 2px 4px rgb(var(--shadow-tint) / 0.06),
     0 12px 30px -10px rgb(var(--shadow-tint) / 0.16);
+}
+
+/* ============================================
+ * FLADE FARVEBLOKKE — referencen ("Flying Veggies"):
+ * hver blok er ÉN mættet, flad farve. Ingen gradient,
+ * ingen glød, ingen overgang inde i blokken. "Overgang"
+ * = den skarpe kant hvor én blok møder den næste
+ * (farveblok → hvid → lys tone-blok). Gul er den ene
+ * skarpe accent (flad fyld, aldrig gradient).
+ * ============================================ */
+
+/* App-canvas: referencens baggrund er næsten-flad lys.
+   Ingen atmosfærisk gradient — bare en rolig flade. */
+@utility app-canvas {
+  background-color: var(--background);
+}
+
+/* Hero-blok: flad, mættet primær-farve. Hvid tekst.
+   Skarp kant nedad mod den hvide sektion. */
+@utility surface-band {
+  color: var(--primary-foreground);
+  background-color: var(--primary);
+}
+
+/* Feature-blok: flad accent-farve (den varme pop). */
+@utility surface-feature {
+  color: var(--accent-foreground);
+  background-color: var(--accent);
+}
+
+/* Tone-blok: flad lys tone — sekundær datablok
+   (fx næringsindhold), som referencens lyse hue-felt. */
+@utility surface-tonal {
+  color: var(--secondary-foreground);
+  background-color: var(--secondary);
 }
 
 /* ============================================

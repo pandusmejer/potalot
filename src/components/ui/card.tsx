@@ -5,21 +5,28 @@ import { cn } from '@/lib/utils'
 /**
  * Kort-varianter — beholdere med forskellig form og dybde,
  * så skærme kan bygges varieret (papir / løftet fane / flad
- * note / tonet modul) i stedet for ens hvide bokse.
+ * note / tonet modul / markant farveblok) i stedet for ens
+ * hvide bokse. hero/feature er fyldte sæson-farveflader.
  */
-const cardVariants = cva('text-card-foreground transition-shadow', {
+const cardVariants = cva('transition-shadow', {
   variants: {
     variant: {
       // Standard: roligt papir med varm, blød dybde
-      default: 'rounded-2xl border border-border bg-card shadow-soft',
+      default: 'rounded-2xl border border-border bg-card text-card-foreground shadow-soft',
       // Løftet: ligger ovenpå/forskudt — "fane" der inviterer
-      elevated: 'rounded-[1.75rem] border border-transparent bg-card shadow-lift',
+      elevated: 'rounded-[1.75rem] border border-transparent bg-card text-card-foreground shadow-lift',
       // Flad: stille, ingen skygge — hairline
-      flat: 'rounded-2xl border border-border bg-card',
+      flat: 'rounded-2xl border border-border bg-card text-card-foreground',
       // Nestet/sekundært panel i lagdelt tone
-      surface: 'rounded-xl border border-transparent bg-surface-2 shadow-soft',
+      surface: 'rounded-xl border border-transparent bg-surface-2 text-card-foreground shadow-soft',
       // Tonet modul — sæsonens bløde flade
-      accent: 'rounded-2xl border border-transparent bg-secondary shadow-soft',
+      accent: 'rounded-2xl border border-transparent bg-secondary text-secondary-foreground shadow-soft',
+      // Markant farveblok — fyldt primær-flade, hvid tekst
+      hero: 'rounded-2xl border border-transparent surface-band shadow-lift',
+      // Varm highlight-blok — accent-flade m. overgang
+      feature: 'rounded-2xl border border-transparent surface-feature shadow-lift',
+      // Roligere tonet farveblok — sekundær m. dybde
+      tonal: 'rounded-2xl border border-transparent surface-tonal shadow-soft',
     },
   },
   defaultVariants: { variant: 'default' },

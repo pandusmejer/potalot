@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { PageHero } from '@/components/ui/page-hero'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,12 +29,11 @@ export default function IndstillingerPage() {
 
   return (
     <div className="space-y-6 max-w-xl">
-      <div>
-        <h1 className="text-3xl font-serif text-foreground">Indstillinger</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Profil, notifikationer og brugertype.
-        </p>
-      </div>
+      <PageHero
+        kicker="Opsætning"
+        title="Indstillinger"
+        subtitle="Profil, notifikationer og brugertype."
+      />
 
       {/* Genvej til profil */}
       <Card>

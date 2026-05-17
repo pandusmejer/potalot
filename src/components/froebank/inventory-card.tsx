@@ -15,15 +15,13 @@ interface Props {
 }
 
 /**
- * Frøbank-element som immersivt samlekort: stor plante-
- * komplementær farveflade med fritlagt motiv + serif-navn,
- * og et hvidt ark der glider op over bunden. Funktion/data
- * uændret — kun udseende.
+ * Frøbank-element: flad mættet plante-farveblok med fritlagt
+ * motiv + fed sans-navn, skarp kant ned til en hvid datasektion.
  */
 export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect }: Props) {
   const statusMeta = INVENTORY_STATUS_META[item.status]
   const sowingPeriod = formatMonths(item.sowingMonths)
-  const { fieldSoft, fieldDeep } = plantColor(item.name, item.variety)
+  const { field } = plantColor(item.name, item.variety)
   const kicker = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frøbank'
 
   const remaining = item.seedCount != null ? (item.seedsRemaining ?? item.seedCount) : null
@@ -35,26 +33,21 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   return (
     <Card variant={item.isPinned ? 'elevated' : 'default'} className="relative overflow-hidden">
       <Link href={`/froebank/${item.id}`} className="block">
-        {/* Plante-farveflade */}
+        {/* Flad plante-farveblok — én mættet farve, ingen gradient */}
         <div
           className="relative h-72 overflow-hidden px-5 pt-5"
-          style={{ backgroundImage: `linear-gradient(165deg, ${fieldSoft}, ${fieldDeep})` }}
+          style={{ backgroundColor: field }}
         >
-          {/* Sæson-modulation */}
-          <div className="absolute inset-0 bg-[var(--hero-to)] opacity-[0.16] mix-blend-soft-light" />
-          {/* Tekst-scrim for læsbar hvid titel */}
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/20 to-transparent" />
-
           {/* Kicker + navn */}
           <div className="relative max-w-[78%]">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">
               {kicker}
             </p>
-            <h3 className="mt-0.5 truncate font-serif text-2xl leading-tight text-white">
+            <h3 className="mt-1 truncate font-sans text-2xl font-bold leading-tight text-white">
               {item.name}
             </h3>
             {item.variety && (
-              <p className="truncate text-sm italic text-white/75">{item.variety}</p>
+              <p className="truncate text-sm text-white/80">{item.variety}</p>
             )}
           </div>
 
@@ -100,8 +93,8 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
           )}
         </div>
 
-        {/* Hvidt ark der glider op over fladen */}
-        <div className="relative -mt-6 rounded-t-3xl bg-card px-4 pt-4 pb-4">
+        {/* Hvid sektion — skarp kant mod farveblokken */}
+        <div className="bg-card px-4 py-4">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
               {statusMeta.label}

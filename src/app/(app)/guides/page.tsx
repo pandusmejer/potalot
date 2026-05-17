@@ -1,4 +1,5 @@
 import { GuideList } from '@/components/guides/guide-list'
+import { PageHero } from '@/components/ui/page-hero'
 import { getAllGuides } from '@/actions/guides'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getCurrentUser, isCurrentUserAdmin } from '@/lib/auth'
@@ -20,12 +21,11 @@ export default async function GuidesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-serif text-foreground">Dyrkningsguides</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Hvordan og hvorfor — videnslaget bag dine planter.
-        </p>
-      </div>
+      <PageHero
+        kicker="Videnslaget"
+        title="Dyrkningsguides"
+        subtitle="Hvordan og hvorfor — videnslaget bag dine planter."
+      />
 
       <GuideList
         guides={guides}

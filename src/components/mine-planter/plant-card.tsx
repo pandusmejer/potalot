@@ -13,38 +13,32 @@ interface Props {
 }
 
 /**
- * Plantekort som immersivt samlekort: stor plante-komplementær
- * farveflade med fritlagt motiv + serif-navn, og et hvidt ark
- * der glider op over bunden. Funktion/data uændret.
+ * Plantekort: flad mættet plante-farveblok med fritlagt motiv
+ * + fed sans-navn, skarp kant ned til en hvid datasektion.
  */
 export function PlantCard({ plant, nextTask }: Props) {
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
-  const { fieldSoft, fieldDeep } = plantColor(plant.name, plant.variety)
+  const { field } = plantColor(plant.name, plant.variety)
 
   return (
     <Card className="relative overflow-hidden">
       <Link href={`/mine-planter/${plant.id}`} className="block">
-        {/* Plante-farveflade */}
+        {/* Flad plante-farveblok — én mættet farve, ingen gradient */}
         <div
           className="relative h-72 overflow-hidden px-5 pt-5"
-          style={{ backgroundImage: `linear-gradient(165deg, ${fieldSoft}, ${fieldDeep})` }}
+          style={{ backgroundColor: field }}
         >
-          {/* Sæson-modulation */}
-          <div className="absolute inset-0 bg-[var(--hero-to)] opacity-[0.16] mix-blend-soft-light" />
-          {/* Tekst-scrim for læsbar hvid titel */}
-          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/20 to-transparent" />
-
           {/* Kicker + navn */}
           <div className="relative max-w-[78%]">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">
               Mine planter
             </p>
-            <h3 className="mt-0.5 truncate font-serif text-2xl leading-tight text-white">
+            <h3 className="mt-1 truncate font-sans text-2xl font-bold leading-tight text-white">
               {plant.name}
             </h3>
             {plant.variety && (
-              <p className="truncate text-sm italic text-white/75">{plant.variety}</p>
+              <p className="truncate text-sm text-white/80">{plant.variety}</p>
             )}
           </div>
 
@@ -64,8 +58,8 @@ export function PlantCard({ plant, nextTask }: Props) {
           </div>
         </div>
 
-        {/* Hvidt ark der glider op over fladen */}
-        <div className="relative -mt-6 rounded-t-3xl bg-card px-4 pt-4 pb-4">
+        {/* Hvid sektion — skarp kant mod farveblokken */}
+        <div className="bg-card px-4 py-4">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
               {statusMeta.label}

@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Kompromisløst mobile-first: én centreret telefon-kolonne.
   // Desktop er blot en elegant udvidelse (samme kolonne, centreret).
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen app-canvas">
       <Topbar profile={profile} />
       {!profile && <DemoBanner />}
       <main className="mx-auto w-full max-w-[480px] px-4 py-6 pb-28">

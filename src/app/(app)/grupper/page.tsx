@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
+import { PageHero } from '@/components/ui/page-hero'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -19,23 +20,22 @@ export default async function GrupperPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-serif text-foreground">Mine grupper</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Private grupper og interessegrupper du er medlem af.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link href="/grupper/udforsk">
-              <Compass className="h-4 w-4" />
-              Udforsk
-            </Link>
-          </Button>
-          <CreateGroupDialog />
-        </div>
-      </div>
+      <PageHero
+        kicker="Sammen"
+        title="Mine grupper"
+        subtitle="Private grupper og interessegrupper du er medlem af."
+        actions={
+          <>
+            <Button asChild variant="outline">
+              <Link href="/grupper/udforsk">
+                <Compass className="h-4 w-4" />
+                Udforsk
+              </Link>
+            </Button>
+            <CreateGroupDialog />
+          </>
+        }
+      />
 
       {groups.length === 0 ? (
         <EmptyState

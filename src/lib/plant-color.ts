@@ -1,22 +1,17 @@
 /**
- * Plante-farve — hver plante får en rolig, botanisk farveflade
- * der *komplementerer* planten (tomat → støvet varm rød, agurk →
- * dæmpet grøn, gulerod → terracotta …). Dæmpede, modne, "dyrkede"
- * toner — aldrig neon, aldrig farvefest.
- *
- * Sæson-modulation sker i UI'et: farvefladen får et tyndt
- * sæson-token-overlay ovenpå, så tomat forbliver tomat men
- * bliver støvet om vinteren / saftig om sommeren — uden at
- * denne rene funktion skal kende årstiden.
+ * Plante-farve — hver plante får ÉN flad, mættet farveblok
+ * der *komplementerer* planten (tomat → varm laks, mangold →
+ * salviegrøn, gulerod → koral …) plus en meget lys tone af
+ * samme kulør til sekundære datablokke. Fast pr. art, ikke
+ * sæsondrevet (jf. reference: flade farveblokke, skarpe kanter
+ * mellem blokke, ingen gradient i blokken).
  */
 
 export interface PlantColor {
-  /** Mættet-men-dæmpet basistone */
+  /** Flad, mættet farveblok (hvid tekst sidder ovenpå) */
   field: string
-  /** Let lysere tone (gradient-top) */
-  fieldSoft: string
-  /** Dybere tone (gradient-bund — sikrer læsbar hvid tekst) */
-  fieldDeep: string
+  /** Meget lys tone af samme kulør — sekundær datablok */
+  tint: string
 }
 
 /** [hue, saturation%, lightness%] — botanisk-sikre toner */
@@ -63,14 +58,19 @@ function hash(s: string): number {
   return Math.abs(h)
 }
 
-function hsl([h, s, l]: HSL, dl = 0): string {
-  const clamped = Math.max(28, Math.min(l + dl, 94))
-  return `hsl(${h} ${s}% ${clamped}%)`
+/** Flad blok-farve: lysstyrke loftes så hvid tekst altid læses */
+function fieldColor([h, s, l]: HSL): string {
+  return `hsl(${h} ${s}% ${Math.max(40, Math.min(l, 66))}%)`
+}
+
+/** Meget lys tone af samme kulør — til sekundær datablok */
+function tintColor([h, s]: HSL): string {
+  return `hsl(${h} ${Math.max(20, Math.round(s * 0.5))}% 94%)`
 }
 
 /**
- * Udled plantens farveflade ud fra dansk navn (+ evt. sort).
- * Deterministisk: samme plante → altid samme tone.
+ * Udled plantens farveblok ud fra dansk navn (+ evt. sort).
+ * Deterministisk: samme plante → altid samme farve.
  */
 export function plantColor(name: string, variety?: string | null): PlantColor {
   const hay = normalize(`${name} ${variety ?? ''}`)
@@ -79,5 +79,5 @@ export function plantColor(name: string, variety?: string | null): PlantColor {
     if (re.test(hay)) { base = color; break }
   }
   if (!base) base = FALLBACK[hash(normalize(name)) % FALLBACK.length]
-  return { field: hsl(base), fieldSoft: hsl(base, 9), fieldDeep: hsl(base, -16) }
+  return { field: fieldColor(base), tint: tintColor(base) }
 }

@@ -1,4 +1,5 @@
 import { PlantList } from '@/components/mine-planter/plant-list'
+import { PageHero } from '@/components/ui/page-hero'
 import { NewPlantDialog } from '@/components/mine-planter/new-plant-dialog'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllTasks } from '@/actions/havekalender'
@@ -15,15 +16,12 @@ export default async function MinePlanterPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-serif text-foreground">Planter</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Aktive dyrkninger — det du har gang i lige nu.
-          </p>
-        </div>
-        <NewPlantDialog inventory={inventory} />
-      </div>
+      <PageHero
+        kicker="I jorden nu"
+        title="Planter"
+        subtitle="Aktive dyrkninger — det du har gang i lige nu."
+        actions={<NewPlantDialog inventory={inventory} />}
+      />
 
       <PlantList plants={plants} tasks={tasks} />
     </div>

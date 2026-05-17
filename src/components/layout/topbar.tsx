@@ -13,8 +13,16 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
     ? await Promise.all([getUnreadCount(), getGardenWeather()])
     : [0, null]
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 py-3">
+    <header
+      className="sticky top-0 z-30 border-b border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md"
+      style={{ background: 'color-mix(in oklab, var(--card) 86%, var(--primary))' }}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, var(--deco-gold), transparent)' }}
+      />
+      <div className="relative mx-auto flex w-full max-w-[480px] items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <Sprout className="h-5 w-5 text-primary" />
           <span className="font-serif text-xl text-foreground">PotAlot</span>
