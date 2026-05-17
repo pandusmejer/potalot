@@ -1,15 +1,13 @@
-import { Card, CardContent } from '@/components/ui/card'
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { saeson } from '@/lib/datetime'
-import { Sparkles } from 'lucide-react'
 
 /**
- * Måneds-hero med stemnings-tekst + fokus-tags. Står mellem årshjul
- * (navigation) og selve sektionerne, og giver hver måned karakter.
- *
- * focusTags = de 3 mest forekommende gøremåls-kategorier for måneden.
- * De giver et visuelt anker så hero'en ikke kun er tekst.
+ * Månedskapitel — et editorielt, fysisk "bog-kapitel" for måneden
+ * i stedet for et generisk gradient-kort. Stor flad sæson-flade,
+ * kæmpe måned, det poetiske stemnings-citat, lagdelt dybde og
+ * botaniske labels. Asymmetrisk/venstrestillet. Samme props, så
+ * KalenderClient er uændret.
  */
 export function MaanedsHero({
   month, year, focusTags = [],
@@ -23,45 +21,50 @@ export function MaanedsHero({
   const sa = saeson(month)
 
   return (
-    <Card className="bg-gradient-to-br from-secondary/40 via-card to-card border-secondary/50 overflow-hidden relative">
-      {/* Subtilt botanisk mønster i baggrunden */}
-      <div className="absolute inset-0 bg-pattern-botanical opacity-30 pointer-events-none" />
-      <CardContent className="relative py-5 sm:py-6">
-        <div className="flex items-start gap-3">
-          <Sparkles className="h-5 w-5 text-accent-copper shrink-0 mt-1" style={{ color: 'var(--accent-copper)' }} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <h2 className="font-serif text-2xl sm:text-3xl text-foreground">
-                {monthName} {year}
-              </h2>
-              <span className="text-xs uppercase tracking-wider text-muted-foreground">
-                {sa}
+    <div className="relative">
+      {/* Bagvedliggende forskudt tone-blok — fysisk lagdeling */}
+      <div
+        aria-hidden
+        className="absolute -right-2 -top-2 h-24 w-2/3 rounded-[2rem] bg-secondary"
+      />
+
+      {/* Selve månedskapitlet — flad sæson-flade, organisk underkant */}
+      <article
+        className="leaf-edge relative overflow-hidden rounded-[2rem] rounded-tl-md bg-primary px-6 pb-12 pt-7 text-primary-foreground"
+      >
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-65">
+          {sa} · {year}
+        </p>
+
+        {/* Kæmpe editoriel måned — venstrestillet, ikke centreret */}
+        <h2 className="mt-1 font-sans text-6xl font-bold leading-[0.95] tracking-tight">
+          {monthName}
+        </h2>
+
+        <p className="mt-4 text-lg font-semibold leading-snug">
+          {stemning.tagline}
+        </p>
+        <p className="mt-2 max-w-md text-sm leading-relaxed opacity-80">
+          {stemning.description}
+        </p>
+
+        {focusTags.length > 0 && (
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-55">
+              Månedens fokus
+            </span>
+            {focusTags.map(tag => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1.5 text-sm font-medium capitalize"
+              >
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+                {tag}
               </span>
-            </div>
-            <p className="font-serif text-lg text-primary mt-1">
-              {stemning.tagline}
-            </p>
-            <p className="text-sm text-foreground/80 mt-1 leading-relaxed max-w-xl">
-              {stemning.description}
-            </p>
-            {focusTags.length > 0 && (
-              <div className="flex items-center gap-1.5 flex-wrap mt-3">
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Månedens fokus:
-                </span>
-                {focusTags.map(tag => (
-                  <span
-                    key={tag}
-                    className="text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 capitalize"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            ))}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        )}
+      </article>
+    </div>
   )
 }
