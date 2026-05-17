@@ -17,6 +17,7 @@ export default async function MinePlanterPage() {
   return (
     <div className="space-y-6">
       <PageHero
+        tone="coral"
         kicker="I jorden nu"
         title="Planter"
         subtitle="Aktive dyrkninger — det du har gang i lige nu."

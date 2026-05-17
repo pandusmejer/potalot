@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card'
 import { FavoritePinButtons } from './favorite-pin-buttons'
 import { INVENTORY_STATUS_META, MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
+import { useImageColor } from '@/lib/use-image-color'
 import type { InventoryItem } from '@/lib/types'
 import { Leaf, Check, ChevronDown, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -28,7 +29,9 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   const [open, setOpen] = useState(false)
   const statusMeta = INVENTORY_STATUS_META[item.status]
   const sowingPeriod = formatMonths(item.sowingMonths)
-  const { field } = plantColor(item.name, item.variety)
+  const photoColor = useImageColor(item.primaryImageId)
+  const { field: nameField } = plantColor(item.name, item.variety)
+  const field = photoColor ?? nameField
   const kicker = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frøbank'
 
   const remaining = item.seedCount != null ? (item.seedsRemaining ?? item.seedCount) : null

@@ -99,6 +99,7 @@ export default async function IdetavlePage() {
   return (
     <div className="space-y-6">
       <PageHero
+        tone="strong"
         kicker="Fri tænkning"
         title="Idétavle"
         subtitle="Langsigtede projekter og inspiration. Ingen daglige tasks."

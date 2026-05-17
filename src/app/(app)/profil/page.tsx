@@ -13,6 +13,7 @@ export default async function ProfilPage() {
   return (
     <div className="space-y-6 max-w-xl">
       <PageHero
+        tone="coral"
         kicker="Dig"
         title="Min profil"
         subtitle="Hvem er du, og hvordan vil du bruge PotAlot."

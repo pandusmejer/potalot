@@ -39,12 +39,13 @@ export function ShareIdeaDialog({ ideaId, ideaTitle, initialCount }: Props) {
   const [groupShares, setGroupShares] = useState<IdeaGroupShare[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string>('')
 
-  const [loading, setLoading] = useState(false)
+  // Hvilken idé vi sidst har hentet delinger for — undgår
+  // synkron setState i effekten (cascading renders/crash).
+  const [loadedFor, setLoadedFor] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
     let active = true
-    setLoading(true)
     Promise.all([
       getShareRecipients(ideaId),
       getGroupSharesForIdea(ideaId),
@@ -55,10 +56,13 @@ export function ShareIdeaDialog({ ideaId, ideaTitle, initialCount }: Props) {
         setRecipients(rs)
         setGroupShares(gs)
         setMyGroups(gr)
+        setLoadedFor(ideaId)
       })
-      .finally(() => { if (active) setLoading(false) })
+      .catch(() => { /* ignorér — UI viser bare tom tilstand */ })
     return () => { active = false }
   }, [open, ideaId])
+
+  const loading = open && loadedFor !== ideaId
 
   function handleSharePerson(e: React.FormEvent) {
     e.preventDefault()

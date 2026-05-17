@@ -27,6 +27,10 @@ const cardVariants = cva('transition-shadow', {
       feature: 'rounded-2xl border border-transparent surface-feature shadow-lift',
       // Roligere tonet farveblok — sekundær m. dybde
       tonal: 'rounded-2xl border border-transparent surface-tonal shadow-soft',
+      // Palette-pop: solgul flad blok (mørk tekst)
+      sun: 'rounded-2xl border border-transparent bg-[var(--block-sun)] text-[var(--foreground)] shadow-soft',
+      // Palette-pop: frisk/lime flad blok (mørk tekst)
+      fresh: 'rounded-2xl border border-transparent bg-[var(--block-fresh)] text-[var(--foreground)] shadow-soft',
     },
   },
   defaultVariants: { variant: 'default' },

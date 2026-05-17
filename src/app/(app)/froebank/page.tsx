@@ -15,6 +15,7 @@ export default async function FroebankPage() {
   return (
     <div className="space-y-6">
       <PageHero
+        tone="fresh"
         kicker="Din samling"
         title="Frøbank"
         subtitle="Alt du har — frø, løg, knolde, buske, træer og stauder."

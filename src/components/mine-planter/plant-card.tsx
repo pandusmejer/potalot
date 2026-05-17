@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
+import { useImageColor } from '@/lib/use-image-color'
 import { dageSiden } from '@/lib/datetime'
 import type { Plant, CalendarTask } from '@/lib/types'
 import { Sprout, ChevronDown, ArrowUpRight } from 'lucide-react'
@@ -31,7 +32,9 @@ export function PlantCard({ plant, nextTask }: Props) {
   const [open, setOpen] = useState(false)
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
-  const { field } = plantColor(plant.name, plant.variety)
+  const photoColor = useImageColor(plant.primaryImageId)
+  const { field: nameField } = plantColor(plant.name, plant.variety)
+  const field = photoColor ?? nameField
 
   const keyLine = alder !== null ? saaetLabel(alder) : statusMeta.label
 

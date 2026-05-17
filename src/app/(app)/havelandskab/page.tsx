@@ -39,6 +39,7 @@ export default async function HavelandskabPage() {
   return (
     <div className="space-y-5 max-w-3xl">
       <PageHero
+        tone="fresh"
         kicker="Fællesskab"
         title="Havelandskab"
         subtitle="Sæsonens fælles rytme. Alle PotAlot-brugere kan deltage."

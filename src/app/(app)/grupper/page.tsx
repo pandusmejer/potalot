@@ -21,6 +21,7 @@ export default async function GrupperPage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <PageHero
+        tone="sun"
         kicker="Sammen"
         title="Mine grupper"
         subtitle="Private grupper og interessegrupper du er medlem af."

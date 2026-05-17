@@ -159,9 +159,9 @@ export default async function OverblikPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <ProgressCard progress={progress} />
-        <Card>
+        <Card variant="fresh">
           <CardHeader className="pb-0">
-            <CardTitle>Hurtige handlinger</CardTitle>
+            <CardTitle className="text-[var(--foreground)]">Hurtige handlinger</CardTitle>
           </CardHeader>
           <CardContent className="pt-3">
             <QuickActions />

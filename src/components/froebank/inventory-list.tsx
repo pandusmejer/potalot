@@ -41,17 +41,24 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
 
-  // Reagér hvis filter-query ændres mens komponenten lever (fx fra notifikations-klik)
+  // Reagér hvis filter-query ændres mens komponenten lever (fx
+  // fra notifikations-klik). setState sker i et microtask-callback
+  // (ikke synkront i effekten) + cancel-guard, så vi undgår
+  // cascading renders / opdatering efter unmount.
   useEffect(() => {
     const f = searchParams.get('filter')
-    if (f && (VALID_SMART_FILTERS as string[]).includes(f)) {
+    if (!f || !(VALID_SMART_FILTERS as string[]).includes(f)) return
+    let active = true
+    Promise.resolve().then(() => {
+      if (!active) return
       setSmartFilters(prev => {
         if (prev.has(f as SmartFilter)) return prev
         const next = new Set(prev)
         next.add(f as SmartFilter)
         return next
       })
-    }
+    })
+    return () => { active = false }
   }, [searchParams])
 
   const tilgaengeligeSubs = useMemo(() => {

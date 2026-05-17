@@ -22,6 +22,7 @@ export default async function GuidesPage() {
   return (
     <div className="space-y-6">
       <PageHero
+        tone="sun"
         kicker="Videnslaget"
         title="Dyrkningsguides"
         subtitle="Hvordan og hvorfor — videnslaget bag dine planter."
