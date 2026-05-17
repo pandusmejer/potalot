@@ -28,16 +28,19 @@ export function MaanedsHero({
         className="absolute -right-2 -top-2 h-24 w-2/3 rounded-[2rem] bg-secondary"
       />
 
-      {/* Selve månedskapitlet — flad sæson-flade, organisk underkant */}
+      {/* Selve månedskapitlet — flad sæson-flade. Asymmetriske
+          hjørner giver organisk karakter uden at klippe tekst. */}
       <article
-        className="leaf-edge relative overflow-hidden rounded-[2rem] rounded-tl-md bg-primary px-6 pb-12 pt-7 text-primary-foreground"
+        className="relative overflow-hidden rounded-[2rem] rounded-tl-md rounded-br-md bg-primary px-6 pb-7 pt-7 text-primary-foreground"
       >
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-65">
           {sa} · {year}
         </p>
 
-        {/* Kæmpe editoriel måned — venstrestillet, ikke centreret */}
-        <h2 className="mt-1 font-sans text-6xl font-bold leading-[0.95] tracking-tight">
+        {/* Kæmpe editoriel måned — venstrestillet, ikke centreret.
+            Eksplicit lys farve: basis-h2-reglen ville ellers
+            tvinge den mørk på den mørke flade. */}
+        <h2 className="mt-1 font-sans text-6xl font-bold leading-[0.95] tracking-tight text-[color:var(--primary-foreground)]">
           {monthName}
         </h2>
 
