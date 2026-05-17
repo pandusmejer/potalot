@@ -296,15 +296,20 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
           }
         />
       ) : (
-        <div className="space-y-4">
-          {filtered.map(item => (
-            <InventoryCard
+        <div className="flex flex-col">
+          {filtered.map((item, i) => (
+            <div
               key={item.id}
-              item={item}
-              selectMode={selectMode}
-              selected={selected.has(item.id)}
-              onToggleSelect={() => toggleSelected(item.id)}
-            />
+              className="relative"
+              style={{ marginTop: i === 0 ? 0 : -16, zIndex: i + 1 }}
+            >
+              <InventoryCard
+                item={item}
+                selectMode={selectMode}
+                selected={selected.has(item.id)}
+                onToggleSelect={() => toggleSelected(item.id)}
+              />
+            </div>
           ))}
         </div>
       )}

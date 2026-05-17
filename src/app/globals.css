@@ -309,6 +309,19 @@ html[data-season='vinter'] {
   background-color: var(--secondary);
 }
 
+/* Organisk underkant — farveblokkens bund er ikke en lige
+   streg men en blød, asymmetrisk blad-bue. SVG-maske skalerer
+   med blokken (mask-size 100% 100%). Det giver "chartek"-stakken
+   en organisk overgang i stedet for en hård kant. */
+@utility leaf-edge {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H320 V236 C 246 318 156 250 92 286 C 52 308 26 296 0 304 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H320 V236 C 246 318 156 250 92 286 C 52 308 26 296 0 304 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 /* ============================================
  * Sprout-celebration når en plante aktiveres
  * (bruges i SowDialog success-state)
