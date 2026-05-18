@@ -9,14 +9,21 @@ import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
 import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
 import { DenneUge } from '@/components/havekalender/denne-uge'
+import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ListChecks, Calendar, EyeOff, Eye, Info, Compass, ArrowRight, ChevronDown } from 'lucide-react'
+import {
+  ListChecks, Calendar, EyeOff, Eye, Info, Compass, ArrowRight, ChevronDown,
+  Sprout, BookOpen, Users, Lightbulb, Plus,
+} from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
-import { MONTHS_DA } from '@/lib/constants'
+import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
+import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { computeWeekSuggestions } from '@/lib/denne-uge'
+import { cn } from '@/lib/utils'
+import type { GardenAlert } from '@/actions/weather'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -28,9 +35,65 @@ interface Props {
   generalTasks: GeneralGardenTask[]
   userTasks: UserGardenTask[]
   guides: Guide[]
+  alerts: GardenAlert[]
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides }: Props) {
+/** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+      {children}
+    </p>
+  )
+}
+
+/* ------------------------------------------------------------------
+ * Skræddersyede timing-ikoner — botaniske, organiske streg-motiver
+ * der matcher resten af designet (ingen emojis/standard-ikoner).
+ * ------------------------------------------------------------------ */
+const svgBase = {
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.75,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+}
+
+/** Gør nu — sol der står op over horisonten (øjeblikket er nu). */
+function IconSol({ className }: { className?: string }) {
+  return (
+    <svg {...svgBase} className={className} aria-hidden>
+      <path d="M3.5 18h17" />
+      <path d="M7.5 18a4.5 4.5 0 0 1 9 0" />
+      <path d="M12 7v2M6.3 10.4l1.4 1.4M17.7 10.4l-1.4 1.4" />
+    </svg>
+  )
+}
+
+/** God timing — lille to-bladet spire (vækst-vinduet er åbent). */
+function IconSpire({ className }: { className?: string }) {
+  return (
+    <svg {...svgBase} className={className} aria-hidden>
+      <path d="M12 21v-9" />
+      <path d="M12 12.5C12 9 9.6 6.4 6 6.4c0 3.6 2.4 6.1 6 6.1Z" />
+      <path d="M12 12.5c0-3.5 2.4-6.1 6-6.1 0 3.6-2.4 6.1-6 6.1Z" />
+    </svg>
+  )
+}
+
+/** Hvis du har tid — dampende krus (en rolig kaffepause, ingen hast). */
+function IconKop({ className }: { className?: string }) {
+  return (
+    <svg {...svgBase} className={className} aria-hidden>
+      <path d="M5.5 11h10.5v3.5a4 4 0 0 1-4 4H9.5a4 4 0 0 1-4-4Z" />
+      <path d="M16 11.8h1.6a2.1 2.1 0 0 1 0 4.2H16" />
+      <path d="M9 8.4c.9-.8.9-1.8 0-2.6M12.6 8.4c.9-.8.9-1.8 0-2.6" />
+    </svg>
+  )
+}
+
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -48,70 +111,25 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   const focusTags = topCategories(generalTasks, valgtMaaned, 3)
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-serif text-foreground">Havekalender</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Hvad du skal gøre nu, sæsonens rytme og hvad du kan så.
-          </p>
-        </div>
-        <AddTaskDialog plants={aktivePlanter} />
-      </div>
-
-      {/* LAG 1 — Denne uge i haven (NU-laget, øverst, altid) */}
-      <DenneUge
-        suggestions={ugeSuggestions}
-        monthName={MONTHS_DA[nuMaaned - 1].full}
-      />
-
-      {/* Årshjul — navigation */}
-      <Aarshjul
-        active={valgtMaaned}
-        onChange={setValgtMaaned}
-        tasks={tasks}
-        generelle={generalTasks.filter(g => !g.isHiddenByMe)}
-      />
-
-      {/* LAG 2 — Måneds-hero med stemning + fokus-tags */}
+    <div className="space-y-7">
+      {/* 1 · ORIENTERING — månedskapitlet er brugerens mentale landing */}
       <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
 
-      {/* Sæson-challenge promo hvis der er aktive i valgte måned */}
-      {challengesForMonth(valgtMaaned).length > 0 && (
-        <Link
-          href="/havelandskab"
-          className="block rounded-xl border border-amber-200/70 bg-gradient-to-br from-amber-50/70 to-card p-3 hover:bg-amber-50 transition-colors group"
-        >
-          <div className="flex items-center gap-3">
-            <Compass className="h-4 w-4 text-amber-700 shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                {challengesForMonth(valgtMaaned).length === 1
-                  ? `Én sæson-challenge denne måned: ${challengesForMonth(valgtMaaned)[0].title}`
-                  : `${challengesForMonth(valgtMaaned).length} sæson-challenges denne måned`}
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Deltag i den fælles rytme — alle PotAlot-brugere er med.
-              </p>
-            </div>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
-          </div>
-        </Link>
+      {/* 2 · OBSERVATION — naturen lige nu (kun når der er varsler) */}
+      {alerts.length > 0 && (
+        <section className="space-y-2">
+          <Eyebrow>Naturen lige nu</Eyebrow>
+          <GardenAlerts alerts={alerts} />
+        </section>
       )}
 
-      {/* Tre-kort grid: Gøremål · Mine opgaver · Det kan du så */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <MaanedensGoeremaal
-          month={valgtMaaned}
-          generalTasks={generalTasks}
-          userTasks={userTasks}
-          visSkjulte={visSkjulte}
-          onToggleSkjulte={() => setVisSkjulte(v => !v)}
-          existingTasks={tasks}
-          year={year}
+      {/* 3 · HANDLING — dine vigtigste opgaver først, så det fulde lag */}
+      <section className="space-y-3">
+        <Eyebrow>Dine vigtigste opgaver</Eyebrow>
+        <DenneUge
+          suggestions={ugeSuggestions}
+          monthName={MONTHS_DA[nuMaaned - 1].full}
         />
-
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -125,24 +143,232 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
               </span>
             </CardTitle>
           </CardHeader>
-          <div className="px-5 pb-5">
+          <div className="space-y-4 px-5 pb-5">
             <TodoTabs tasks={tasks} />
+            {/* Ny opgave på samme board som Mine opgaver —
+                aflang afrundet fuld-bredde knap */}
+            <AddTaskDialog plants={aktivePlanter}>
+              <Button className="w-full">
+                <Plus className="h-4 w-4" />
+                Ny opgave
+              </Button>
+            </AddTaskDialog>
           </div>
         </Card>
+      </section>
 
+      {/* 4 · PERSONLIG RELEVANS — dine egne planter lige nu */}
+      <section className="space-y-2">
+        <Eyebrow>Dine planter i fokus</Eyebrow>
+        <DinePlanterIFokus plants={plants} tasks={tasks} />
+      </section>
+
+      {/* 5 · PLANLÆGNING — året som lodret sæson-progression */}
+      <section className="space-y-2">
+        <Aarshjul
+          active={valgtMaaned}
+          onChange={setValgtMaaned}
+          tasks={tasks}
+          generelle={generalTasks.filter(g => !g.isHiddenByMe)}
+          renderActive={(m) => (
+            <MaanedensGoeremaal
+              embedded
+              month={m}
+              generalTasks={generalTasks}
+              userTasks={userTasks}
+              visSkjulte={visSkjulte}
+              onToggleSkjulte={() => setVisSkjulte(v => !v)}
+              existingTasks={tasks}
+              year={year}
+            />
+          )}
+        />
+      </section>
+
+      {/* 6 · MIKRO-INSPIRATION — det kan du så nu */}
+      <section className="space-y-2">
+        <Eyebrow>Det kan du så nu</Eyebrow>
         <DetKanDuNu
           month={valgtMaaned}
           inventory={inventory}
           guides={guides}
           plants={plants}
         />
-      </div>
+      </section>
+
+      {/* 7 · ENGAGEMENT — månedens udfordring */}
+      {challengesForMonth(valgtMaaned).length > 0 && (
+        <section className="space-y-2">
+          <Eyebrow>Månedens udfordring</Eyebrow>
+          <Link
+            href="/havelandskab"
+            className="group flex items-center gap-3 rounded-tl-[1.5rem] rounded-br-[1.5rem] rounded-tr-md rounded-bl-md bg-[var(--block-sun)] px-5 py-4 text-[var(--foreground)] transition-transform hover:-translate-y-0.5"
+          >
+            <Compass className="h-5 w-5 shrink-0 opacity-80" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold">
+                {challengesForMonth(valgtMaaned).length === 1
+                  ? challengesForMonth(valgtMaaned)[0].title
+                  : `${challengesForMonth(valgtMaaned).length} sæson-challenges denne måned`}
+              </p>
+              <p className="text-xs opacity-70 mt-0.5">
+                Deltag i den fælles rytme — alle PotAlot-brugere er med.
+              </p>
+            </div>
+            <ArrowRight className="h-4 w-4 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </section>
+      )}
+
+      {/* 8 · EKSPLORATIV — hent inspiration (ikke akut, derfor sent) */}
+      <section className="space-y-2">
+        <Eyebrow>Hent inspiration</Eyebrow>
+        <HentInspiration />
+      </section>
+
+      {/* 9 · PROGRESSION — kommende i næste måned (forventning) */}
+      <KommendeNaesteMaaned month={nuMaaned} generalTasks={generalTasks} />
     </div>
   )
 }
 
+/**
+ * 4 · Dine planter i fokus — personlig sektion. Dine aktive
+ * planter + deres nærmeste åbne opgave (ægte data, ingen fyld).
+ */
+function DinePlanterIFokus({ plants, tasks }: { plants: Plant[]; tasks: CalendarTask[] }) {
+  const aktive = plants.filter(p => !p.isArchived)
+
+  if (aktive.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Du har ingen aktive planter endnu.{' '}
+        <Link href="/froebank" className="font-semibold text-primary underline-offset-2 hover:underline">
+          Aktivér en sort fra frøbanken
+        </Link>{' '}
+        — så følger dine egne planter dig her.
+      </p>
+    )
+  }
+
+  function nextTaskFor(plantId: string): CalendarTask | null {
+    return tasks
+      .filter(t => t.linkedPlantId === plantId && t.status === 'open')
+      .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null
+  }
+
+  const vist = aktive.slice(0, 6)
+
+  return (
+    <div className="space-y-1.5">
+      {vist.map((p, i) => {
+        const nt = nextTaskFor(p.id)
+        const status = PLANT_STATUS_META[p.status]?.label ?? ''
+        const radius = i % 2 === 0
+          ? 'rounded-tl-[1.25rem] rounded-br-[1.25rem] rounded-tr-md rounded-bl-md'
+          : 'rounded-tr-[1.25rem] rounded-bl-[1.25rem] rounded-tl-md rounded-br-md'
+        return (
+          <Link
+            key={p.id}
+            href={`/mine-planter/${p.id}`}
+            className={cn(
+              'group flex items-center gap-3 border-l-[3px] border-primary/40 bg-secondary px-4 py-3 transition-transform hover:-translate-y-0.5',
+              radius
+            )}
+          >
+            <Sprout className="h-4 w-4 shrink-0 text-primary" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-foreground">
+                {p.name}
+                {p.variety && <span className="ml-1.5 font-normal text-muted-foreground">{p.variety}</span>}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {nt ? `Næste: ${nt.title}` : status}
+              </p>
+            </div>
+            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        )
+      })}
+      {aktive.length > vist.length && (
+        <Link href="/mine-planter" className="inline-block pt-1 text-xs font-semibold text-primary">
+          Se alle {aktive.length} planter →
+        </Link>
+      )}
+    </div>
+  )
+}
+
+/**
+ * 8 · Hent inspiration — eksplorativt, ikke akut. Varierede
+ * label-links (ikke ens bokse).
+ */
+function HentInspiration() {
+  const links = [
+    { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen, bg: 'var(--block-fresh)' },
+    { href: '/idetavle', label: 'Idétavle', icon: Lightbulb, bg: 'var(--block-sun)' },
+    { href: '/grupper', label: 'Fællesskab', icon: Users, bg: 'var(--accent)' },
+  ]
+  return (
+    <div className="flex flex-wrap gap-2">
+      {links.map((l, i) => {
+        const Icon = l.icon
+        const radius = i % 2 === 0
+          ? 'rounded-tl-[1.1rem] rounded-br-[1.1rem] rounded-tr-md rounded-bl-md'
+          : 'rounded-tr-[1.1rem] rounded-bl-[1.1rem] rounded-tl-md rounded-br-md'
+        return (
+          <Link
+            key={l.href}
+            href={l.href}
+            className={cn('inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--foreground)] transition-transform hover:-translate-y-0.5', radius)}
+            style={{ backgroundColor: l.bg }}
+          >
+            <Icon className="h-4 w-4 opacity-80" />
+            {l.label}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * 9 · Kommende i næste måned — progression/forventning. Stærk
+ * afslutning: næste måneds stemning + dens første gøremål.
+ */
+function KommendeNaesteMaaned({ month, generalTasks }: { month: number; generalTasks: GeneralGardenTask[] }) {
+  const next = month === 12 ? 1 : month + 1
+  const navn = MONTHS_DA[next - 1].full
+  const tagline = MAANEDS_STEMNING[next]?.tagline ?? ''
+  const kommende = generalTasks
+    .filter(g => g.month === next && !g.isHiddenByMe)
+    .slice(0, 3)
+
+  return (
+    <section className="space-y-2">
+      <Eyebrow>Kommende</Eyebrow>
+      <div className="rounded-tr-[1.75rem] rounded-bl-[1.75rem] rounded-tl-md rounded-br-md bg-surface-2 px-6 py-6">
+        <p className="font-sans text-2xl font-bold tracking-tight text-foreground">
+          {navn} nærmer sig
+        </p>
+        {tagline && <p className="mt-1 text-sm font-medium text-muted-foreground">{tagline}</p>}
+        {kommende.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5">
+            {kommende.map(g => (
+              <span key={g.id} className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                {g.title}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
 function MaanedensGoeremaal({
-  month, generalTasks, userTasks, visSkjulte, onToggleSkjulte, existingTasks, year,
+  month, generalTasks, userTasks, visSkjulte, onToggleSkjulte, existingTasks, year, embedded = false,
 }: {
   month: number
   generalTasks: GeneralGardenTask[]
@@ -151,6 +377,8 @@ function MaanedensGoeremaal({
   onToggleSkjulte: () => void
   existingTasks: CalendarTask[]
   year: number
+  /** Indlejret i månedens blok i årshjulet — uden Card-ramme/titel */
+  embedded?: boolean
 }) {
   const monthName = MONTHS_DA[month - 1].full
   const generelleAlle = generalTasks.filter(g => g.month === month)
@@ -167,55 +395,70 @@ function MaanedensGoeremaal({
       .map(t => t.sourceId as string)
   )
 
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-start justify-between gap-2 flex-wrap">
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-primary" />
-          Gøremål — {monthName}
-          <span
-            className="inline-flex items-center"
-            title="Sæsonbestemte ting man typisk gør hver måned. Klik et gøremål for at folde det ud og se detaljer eller tilføje det til Mine opgaver."
-          >
-            <Info className="h-3 w-3 text-muted-foreground" />
-          </span>
-        </CardTitle>
-        <UserTaskDialog defaultMonth={month} />
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Havens gøremål — grupperet i collapsible kategori-accordions */}
+  // Ikke kategorier/prioritet — menneskelig timing-tredeling.
+  // Hvad er vigtigt LIGE NU, ikke "åbn kategorien Biodiversitet".
+  const bucketOf = (p: GeneralGardenTask['priority']) =>
+    p === 'critical' || p === 'high' ? 0 : p === 'medium' ? 1 : 2
+  const sorteret = [...generelleSynlige].sort(
+    (a, b) => bucketOf(a.priority) - bucketOf(b.priority)
+  )
+  const VIS_ANTAL = 6
+  const [visAlle, setVisAlle] = useState(false)
+  const vist = visAlle ? sorteret : sorteret.slice(0, VIS_ANTAL)
+  const flereAntal = sorteret.length - vist.length
+  const TIMING = [
+    { Icon: IconSol, label: 'Gør nu', bg: 'var(--accent)' },
+    { Icon: IconSpire, label: 'God timing', bg: 'var(--block-fresh)' },
+    { Icon: IconKop, label: 'Hvis du har tid', bg: 'var(--secondary)' },
+  ] as const
+
+  const indhold = (
+    <>
+        {/* Havens gøremål — venlige sæsonskub efter timing/energi,
+            ikke kategorier eller opgavestyring. Kun et lille udvalg. */}
         {generelleSynlige.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">
-              Havens gøremål
-            </p>
-            {groupByCategory(generelleSynlige).map(({ category, items }) => (
-              <details
-                key={category}
-                open={generelleSynlige.length <= 6}
-                className="group rounded-lg border border-border bg-card/40 overflow-hidden"
-              >
-                <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none hover:bg-accent/30 transition-colors list-none">
-                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-open:rotate-0 -rotate-90" />
-                  <span className="text-sm font-medium text-foreground capitalize flex-1">
-                    {category}
-                  </span>
-                  <span className="text-[11px] text-muted-foreground">
-                    {items.length}
-                  </span>
-                </summary>
-                <div className="px-2 pb-2 pt-1 space-y-1.5">
-                  {items.map(t => (
-                    <GeneralTaskCard
-                      key={t.id}
-                      task={t}
-                      alreadyAdded={tilfoejedeIds.has(t.id)}
-                      year={year}
-                    />
-                  ))}
+          <div className="space-y-4">
+            {TIMING.map((t, bi) => {
+              const items = vist.filter(g => bucketOf(g.priority) === bi)
+              if (items.length === 0) return null
+              const Icon = t.Icon
+              return (
+                <div key={t.label} className="space-y-1.5">
+                  <p className="flex items-center gap-2.5 text-sm font-bold text-foreground">
+                    <span
+                      aria-hidden
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-tl-[0.9rem] rounded-br-[0.9rem] rounded-tr-md rounded-bl-md"
+                      style={{ backgroundColor: t.bg }}
+                    >
+                      <Icon className="h-[18px] w-[18px] text-[var(--foreground)]" />
+                    </span>
+                    {t.label}
+                  </p>
+                  <div className="space-y-1.5">
+                    {items.map(g => (
+                      <GeneralTaskCard
+                        key={g.id}
+                        task={g}
+                        alreadyAdded={tilfoejedeIds.has(g.id)}
+                        year={year}
+                        soft
+                      />
+                    ))}
+                  </div>
                 </div>
-              </details>
-            ))}
+              )
+            })}
+
+            {(flereAntal > 0 || visAlle) && (
+              <button
+                type="button"
+                onClick={() => setVisAlle(v => !v)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition-transform hover:-translate-y-0.5"
+              >
+                {visAlle ? 'Vis færre' : `Se flere gøremål${flereAntal > 0 ? ` (${flereAntal})` : ''}`}
+                <ChevronDown className={cn('h-4 w-4 transition-transform', visAlle && 'rotate-180')} />
+              </button>
+            )}
           </div>
         )}
 
@@ -258,7 +501,41 @@ function MaanedensGoeremaal({
         {generelleSynlige.length === 0 && mine.length === 0 && !harSkjulte && (
           <p className="text-sm text-muted-foreground italic">Ingen gøremål i {monthName.toLowerCase()}.</p>
         )}
-      </CardContent>
+    </>
+  )
+
+  // Indlejret i månedens blok i årshjulet: ingen Card-ramme,
+  // ingen redundant "Gøremål — {måned}"-titel (blokken har den).
+  if (embedded) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] opacity-60">
+            Månedens gøremål
+          </p>
+          <UserTaskDialog defaultMonth={month} />
+        </div>
+        {indhold}
+      </div>
+    )
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-2 flex-wrap">
+        <CardTitle className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-primary" />
+          Gøremål — {monthName}
+          <span
+            className="inline-flex items-center"
+            title="Sæsonbestemte ting man typisk gør hver måned. Klik et gøremål for at folde det ud og se detaljer eller tilføje det til Mine opgaver."
+          >
+            <Info className="h-3 w-3 text-muted-foreground" />
+          </span>
+        </CardTitle>
+        <UserTaskDialog defaultMonth={month} />
+      </CardHeader>
+      <CardContent className="space-y-4">{indhold}</CardContent>
     </Card>
   )
 }
@@ -296,22 +573,4 @@ function topCategories(tasks: GeneralGardenTask[], month: number, n: number): st
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)
     .map(([cat]) => cat)
-}
-
-/**
- * Gruppér gøremål efter kategori, sorteret efter flest gøremål først.
- */
-function groupByCategory(
-  tasks: GeneralGardenTask[]
-): Array<{ category: string; items: GeneralGardenTask[] }> {
-  const map = new Map<string, GeneralGardenTask[]>()
-  for (const t of tasks) {
-    const cat = t.category || 'Øvrige'
-    const list = map.get(cat) ?? []
-    list.push(t)
-    map.set(cat, list)
-  }
-  return [...map.entries()]
-    .map(([category, items]) => ({ category, items }))
-    .sort((a, b) => b.items.length - a.items.length)
 }

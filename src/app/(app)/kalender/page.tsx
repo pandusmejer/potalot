@@ -4,17 +4,19 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllGuides } from '@/actions/guides'
 import { getGeneralGardenTasks, getUserGardenTasks } from '@/actions/aarshjul'
+import { getGardenAlerts } from '@/actions/weather'
 
 export const dynamic = 'force-dynamic'
 
 export default async function KalenderPage() {
-  const [tasks, plants, inventory, guides, generalTasks, userTasks] = await Promise.all([
+  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
     getAllGuides(),
     getGeneralGardenTasks(),
     getUserGardenTasks(),
+    getGardenAlerts(),
   ])
 
   return (
@@ -25,6 +27,7 @@ export default async function KalenderPage() {
       generalTasks={generalTasks}
       userTasks={userTasks}
       guides={guides}
+      alerts={alerts}
     />
   )
 }
