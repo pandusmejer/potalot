@@ -9,6 +9,8 @@
  */
 
 import type { InventoryItem, Plant, PlantStatus } from './types'
+import type { GardenAlert } from '@/actions/weather'
+import { saeson } from './datetime'
 
 export type SuggestionKind = 'sow' | 'plant_out' | 'harvest' | 'tend'
 
@@ -155,4 +157,168 @@ export function computeWeekSuggestions(
       return true
     })
     .slice(0, 5)
+}
+
+/* ------------------------------------------------------------------
+ * Uge-overblik — ÉN tydelig primær handling + 2–4 mindre
+ * observationer. Svarer på "hvad er det vigtigste jeg bør gøre
+ * i haven denne uge?". Bygger på data (frøbank/planter/vejr) og
+ * falder tilbage på sæsonlogik, så der ALTID er en primær handling.
+ * ------------------------------------------------------------------ */
+
+export type OverviewIcon =
+  | 'frost' | 'sun' | 'rain' | 'wind'
+  | 'sprout' | 'harvest' | 'water' | 'leaf'
+  | 'plan' | 'pest'
+
+export interface OverviewRow {
+  icon: OverviewIcon
+  primary: string
+  secondary?: string
+}
+
+export interface PrimaryAction {
+  icon: OverviewIcon
+  label: string
+  headline: string
+  body: string
+  cta: { label: string; href: string }
+}
+
+export interface WeekOverview {
+  primary: PrimaryAction
+  secondary: OverviewRow[]
+}
+
+const ALERT_ICON: Record<GardenAlert['icon'], OverviewIcon> = {
+  Snowflake: 'frost', Sun: 'sun', CloudRain: 'rain', Wind: 'wind',
+}
+
+const SUGGESTION_ICON: Record<SuggestionKind, OverviewIcon> = {
+  sow: 'sprout', plant_out: 'sprout', harvest: 'harvest', tend: 'water',
+}
+
+const SUGGESTION_CTA: Record<SuggestionKind, string> = {
+  sow: 'Start såning', plant_out: 'Plant ud', harvest: 'Til høst', tend: 'Se planten',
+}
+
+type Season = ReturnType<typeof saeson>
+
+// Sæson-fallback: en konkret primær handling pr. sæson, så der
+// ALTID er ét tydeligt "gør dette" — også med tom frøbank/uden vejr.
+const SEASON_PRIMARY: Record<Season, PrimaryAction> = {
+  'Forår': {
+    icon: 'sprout',
+    label: 'Ugens moment',
+    headline: 'Så direkte: rødbede, salat og spinat',
+    body: 'Jorden er varm nok, og majregnen hjælper spiringen.',
+    cta: { label: 'Start såning', href: '/froebank' },
+  },
+  'Sommer': {
+    icon: 'water',
+    label: 'Ugens moment',
+    headline: 'Hold vandingen i top denne uge',
+    body: 'Drivhus og krukker tørrer hurtigt ud — vand dybt morgen eller aften.',
+    cta: { label: 'Se gøremål', href: '#aarshjul' },
+  },
+  'Efterår': {
+    icon: 'harvest',
+    label: 'Ugens moment',
+    headline: 'Få den sidste store høst i hus',
+    body: 'Det modne skal ind, før nattekulden sætter ind for alvor.',
+    cta: { label: 'Se gøremål', href: '#aarshjul' },
+  },
+  'Vinter': {
+    icon: 'plan',
+    label: 'Ugens moment',
+    headline: 'Læg næste sæsons så-plan',
+    body: 'Rolig uge i haven — den bedste tid til at planlægge og forkultivere.',
+    cta: { label: 'Planlæg sæson', href: '#aarshjul' },
+  },
+}
+
+// Sæson-pulje af mindre observationer (min. 3 pr. sæson) så de
+// sekundære punkter altid kan fyldes op.
+const SEASON_SECONDARY: Record<Season, OverviewRow[]> = {
+  'Forår': [
+    { icon: 'sun', primary: 'Perfekt jordtemperatur denne uge', secondary: 'Ideelt til direkte såning af de hårdføre' },
+    { icon: 'pest', primary: 'Sneglene begynder at røre på sig', secondary: 'Tjek bedene tidlig morgen og sen aften' },
+    { icon: 'water', primary: 'Drivhuset tørrer hurtigt ud i solen', secondary: 'Hold øje med vandingen på lune dage' },
+    { icon: 'leaf', primary: 'Tid til første gødning', secondary: 'Giv bede og krukker en omgang næring' },
+  ],
+  'Sommer': [
+    { icon: 'harvest', primary: 'Løbende høst holder planterne i gang', secondary: 'Pluk ofte — især ærter, bønner og salat' },
+    { icon: 'pest', primary: 'Bladlus og snegle topper i varmen', secondary: 'Tjek undersiden af bladene' },
+    { icon: 'sprout', primary: 'Stadig tid til efterårsafgrøder', secondary: 'Så grønkål, pak choi og vinterportulak' },
+    { icon: 'sun', primary: 'Skyg sart sået jord', secondary: 'Undgå udtørring i højsommerlyset' },
+  ],
+  'Efterår': [
+    { icon: 'leaf', primary: 'Saml blade til løvkompost', secondary: 'Gratis jordforbedring til næste år' },
+    { icon: 'sprout', primary: 'Dæk bedene til vinter', secondary: 'Grøngødning eller et lag kompost' },
+    { icon: 'frost', primary: 'Hold øje med første nattefrost', secondary: 'Få det sarte ind eller dækket til' },
+    { icon: 'plan', primary: 'Evaluér sæsonen', secondary: 'Notér hvad der lykkedes — og hvad ikke' },
+  ],
+  'Vinter': [
+    { icon: 'sprout', primary: 'Tidlig forkultivering kan begynde', secondary: 'Chili og aubergine vil have et forspring' },
+    { icon: 'frost', primary: 'Frost-vagt: tjek krukker og kar', secondary: 'Sårbare rødder kan trænge til dække' },
+    { icon: 'plan', primary: 'Gennemgå frøbanken', secondary: 'Bestil det du mangler til foråret' },
+    { icon: 'leaf', primary: 'Hold ro i haven', secondary: 'Livet under overfladen arbejder videre' },
+  ],
+}
+
+/**
+ * Byg ugens overblik: ÉN primær handling (data-drevet hvis muligt,
+ * ellers sæson-fallback) + 2–4 mindre observationer (vejr → øvrige
+ * plante-status → sæson), deduppet på tekst.
+ */
+export function computeWeekOverview(
+  suggestions: WeekSuggestion[],
+  alerts: GardenAlert[],
+  month: number
+): WeekOverview {
+  const season = saeson(month)
+
+  // Primær: øverste konkrete plante-handling hvis der er data,
+  // ellers sæsonens fallback-handling.
+  let primary: PrimaryAction
+  let restSuggestions: WeekSuggestion[]
+  if (suggestions.length > 0) {
+    const top = suggestions[0]
+    primary = {
+      icon: SUGGESTION_ICON[top.kind],
+      label: 'Ugens moment',
+      headline: top.title,
+      body: top.detail,
+      cta: { label: SUGGESTION_CTA[top.kind], href: top.href },
+    }
+    restSuggestions = suggestions.slice(1)
+  } else {
+    primary = SEASON_PRIMARY[season]
+    restSuggestions = []
+  }
+
+  const harHandlinger = alerts.length > 0 || suggestions.length > 0
+
+  // Sekundære: vejr (advarsler først) → øvrige plante-status →
+  // sæson-observationer. Dedup, og aldrig en dublet af den primære.
+  const secondary: OverviewRow[] = []
+  const seen = new Set<string>([primary.headline])
+  const push = (r: OverviewRow) => {
+    if (secondary.length >= 4 || seen.has(r.primary)) return
+    seen.add(r.primary)
+    secondary.push(r)
+  }
+
+  ;[...alerts]
+    .sort((a, b) => (a.severity === b.severity ? 0 : a.severity === 'warning' ? -1 : 1))
+    .forEach(a => push({ icon: ALERT_ICON[a.icon], primary: a.title, secondary: a.detail }))
+
+  restSuggestions.forEach(s =>
+    push({ icon: SUGGESTION_ICON[s.kind], primary: s.title, secondary: s.detail })
+  )
+
+  SEASON_SECONDARY[season].forEach(push)
+
+  // Hold det stramt: 3 når det er ren sæson-fallback, op til 4 med data.
+  return { primary, secondary: secondary.slice(0, harHandlinger ? 4 : 3) }
 }

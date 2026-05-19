@@ -123,13 +123,16 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         </section>
       )}
 
-      {/* 3 · HANDLING — dine vigtigste opgaver først, så det fulde lag */}
+      {/* 3 · HANDLING — kompakt status-overblik der overlapper heroen */}
+      <DenneUge
+        suggestions={ugeSuggestions}
+        alerts={alerts}
+        month={nuMaaned}
+        monthName={MONTHS_DA[nuMaaned - 1].full}
+      />
+
+      {/* 3b · Mine opgaver — konkrete to-dos */}
       <section className="space-y-3">
-        <Eyebrow>Dine vigtigste opgaver</Eyebrow>
-        <DenneUge
-          suggestions={ugeSuggestions}
-          monthName={MONTHS_DA[nuMaaned - 1].full}
-        />
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -164,7 +167,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
       </section>
 
       {/* 5 · PLANLÆGNING — året som lodret sæson-progression */}
-      <section className="space-y-2">
+      <section id="aarshjul" className="space-y-2 scroll-mt-20">
         <Aarshjul
           active={valgtMaaned}
           onChange={setValgtMaaned}
