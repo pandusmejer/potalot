@@ -378,3 +378,31 @@ html[data-season='vinter'] {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 10 Q45 25 40 40 Q35 55 40 70' stroke='%23A87C3B' stroke-width='0.4' fill='none' opacity='0.12'/%3E%3Cpath d='M20 40 Q30 35 40 40 Q50 45 60 40' stroke='%23A87C3B' stroke-width='0.4' fill='none' opacity='0.08'/%3E%3C/svg%3E");
   background-repeat: repeat;
 }
+
+/* ============================================
+ * Micro-delight — diskrete tegn på liv (natur,
+ * tid, sæson). ALDRIG animation for sin egen
+ * skyld. Slukkes helt ved prefers-reduced-motion.
+ * ============================================ */
+@keyframes ccd-soft-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(188, 210, 95, 0); }
+  50%      { box-shadow: 0 0 32px rgba(188, 210, 95, 0.10); }
+}
+@keyframes ccd-slow-drift {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(7px, -9px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Featured "Ugens moment" — meget langsom breathing-glow */
+.moment-pulse { animation: ccd-soft-pulse 7s ease-in-out infinite; }
+
+/* Svage bokeh-prikker der driver ultra-langsomt (matcher hero-foto) */
+.bokeh-drift   { animation: ccd-slow-drift 22s ease-in-out infinite; }
+.bokeh-drift-2 { animation: ccd-slow-drift 28s ease-in-out infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .moment-pulse,
+  .bokeh-drift,
+  .bokeh-drift-2 { animation: none !important; }
+}
