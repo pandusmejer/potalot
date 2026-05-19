@@ -25,16 +25,158 @@ function IconDrivhus(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Krans-ikon (julekrans) — ring med sløjfe forneden. */
+function IconKrans(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="12" cy="11" r="7.5" />
+      <path d="M9.3 18.3 12 20.3l2.7-2" />
+      <path d="M9.3 18.3c-1.3 1.1-2.6 1.6-3.8 1.7M14.7 18.3c1.3 1.1 2.6 1.6 3.8 1.7" />
+    </svg>
+  )
+}
+
+/** Kålhoved-ikon — rundt hoved med lagvis kålblade. */
+function IconKaal(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+      <path d="M12 5c-2.6 2.6-3.6 6-2.6 11" />
+      <path d="M12 5c2.6 2.6 3.6 6 2.6 11" />
+      <path d="M5.4 9.5c1 2.8 1.1 5.6.4 8.4M18.6 9.5c-1 2.8-1.1 5.6-.4 8.4" />
+    </svg>
+  )
+}
+
+/** Krukke-ikon — havekrukke med rand og tilspidset krop. */
+function IconKrukke(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M4.5 7.5h15" />
+      <path d="M6 7.5l1.5 12.2a1 1 0 0 0 1 .8h7a1 1 0 0 0 1-.8L18 7.5" />
+    </svg>
+  )
+}
+
+/** Høst-kurv-ikon — flettekurv med hank. */
+function IconKurv(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M7 9a5 5 0 0 1 10 0" />
+      <path d="M3 9h18l-1.5 9.4a2 2 0 0 1-2 1.6H6.5a2 2 0 0 1-2-1.6L3 9Z" />
+      <path d="M9 12.5l.8 5M15 12.5l-.8 5M12 12.5v5" />
+    </svg>
+  )
+}
+
+/** Græs-tot-ikon — buket af græsstrå fra fælles base. */
+function IconGraes(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 21C9 17 7 13 7 8" />
+      <path d="M12 21C11 16 10 12 9.5 7" />
+      <path d="M12 21V6.5" />
+      <path d="M12 21C13 16 14 12 14.5 7" />
+      <path d="M12 21C15 17 17 13 17 8" />
+    </svg>
+  )
+}
+
+/** Græskar-ikon — ribbet græskar med stilk. */
+function IconGraeskar(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 7c0-1.8 1-3 2.6-3.2" />
+      <path d="M12 7C7.6 7 4 10 4 14s3.6 7 8 7 8-3 8-7-3.6-7-8-7Z" />
+      <path d="M9 7.6C7.5 10 7.5 18 9 20.4" />
+      <path d="M15 7.6C16.5 10 16.5 18 15 20.4" />
+    </svg>
+  )
+}
+
+/** Regnorm-ikon — buet, segmenteret orm. */
+function IconRegnorm(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M5 19c1.5-3 3.2-3 4.5-.6 1.4 2.4 3 .9 4-1.6 1-2.5 2.6-4.4 4.5-5.3" />
+      <path d="M8.4 17.1l.9 1.5M12.3 15.6l.9-1.5M15.8 11.6l1.2 1.1" />
+    </svg>
+  )
+}
+
 /** Matchende ikon pr. fokus-kategori (ikke ét generisk blad). */
 function ikonFor(kategori: string): ComponentType<SVGProps<SVGSVGElement>> {
   const c = kategori.toLowerCase()
   if (/drivhus|varme/.test(c)) return IconDrivhus
+  if (/juledekoration|krans|adventskrans/.test(c)) return IconKrans
+  if (/vinterdyrk|k(å|aa)l/.test(c)) return IconKaal
+  if (/krukke|potte|urtepotte/.test(c)) return IconKrukke
+  if (/halloween|gr(æ|ae)skar/.test(c)) return IconGraeskar
+  if (/jordforbedr|regnorm|kompost/.test(c)) return IconRegnorm
   if (/udplant|s(å|aa)ning|forkultiv|spir/.test(c)) return Sprout
   if (/blomst|staud/.test(c)) return Flower
   if (/biodivers|bi(er)?|insekt|sommerfugl/.test(c)) return Bug
   if (/vand/.test(c)) return Droplets
   if (/besk(æ|ae)r/.test(c)) return Scissors
-  if (/k(ø|oe)kkenhave|h(ø|oe)st|gr(ø|oe)nt/.test(c)) return Carrot
+  if (/h(ø|oe)st|kurv/.test(c)) return IconKurv
+  if (/gr(æ|ae)s|pl(æ|ae)ne/.test(c)) return IconGraes
+  if (/k(ø|oe)kkenhave|gr(ø|oe)nt/.test(c)) return Carrot
   return Leaf
 }
 
