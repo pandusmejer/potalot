@@ -41,6 +41,16 @@ function ikonFor(kategori: string): ComponentType<SVGProps<SVGSVGElement>> {
 const sans = 'var(--font-manrope)'
 
 /**
+ * Foto pr. måned. Fotos lægges i /public/images og hedder
+ * hero-<månedsnavn>-foto.png (fuldt dansk navn, lowercase).
+ * Mangler et foto, falder den blødt tilbage på sæson-grøn.
+ */
+const MAANED_SLUG = [
+  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+  'juli', 'august', 'september', 'oktober', 'november', 'december',
+] as const
+
+/**
  * Måneds-hero — en STEMNING, ikke et kort. Fuldbredde forårsfoto
  * der dominerer; mørkt overlay KUN i venstre side bag teksten,
  * mens højre side (blomst/lys) får lov at leve. Off-white
@@ -57,6 +67,7 @@ export function MaanedsHero({
   const monthName = MONTHS_DA[month - 1].full
   const stemning = MAANEDS_STEMNING[month]
   const sa = saeson(month)
+  const foto = `/images/hero-${MAANED_SLUG[month - 1]}-foto.png`
   const lys = '#F6F3EA'
   // Blød tekst-skygge: holder teksten læsbar over de lyse blade
   // UDEN at gøre billedet mørkere (ingen ekstra overlay).
@@ -72,7 +83,7 @@ export function MaanedsHero({
         aria-hidden
         className="absolute inset-0 bg-cover"
         style={{
-          backgroundImage: "url('/images/hero-foraar.png')",
+          backgroundImage: `url('${foto}')`,
           backgroundPosition: '68% center',
         }}
       />
