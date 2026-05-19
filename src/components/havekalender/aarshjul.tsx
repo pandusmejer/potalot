@@ -43,7 +43,7 @@ const SAESONER: SaesonDef[] = [
   { navn: 'Efterår', months: [9, 10, 11], icon: Leaf,
     primary: '#A3883A', onPrimary: '#F8F1DE', tint: '#EDE4CC', ink: '#3A2F12', accent: '#7A4A12' },
   { navn: 'Vinter', months: [12, 1, 2], icon: Snowflake,
-    primary: '#B6C6D4', onPrimary: '#2D3A45', tint: '#E4EAEF', ink: '#2D3A45', accent: '#5E7081' },
+    primary: '#C9DCE6', onPrimary: '#2D3A45', tint: '#E7EFF4', ink: '#2D3A45', accent: '#5E7081' },
 ]
 
 /**

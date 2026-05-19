@@ -569,8 +569,23 @@ function topCategories(tasks: GeneralGardenTask[], month: number, n: number): st
     if (t.month !== month || t.isHiddenByMe || !t.category) continue
     counts.set(t.category, (counts.get(t.category) ?? 0) + 1)
   }
+  // På lige antal: vis de mest "hero-værdige" kategorier først
+  // (så fx Maj giver Drivhus/Udplantning/Blomster, ikke en
+  // tilfældig Map-rækkefølge).
+  const PRIO = [
+    'drivhus', 'udplantning', 'blomster', 'såning', 'saaning',
+    'køkkenhave', 'koekkenhave', 'høst', 'hoest', 'biodiversitet',
+  ]
+  const prio = (c: string) => {
+    const i = PRIO.indexOf(c.toLowerCase())
+    return i < 0 ? 99 : i
+  }
   return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) =>
+      b[1] - a[1] ||
+      prio(a[0]) - prio(b[0]) ||
+      a[0].localeCompare(b[0], 'da')
+    )
     .slice(0, n)
     .map(([cat]) => cat)
 }
