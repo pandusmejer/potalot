@@ -251,9 +251,11 @@ export function MaanedsHero({
         }}
       />
 
-      {/* Indhold — langsomt, roligt, venstre safe-zone */}
+      {/* Indhold — langsomt, roligt, venstre safe-zone.
+          Bund-padding skal RYDDE den høje landskabsbølge
+          (150/180/210px) så pillerne aldrig havner bag den. */}
       <div
-        className="relative w-[90%] max-w-[520px] px-6 pb-28"
+        className="relative w-[90%] max-w-[520px] px-6 pb-[176px] sm:pb-[206px] lg:pb-[236px]"
         style={{ paddingTop: 'clamp(48px, 8vw, 96px)' }}
       >
         <p
