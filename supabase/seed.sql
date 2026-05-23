@@ -347,48 +347,65 @@ INSERT INTO public.plants_v2 (
   sow_date, planting_out_date, quantity,
   primary_image_url, is_archived
 ) VALUES
+-- Hver demo-plante har et komponeret makrofoto i /public/images/plantekort/
+-- der følger plantekort-spec'en (4:5 portrait, shallow DOF, sansende
+-- makro-detalje). Sammen dækker de syv planter alle fem aktive vækst-
+-- stadier samt en "planlagt" tilstand.
 ('b1000000-0000-0000-0000-000000000001',
  '00000000-0000-0000-0000-000000000001',
  'c0000000-0000-0000-0000-000000000001',
  'Tomat', 'San Marzano', 'klar_til_udplantning', 'Vindueskarm',
  '2026-03-15', NULL, 6,
- '/images/groentsager/Cherrytomat%20Potalot.png', false),
+ '/images/plantekort/plantekort-tomat-san-marzano.png', false),
 
 ('b1000000-0000-0000-0000-000000000002',
  '00000000-0000-0000-0000-000000000001',
  NULL,
  'Sukkerært', 'Sugar Snap', 'spirer', 'Have, sydbed',
  '2026-04-10', NULL, 12,
- NULL, false),
+ '/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg', false),
 
 ('b1000000-0000-0000-0000-000000000003',
  '00000000-0000-0000-0000-000000000001',
  NULL,
  'Dahlia', 'Café au Lait', 'planlagt', NULL,
  NULL, NULL, 3,
- NULL, false),
+ '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg', false),
 
 ('b1000000-0000-0000-0000-000000000004',
  '00000000-0000-0000-0000-000000000001',
  'c0000000-0000-0000-0000-000000000002',
- 'Chili', 'Habanero', 'i_vaekst', 'Drivhus',
+ 'Chili', 'Habanero Orange', 'i_vaekst', 'Drivhus',
  '2026-02-20', NULL, 5,
- '/images/groentsager/Chiliplante%20Potalot.png', false),
+ '/images/plantekort/plantekort-chili-habanero-orange.jpg', false),
 
--- Yderligere planter linket til Agurk + Stangbønne. Deres eneste
--- formål er at give frøkort-demoen den fulde range af ring-states:
--- terracotta (meget lav, <10%), ochre (lav, <30%), ivory (normal).
+-- Yderligere planter linket til Agurk + Stangbønne. De gav oprindeligt
+-- frøkort-demoen den fulde range af ring-states (terracotta/ochre/ivory)
+-- og fungerer nu også som plantekort-demoer med rigtige makrofotos.
 ('b1000000-0000-0000-0000-000000000005',
  '00000000-0000-0000-0000-000000000001',
  'c0000000-0000-0000-0000-000000000006',
  'Agurk', 'Marketmore', 'i_vaekst', 'Drivhus',
- '2026-04-10', NULL, 14, NULL, false),
+ '2026-04-10', NULL, 14,
+ '/images/plantekort/plantekort-agurk-marketmore.png', false),
 
 ('b1000000-0000-0000-0000-000000000006',
  '00000000-0000-0000-0000-000000000001',
  'c0000000-0000-0000-0000-000000000005',
  'Stangbønne', 'Cobra', 'spirer', 'Have, sydbed',
- '2026-05-05', NULL, 6, NULL, false)
+ '2026-05-05', NULL, 6,
+ '/images/plantekort/plantekort-stangboenne-cobra.jpg', false),
+
+-- Dild Bouquet — egen plante uden source_inventory_id (vi har ingen
+-- dild i frøbanken). Eksisterer for at vise krydderurte-spektret på
+-- plantekortet, og fordi fotoet er et perfekt eksempel på den tætte
+-- urte-tekstur master spec'en kalder på.
+('b1000000-0000-0000-0000-000000000007',
+ '00000000-0000-0000-0000-000000000001',
+ NULL,
+ 'Dild', 'Bouquet', 'i_vaekst', 'Krydderurte-bed',
+ '2026-04-15', NULL, 8,
+ '/images/plantekort/plantekort-dild.jpg', false)
 
 ON CONFLICT (id) DO NOTHING;
 
