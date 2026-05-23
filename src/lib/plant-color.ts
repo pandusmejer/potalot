@@ -12,14 +12,22 @@ export interface PlantColor {
   field: string
   /** Meget lys tone af samme kulør — sekundær datablok */
   tint: string
+  /** Lyst, FARVET highlight (retningsbestemt lys) — beholder kulør,
+   *  bliver aldrig gråt/beige. Bruges som rgba med egen alpha. */
+  light: string
+  /** Translucent glas-tone i samme kulør — til badges/kapsler */
+  glass: string
+  /** Sand for varme kulører (koral/gul), falsk for kølige (grøn/blå) */
+  warm: boolean
 }
 
 /** [hue, saturation%, lightness%] — botanisk-sikre toner */
 type HSL = [number, number, number]
 
 const KEYWORDS: Array<[RegExp, HSL]> = [
-  [/tomat|cherry/, [8, 55, 68]],
-  [/chili|jalapeno|peber/, [14, 62, 64]],
+  // Dusty coral / warm salmon — undgår neon-rød/orange
+  [/tomat|cherry/, [12, 38, 74]],
+  [/chili|jalapeno|peber/, [16, 44, 70]],
   [/agurk|squash|zucchini|gr(æ|ae)skar|melon|courgette/, [95, 32, 64]],
   [/gulerod|karotte|pastinak/, [24, 58, 64]],
   [/salat|spinat|mangold|gr(ø|oe)nk(å|aa)l|k(å|aa)l|rucola|bladbede/, [110, 28, 62]],
@@ -68,6 +76,17 @@ function tintColor([h, s]: HSL): string {
   return `hsl(${h} ${Math.max(20, Math.round(s * 0.5))}% 94%)`
 }
 
+/** Lyst FARVET highlight — høj lysstyrke, men kuløren bevares
+ *  (saturation falder IKKE mod grå). Til retningsbestemt lys. */
+function lightColor([h, s]: HSL): string {
+  return `hsl(${h} ${Math.max(40, Math.min(s + 8, 72))}% 84%)`
+}
+
+/** Translucent glas-tone i samme kulør — til badges/kapsler */
+function glassColor([h, s]: HSL): string {
+  return `hsla(${h}, ${Math.max(34, Math.min(s, 58))}%, 60%, 0.30)`
+}
+
 /**
  * Udled plantens farveblok ud fra dansk navn (+ evt. sort).
  * Deterministisk: samme plante → altid samme farve.
@@ -79,5 +98,12 @@ export function plantColor(name: string, variety?: string | null): PlantColor {
     if (re.test(hay)) { base = color; break }
   }
   if (!base) base = FALLBACK[hash(normalize(name)) % FALLBACK.length]
-  return { field: fieldColor(base), tint: tintColor(base) }
+  const [h] = base
+  return {
+    field: fieldColor(base),
+    tint: tintColor(base),
+    light: lightColor(base),
+    glass: glassColor(base),
+    warm: h <= 65 || h >= 320,
+  }
 }

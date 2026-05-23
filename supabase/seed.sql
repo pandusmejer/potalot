@@ -240,3 +240,186 @@ ON CONFLICT (user_id, year) DO NOTHING;
 INSERT INTO public.notification_preferences (user_id, push_enabled, daily_reminder_time, remind_task_due, remind_days_before, remind_watering) VALUES
 ('00000000-0000-0000-0000-000000000001', false, '08:00', true, 1, true)
 ON CONFLICT (user_id) DO NOTHING;
+
+-- ============================================
+-- 9. DEMO INVENTORY (frøbank v2/v3)
+-- ============================================
+-- Syv frø med komponerede frøkort-fotos i /public/images/froebank,
+-- så Frøkort-designet kan verificeres på tværs af afgrøder
+-- og chips-kombinationer (forspires/så direkte/udplantes).
+INSERT INTO public.inventory_items (
+  id, user_id, name, variety, latin_name, supplier,
+  primary_category_id, subcategory_id,
+  seed_count, purchase_year,
+  sowing_months, sowing_depth_mm, pre_cultivation,
+  planting_out_months, harvest_months,
+  light, water, germination_days, plant_spacing,
+  growing_locations, status, is_favorite, is_pinned,
+  primary_image_url
+) VALUES
+('c0000000-0000-0000-0000-000000000001',
+ '00000000-0000-0000-0000-000000000001',
+ 'Tomat', 'Cherry Sweetie', 'Solanum lycopersicum', 'Frøsalg',
+ 'fro', 'groentsager',
+ 12, 2026,
+ ARRAY[3,4], 5, true,
+ ARRAY[5,6], ARRAY[7,8,9],
+ 'full_sun', 'high', '7-14 dage', '50 cm',
+ ARRAY['drivhus','have']::TEXT[], 'i_froebank', true, false,
+  '/images/froebank/froekort-cherrytomat.png'),
+
+('c0000000-0000-0000-0000-000000000002',
+ '00000000-0000-0000-0000-000000000001',
+ 'Chili', 'Habanero Orange', 'Capsicum chinense', 'Solhatten',
+ 'fro', 'groentsager',
+ 8, 2026,
+ ARRAY[2,3], 5, true,
+ ARRAY[5,6], ARRAY[8,9,10],
+ 'full_sun', 'regular', '14-21 dage', '40 cm',
+ ARRAY['drivhus']::TEXT[], 'i_froebank', false, false,
+  '/images/froebank/froekort-chili-habanero-orange.png'),
+
+('c0000000-0000-0000-0000-000000000003',
+ '00000000-0000-0000-0000-000000000001',
+ 'Peberfrugt', 'California Wonder', 'Capsicum annuum', 'Frøsalg',
+ 'fro', 'groentsager',
+ 10, 2026,
+ ARRAY[3], 5, true,
+ ARRAY[5,6], ARRAY[8,9],
+ 'full_sun', 'regular', '10-14 dage', '40 cm',
+ ARRAY['drivhus']::TEXT[], 'i_froebank', false, false,
+  '/images/froebank/froekort-peberfrugt-california-wonder.png'),
+
+('c0000000-0000-0000-0000-000000000004',
+ '00000000-0000-0000-0000-000000000001',
+ 'Squash', 'Eight Ball', 'Cucurbita pepo', 'Solhatten',
+ 'fro', 'groentsager',
+ 10, 2026,
+ ARRAY[4,5], 20, true,
+ ARRAY[5,6], ARRAY[7,8,9],
+ 'full_sun', 'high', '7-10 dage', '90 cm',
+ ARRAY['have','drivhus']::TEXT[], 'i_froebank', false, false,
+  '/images/froebank/froekort-squash-eight-ball.png'),
+
+('c0000000-0000-0000-0000-000000000005',
+ '00000000-0000-0000-0000-000000000001',
+ 'Stangbønne', 'Cobra', 'Phaseolus vulgaris', 'Frøsalg',
+ 'fro', 'groentsager',
+ 24, 2026,
+ ARRAY[5,6], 25, false,
+ ARRAY[]::INTEGER[], ARRAY[8,9],
+ 'full_sun', 'regular', '7-14 dage', '15 cm',
+ ARRAY['have']::TEXT[], 'i_froebank', false, false,
+  '/images/froebank/froekort-stangboenne-cobra.png'),
+
+('c0000000-0000-0000-0000-000000000006',
+ '00000000-0000-0000-0000-000000000001',
+ 'Agurk', 'Marketmore', 'Cucumis sativus', 'Solhatten',
+ 'fro', 'groentsager',
+ 15, 2026,
+ ARRAY[4,5], 10, true,
+ ARRAY[6], ARRAY[7,8,9],
+ 'full_sun', 'high', '5-10 dage', '40 cm',
+ ARRAY['drivhus']::TEXT[], 'i_froebank', false, false,
+  '/images/froebank/froekort-agurk-marketmore.png'),
+
+('c0000000-0000-0000-0000-000000000007',
+ '00000000-0000-0000-0000-000000000001',
+ 'Salat', 'Crispy Mint', 'Lactuca sativa', 'Solhatten',
+ 'fro', 'groentsager',
+ 200, 2025,
+ ARRAY[3,4,5,6,7,8], 5, false,
+ ARRAY[]::INTEGER[], ARRAY[5,6,7,8,9],
+ 'partial_shade', 'regular', '7-10 dage', '25 cm',
+ ARRAY['have','drivhus']::TEXT[], 'i_froebank', false, true,
+  '/images/froebank/froekort-salat-crispy-mint.png')
+
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 10. DEMO PLANTS V2 (aktive planter)
+-- ============================================
+-- Fire planter med varierede statusser så Plantekort-designet
+-- kan testes mod alle vækstfaser, og to har foto (Tomat + Chili).
+INSERT INTO public.plants_v2 (
+  id, user_id, source_inventory_id,
+  name, variety, status, location,
+  sow_date, planting_out_date, quantity,
+  primary_image_url, is_archived
+) VALUES
+('b1000000-0000-0000-0000-000000000001',
+ '00000000-0000-0000-0000-000000000001',
+ 'c0000000-0000-0000-0000-000000000001',
+ 'Tomat', 'San Marzano', 'klar_til_udplantning', 'Vindueskarm',
+ '2026-03-15', NULL, 6,
+ '/images/groentsager/Cherrytomat%20Potalot.png', false),
+
+('b1000000-0000-0000-0000-000000000002',
+ '00000000-0000-0000-0000-000000000001',
+ NULL,
+ 'Sukkerært', 'Sugar Snap', 'spirer', 'Have, sydbed',
+ '2026-04-10', NULL, 12,
+ NULL, false),
+
+('b1000000-0000-0000-0000-000000000003',
+ '00000000-0000-0000-0000-000000000001',
+ NULL,
+ 'Dahlia', 'Café au Lait', 'planlagt', NULL,
+ NULL, NULL, 3,
+ NULL, false),
+
+('b1000000-0000-0000-0000-000000000004',
+ '00000000-0000-0000-0000-000000000001',
+ 'c0000000-0000-0000-0000-000000000002',
+ 'Chili', 'Habanero', 'i_vaekst', 'Drivhus',
+ '2026-02-20', NULL, 5,
+ '/images/groentsager/Chiliplante%20Potalot.png', false),
+
+-- Yderligere planter linket til Agurk + Stangbønne. Deres eneste
+-- formål er at give frøkort-demoen den fulde range af ring-states:
+-- terracotta (meget lav, <10%), ochre (lav, <30%), ivory (normal).
+('b1000000-0000-0000-0000-000000000005',
+ '00000000-0000-0000-0000-000000000001',
+ 'c0000000-0000-0000-0000-000000000006',
+ 'Agurk', 'Marketmore', 'i_vaekst', 'Drivhus',
+ '2026-04-10', NULL, 14, NULL, false),
+
+('b1000000-0000-0000-0000-000000000006',
+ '00000000-0000-0000-0000-000000000001',
+ 'c0000000-0000-0000-0000-000000000005',
+ 'Stangbønne', 'Cobra', 'spirer', 'Have, sydbed',
+ '2026-05-05', NULL, 6, NULL, false)
+
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 11. DEMO SOWING EVENTS (frøtæller-variation)
+-- ============================================
+-- Disse hændelser eksisterer udelukkende for at give frøkort-ringen
+-- realistisk variation i remaining/total. Uden dem ville alle rings
+-- vise 100%. Forholdene rammer bevidst de tre farvestadier:
+--   • Agurk:      1/15  =  6.7% → terracotta (meget lav)
+--   • Chili:      1/8   = 12.5% → ochre (lav)
+--   • Tomat:      5/12  = 41.7% → ivory (normal, knap halv)
+--   • Stangbønne: 18/24 = 75.0% → ivory (normal)
+--   • Peberfrugt / Squash / Salat — ingen events → 100% ivory.
+INSERT INTO public.sowing_events
+  (user_id, plant_id, inventory_item_id, sown_count, sowing_date, container_type, location)
+VALUES
+  ('00000000-0000-0000-0000-000000000001',
+   'b1000000-0000-0000-0000-000000000001',
+   'c0000000-0000-0000-0000-000000000001',
+   7, '2026-03-15', 'Såbakke', 'Vindueskarm'),
+  ('00000000-0000-0000-0000-000000000001',
+   'b1000000-0000-0000-0000-000000000004',
+   'c0000000-0000-0000-0000-000000000002',
+   7, '2026-02-20', 'Plugbox', 'Drivhus'),
+  ('00000000-0000-0000-0000-000000000001',
+   'b1000000-0000-0000-0000-000000000005',
+   'c0000000-0000-0000-0000-000000000006',
+   14, '2026-04-10', 'Plugbox', 'Drivhus'),
+  ('00000000-0000-0000-0000-000000000001',
+   'b1000000-0000-0000-0000-000000000006',
+   'c0000000-0000-0000-0000-000000000005',
+   6, '2026-05-05', 'Direkte friland', 'Have, sydbed')
+ON CONFLICT DO NOTHING;

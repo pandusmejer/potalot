@@ -14,13 +14,13 @@ const dmSerif = DM_Serif_Display({
   weight: '400',
 })
 
-// Cormorant Garamond SemiBold — KUN til hero-månedsnavnet
-// (poetisk naturbog). Alt andet er sans (Manrope).
+// Cormorant Garamond — hero-månedsnavn (normal 600) + kursiv 600
+// til det organiske inventar-skilt på frøkort (KUN dér).
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   subsets: ['latin'],
   weight: ['600'],
-  style: ['normal'],
+  style: ['normal', 'italic'],
 })
 
 // Manrope — hero-sans (kicker, undertitel, brødtekst, tags).
