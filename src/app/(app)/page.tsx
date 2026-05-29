@@ -7,19 +7,21 @@ import { PlantMiniCard } from '@/components/overblik/plant-mini-card'
 import { ProgressCard } from '@/components/overblik/progress-card'
 import { QuickActions } from '@/components/overblik/quick-actions'
 import { EmptyState } from '@/components/ui/empty-state'
-import { GardenRoleCard } from '@/components/profil/garden-role-card'
-import { BadgeGallery } from '@/components/profil/badge-gallery'
+// SKJULT INDTIL VIDERE: GardenRoleCard + BadgeGallery + role-beregning
+// er del af Challenges/Badges-laget der lanceres senere.
+// import { GardenRoleCard } from '@/components/profil/garden-role-card'
+// import { BadgeGallery } from '@/components/profil/badge-gallery'
 import { StartHereCard } from '@/components/overblik/start-here-card'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getGeneralGardenTasks } from '@/actions/aarshjul'
-import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
+// import { backfillAllBadges, getBadgesForUser } from '@/actions/badges'
 import { getGardenAlerts } from '@/actions/weather'
 import { getCurrentUser } from '@/lib/auth'
 import { getProfile } from '@/actions/profil'
-import { computeRole, GARDEN_ROLES } from '@/lib/garden-roles'
+// import { computeRole, GARDEN_ROLES } from '@/lib/garden-roles'
 import { erForsinket, erIDag, aktuelMaaned, maanedNavn } from '@/lib/datetime'
 import { AlertCircle, CalendarClock, Sprout, ArrowRight, Lightbulb } from 'lucide-react'
 import type { ProgressState } from '@/lib/types'
@@ -29,24 +31,21 @@ export const dynamic = 'force-dynamic'
 export default async function OverblikPage() {
   const me = await getCurrentUser()
 
-  const [tasks, plants, inventory, generalTasks, profile, earned, alerts] = await Promise.all([
+  const [tasks, plants, inventory, generalTasks, profile, alerts] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
     getGeneralGardenTasks(),
     getProfile(),
-    me ? (async () => {
-      await backfillAllBadges(me.id)
-      return getBadgesForUser(me.id)
-    })() : Promise.resolve([]),
     getGardenAlerts(),
   ])
 
   // Helt ny bruger: ingen planter + ingen frøbank-items
   const isNewUser = me !== null && plants.length === 0 && inventory.length === 0
 
-  const roleProgress = computeRole(earned.map(e => e.badgeId))
-  const roleLabel = GARDEN_ROLES[roleProgress.currentRole].label
+  // SKJULT INDTIL VIDERE: rolle + badges-beregning (Challenges-lag)
+  // const roleProgress = computeRole(earned.map(e => e.badgeId))
+  // const roleLabel = GARDEN_ROLES[roleProgress.currentRole].label
   const greeting = greetingFor(profile?.username ?? null)
 
   // Dagens opgaver
@@ -95,17 +94,10 @@ export default async function OverblikPage() {
         kicker={maanedenNavn}
         title={`${greeting}${profile?.username ? `, ${profile.username}` : ''}`}
         subtitle={
-          me ? (
-            <>
-              Du er{' '}
-              <strong className="font-semibold text-[var(--primary-foreground)]">
-                {roleLabel}
-              </strong>{' '}
-              · {earned.length} optjent badge{earned.length === 1 ? '' : 's'}
-            </>
-          ) : (
-            <>Dit grønne overblik.</>
-          )
+          /* SKJULT INDTIL VIDERE: haverolle + badges-tæller — del af
+             Challenges/Badges-laget der designes senere. Kerneproduktet
+             først. Vi viser samme tagline for alle brugere indtil videre. */
+          <>Dit grønne overblik.</>
         }
       />
 
@@ -237,20 +229,24 @@ export default async function OverblikPage() {
         </Card>
       )}
 
-      {/* Identitet: haverolle + badges (tidligere /havebog) */}
-      {me && (
-        <>
-          <div className="pt-2">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
-              Din havehistorie
-            </p>
-            <div className="space-y-4">
-              <GardenRoleCard progress={roleProgress} />
-              <BadgeGallery earned={earned} />
+      {/* SKJULT INDTIL VIDERE: "Din havehistorie" med haverolle og
+          badge-galleri er en del af Challenges/Badges-laget. Det
+          designes og lanceres senere — kerneproduktet (5 hovedmenu-
+          punkter) lanceres først. Hele blokken bevares som
+          kommenteret kode klar til genaktivering.
+
+          {me && (
+            <div className="pt-2">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+                Din havehistorie
+              </p>
+              <div className="space-y-4">
+                <GardenRoleCard progress={roleProgress} />
+                <BadgeGallery earned={earned} />
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          )}
+      */}
     </div>
   )
 }

@@ -14,12 +14,14 @@ const dmSerif = DM_Serif_Display({
   weight: '400',
 })
 
-// Cormorant Garamond — hero-månedsnavn (normal 600) + kursiv 600
-// til det organiske inventar-skilt på frøkort (KUN dér).
+// Cormorant Garamond — hero-månedsnavn (normal 600), kursiv 600 til
+// det organiske inventar-skilt på frøkort, og weight 400/500 til
+// editoriale headlines som "Juni nærmer sig"-card'et (anticipations-
+// lag) hvor en mere delikat serif giver magasin-følelse.
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   subsets: ['latin'],
-  weight: ['600'],
+  weight: ['400', '500', '600', '700'],
   style: ['normal', 'italic'],
 })
 

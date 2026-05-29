@@ -59,19 +59,23 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
               >
                 <span
                   className={cn(
-                    'absolute -top-4 flex items-center justify-center h-14 w-14 rounded-full shadow-lift transition-all',
+                    'absolute flex items-center justify-center rounded-full shadow-lift transition-all',
                     active
                       ? 'bg-primary text-primary-foreground scale-105'
                       : 'bg-accent-strong text-primary-foreground hover:scale-105'
                   )}
+                  // ~11 % mindre end før (56 → 50 px) så hero-knappen ikke
+                  // stjæler fokus fra indholdet.
+                  style={{ top: -14, height: 50, width: 50 }}
                 >
-                  <Icon className="h-6 w-6" />
+                  <Icon style={{ height: 21, width: 21 }} />
                 </span>
                 <span
                   className={cn(
-                    'text-[10px] mt-10 font-medium uppercase tracking-wider',
+                    'text-[10px] font-medium uppercase tracking-wider',
                     active ? 'text-primary' : 'text-muted-foreground'
                   )}
+                  style={{ marginTop: 36 }}
                 >
                   {item.label}
                 </span>
