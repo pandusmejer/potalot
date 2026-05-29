@@ -3,13 +3,23 @@
 import { useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
 import { TodoTabs } from '@/components/havekalender/todo-tabs'
-import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
+// DetKanDuNu er erstattet af det nye 4-lags Inspiration-card. Importen
+// bevares som kommentar i tilfælde af genaktivering.
+// import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
+import { Inspiration } from '@/components/havekalender/inspiration'
 import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
 import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
 import { DenneUge } from '@/components/havekalender/denne-uge'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
+import { DinDyrkning } from '@/components/havekalender/din-dyrkning'
+import { WeatherPills } from '@/components/havekalender/weather-pills'
+import { DenneUgeIHaven } from '@/components/havekalender/denne-uge-i-haven'
+import { HaveStemning } from '@/components/havekalender/have-stemning'
+import { TimingHorisont } from '@/components/havekalender/timing-horisont'
+import { DetKanDuGoere } from '@/components/havekalender/det-kan-du-goere'
+import { NaesteMaaned } from '@/components/havekalender/naeste-maaned'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -19,7 +29,6 @@ import {
 } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
-import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { computeWeekSuggestions } from '@/lib/denne-uge'
 import { cn } from '@/lib/utils'
@@ -36,6 +45,9 @@ interface Props {
   userTasks: UserGardenTask[]
   guides: Guide[]
   alerts: GardenAlert[]
+  /** Daglig sensorisk note — beregnet server-side, roterer pr. dag. */
+  gardenNote: string
+  isLoggedIn: boolean
 }
 
 /** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
@@ -93,7 +105,7 @@ function IconKop({ className }: { className?: string }) {
   )
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -112,27 +124,59 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
   return (
     <div className="space-y-7">
-      {/* 1 · ORIENTERING — månedskapitlet er brugerens mentale landing */}
+      {/* 1 · ORIENTERING — månedskapitlet er brugerens mentale landing.
+          Heroen er fredet per KALENDER_MASTER_SPEC.md (critical rule). */}
       <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
 
-      {/* 2 · OBSERVATION — naturen lige nu (kun når der er varsler) */}
-      {alerts.length > 0 && (
-        <section className="space-y-2">
-          <Eyebrow>Naturen lige nu</Eyebrow>
-          <GardenAlerts alerts={alerts} />
-        </section>
-      )}
+      {/* 2 · KONTEKST-PILLER — små have-relevante vejrsignaler lige under
+          heroen. Ikke et dashboard, kun det der ændrer have-beslutninger. */}
+      <WeatherPills alerts={alerts} />
 
-      {/* 3 · HANDLING — kompakt status-overblik der overlapper heroen */}
-      <DenneUge
-        suggestions={ugeSuggestions}
-        alerts={alerts}
+      {/* 3 · UGENS RYTME — varmt papir-card med horisontale day cards.
+          AKTUELT-laget. Linker via "Ugens opgaver →" til Mine opgaver
+          nedenfor — IKKE til årshjulet (forskellig tidslogik).  */}
+      <DenneUgeIHaven suggestions={ugeSuggestions} alerts={alerts} />
+
+      {/* 4 · MÅNEDENS RYTME — det botaniske årshjul-snapshot.
+          Erstatter den gamle "Månedens guide". Indeholder
+          DYRKNINGSRYTME (rytme-tidslinjer pr. afgrøde) og
+          MÅNEDENS FOKUS (3-5 prioriterede opgaver). Sektionen
+          giver brugeren "hvad betyder maj for min have"-overblikket
+          på under 5 sekunder. Per spec: placeret efter Denne uge,
+          FØR Mine opgaver. */}
+      <DetKanDuGoere
         month={nuMaaned}
-        monthName={MONTHS_DA[nuMaaned - 1].full}
+        year={year}
+        generalTasks={generalTasks.filter(g => !g.isHiddenByMe)}
+        isLoggedIn={isLoggedIn}
       />
 
-      {/* 3b · Mine opgaver — konkrete to-dos */}
-      <section className="space-y-3">
+      {/* Lille sensorisk note — "små ting fra haven". Svæver mellem
+          de strukturerede sektioner som en stille observation.
+          Ikke en opgave, ikke et card. Konkret-kropsligt indhold
+          der bruger måned, tid og vejr som kontekst. Per
+          HAVEN_SOM_SANCTUARY.md max 1-2 noter pr. side. */}
+      {/* Daglig sensorisk note — den stille invitation midt i scrollet.
+          Roterer pr. dag (kontekst-aware: måned, tid, vejr) via
+          pickGardenNote, beregnet server-side i page.tsx og sendt som
+          prop, så den er stabil inden for samme dag. */}
+      <HaveStemning text={gardenNote} />
+
+      {/* PERSONLIG RELEVANS — horisontal scroll med KUN de af brugerens
+          planter der kræver handling lige nu (skal udplantes/ompottes,
+          klar til høst, mangler logning). Hvert kort bærer sin
+          handlings-årsag. Princip: Planter-siden ejer overblikket,
+          kalenderen ejer handlingen — så dette er IKKE et galleri over
+          alle planter, men en kort handlings-liste. */}
+      <section className="space-y-2">
+        <Eyebrow>Din dyrkning</Eyebrow>
+        <DinDyrkning plants={plants} />
+      </section>
+
+      {/* 4 · HANDLING — Mine opgaver. Sidder direkte efter uge-stripen
+          fordi uge + opgaver er samme operationelle tidslag. Linket
+          "Ugens opgaver →" fra DenneUgeIHaven scrollanchorer hertil. */}
+      <section id="mine-opgaver" className="space-y-3 scroll-mt-20">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -160,47 +204,63 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         </Card>
       </section>
 
-      {/* 4 · PERSONLIG RELEVANS — dine egne planter lige nu */}
-      <section className="space-y-2">
-        <Eyebrow>Dine planter i fokus</Eyebrow>
-        <DinePlanterIFokus plants={plants} tasks={tasks} />
-      </section>
+      {/* 5 · ORIENTERING — Årshjulet, "den botaniske tidsmotor".
+          SKJULT INDTIL VIDERE: hele Aarshjul-sektionen er midlertidigt
+          gated bag false. "Det kan du gøre i"-card'et ovenfor har nu
+          måneds-navigation (APRIL ← / → JUNI) der dækker stort set
+          samme behov uden at duplikere informationen.
 
-      {/* 5 · PLANLÆGNING — året som lodret sæson-progression */}
-      <section id="aarshjul" className="space-y-2 scroll-mt-20">
-        <Aarshjul
-          active={valgtMaaned}
-          onChange={setValgtMaaned}
-          tasks={tasks}
-          generelle={generalTasks.filter(g => !g.isHiddenByMe)}
-          renderActive={(m) => (
-            <MaanedensGoeremaal
-              embedded
-              month={m}
-              generalTasks={generalTasks}
-              userTasks={userTasks}
-              visSkjulte={visSkjulte}
-              onToggleSkjulte={() => setVisSkjulte(v => !v)}
-              existingTasks={tasks}
-              year={year}
-            />
-          )}
-        />
-      </section>
+          Det fulde 12-måneds visuelle årshjul (TimingHorisont) ligger
+          i `src/components/havekalender/timing-horisont.tsx` og kan
+          enten genaktiveres her (sæt gate til true) eller flyttes til
+          en dedikeret /aarshjul-side senere når brugen kalder på det. */}
+      {false && (
+        <section id="aarshjul" className="space-y-2 scroll-mt-20">
+          <Aarshjul
+            active={valgtMaaned}
+            onChange={setValgtMaaned}
+            tasks={tasks}
+            generelle={generalTasks.filter(g => !g.isHiddenByMe)}
+            renderActive={(m) => (
+              <div className="space-y-5">
+                <TimingHorisont
+                  inventory={inventory}
+                  plants={plants}
+                  currentMonth={m}
+                />
 
-      {/* 6 · MIKRO-INSPIRATION — det kan du så nu */}
-      <section className="space-y-2">
-        <Eyebrow>Det kan du så nu</Eyebrow>
-        <DetKanDuNu
-          month={valgtMaaned}
-          inventory={inventory}
-          guides={guides}
-          plants={plants}
-        />
-      </section>
+                <MaanedensGoeremaal
+                  embedded
+                  month={m}
+                  generalTasks={generalTasks}
+                  userTasks={userTasks}
+                  visSkjulte={visSkjulte}
+                  onToggleSkjulte={() => setVisSkjulte(v => !v)}
+                  existingTasks={tasks}
+                  year={year}
+                />
+              </div>
+            )}
+          />
+        </section>
+      )}
 
-      {/* 7 · ENGAGEMENT — månedens udfordring */}
-      {challengesForMonth(valgtMaaned).length > 0 && (
+      {/* 6 · INSPIRATION — tre asymmetriske lag (Fra din frøbank →
+          Kurateret → Fordyb dig). Community-lagene ("Andre dyrker",
+          "Idétavle") er fjernet til launch — fokus er at hjælpe i
+          haven, ikke fællesskab. Mindre funktion, mere stemning. */}
+      <Inspiration
+        month={valgtMaaned}
+        inventory={inventory}
+        plants={plants}
+      />
+
+      {/* 7 · ENGAGEMENT — månedens udfordring.
+          SKJULT INDTIL VIDERE: communities + challenges-funktioner
+          er midlertidigt dektiveret per user-direktion (haven-i-fokus
+          retning, ikke gamification). Hele blokken bevares som
+          kommenteret kode klar til genaktivering. */}
+      {false && challengesForMonth(valgtMaaned).length > 0 && (
         <section className="space-y-2">
           <Eyebrow>Månedens udfordring</Eyebrow>
           <Link
@@ -223,14 +283,14 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         </section>
       )}
 
-      {/* 8 · EKSPLORATIV — hent inspiration (ikke akut, derfor sent) */}
-      <section className="space-y-2">
-        <Eyebrow>Hent inspiration</Eyebrow>
-        <HentInspiration />
-      </section>
+      {/* 8 · (Tidligere HentInspiration-CTA-row er fjernet —
+          "Fordyb dig"-laget inde i Inspiration-card'et ovenfor dækker
+          nu adgangen til Dyrkningsguides + Idétavle som store
+          invitationskort. HentInspiration-komponenten bevares i koden
+          hvis vi vil have den tilbage et andet sted senere.) */}
 
       {/* 9 · PROGRESSION — kommende i næste måned (forventning) */}
-      <KommendeNaesteMaaned month={nuMaaned} generalTasks={generalTasks} />
+      <NaesteMaaned month={nuMaaned} generalTasks={generalTasks} />
     </div>
   )
 }
@@ -307,10 +367,14 @@ function DinePlanterIFokus({ plants, tasks }: { plants: Plant[]; tasks: Calendar
  * label-links (ikke ens bokse).
  */
 function HentInspiration() {
+  // "Fællesskab"/grupper-linket er SKJULT INDTIL VIDERE per
+  // user-direktion (haven-i-fokus retning, ingen community-feature
+  // før vi er klar). Lader linket stå som kommentar så det er let
+  // at genaktivere senere.
   const links = [
     { href: '/guides', label: 'Dyrkningsguides', icon: BookOpen, bg: 'var(--block-fresh)' },
     { href: '/idetavle', label: 'Idétavle', icon: Lightbulb, bg: 'var(--block-sun)' },
-    { href: '/grupper', label: 'Fællesskab', icon: Users, bg: 'var(--accent)' },
+    // { href: '/grupper', label: 'Fællesskab', icon: Users, bg: 'var(--accent)' },
   ]
   return (
     <div className="flex flex-wrap gap-2">
@@ -332,41 +396,6 @@ function HentInspiration() {
         )
       })}
     </div>
-  )
-}
-
-/**
- * 9 · Kommende i næste måned — progression/forventning. Stærk
- * afslutning: næste måneds stemning + dens første gøremål.
- */
-function KommendeNaesteMaaned({ month, generalTasks }: { month: number; generalTasks: GeneralGardenTask[] }) {
-  const next = month === 12 ? 1 : month + 1
-  const navn = MONTHS_DA[next - 1].full
-  const tagline = MAANEDS_STEMNING[next]?.tagline ?? ''
-  const kommende = generalTasks
-    .filter(g => g.month === next && !g.isHiddenByMe)
-    .slice(0, 3)
-
-  return (
-    <section className="space-y-2">
-      <Eyebrow>Kommende</Eyebrow>
-      <div className="rounded-tr-[1.75rem] rounded-bl-[1.75rem] rounded-tl-md rounded-br-md bg-surface-2 px-6 py-6">
-        <p className="font-sans text-2xl font-bold tracking-tight text-foreground">
-          {navn} nærmer sig
-        </p>
-        {tagline && <p className="mt-1 text-sm font-medium text-muted-foreground">{tagline}</p>}
-        {kommende.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5">
-            {kommende.map(g => (
-              <span key={g.id} className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-primary/60" />
-                {g.title}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
   )
 }
 
