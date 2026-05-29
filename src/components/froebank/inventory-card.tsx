@@ -13,6 +13,16 @@ interface Props {
   selectMode?: boolean
   selected?: boolean
   onToggleSelect?: () => void
+  /** Hvis true: skjul "MIN FRØBANK · FRØ" eyebrow. Bruges af stack-
+   *  kortene i Frøbank-arkivet hvor eyebrow er overflødig. */
+  hideEyebrow?: boolean
+  /** Skalér plantenavnets fontSize. Default 1.0 (= 30 px).
+   *  Bruges af stack-kortene der ønsker mindre overskrift. */
+  nameScale?: number
+  /** Hvis true: skjul ALT overlay-indhold (eyebrow + navn + sort +
+   *  count-ring) så kun fotoet er synligt. Bruges af stack-kortene
+   *  under hover-tilstand. */
+  hideOverlay?: boolean
 }
 
 const sans = 'var(--font-manrope)'
@@ -42,7 +52,7 @@ const LIGHT_LABEL: Record<string, string> = {
  * creme-dyrkningspanel. Mangler et billede, vises en rolig
  * ensfarvet fallback indtil det komponerede foto findes.
  */
-export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect }: Props) {
+export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect, hideEyebrow = false, nameScale = 1, hideOverlay = false }: Props) {
   const heroImage = item.primaryImageId || null
   const { field } = plantColor(item.name, item.variety)
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'
@@ -78,36 +88,44 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
         <div aria-hidden className="absolute inset-0" style={{ background: field }} />
       )}
 
-      {/* Læsbarheds-scrim — kun nok til at hvid tekst altid kan læses */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[42%]"
-        style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.34) 0%, rgba(18,14,10,0.08) 55%, transparent 100%)' }}
-      />
+      {/* Læsbarheds-scrim — kun nok til at hvid tekst altid kan læses.
+          Skjules sammen med overlayet på hover-stack-kort. */}
+      {!hideOverlay && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[42%]"
+          style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.34) 0%, rgba(18,14,10,0.08) 55%, transparent 100%)' }}
+        />
+      )}
 
-      {/* TOP-VENSTRE — eyebrow + titel + sort */}
-      <div className="absolute left-0 top-0 z-10 max-w-[70%] p-[20px]">
-        <p
-          className="uppercase"
-          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', color: '#FFFFFF', opacity: 0.92, textShadow: '0 1px 4px rgba(20,14,8,0.45)' }}
-        >
-          {eyebrow}
-        </p>
-        <h3
-          className="mt-2"
-          style={{ fontFamily: sans, fontSize: 30, fontWeight: 800, lineHeight: 1.02, color: '#FFFFFF', textShadow: '0 2px 12px rgba(20,14,8,0.42)' }}
-        >
-          {item.name}
-        </h3>
-        {item.variety && (
-          <p
-            className="mt-1.5 truncate"
-            style={{ fontFamily: sans, fontSize: 16, fontWeight: 500, letterSpacing: '0.02em', color: '#FFFFFF', opacity: 0.74, textShadow: '0 1px 6px rgba(20,14,8,0.38)' }}
+      {/* TOP-VENSTRE — eyebrow + titel + sort.
+          Skjules som hele blokken når hideOverlay = true. */}
+      {!hideOverlay && (
+        <div className="absolute left-0 top-0 z-10 max-w-[70%] p-[20px]">
+          {!hideEyebrow && (
+            <p
+              className="uppercase"
+              style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', color: '#FFFFFF', opacity: 0.92, textShadow: '0 1px 4px rgba(20,14,8,0.45)' }}
+            >
+              {eyebrow}
+            </p>
+          )}
+          <h3
+            className={hideEyebrow ? '' : 'mt-2'}
+            style={{ fontFamily: sans, fontSize: 30 * nameScale, fontWeight: 800, lineHeight: 1.02, color: '#FFFFFF', textShadow: '0 2px 12px rgba(20,14,8,0.42)' }}
           >
-            {item.variety}
-          </p>
-        )}
-      </div>
+            {item.name}
+          </h3>
+          {item.variety && (
+            <p
+              className="mt-1.5 truncate"
+              style={{ fontFamily: sans, fontSize: 16, fontWeight: 500, letterSpacing: '0.02em', color: '#FFFFFF', opacity: 0.74, textShadow: '0 1px 6px rgba(20,14,8,0.38)' }}
+            >
+              {item.variety}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* SELECT-MODE — checkmark */}
       {selectMode && (
@@ -124,8 +142,9 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
 
       {/* SEED COUNT RING — diskret inventar-instrument øverst til
           højre INDE i billedet. Bryder ikke kortets kant. Vises kun
-          når der findes seedCount-data, og ikke under select-mode. */}
-      {!selectMode && tilbage != null && (
+          når der findes seedCount-data, ikke under select-mode, og
+          ikke når overlay er skjult (hover-state på stack-kort). */}
+      {!selectMode && !hideOverlay && tilbage != null && (
         <SeedCountRing remaining={tilbage} total={item.seedCount} />
       )}
 
@@ -272,8 +291,9 @@ function SeedCountRing({ remaining, total }: { remaining: number; total?: number
     else if (percent < 30) activeColor = '#C89A35'
   }
 
-  const size = 64
-  const stroke = 3
+  // Cirklen er 20 % mindre end før (64 → 51) — gælder alle frøkort.
+  const size = 51
+  const stroke = 2.4
   const radius = (size - stroke) / 2
   const center = size / 2
   const circumference = 2 * Math.PI * radius
@@ -281,19 +301,25 @@ function SeedCountRing({ remaining, total }: { remaining: number; total?: number
 
   return (
     <div
-      className="pointer-events-none absolute right-[28px] top-[28px] z-20"
+      className="pointer-events-none absolute right-[28px] top-[20px] z-20"
       style={{ width: size, height: size }}
     >
-      {/* Glas-lignende baggrund — papir-vellum mod fotoet */}
+      {/* Glas-lignende baggrund — papir-vellum mod fotoet.
+          Materialitet: subtle outer shadow + inset top highlight giver
+          badgen den samme fysiske dybde som kortene under den. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           borderRadius: '50%',
           background: 'rgba(36,48,31,0.34)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          backdropFilter: 'blur(2px)',
+          WebkitBackdropFilter: 'blur(2px)',
           border: '1px solid rgba(246,243,235,0.22)',
+          boxShadow: [
+            '0 1px 2px rgba(0,0,0,0.04)',
+            'inset 0 1px 0 rgba(255,255,255,0.18)',
+          ].join(', '),
         }}
       />
       {/* Progress-ring */}
@@ -332,7 +358,7 @@ function SeedCountRing({ remaining, total }: { remaining: number; total?: number
         <span
           style={{
             fontFamily: sans,
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: 700,
             lineHeight: 1,
             color: '#F6F3EB',
@@ -343,7 +369,7 @@ function SeedCountRing({ remaining, total }: { remaining: number; total?: number
         <span
           style={{
             fontFamily: sans,
-            fontSize: 10,
+            fontSize: 8,
             fontWeight: 600,
             letterSpacing: '0.04em',
             color: '#F6F3EB',
