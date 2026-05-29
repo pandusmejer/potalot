@@ -1,194 +1,155 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { StageProgress } from '@/components/mine-planter/stage-progress'
-import { StageHeader } from '@/components/mine-planter/stage-header'
-import { StageTaskList } from '@/components/mine-planter/stage-task-list'
-import { Timeline } from '@/components/mine-planter/timeline'
-import { LogForm } from '@/components/mine-planter/log-form'
-import { SowingsList } from '@/components/mine-planter/sowings-list'
-import { getPlant, getPlantLogs, getAllPlants } from '@/actions/mine-planter'
-import { getSowingEventsForPlant } from '@/actions/sowing-events'
-import { getInventoryItem } from '@/actions/froebank'
-import { getTasksForPlant } from '@/actions/havekalender'
-import { getGuide } from '@/actions/guides'
-import { dageSiden, formatDatoMedAar } from '@/lib/datetime'
+import { PlantCard } from '@/components/mine-planter/plant-card'
+import { PlantTimeline } from '@/components/mine-planter/plant-timeline'
+import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
+import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
+import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
+import { PLANT_STATUS_META } from '@/lib/constants'
+import { formatPlantDate, getMockPlantById, mockPlantTasks } from '@/data/mock-plants'
 import {
-  ArrowLeft, MapPin, Calendar, BookOpen, Package, ArrowRight, Sprout,
-  ClipboardList,
+  Archive,
+  ArrowLeft,
+  BookOpen,
+  ChevronDown,
+  Images,
+  NotebookText,
 } from 'lucide-react'
 
 interface Props {
   params: Promise<{ id: string }>
 }
 
-export const dynamic = 'force-dynamic'
+export function generateStaticParams() {
+  return []
+}
 
 export default async function PlanteDetailPage({ params }: Props) {
   const { id } = await params
+  const plant = getMockPlantById(id)
 
-  const plant = await getPlant(id)
   if (!plant) notFound()
 
-  const [logs, sowings, tasks, guide, inventoryItem, allPlants] = await Promise.all([
-    getPlantLogs(plant.id),
-    getSowingEventsForPlant(plant.id),
-    getTasksForPlant(plant.id),
-    plant.guideId ? getGuide(plant.guideId) : Promise.resolve(null),
-    plant.sourceElementId ? getInventoryItem(plant.sourceElementId) : Promise.resolve(null),
-    getAllPlants(),
-  ])
-
-  const otherActivePlants = allPlants
-    .filter(p => p.id !== plant.id && !p.isArchived)
-    .map(p => ({ id: p.id, name: p.name, variety: p.variety }))
-
-  // Find seneste status-skift-log som proxy for "indgang til nuværende stadie"
-  const lastStatusChange = logs
-    .filter(l => l.type === 'status_change')
-    .sort((a, b) => b.date.localeCompare(a.date))[0]
-  const stageEnteredOn = lastStatusChange?.date ?? plant.sowDate ?? null
-
-  const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
+  const statusMeta = PLANT_STATUS_META[plant.status]
+  const nextTask = mockPlantTasks.find(task => task.linkedPlantId === plant.id) ?? null
 
   return (
-    <article className="space-y-5 max-w-3xl">
-      <div className="flex items-center gap-3">
-        <Button asChild variant="ghost" size="icon">
-          <Link href="/mine-planter" aria-label="Tilbage">
+    <article className="mx-auto max-w-3xl space-y-6 pb-8">
+      <div className="space-y-3">
+        <Button asChild variant="ghost" size="sm" className="-ml-2">
+          <Link href="/mine-planter">
             <ArrowLeft className="h-4 w-4" />
+            Tilbage
           </Link>
         </Button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-serif text-foreground truncate">
-            {plant.name}
-          </h1>
-          {plant.variety && (
-            <p className="text-sm italic text-muted-foreground truncate">
-              {plant.variety}
-            </p>
-          )}
+        <PlantCard plant={plant} nextTask={nextTask} />
+      </div>
+
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Fact label="Status" value={statusMeta.label} />
+        <Fact label="Type" value={plant.type} />
+        <Fact label="Forventet høst" value={formatPlantDate(plant.expectedHarvestStart)} />
+      </section>
+
+      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="font-serif text-2xl leading-tight text-foreground">Tidslinje</h2>
+        <div className="mt-4">
+          <PlantTimeline plant={plant} />
         </div>
-      </div>
+      </section>
 
-      <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
-        {plant.location && (
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5" />
-            {plant.location}
+      <NextPlantActions actions={[plant.nextAction]} />
+
+      {plant.pictures.length > 0 && (
+        <details className="group rounded-2xl border border-border bg-card shadow-soft">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Images className="h-4 w-4" />
+              </span>
+              <span>
+                <span className="block font-serif text-2xl leading-tight text-foreground">Billeder</span>
+                <span className="text-xs text-muted-foreground">{plant.pictures.length} billeder</span>
+              </span>
+            </span>
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="px-5 pb-5 pt-0">
+            <PlantPhotoGrid images={plant.pictures} />
+          </div>
+        </details>
+      )}
+
+      <details className="group rounded-2xl border border-border bg-card shadow-soft">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+          <span className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <NotebookText className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block font-serif text-2xl leading-tight text-foreground">Noter</span>
+              <span className="text-xs text-muted-foreground">{plant.logs.length} logpunkter</span>
+            </span>
           </span>
-        )}
-        {alder !== null && (
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5" />
-            {alder} dage gammel
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="space-y-3 px-5 pb-5 pt-0">
+          <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
+            <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
+          </div>
+          <div className="grid gap-3">
+            {plant.logs.map(log => (
+              <PlantLogEntry key={log.id} entry={log} />
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <details className="group rounded-2xl border border-border bg-card shadow-soft">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+          <span className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <BookOpen className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block font-serif text-2xl leading-tight text-foreground">Dyrkningsguide</span>
+              <span className="text-xs text-muted-foreground">{plant.guide.title}</span>
+            </span>
           </span>
-        )}
-        {plant.quantity > 1 && (
-          <span className="inline-flex items-center gap-1.5">
-            <Sprout className="h-3.5 w-3.5" />
-            {plant.quantity} stk
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-5 pb-5 pt-0">
+          <p className="text-sm font-semibold text-foreground">{plant.guide.title}</p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">{plant.guide.body}</p>
+        </div>
+      </details>
+
+      <section className="rounded-2xl border border-border bg-surface-2 p-5 shadow-soft">
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground">
+            <Archive className="h-5 w-5" />
           </span>
-        )}
-        {plant.isArchived && plant.archivedYear && (
-          <Badge variant="muted">Arkiveret {plant.archivedYear}</Badge>
-        )}
-      </div>
-
-      {!plant.isArchived && (
-        <>
-          <StageProgress status={plant.status} />
-          <StageHeader
-            plantId={plant.id}
-            status={plant.status}
-            stageEnteredOn={stageEnteredOn}
-          />
-          <StageTaskList
-            plantId={plant.id}
-            plantName={plant.name}
-            plantVariety={plant.variety ?? null}
-            status={plant.status}
-            tasks={tasks}
-            otherPlants={otherActivePlants}
-          />
-        </>
-      )}
-
-      <SowingsList events={sowings} />
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <ClipboardList className="h-4 w-4 text-primary" />
-            Tidslinje
-          </CardTitle>
-          {!plant.isArchived && <LogForm plantId={plant.id} />}
-        </CardHeader>
-        <CardContent>
-          <Timeline plant={plant} logs={logs} />
-        </CardContent>
-      </Card>
-
-      {guide && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-primary" />
-              Dyrkningsguide
-            </CardTitle>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={`/guides/${guide.id}`}>
-                Åbn guide <ArrowRight className="h-3 w-3" />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <p className="font-medium text-foreground">
-              {guide.plantName}{guide.variety ? ` — ${guide.variety}` : ''}
+          <div className="min-w-0 flex-1">
+            <h2 className="font-serif text-xl leading-tight text-foreground">Arkivér plante</h2>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              Gem sæsonens noter, billeder og høsterfaringer i havebogen, når planten er færdig.
             </p>
-            <p className="text-sm text-muted-foreground mt-1">{guide.summary}</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {inventoryItem && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Package className="h-4 w-4 text-primary" />
-              Fra frøbank
-            </CardTitle>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={`/froebank/${inventoryItem.id}`}>
-                Se element <ArrowRight className="h-3 w-3" />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <p className="font-medium text-foreground">
-              {inventoryItem.name}{inventoryItem.variety ? ` — ${inventoryItem.variety}` : ''}
-            </p>
-            {inventoryItem.supplier && (
-              <p className="text-sm text-muted-foreground mt-0.5">
-                {inventoryItem.supplier}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {plant.isArchived && (
-        <Card className="bg-muted/40">
-          <CardContent className="py-3">
-            <p className="text-sm text-foreground">
-              Denne plante er afsluttet og arkiveret{plant.archivedAt && ` ${formatDatoMedAar(plant.archivedAt)}`}.
-              Loggen er låst som read-only.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
+            Arkivér
+          </Button>
+        </div>
+      </section>
     </article>
+  )
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+      <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
+    </div>
   )
 }
