@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { PLANT_STATUS_META } from '@/lib/constants'
-import type { MockPlant } from '@/data/mock-plants'
+import type { Plant } from '@/lib/types'
 
 interface GreenhouseNowProps {
-  plants: MockPlant[]
+  plants: Plant[]
 }
 
 export function GreenhouseNow({ plants }: GreenhouseNowProps) {

@@ -19,36 +19,63 @@ import {
   plantStatusFilters,
   type PlantFilterStatus,
 } from '@/data/mock-plants'
+import type { Plant, CalendarTask } from '@/lib/types'
 import { ArrowRight, BookOpen } from 'lucide-react'
 
-export function MinePlanterClient() {
+interface Props {
+  /**
+   * Brugerens ægte planter. Hvis tomt array → demo-mode (mock-data
+   * driver hele siden). Hvis non-empty → real-data path: ægte planter
+   * vises, og de mock-baserede "Næste handlinger" + "Senest i haven"
+   * skjules (de hører til demo-oplevelsen og har endnu ingen ægte
+   * data-kilde for almindelige brugere).
+   */
+  plants: Plant[]
+}
+
+export function MinePlanterClient({ plants: realPlants }: Props) {
   const [activeFilter, setActiveFilter] = useState<PlantFilterStatus>('alle')
 
+  const isDemo = realPlants.length === 0
+  // Bemærk: mockPlants extends Plant, så typen er Plant-kompatibel
+  // begge veje. Vi kalder den bare "plants" i komponentkroppen.
+  const plants: Plant[] = isDemo ? mockPlants : realPlants
+
   const activePlants = useMemo(
-    () => filterMockPlantsByStatus(mockPlants, activeFilter),
-    [activeFilter]
+    () =>
+      isDemo
+        ? filterMockPlantsByStatus(mockPlants, activeFilter)
+        : filterRealPlantsByStatus(realPlants, activeFilter),
+    [isDemo, realPlants, activeFilter],
   )
 
   const varietyCount = useMemo(() => {
     const varieties = new Set(
-      mockPlants
+      plants
         .filter(plant => !plant.isArchived)
-        .map(plant => `${plant.name}-${plant.variety ?? ''}`)
+        .map(plant => `${plant.name}-${plant.variety ?? ''}`),
     )
     return varieties.size
-  }, [])
+  }, [plants])
 
-  const nextTaskFor = (plantId: string) =>
-    mockPlantTasks.find(task => task.linkedPlantId === plantId) ?? null
+  const nextTaskFor = (plantId: string): CalendarTask | null => {
+    if (!isDemo) {
+      // Real-data path: vi har ingen task-kobling endnu i Planter-flowet.
+      // Næste-handling vises stadig via PlantCard's egen estimateNextTask
+      // (asset-drevet, statusbaseret) — så denne returner null.
+      return null
+    }
+    return mockPlantTasks.find(task => task.linkedPlantId === plantId) ?? null
+  }
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-8">
       <PlantHero
-        activeCount={mockPlants.filter(plant => !plant.isArchived).length}
+        activeCount={plants.filter(plant => !plant.isArchived).length}
         varietyCount={varietyCount}
       />
 
-      <GreenhouseNow plants={mockPlants} />
+      <GreenhouseNow plants={plants} />
 
       <PlantStatusFilter
         filters={plantStatusFilters}
@@ -66,8 +93,15 @@ export function MinePlanterClient() {
         )}
       </section>
 
-      <NextPlantActions actions={mockPlantActions} />
-      <RecentPlantActivity activities={mockPlantActivities} />
+      {/* Mock-drevne demo-sektioner — vises kun i demo-mode, fordi de
+          har ingen real-data ækvivalent endnu. Når real users har data
+          her, kommer en separat real-data variant. */}
+      {isDemo && (
+        <>
+          <NextPlantActions actions={mockPlantActions} />
+          <RecentPlantActivity activities={mockPlantActivities} />
+        </>
+      )}
 
       <section className="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,var(--surface-2),var(--card))] p-5 shadow-soft">
         <div className="flex items-start gap-3">
@@ -81,7 +115,7 @@ export function MinePlanterClient() {
             </p>
           </div>
           <Button asChild variant="ghost" size="sm" className="shrink-0">
-            <Link href="/mine-planter?arkiv=kommende">
+            <Link href="/">
               Åbn havebog
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -90,4 +124,14 @@ export function MinePlanterClient() {
       </section>
     </div>
   )
+}
+
+/** Status-filter for ægte Plant-objekter (uden Mock-extras). */
+function filterRealPlantsByStatus(
+  plants: Plant[],
+  status: PlantFilterStatus,
+): Plant[] {
+  if (status === 'alle') return plants.filter(p => !p.isArchived)
+  // PlantFilterStatus matches PlantStatus minus 'alle'
+  return plants.filter(p => !p.isArchived && (p.status as string) === status)
 }

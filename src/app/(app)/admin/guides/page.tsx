@@ -87,7 +87,7 @@ export default async function AdminGuidesPage() {
                   <div key={g.id} className="flex items-start gap-3 p-3 rounded-lg border border-amber-200 bg-card">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <Link href={`/guides/${g.id}`} className="font-medium text-foreground hover:underline">
+                        <Link href={`/admin/guides/${g.id}`} className="font-medium text-foreground hover:underline">
                           {g.plantName}
                         </Link>
                         {g.variety && <span className="text-xs text-muted-foreground">· {g.variety}</span>}

@@ -69,7 +69,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
   try {
     const [logsRes, plantsRes, inventoryRes] = await Promise.all([
       supabase
-        .from('plant_logs')
+        .from('plant_logs_v2')
         .select('id, plant_id, date, type, title, note, image_urls')
         .eq('user_id', me.id)
         .order('date', { ascending: false }),
@@ -78,7 +78,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .select('id, name, variety, is_archived, archived_year, archived_at, primary_image_url')
         .eq('user_id', me.id),
       supabase
-        .from('inventory')
+        .from('inventory_items')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', me.id),
     ])
