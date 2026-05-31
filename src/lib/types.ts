@@ -148,6 +148,8 @@ export type PlantStatus =
   | 'hoestklar'
   | 'afsluttet'
 
+export type PlantImageSource = 'guide_reference' | 'user_upload' | null
+
 export interface Plant {
   id: string
   userId: string
@@ -169,6 +171,7 @@ export interface Plant {
   // Medier og relationer
   imageIds: string[]
   primaryImageId?: string | null
+  imageSource?: PlantImageSource
   logIds: string[]
   guideId?: string | null
 

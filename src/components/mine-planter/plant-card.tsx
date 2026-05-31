@@ -5,7 +5,7 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import type { Plant, PlantStatus, CalendarTask } from '@/lib/types'
 import { estimateNextTask } from '@/lib/next-plant-task'
-import { Sprout, Calendar, Scissors } from 'lucide-react'
+import { Sprout, Calendar, Scissors, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
 
@@ -182,6 +182,16 @@ export function PlantCard({ plant, nextTask }: Props) {
           ikke restmængde. Subtilt vandret split-divider på midten
           for det rolige mekaniske look. */}
       <ActivePlantCounter count={plant.quantity} />
+
+      {plant.imageSource === 'guide_reference' && (
+        <span
+          className="pointer-events-none absolute right-[24px] top-[92px] z-20 flex items-center gap-1 rounded-full border border-white/15 bg-[#24301F]/55 px-2 py-1 text-[10px] font-semibold text-white/80 backdrop-blur-sm"
+          style={{ fontFamily: sans }}
+        >
+          <BookOpen className="h-3 w-3" aria-hidden />
+          Referencefoto
+        </span>
+      )}
 
       {/* BUND — varmt botanisk papirpanel.
           Strammere højde end første pass (~26% af kortet, så fotoet

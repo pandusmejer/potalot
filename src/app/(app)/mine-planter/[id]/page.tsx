@@ -20,6 +20,7 @@ import {
   Archive,
   ArrowLeft,
   BookOpen,
+  Camera,
   ChevronDown,
   Images,
   NotebookText,
@@ -127,6 +128,12 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
           </Link>
         </Button>
         <PlantCard plant={plant} nextTask={resolvedNextTask} />
+        {plant.imageSource !== 'user_upload' && (
+          <Button variant="outline" size="sm" className="bg-card/70" disabled>
+            <Camera className="h-4 w-4" />
+            Tilføj dit første foto
+          </Button>
+        )}
       </div>
 
       <section className="grid gap-3 sm:grid-cols-3">

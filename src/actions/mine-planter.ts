@@ -11,7 +11,7 @@ import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import {
   maybeAwardFirstSowing, maybeAwardFirstHarvest, maybeAwardSeasonFinisher,
 } from '@/actions/badges'
-import type { Plant, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
+import type { Plant, PlantImageSource, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
 // Mappers
@@ -31,6 +31,7 @@ interface PlantRow {
   quantity: number
   image_urls: string[]
   primary_image_url: string | null
+  image_source: string | null
   guide_id: string | null
   is_archived: boolean
   archived_at: string | null
@@ -68,6 +69,7 @@ function rowToPlant(row: PlantRow): Plant {
     quantity: row.quantity,
     imageIds: row.image_urls ?? [],
     primaryImageId: row.primary_image_url,
+    imageSource: row.image_source as PlantImageSource,
     logIds: [],                  // populated separately
     guideId: row.guide_id,
     isArchived: row.is_archived,
@@ -187,6 +189,15 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
 
   if (invErr || !invItem) return { error: 'Frøbank-element ikke fundet' }
   const inv = invItem as { id: string; name: string; variety: string | null; guide_id: string | null; status: string }
+  let guideImageUrl: string | null = null
+  if (inv.guide_id) {
+    const { data: guide } = await supabase
+      .from('guides')
+      .select('primary_image_url')
+      .eq('id', inv.guide_id)
+      .maybeSingle()
+    guideImageUrl = (guide?.primary_image_url as string | null | undefined) ?? null
+  }
 
   const growingYear = parseInt(input.date.split('-')[0], 10)
 
@@ -321,6 +332,8 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
         quantity: 0, // bliver opdateret efter sowing_event er sat
         growing_year: growingYear,
         guide_id: inv.guide_id,
+        primary_image_url: guideImageUrl,
+        image_source: guideImageUrl ? 'guide_reference' : null,
         is_archived: false,
       })
       .select('id')
