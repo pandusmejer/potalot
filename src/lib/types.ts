@@ -346,6 +346,14 @@ export interface GuideQuickFacts {
   sowingDepthMm?: number
   frostSensitive?: boolean
   minimumTemperature?: string
+
+  // Sortsguide-felter (typisk udfyldt på variety, ikke species).
+  // Fri tekst i V1 — kan blive enum/struktureret når vi har set
+  // 5-10 rigtige sortsguider og kender variansen.
+  growthType?: string                // fx 'ranketomat', 'busktomat', 'klatretomat'
+  height?: string                    // fx '180-220 cm'
+  maturityDays?: string              // fx '80-85 dage' (fra udplantning)
+  primaryUse?: string                // fx 'Sauce og madlavning', 'Frisk spisning'
 }
 
 export interface GuideSection {

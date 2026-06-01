@@ -254,6 +254,10 @@ function normalizeQuickFacts(qf: Record<string, unknown> | null): GuideQuickFact
     sowingDepthMm: typeof o.sowingDepthMm === 'number' ? o.sowingDepthMm : undefined,
     frostSensitive: typeof o.frostSensitive === 'boolean' ? o.frostSensitive : undefined,
     minimumTemperature: typeof o.minimumTemperature === 'string' ? o.minimumTemperature : undefined,
+    growthType: typeof o.growthType === 'string' ? o.growthType : undefined,
+    height: typeof o.height === 'string' ? o.height : undefined,
+    maturityDays: typeof o.maturityDays === 'string' ? o.maturityDays : undefined,
+    primaryUse: typeof o.primaryUse === 'string' ? o.primaryUse : undefined,
   }
 }
 
@@ -630,6 +634,10 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
       sowingDepthMm: typeof qf.sowingDepthMm === 'number' ? qf.sowingDepthMm : undefined,
       frostSensitive: typeof qf.frostSensitive === 'boolean' ? qf.frostSensitive : undefined,
       minimumTemperature: typeof qf.minimumTemperature === 'string' ? qf.minimumTemperature : undefined,
+      growthType: typeof qf.growthType === 'string' ? qf.growthType : undefined,
+      height: typeof qf.height === 'string' ? qf.height : undefined,
+      maturityDays: typeof qf.maturityDays === 'string' ? qf.maturityDays : undefined,
+      primaryUse: typeof qf.primaryUse === 'string' ? qf.primaryUse : undefined,
     }
   }
   if (Array.isArray(parsed.sections)) {

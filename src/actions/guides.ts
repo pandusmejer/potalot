@@ -54,6 +54,10 @@ function rowToGuide(row: GuideRow): Guide {
     sowingDepthMm: typeof qf.sowingDepthMm === 'number' ? qf.sowingDepthMm : undefined,
     frostSensitive: typeof qf.frostSensitive === 'boolean' ? qf.frostSensitive : undefined,
     minimumTemperature: typeof qf.minimumTemperature === 'string' ? qf.minimumTemperature : undefined,
+    growthType: typeof qf.growthType === 'string' ? qf.growthType : undefined,
+    height: typeof qf.height === 'string' ? qf.height : undefined,
+    maturityDays: typeof qf.maturityDays === 'string' ? qf.maturityDays : undefined,
+    primaryUse: typeof qf.primaryUse === 'string' ? qf.primaryUse : undefined,
   }
   return {
     id: row.id,

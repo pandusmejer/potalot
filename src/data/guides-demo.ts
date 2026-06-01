@@ -102,11 +102,15 @@ const POTALOT_TOMAT: Guide = {
     sowingMonths: [3, 4],
     directSowingMonths: [],
     plantingOutMonths: [5, 6],
-    harvestMonths: [7, 8, 9],
+    harvestMonths: [8, 9, 10],
     preCultivation: true,
     light: 'full_sun',
     water: 'regular',
     soil: 'Næringsrig, veldrænende muldjord. pH 6,0–6,8.',
+    growthType: 'Ranketomat',
+    height: '180-220 cm',
+    maturityDays: '80-85 dage',
+    primaryUse: 'Sauce og madlavning',
   },
   sections: [
     {
