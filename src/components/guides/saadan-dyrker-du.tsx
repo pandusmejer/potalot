@@ -8,6 +8,7 @@
  */
 
 import type { GuideSection } from '@/lib/types'
+import { GuideFactCard } from './guide-fact-card'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -40,39 +41,54 @@ export function SaadanDyrkerDu({ sections }: Props) {
     <section className="space-y-5">
       <SektionEyebrow>Sådan dyrker du</SektionEyebrow>
       <div className="space-y-8 sm:space-y-9">
-        {sections.map((s, i) => (
-          <article key={s.key ?? i} className="space-y-3">
-            <h3
-              style={{
-                fontFamily: serif,
-                fontWeight: 500,
-                fontSize: 'clamp(24px, 4.8vw, 30px)',
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em',
-                color: '#24301F',
-                margin: 0,
-              }}
-            >
-              {s.title}
-            </h3>
-            <p
-              style={{
-                fontFamily: serif,
-                fontWeight: 400,
-                fontSize: 'clamp(16px, 2.6vw, 18.5px)',
-                lineHeight: 1.65,
-                color: 'rgba(36,48,31,0.82)',
-                margin: 0,
-                maxWidth: 640,
-                whiteSpace: 'pre-line',
-              }}
-            >
-              {s.body}
-            </p>
-          </article>
-        ))}
+        {sections.map((s, i) =>
+          s.kind === 'fact' ? (
+            <GuideFactCard
+              key={s.key ?? i}
+              title={s.title}
+              variant={s.variant}
+              columns={s.columns}
+            />
+          ) : (
+            <ProseSection key={s.key ?? i} title={s.title} body={s.body} />
+          ),
+        )}
       </div>
     </section>
+  )
+}
+
+function ProseSection({ title, body }: { title: string; body: string }) {
+  return (
+    <article className="space-y-3">
+      <h3
+        style={{
+          fontFamily: serif,
+          fontWeight: 500,
+          fontSize: 'clamp(24px, 4.8vw, 30px)',
+          lineHeight: 1.1,
+          letterSpacing: '-0.02em',
+          color: '#24301F',
+          margin: 0,
+        }}
+      >
+        {title}
+      </h3>
+      <p
+        style={{
+          fontFamily: serif,
+          fontWeight: 400,
+          fontSize: 'clamp(16px, 2.6vw, 18.5px)',
+          lineHeight: 1.65,
+          color: 'rgba(36,48,31,0.82)',
+          margin: 0,
+          maxWidth: 640,
+          whiteSpace: 'pre-line',
+        }}
+      >
+        {body}
+      </p>
+    </article>
   )
 }
 

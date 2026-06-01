@@ -356,11 +356,43 @@ export interface GuideQuickFacts {
   primaryUse?: string                // fx 'Sauce og madlavning', 'Frisk spisning'
 }
 
-export interface GuideSection {
+/**
+ * Sektion på en guide — to varianter.
+ *
+ * **prose** (default): det editoriale læselag — overskrift + brødtekst.
+ *   Format som hidtil; `kind` kan udelades for bagudkompatibilitet med
+ *   eksisterende DB-rækker og demo-data.
+ *
+ * **fact**: et faktakort — illustration i en naturhåndbog. Renderes
+ *   som <GuideFactCard>. Indtil videre kun `comparison`-varianten
+ *   (to søjler side om side, fx "Ranketomat vs Busktomat").
+ *
+ * `body?` på fact-varianten findes kun for at admin-editoren (som
+ *   redigerer alle sektioner som prose) ikke smider TypeScript-fejl;
+ *   feltet ignoreres ved render.
+ */
+export interface GuideFactColumn {
+  heading: string
+  items: string[]
+}
+
+export interface GuideProseSection {
+  kind?: 'prose'
   key: string                        // fx 'intro', 'pre_cultivation'
   title: string
   body: string
 }
+
+export interface GuideFactSection {
+  kind: 'fact'
+  key: string
+  title: string
+  variant: 'comparison'
+  columns: GuideFactColumn[]
+  body?: string                      // editor-compat; ikke renderet
+}
+
+export type GuideSection = GuideProseSection | GuideFactSection
 
 export interface GuideCalendarRule {
   taskType: TaskType

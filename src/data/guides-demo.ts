@@ -120,6 +120,32 @@ const POTALOT_TOMAT: Guide = {
         'San Marzano er en hævdvunden italiensk landrace fra det vulkanske område syd for Napoli. Sorten er bedrejeren bag den klassiske ragù: kødfuld, sød, med lavt vandindhold og let at koge ind. På bedsted vokser den højt, så opbinding er nødvendig fra første dag i jord.',
     },
     {
+      kind: 'fact',
+      key: 'rank-vs-busk',
+      variant: 'comparison',
+      title: 'Tomater vokser på to måder',
+      columns: [
+        {
+          heading: 'Ranketomat',
+          items: [
+            'Vokser hele sæsonen',
+            'Skal opbindes',
+            'Skal ofte knibes',
+            'Bedst i drivhus',
+          ],
+        },
+        {
+          heading: 'Busktomat',
+          items: [
+            'Kompakt vækst',
+            'Kræver sjældent opbinding',
+            'Kræver sjældent knibning',
+            'Velegnet til krukker og altan',
+          ],
+        },
+      ],
+    },
+    {
       key: 'forspiring',
       title: 'Forspiring',
       body:
