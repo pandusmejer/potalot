@@ -45,8 +45,8 @@ export function GuideFactCard({ title, variant, columns }: Props) {
       style={{
         backgroundColor: '#F2EBD9',
         border: '1px solid rgba(36,48,31,0.10)',
-        borderRadius: 18,
-        padding: 'clamp(18px, 3vw, 26px)',
+        borderRadius: 22,
+        padding: 'clamp(26px, 4.5vw, 40px) clamp(22px, 4vw, 34px)',
         maxWidth: 640,
       }}
       className="not-prose"
@@ -55,9 +55,9 @@ export function GuideFactCard({ title, variant, columns }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(20px, 3.6vw, 25px)',
-          lineHeight: 1.15,
-          letterSpacing: '-0.015em',
+          fontSize: 'clamp(22px, 4vw, 28px)',
+          lineHeight: 1.12,
+          letterSpacing: '-0.02em',
           color: '#24301F',
           margin: 0,
           textAlign: 'center',
@@ -70,8 +70,8 @@ export function GuideFactCard({ title, variant, columns }: Props) {
         aria-hidden
         style={{
           height: 1,
-          backgroundColor: 'rgba(36,48,31,0.12)',
-          margin: '14px 0 18px',
+          backgroundColor: 'rgba(36,48,31,0.14)',
+          margin: '20px 0 26px',
         }}
       />
 
@@ -79,12 +79,12 @@ export function GuideFactCard({ title, variant, columns }: Props) {
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1px 1fr',
-          gap: 'clamp(16px, 3vw, 22px)',
+          gap: 'clamp(20px, 4vw, 30px)',
           alignItems: 'start',
         }}
       >
         <FactColumnView column={left} />
-        <div aria-hidden style={{ width: 1, alignSelf: 'stretch', backgroundColor: 'rgba(36,48,31,0.12)' }} />
+        <div aria-hidden style={{ width: 1, alignSelf: 'stretch', backgroundColor: 'rgba(36,48,31,0.14)' }} />
         <FactColumnView column={right} />
       </div>
     </aside>
@@ -98,11 +98,11 @@ function FactColumnView({ column }: { column: GuideFactColumn }) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(17px, 2.6vw, 19px)',
-          lineHeight: 1.2,
+          fontSize: 'clamp(18px, 2.8vw, 21px)',
+          lineHeight: 1.18,
           letterSpacing: '-0.01em',
           color: '#24301F',
-          margin: '0 0 10px',
+          margin: '0 0 14px',
         }}
       >
         {column.heading}
@@ -113,11 +113,11 @@ function FactColumnView({ column }: { column: GuideFactColumn }) {
             key={i}
             style={{
               fontFamily: sans,
-              fontSize: 14,
-              lineHeight: 1.55,
-              color: 'rgba(36,48,31,0.78)',
-              padding: '4px 0',
-              borderTop: i === 0 ? 'none' : '1px solid rgba(36,48,31,0.06)',
+              fontSize: 14.5,
+              lineHeight: 1.6,
+              color: 'rgba(36,48,31,0.80)',
+              padding: '6px 0',
+              borderTop: i === 0 ? 'none' : '1px solid rgba(36,48,31,0.07)',
             }}
           >
             {item}

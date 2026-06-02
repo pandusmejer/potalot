@@ -11,6 +11,7 @@ import type { GuideSection } from '@/lib/types'
 import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
+import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -77,6 +78,11 @@ export function SaadanDyrkerDu({ sections }: Props) {
                 items={s.items}
               />
             )
+          }
+          // Prose-fald — men hvis titlen starter med "Potalot", render
+          // som signatur-blok i stedet for almindelig sektion.
+          if (isPotalotNoteSection(s.title)) {
+            return <GuidePotalotNote key={key} body={s.body} />
           }
           return <ProseSection key={key} title={s.title} body={s.body} />
         })}
