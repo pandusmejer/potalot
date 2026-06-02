@@ -36,25 +36,25 @@ export const POPULAERE_EMNER: PopulaertEmne[] = [
     matchPlantName: 'tomat',
     navn: 'Tomater',
     byline: 'Fra frø til høst',
-    imageUrl: '/images/plantekort/plantekort-tomat-san-marzano.png',
+    imageUrl: '/images/plantekort/tomat-san-marzano.png',
   },
   {
     matchPlantName: 'dahlia',
     navn: 'Dahliaer',
     byline: 'Flere blomster hele sommeren',
-    imageUrl: '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg',
+    imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg',
   },
   {
     matchPlantName: 'agurk',
     navn: 'Agurker',
     byline: 'Sprøde høster gennem sommeren',
-    imageUrl: '/images/plantekort/plantekort-agurk-marketmore.png',
+    imageUrl: '/images/plantekort/agurk-marketmore.png',
   },
   {
     matchPlantName: 'chili',
     navn: 'Chili',
     byline: 'Lang sæson, stor belønning',
-    imageUrl: '/images/plantekort/plantekort-chili-habanero-orange.jpg',
+    imageUrl: '/images/plantekort/chili-habanero-orange.jpg',
   },
 ]
 
@@ -194,7 +194,7 @@ const POTALOT_TOMAT: Guide = {
     { taskType: 'pruning', title: 'Tyv tomatplanterne', recommendedMonths: [6, 7, 8], priority: 'medium' },
     { taskType: 'harvest', title: 'Høst modne frugter', recommendedMonths: [7, 8, 9], priority: 'high' },
   ],
-  primaryImageId: '/images/plantekort/plantekort-tomat-san-marzano.png',
+  primaryImageId: '/images/plantekort/tomat-san-marzano.png',
   visibility: 'public',
 }
 
@@ -288,7 +288,7 @@ const POTALOT_DAHLIA: Guide = {
     { taskType: 'harvest', title: 'Pluk blomster løbende', recommendedMonths: [7, 8, 9, 10], priority: 'medium' },
     { taskType: 'maintenance', title: 'Grav op og overvintr knolde', recommendedMonths: [10, 11], priority: 'high' },
   ],
-  primaryImageId: '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg',
+  primaryImageId: '/images/plantekort/dahlia-cafe-au-lait.jpg',
   visibility: 'public',
 }
 
@@ -557,7 +557,7 @@ const EGEN_TOMAT_TILPASNING: Guide = {
     { taskType: 'plant_out', title: 'Udplant i drivhus (juni)', recommendedMonths: [6], priority: 'high' },
     { taskType: 'harvest', title: 'Høst modne frugter', recommendedMonths: [8, 9, 10], priority: 'high' },
   ],
-  primaryImageId: '/images/plantekort/plantekort-tomat-san-marzano.png',
+  primaryImageId: '/images/plantekort/tomat-san-marzano.png',
   visibility: 'private',
 }
 
@@ -600,7 +600,7 @@ const EGEN_SUKKERAERT: Guide = {
     { taskType: 'sowing', title: 'Direkte såning', recommendedMonths: [3, 4], priority: 'high' },
     { taskType: 'harvest', title: 'Pluk bælge hver 2.–3. dag', recommendedMonths: [6, 7], priority: 'medium' },
   ],
-  primaryImageId: '/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg',
+  primaryImageId: '/images/plantekort/sukkeraert-sugar-snap.jpg',
   visibility: 'private',
 }
 
@@ -646,7 +646,7 @@ const AI_AGURK: Guide = {
     { taskType: 'plant_out', title: 'Plant ud i drivhus', recommendedMonths: [6], priority: 'high' },
     { taskType: 'harvest', title: 'Pluk agurker løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
   ],
-  primaryImageId: '/images/plantekort/plantekort-agurk-marketmore.png',
+  primaryImageId: '/images/plantekort/agurk-marketmore.png',
   visibility: 'private',
 }
 

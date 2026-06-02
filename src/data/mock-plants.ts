@@ -94,8 +94,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-08-08',
     expectedHarvestEnd: '2026-09-20',
     quantity: 6,
-    imageIds: ['/images/plantekort/plantekort-tomat-san-marzano.png'],
-    primaryImageId: '/images/plantekort/plantekort-tomat-san-marzano.png',
+    imageIds: ['/images/plantekort/tomat-san-marzano.png'],
+    primaryImageId: '/images/plantekort/tomat-san-marzano.png',
     imageSource: 'guide_reference',
     logIds: ['log-tomat-1', 'log-tomat-2'],
     guideId: 'guide-tomat',
@@ -104,7 +104,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-28T18:30:00.000Z',
     notes: 'Stærke planter efter ompotning. Hold øje med vanding på solrige dage.',
     pictures: [
-      { id: 'tomat-img-1', src: '/images/plantekort/plantekort-tomat-san-marzano.png', alt: 'Tomat San Marzano' },
+      { id: 'tomat-img-1', src: '/images/plantekort/tomat-san-marzano.png', alt: 'Tomat San Marzano' },
     ],
     latestActivity: {
       id: 'activity-tomat',
@@ -112,7 +112,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Tomat San Marzano',
       action: 'Ompottet for 9 dage siden',
       when: '20. april',
-      image: '/images/plantekort/plantekort-tomat-san-marzano.png',
+      image: '/images/plantekort/tomat-san-marzano.png',
     },
     nextAction: {
       id: 'next-tomat',
@@ -151,8 +151,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-07-22',
     expectedHarvestEnd: '2026-09-05',
     quantity: 3,
-    imageIds: ['/images/plantekort/plantekort-agurk-marketmore.png'],
-    primaryImageId: '/images/plantekort/plantekort-agurk-marketmore.png',
+    imageIds: ['/images/plantekort/agurk-marketmore.png'],
+    primaryImageId: '/images/plantekort/agurk-marketmore.png',
     imageSource: 'user_upload',
     logIds: ['log-agurk-1', 'log-agurk-2'],
     guideId: 'guide-agurk',
@@ -161,7 +161,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-29T07:40:00.000Z',
     notes: 'Spirer hurtigt. Skal ikke stå for vådt omkring rothalsen.',
     pictures: [
-      { id: 'agurk-img-1', src: '/images/plantekort/plantekort-agurk-marketmore.png', alt: 'Agurk Marketmore' },
+      { id: 'agurk-img-1', src: '/images/plantekort/agurk-marketmore.png', alt: 'Agurk Marketmore' },
     ],
     latestActivity: {
       id: 'activity-agurk',
@@ -169,7 +169,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Agurk Marketmore',
       action: 'Foto tilføjet',
       when: 'I dag',
-      image: '/images/plantekort/plantekort-agurk-marketmore.png',
+      image: '/images/plantekort/agurk-marketmore.png',
     },
     nextAction: {
       id: 'next-agurk',
@@ -218,7 +218,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-29T08:00:00.000Z',
     notes: 'Kompakt vækst. Første blomsterknopper er synlige.',
     pictures: [
-      { id: 'chili-img-1', src: '/images/plantekort/plantekort-chili-habanero-orange.jpg', alt: 'Chili Habanero' },
+      { id: 'chili-img-1', src: '/images/plantekort/chili-habanero-orange.jpg', alt: 'Chili Habanero' },
     ],
     latestActivity: {
       id: 'activity-chili',
@@ -226,7 +226,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Chili Habanero',
       action: 'Spirede i dag',
       when: '22. februar',
-      image: '/images/plantekort/plantekort-chili-habanero-orange.jpg',
+      image: '/images/plantekort/chili-habanero-orange.jpg',
     },
     nextAction: {
       id: 'next-chili',
@@ -265,8 +265,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-07-28',
     expectedHarvestEnd: '2026-10-05',
     quantity: 4,
-    imageIds: ['/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg'],
-    primaryImageId: '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg',
+    imageIds: ['/images/plantekort/dahlia-cafe-au-lait.jpg'],
+    primaryImageId: '/images/plantekort/dahlia-cafe-au-lait.jpg',
     logIds: ['log-dahlia-1', 'log-dahlia-2'],
     guideId: 'guide-dahlia',
     isArchived: false,
@@ -274,7 +274,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-28T17:00:00.000Z',
     notes: 'Hærdet af i skygge. Vent med udplantning ved kolde nætter.',
     pictures: [
-      { id: 'dahlia-img-1', src: '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg', alt: 'Dahlia Cafe au Lait' },
+      { id: 'dahlia-img-1', src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Dahlia Cafe au Lait' },
     ],
     latestActivity: {
       id: 'activity-dahlia',
@@ -282,7 +282,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Dahlia Café au Lait',
       action: 'Ompottet i går',
       when: 'I går',
-      image: '/images/plantekort/plantekort-dahlia-cafe-au-lait.jpg',
+      image: '/images/plantekort/dahlia-cafe-au-lait.jpg',
     },
     nextAction: {
       id: 'next-dahlia',
@@ -321,8 +321,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-05-29',
     expectedHarvestEnd: '2026-06-20',
     quantity: 12,
-    imageIds: ['/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg'],
-    primaryImageId: '/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg',
+    imageIds: ['/images/plantekort/sukkeraert-sugar-snap.jpg'],
+    primaryImageId: '/images/plantekort/sukkeraert-sugar-snap.jpg',
     logIds: ['log-salat-1', 'log-salat-2'],
     guideId: 'guide-salat',
     isArchived: false,
@@ -330,7 +330,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-29T08:20:00.000Z',
     notes: 'Klar til løbende høst af sprøde bælge.',
     pictures: [
-      { id: 'sukkeraert-img-1', src: '/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg', alt: 'Sukkertært Sugar Snap' },
+      { id: 'sukkeraert-img-1', src: '/images/plantekort/sukkeraert-sugar-snap.jpg', alt: 'Sukkertært Sugar Snap' },
     ],
     latestActivity: {
       id: 'activity-salat',
@@ -338,7 +338,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Sukkertært Sugar Snap',
       action: 'Klar til høst',
       when: 'I dag',
-      image: '/images/plantekort/plantekort-sukkeraert-sugar-snap.jpg',
+      image: '/images/plantekort/sukkeraert-sugar-snap.jpg',
     },
     nextAction: {
       id: 'next-salat',
@@ -377,8 +377,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-08-01',
     expectedHarvestEnd: '2026-09-15',
     quantity: 8,
-    imageIds: ['/images/plantekort/plantekort-stangboenne-cobra.jpg'],
-    primaryImageId: '/images/plantekort/plantekort-stangboenne-cobra.jpg',
+    imageIds: ['/images/plantekort/stangboenne-cobra.jpg'],
+    primaryImageId: '/images/plantekort/stangboenne-cobra.jpg',
     logIds: ['log-boenne-1'],
     guideId: 'guide-boenne',
     isArchived: false,
@@ -386,7 +386,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-25T09:00:00.000Z',
     notes: 'Venter på spiring. Skal have stativ ved udplantning.',
     pictures: [
-      { id: 'boenne-img-1', src: '/images/plantekort/plantekort-stangboenne-cobra.jpg', alt: 'Stangbønne Cobra' },
+      { id: 'boenne-img-1', src: '/images/plantekort/stangboenne-cobra.jpg', alt: 'Stangbønne Cobra' },
     ],
     latestActivity: {
       id: 'activity-boenne',
@@ -394,7 +394,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Stangbønne Cobra',
       action: 'Sået',
       when: '25. maj',
-      image: '/images/plantekort/plantekort-stangboenne-cobra.jpg',
+      image: '/images/plantekort/stangboenne-cobra.jpg',
     },
     nextAction: {
       id: 'next-boenne',

@@ -35,7 +35,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
  * fuld-bleed atmosfærisk baggrund. Tilføj flere efter behov.
  */
 const KOMMENDE_BAGGRUNDE: Record<number, string> = {
-  6: '/images/kalender/Baggrund kommende maaned juni.png',
+  6: '/images/kalender/baggrund-kommende-maaned-juni.png',
 }
 
 export function NaesteMaaned({ month, generalTasks }: { month: number; generalTasks: GeneralGardenTask[] }) {
