@@ -40,7 +40,38 @@ Sådan laver du frø
 Sådan vander du i drivhus
 ```
 
-Tre lag løser det rent.
+Tre lag løser det rent — med et fjerde lag (Concept) der venter længere
+ude, når biblioteket er stort nok til at retfærdiggøre det.
+
+---
+
+## Topologi: netværk, ikke hierarki
+
+> Brugeren bevæger sig ikke ned gennem hierarkiet.
+> Brugeren vandrer rundt i et netværk.
+
+Det er en vigtig forskel. Niveauerne nedenfor betyder *ikke* at læseren
+skal læse Species før Variety før Technique. En læser lander hvor som
+helst — typisk gennem en søgning på en handling: *"Hvordan kniber jeg
+tomater?"* — og vandrer derfra.
+
+```
+Species  →  Variety  →  Technique  →  Species
+```
+
+Det er en cyklus, ikke en pil. *Marketmore → opbinding-af-agurker →
+tilbage til Agurk* er en sund trafik-loop, ikke en navigationsfejl.
+
+**Konsekvenser:**
+
+- **Hver guide er en mulig indgang.** SEO, search og deep-linking har
+  samme værdi som en forside
+- **`:::guide`, `:::related-guides` og `:::next-guide` er netværkskanter**,
+  ikke breadcrumbs
+- **Der findes ikke "tilbage til oversigten"** — fordi der ingen
+  oversigt er
+- **Sortsguider er invitationer, ikke manualer** — læseren har ikke
+  nødvendigvis læst artsguiden først
 
 ---
 
@@ -120,6 +151,52 @@ tusindvis af sorter, og du kommer aldrig til manuelt at skrive dem alle.
 
 ---
 
+## Niveau 4 — Konceptguides (Concept) — V2
+
+**Forståelse af begreber. Ikke planter, ikke handlinger.**
+
+Eksempler:
+
+- F1-hybrider
+- Frøægte sorter
+- Arvesorter
+- Sædskifte
+- Ledsageplanter
+- Biodynamisk dyrkning
+
+En konceptguide besvarer **"Hvad betyder dette?"** — ikke *"hvordan
+dyrker jeg?"* (species/variety), ikke *"hvordan gør jeg?"* (technique).
+
+Konceptguider er en kategori for sig fordi de er **kategorisk
+hjemløse** i species/variety/technique-modellen. F1 er ikke en plante,
+ikke en sort, ikke en handling. Det er et begreb der gælder på tværs af
+alle tre lag.
+
+```
+                 [ Koncept ]
+                      ▲
+                      │
+[ Species ] ◄────► [ Technique ]
+      ▲
+      │
+[ Variety ]
+```
+
+| Søjle | Spørgsmål | Eksempel |
+|---|---|---|
+| Species | Hvordan dyrker jeg? | Tomat, Agurk |
+| Variety | Hvorfor netop denne? | San Marzano, Marketmore |
+| Technique | Hvordan gør jeg? | Knibning af tomater |
+| **Concept** | **Hvad betyder dette?** | **F1-hybrider, sædskifte** |
+
+**Schema:** ny enum-værdi `guideLevel: 'concept'`.
+
+**Hvornår:** først når biblioteket har 30-50 planteguider. Tidligere
+bliver konceptguider for abstrakte — der mangler den konkrete kontekst
+der gør et begreb forståeligt.
+
+---
+
 ## Relationer
 
 ```
@@ -180,8 +257,16 @@ tredelte taksonomi er endnu ikke synlig.
 - Udvid guides-forsiden med separat "Teknikker"-indgang
 - Skriv 50 AI-genererede sortsguider med klart `AI-udkast`-badge
 
-**V2 (senere):** AI-pipeline for systematisk sortsgenerering.
-Community-contributed teknikker. Avancerede filtre.
+**V2 (senere):** Aktivér koncept-laget.
+
+- Tilføj `'concept'` til `GuideLevel`-enum
+- Skriv 5-10 konceptguider (F1, arvesort, frøægte, sædskifte, ledsageplanter)
+- AI-pipeline for systematisk sortsgenerering
+- Community-contributed teknikker
+- Avancerede filtre
+
+Konceptlaget aktiveres KUN når biblioteket har 30-50 planteguider — så
+begreberne har konkret kontekst at hænge på.
 
 ---
 

@@ -43,6 +43,26 @@ Eksempel:
 
 ---
 
+## Netværk, ikke navigation
+
+Blokkene er **kanter** i et netværk — ikke navigationsbreadcrumbs.
+
+Brugeren bevæger sig ikke ned gennem et hierarki. Hun vandrer mellem
+guider: *Tomat → San Marzano → opbinding-af-tomater → tilbage til
+Tomat*. Det er en sund cyklus, ikke en navigationsfejl.
+
+Det betyder:
+
+- **Hver guide kan være en indgang** — SEO og search har samme værdi
+  som en forside
+- **Der findes ikke "tilbage til oversigten"** — der er ingen oversigt
+- **Blokkene peger udad**, ikke opad mod en parent
+
+Se [`GUIDES_ARCHITECTURE.md`](./GUIDES_ARCHITECTURE.md) — afsnittet
+*"Topologi: netværk, ikke hierarki"* — for det fulde arkitekturpoint.
+
+---
+
 ## Sektioner i brødteksten
 
 - `## Hovedsektion` — top-niveau-kapitel ("Om planten", "Forspiring",
