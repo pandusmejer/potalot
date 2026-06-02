@@ -346,6 +346,174 @@ const POTALOT_HVIDLOG: Guide = {
   visibility: 'public',
 }
 
+// Midlertidig demo-version af Agurk-artsguide.md indtil import-script lander.
+const POTALOT_AGURK: Guide = {
+  ...baseGuide(),
+  guideLevel: 'species',
+  parentGuideId: null,
+  id: 'demo-guide-agurk-arts',
+  plantName: 'Agurk',
+  variety: null,
+  latinName: 'Cucumis sativus',
+  primaryCategoryId: 'fro',
+  subcategoryId: 'groentsager',
+  summary:
+    'Agurk er en hurtigtvoksende og produktiv grøntsag, der trives i varme omgivelser. Med den rette mængde vand, næring og sol kan få planter levere et imponerende udbytte gennem hele sommeren.',
+  tags: ['drivhus', 'friland', 'sommergrøntsag', 'køkkenhave', 'produktiv', 'spisekammer', 'selvforsyning'],
+  quickFacts: {
+    sowingMonths: [4, 5],
+    directSowingMonths: [5, 6],
+    plantingOutMonths: [5, 6],
+    harvestMonths: [7, 8, 9],
+    preCultivation: true,
+    light: 'full_sun',
+    water: 'regular',
+    soil: 'Næringsrig, veldrænet og fugtighedsbevarende jord med højt indhold af organisk materiale.',
+  },
+  sections: [
+    {
+      key: 'om-planten',
+      title: 'Om planten',
+      body:
+        'Agurk er en af køkkenhavens mest gavmilde planter. Giver du den varme, vand og næringsrig jord, kvitterer den med et imponerende udbytte gennem hele sommeren. Oprindeligt stammer agurken fra Sydasien, og i dag dyrkes den i et væld af sorter til både frisk brug og syltning. De fleste trives bedst i drivhus eller på en varm og beskyttet plads på friland.',
+    },
+    {
+      key: 'typer',
+      title: 'Forskellige typer agurker',
+      body:
+        'Når man taler om agurker, mener man ofte den lange grønne drivhusagurk fra supermarkedet. Men agurker findes i mange forskellige former og størrelser.\nDe fleste sorter kan groft opdeles i nogle få grupper:\n• Drivhusagurker — lange, glatte agurker dyrket under glas.\n• Frilandsagurker — robuste sorter til det danske sommervejr.\n• Drue- og sylteagurker — mindre agurker velegnet til syltning.\n• Snackagurker — små, søde agurker til frisk spisning.\n• Specialsorter — gamle kulturarvssorter eller sorter med særlige former, farver og smagsnuancer.\nDe grundlæggende dyrkningsprincipper er de samme, men nogle sorter er bedre tilpasset bestemte formål og voksesteder end andre.',
+    },
+    {
+      kind: 'fact',
+      key: 'fact-drivhus-friland',
+      title: 'Drivhusagurk eller frilandsagurk?',
+      variant: 'comparison',
+      columns: [
+        {
+          heading: 'Drivhusagurk',
+          items: [
+            'Trives bedst under glas',
+            'Giver ofte lange glatte frugter',
+            'Har brug for varme hele sæsonen',
+            'Mange sorter er selvfertile',
+          ],
+        },
+        {
+          heading: 'Frilandsagurk',
+          items: [
+            'Mere robust over for dansk sommervejr',
+            'Egner sig til bede og højbede',
+            'Bestøves normalt af insekter',
+            'Velegnet til syltning og frisk brug',
+          ],
+        },
+      ],
+    },
+    {
+      key: 'sma-haver',
+      title: 'Agurker i små haver og vindueskarme',
+      body:
+        'Agurker forbindes ofte med drivhuse og køkkenhaver, men flere sorter egner sig også til dyrkning på altaner, terrasser og i lyse vinduer.\nI de senere år har mange dyrkere fået øjnene op for at lade slyngplanter vokse op ad snore eller espalier indendørs. Det giver ikke blot høst på begrænset plads, men kan også fungere som en levende grøn væg med spiselige frugter.\nIkke alle sorter egner sig til formålet, men kompakte sorter og snackagurker kan ofte dyrkes overraskende succesfuldt i store krukker og selvvandende beholdere.',
+    },
+    {
+      key: 'forspiring',
+      title: 'Forspiring eller direkte såning',
+      body:
+        'Agurker elsker varme. Derfor vælger mange at forspire dem indendørs i april eller maj for at få en tidligere høst.\nFrøene spirer hurtigt, og planterne vokser ofte overraskende hurtigt allerede de første uger. Pas på ikke at starte for tidligt. Store agurkeplanter på en vindueskarm bliver hurtigt besværlige at håndtere.\nPå lune voksesteder kan agurker også sås direkte, når jorden er blevet varm.',
+    },
+    {
+      key: 'udplantning',
+      title: 'Udplantning',
+      body:
+        'Agurker er følsomme over for kulde. Vent med udplantning til risikoen for nattefrost er ovre, og jorden har fået temperatur.\nPlanterne trives bedst i næringsrig jord med masser af kompost. Vælg en placering med læ, varme og så meget sol som muligt.\nAgurker kan dyrkes både i bede, højbede, krukker og forskellige former for selvvandende dyrkningssystemer. Fælles for dem alle er, at planterne har brug for rigelig adgang til både vand og næring gennem hele sæsonen.',
+    },
+    {
+      key: 'pleje',
+      title: 'Pleje gennem sæsonen',
+      body:
+        'Agurker vokser hurtigt og har et stort behov for både vand og næring.\nJævn vanding giver de bedste frugter. Hvis planterne skiftevis tørrer ud og druknes, kan frugterne blive bitre eller udvikle sig ujævnt.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-opbinding',
+      slug: 'opbinding-af-agurker',
+      title: 'Sådan opbinder du agurker',
+      description:
+        'Mange agurkesorter giver et bedre udbytte og fylder mindre, når de dyrkes op ad snor eller espalier.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-beskaering',
+      slug: 'beskaering-af-agurker',
+      title: 'Sådan beskærer du agurker',
+      description:
+        'Beskæring kan give bedre luft omkring planterne, mindske sygdomspres og gøre det lettere at styre væksten i drivhuset.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-knibning',
+      slug: 'knibning-af-agurker',
+      title: 'Sådan kniber du agurker',
+      description:
+        'Lær hvornår og hvordan du kniber sideskud og vækstpunkter, så planten bruger energien dér, hvor den giver mest værdi.',
+    },
+    {
+      key: 'sygdomme',
+      title: 'Sygdomme og udfordringer',
+      body:
+        'Agurker fortæller hurtigt, når noget er galt. Mangler de vand, hænger bladene. Mangler de varme, stopper væksten næsten fra den ene dag til den anden.\nDen mest almindelige udfordring er meldug sidst på sommeren. Sørg for god luft omkring planterne, høst løbende og undgå unødigt stress. Stærke planter klarer som regel sæsonen bedst.',
+    },
+    {
+      key: 'bestoevning',
+      title: 'Blomster og bestøvning',
+      body:
+        'Agurker danner både han- og hunblomster. Hunblomsterne kan kendes på den lille agurk, der sidder bag blomsten, mens hanblomsterne sidder direkte på stilken.\nMange moderne drivhusagurker er selvfertile eller partenokarpe. Det betyder, at de kan udvikle frugter uden bestøvning. Andre sorter er afhængige af pollen fra hanblomster og hjælp fra bier eller andre insekter.\nPå friland klarer bestøverne som regel arbejdet uden hjælp. I drivhus kan manglende bestøvning føre til små frugter, der stopper væksten eller falder af.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-bestoevning',
+      slug: 'bestoevning-af-agurker',
+      title: 'Sådan bestøver du agurker',
+      description:
+        'Lær forskellen på han- og hunblomster, og hvornår du eventuelt skal hjælpe naturen lidt på vej.',
+    },
+    {
+      key: 'host',
+      title: 'Høst',
+      body:
+        'Agurker høstes bedst løbende.\nJo flere frugter du plukker, desto flere nye vil planten typisk danne. Lader du mange agurker sidde og blive store, bruger planten energi på frøudvikling i stedet for nye frugter.',
+    },
+    {
+      key: 'fejl',
+      title: 'Typiske fejl',
+      body:
+        '• At være for ivrig om foråret. Agurker elsker varme og belønner sjældent den første udplantning.\n• At vande for lidt i varme perioder. Få planter reagerer så hurtigt på tørke som agurker.\n• At glemme, hvor store planterne bliver. Det, der ligner en lille plante i juni, kan ligne en jungle i august.\n• At lade frugterne hænge for længe. Regelmæssig høst giver som regel flere agurker.\n• At spare på næringen. Agurker er blandt køkkenhavens mest sultne planter.\n• At bekymre sig for sent om luftcirkulation. Tætte planter giver lettere problemer med meldug sidst på sæsonen.',
+    },
+    {
+      key: 'potalot-note',
+      title: 'Potalot-note',
+      body:
+        'Der findes grøntsager, som kræver tålmodighed. Agurker er ikke en af dem. Når først planten har fået fat, går der sjældent mange dage mellem hver høst.',
+    },
+    {
+      kind: 'next',
+      key: 'next-marketmore',
+      title: 'Vælg en sort',
+      description:
+        'Nogle agurker er skabt til drivhuset, andre til friland. Nogle er bedst friske, andre til syltning.',
+      slug: 'demo-guide-agurk-marketmore',
+      label: 'Læs om Agurk Marketmore',
+    },
+  ],
+  calendarRules: [
+    { taskType: 'sowing', title: 'Forspir agurker indendørs', recommendedMonths: [4, 5], priority: 'high' },
+    { taskType: 'plant_out', title: 'Udplant når jorden er varm', recommendedMonths: [5, 6], priority: 'high' },
+    { taskType: 'harvest', title: 'Høst løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
+  ],
+  primaryImageId: '/images/groentsager/Agurkeplante Potalot.png',
+  visibility: 'public',
+}
+
 // ── 2 EGNE GUIDES (visibility: 'private') ────────────────────────
 
 const EGEN_TOMAT_TILPASNING: Guide = {
@@ -486,7 +654,7 @@ const AI_AGURK: Guide = {
 // EKSPORTER
 // ════════════════════════════════════════════════════════════════
 
-export const DEMO_POTALOT_GUIDES: Guide[] = [POTALOT_TOMAT, POTALOT_DAHLIA, POTALOT_HVIDLOG]
+export const DEMO_POTALOT_GUIDES: Guide[] = [POTALOT_TOMAT, POTALOT_DAHLIA, POTALOT_HVIDLOG, POTALOT_AGURK]
 export const DEMO_EGNE_GUIDES: Guide[] = [EGEN_TOMAT_TILPASNING, EGEN_SUKKERAERT]
 export const DEMO_AI_GUIDES: Guide[] = [AI_AGURK]
 
