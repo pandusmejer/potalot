@@ -209,7 +209,7 @@ export function MaanedsHero({
   const monthName = MONTHS_DA[month - 1].full
   const stemning = MAANEDS_STEMNING[month]
   const sa = saeson(month)
-  const foto = `/images/hero-${MAANED_SLUG[month - 1]}-foto.png`
+  const foto = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1]}-foto.png`
   const lys = '#F6F3EA'
   // Blød tekst-skygge: holder teksten læsbar over de lyse blade
   // UDEN at gøre billedet mørkere (ingen ekstra overlay).

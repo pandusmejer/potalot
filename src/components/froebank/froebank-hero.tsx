@@ -30,7 +30,7 @@ export function FroebankHero({
   stats?: Array<string>
   addHref?: string
 }) {
-  const foto = '/images/hero-froebank-foto.png'
+  const foto = '/images/heroes-sider/hero-froebank-foto.png'
   const lys = '#F6F3EB'
 
   return (

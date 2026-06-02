@@ -510,7 +510,7 @@ const POTALOT_AGURK: Guide = {
     { taskType: 'plant_out', title: 'Udplant når jorden er varm', recommendedMonths: [5, 6], priority: 'high' },
     { taskType: 'harvest', title: 'Høst løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
   ],
-  primaryImageId: '/images/groentsager/Agurkeplante Potalot.png',
+  primaryImageId: null,
   visibility: 'public',
 }
 

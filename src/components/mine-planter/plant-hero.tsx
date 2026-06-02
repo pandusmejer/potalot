@@ -12,7 +12,7 @@ export function PlantHero({ activeCount, varietyCount }: PlantHeroProps) {
     <section className="relative min-h-[180px] overflow-hidden rounded-[1.75rem] bg-[#24301f] px-5 py-4 text-white shadow-lift sm:min-h-[200px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/hero-planter-spirer.png"
+        src="/images/heroes-sider/hero-planter-spirer.png"
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
       />

@@ -42,6 +42,9 @@ Så hvis du har et nærbillede af en tomatblomst, ligger det i
 | `arts/` | Hero-billede til en hel art (hele planten). Ét pr. plante. |
 | `plantekort/` | Hero-billede til en sort (nærbillede af frugt/blomst). |
 | `frokort/` | Fritlagt frø/frøpose-billede til frøbanken. |
+| `heroes-maaneder/` | Hero-billede til hver måned i kalenderen (jan-dec + foraar). |
+| `heroes-sider/` | Hero-billede til app-sider (frøbank, planter osv.). |
+| `kalender/` | Kalender-specifikke grafiske elementer. |
 | `makro/<plante>/` | Stemnings-nærbilleder (Botanical Bleed). 5 pr. plante. |
 | `detail/<plante>/` | Asymmetriske udsnit (Detail Bleed). |
 | `teknik/` | Hero-billede til en teknikguide (knibning, opbinding…). |
@@ -147,6 +150,8 @@ Specifikke anbefalinger pr. mappe:
 public/images/arts/tomat.jpg
 public/images/plantekort/tomat-san-marzano.jpg
 public/images/frokort/agurk-marketmore.jpg
+public/images/heroes-maaneder/hero-maj-foto.png
+public/images/heroes-sider/hero-froebank-foto.png
 public/images/makro/tomat/blomst.jpg
 public/images/makro/agurk/hanblomst.jpg
 public/images/detail/dahlia/buket.jpg

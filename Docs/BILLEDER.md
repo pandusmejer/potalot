@@ -16,6 +16,9 @@ public/images/
 ├── arts/                    Artsguide-hero (hele planten)
 ├── plantekort/              Sortskort-hero (nærbillede af sorten)
 ├── frokort/                 Frøkort i frøbanken
+├── heroes-maaneder/         Måneds-hero i kalenderen
+├── heroes-sider/            Side-hero (frøbank, planter osv.)
+├── kalender/                Kalender-specifikke grafiske elementer
 ├── makro/                   Stemnings-nærbilleder (Botanical Bleed)
 │   ├── tomat/
 │   ├── agurk/

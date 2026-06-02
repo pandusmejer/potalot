@@ -473,7 +473,7 @@ function FocusTaskRow({
   // 8px hero-strimmel pr. række — forskellige horisontale udsnit
   // af samme hero-billede så hver pille har sit eget mini-billede
   // men de hænger sammen som strips af samme foto.
-  const heroSrc = `/images/hero-${MAANED_SLUG[month - 1] ?? 'maj'}-foto.png`
+  const heroSrc = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1] ?? 'maj'}-foto.png`
   const stripOffsets = ['12%', '38%', '64%', '88%', '24%', '52%', '76%', '4%']
   const stripPos = stripOffsets[stripIndex % stripOffsets.length]
 
