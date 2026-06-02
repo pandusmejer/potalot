@@ -392,7 +392,57 @@ export interface GuideFactSection {
   body?: string                      // editor-compat; ikke renderet
 }
 
-export type GuideSection = GuideProseSection | GuideFactSection
+/**
+ * `:::guide` — inline teknik-/færdighedskort i brødteksten.
+ * Renderes som <GuideTechniqueCard>. Peger på en teknikguide via slug.
+ */
+export interface GuideTechniqueSection {
+  kind: 'guide'
+  key: string
+  title: string                      // fx 'Sådan opbinder du tomater'
+  slug: string                       // → target guide
+  description: string
+  body?: string                      // editor-compat
+}
+
+/**
+ * `:::related-guides` — container med flere beslægtede sorter/guides.
+ * Renderes som <GuideRelatedList>. Hvert item er en mini-kort-reference.
+ */
+export interface GuideRelatedItem {
+  slug: string
+  heading: string                    // #### Navn
+  description: string
+}
+
+export interface GuideRelatedSection {
+  kind: 'related'
+  key: string
+  title?: string                     // valgfri eyebrow ("Beslægtede sorter")
+  items: GuideRelatedItem[]
+  body?: string                      // editor-compat
+}
+
+/**
+ * `:::next-guide` — det redaktionelle "store næste skridt", typisk
+ * allersidst på siden. Højst én pr. guide.
+ */
+export interface GuideNextSection {
+  kind: 'next'
+  key: string
+  title: string                      // fx 'Vælg en sort'
+  description: string
+  slug: string                       // target guide
+  label: string                      // CTA-tekst, fx 'Tomat San Marzano'
+  body?: string                      // editor-compat
+}
+
+export type GuideSection =
+  | GuideProseSection
+  | GuideFactSection
+  | GuideTechniqueSection
+  | GuideRelatedSection
+  | GuideNextSection
 
 export interface GuideCalendarRule {
   taskType: TaskType

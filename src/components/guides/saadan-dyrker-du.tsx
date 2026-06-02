@@ -9,6 +9,8 @@
 
 import type { GuideSection } from '@/lib/types'
 import { GuideFactCard } from './guide-fact-card'
+import { GuideTechniqueCard } from './guide-technique-card'
+import { GuideRelatedList } from './guide-related-list'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -18,7 +20,11 @@ interface Props {
 }
 
 export function SaadanDyrkerDu({ sections }: Props) {
-  if (sections.length === 0) {
+  // `:::next-guide` rendres ikke her — guide-detail-page rendrer den
+  // som det allersidste blok på siden (efter sortsvarianter, noter osv).
+  const body = sections.filter(s => s.kind !== 'next')
+
+  if (body.length === 0) {
     return (
       <section className="space-y-3">
         <SektionEyebrow>Sådan dyrker du</SektionEyebrow>
@@ -41,18 +47,39 @@ export function SaadanDyrkerDu({ sections }: Props) {
     <section className="space-y-5">
       <SektionEyebrow>Sådan dyrker du</SektionEyebrow>
       <div className="space-y-8 sm:space-y-9">
-        {sections.map((s, i) =>
-          s.kind === 'fact' ? (
-            <GuideFactCard
-              key={s.key ?? i}
-              title={s.title}
-              variant={s.variant}
-              columns={s.columns}
-            />
-          ) : (
-            <ProseSection key={s.key ?? i} title={s.title} body={s.body} />
-          ),
-        )}
+        {body.map((s, i) => {
+          const key = s.key ?? `section-${i}`
+          if (s.kind === 'fact') {
+            return (
+              <GuideFactCard
+                key={key}
+                title={s.title}
+                variant={s.variant}
+                columns={s.columns}
+              />
+            )
+          }
+          if (s.kind === 'guide') {
+            return (
+              <GuideTechniqueCard
+                key={key}
+                slug={s.slug}
+                title={s.title}
+                description={s.description}
+              />
+            )
+          }
+          if (s.kind === 'related') {
+            return (
+              <GuideRelatedList
+                key={key}
+                title={s.title}
+                items={s.items}
+              />
+            )
+          }
+          return <ProseSection key={key} title={s.title} body={s.body} />
+        })}
       </div>
     </section>
   )

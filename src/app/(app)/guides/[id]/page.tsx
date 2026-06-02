@@ -8,6 +8,7 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
+import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderKobling } from '@/components/guides/kalender-kobling'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
@@ -93,6 +94,11 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
 
   const cat = PRIMARY_CATEGORIES[effective.primaryCategoryId]
   const isOwner = !!currentUser && original.visibility === 'private'
+
+  // `:::next-guide`-blokken vises som sidste editorial element på siden,
+  // efter alt andet content (sortsvarianter, noter, kalender osv).
+  // Højst én pr. guide — vi tager den første hvis flere skulle smutte ind.
+  const nextGuide = effective.sections.find(s => s.kind === 'next')
 
   // Trust-badge: i demo har vi AI-flag; ellers public=potalot / private=egen
   const aiIds = isDemo
@@ -339,6 +345,16 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             </CardContent>
           </Card>
         </section>
+      )}
+
+      {/* ── 7. NEXT-GUIDE — det redaktionelle sidste skub ── */}
+      {nextGuide && nextGuide.kind === 'next' && (
+        <GuideNextCard
+          title={nextGuide.title}
+          description={nextGuide.description}
+          slug={nextGuide.slug}
+          label={nextGuide.label}
+        />
       )}
     </article>
   )

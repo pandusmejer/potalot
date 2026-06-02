@@ -164,10 +164,27 @@ const POTALOT_TOMAT: Guide = {
         'Tyv (knib sideskud væk) hver 7. dag — det giver større frugter og lader luften cirkulere. Vand dybt og regelmæssigt; ujævn vanding giver revnede tomater. Gød hver 14. dag fra første blomst med tomat-gødning eller komposttea. Fjern de nederste blade når de gulner.',
     },
     {
+      kind: 'guide',
+      key: 'guide-knibning',
+      slug: 'knibning-af-tomater',
+      title: 'Sådan kniber du tomater',
+      description:
+        'Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten.',
+    },
+    {
       key: 'host',
       title: 'Høst og opbevaring',
       body:
         'Pluk når frugterne er fuldt røde og let bløde. San Marzano kan plukkes lidt grønne og modnes på køkkenbordet hvis efteråret bliver koldt. Hold dem ved stuetemperatur — aldrig køleskab. Til konservering: blanchér 30 sekunder, pillet skinn af, og rull på glas eller frys.',
+    },
+    {
+      kind: 'next',
+      key: 'next-guide',
+      title: 'Sammenlign med Roma',
+      description:
+        'Roma og San Marzano bliver ofte nævnt i samme åndedrag. Begge er klassiske pastatomater, men de adskiller sig i vækst, smag og anvendelse.',
+      slug: 'demo-guide-tomat-roma',
+      label: 'Læs om Roma',
     },
   ],
   calendarRules: [
@@ -232,6 +249,37 @@ const POTALOT_DAHLIA: Guide = {
       title: 'Overvintring af knolde',
       body:
         'Grav knoldene op efter første nattefrost (oktober–november). Lad dem tørre i et par dage, rens jord af, og opbevar dem i tør sand eller tørvesmuld i en frostfri kælder ved 5–10 °C. Tjek dem hver måned vinteren igennem for skimmel eller udtørring.',
+    },
+    {
+      kind: 'related',
+      key: 'related-dahliaer',
+      title: 'Andre dahliaer du måske vil se',
+      items: [
+        {
+          slug: 'demo-guide-dahlia-karma-choc',
+          heading: 'Karma Choc',
+          description: 'Dyb burgunderrød dahlia med ekstra lang stilk — favorit til snitblomster.',
+        },
+        {
+          slug: 'demo-guide-dahlia-linda-baby',
+          heading: 'Linda’s Baby',
+          description: 'Lille pompon-dahlia i blød rosa. Ideel til mindre buketter og krukker.',
+        },
+        {
+          slug: 'demo-guide-dahlia-bishop',
+          heading: 'Bishop of Llandaff',
+          description: 'Mørkblade-dahlia med signalrøde enkeltblomster. Klassiker fra 1920’erne.',
+        },
+      ],
+    },
+    {
+      kind: 'next',
+      key: 'next-guide',
+      title: 'Lær at overvintre dahliaer',
+      description:
+        'Café au Lait belønner den der gemmer knoldene varsomt om vinteren. Få styr på temperatur, fugt og opbevaring så de samme planter blomstrer igen næste år.',
+      slug: 'overvintring-af-dahliaer',
+      label: 'Sådan overvintrer du dahliaer',
     },
   ],
   calendarRules: [
