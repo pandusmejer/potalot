@@ -94,8 +94,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-08-08',
     expectedHarvestEnd: '2026-09-20',
     quantity: 6,
-    imageIds: ['/images/plantekort/tomat-san-marzano.png'],
-    primaryImageId: '/images/plantekort/tomat-san-marzano.png',
+    imageIds: ['/images/plantekort/tomat-san-marzano.jpg'],
+    primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
     imageSource: 'guide_reference',
     logIds: ['log-tomat-1', 'log-tomat-2'],
     guideId: 'guide-tomat',
@@ -104,7 +104,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-28T18:30:00.000Z',
     notes: 'Stærke planter efter ompotning. Hold øje med vanding på solrige dage.',
     pictures: [
-      { id: 'tomat-img-1', src: '/images/plantekort/tomat-san-marzano.png', alt: 'Tomat San Marzano' },
+      { id: 'tomat-img-1', src: '/images/plantekort/tomat-san-marzano.jpg', alt: 'Tomat San Marzano' },
     ],
     latestActivity: {
       id: 'activity-tomat',
@@ -112,7 +112,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Tomat San Marzano',
       action: 'Ompottet for 9 dage siden',
       when: '20. april',
-      image: '/images/plantekort/tomat-san-marzano.png',
+      image: '/images/plantekort/tomat-san-marzano.jpg',
     },
     nextAction: {
       id: 'next-tomat',

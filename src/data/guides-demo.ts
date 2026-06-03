@@ -36,7 +36,7 @@ export const POPULAERE_EMNER: PopulaertEmne[] = [
     matchPlantName: 'tomat',
     navn: 'Tomater',
     byline: 'Fra frø til høst',
-    imageUrl: '/images/plantekort/tomat-san-marzano.png',
+    imageUrl: '/images/plantekort/tomat-san-marzano.jpg',
   },
   {
     matchPlantName: 'dahlia',
@@ -194,7 +194,7 @@ const POTALOT_TOMAT: Guide = {
     { taskType: 'pruning', title: 'Tyv tomatplanterne', recommendedMonths: [6, 7, 8], priority: 'medium' },
     { taskType: 'harvest', title: 'Høst modne frugter', recommendedMonths: [7, 8, 9], priority: 'high' },
   ],
-  primaryImageId: '/images/plantekort/tomat-san-marzano.png',
+  primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
   visibility: 'public',
 }
 
@@ -747,7 +747,7 @@ const EGEN_TOMAT_TILPASNING: Guide = {
     { taskType: 'plant_out', title: 'Udplant i drivhus (juni)', recommendedMonths: [6], priority: 'high' },
     { taskType: 'harvest', title: 'Høst modne frugter', recommendedMonths: [8, 9, 10], priority: 'high' },
   ],
-  primaryImageId: '/images/plantekort/tomat-san-marzano.png',
+  primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
   visibility: 'private',
 }
 
