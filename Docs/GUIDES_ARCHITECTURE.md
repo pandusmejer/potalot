@@ -73,6 +73,33 @@ tilbage til Agurk* er en sund trafik-loop, ikke en navigationsfejl.
 - **Sortsguider er invitationer, ikke manualer** — læseren har ikke
   nødvendigvis læst artsguiden først
 
+### Editorial-følge: hver guide skal stå på egne ben
+
+> ## Beskriv planten ud fra dens egne behov, ikke i forhold til en anden plante.
+
+Det er en direkte konsekvens af netværks-topologien. Hvis brugeren
+lander direkte på *"Peberfrugt"*, må teksten ikke kræve at vedkommende
+først har læst *"Tomat"* — det gælder også når de er to artsguider,
+ikke kun art→sort.
+
+**Anti-mønstre:**
+
+| ❌ | Hvorfor det ikke fungerer |
+|---|---|
+| *"Peberfrugter vokser mere kompakt end tomater"* | Forudsætter at læseren ved hvor stor en tomat er |
+| *"Mindre krævende end chili"* | Cirkulær — kræver først at læseren har læst chili-guiden |
+| *"Større end dild"* | Mål via sammenligning er ubrugeligt uden konteksten |
+| *"Mere følsom end tomat"* | Det er stadig ikke information om peberfrugten — kun om tomaten |
+
+**Hvordan vi gør det rigtigt:** Skriv konkret om planten selv.
+*"Peberfrugter trives bedst med stabile forhold"* slår
+*"Peberfrugter vokser mere kompakt end tomater"* — fordi den første
+faktisk siger noget brugeren kan bruge.
+
+Det betyder også: vi må gerne pege på andre guides (via `:::guide` og
+`:::related-guides`) — det er netværkskanter. Men **brødteksten i en
+guide må ikke afhænge af at læseren har klikket på dem.**
+
 ---
 
 ## Niveau 1 — Dyrkningsguides (Technique)
