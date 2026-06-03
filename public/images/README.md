@@ -45,8 +45,8 @@ Så hvis du har et nærbillede af en tomatblomst, ligger det i
 | `heroes-maaneder/` | Hero-billede til hver måned i kalenderen (jan-dec + foraar). |
 | `heroes-sider/` | Hero-billede til app-sider (frøbank, planter osv.). |
 | `kalender/` | Kalender-specifikke grafiske elementer. |
-| `makro/<plante>/` | Stemnings-nærbilleder (Botanical Bleed). 5 pr. plante. |
-| `detail/<plante>/` | Asymmetriske udsnit (Detail Bleed). |
+| `makro/<slug>/` | Stemnings-nærbilleder (Botanical Bleed). Se mængde-regler nedenfor. |
+| `detail/<slug>/` | Asymmetriske udsnit (Detail Bleed). |
 | `teknik/` | Hero-billede til en teknikguide (knibning, opbinding…). |
 | `historical/flora-danica/` | Gamle botaniske illustrationer. |
 | `ui/` | Logoer, brand-elementer, custom-ikoner. |
@@ -89,7 +89,44 @@ plantekort/tomat-san-marzano.jpg                  godt
 plantekort/plantekort-tomat-san-marzano.jpg       redundant
 ```
 
-### Regel 4 — Flere varianter af samme motiv
+### Regel 4 — Makro og detail: art-niveau **og** sort-niveau
+
+Både `makro/` og `detail/` følger samme mønster som guides: en
+folder kan høre til **enten** en art **eller** en sort. Folder-navnet
+matcher guidens slug.
+
+```
+makro/
+├── tomat/                              Art-niveau (3-5 generiske)
+│   ├── blomst.jpg
+│   ├── staengel.jpg
+│   └── blad.jpg
+│
+├── tomat-san-marzano/                  Sort-niveau (5 sortspecifikke)
+│   ├── moden.jpg
+│   ├── tvaersnit.jpg
+│   ├── groen.jpg
+│   ├── klase.jpg
+│   └── staengel.jpg
+│
+├── chili/                              Art
+└── chili-habanero-orange/              Sort
+```
+
+**Hvorfor begge niveauer:** Art-fotos er generiske og bruges i
+artsguider (en tomat-blomst ligner en tomat-blomst). Sort-fotos er
+specifikke og bruges i sortsguider (San Marzanos aflange frugt ser
+ikke ud som en Marmandes ribbede). Det er der lærings­værdien opstår.
+
+**Mængde-regler:**
+
+| Niveau | Antal fotos | Til |
+|---|---|---|
+| Art-makro | 3-5 | Botanical Bleed i artsguider — generiske motiver |
+| Sort-makro | 5 | Botanical Bleed i sortsguider — sortsidentitet |
+| Detail-bleed pr. sort | 1-2 | Asymmetriske bleeds når layoutet kalder på det |
+
+### Regel 5 — Flere varianter af samme motiv
 
 Når du har **flere fotos af samme ting** (fx tre nærbilleder af
 chili-frø), nummerér med `-1`, `-2`, `-3`:
@@ -110,7 +147,7 @@ froe-i-haand.jpg                   godt — beskrivende
 froe-spredt.jpg                    godt — beskrivende
 ```
 
-### Regel 5 — Filnavn = guidens slug
+### Regel 6 — Filnavn = guidens slug
 
 Hver guide har en kort URL-venlig identifikator ("slug"). Filnavnet
 skal være **præcis det samme ord**. Så ved appen automatisk hvilket

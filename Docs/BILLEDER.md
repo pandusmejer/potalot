@@ -80,35 +80,61 @@ en modnet San Marzano-klase, en Habanero-frugt, en Café au Lait-blomst.
 
 ---
 
-### `makro/<plante>/` — Stemnings-nærbilleder
+### `makro/<slug>/` — Stemnings-nærbilleder (art **eller** sort)
 
 **Hvad:** Tæt-på-billeder der **ikke forklarer** men **skaber stemning**.
 Det er disse der senere får brugeren til at føle "jeg er inde i planten".
 
-**Eksempler:**
-- `makro/tomat/blomst.jpg`
-- `makro/tomat/frugt.jpg`
-- `makro/agurk/hanblomst.jpg`
-- `makro/agurk/slyngtraad.jpg`
+Folder-navnet matcher guidens slug — det kan være enten en **art** eller
+en **sort**. Begge niveauer eksisterer som søskende-folders.
+
+**Art-niveau** (generiske motiver der gælder hele arten):
+```
+makro/tomat/blomst.jpg
+makro/tomat/staengel.jpg
+makro/tomat/blad.jpg
+```
+
+**Sort-niveau** (sortsspecifikke motiver der adskiller sorten):
+```
+makro/tomat-san-marzano/moden.jpg
+makro/tomat-san-marzano/tvaersnit.jpg
+makro/tomat-san-marzano/groen.jpg
+makro/tomat-san-marzano/klase.jpg
+makro/tomat-san-marzano/staengel.jpg
+```
+
+**Hvorfor begge:** Art-fotos er generiske og bruges i artsguider (en
+tomat-blomst ligner en tomat-blomst). Sort-fotos er specifikke og
+bruges i sortsguider — det er der lærings­værdien opstår. San
+Marzanos aflange frugt ser ikke ud som en Marmandes ribbede.
+
+**Anbefalet antal:**
+
+| Niveau | Antal pr. folder |
+|---|---|
+| Art-makro (`makro/tomat/`) | 3-5 generiske |
+| Sort-makro (`makro/tomat-san-marzano/`) | 5 sortsspecifikke |
 
 **Format:** JPG, høj opløsning (1600 × 1200 px eller mere). Beskåret tæt.
 
-**Bruges til:** Det kommende **Botanical Bleed**-modul — den der bryder
-rytmen i lange guides ved at fade ind og ud til gennemsigtighed.
-
-**Anbefalet antal pr. plante:** 5. Mere er fint, men 5 dækker rytmen
-i en typisk artsguide (ét billede pr. ~3 sektioner).
+**Bruges til:** Det kommende **Botanical Bleed**-modul.
 
 ---
 
-### `detail/<plante>/` — Asymmetriske udsnit
+### `detail/<slug>/` — Asymmetriske udsnit (art **eller** sort)
 
-**Hvad:** Skarpt beskåret, organisk formet billede der "blæder" ind
-fra venstre eller højre side af siden. Ingen fade — skarp kant.
+Samme dual struktur som `makro/`. Folder-navnet er enten art-slug eller
+variety-slug.
 
 **Eksempler:**
-- `detail/tomat/modne-klaser.jpg`
-- `detail/agurk/op-ad-espalier.jpg`
+```
+detail/tomat/klase-paa-stand.jpg          (art-niveau)
+detail/tomat-san-marzano/modne-klaser.jpg (sort-niveau)
+detail/agurk-marketmore/op-ad-espalier.jpg
+```
+
+**Anbefalet antal:** 1-2 pr. sort, færre eller ingen pr. art.
 
 **Bruges til:** Det kommende **Detail Bleed**-modul.
 

@@ -329,11 +329,38 @@ AI-fabrikken returnerer ikke kun tekst. Den foreslår også
 
 ```typescript
 interface ImageNeeds {
-  seedCardImagePrompt: string      // til frøkort
-  plantCardMacroPrompt: string     // til plantekort
-  guideMacroNeeds: string[]        // til makro-foto-blokke i guiden
+  // Hero-billede (kun for species/variety, ikke technique/concept)
+  artHeroPrompt?: string           // → arts/<slug>.jpg
+
+  // Frøkort (kun for variety)
+  seedCardImagePrompt?: string     // → frokort/<slug>.png
+
+  // Plantekort hero (kun for variety)
+  plantCardMacroPrompt?: string    // → plantekort/<slug>.jpg
+
+  // Makro-fotos (Botanical Bleed)
+  // - For species: 3-5 generiske art-motiver
+  // - For variety: 5 sortsspecifikke motiver
+  macroPrompts: Array<{
+    filename: string               // fx 'blomst', 'tvaersnit', 'moden'
+    prompt: string
+    targetFolder: 'makro' | 'detail'
+    slugFolder: string             // art-slug eller variety-slug
+  }>
 }
 ```
+
+**Niveau-regler for `macroPrompts`:**
+
+| guideLevel | Antal | Karakter | Folder |
+|---|---|---|---|
+| `species` | 3-5 | Generiske art-motiver (blomst, blad, stængel) | `makro/<art-slug>/` |
+| `variety` | 5 | Sortsspecifikke motiver (moden, tvaersnit, groen, klase, detalje) | `makro/<variety-slug>/` |
+| `technique` | 0-2 | Action-fokuseret (fx hånd der kniber) | `teknik/` |
+| `concept` | 0 | Konceptguider er tekstbåren — ingen makro-behov | — |
+
+Se [`BILLEDER.md`](./BILLEDER.md) for den fulde mappestruktur og
+navngivnings-konvention der gælder for alle disse billeder.
 
 Format-direktiver:
 
