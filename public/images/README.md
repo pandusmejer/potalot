@@ -89,7 +89,28 @@ plantekort/tomat-san-marzano.jpg                  godt
 plantekort/plantekort-tomat-san-marzano.jpg       redundant
 ```
 
-### Regel 4 — Filnavn = guidens slug
+### Regel 4 — Flere varianter af samme motiv
+
+Når du har **flere fotos af samme ting** (fx tre nærbilleder af
+chili-frø), nummerér med `-1`, `-2`, `-3`:
+
+```
+froe-1.jpg                         godt
+froe-2.jpg                         godt
+froe-3.jpg                         godt
+```
+
+Brug **kun** nummerering når billederne er **stilistiske variationer**
+af samme motiv. Hvis de viser forskellige aspekter (fx ét med tørre
+frø og ét med frø i en hånd), så er beskrivende navne bedre:
+
+```
+froe-tor.jpg                       godt — beskrivende
+froe-i-haand.jpg                   godt — beskrivende
+froe-spredt.jpg                    godt — beskrivende
+```
+
+### Regel 5 — Filnavn = guidens slug
 
 Hver guide har en kort URL-venlig identifikator ("slug"). Filnavnet
 skal være **præcis det samme ord**. Så ved appen automatisk hvilket

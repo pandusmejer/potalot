@@ -190,7 +190,28 @@ plantekort/plantekort-tomat-san-marzano.jpg       siger det to gange
 Mappen fortæller allerede *hvad det er*. Filnavnet fortæller
 *hvilken plante*.
 
-### Regel 4 — Filnavnet skal matche guidens slug
+### Regel 4 — Flere varianter af samme motiv
+
+Når der er **flere fotos af samme ting** (fx tre nærbilleder af
+chili-frø), nummerér med `-1`, `-2`, `-3`:
+
+```
+froe-1.jpg                         godt
+froe-2.jpg                         godt
+froe-3.jpg                         godt
+```
+
+Brug **kun** nummerering når billederne er **stilistiske variationer**
+af samme motiv. Hvis de viser forskellige aspekter, så er beskrivende
+navne bedre:
+
+```
+froe-tor.jpg                       beskrivende — tørrede frø
+froe-i-haand.jpg                   beskrivende — frø holdt i hånd
+froe-spredt.jpg                    beskrivende — spredt på overflade
+```
+
+### Regel 5 — Filnavnet skal matche guidens slug
 
 Hver guide i databasen har en kort, URL-venlig identifikator
 ("slug"). Filnavnet skal være **præcis det samme ord**.
