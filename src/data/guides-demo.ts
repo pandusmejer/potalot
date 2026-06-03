@@ -510,7 +510,197 @@ const POTALOT_AGURK: Guide = {
     { taskType: 'plant_out', title: 'Udplant når jorden er varm', recommendedMonths: [5, 6], priority: 'high' },
     { taskType: 'harvest', title: 'Høst løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
   ],
-  primaryImageId: null,
+  primaryImageId: '/images/arts/agurk.jpg',
+  visibility: 'public',
+}
+
+// Midlertidig demo-version af Tomat-artsguide.md indtil import-script lander.
+const POTALOT_TOMAT_ARTS: Guide = {
+  ...baseGuide(),
+  guideLevel: 'species',
+  parentGuideId: null,
+  id: 'demo-guide-tomat-arts',
+  plantName: 'Tomat',
+  variety: null,
+  latinName: 'Solanum lycopersicum',
+  primaryCategoryId: 'fro',
+  subcategoryId: 'groentsager',
+  summary:
+    'Tomater elsker varme, lys og en lang sæson. Starter du dem tidligt og giver dem stabile forhold, kan de belønne dig hele sommeren.',
+  tags: ['drivhus', 'varmekraevende', 'klassiker', 'sommer', 'spisekammer'],
+  quickFacts: {
+    sowingMonths: [3, 4],
+    directSowingMonths: [],
+    plantingOutMonths: [5, 6],
+    harvestMonths: [7, 8, 9],
+    preCultivation: true,
+    light: 'full_sun',
+    water: 'regular',
+    soil: 'Næringsrig, veldrænende muldjord med jævn fugt.',
+  },
+  sections: [
+    {
+      key: 'om-arten',
+      title: 'Om arten',
+      body:
+        'Tomater stammer oprindeligt fra Sydamerika og dyrkes i dag over hele verden. Tomater findes i et enormt antal former, størrelser og farver. Nogle dyrkes for deres sødme, andre for deres høje udbytte eller særlige anvendelse i køkkenet.\nTomater er varmeelskende planter med en lang sæson. De fleste sorter trives bedst, når de får en tidlig start indendørs, masser af lys og en lun placering senere på året. I Danmark dyrker mange tomater i drivhus, men flere sorter kan også klare sig på en varm altan eller et læfyldt sted på friland.',
+    },
+    {
+      kind: 'fact',
+      key: 'fact-rank-busk',
+      title: 'Tomater findes som to typer vækstformer',
+      variant: 'comparison',
+      columns: [
+        {
+          heading: 'Ranketomat',
+          items: ['Vokser i højden hele sæsonen', 'Skal opbindes', 'Sideskud skal knibes'],
+        },
+        {
+          heading: 'Busktomat',
+          items: ['Lavtvoksende og kompakt', 'Velegnet til krukker', 'Kræver sjældent opbinding', 'Sideskud skal ikke knibes'],
+        },
+      ],
+    },
+    {
+      key: 'sorter-formaal',
+      title: 'Sortsvalg afhænger af formålet',
+      body:
+        'Tomater dyrkes til forskellige formål. Nogle sorter egner sig bedst til frisk spisning, andre til sauce, tørring eller konservering. Før du vælger sort, kan det derfor være en fordel at overveje, hvordan du ønsker at bruge høsten.',
+    },
+    {
+      key: 'typer',
+      title: 'Forskellige typer tomater',
+      body:
+        'Tomater findes i et væld af former, størrelser og smagsretninger. Selvom de grundlæggende dyrkes på samme måde, har de forskellige styrker i køkkenet og haven.\nDe fleste sorter kan groft opdeles i nogle få grupper:\n• Cherrytomater — små, søde tomater til frisk spisning.\n• Cocktailtomater — lidt større end cherrytomater med god balance mellem sødme og syre.\n• Salattomater — klassiske allround-tomater til madpakken og salatskålen.\n• Bøftomater — store, kødfulde tomater med få kerner.\n• Pastatomater — aflange tomater med fast frugtkød og lavt vandindhold.\n• Specialsorter — gamle kulturarvssorter eller sorter med særlige former, farver og smagsnuancer.\nDe grundlæggende dyrkningsprincipper er de samme, men valget af sort har stor betydning for både smag, udbytte og anvendelse.',
+    },
+    {
+      key: 'arvesorter',
+      title: 'Arvesorter, F1-hybrider og frøægte sorter',
+      body:
+        'Når du vælger tomater, støder du ofte på begreber som F1, arvesort eller frøægte.\n• F1-hybrider er krydsninger udviklet for at give ensartede planter, højt udbytte eller bedre sygdomsresistens.\n• Frøægte sorter (Open Pollinated) giver afkom, der ligner moderplanten, hvis du selv gemmer frø.\n• Arvesorter (Heirloom) er gamle, frøægte sorter, som ofte er blevet dyrket gennem generationer.\nDer findes fremragende tomater i alle tre grupper. Valget handler ofte om, hvad du vægter højest: udbytte, robusthed, smag eller muligheden for selv at gemme frø.',
+    },
+    {
+      key: 'forspiring',
+      title: 'Forspiring eller direkte såning',
+      body:
+        'I dansk klima bør de fleste tomater forspires indendørs.\nSø frøene i marts eller april i fugtig så- og priklejord. Frøene spirer typisk efter 5-10 dage ved temperaturer omkring 20-25 °C. For tidlig såning giver ofte lange og svage planter, mens for sen såning forkorter høstsæsonen.\nNår spirerne bryder frem, skal de have så meget lys som muligt, så planterne ikke bliver lange og svage. Når planterne har udviklet deres første rigtige bladpar, prikles de om i individuelle potter. Plant dem gerne en smule dybere, end de stod før. Tomater kan danne rødder langs stænglen, og det giver ofte en stærkere plante.',
+    },
+    {
+      key: 'udplantning',
+      title: 'Udplantning',
+      body:
+        'Vent med udplantning til nætterne er lune, og risikoen for frost er væk. Tomater bryder sig ikke om kulde. I drivhus kan du ofte plante ud tidligere end på friland, og i opvarmet drivhus endnu tidligere — men hold stadig øje med nattetemperaturerne.\nPlant tomater dybt i næringsrig jord og giv dem plads til luft omkring bladene. Ranketomater skal have støtte fra begyndelsen, så planten ikke vælter, når den sætter frugt.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-opbinding',
+      slug: 'opbinding-af-tomater',
+      title: 'Sådan opbinder du tomater',
+      description: 'Lær hvordan du opbinder tomater og undgår knækkede planter.',
+    },
+    {
+      key: 'pleje',
+      title: 'Pleje gennem sæsonen',
+      body:
+        'Vand jævnt og roligt. Tomater trives dårligt, hvis de skiftevis tørrer ud og drukner. Ujævn vanding kan give revnede frugter og stressede planter.\nHøje ranketomater skal løbende bindes op og have fjernet sideskud.',
+    },
+    {
+      kind: 'guide',
+      key: 'guide-knibning',
+      slug: 'knibning-af-tomater',
+      title: 'Sådan kniber du tomater',
+      description: 'Lær hvilke sideskud der skal fjernes, og hvornår det giver mening.',
+    },
+    {
+      key: 'sygdomme',
+      title: 'Sygdomme og udfordringer',
+      body:
+        'Tomater kan rammes af blandt andet kartoffelskimmel, griffelråd og revnede frugter. De fleste tomatproblemer skyldes dyrkningsforholdene og ikke selve planten. Stabil vanding, god luftcirkulation og passende næring forebygger langt de fleste udfordringer.',
+    },
+    {
+      key: 'host',
+      title: 'Høst',
+      body:
+        'Tomater smager allerbedst, når de får lov at modne på planten så længe som muligt. Høstes når de har fået fuld farve og slipper let fra stilken. Pluk løbende, så planten bruger energi på nye frugter. Mod slutningen af sæsonen kan du tage næsten modne tomater ind og lade dem eftermodne mørkt og ved stuetemperatur.',
+    },
+    {
+      key: 'fejl',
+      title: 'Typiske fejl',
+      body:
+        '• Utålmodighed og såning for tidligt på året\n• For lidt lys under forspiring giver lange, svage planter\n• For tidlig udplantning giver stressede planter\n• Ujævn vanding kan give revnede frugter\n• Manglende opbinding af høje sorter\n• Overgødskning med kvælstof giver mange blade og færre tomater',
+    },
+    {
+      key: 'potalot-note',
+      title: 'Potalot-note',
+      body:
+        'Tomater belønner den rolige gartner. Giv dem varme, lys og jævn pleje, så skal de nok gøre deres del.',
+    },
+    {
+      kind: 'next',
+      key: 'next-guide',
+      title: 'Vælg en sort',
+      description: 'Ikke alle tomater dyrkes ens. Udforsk nogle af de mest populære sorter.',
+      slug: 'demo-guide-tomat-sm',
+      label: 'Læs om Tomat San Marzano',
+    },
+  ],
+  calendarRules: [
+    { taskType: 'sowing', title: 'Forspir tomater indendørs', recommendedMonths: [3, 4], priority: 'high' },
+    { taskType: 'repot', title: 'Prikl tomatplanter om', recommendedMonths: [4, 5], priority: 'medium' },
+    { taskType: 'plant_out', title: 'Plant tomater ud', recommendedMonths: [5, 6], priority: 'high' },
+    { taskType: 'pruning', title: 'Knib sideskud på ranketomater', recommendedMonths: [5, 6, 7], priority: 'high' },
+    { taskType: 'maintenance', title: 'Bind tomater op', recommendedMonths: [6, 7, 8], priority: 'medium' },
+    { taskType: 'harvest', title: 'Høst tomater løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
+  ],
+  primaryImageId: '/images/arts/tomat.jpg',
+  visibility: 'public',
+}
+
+// Thin placeholder så arts/chili.jpg kan ses indtil rigtig
+// chili-artsguide.md skrives og importeres.
+const POTALOT_CHILI: Guide = {
+  ...baseGuide(),
+  guideLevel: 'species',
+  parentGuideId: null,
+  id: 'demo-guide-chili-arts',
+  plantName: 'Chili',
+  variety: null,
+  latinName: 'Capsicum',
+  primaryCategoryId: 'fro',
+  subcategoryId: 'groentsager',
+  summary:
+    'Chili er den lange-sæson-grøntsag. Forspires tidligt, plantes ud sent, høstes hele eftersommeren. Belønningen er ekstrem smagskoncentration — fra mild sødme til brændende heat.',
+  tags: ['drivhus', 'varmekraevende', 'krydderi', 'lang-saeson'],
+  quickFacts: {
+    sowingMonths: [1, 2, 3],
+    directSowingMonths: [],
+    plantingOutMonths: [5, 6],
+    harvestMonths: [8, 9, 10],
+    preCultivation: true,
+    light: 'full_sun',
+    water: 'regular',
+    soil: 'Næringsrig, veldrænende, gerne let sandet.',
+  },
+  sections: [
+    {
+      key: 'placeholder',
+      title: 'Om arten',
+      body:
+        'Chili-artsguiden er endnu ikke skrevet i sin fulde form. Den kommer snart — med oprindelse, vækstform, og hvad der adskiller en mild paprika fra en brændende habanero.',
+    },
+    {
+      key: 'potalot-note',
+      title: 'Potalot-note',
+      body:
+        'Chili tester tålmodigheden allerede ved såningen. Den belønner den der venter — og dyrker den i drivhus eller den varmeste plet på terrassen.',
+    },
+  ],
+  calendarRules: [
+    { taskType: 'sowing', title: 'Forspir chili indendørs', recommendedMonths: [1, 2, 3], priority: 'high' },
+    { taskType: 'plant_out', title: 'Udplant i drivhus', recommendedMonths: [5, 6], priority: 'high' },
+    { taskType: 'harvest', title: 'Høst når frugterne har farve', recommendedMonths: [8, 9, 10], priority: 'medium' },
+  ],
+  primaryImageId: '/images/arts/chili.jpg',
   visibility: 'public',
 }
 
@@ -654,7 +844,7 @@ const AI_AGURK: Guide = {
 // EKSPORTER
 // ════════════════════════════════════════════════════════════════
 
-export const DEMO_POTALOT_GUIDES: Guide[] = [POTALOT_TOMAT, POTALOT_DAHLIA, POTALOT_HVIDLOG, POTALOT_AGURK]
+export const DEMO_POTALOT_GUIDES: Guide[] = [POTALOT_TOMAT, POTALOT_DAHLIA, POTALOT_HVIDLOG, POTALOT_AGURK, POTALOT_TOMAT_ARTS, POTALOT_CHILI]
 export const DEMO_EGNE_GUIDES: Guide[] = [EGEN_TOMAT_TILPASNING, EGEN_SUKKERAERT]
 export const DEMO_AI_GUIDES: Guide[] = [AI_AGURK]
 
