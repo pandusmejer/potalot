@@ -125,11 +125,15 @@ En planteguide kan have:
 
 ### Botanisk art vs Potalot-art — vigtig schema-skelnen (V1.5)
 
-> En Potalot-art er ikke nødvendigvis identisk med en botanisk art.
+> ## `latinName` = det brugeren tror planten er
+> ## `botanicalSpecies` = det botanikken siger planten er
+
+Det er hele reglen. Resten er udfoldninger.
 
 Brugeren tænker *"Peberfrugt"* og *"Chili"* som to forskellige planter.
 Botanikeren tænker *"Capsicum annuum"* som **én** art der dækker begge.
-Begge mental-modeller er rigtige — bare i forskellige kontekster.
+Begge mental-modeller er rigtige — bare i forskellige kontekster. Potalot
+skal kunne tale begge sprog uden at få schema-migræne.
 
 Schemaet skal kunne håndtere begge ved at adskille to felter:
 
