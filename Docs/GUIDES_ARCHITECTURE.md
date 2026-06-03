@@ -261,7 +261,7 @@ tredelte taksonomi er endnu ikke synlig.
 
 - Tilføj `'concept'` til `GuideLevel`-enum
 - Skriv 5-10 konceptguider (F1, arvesort, frøægte, sædskifte, ledsageplanter)
-- AI-pipeline for systematisk sortsgenerering
+- AI-pipeline for systematisk sortsgenerering — se [`AI_GUIDE_FABRIK.md`](./AI_GUIDE_FABRIK.md)
 - Community-contributed teknikker
 - Avancerede filtre
 
