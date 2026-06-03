@@ -70,12 +70,24 @@ Gruppe er **valgfri**: hvis arten ikke har meningsfulde grupper
 Normaliserer input til en kanonisk botanisk identitet før kildehentning.
 
 ```
-"Habanero orange"           → Capsicum chinense 'Habanero Orange'
-"san marzano"               → Solanum lycopersicum 'San Marzano'
-"agurk marketmore"          → Cucumis sativus 'Marketmore'
+"Habanero orange"           → latinName: Capsicum chinense 'Habanero Orange'
+                              botanicalSpecies: Capsicum chinense
+"san marzano"               → latinName: Solanum lycopersicum 'San Marzano'
+                              botanicalSpecies: Solanum lycopersicum
+"agurk marketmore"          → latinName: Cucumis sativus 'Marketmore'
+                              botanicalSpecies: Cucumis sativus
+"peberfrugt"                → latinName: Capsicum annuum (Grossum Group)
+                              botanicalSpecies: Capsicum annuum
+"chili"                     → latinName: Capsicum annuum / chinense / baccatum
+                              botanicalSpecies: null (spænder flere arter)
 "forspiring"                → Teknik: forspiring (ingen botanisk identitet)
 "F1 hybrider"               → Koncept: F1-hybrider (ingen botanisk identitet)
 ```
+
+`botanicalSpecies` returneres **separat** fra `latinName` fordi en
+Potalot-art ikke nødvendigvis svarer til én botanisk art (se
+[`GUIDES_ARCHITECTURE.md`](./GUIDES_ARCHITECTURE.md) — sektionen
+"Botanisk art vs Potalot-art").
 
 For species/variety bruges botanisk navn som søgeforespørgsel til
 kildemotorerne — øger præcision og adskiller fra trivielnavne der har

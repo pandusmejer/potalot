@@ -123,6 +123,65 @@ En planteguide kan have:
 
 **Schema:** `guideLevel: 'species'` *(eksisterer allerede)*.
 
+### Botanisk art vs Potalot-art — vigtig schema-skelnen (V1.5)
+
+> En Potalot-art er ikke nødvendigvis identisk med en botanisk art.
+
+Brugeren tænker *"Peberfrugt"* og *"Chili"* som to forskellige planter.
+Botanikeren tænker *"Capsicum annuum"* som **én** art der dækker begge.
+Begge mental-modeller er rigtige — bare i forskellige kontekster.
+
+Schemaet skal kunne håndtere begge ved at adskille to felter:
+
+| Felt | Hvad det rummer | Brugt til |
+|---|---|---|
+| `latinName` | Potalot-artens latinske formulering — kan inkludere cultivargroup eller varietet (`Capsicum annuum Grossum Group`, `Brassica oleracea var. italica`) | Vises på guide-siden, redaktionel præcision |
+| `botanicalSpecies` *(nyt felt)* | Den **rene** botaniske art uden gruppe-/varietets-notation (`Capsicum annuum`, `Brassica oleracea`) | Krydsrelationer mellem Potalot-arter der deler botanisk art |
+
+#### Eksempler
+
+| Potalot-art | `latinName` | `botanicalSpecies` |
+|---|---|---|
+| Tomat | Solanum lycopersicum | Solanum lycopersicum |
+| Æble | Malus domestica | Malus domestica |
+| Peberfrugt | Capsicum annuum (Grossum Group) | Capsicum annuum |
+| Chili | Capsicum annuum / chinense / baccatum | *(null — spans multiple)* |
+| Broccoli | Brassica oleracea var. italica | Brassica oleracea |
+| Blomkål | Brassica oleracea var. botrytis | Brassica oleracea |
+| Rosenkål | Brassica oleracea var. gemmifera | Brassica oleracea |
+
+#### Når en Potalot-art spænder over flere botaniske arter
+
+Chili er undtagelsen. Den dækker Capsicum annuum, chinense og baccatum.
+I dette tilfælde:
+
+- `botanicalSpecies` på Chili-arten er **null**
+- `botanicalSpecies` sættes i stedet på Chili's **grupper** (når gruppe-laget aktiveres):
+  - Capsicum annuum-gruppen → `botanicalSpecies: 'Capsicum annuum'`
+  - Capsicum chinense-gruppen → `botanicalSpecies: 'Capsicum chinense'`
+
+Det matcher virkeligheden: chili-grupperne ER de botaniske arter.
+
+#### Hvad det giver os senere
+
+- **Botanisk søgning** — "Vis mig alle Potalot-arter med botanicalSpecies = Capsicum annuum" returnerer **både** Peberfrugt og Chili
+- **AI-præcision** — `resolveBotanicalIdentity()` kan returnere både Potalot-artens identitet og den botaniske
+- **Vidensoverførsel** — Sygdomsguides for Capsicum annuum kan automatisk linkes til både Peberfrugt og Chili
+- **Migration-sikkerhed** — Hvis vi senere beslutter at slå Peberfrugt og Chili sammen til én art, har vi data-relationen klar
+
+#### Schema-impact
+
+```typescript
+interface Guide {
+  // … eksisterende felter
+  latinName?: string | null         // eksisterer
+  botanicalSpecies?: string | null  // NYT — V1.5
+}
+```
+
+Migration-omfang: én optional kolonne. Bagudkompatibelt — eksisterende
+guides hvor feltet ikke er sat, render som hidtil.
+
 ---
 
 ## Niveau 3 — Gruppeguides (Group) — V1.5, valgfri

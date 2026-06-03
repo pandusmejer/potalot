@@ -49,6 +49,24 @@ Potalot har flere navigations-/data-niveauer. De spiller forskellige roller:
 | **Gruppe** *(valgfri)* | Brugsgruppe inden for arten | Cherrytomat · Buskbønne · Capsicum chinense |
 | **Sort** | Konkrete frøsorter / kultivarer | San Marzano · Ingrid Marie · Bloodgood |
 
+### Potalot-art vs botanisk art — schema-skelnen
+
+> En Potalot-art er ikke nødvendigvis identisk med en botanisk art.
+
+Eksempler hvor de divergerer:
+
+| Potalot-art | Botanisk art | Deler botanisk art med |
+|---|---|---|
+| Peberfrugt | Capsicum annuum (Grossum Group) | Chili (delvis) |
+| Chili | Capsicum annuum / chinense / baccatum | Peberfrugt (annuum) |
+| Broccoli | Brassica oleracea var. italica | Blomkål, Rosenkål, Kål |
+| Blomkål | Brassica oleracea var. botrytis | Broccoli, Rosenkål, Kål |
+| Rosenkål | Brassica oleracea var. gemmifera | Broccoli, Blomkål, Kål |
+
+Schema-mæssigt håndteres det med to felter — `latinName` (Potalot-artens
+formulering, kan inkludere cultivargroup) og `botanicalSpecies` (den
+rene botaniske art). Detaljer i [`GUIDES_ARCHITECTURE.md`](./GUIDES_ARCHITECTURE.md).
+
 ### Klasse vs Gruppe — vigtig forskel
 
 | | Klasse | Gruppe |
