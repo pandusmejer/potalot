@@ -156,6 +156,42 @@ alle arter gennem et gruppe-niveau, ender vi med kunstige
 mellem­kategorier som *"Hvidløg → Almindelig hvidløg → Germidour"*.
 Det er bureaukratisk struktur uden brugerværdi.
 
+### Reglen for hvornår en gruppe oprettes
+
+> ## En gruppe oprettes først, når den giver mere værdi end kompleksitet.
+
+Tre konkrete betingelser bør være opfyldt før en gruppe skabes:
+
+1. **Datamængde** — du har 20-30+ sorter under arten der naturligt deler en gruppering
+2. **Fælles karakteristika** — sorterne i gruppen deler observerbar dyrkningsmæssig forskel fra andre sorter under samme art
+3. **Bruger-mental model** — folk siger og søger faktisk på gruppen ("jeg vil have en spidspeber") — ikke kun botanikere
+
+Hvis blot **én** af betingelserne mangler: skriv ikke en gruppeguide endnu.
+
+### Hvor gruppen kommer fra (og hvor den ikke gør)
+
+| Tilgang | Resultat |
+|---|---|
+| **Top-down:** Læg alle arter ind i forudsatte grupper fra start | 100 grupper med 3 sorter hver. Brugeren ender med at navigere et Dewey-bibliotek for at finde en peberfrugt. |
+| **Bottom-up:** Opret grupper når datamængden retfærdiggør dem | Få grupper der hver dækker en reel dyrknings-virkelighed. Brugeren forstår dem uden forklaring. |
+
+Potalot vælger bottom-up.
+
+### Hvilke arter har behov for gruppe FRA DAG ÉT
+
+Tre arter er så naturligt grupperede at det er svært at skrive en
+sammenhængende artsguide uden at hierarkien antydes:
+
+| Art | Grupper | Hvorfor fra dag ét |
+|---|---|---|
+| **Tomat** | Cherrytomat · Pastatomat · Bøftomat | Vækstform, modningstid og anvendelse adskiller sig markant |
+| **Bønne** | Stangbønne · Buskbønne | Forskellig højde (2m vs 40cm) → forskellig stativ-/krukkebehov |
+| **Chili** | Capsicum annuum · chinense · baccatum | Forskellige arter med forskellige forspirings-vinduer og heat-profiler |
+
+Alle andre arter — **inklusiv Peberfrugt** — starter uden gruppe-niveau.
+Hvis sortskataloget vokser nok over tid, kan en gruppe tilføjes senere
+uden at bryde eksisterende sortsguider.
+
 **Niveauernes formål:**
 
 | Niveau | Formål |
