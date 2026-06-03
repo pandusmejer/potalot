@@ -1,16 +1,24 @@
-# Potalot — arter-backlog (grøntsager V1+)
+# Potalot — arter-backlog (V1+)
 
 > **Status:** Indholds-roadmap, ikke implementeringsplan.
-> Listen definerer hvilke arter, grupper og sorter Potalot skal
-> kunne tale om over tid. Den er ikke "skal-skrives", men "skal-kunne-rumme".
+> Listen definerer hvilke arter, klasser, grupper og sorter Potalot
+> skal kunne tale om over tid. Den er ikke "skal-skrives", men
+> "skal-kunne-rumme".
 
 ---
 
 ## Målsætning
 
 ```
-80-120 grøntsagsarter
-1.500-3.000 sorter
+Kategori          Arter        Sorter
+─────────────────────────────────────────────
+Grøntsager        80-120
+Frugt & bær       40-60
+Krydderurter      30-50
+Prydplanter       300-600
+Træer & buske     100-200
+─────────────────────────────────────────────
+I alt            600-1.000     10.000-50.000
 ```
 
 Det lyder voldsomt. Det er det også — men kun hvis vi prøver at skrive
@@ -24,33 +32,40 @@ alt manuelt. Den svære del er **ikke sorterne**. Den svære del er:
 Når artsguiden er på plads, kan AI hjælpe med at oprette sorter under den
 (se [`AI_GUIDE_FABRIK.md`](./AI_GUIDE_FABRIK.md)).
 
----
-
-## Niveauernes formål
-
-```
-Art         → Biologisk identitet
-Gruppe      → Dyrknings-/brugsgruppe (ikke biologi)
-Sort        → Konkrete frøsorter
-```
-
-**Gruppe er valgfri.** Den eksisterer for navigation, læring og
-dyrknings­mæssige forskelle — ikke for taksonomisk renlighed.
-
-| Art med grupper | Art uden grupper |
-|---|---|
-| Tomat (cherrytomat, pastatomat…) | Hvidløg |
-| Bønne (stangbønne, buskbønne…) | Dild |
-| Chili (annuum, chinense…) | Pastinak |
-| Squash (zucchini, sommersquash…) | Knoldselleri |
-
-Tvang ikke alle arter gennem et gruppe-niveau — det ville give kunstige
-mellem­kategorier som *"Hvidløg → Almindelig hvidløg → Germidour"*.
-Bureaukratisk struktur uden brugerværdi.
+Det er **arterne, billederne, relationerne og dyrkningsviden** der
+bliver Potalots kronjuvel. Sorter er i høj grad data.
 
 ---
 
-## V1+ Backlog
+## Hierarki-modellen
+
+Potalot har flere navigations-/data-niveauer. De spiller forskellige roller:
+
+| Niveau | Formål | Eksempel |
+|---|---|---|
+| **Kategori** | Top-level navigation | Grøntsager · Frugt · Krydderurter · Prydplanter |
+| **Klasse** | Dyrknings-archetype (krydser arter) | Frugttræer · Etårige urter · Prydbuske · Stauder |
+| **Art** | Biologisk identitet | Tomat · Æble · Basilikum · Hortensia |
+| **Gruppe** *(valgfri)* | Brugsgruppe inden for arten | Cherrytomat · Buskbønne · Capsicum chinense |
+| **Sort** | Konkrete frøsorter / kultivarer | San Marzano · Ingrid Marie · Bloodgood |
+
+### Klasse vs Gruppe — vigtig forskel
+
+| | Klasse | Gruppe |
+|---|---|---|
+| Hvad | Dyrkningsarchetype | Bruger-valg inden for arten |
+| Niveau | KRYDSER arter | INDEN FOR én art |
+| Eksempel | "Frugttræer" indeholder Æble, Pære, Blomme | "Cherrytomat" indeholder kun tomat-sorter |
+| Schema | Sandsynligvis `primaryCategoryId` + `subcategoryId` (eksisterer) | `guideLevel: 'group'` (V1.5) |
+| Hvornår defineres | Når arten oprettes | Når dyrknings-virkeligheden viser at brugeren tænker i grupper |
+
+Begge er valgfri. Klasse er valgfri fordi nogle arter ikke har en
+naturlig dyrkningsarchetype. Gruppe er valgfri fordi nogle arter
+(Hvidløg, Dild, Pastinak) går direkte fra art til sort.
+
+---
+
+## Grøntsager
 
 ### Tomat
 - **Cherrytomat:** Sweetie · Sungold · Black Cherry · Gardener's Delight
@@ -60,8 +75,6 @@ Bureaukratisk struktur uden brugerværdi.
 - **Specialsort:** Green Zebra
 
 ### Agurk
-*(ingen gruppe — alle dyrkes i samme grundmønster, drivhus vs friland er
-en frysestyret kategori i sortsguiden)*
 - Marketmore · Telegraph Improved · Beth Alpha · Passandra · Lemon ·
   Crystal Apple
 
@@ -163,6 +176,148 @@ en frysestyret kategori i sortsguiden)*
 
 ---
 
+## Frugt
+
+### Frugttræer
+
+**Æble** *(Malus domestica)* — Ingrid Marie · Filippa · Aroma · Discovery · Elstar · Cox Orange · Belle de Boskoop
+
+**Pære** *(Pyrus communis)* — Conference · Clara Frijs · Gråpære · Herrepære · Comice
+
+**Blomme** *(Prunus domestica)* — Opal · Victoria · Reine Claude · Jubileum
+
+**Kirsebær** *(Prunus avium)* — Stella · Lapins · Sunburst · Van
+
+**Fersken** *(Prunus persica)* — Frost · Red Haven · Avalon Pride
+
+**Abrikos** *(Prunus armeniaca)* — Harcot · Bergeron · Goldrich
+
+**Kvæde** *(Cydonia oblonga)* — Vranja · Leskovac
+
+### Frugtbuske
+
+**Solbær** *(Ribes nigrum)* — Ben Lomond · Titania · Ben Hope
+
+**Ribs** *(Ribes rubrum)* — Rovada · Jonkheer van Tets · Rød Hollandsk
+
+**Stikkelsbær** *(Ribes uva-crispa)* — Invicta · Hinnonmäki Rød · Captivator
+
+**Honningbær** *(Lonicera caerulea)* — Borealis · Honey Bee · Aurora
+
+**Aronia** *(Aronia melanocarpa)* — Viking · Nero
+
+### Bær
+
+**Jordbær** *(Fragaria × ananassa)* — Sonata · Korona · Florence · Elsanta · Malwina
+
+**Hindbær** *(Rubus idaeus)* — Glen Ample · Autumn Bliss · Polka · Tulameen
+
+**Brombær** *(Rubus fruticosus)* — Loch Ness · Triple Crown · Navaho
+
+**Blåbær** *(Vaccinium corymbosum)* — Duke · Bluecrop · Patriot · Chandler
+
+**Tranebær** *(Vaccinium macrocarpon)* — Stevens · Pilgrim
+
+### Vinplanter
+
+**Vindrue** *(Vitis vinifera)* — Solaris · Rondo · Himrod · Muscat Bleu
+
+**Kiwi** *(Actinidia deliciosa)* — Hayward · Jenny
+
+---
+
+## Krydderurter
+
+### Etårige krydderurter
+
+**Basilikum** *(Ocimum basilicum)* — Genovese · Sweet Basil · Dark Opal · Thai Basil
+
+**Dild** *(Anethum graveolens)* — Bouquet · Mammoth
+
+**Koriander** *(Coriandrum sativum)* — Leisure · Santo
+
+**Persille** *(Petroselinum crispum)* — Gigante d'Italia · Moss Curled
+
+### Flerårige krydderurter
+
+**Timian** *(Thymus vulgaris)* — German Winter · Silver Posie · Lemon Thyme
+
+**Oregano** *(Origanum vulgare)* — Greek · Hot & Spicy
+
+**Salvie** *(Salvia officinalis)* — Berggarten · Purpur
+
+**Purløg** *(Allium schoenoprasum)* — Staro · Polyvert
+
+**Mynte** *(Mentha)* — Spearmint · Chocolate Mint · Moroccan Mint · Peppermint
+
+### Buskagtige krydderurter
+
+**Rosmarin** *(Salvia rosmarinus)* — Arp · Blue Winter
+
+**Lavendel** *(Lavandula angustifolia)* — Hidcote · Munstead
+
+---
+
+## Prydplanter
+
+### Prydtræer
+
+**Japansk Ahorn** *(Acer palmatum)* — Bloodgood · Orange Dream · Sango-kaku
+
+**Magnolie** *(Magnolia)* — Susan · Genie · Stellata
+
+**Prydkirsebær** *(Prunus serrulata)* — Kanzan · Amanogawa
+
+**Paradisæble** *(Malus)* — Red Sentinel · Evereste
+
+### Prydbuske
+
+**Hortensia** *(Hydrangea)* — Annabelle · Limelight · Endless Summer
+
+**Syren** *(Syringa vulgaris)* — Charles Joly · Primrose
+
+**Sommerfuglebusk** *(Buddleja davidii)* — Black Knight · White Profusion
+
+**Rhododendron** — Cunningham's White · Nova Zembla
+
+### Stauder
+
+**Solhat** *(Echinacea purpurea)* — Magnus · White Swan
+
+**Sankthansurt** *(Hylotelephium)* — Herbstfreude · Matrona
+
+**Kæmpejernurt** *(Verbena bonariensis)* — Lollipop · Buenos Aires
+
+**Storkenæb** *(Geranium)* — Rozanne · Johnson's Blue
+
+**Lupin** *(Lupinus)* — Gallery Red · Russell Mix
+
+### Etårige blomster
+
+**Morgenfrue** *(Calendula officinalis)* — Orange King · Fiesta Gitana
+
+**Cosmos** *(Cosmos bipinnatus)* — Purity · Sensation Mix
+
+**Zinnia** *(Zinnia elegans)* — Benary's Giant · Queen Lime
+
+**Tagetes** *(Tagetes patula)* — Bonanza · Safari
+
+**Kornblomst** *(Centaurea cyanus)* — Blue Boy · Black Ball
+
+### Løg- og knoldplanter
+
+**Tulipan** *(Tulipa)* — Queen of Night · Angelique · Apeldoorn
+
+**Påskelilje** *(Narcissus)* — Tête-à-Tête · Dutch Master
+
+**Krokus** *(Crocus)* — Jeanne d'Arc · Flower Record
+
+**Dahlia** *(Dahlia)* — Café au Lait · Arabian Night · Bishop of Llandaff
+
+**Gladiolus** — White Prosperity · Priscilla
+
+---
+
 ## Hvorfor dette dokument eksisterer
 
 1. **Indholds-roadmap.** Når redaktøren spørger "hvad mangler vi?", er
@@ -175,6 +330,16 @@ en frysestyret kategori i sortsguiden)*
    svaret målbart mod denne liste.
 
 ---
+
+## Hvorfor Klasse-niveauet ikke står som "skal-skrives"
+
+Klasse fungerer som primaryCategoryId + subcategoryId i det
+eksisterende schema. Listen ovenfor er **navigations-organisering**,
+ikke nye schema-felter.
+
+Når vi opretter en art under Klasse = "Frugttræer", skal artens
+`primaryCategoryId` være `'traeer'` og `subcategoryId` være `'frugt'`
+(eller lignende). Det er allerede understøttet i schemaet.
 
 ## Hvorfor gruppe ikke står som "skal-skrives"
 
@@ -194,5 +359,6 @@ stilladset før første mursten er lagt. Vi gør det ikke her.
 - [`AI_GUIDE_FABRIK.md`](./AI_GUIDE_FABRIK.md) — beskriver hvordan AI bruger gruppe-laget til at narrow recommendations
 - [`REDAKTOER_BESTILLING_GUIDES_V1.md`](./REDAKTOER_BESTILLING_GUIDES_V1.md) — første 10 manuelle guider
 - [`TEKNIK_GUIDES_BACKLOG.md`](./TEKNIK_GUIDES_BACKLOG.md) — teknik-laget, paralelt med dette katalog
+- [`POTALOT_ROADMAP.md`](./POTALOT_ROADMAP.md) — 8-fase produktroadmap, hvor dette katalog fylder Fase 1 (kerneprodukt)
 
 🌱
