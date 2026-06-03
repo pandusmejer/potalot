@@ -116,14 +116,61 @@ dyrkningsprincipper. Gælder 80–90% af alle sorter under arten.
 
 En planteguide kan have:
 
-- Mange sortsguides (variety) som arver fra den
+- Mange gruppeguides (group) under sig — *valgfrit, kun når arten har
+  meningsfulde dyrknings-/brugsgrupper*
+- Mange sortsguides (variety) som arver direkte fra den, eller via en gruppe
 - Mange teknikguides (technique) som linkes til den
 
 **Schema:** `guideLevel: 'species'` *(eksisterer allerede)*.
 
 ---
 
-## Niveau 3 — Sortsguides (Variety)
+## Niveau 3 — Gruppeguides (Group) — V1.5, valgfri
+
+**Dyrknings- og brugsorienteret mellemniveau.**
+
+> **Vigtigt:** Gruppe er **ikke et taksonomisk niveau**. Det er ikke
+> biologi. Brugeren tænker ikke *"jeg vil dyrke Capsicum annuum"* —
+> brugeren tænker *"jeg vil dyrke en mild chili"*, *"jeg vil have
+> buskbønner i krukker"*, *"jeg vil have nogle cherrytomater"*.
+
+Gruppe-niveauet eksisterer primært til **navigation, læring og
+dyrknings­mæssige forskelle**.
+
+Eksempler hvor det giver mening:
+
+| Art | Grupper |
+|---|---|
+| Bønne | Stangbønne · Buskbønne · Snitbønne · Voksbønne · Pralbønne |
+| Tomat | Cherrytomat · Cocktailtomat · Salattomat · Bøftomat · Pastatomat |
+| Chili | Capsicum annuum · Capsicum chinense · Capsicum baccatum |
+
+Eksempler hvor gruppe **ikke** giver mening (og **ikke** skal tvinges):
+
+- Hvidløg → direkte til sorter (Germidour, Messidrome…)
+- Dild → direkte til sorter (Bouquet, Mammoth…)
+- Pastinak → direkte til sorter (Gladiator, Hollow Crown…)
+
+**Hvorfor det er kritisk at gruppe er valgfri:** Hvis vi tvinger
+alle arter gennem et gruppe-niveau, ender vi med kunstige
+mellem­kategorier som *"Hvidløg → Almindelig hvidløg → Germidour"*.
+Det er bureaukratisk struktur uden brugerværdi.
+
+**Niveauernes formål:**
+
+| Niveau | Formål |
+|---|---|
+| Art | Biologisk identitet |
+| Gruppe | Dyrknings-/brugsgruppe (ikke biologi) |
+| Sort | Konkrete frøsorter |
+
+**Schema:** ny enum-værdi `guideLevel: 'group'`. `parentGuideId` peger
+på Species. Sortsguider kan herefter have `parentGuideId` til **enten**
+en Group **eller** en Species (afhængigt af om arten har grupper).
+
+---
+
+## Niveau 4 — Sortsguides (Variety)
 
 **Viden om den konkrete sort.**
 
@@ -147,11 +194,12 @@ sortsspecifik viden:
 Skal være korte. Det er her AI kommer til sin ret — der findes
 tusindvis af sorter, og du kommer aldrig til manuelt at skrive dem alle.
 
-**Schema:** `guideLevel: 'variety'` + `parentGuideId` *(eksisterer allerede)*.
+**Schema:** `guideLevel: 'variety'` + `parentGuideId` (peger på Group
+*hvis arten har grupper*, ellers Species) *(eksisterer allerede)*.
 
 ---
 
-## Niveau 4 — Konceptguides (Concept) — V2
+## Niveau 5 — Konceptguides (Concept) — V2
 
 **Forståelse af begreber. Ikke planter, ikke handlinger.**
 
@@ -179,13 +227,17 @@ alle tre lag.
 [ Species ] ◄────► [ Technique ]
       ▲
       │
+   [ Group ]   ← valgfri, kun når arten har dyrknings-grupper
+      ▲
+      │
 [ Variety ]
 ```
 
 | Søjle | Spørgsmål | Eksempel |
 |---|---|---|
-| Species | Hvordan dyrker jeg? | Tomat, Agurk |
-| Variety | Hvorfor netop denne? | San Marzano, Marketmore |
+| Species | Hvordan dyrker jeg arten? | Tomat, Agurk, Hvidløg |
+| **Group** | **Hvilken slags vil jeg have?** | **Cherrytomat, Buskbønne, Capsicum chinense** |
+| Variety | Hvorfor netop denne? | San Marzano, Marketmore, Therados |
 | Technique | Hvordan gør jeg? | Knibning af tomater |
 | **Concept** | **Hvad betyder dette?** | **F1-hybrider, sædskifte** |
 
@@ -248,11 +300,16 @@ Teknikker der gælder
 Ingen teknikguider endnu. UI viser dem alle som "Potalot-guides" — den
 tredelte taksonomi er endnu ikke synlig.
 
-**V1.5 (efter launch + brugerfeedback):** Aktivér teknik-laget.
+**V1.5 (efter launch + brugerfeedback):** Aktivér teknik-laget **og** gruppe-laget.
 
-- Tilføj `'technique'` til `GuideLevel`-enum
+- Tilføj `'technique'` og `'group'` til `GuideLevel`-enum
 - Opret M2M-tabel `guide_technique_links`
 - Skriv 15 teknikguider (de eviggrønne ovenfor)
+- Skriv 3-5 gruppeguider (Cherrytomat, Pastatomat, Buskbønne, Capsicum
+  annuum...) for at se mønstret i praksis FØR vi skriver
+  `_TEMPLATE-gruppeguide.md` — undgå at designe det syvende lag af
+  stilladset før første mursten er lagt
+- `parentGuideId` på Variety kan nu pege på Group OR Species
 - Udvid guide-detail med "Teknikker der gælder"-sektion
 - Udvid guides-forsiden med separat "Teknikker"-indgang
 - Skriv 50 AI-genererede sortsguider med klart `AI-udkast`-badge

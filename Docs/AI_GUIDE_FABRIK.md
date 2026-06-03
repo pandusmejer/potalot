@@ -49,11 +49,21 @@ Bestemmer hvilken `guideLevel` der skal genereres:
 | Input | Klasse |
 |---|---|
 | "Tomat" eller andet artsnavn alene | `species` |
+| "Cherrytomat", "Buskbønne", "Capsicum annuum" | `group` |
 | "Tomat San Marzano" eller variety-form | `variety` |
 | "Sådan kniber jeg tomater" / handlings-spørgsmål | `technique` |
 | "Hvad er F1?" / begrebsspørgsmål | `concept` |
 
 Output: `{ guideLevel, parentSlug?, normalizedInput }`.
+
+**Gruppe-erkendelse:** Gruppe er ikke et taksonomisk niveau — det er
+dyrknings-/brugsbaseret. AI skal genkende intentionel gruppering fra
+inputs som *"jeg vil have nogle cherrytomater"* (group: cherrytomat)
+versus *"jeg vil have en San Marzano"* (variety). Hvis brugeren
+nævner en sortskategori uden specifik sort, så er det Group-niveau.
+
+Gruppe er **valgfri**: hvis arten ikke har meningsfulde grupper
+(Hvidløg, Dild, Pastinak), så preserver vi den direkte Art → Sort-relation.
 
 ### 2. `resolveBotanicalIdentity()`
 
@@ -234,12 +244,54 @@ Det giver redaktøren mulighed for at audit'e: "Hvor kom denne påstand fra?"
 - **Ingen** planteleksikon — generel viden om planter hører hjemme i artsguider
 - `:::related-guides`-blok til sidst med "Relevant for disse planter"
 
+### Gruppeguide (`group`) — V1.5
+
+- Forklarer **forskellen mellem dyrknings-grupper inden for arten**
+  (fx hvordan Stangbønne adskiller sig fra Buskbønne)
+- **Gentager ikke** artsguiden
+- Indeholder gerne et `:::fact`-blok der sammenligner gruppen med dens
+  søskendegrupper (Cherrytomat vs Salattomat)
+- Maks 2 teknikguide-referencer (`:::guide`-blokke)
+- Slutter med `:::related-guides` der peger på sorter inden for gruppen,
+  eller `:::next-guide` til en oplagt sort
+
 ### Konceptguide (`concept`)
 
 - Forklarer **ét** begreb (F1, sædskifte, ledsageplanter)
 - **Ingen** kalenderregler
 - **Ingen** dyrkningsmanual
 - Kort, eviggrøn, definitions-fokuseret
+
+---
+
+## Hvorfor gruppe-laget er kritisk for AI-anbefaling
+
+Gruppe-niveauet eksisterer primært **for AI's gavn** når den skal
+forslå sorter ud fra brugerens kontekst — ikke for taksonomisk renlighed.
+
+**Eksempel:**
+
+```
+Bruger skriver:
+  "Jeg har kun et højbed og gider ikke stativer."
+
+AI-fabrikken finder:
+  art = Bønne
+  gruppe = Buskbønne (ikke Stangbønne — kræver stativ)
+
+Foreslår sorter:
+  Mascotte
+  Processor
+
+I stedet for at gennemgå alle bønnesorter i verden.
+```
+
+Uden gruppe-laget vil AI'en være tvunget til at evaluere alle
+bønnesorter individuelt — og let foreslå Cobra eller Blauhilde fordi
+de er populære, uden at indse de er 2-meter-klatreplanter.
+
+Det er præcis derfor gruppe ikke er botanik: brugerens spørgsmål er
+*"hvad passer til min situation?"*, ikke *"hvilken art er dette?"*.
 
 ---
 
