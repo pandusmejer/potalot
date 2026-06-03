@@ -102,7 +102,7 @@ naturlig dyrkningsarchetype. Gruppe er valgfri fordi nogle arter
   Carolina Reaper · Trinidad Moruga Scorpion
 
 ### Peberfrugt
-- California Wonder · Yolo Wonder · King of the North · Red Knight · Sweet Banana
+- California Wonder · Yolo Wonder · King of the North · Red Knight · Sweet Banana · Corno di Toro Rosso
 
 ### Aubergine
 - Black Beauty · Rosa Bianca · Listada de Gandia · Violetta Lunga
