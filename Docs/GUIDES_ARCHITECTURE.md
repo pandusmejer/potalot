@@ -476,6 +476,79 @@ tredelte taksonomi er endnu ikke synlig.
 - Udvid guides-forsiden med separat "Teknikker"-indgang
 - Skriv 50 AI-genererede sortsguider med klart `AI-udkast`-badge
 
+---
+
+### Parkeret V1.5: ny `calendarRule`-type `overwintering`
+
+#### Baggrund
+
+Nogle planteaktiviteter handler ikke om dyrkning eller høst, men om at
+**bevare planten til næste sæson**. I V1 bruges `harvest` midlertidigt
+til disse aktiviteter, men begrebsmæssigt er det ikke korrekt.
+
+Eksempler:
+
+- Grav dahliaknolde op før frost
+- Flyt chili ind til overvintring
+- Beskær og klargør moderplanter
+- Opbevar knolde og løg vinteren over
+
+#### Foreslået udvidelse
+
+```ts
+type CalendarRuleType =
+  | "sowing"
+  | "repot"
+  | "plant_out"
+  | "maintenance"
+  | "fertilizing"
+  | "harvest"
+  | "overwintering"   // NY
+```
+
+#### Arter hvor typen allerede er relevant
+
+- Dahlia
+- Chili
+- Pelargonie
+- Fuchsia
+- Canna
+- Begonia (knoldbegonia)
+- Gladiolus
+- Flere løg- og knoldplanter
+
+#### Hvorfor ikke bare bruge `harvest`?
+
+**Harvest** beskriver handlinger hvor dyrkeren *tager udbyttet*:
+
+- tomater
+- agurker
+- chili
+- blomster til buketter
+- frø
+
+**Overwintering** beskriver handlinger hvor dyrkeren *bevarer planten
+til næste sæson*.
+
+De to handlinger har forskellige formål og bør på sigt kunne filtreres
+og vises forskelligt — fx ville en "Hvad skal jeg gøre i oktober?"-visning
+gerne kunne adskille *"høst de sidste æbler"* fra *"grav dahliaknoldene
+op før frost"*.
+
+#### Status
+
+**Parkeret til V1.5.** Ikke nødvendigt for launch. Eksisterende guides
+(Dahlia, Chili) bruger `harvest` indtil videre — det er den **mindst
+forkerte** kategori i V1's enum.
+
+> Den her note findes for at "Grav knolde op før frost" om seks måneder
+> ikke ender som endnu en kreativ brug af `maintenance`, `harvest`,
+> `other`, `miscellaneous`, `special` eller `winter-stuff` — alle
+> klassiske symptomer på, at et schema langsomt er ved at blive
+> komposteret. 🌷
+
+---
+
 **V2 (senere):** Aktivér koncept-laget.
 
 - Tilføj `'concept'` til `GuideLevel`-enum
