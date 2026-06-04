@@ -69,6 +69,14 @@ Disse opstår naturligt når biblioteket vokser.
 - Jordforbedring med kompost
 - Sådan undgår du meldug
 - Frøindsamling og frøopbevaring
+- Overvintring af chili *(refereret fra Habanero Orange)*
+- Opbinding af peberfrugt *(refereret fra Corno di Toro Rosso)*
+
+> **Bemærk:** Chili-artsguiden refererer til en `goedning-af-chili`-teknik.
+> Det skal afklares senere om den skal være en selvstændig guide eller
+> kollapses ind i den generelle "Gødning i køkkenhaven". Lige nu er det
+> et brudt link i artsguiden, som ikke fixes før V1.5-teknikfunktionen
+> aktiveres.
 
 ---
 
