@@ -100,6 +100,9 @@ naturlig dyrkningsarchetype. Gruppe er valgfri fordi nogle arter
 - **Capsicum annuum:** Jalapeño · Cayenne · Anaheim · Serrano · Hungarian Hot Wax
 - **Capsicum chinense:** Habanero Orange · Habanero Red · Scotch Bonnet ·
   Carolina Reaper · Trinidad Moruga Scorpion
+- **Capsicum baccatum:** Aji Amarillo · Aji Limón · Bishop's Crown
+- **Capsicum frutescens:** Tabasco · Thai Bird · Piri Piri
+- **Capsicum pubescens:** Rocoto Manzano · Rocoto Locoto
 
 ### Peberfrugt
 - California Wonder · Yolo Wonder · King of the North · Red Knight · Sweet Banana · Corno di Toro Rosso
