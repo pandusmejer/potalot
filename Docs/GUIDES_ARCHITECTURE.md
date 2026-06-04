@@ -176,10 +176,46 @@ Schemaet skal kunne håndtere begge ved at adskille to felter:
 | Tomat | Solanum lycopersicum | Solanum lycopersicum |
 | Æble | Malus domestica | Malus domestica |
 | Peberfrugt | Capsicum annuum (Grossum Group) | Capsicum annuum |
-| Chili | Capsicum annuum / chinense / baccatum | *(null — spans multiple)* |
+| Chili | Capsicum | *(null — spans multiple species)* |
 | Broccoli | Brassica oleracea var. italica | Brassica oleracea |
 | Blomkål | Brassica oleracea var. botrytis | Brassica oleracea |
 | Rosenkål | Brassica oleracea var. gemmifera | Brassica oleracea |
+
+#### Konvention for multi-art-Potalot-arter
+
+Når en Potalot-art spænder over flere botaniske arter, skal `latinName`
+spring op til **genus-niveau** (slægten) — ikke liste alle arter ud.
+
+| ❌ Forkert | ✅ Korrekt |
+|---|---|
+| `Capsicum annuum / chinense / baccatum` | `Capsicum` |
+| `Brassica oleracea / napus / rapa` | `Brassica` |
+
+Hvorfor: Skriver vi *"Capsicum annuum"* på Chili-artsguiden, er det
+botanisk **forkert** for Habanero (chinense), Aji (baccatum), Rocoto
+(pubescens) og resten. Brugeren ser et latinsk navn der er ukorrekt
+for de fleste af de sorter guiden faktisk dækker.
+
+Genus-niveauet er botanisk **korrekt** for hele samlingen. Botaniske
+specifikationer flyttes til gruppe-niveauet (når gruppe-laget aktiveres),
+hvor `botanicalSpecies` så får den specifikke art:
+
+```
+Chili (latinName: Capsicum, botanicalSpecies: null)
+├── Gruppe: Capsicum annuum  (botanicalSpecies: Capsicum annuum)
+│     └── Jalapeño, Cayenne, Anaheim, Serrano
+├── Gruppe: Capsicum chinense (botanicalSpecies: Capsicum chinense)
+│     └── Habanero Orange, Scotch Bonnet, Carolina Reaper
+├── Gruppe: Capsicum baccatum (botanicalSpecies: Capsicum baccatum)
+│     └── Aji
+└── Gruppe: Capsicum pubescens (botanicalSpecies: Capsicum pubescens)
+      └── Rocoto
+```
+
+Det er der gruppe-laget viser sin reelle værdi: chili-grupperne **er**
+de botaniske arter. Brugeren kan vælge ud fra "jeg vil have en mild
+chili" (annuum) eller "jeg vil have noget brændende eksotisk" (chinense)
+— uden at skulle lære botanisk taksonomi.
 
 #### Når en Potalot-art spænder over flere botaniske arter
 

@@ -78,7 +78,7 @@ Normaliserer input til en kanonisk botanisk identitet før kildehentning.
                               botanicalSpecies: Cucumis sativus
 "peberfrugt"                → latinName: Capsicum annuum (Grossum Group)
                               botanicalSpecies: Capsicum annuum
-"chili"                     → latinName: Capsicum annuum / chinense / baccatum
+"chili"                     → latinName: Capsicum (genus-niveau når arten spænder flere)
                               botanicalSpecies: null (spænder flere arter)
 "forspiring"                → Teknik: forspiring (ingen botanisk identitet)
 "F1 hybrider"               → Koncept: F1-hybrider (ingen botanisk identitet)
