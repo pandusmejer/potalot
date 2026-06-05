@@ -27,6 +27,9 @@ import Link from 'next/link'
 import type { Guide } from '@/lib/types'
 import { TrustBadge, type GuideKind } from './trust-badge'
 import { ArrowRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { getGuideImages } from '@/data/guide-images'
+import { selectGuideImage } from '@/lib/guides/select-guide-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -41,6 +44,7 @@ interface Props {
   /** AI-udkast får hjælpetekst under summary */
   aiHelpText?: boolean
   size?: 'standard' | 'compact'
+  offset?: 'none' | 'left' | 'right'
 }
 
 export function GuideCardEditorial({
@@ -50,77 +54,97 @@ export function GuideCardEditorial({
   iFroebank = false,
   aiHelpText = false,
   size = 'standard',
+  offset = 'none',
 }: Props) {
-  const hero = guide.primaryImageId
   const isCompact = size === 'compact'
+  const isVariety = guide.guideLevel === 'variety' || !!guide.variety
+  const hero = pickGuideListImage(guide)
 
-  // Sortsguide → titel = sortsnavn, plantenavn bliver eyebrow over
-  // Artsguide → titel = plantenavn, ingen eyebrow med navn
   const title = guide.variety ?? guide.plantName
   const subtitleName = guide.variety ? guide.plantName : null
 
-  // Trust-badge vises KUN for afvigelser fra default (egen, ai-udkast).
-  // Potalot er default — siden signalerer det én gang øverst.
   const showBadge = kind !== 'potalot'
 
   return (
     <Link
       href={`/guides/${guide.id}`}
-      className="group block transition-transform duration-200 ease-out hover:-translate-y-0.5"
+      className={cn(
+        'group block transition-transform duration-200 ease-out hover:-translate-y-0.5',
+        offset === 'right' && 'sm:translate-x-5',
+        offset === 'left' && 'sm:-translate-x-4',
+      )}
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
-      {hero && (
+      <article className={cn('relative', isVariety && 'pl-5')}>
+        {hero && (
+          <div
+            className={cn(
+              'relative overflow-hidden bg-[#EAE6D8]',
+              isVariety ? 'ml-8 h-[190px] rounded-[22px]' : 'h-[255px] rounded-[28px]',
+              isCompact && (isVariety ? 'h-[164px]' : 'h-[210px]'),
+            )}
+            style={{
+              border: '1px solid rgba(45,42,36,0.08)',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={hero}
+              alt=""
+              className={cn(
+                'absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]',
+                isVariety ? 'scale-[1.08]' : 'scale-100',
+              )}
+            />
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-24"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(20,14,8,0) 0%, rgba(20,14,8,0.28) 100%)',
+              }}
+            />
+            {iFroebank && (
+              <span
+                className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.10em',
+                  textTransform: 'uppercase',
+                  padding: '5px 10px',
+                  background: 'rgba(244,240,229,0.92)',
+                  color: '#7F8F6A',
+                }}
+                title="Sorten findes i din frøbank"
+              >
+                I din frøbank
+              </span>
+            )}
+          </div>
+        )}
+
         <div
-          className="relative overflow-hidden"
+          className={cn(
+            'relative z-10 flex items-start gap-3',
+            isVariety
+              ? '-mt-12 mr-5 rounded-[22px] border px-4 pb-4 pt-4'
+              : '-mt-8 ml-4 mr-3 rounded-[24px] border px-4 pb-4 pt-5',
+          )}
           style={{
-            borderRadius: 24,
-            aspectRatio: '5 / 3',
-            background: '#EAE6D8',
+            background: 'rgba(244,240,229,0.96)',
+            borderColor: 'rgba(45,42,36,0.09)',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={hero}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
-          />
-          {iFroebank && (
-            <span
-              className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full"
-              style={{
-                fontFamily: sans,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: '0.10em',
-                textTransform: 'uppercase',
-                padding: '5px 10px',
-                background: 'rgba(244,240,229,0.92)',
-                color: '#7F8F6A', // Salvie
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-              }}
-              title="Sorten findes i din frøbank"
-            >
-              I din frøbank
-            </span>
-          )}
-        </div>
-      )}
-
-      <div
-        className="flex items-start gap-3"
-        style={{ paddingInline: 4, paddingTop: 16 }}
-      >
-        <div className="flex-1 min-w-0">
-          {/* Trust-badge KUN for afvigelser (Egen, AI) */}
+          <div className="flex-1 min-w-0">
           {showBadge && (
             <div style={{ marginBottom: 8 }}>
               <TrustBadge kind={kind} size="sm" />
             </div>
           )}
 
-          {/* Plantenavn-eyebrow for sortsguider */}
-          {subtitleName && (
+          {isVariety && (
             <p
               style={{
                 fontFamily: sans,
@@ -133,7 +157,7 @@ export function GuideCardEditorial({
                 marginBottom: 4,
               }}
             >
-              {subtitleName}
+              {subtitleName ?? guide.primaryCategoryId}
             </p>
           )}
 
@@ -141,9 +165,9 @@ export function GuideCardEditorial({
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: isCompact ? 26 : 30,
+              fontSize: isCompact ? 25 : isVariety ? 31 : 36,
               lineHeight: 1.0,
-              letterSpacing: '-0.01em',
+              letterSpacing: 0,
               color: '#2D2A24',
               margin: 0,
             }}
@@ -186,18 +210,15 @@ export function GuideCardEditorial({
 
           {guide.summary && (
             <p
+              className="line-clamp-2"
               style={{
-                fontFamily: serif,
-                fontSize: isCompact ? 15 : 16.5,
-                fontWeight: 400,
-                lineHeight: 1.5,
+                fontFamily: isVariety ? sans : serif,
+                fontSize: isCompact ? 14 : isVariety ? 14.5 : 16,
+                fontWeight: isVariety ? 500 : 400,
+                lineHeight: isVariety ? 1.45 : 1.48,
                 color: '#6A665C',
                 margin: 0,
-                marginTop: 12,
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
+                marginTop: isVariety ? 9 : 11,
               }}
             >
               {guide.summary}
@@ -221,19 +242,44 @@ export function GuideCardEditorial({
               Genereret automatisk. Gennemgå og tilpas efter dine forhold.
             </p>
           )}
-        </div>
+          </div>
 
-        {/* Pil — viser at kortet er et opslag */}
-        <div
-          className="shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
-          style={{
-            marginTop: 6,
-            color: '#7F8F6A',
-          }}
-        >
-          <ArrowRight size={20} strokeWidth={1.75} />
+          <div
+            className="shrink-0 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+            style={{
+              marginTop: 5,
+              color: '#7F8F6A',
+            }}
+          >
+            <ArrowRight size={18} strokeWidth={1.75} />
+          </div>
         </div>
-      </div>
+      </article>
     </Link>
   )
+}
+
+function pickGuideListImage(guide: Guide): string | null | undefined {
+  if (guide.guideLevel === 'species' || !guide.variety) return guide.primaryImageId
+
+  const registered = getGuideImages(guide.id)
+  const selected = selectGuideImage({
+    images: registered?.macro,
+    preferredRoles: ['fruit', 'structure', 'detail'],
+    seed: `${guide.id}:guideCard`,
+    fallbackIndex: 0,
+    cropProfile: 'detail-close',
+  })
+  if (selected) return selected.src
+
+  const key = `${guide.plantName} ${guide.variety}`.toLowerCase()
+  if (key.includes('san marzano')) return '/images/makro/tomat-san-marzano/dug.jpg'
+  if (key.includes('marketmore')) return '/images/makro/agurk/frugt-med-blomst.jpg'
+  if (key.includes('habanero')) return '/images/makro/chili-habanero-orange/skin.jpg'
+  if (key.includes('california wonder')) return '/images/makro/peberfrugt-california-wonder/indre.jpg'
+  if (key.includes('café au lait') || key.includes('cafe au lait')) {
+    return '/images/plantekort/dahlia-cafe-au-lait.jpg'
+  }
+  if (key.includes('corno')) return '/images/makro/peberfrugt-california-wonder/indre.jpg'
+  return guide.primaryImageId
 }

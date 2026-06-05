@@ -1,26 +1,10 @@
 'use client'
 
-/**
- * GuidesBibliotek — bibliotek-orchestrator.
- *
- * Layout (per master-spec):
- *   1. Populære emner   ← redaktionelle indgange, ikke filter
- *   2. Potalot-guides   ← primær sektion, mest visuel vægt
- *   3. Søg + filtrer    ← efter inspiration, ikke før
- *   4. Egne guides      ← personlig
- *   5. AI-udkast        ← sekundært, klart markeret
- *
- * Filtre er læserens kvalitetsvalg: Alle guides · Potalot-guides ·
- * Egne guides · AI-udkast. Ingen Master/Mine/Promote/Flag/Clone.
- *
- * Klik på populært emne forfilterer listen (V1 — ingen separat
- * /guides/emne/[slug]-side endnu).
- */
-
 import { useMemo, useState } from 'react'
 import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
+import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
 import { TrustBadge, guideKindFor, type GuideKind } from './trust-badge'
 import {
   POPULAERE_EMNER,
@@ -34,11 +18,8 @@ type Filter = 'alle' | 'potalot' | 'egen' | 'ai-udkast'
 
 interface Props {
   guides: Guide[]
-  /** IDs der i demo skal vises som AI-udkast (null for real-data) */
   aiGuideIds: ReadonlySet<string> | null
-  /** Map fra guide.id til parent's plante-navn — bruges til lineage-tekst */
   parentPlantNameById: Map<string, string>
-  /** Set af guide-IDs der er linket til brugerens frøbank — diskret kort-badge */
   iFroebankIds: ReadonlySet<string>
 }
 
@@ -55,10 +36,9 @@ export function GuidesBibliotek({
   function vaelgEmne(e: PopulaertEmne) {
     setAktivtEmne(curr => (curr?.matchPlantName === e.matchPlantName ? null : e))
     setSearch('')
-    // Scroll til Potalot-sektionen så læseren ser resultatet
     if (typeof document !== 'undefined') {
       requestAnimationFrame(() => {
-        document.getElementById('potalot-sektion')?.scrollIntoView({
+        document.getElementById('guide-feltet')?.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         })
@@ -68,7 +48,6 @@ export function GuidesBibliotek({
 
   const effectiveSearch = aktivtEmne?.matchPlantName ?? search
 
-  // Beregn kind pr. guide
   const withKind = useMemo(() => {
     return guides.map(g => ({
       guide: g,
@@ -76,7 +55,6 @@ export function GuidesBibliotek({
     }))
   }, [guides, aiGuideIds])
 
-  // Filter pr. søgning + kvalitets-filter
   const filtered = useMemo(() => {
     const q = effectiveSearch.trim().toLowerCase()
     return withKind
@@ -91,7 +69,12 @@ export function GuidesBibliotek({
           g.tags.some(t => t.toLowerCase().includes(q))
         )
       })
-      .sort((a, b) => a.guide.plantName.localeCompare(b.guide.plantName, 'da'))
+      .sort((a, b) => {
+        if (a.guide.guideLevel !== b.guide.guideLevel) {
+          return a.guide.guideLevel === 'species' ? -1 : 1
+        }
+        return a.guide.plantName.localeCompare(b.guide.plantName, 'da')
+      })
   }, [withKind, effectiveSearch, filter])
 
   const potalot = filtered.filter(x => x.kind === 'potalot')
@@ -99,78 +82,57 @@ export function GuidesBibliotek({
   const ai = filtered.filter(x => x.kind === 'ai-udkast')
 
   return (
-    <div className="space-y-12 sm:space-y-14">
-      {/* ── 1. BEGYND HER — redaktionelle indgange ── */}
+    <div className="space-y-10 sm:space-y-12">
+      {/* Layered section: topic papers overlap the hero's atmospheric photo field. */}
       <PopulaereEmner
         emner={POPULAERE_EMNER}
         aktivt={aktivtEmne}
         onVaelg={vaelgEmne}
       />
 
-      {/* ── 2. POTALOT-GUIDES — primær sektion ──
-          V4: atmosfærisk makrofoto-lag ligger BAG kortene, stikker
-          ud over højre sektionkant. Ingen rektangulær container —
-          fotoet er materiale, ikke modul. */}
-      <section id="potalot-sektion" className="relative space-y-4">
-        {/* Lag 2 — atmosfærisk makro (tomathud med dug).
-            Stikker ud over sektionens højre kant. Aggressiv beskæring
-            via radial mask. Lav opacity + multiply så den smelter
-            med papirbaggrunden. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-24 -right-16 hidden sm:block"
-          style={{
-            width: '60%',
-            maxWidth: 460,
-            aspectRatio: '4/5',
-            opacity: 0.55,
-            mixBlendMode: 'multiply',
-            maskImage:
-              'radial-gradient(ellipse 60% 70% at 35% 50%, black 30%, transparent 78%)',
-            WebkitMaskImage:
-              'radial-gradient(ellipse 60% 70% at 35% 50%, black 30%, transparent 78%)',
-            transform: 'rotate(-2deg)',
-            zIndex: 0,
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/makro/tomat-san-marzano/dug.jpg"
-            alt=""
-            className="h-full w-full object-cover"
-          />
-        </div>
+      {/* Layered section: paper fact sheet sits over a faded macro image, compact on mobile. */}
+      <LayeredFactBlock
+        {...layeredGuideSampleData.fact}
+        className="-mt-3 sm:-mt-1"
+      />
 
-        <div className="relative" style={{ zIndex: 1 }}>
-          <SektionEyebrow>
-            <TrustBadge kind="potalot" size="sm" />
-            <span className="ml-1.5">Kvalitetssikret af Potalot</span>
-          </SektionEyebrow>
-          <SektionTitel>
-            {aktivtEmne ? `${aktivtEmne.navn}-guides` : 'Læs en guide'}
-          </SektionTitel>
-        </div>
-        {potalot.length === 0 ? (
-          <EmptyNote text={
-            aktivtEmne || effectiveSearch
-              ? 'Ingen Potalot-guide matcher endnu — prøv et andet emne eller søg bredere.'
-              : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
-          } />
-        ) : (
-          <div className="relative space-y-3" style={{ zIndex: 1 }}>
-            {potalot.map(({ guide, kind }) => (
-              <GuideCardEditorial
-                key={guide.id}
-                guide={guide}
-                kind={kind}
-                iFroebank={iFroebankIds.has(guide.id)}
-              />
-            ))}
+      {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
+      <section id="guide-feltet" className="relative pt-2">
+        <AtmosphericGuideField />
+        <div className="relative z-10 space-y-4">
+          <div className="max-w-[360px]">
+            <SektionEyebrow>
+              <TrustBadge kind="potalot" size="sm" />
+              <span>Kvalitetssikrede dyrkningsnoter</span>
+            </SektionEyebrow>
+            <SektionTitel>
+              {aktivtEmne ? `${aktivtEmne.navn} i felten` : 'Guides i felten'}
+            </SektionTitel>
           </div>
-        )}
+
+          {potalot.length === 0 ? (
+            <EmptyNote text={
+              aktivtEmne || effectiveSearch
+                ? 'Ingen guide matcher endnu. Prøv et andet emne eller søg bredere.'
+                : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
+            } />
+          ) : (
+            <div className="space-y-7">
+              {potalot.map(({ guide, kind }, index) => (
+                <GuideCardEditorial
+                  key={guide.id}
+                  guide={guide}
+                  kind={kind}
+                  iFroebank={iFroebankIds.has(guide.id)}
+                  offset={index % 3 === 1 ? 'right' : index % 3 === 2 ? 'left' : 'none'}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* ── 3. SØG + FILTRER ── */}
+      {/* Editorial transition: search stays functional, but behaves like a quiet field index. */}
       <SoegBar
         search={search}
         onSearch={(v) => {
@@ -187,69 +149,32 @@ export function GuidesBibliotek({
         }}
       />
 
-      {/* ── 4. EGNE GUIDES — mindre vægt end Potalot ── */}
       {(filter === 'alle' || filter === 'egen') && (
-        <section className="space-y-3">
-          <SektionEyebrow>
-            <TrustBadge kind="egen" size="sm" />
-            <span className="ml-1.5">Dine egne erfaringer</span>
-          </SektionEyebrow>
-          {egne.length === 0 ? (
-            <EmptyNote text="Når du tilpasser en Potalot-guide eller skriver din egen, finder du den her." />
-          ) : (
-            <div className="space-y-3">
-              {egne.map(({ guide, kind }) => {
-                const lineage = guide.parentGuideId
-                  ? parentPlantNameById.get(guide.parentGuideId)
-                  : null
-                return (
-                  <GuideCardEditorial
-                    key={guide.id}
-                    guide={guide}
-                    kind={kind}
-                    lineageText={
-                      lineage
-                        ? `Baseret på Potalot-guiden om ${lineage}`
-                        : null
-                    }
-                    iFroebank={iFroebankIds.has(guide.id)}
-                    size="compact"
-                  />
-                )
-              })}
-            </div>
-          )}
-        </section>
+        <SecondaryGuideSection
+          title="Dine egne erfaringer"
+          empty="Når du tilpasser en Potalot-guide eller skriver din egen, finder du den her."
+          items={egne}
+          iFroebankIds={iFroebankIds}
+          lineage={(guide) => {
+            const parent = guide.parentGuideId
+              ? parentPlantNameById.get(guide.parentGuideId)
+              : null
+            return parent ? `Baseret på Potalot-guiden om ${parent}` : null
+          }}
+        />
       )}
 
-      {/* ── 5. AI-UDKAST — sekundært lag ── */}
       {(filter === 'alle' || filter === 'ai-udkast') && ai.length > 0 && (
-        <section className="space-y-3">
-          <SektionEyebrow>
-            <TrustBadge kind="ai-udkast" size="sm" />
-            <span className="ml-1.5">Udkast til inspiration</span>
-          </SektionEyebrow>
-          <div className="space-y-3">
-            {ai.map(({ guide, kind }) => (
-              <GuideCardEditorial
-                key={guide.id}
-                guide={guide}
-                kind={kind}
-                iFroebank={iFroebankIds.has(guide.id)}
-                aiHelpText
-                size="compact"
-              />
-            ))}
-          </div>
-        </section>
+        <SecondaryGuideSection
+          title="Udkast til inspiration"
+          items={ai}
+          iFroebankIds={iFroebankIds}
+          aiHelpText
+        />
       )}
     </div>
   )
 }
-
-// ════════════════════════════════════════════════════════════════
-// Sub-komponenter
-// ════════════════════════════════════════════════════════════════
 
 function PopulaereEmner({
   emner,
@@ -261,79 +186,80 @@ function PopulaereEmner({
   onVaelg: (e: PopulaertEmne) => void
 }) {
   return (
-    <section className="space-y-3">
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.55)',
-          margin: 0,
-        }}
-      >
-        Begynd her
-      </p>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {emner.map(e => {
+    <section className="relative -mt-2">
+      <div className="relative z-10 mb-3">
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.55)',
+            margin: 0,
+          }}
+        >
+          Begynd her
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {emner.map((e, index) => {
           const erAktivt = aktivt?.matchPlantName === e.matchPlantName
           return (
             <button
               key={e.matchPlantName}
               type="button"
               onClick={() => onVaelg(e)}
-              className="group relative block overflow-hidden text-left transition-all duration-200 ease-out hover:-translate-y-0.5"
+              className={[
+                'group relative isolate block overflow-hidden text-left transition-transform duration-200 ease-out hover:-translate-y-0.5',
+                index % 2 === 0 ? 'translate-y-0' : 'translate-y-5',
+              ].join(' ')}
               style={{
-                borderRadius: 24,
-                aspectRatio: '5 / 3',
-                boxShadow: erAktivt
-                  ? '0 10px 30px rgba(26,34,22,0.18)'
-                  : '0 8px 22px rgba(26,34,22,0.10)',
-                outline: erAktivt ? '2.5px solid #3D5A26' : 'none',
-                outlineOffset: '-2.5px',
+                borderRadius: index % 2 === 0 ? 24 : 18,
+                aspectRatio: '4 / 3.35',
+                border: erAktivt
+                  ? '1.5px solid rgba(61,90,38,0.75)'
+                  : '1px solid rgba(45,42,36,0.10)',
+                background: '#F4F0E5',
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={e.imageUrl}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
               />
-              {/* Mørk-til-klar gradient i bunden så teksten er læsbar */}
               <div
                 aria-hidden
                 className="absolute inset-0"
                 style={{
                   background:
-                    'linear-gradient(180deg, rgba(20,14,8,0) 38%, rgba(20,14,8,0.62) 100%)',
+                    'linear-gradient(180deg, rgba(24,20,14,0.02) 20%, rgba(24,20,14,0.66) 100%)',
                 }}
               />
-              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <div className="absolute inset-x-0 bottom-0 p-3.5">
                 <h3
                   style={{
                     fontFamily: serif,
                     fontWeight: 500,
-                    fontSize: 'clamp(26px, 5.5vw, 34px)',
-                    lineHeight: 1,
-                    letterSpacing: '-0.02em',
+                    fontSize: 'clamp(23px, 7vw, 31px)',
+                    lineHeight: 0.95,
                     color: '#FFFFFF',
                     margin: 0,
-                    textShadow: '0 2px 12px rgba(20,14,8,0.6)',
+                    letterSpacing: 0,
+                    textShadow: '0 2px 12px rgba(20,14,8,0.50)',
                   }}
                 >
                   {e.navn}
                 </h3>
                 <p
-                  className="mt-1.5"
+                  className="mt-1 line-clamp-1"
                   style={{
                     fontFamily: sans,
-                    fontStyle: 'italic',
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: 'rgba(255,255,255,0.92)',
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    color: 'rgba(255,255,255,0.88)',
                     margin: 0,
-                    textShadow: '0 1px 8px rgba(20,14,8,0.55)',
                   }}
                 >
                   {e.byline}
@@ -345,29 +271,25 @@ function PopulaereEmner({
       </div>
       {aktivt && (
         <p
-          className="pt-1"
+          className="mt-8"
           style={{
             fontFamily: sans,
             fontSize: 12.5,
             fontWeight: 500,
-            color: 'rgba(36,48,31,0.55)',
-            margin: 0,
+            color: 'rgba(36,48,31,0.58)',
+            marginBottom: 0,
           }}
         >
-          Viser guides om {aktivt.navn.toLowerCase()}.{' '}
+          Viser {aktivt.navn.toLowerCase()}.{' '}
           <button
             type="button"
             onClick={() => onVaelg(aktivt)}
+            className="underline underline-offset-4"
             style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
               color: '#3D5A26',
               fontFamily: sans,
               fontSize: 12.5,
               fontWeight: 700,
-              cursor: 'pointer',
-              textDecoration: 'underline',
             }}
           >
             Vis alle
@@ -375,6 +297,45 @@ function PopulaereEmner({
         </p>
       )}
     </section>
+  )
+}
+
+function AtmosphericGuideField() {
+  return (
+    <>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-20 top-4 h-72 w-72"
+        style={{
+          backgroundImage: 'url(/images/makro/agurk/blad.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.18,
+          mixBlendMode: 'multiply',
+          transform: 'rotate(-7deg)',
+          maskImage:
+            'radial-gradient(ellipse 70% 64% at 50% 50%, black 20%, transparent 82%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 70% 64% at 50% 50%, black 20%, transparent 82%)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 top-[28rem] h-80 w-80"
+        style={{
+          backgroundImage: 'url(/images/makro/tomat-san-marzano/dug.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.2,
+          mixBlendMode: 'multiply',
+          transform: 'rotate(5deg)',
+          maskImage:
+            'radial-gradient(ellipse 66% 70% at 50% 50%, black 20%, transparent 84%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 66% 70% at 50% 50%, black 20%, transparent 84%)',
+        }}
+      />
+    </>
   )
 }
 
@@ -392,60 +353,62 @@ function SoegBar({
   antal: Record<Filter, number>
 }) {
   const filterChips: { id: Filter; label: string }[] = [
-    { id: 'alle', label: 'Alle guides' },
-    { id: 'potalot', label: 'Potalot-guides' },
-    { id: 'egen', label: 'Egne guides' },
-    { id: 'ai-udkast', label: 'AI-udkast' },
+    { id: 'alle', label: 'Alle' },
+    { id: 'potalot', label: 'Potalot' },
+    { id: 'egen', label: 'Egne' },
+    { id: 'ai-udkast', label: 'Udkast' },
   ]
   return (
-    <section className="space-y-3">
+    <section className="relative pt-2">
+      <div
+        aria-hidden
+        className="absolute left-10 right-10 top-0 h-px bg-[#2D2A24]/10"
+      />
       <p
+        className="mb-3 text-center"
         style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.55)',
-          margin: 0,
+          fontFamily: serif,
+          fontStyle: 'italic',
+          fontSize: 18,
+          color: 'rgba(36,48,31,0.56)',
+          marginTop: 0,
         }}
       >
-        Søg i biblioteket
+        Find den plante, du står med.
       </p>
       <div
         className="relative"
         style={{
           borderRadius: 18,
-          background: 'var(--card)',
+          background: 'rgba(244,240,229,0.68)',
           border: '1px solid rgba(36,48,31,0.10)',
-          boxShadow: '0 4px 14px rgba(26,34,22,0.05)',
-          padding: '4px 6px 4px 6px',
+          padding: '3px 5px',
         }}
       >
         <Search
           aria-hidden
           className="absolute left-4 top-1/2 -translate-y-1/2"
-          style={{ width: 16, height: 16, color: 'rgba(36,48,31,0.45)' }}
+          style={{ width: 15, height: 15, color: 'rgba(36,48,31,0.42)' }}
         />
         <input
           type="text"
           value={search}
           onChange={e => onSearch(e.target.value)}
-          placeholder="Søg plante, sort eller latinsk navn"
+          placeholder="Søg plante, sort eller latin"
           style={{
             width: '100%',
             border: 'none',
             outline: 'none',
             background: 'transparent',
             fontFamily: sans,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: 500,
             color: '#24301F',
-            padding: '12px 12px 12px 34px',
+            padding: '11px 10px 11px 32px',
           }}
         />
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="mt-2 flex flex-wrap gap-1.5">
         {filterChips.map(c => {
           const active = filter === c.id
           return (
@@ -455,26 +418,17 @@ function SoegBar({
               onClick={() => onFilter(c.id)}
               style={{
                 fontFamily: sans,
-                fontSize: 12.5,
-                fontWeight: 600,
-                letterSpacing: '0.01em',
-                padding: '7px 14px',
+                fontSize: 11.5,
+                fontWeight: 650,
+                padding: '6px 10px',
                 borderRadius: 999,
-                background: active ? '#24301F' : 'transparent',
-                color: active ? '#F6F3EB' : 'rgba(36,48,31,0.65)',
-                border: active ? '1px solid #24301F' : '1px solid rgba(36,48,31,0.18)',
-                cursor: 'pointer',
-                transition: 'all 150ms ease-out',
+                background: active ? 'rgba(36,48,31,0.88)' : 'rgba(244,240,229,0.35)',
+                color: active ? '#F6F3EB' : 'rgba(36,48,31,0.55)',
+                border: active ? '1px solid rgba(36,48,31,0.88)' : '1px solid rgba(36,48,31,0.10)',
               }}
             >
               {c.label}
-              <span
-                style={{
-                  marginLeft: 8,
-                  opacity: 0.75,
-                  fontWeight: 500,
-                }}
-              >
+              <span style={{ marginLeft: 6, opacity: 0.66 }}>
                 {antal[c.id]}
               </span>
             </button>
@@ -485,24 +439,71 @@ function SoegBar({
   )
 }
 
+function SecondaryGuideSection({
+  title,
+  empty,
+  items,
+  iFroebankIds,
+  lineage,
+  aiHelpText = false,
+}: {
+  title: string
+  empty?: string
+  items: { guide: Guide; kind: GuideKind }[]
+  iFroebankIds: ReadonlySet<string>
+  lineage?: (guide: Guide) => string | null
+  aiHelpText?: boolean
+}) {
+  return (
+    <section className="space-y-3">
+      <SektionEyebrow>
+        <span>{title}</span>
+      </SektionEyebrow>
+      {items.length === 0 && empty ? (
+        <EmptyNote text={empty} />
+      ) : (
+        <div className="space-y-5">
+          {items.map(({ guide, kind }) => (
+            <GuideCardEditorial
+              key={guide.id}
+              guide={guide}
+              kind={kind}
+              lineageText={lineage?.(guide)}
+              iFroebank={iFroebankIds.has(guide.id)}
+              aiHelpText={aiHelpText}
+              size="compact"
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
 function SektionEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div
+      className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase"
+      style={{
+        fontFamily: sans,
+        letterSpacing: '0.18em',
+        color: 'rgba(36,48,31,0.55)',
+      }}
+    >
       {children}
     </div>
   )
 }
 
 function SektionTitel({ children }: { children: React.ReactNode }) {
-  // V3: H2 Cormorant 32px, weight 500, line-height 1.0, color #2D2A24
   return (
     <h2
       style={{
         fontFamily: serif,
         fontWeight: 500,
-        fontSize: 'clamp(26px, 5vw, 32px)',
-        lineHeight: 1.0,
-        letterSpacing: '-0.01em',
+        fontSize: 'clamp(31px, 8vw, 40px)',
+        lineHeight: 0.96,
+        letterSpacing: 0,
         color: '#2D2A24',
         margin: 0,
       }}

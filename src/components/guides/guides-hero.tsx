@@ -10,7 +10,6 @@
  * det Potalot-univers vi allerede har.
  */
 
-const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 export function GuidesHero() {

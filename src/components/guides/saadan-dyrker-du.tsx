@@ -8,22 +8,27 @@
  */
 
 import type { GuideSection } from '@/lib/types'
+import type { SelectedGuideImage } from '@/lib/guides/select-guide-image'
 import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
-import { AtmosfaeriskLag } from './atmosfaerisk-lag'
+import { AtmosphericImageLayer } from './layered-guide'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
   sections: GuideSection[]
-  /** Atmosfærisk makro-path til Lag 2 bag faktabokse. */
-  atmosfaeriskMakro?: string | null
+  /**
+   * Atmosfærisk makro-billede (V4 Lag 2) bag fact-blokke.
+   * Vælges på guide-detail-page via selectGuideImage(); kan være null
+   * for guides der ikke har makro-entries endnu.
+   */
+  factMacroImage?: SelectedGuideImage | null
 }
 
-export function SaadanDyrkerDu({ sections, atmosfaeriskMakro }: Props) {
+export function SaadanDyrkerDu({ sections, factMacroImage }: Props) {
   // `:::next-guide` rendres ikke her — guide-detail-page rendrer den
   // som det allersidste blok på siden (efter sortsvarianter, noter osv).
   const body = sections.filter(s => s.kind !== 'next')
@@ -57,25 +62,35 @@ export function SaadanDyrkerDu({ sections, atmosfaeriskMakro }: Props) {
       {body.map((s, i) => {
         const key = s.key ?? `section-${i}`
         if (s.kind === 'fact') {
-          // V4 Lag 4: faktabokse skal ligge OVENPÅ et makrofoto, ikke
-          // mellem to tekstblokke. Atmosfærisk lag vælges på guide-
-          // detail-page baseret på guide-slug.
+          // V4 Lag 4: faktabokse ligger OVENPÅ et makrofoto, ikke
+          // mellem to tekstblokke. Bruger AtmosphericImageLayer som
+          // lav-level baggrundslag — stikker ud over fact-cardens kant
+          // og fader rundt med radial mask.
           return (
-            <AtmosfaeriskLag
+            <div
               key={key}
-              src={atmosfaeriskMakro}
-              focal="right"
-              opacity={0.45}
-              bleed={48}
-              rotate={-1}
-              alt="Atmosfærisk makro-baggrund"
+              className="relative isolate overflow-visible"
             >
-              <GuideFactCard
-                title={s.title}
-                variant={s.variant}
-                columns={s.columns}
-              />
-            </AtmosfaeriskLag>
+              {factMacroImage && (
+                <AtmosphericImageLayer
+                  src={factMacroImage.src}
+                  alt={factMacroImage.alt}
+                  fade="right"
+                  focal="right"
+                  opacity={0.42}
+                  rotate={-1}
+                  scale={factMacroImage.scale}
+                  className="inset-[-40px]"
+                />
+              )}
+              <div className="relative z-10">
+                <GuideFactCard
+                  title={s.title}
+                  variant={s.variant}
+                  columns={s.columns}
+                />
+              </div>
+            </div>
           )
         }
         if (s.kind === 'guide') {

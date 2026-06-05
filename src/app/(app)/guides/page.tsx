@@ -69,14 +69,34 @@ export default async function GuidesPage() {
   }
 
   return (
-    <div className="space-y-12 sm:space-y-14 pb-6">
-      <GuidesHero />
-      <GuidesBibliotek
-        guides={visibleGuides}
-        aiGuideIds={aiGuideIds}
-        parentPlantNameById={parentPlantNameById}
-        iFroebankIds={inFroebankIds}
+    <div className="relative -mx-4 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
+      <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
+      {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-[-42%] right-[-42%] top-[150px] h-[360px]"
+        style={{
+          backgroundImage: 'url(/images/makro/chili-habanero-orange/frugter.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.18,
+          mixBlendMode: 'multiply',
+          transform: 'rotate(-2deg)',
+          maskImage:
+            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+        }}
       />
+      <div className="relative z-10 space-y-10 sm:space-y-12">
+        <GuidesHero />
+        <GuidesBibliotek
+          guides={visibleGuides}
+          aiGuideIds={aiGuideIds}
+          parentPlantNameById={parentPlantNameById}
+          iFroebankIds={inFroebankIds}
+        />
+      </div>
     </div>
   )
 }
