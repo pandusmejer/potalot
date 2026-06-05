@@ -75,6 +75,7 @@ Disse opstår naturligt når biblioteket vokser.
 - Plukning af dahlia *(refereret fra Dahlia-artsguide)*
 - Buketter med dahlia *(refereret fra Dahlia-artsguide)*
 - Overvintring af dahlia *(refereret fra Dahlia-artsguide)*
+- Opbinding af dahlia *(refereret fra Café au Lait — both `:::guide` and `:::next-guide`)*
 
 > **Bemærk:** Chili-artsguiden refererer til en `goedning-af-chili`-teknik.
 > Det skal afklares senere om den skal være en selvstændig guide eller
@@ -104,12 +105,13 @@ slug.
 - `beskaering-af-agurker`
 - `knibning-af-agurker`
 
-### Dahlia-guiden refererer til
+### Dahlia-guiderne refererer til
 
-- `forspiring-af-dahlia`
-- `plukning-af-dahlia`
-- `buketter-med-dahlia`
-- `overvintring-af-dahlia`
+- `forspiring-af-dahlia` *(fra artsguide)*
+- `plukning-af-dahlia` *(fra artsguide)*
+- `buketter-med-dahlia` *(fra artsguide)*
+- `overvintring-af-dahlia` *(fra artsguide)*
+- `opbinding-af-dahlia` *(fra Café au Lait — også next-guide)*
 
 ### Chili + Peberfrugt-guiderne refererer til
 
