@@ -44,69 +44,112 @@ export function SaadanDyrkerDu({ sections }: Props) {
     )
   }
 
+  // Tæl prose-sektioner for kapitelnummerering. Fact/guide/related/
+  // potalot-note er "indstik" og får ikke nummer — som i en bog hvor
+  // kapitler nummereres men sidebars ikke.
+  let chapterCounter = 0
+
   return (
-    <section className="space-y-5">
-      <SektionEyebrow>Sådan dyrker du</SektionEyebrow>
-      <div className="space-y-8 sm:space-y-9">
-        {body.map((s, i) => {
-          const key = s.key ?? `section-${i}`
-          if (s.kind === 'fact') {
-            return (
-              <GuideFactCard
-                key={key}
-                title={s.title}
-                variant={s.variant}
-                columns={s.columns}
-              />
-            )
-          }
-          if (s.kind === 'guide') {
-            return (
-              <GuideTechniqueCard
-                key={key}
-                slug={s.slug}
-                title={s.title}
-                description={s.description}
-              />
-            )
-          }
-          if (s.kind === 'related') {
-            return (
-              <GuideRelatedList
-                key={key}
-                title={s.title}
-                items={s.items}
-              />
-            )
-          }
-          // Prose-fald — men hvis titlen starter med "Potalot", render
-          // som signatur-blok i stedet for almindelig sektion.
-          if (isPotalotNoteSection(s.title)) {
-            return <GuidePotalotNote key={key} body={s.body} />
-          }
-          return <ProseSection key={key} title={s.title} body={s.body} />
-        })}
-      </div>
+    <section className="space-y-[56px] sm:space-y-[72px]">
+      {body.map((s, i) => {
+        const key = s.key ?? `section-${i}`
+        if (s.kind === 'fact') {
+          return (
+            <GuideFactCard
+              key={key}
+              title={s.title}
+              variant={s.variant}
+              columns={s.columns}
+            />
+          )
+        }
+        if (s.kind === 'guide') {
+          return (
+            <GuideTechniqueCard
+              key={key}
+              slug={s.slug}
+              title={s.title}
+              description={s.description}
+            />
+          )
+        }
+        if (s.kind === 'related') {
+          return (
+            <GuideRelatedList
+              key={key}
+              title={s.title}
+              items={s.items}
+            />
+          )
+        }
+        // Prose-fald — men hvis titlen starter med "Potalot", render
+        // som signatur-blok i stedet for almindelig sektion.
+        if (isPotalotNoteSection(s.title)) {
+          return <GuidePotalotNote key={key} body={s.body} />
+        }
+        chapterCounter++
+        return (
+          <ProseSection
+            key={key}
+            chapter={chapterCounter}
+            title={s.title}
+            body={s.body}
+          />
+        )
+      })}
     </section>
   )
 }
 
-function ProseSection({ title, body }: { title: string; body: string }) {
+/**
+ * V3 prose-sektion.
+ *
+ *   - Kapitelnummer (Manrope 12px, salvie-grøn, tracking 0.12em)
+ *   - H2 (Cormorant 32px, weight 500, line-height 1.0)
+ *   - 16px mellem H2 og tekst
+ *   - Body via ProseBody (Cormorant 20px, line-height 1.75, max 70ch)
+ *
+ * Sektioner adskilles af 72px (eller 56px på mobil) — den vertikale
+ * rytme er låst i guides.md sektion 15.4.
+ */
+function ProseSection({
+  chapter,
+  title,
+  body,
+}: {
+  chapter: number
+  title: string
+  body: string
+}) {
   return (
-    <article className="space-y-3">
-      <h3
+    <article>
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: '0.12em',
+          color: '#7F8F6A', // Salvie
+          margin: 0,
+          marginBottom: 8,
+        }}
+      >
+        {String(chapter).padStart(2, '0')}
+      </p>
+      <h2
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(24px, 4.8vw, 30px)',
-          lineHeight: 1.1,
-          letterSpacing: '-0.02em',
-          color: '#24301F',
+          fontSize: 'clamp(26px, 5vw, 32px)',
+          lineHeight: 1.0,
+          letterSpacing: '-0.01em',
+          color: '#2D2A24',
           margin: 0,
+          marginBottom: 16,
         }}
       >
         {title}
-      </h3>
+      </h2>
       <ProseBody body={body} />
     </article>
   )
@@ -123,27 +166,29 @@ function ProseSection({ title, body }: { title: string; body: string }) {
  * links, kode-blokke eller H4 i body, så er det tid til react-markdown.
  */
 function ProseBody({ body }: { body: string }) {
+  // V3: Cormorant 20px, line-height 1.75, max 70ch.
+  // "Cormorant. Ikke Manrope. Guides skal læses."
   const bodyStyle: React.CSSProperties = {
     fontFamily: serif,
     fontWeight: 400,
-    fontSize: 'clamp(16px, 2.6vw, 18.5px)',
-    lineHeight: 1.65,
-    color: 'rgba(36,48,31,0.82)',
+    fontSize: 'clamp(18px, 3vw, 20px)',
+    lineHeight: 1.75,
+    color: '#2D2A24',
     margin: 0,
-    maxWidth: 640,
+    maxWidth: '70ch',
   }
 
   // Split body i paragraffer (blank linje mellem)
   const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
 
   return (
-    <div className="space-y-3" style={bodyStyle}>
+    <div className="space-y-6" style={bodyStyle}>
       {paragraphs.map((para, i) => {
         const lines = para.split('\n').map((l) => l.trim())
         const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
         if (isBulletList) {
           return (
-            <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-1">
+            <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
               {lines.map((l, j) => (
                 <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
               ))}

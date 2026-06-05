@@ -137,43 +137,48 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
               {original.guideLevel === 'species' && ' · artsguide'}
             </span>
           </div>
+          {/* V3 H1 — Cormorant 48px, weight 500, line-height 0.95.
+              For sortsguider er sortsnavnet titlen; plantenavnet bliver
+              eyebrow over (i kategori-strippen). */}
           <h1
             style={{
               fontFamily: 'var(--font-cormorant), Georgia, serif',
               fontWeight: 500,
-              fontSize: 'clamp(40px, 9vw, 64px)',
-              lineHeight: 0.98,
-              letterSpacing: '-0.025em',
-              color: '#24301F',
+              fontSize: 'clamp(36px, 8vw, 48px)',
+              lineHeight: 0.95,
+              letterSpacing: '-0.02em',
+              color: '#2D2A24',
               margin: 0,
             }}
           >
-            {effective.plantName}
+            {effective.variety ?? effective.plantName}
           </h1>
           {effective.variety && (
             <p
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontStyle: 'italic',
-                fontWeight: 400,
-                fontSize: 'clamp(20px, 3.6vw, 26px)',
-                lineHeight: 1.1,
-                color: 'rgba(36,48,31,0.68)',
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 13,
+                fontWeight: 500,
+                letterSpacing: '0.05em',
+                color: '#6A665C',
                 margin: 0,
+                marginTop: 4,
               }}
             >
-              {effective.variety}
+              {effective.plantName}
             </p>
           )}
           {effective.latinName && (
             <p
               style={{
-                fontFamily: 'var(--font-manrope)',
+                fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontStyle: 'italic',
-                fontSize: 13.5,
-                fontWeight: 500,
-                color: 'rgba(36,48,31,0.52)',
+                fontSize: 'clamp(17px, 3vw, 20px)',
+                fontWeight: 400,
+                color: '#2D2A24',
+                opacity: 0.72,
                 margin: 0,
+                marginTop: 8,
               }}
             >
               {effective.latinName}
@@ -197,14 +202,19 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         )}
       </header>
 
-      {/* ── HOVEDBILLEDE ── */}
+      {/* ── HOVEDBILLEDE — V3 spec ──
+          Højde 420px på mobil. Ingen skygge ("Guides skal føles som
+          papir"). Subtil border som papir-kant. Aspect 4/5 portrait
+          eller wide for arts/sorts forskel — fastlagt af kortets data.
+          Vi bruger en fast højde-formel: kortere på small screens,
+          op til 420px der efter.
+       */}
       {effective.primaryImageId && (
         <div
           className="overflow-hidden"
           style={{
             borderRadius: 24,
-            border: '1px solid rgba(36,48,31,0.08)',
-            boxShadow: '0 8px 28px rgba(26,34,22,0.10)',
+            border: '1px solid rgba(45,42,36,0.06)',
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -212,7 +222,10 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             src={effective.primaryImageId}
             alt={effective.plantName}
             className="w-full object-cover"
-            style={{ aspectRatio: '16/9' }}
+            style={{
+              aspectRatio: '4/5',
+              maxHeight: 420,
+            }}
           />
         </div>
       )}
