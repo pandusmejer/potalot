@@ -16,6 +16,107 @@
 
 ---
 
+## 0. Visuelt fundament
+
+> Reglerne i resten af dokumentet udspringer af **stemningen** dette
+> afsnit beskriver. Hvis et fremtidigt designvalg er i overensstemmelse
+> med reglerne men i strid med stemningen — så er det stemningen der
+> har ret. Mennesker husker billeder bedre end regler.
+
+### Referencer
+
+Potalot er ikke "én ting" — det er en kuratereret blanding:
+
+- **Editorial magasinlayout** (Kinfolk, Cereal, Apartamento)
+- **Moderne naturbøger** — britiske/skandinaviske botaniske udgivelser
+- **Premium skincare og parfumeemballage** (Aesop, Le Labo) — for
+  papirkant, tryksvære labels, beherskede farver
+- **Coffee table books** for typografi-vejrtrækning
+- **Royal Horticultural Society** for autoritet og saglighed
+- **Gammel naturhistorisk håndbog** for rytmen mellem tekst og
+  illustration
+- **Modernistisk magasinlayout** for asymmetri og luft
+
+**Godkendte visuelle referencer ligger i**
+[`./references/guides/`](./references/guides/).
+Den mappe er den endelige sandhed. Tekst-beskrivelserne i resten
+af denne doc er en understøttende dokumentation af det, billederne
+viser.
+
+### Formbibliotek
+
+Potalots faktiske form-vokabular — det der allerede er en del af
+appens DNA i frøbank, kalender, manila-faner:
+
+| Form | Hvor det bruges |
+|---|---|
+| **Organiske blobs** | Masker omkring billeder, hero-baggrunde, måneds-stemninger |
+| **Asymmetriske billede-masker** | Detail Bleed, sortskort-foto, månedshero |
+| **Papirlabels** | Frøbank-kort-headers, kategori-tags, det haptiske look |
+| **Kapsler** | Pills, badges, kompakte status-elementer |
+| **Overlappende kort** | Manila-mappe-stak (frøbank-arkiv), guidekort |
+| **Runde highlights** | Spot-ikoner, tæller-bobler, månede-cirkler |
+| **Bølgende overgange** | Frøbank-hero-bund, sektion-separatorer |
+| **Soft bottom curves** | Manila-folder, kategori-baggrunde |
+
+**Reglen:** Designet er **flade flader med organiske former**.
+Indholdet inde i en blok er fladt og ugradieret — men blokkenes
+ydre kanter er sjældent rektangulære. Den hybrid er Potalots
+visuelle signatur.
+
+### Billedbehandling
+
+| ✅ Gør | ❌ Gør IKKE |
+|---|---|
+| Bløde overgange mellem foto og baggrund | Hårde sortie kanter på rektangulære billeder |
+| Fade til creme-baggrund i hero-bunden | Brutale kanter mod næste sektion |
+| Organisk beskæring — masker, blobs, bølger | Rectangulære galleri-grids |
+| Lav-mætning på alle fotos | Instagram-saturation eller HDR |
+| Lys, varm farvetone | Kølige skygger eller blålige højlys |
+| Tæt-på-motivet for makro/detail | Wide shots med have-baggrund |
+
+### Farvefilosofi
+
+Farverne **trækkes fra planterne selv** — dæmpede, varme, lave i
+mætning. Ikke "naturfarver" i den klassiske app-betydning.
+
+Vi vil have:
+
+- Støvet salvie
+- Pistacie
+- Creme
+- Ler
+- Terracotta
+- Dæmpet oliven
+- Sienna
+- Tuscan sun
+- Coastal blue (kun til vinter-momenter)
+- Autumn bronze
+
+Vi vil **IKKE** have:
+
+- Klassisk skovgrøn ("forest green")
+- Klassisk havegrøn ("grass green")
+- Bondegårdsrød eller barnløgs-orange
+- Syntetiske primærfarver
+- Pastel-mint, lavendel, baby-blå (generiske app-farver)
+
+Sæson-spillet (forår/sommer/efterår/vinter) skal kunne ses i
+Potalot uden at det bryder hovedpaletten. Vinter-blå er accent,
+ikke modspil.
+
+### Det vi har lært af mockups (juni 2026)
+
+> Erkendelse: Vores nuværende guide-mockups (tomat, agurk, knibning)
+> er allerede længere fremme end den her doc. Mockupsene viser
+> organisk-maskede billeder, fade-overgange, visuelle øer og
+> modulære faktakort. Doc'en er ved at komme bagefter designet.
+>
+> Det er en god ting — billeder skal altid være forrest. Doc'en
+> følger med, og denne sektion 0 er hvor billeder vinder over tekst.
+
+---
+
 ## 1. Formålet
 
 **Hvad er en Potalot-guide?**
@@ -483,22 +584,41 @@ medium hvor 80% af brugerne læser.
 
 ## 11. Farvepalette
 
-(Henter fra Annas memory: *"flat saturated blocks, sharp edges
-between blocks, NO gradient inside a block"*)
+Se også sektion 0 — **Farvefilosofi** — for hvilke farver der hører
+til Potalots familie og hvilke der eksplicit ikke gør.
 
-| Rolle | Værdi |
-|---|---|
-| Baggrund — creme | `#F4F0E6` eller projektets eksisterende `var(--background)` |
-| Tekst — primær | `#24301F` (dyb forest) |
-| Tekst — sekundær | `rgba(36,48,31,0.72)` |
-| Tekst — meta | `rgba(36,48,31,0.55)` |
-| Accent — forest green | `#3D5A26` (samme som I din frøbank-badge) |
-| Accent — terracotta | for "udløber snart"-tilstande |
-| Card-border | `rgba(36,48,31,0.08)` |
-| Subtil skygge | `0 6px 20px rgba(26,34,22,0.06)` |
+### Kerne (altid synlig)
 
-**Brug af farve:** Sparsom. Kort har ingen gradient. Hovedfarven
-er Cormorant-tekst i `#24301F` på creme — alt andet er ornamentik.
+| Rolle | Værdi | Note |
+|---|---|---|
+| Baggrund — creme | `#F4F0E6` / `var(--background)` | Den faste base |
+| Tekst — primær | `#24301F` (dæmpet skov-mørk) | Næsten sort, varm undertone |
+| Tekst — sekundær | `rgba(36,48,31,0.72)` | Body-prosa |
+| Tekst — meta | `rgba(36,48,31,0.55)` | Eyebrows, badges, timestamps |
+| Card-border | `rgba(36,48,31,0.08)` | Diskret, aldrig hård |
+
+### Naturpalette (rotation gennem sæsonerne)
+
+Disse farver bruges som **accent** i guides — på fact-card-kanter,
+botanical bleed-overgange, kategori-eyebrows, sæson-stemninger.
+Værdierne er **omtrentlige** — låses endeligt af Anna mod
+referencefilerne i `references/guides/farvepalette-*.png`.
+
+| Navn | Cirka værdi | Sæson | Hvor |
+|---|---|---|---|
+| Støvet salvie | `~#A8B5A0` | Forår | Fact-card-eyebrows |
+| Pistacie | `~#C8D4A4` | Forår-sommer | Fresh-spire-tilstande |
+| Ler | `~#C9A982` | Sommer | Frø-emballage-look |
+| Sienna | `~#A56743` | Sommer-efterår | Tomat-, peberfrugt-accent |
+| Tuscan sun | `~#D9A654` | Sommer | Modne-frugter-accent |
+| Terracotta | `~#B5604A` | Efterår | "Udløber snart"-tilstande |
+| Autumn bronze | `~#8C5A2E` | Efterår | Knold- og rod-accent |
+| Dæmpet oliven | `~#7B8A5F` | Hele sæsonen | Standard-plante-accent |
+| Coastal blue | `~#7A93A8` | Vinter | Vinter-only accent, sparsom |
+
+**Brug af farve:** Sparsom. Kort har ingen gradient. Hovedfarven er
+Cormorant-tekst i `#24301F` på creme — alt andet er ornamentik.
+**Aldrig mere end 2 accentfarver på samme guide-opslag.**
 
 ---
 
