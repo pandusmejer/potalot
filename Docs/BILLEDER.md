@@ -9,6 +9,179 @@ en ny fil hører hjemme — uden at skulle gætte.
 
 ---
 
+## De 5 billedtyper — den mentale model
+
+Potalot har **5 hovedtyper** billeder. Hver type har ét specifikt
+formål; ingen type må overlappe med en anden. Hvis du er i tvivl om
+hvilken type et nyt billede tilhører — så er det sandsynligvis et
+forsøg på at opfinde en sjette type. Stop.
+
+### 1. Frøkort-billede
+
+**Formål:** Viser sorten som **objekt** (fritlagt, produktagtig).
+Motiv på farvet atmosfærisk baggrund.
+
+**Bruges på:** Frøbank, frøkort-detail, sort-lister, kompakte
+thumbnails, søgeresultater.
+
+**Eksempel:** Én San Marzano-tomat på varm rød/terracotta baggrund.
+
+### 2. Plantekort-billede (sortsfoto)
+
+**Formål:** Viser sorten som **levende plante** (sanseligt makro-
+eller close-up-udsnit i vækst).
+
+**Bruges på:** Aktive planter, plantekort-detail, sortsguide-hero,
+sortsguide-kort i biblioteket.
+
+**Eksempel:** San Marzano på planten — stilk, dug, klaser, grønne
+og røde toner.
+
+### 3. Artsfoto
+
+**Formål:** Viser arten som **visuel identitet** (hurtig
+genkendelse — ikke nødvendigvis botanisk repræsentation).
+
+**Bruges på:** Artsguide-hero, artsguide-kort, kategorier,
+"Begynd her", relaterede arter.
+
+**🔒 Låst regel — artsfotoets opgave:**
+
+> Artsfotoets opgave er ikke at vise **én plante**.
+> Artsfotoets opgave er at vise **den visuelle identitet af arten**.
+
+Det kan være:
+
+- én plante (tomat, dahlia)
+- flere planter
+- et bed
+- **en mark** (hvidløg, kartofler, korn)
+- et drivhus
+- en gruppe planter
+- kant-til-kant tæppe af samme motiv (løg i rækker, byg, hvede)
+
+**Reglen:** Vælg den komposition som **hurtigst** får brugeren til
+at tænke:
+
+> *"Det dér er hvidløg."*
+> *"Det dér er kartofler."*
+> *"Det dér er tomater."*
+
+**Genkendelse først, botanik bagefter.** Det er sådan mennesker
+faktisk ser verden — selv om plantebøger ofte prøver at overbevise
+os om noget andet.
+
+| Art | Bedste komposition |
+|---|---|
+| Tomat | Én plante eller drivhusrække |
+| Dahlia | Én plante eller gruppe i bed |
+| Agurk | Plante i drivhus |
+| Hvidløg | **Mark eller rækker** |
+| Kartofler | **Rækker / mark** |
+| Løg | **Mange løg i rækker** |
+| Byg / hvede / rug | **Mark, bevægelse, mængde** |
+| Chili | Plante med modne frugter |
+
+### 4. Makrofotos
+
+**Formål:** Viser planten som **materiale og nærhed** (sanselige,
+tætte fotos af tekstur, blade, frugt, blomst, stængel, frøkamre).
+
+**Bruges på:** Guides som lag, baggrunde, faktabokse, "Vidste du?",
+Potalot-tip, overgange, sortsguider, atmosfæriske crops.
+
+**Eksempel:** Tomathud med dug, dahlia-kronblade, chili-overflade.
+
+**Regel:** Makrofotos må ikke gentages **ens** på samme side. Hvis
+samme billede bruges flere steder, skal systemet variere crop,
+zoom, placering og opacity.
+
+Tonal og kompositorisk spec er låst i
+[`design-system/prompts/makro-detail-fotos.md`](./design-system/prompts/makro-detail-fotos.md).
+
+### 5. Thumbnails / crops
+
+**Formål:** Afledte beskæringer af de 4 andre typer. **Ikke en
+separat billedproduktion.**
+
+**Bruges på:** Lister, søgeresultater, relaterede guides, små kort.
+
+**Regel:** Systemet cropper fra frøkort, plantekort, artsfoto eller
+makro. Aldrig en ny billedfil.
+
+---
+
+## Den korte regel
+
+```
+Frøkort     viser sorten som ikon.
+Plantekort  viser sorten som levende plante.
+Artsfoto    viser arten som visuel identitet (ikke "én plante").
+Makrofoto   viser planten som sanseligt materiale.
+Thumbnails  er bare beskæringer, ikke nye billeder.
+```
+
+Resten er bare AI'er der prøver at opfinde
+`image_final_v7_actual_use_this_one.jpg`.
+
+---
+
+## Hvor vises hvad — komplet matrix
+
+| Sted i appen | Primært billede | Sekundære billeder |
+|---|---|---|
+| Frøbank | Frøkort | Thumbnail-crops af frøkort |
+| Frøkort-detail | Frøkort | Evt. makro som baggrund |
+| Aktive planter | Plantekort | Makro-crops |
+| Plantekort-detail | Plantekort | Ingen eller makro-lag |
+| Artsguide | Artsfoto | 2-3 artsdetaljer + makro |
+| Sortsguide | Plantekort (eller frøkort afh. kontekst) | Makrofotos |
+| Guides landing — artsguide-kort | Artsfoto | Atmosfæriske makrolag |
+| Guides landing — sortsguide-kort | Plantekort / sortsfoto | Atmosfæriske makrolag |
+| Faktabokse i guides | Makrofoto som baggrundslag | — |
+| Potalot-tip / Vidste du | Makrofoto | Varierede crops |
+| Søgning | Thumbnail-crops | Afh. type |
+| Relaterede guides | Thumbnail-crops | Frøkort for sort, artsfoto for art |
+
+---
+
+## Tre-niveau-systemet
+
+Potalots billeder følger en mental hierarki som brugeren lærer
+automatisk gennem brug:
+
+| Niveau | Hvad | Foto |
+|---|---|---|
+| **1. Art** | Tomat, agurk, chili, hvidløg | Artsfoto (visuel identitet) |
+| **2. Sort** | San Marzano, Marketmore, Café au Lait | Plantekort (sanseligt udsnit) |
+| **3. Guide-indhold** | Inde i en specifik guide | Makrofotos + crops |
+
+Som brugeren ser:
+
+- **Hel plante / mark / mængde** = art
+- **Sanseligt udsnit** = sort
+- **Tekstur og nærhed** = fordybelse
+
+Det er en stærk mental model fordi den **lærer sig selv** —
+brugeren behøver ikke at læse om systemet for at forstå det.
+
+---
+
+## Hvilke billeder går igen flere steder
+
+| Billedtype | Går igen på |
+|---|---|
+| **Frøkort** | Frøbank · sortslister · søgeresultater · små thumbnails · relaterede sorter |
+| **Plantekort** | Aktive planter · plantekort-detail · sortsguide-hero · sortsguide-kort |
+| **Artsfoto** | Artsguide-hero · guides landing · artskort · relaterede artsguider |
+| **Makrofotos** | Guides · faktabokse · Potalot-tip · Vidste du · atmosfæriske baggrundslag · crops i sortsguider |
+
+**Vigtigt:** Sorter må aldrig arve generiske artsbilleder overalt.
+San Marzano skal **ligne** San Marzano, ikke "tomat i almindelighed".
+Ellers forsvinder læringsværdien.
+
+---
+
 ## Mappestrukturen
 
 ```
