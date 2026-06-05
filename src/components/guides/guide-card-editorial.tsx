@@ -1,12 +1,18 @@
 /**
- * GuideCardEditorial — naturhåndbog-stilen til guide-kort.
+ * GuideCardEditorial — V3 Fase 2 editorial list-kort.
  *
- * Ét trust-badge pr. kort, aldrig kombinationer. Lineage vises som
- * sekundær tekst, ikke som badge.
+ * "Et bog-opslag, ikke et app-grid."
  *
- * To størrelser:
- *   - 'standard' (default) — Potalot-guides, Egne guides
- *   - 'compact' — AI-udkast får lidt mindre vægt
+ * Layout:
+ *   - Thumbnail venstre (88px square, 16px radius)
+ *   - Tekst højre — Cormorant titel, Manrope meta, Cormorant body
+ *   - Card #F4F0E5, border #D8D1BF, radius 24px, INGEN skygge
+ *
+ * Spec-kilde: Docs/design-system/guides.md §15.12 (Guidekort) +
+ * §15.14 (Farver).
+ *
+ * Trust-badge står ALTID som eyebrow over titel — aldrig ved siden af.
+ * Lineage vises som sekundær tekst, ikke som badge.
  */
 
 import Link from 'next/link'
@@ -39,91 +45,100 @@ export function GuideCardEditorial({
   const hero = guide.primaryImageId
   const isCompact = size === 'compact'
 
+  // Sortsguide → titel = sortsnavn, plantenavn bliver eyebrow
+  // Artsguide → titel = plantenavn, ingen eyebrow med navn
+  const title = guide.variety ?? guide.plantName
+  const subtitleName = guide.variety ? guide.plantName : null
+
   return (
     <Link
       href={`/guides/${guide.id}`}
-      className="group block overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5"
+      className="group block overflow-hidden transition-colors duration-200"
       style={{
-        borderRadius: 22,
-        background: 'var(--card)',
-        border: '1px solid rgba(36,48,31,0.08)',
-        boxShadow: '0 6px 20px rgba(26,34,22,0.06)',
+        background: '#F4F0E5',
+        border: '1px solid #D8D1BF',
+        borderRadius: 24,
         textDecoration: 'none',
         color: 'inherit',
       }}
     >
-      <div className="flex">
+      <div
+        className="flex gap-4"
+        style={{ padding: isCompact ? 14 : 16 }}
+      >
         {hero && (
           <div
-            className="relative shrink-0"
-            style={{ width: isCompact ? 96 : 128 }}
+            className="relative shrink-0 overflow-hidden"
+            style={{
+              width: isCompact ? 76 : 88,
+              height: isCompact ? 76 : 88,
+              borderRadius: 16,
+              background: '#EAE6D8',
+            }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={hero}
               alt=""
               className="h-full w-full object-cover"
-              style={{ aspectRatio: '3 / 4' }}
             />
-            {iFroebank && (
-              <span
-                className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 9.5,
-                  fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  padding: '4px 8px',
-                  background: 'rgba(255,255,255,0.92)',
-                  color: '#3D5A26',
-                  border: '1px solid rgba(123,148,96,0.30)',
-                  textShadow: 'none',
-                }}
-                title="Sorten findes i din frøbank"
-              >
-                I din frøbank
-              </span>
-            )}
           </div>
         )}
 
-        <div
-          className="flex-1 min-w-0 space-y-2"
-          style={{ padding: isCompact ? '12px 14px' : '16px 18px' }}
-        >
-          {/* Trust-badge som eyebrow over titel — aldrig ved siden af.
-              Tidligere stod den justify-between med titel og kolliderede
-              visuelt med lange plantenavne på smalle kort. */}
-          <TrustBadge kind={kind} size="sm" />
-          <div className="min-w-0">
-            <h3
+        <div className="flex-1 min-w-0">
+          {/* Trust-badge som eyebrow over titel */}
+          <div className="mb-2">
+            <TrustBadge kind={kind} size="sm" />
+          </div>
+
+          {/* Plantenavn-eyebrow for sortsguider — så San Marzano kender sit tomat-DNA */}
+          {subtitleName && (
+            <p
               style={{
-                fontFamily: serif,
-                fontWeight: 500,
-                fontSize: isCompact ? 22 : 26,
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
-                color: '#24301F',
+                fontFamily: sans,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#7F8F6A', // Salvie
                 margin: 0,
+                marginBottom: 4,
               }}
             >
-              {guide.plantName}
-            </h3>
-            {guide.variety && (
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: isCompact ? 13 : 14,
-                  fontWeight: 500,
-                  color: 'rgba(36,48,31,0.55)',
-                  margin: 0,
-                  marginTop: 2,
-                }}
-              >
-                {guide.variety}
-              </p>
-            )}
-          </div>
+              {subtitleName}
+            </p>
+          )}
+
+          <h3
+            style={{
+              fontFamily: serif,
+              fontWeight: 500,
+              fontSize: isCompact ? 22 : 24,
+              lineHeight: 1.05,
+              letterSpacing: '-0.01em',
+              color: '#2D2A24',
+              margin: 0,
+            }}
+          >
+            {title}
+          </h3>
+
+          {guide.latinName && (
+            <p
+              style={{
+                fontFamily: serif,
+                fontStyle: 'italic',
+                fontSize: 14,
+                fontWeight: 400,
+                color: '#2D2A24',
+                opacity: 0.6,
+                margin: 0,
+                marginTop: 2,
+              }}
+            >
+              {guide.latinName}
+            </p>
+          )}
 
           {lineageText && (
             <p
@@ -132,8 +147,9 @@ export function GuideCardEditorial({
                 fontStyle: 'italic',
                 fontSize: 12,
                 fontWeight: 400,
-                color: 'rgba(36,48,31,0.55)',
+                color: '#6A665C',
                 margin: 0,
+                marginTop: 6,
               }}
             >
               {lineageText}
@@ -143,15 +159,37 @@ export function GuideCardEditorial({
           {guide.summary && (
             <p
               style={{
-                fontFamily: sans,
-                fontSize: isCompact ? 12.5 : 13.5,
+                fontFamily: serif,
+                fontSize: isCompact ? 15 : 16,
                 fontWeight: 400,
-                lineHeight: 1.45,
-                color: 'rgba(36,48,31,0.72)',
+                lineHeight: 1.5,
+                color: '#6A665C',
                 margin: 0,
+                marginTop: 8,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
               }}
             >
               {guide.summary}
+            </p>
+          )}
+
+          {iFroebank && (
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: '0.10em',
+                textTransform: 'uppercase',
+                color: '#7F8F6A', // Salvie
+                margin: 0,
+                marginTop: 10,
+              }}
+            >
+              · I din frøbank
             </p>
           )}
 
@@ -162,10 +200,11 @@ export function GuideCardEditorial({
                 fontSize: 11.5,
                 fontWeight: 500,
                 lineHeight: 1.4,
-                color: 'rgba(90,79,115,0.78)',
+                color: '#6A665C',
                 margin: 0,
-                paddingTop: 4,
-                borderTop: '1px solid rgba(180,165,200,0.30)',
+                marginTop: 10,
+                paddingTop: 8,
+                borderTop: '1px solid #D8D1BF',
               }}
             >
               Genereret automatisk. Gennemgå og tilpas efter dine forhold.

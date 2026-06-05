@@ -123,7 +123,7 @@ export function GuidesBibliotek({
               : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
           } />
         ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="space-y-3">
             {potalot.map(({ guide, kind }) => (
               <GuideCardEditorial
                 key={guide.id}
@@ -460,15 +460,16 @@ function SektionEyebrow({ children }: { children: React.ReactNode }) {
 }
 
 function SektionTitel({ children }: { children: React.ReactNode }) {
+  // V3: H2 Cormorant 32px, weight 500, line-height 1.0, color #2D2A24
   return (
     <h2
       style={{
         fontFamily: serif,
         fontWeight: 500,
-        fontSize: 'clamp(26px, 5vw, 36px)',
-        lineHeight: 1.05,
-        letterSpacing: '-0.02em',
-        color: '#24301F',
+        fontSize: 'clamp(26px, 5vw, 32px)',
+        lineHeight: 1.0,
+        letterSpacing: '-0.01em',
+        color: '#2D2A24',
         margin: 0,
       }}
     >
