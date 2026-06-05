@@ -123,7 +123,7 @@ export function GuidesBibliotek({
               : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
           } />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             {potalot.map(({ guide, kind }) => (
               <GuideCardEditorial
                 key={guide.id}

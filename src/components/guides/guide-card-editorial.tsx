@@ -91,37 +91,38 @@ export function GuideCardEditorial({
           className="flex-1 min-w-0 space-y-2"
           style={{ padding: isCompact ? '12px 14px' : '16px 18px' }}
         >
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0 flex-1">
-              <h3
+          {/* Trust-badge som eyebrow over titel — aldrig ved siden af.
+              Tidligere stod den justify-between med titel og kolliderede
+              visuelt med lange plantenavne på smalle kort. */}
+          <TrustBadge kind={kind} size="sm" />
+          <div className="min-w-0">
+            <h3
+              style={{
+                fontFamily: serif,
+                fontWeight: 500,
+                fontSize: isCompact ? 22 : 26,
+                lineHeight: 1.05,
+                letterSpacing: '-0.02em',
+                color: '#24301F',
+                margin: 0,
+              }}
+            >
+              {guide.plantName}
+            </h3>
+            {guide.variety && (
+              <p
                 style={{
-                  fontFamily: serif,
+                  fontFamily: sans,
+                  fontSize: isCompact ? 13 : 14,
                   fontWeight: 500,
-                  fontSize: isCompact ? 22 : 26,
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.02em',
-                  color: '#24301F',
+                  color: 'rgba(36,48,31,0.55)',
                   margin: 0,
+                  marginTop: 2,
                 }}
               >
-                {guide.plantName}
-              </h3>
-              {guide.variety && (
-                <p
-                  style={{
-                    fontFamily: sans,
-                    fontSize: isCompact ? 13 : 14,
-                    fontWeight: 500,
-                    color: 'rgba(36,48,31,0.55)',
-                    margin: 0,
-                    marginTop: 2,
-                  }}
-                >
-                  {guide.variety}
-                </p>
-              )}
-            </div>
-            <TrustBadge kind={kind} size={isCompact ? 'sm' : 'md'} />
+                {guide.variety}
+              </p>
+            )}
           </div>
 
           {lineageText && (
