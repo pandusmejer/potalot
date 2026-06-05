@@ -85,6 +85,11 @@ en modnet San Marzano-klase, en Habanero-frugt, en Café au Lait-blomst.
 **Hvad:** Tæt-på-billeder der **ikke forklarer** men **skaber stemning**.
 Det er disse der senere får brugeren til at føle "jeg er inde i planten".
 
+> 🌱 **Skal du generere eller bestille et nyt makro-billede?**
+> Læs [`design-system/prompts/makro-detail-fotos.md`](./design-system/prompts/makro-detail-fotos.md)
+> — masterprompten der låser tone, komposition, lys og farve på tværs
+> af AI-genererede billeder og fotografer.
+
 Folder-navnet matcher guidens slug — det kan være enten en **art** eller
 en **sort**. Begge niveauer eksisterer som søskende-folders.
 

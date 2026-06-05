@@ -287,6 +287,8 @@ billedets skyld — og naturhåndbogen bliver en stock-photo-karusel.
 **Kilde:**
 - Artsguider trækker fra `public/images/makro/<art>/` (3-5 motiver)
 - Sortsguider trækker fra `public/images/makro/<art-sort>/` (5 motiver)
+- Tonal og kompositorisk specifikation for motiverne er låst i
+  [`./prompts/makro-detail-fotos.md`](./prompts/makro-detail-fotos.md)
 
 **Eksempler på motiver:**
 - Et blad mod modlys
@@ -329,6 +331,8 @@ flush-right eller som egen blok — tekst flyder aldrig rundt om.
 
 **Kilde:**
 - `public/images/detail/<art>/` eller `detail/<art-sort>/` (1-2 motiver pr. niveau)
+- Samme tone-spec som makro — se
+  [`./prompts/makro-detail-fotos.md`](./prompts/makro-detail-fotos.md)
 
 **Eksempler på motiver:**
 - Et frugt-tværsnit der viser frøkamre
