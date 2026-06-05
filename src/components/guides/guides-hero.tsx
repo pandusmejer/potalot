@@ -15,7 +15,7 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 
 export function GuidesHero() {
   return (
-    <section className="space-y-5 pt-2 sm:pt-3">
+    <section className="pt-2 sm:pt-3">
       <h1
         style={{
           fontFamily: serif,
@@ -23,21 +23,23 @@ export function GuidesHero() {
           fontSize: 'clamp(46px, 11vw, 78px)',
           lineHeight: 0.95,
           letterSpacing: '-0.025em',
-          color: '#24301F',
+          color: '#2D2A24',
           margin: 0,
+          marginBottom: 32, // V3 §15.4 — mere luft mellem H1 og under
         }}
       >
         Dyrkningsguides
       </h1>
       <p
         style={{
-          fontFamily: sans,
-          fontSize: 'clamp(15px, 2.4vw, 18px)',
+          fontFamily: serif,
+          fontStyle: 'italic',
+          fontSize: 'clamp(20px, 4.5vw, 28px)',
           fontWeight: 400,
-          lineHeight: 1.45,
-          color: 'rgba(36,48,31,0.62)',
+          lineHeight: 1.3,
+          color: '#6A665C',
           margin: 0,
-          maxWidth: 480,
+          maxWidth: 520,
         }}
       >
         Lær hvordan planter dyrkes fra frø til høst.

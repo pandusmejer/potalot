@@ -21,6 +21,7 @@ import { useMemo, useState } from 'react'
 import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
+import { BotanicalBleed } from './botanical-bleed'
 import { TrustBadge, guideKindFor, type GuideKind } from './trust-badge'
 import {
   POPULAERE_EMNER,
@@ -100,11 +101,18 @@ export function GuidesBibliotek({
 
   return (
     <div className="space-y-12 sm:space-y-14">
-      {/* ── 1. POPULÆRE EMNER — redaktionelle indgange ── */}
+      {/* ── 1. BEGYND HER — redaktionelle indgange ── */}
       <PopulaereEmner
         emner={POPULAERE_EMNER}
         aktivt={aktivtEmne}
         onVaelg={vaelgEmne}
+      />
+
+      {/* ── 🌿 BOTANICAL BLEED — pause mellem grupper ── */}
+      <BotanicalBleed
+        src="/images/makro/tomat-san-marzano/dug.jpg"
+        alt="Tomathud med dug"
+        height={220}
       />
 
       {/* ── 2. POTALOT-GUIDES — primær sektion ── */}
@@ -135,6 +143,13 @@ export function GuidesBibliotek({
           </div>
         )}
       </section>
+
+      {/* ── 🌿 BOTANICAL BLEED — pause før den utility-prægede søg/filtrer ── */}
+      <BotanicalBleed
+        src="/images/makro/chili-habanero-orange/kerner.jpg"
+        alt="Chilifrø, frøkammer"
+        height={220}
+      />
 
       {/* ── 3. SØG + FILTRER ── */}
       <SoegBar
@@ -239,7 +254,7 @@ function PopulaereEmner({
           margin: 0,
         }}
       >
-        Populære emner
+        Begynd her
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {emner.map(e => {
