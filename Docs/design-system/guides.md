@@ -1,14 +1,177 @@
-# Potalot — guides (V3)
+# Potalot — guides (V4)
 
 > ## Status
 >
-> **Dette dokument er V3 og erstatter alle tidligere udkast.**
-> V3 er resultatet af arbejdet med frøbanken, plantekortene,
-> artsguiderne, makro/detail-fotos, moodboards (maj 2026) og
-> guide-mockups (juni 2026).
+> **Dette dokument er V4 og erstatter alle tidligere udkast.**
+>
+> V3 var resultatet af frøbank, plantekort, artsguider, makro/detail-
+> fotos, moodboards (maj 2026) og guide-mockups (juni 2026).
+>
+> **V4 tilføjede den vigtigste opdagelse:**
+> Guides skal bygges som **lag**, ikke som **komponenter stablet
+> ovenpå hinanden**. Den indsigt er låst i sektion -1.
 >
 > Hvis dette dokument er i konflikt med ældre guide-noter, vinder
-> dette dokument.
+> dette dokument. Hvis sektion -1 er i konflikt med en regel længere
+> nede, **vinder sektion -1**.
+
+---
+
+## -1. Lag, ikke komponenter (V4 — den vigtigste regel)
+
+> **Hvis man kan tegne en tydelig rektangulær boks rundt om et
+> billede — så er det sandsynligvis stadig for meget komponent og
+> for lidt fotografi.**
+
+### Problemet V4 løser
+
+V3 troede at "Botanical Bleed som modul" + "Detail Bleed som modul"
+løste sansen for nærhed. Det gjorde det ikke. Når billeder bliver
+til komponenter — selv med fade — ender de som:
+
+```
+SEKTION
+[ billede ]
+SEKTION
+[ kort ]
+SEKTION
+```
+
+Hjernen registrerer **"UI-komponent"** før den registrerer
+**"tomat"**.
+
+### Forskellen V4 låser
+
+| Forkert (V3-implementation) | Rigtigt (V4) |
+|---|---|
+| `tekst` → `[ bleed ]` → `tekst` | `tekst` → foto vokser **ind i** sektionen → tekst fortsætter |
+| `[ billede ]` med fade | foto **uden synlig kant** der opfører sig som baggrund |
+| `tekst` → `[ faktaboks ]` → `tekst` | foto → faktaboks **ovenpå** fotoet → tekst fortsætter |
+| Komponenter stablet | Lag i z-akse |
+
+> **Fotografiet er ikke et element. Fotografiet er et materiale.**
+
+### Z-INDEX SYSTEM (låst)
+
+| Lag | Hvad | Regler |
+|---|---|---|
+| **1. Papir** | `#EAE6D8` baggrund | Altid nederst. Fylder siden. |
+| **2. Atmosfæriske makrofotos** | tomathud, bladnerver, kronblade, dugdråber, frøkamre | MÅ fade, være ude af fokus, beskæres aggressivt, gå udenfor grid. MÅ IKKE have synlige rammer, beholdere, bounding box |
+| **3. Indholdsfotos** | artsfoto, plantekortfoto, sortsfoto | MÅ have hård organisk maske, bryde layoutet, overlappe sektioner. MÅ IKKE ligge i rektangulære cards |
+| **4. Faktabokse** | fact-card, "Vidste du?", Potalot-tip, Quick Facts | Placeres OVENPÅ billeder. Ikke under. Ikke mellem. Føles som papirark lagt på fotografi |
+| **5. Typografi** | H1, H2, body, badges, kapitelnumre | Altid øverste lag |
+
+### Atmosfæriske fotos (Lag 2)
+
+Disse er **stemning, ikke indhold**. Når et foto er atmosfærisk:
+
+- **Fade** mod baggrund
+- **Blur** / ude af fokus
+- **Aggressivt beskåret** (kun et udsnit synligt)
+- **Går udenfor grid** (stikker ud over sektion-margin, ud over hero-kant)
+- **Ingen hård afgrænsning, ingen synlig kant**
+
+Det skal føles som om fotoet **fortsætter udenfor skærmen**.
+
+Implementeringsmønster:
+```jsx
+<section className="relative">
+  {/* Atmosfærisk lag — position absolute, lavopacity, stikker ud */}
+  <img
+    src="/images/makro/tomat-san-marzano/dug.jpg"
+    aria-hidden
+    className="absolute -right-8 -top-12 w-[70%] pointer-events-none"
+    style={{
+      opacity: 0.55,
+      mixBlendMode: 'multiply',
+      maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 75%)',
+      transform: 'rotate(-2deg)',
+    }}
+  />
+
+  {/* Indhold flyder ovenpå */}
+  <div className="relative z-10">
+    {children}
+  </div>
+</section>
+```
+
+### Indholdsfotos (Lag 3)
+
+Disse er **information**. Når et foto bærer identitet (artsfoto,
+sortsfoto), så:
+
+- **Hård organisk maske** — skarp kant, ingen fade
+- **Bryder layoutet** — strækker udenfor tekstkolonnens kant
+- **Overlapper sektioner** — kan starte i én sektion og række ind i den næste
+- **Ingen rektangulære cards omkring**
+
+### Faktabokse — V4 placering
+
+V3 sagde: `tekst → faktaboks → tekst`.
+V4 siger: **faktaboks ovenpå makrofoto**.
+
+```
+[ atmosfærisk makrofoto ]
+
+        ┌──────────────┐
+        │ VIDSTE DU?   │   ← lægger sig som papirlap på fotoet
+        │ Tomater blev │
+        │ tidligere    │
+        │ anset som    │
+        │ giftige.     │
+        └──────────────┘
+
+tekst fortsætter ...
+```
+
+Boksen skal føles **fysisk placeret på billedet**, ikke svævende
+mellem to tekstblokke.
+
+### Hero — V4 bygges som lag
+
+**Forkert:**
+```
+titel
+foto
+tekst
+```
+
+**Rigtigt:**
+```
+titel
+foto
+tekst ovenpå foto
+faktaboks ovenpå foto
+```
+
+Reference: master-mockup
+[`./references/guides/01-master-mockup-sortsguide-plus-teknik.png`](./references/guides/01-master-mockup-sortsguide-plus-teknik.png).
+
+### Implementerings-konsekvenser
+
+- `BotanicalBleed` som **selvstændig komponent** er forkert tilgang.
+  Den producerer rektangulær container med fade — dvs. præcis det
+  vi vil væk fra. **Brug i stedet inline atmosfæriske lag.**
+- `DetailBleed` skal ikke være en komponent der wrapper et billede.
+  Det er en **organisk masket img** der lever inden i en sektion.
+- Faktabokse kan IKKE renderes uafhængigt af deres makrofoto-bagrund.
+  De skal placeres i en `<section className="relative">` med
+  baggrundsbilledet **først** i DOM.
+
+### Den nye designregel
+
+| Når du står med | Spørg dig selv |
+|---|---|
+| Et nyt billede der skal ind | "Er det stemning eller indhold?" → Lag 2 eller Lag 3 |
+| Et nyt UI-element | "Kan det ligge ovenpå et makrofoto?" → så placer det dér |
+| En sektion der mangler liv | "Hvilket makrofoto kan vokse ind i den?" |
+| Et `<div>` rundt om et billede | **Stop.** Hvorfor skal der være en kasse? |
+
+> **Mål:** *"Fotografiet er blevet en del af siden."* — ikke
+> *"Her er et billede."*
+
+---
 
 ---
 

@@ -21,7 +21,6 @@ import { useMemo, useState } from 'react'
 import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
-import { BotanicalBleed } from './botanical-bleed'
 import { TrustBadge, guideKindFor, type GuideKind } from './trust-badge'
 import {
   POPULAERE_EMNER,
@@ -108,22 +107,49 @@ export function GuidesBibliotek({
         onVaelg={vaelgEmne}
       />
 
-      {/* ── 🌿 BOTANICAL BLEED — pause mellem grupper ── */}
-      <BotanicalBleed
-        src="/images/makro/tomat-san-marzano/dug.jpg"
-        alt="Tomathud med dug"
-        height={220}
-      />
+      {/* ── 2. POTALOT-GUIDES — primær sektion ──
+          V4: atmosfærisk makrofoto-lag ligger BAG kortene, stikker
+          ud over højre sektionkant. Ingen rektangulær container —
+          fotoet er materiale, ikke modul. */}
+      <section id="potalot-sektion" className="relative space-y-4">
+        {/* Lag 2 — atmosfærisk makro (tomathud med dug).
+            Stikker ud over sektionens højre kant. Aggressiv beskæring
+            via radial mask. Lav opacity + multiply så den smelter
+            med papirbaggrunden. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -right-16 hidden sm:block"
+          style={{
+            width: '60%',
+            maxWidth: 460,
+            aspectRatio: '4/5',
+            opacity: 0.55,
+            mixBlendMode: 'multiply',
+            maskImage:
+              'radial-gradient(ellipse 60% 70% at 35% 50%, black 30%, transparent 78%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 60% 70% at 35% 50%, black 30%, transparent 78%)',
+            transform: 'rotate(-2deg)',
+            zIndex: 0,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/makro/tomat-san-marzano/dug.jpg"
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        </div>
 
-      {/* ── 2. POTALOT-GUIDES — primær sektion ── */}
-      <section id="potalot-sektion" className="space-y-4">
-        <SektionEyebrow>
-          <TrustBadge kind="potalot" size="sm" />
-          <span className="ml-1.5">Kvalitetssikret af Potalot</span>
-        </SektionEyebrow>
-        <SektionTitel>
-          {aktivtEmne ? `${aktivtEmne.navn}-guides` : 'Læs en guide'}
-        </SektionTitel>
+        <div className="relative" style={{ zIndex: 1 }}>
+          <SektionEyebrow>
+            <TrustBadge kind="potalot" size="sm" />
+            <span className="ml-1.5">Kvalitetssikret af Potalot</span>
+          </SektionEyebrow>
+          <SektionTitel>
+            {aktivtEmne ? `${aktivtEmne.navn}-guides` : 'Læs en guide'}
+          </SektionTitel>
+        </div>
         {potalot.length === 0 ? (
           <EmptyNote text={
             aktivtEmne || effectiveSearch
@@ -131,7 +157,7 @@ export function GuidesBibliotek({
               : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
           } />
         ) : (
-          <div className="space-y-3">
+          <div className="relative space-y-3" style={{ zIndex: 1 }}>
             {potalot.map(({ guide, kind }) => (
               <GuideCardEditorial
                 key={guide.id}
@@ -143,13 +169,6 @@ export function GuidesBibliotek({
           </div>
         )}
       </section>
-
-      {/* ── 🌿 BOTANICAL BLEED — pause før den utility-prægede søg/filtrer ── */}
-      <BotanicalBleed
-        src="/images/makro/chili-habanero-orange/kerner.jpg"
-        alt="Chilifrø, frøkammer"
-        height={220}
-      />
 
       {/* ── 3. SØG + FILTRER ── */}
       <SoegBar
