@@ -34,6 +34,12 @@
 - **Naturhistorisk håndbog** for rytmen — illustrationer der afbryder,
   marginal-noter, ægte respekt for emnet
 
+**Hvad det ender med at være:** En **digital naturencyklopædi**.
+Havefolk bruger overraskende meget tid på at læse om planter, de
+ikke engang ejer endnu — det er næsten en biologisk drift. Guides
+skal kunne læses for læsningens skyld, ikke kun som opslagsværk
+til *"den her er den jeg har plantet"*.
+
 | ✅ Guides ER | ❌ Guides ER IKKE |
 |---|---|
 | Selvstændige opslag der kan stå på egne ben | Listicle-sider der kæder hyperlinks sammen |
@@ -75,15 +81,19 @@ Cormorant bærer indholdet. Manrope bærer skelet og navigation.
 De krydser aldrig: et badge skal aldrig være Cormorant, en headline
 skal aldrig være Manrope.
 
-### Skala (anbefalet — bekræft med Anna)
+### Skala (låst — mobile-first)
+
+Potalot er ikke et coffee-table-magasin. Det er en mobilapp.
+Frøbanken og kalenderen fungerer netop fordi de **ikke råber**.
+Guides må ikke pludselig blive *"editorial mode activated"*.
 
 | Element | Font | Vægt | Størrelse | Linjehøjde |
 |---|---|---|---|---|
-| Hero-titel | Cormorant | 500 | 44-56px (responsiv) | 1.0 |
-| Sektion `<h2>` | Cormorant | 500 | 30-36px | 1.05 |
-| Undersektion `<h3>` | Cormorant | 500 | 22-26px | 1.1 |
-| Body | Cormorant | 400 | 18-19px | 1.65 |
-| Citation/fact-overskrift | Cormorant | 500 italic | 22-24px | 1.1 |
+| Hero-titel | Cormorant | 500 | 40-48px (responsiv) | 1.0 |
+| Sektion `<h2>` | Cormorant | 500 | 26-32px | 1.05 |
+| Undersektion `<h3>` | Cormorant | 500 | 20-24px | 1.1 |
+| Body | Cormorant | 400 | 18px | 1.65 |
+| Citation/fact-overskrift | Cormorant | 500 italic | 20-22px | 1.1 |
 | Eyebrow / kategori | Manrope | 700 | 11-12px (caps, tracking 0.08em) | 1.0 |
 | Meta (badges, tags) | Manrope | 500 | 12-13px | 1.3 |
 | Badge-label | Manrope | 700 | 10-11px | 1.0 |
@@ -150,6 +160,10 @@ tekstkolonnens læsning og giver et rent visuelt vejrtræk.
 - **Sortsguide:** 1-2 stk pr. opslag
 - **Teknikguide:** 0-1 stk
 
+**Densitetsregel (låst):** Maksimalt **én Botanical Bleed pr.
+~500-700 ord**. Ellers begynder vi at indsætte billeder for
+billedets skyld — og naturhåndbogen bliver en stock-photo-karusel.
+
 **Beskæring og format:**
 - **Mobil:** full-bleed (margin: 0), aspect 4/3 eller 3/2
 - **Desktop:** contained med 32px side-margin, aspect 16/9 eller 21/9
@@ -191,8 +205,13 @@ en Botanical Bleed.
 
 **Form:**
 - Bredde: 50-70% af kolonne, ikke fuld bredde
-- Placering: flush-left eller flush-right, tekst kan ikke wrappe omkring
+- Placering: flush-left, flush-right, eller egen blok mellem afsnit
 - Aspect: variabelt — 1/1, 3/4, 2/3 alt efter motivet
+
+**Låst regel: INGEN tekst-wrap omkring billedet.**
+Tekst-wrap er sådan noget mennesker tror ser elegant ud, indtil
+de skal læse det på en telefon. Billedet sidder enten flush-left,
+flush-right eller som egen blok — tekst flyder aldrig rundt om.
 
 **Kilde:**
 - `public/images/detail/<art>/` eller `detail/<art-sort>/` (1-2 motiver pr. niveau)
@@ -218,10 +237,40 @@ Hver komponent har: **rolle, hvornår, felter, signatur, kode-link**.
 - **Hvornår:** Allerøverst, før noget andet.
 - **Felter:** `primaryImageId`, `plantName`, `variety?`, `latinName?`,
   `kategoriId`, trust-badge.
-- **Signatur:** Stort foto, navn i Cormorant 44-56px, latin i italic
+- **Signatur:** Stort foto, navn i Cormorant 40-48px, latin i italic
   Cormorant, kategori-eyebrow i Manrope caps.
 - **Anti:** Lyseblå CTA-knap, overlay-tekst på foto (læsbarhed),
   store gradients på fotoet.
+
+**Hero-strategi (låst):**
+
+| Guide-type | Hero-format |
+|---|---|
+| Artsguide | Fotohero (`arts/<slug>.jpg`) |
+| Sortsguide | Fotohero (`plantekort/<slug>.jpg`) |
+| Teknikguide | **Flat colour-block hero** — ingen foto |
+
+Teknikguider får deres egen visuelle identitet — en flad farveblok
+med stor Cormorant-titel og kategori-eyebrow. Det signalerer
+*"handling, ikke art"* uden at konkurrere med arts- og sorts-guidernes
+fotoæstetik.
+
+---
+
+### 📦 Billed-økonomi (låst regel)
+
+> **Alle billedtyper i guides skal komme fra det eksisterende
+> Potalot-billedsystem** (`arts/`, `plantekort/`, `frokort/`,
+> `makro/<slug>/`, `detail/<slug>/`, `teknik/`, `heroes-sider/`).
+>
+> Der introduceres **ikke** nye billedkategorier uden en særskilt
+> designbeslutning der opdaterer denne doc OG
+> [`../BILLEDER.md`](../BILLEDER.md).
+
+Hvorfor det er en låst regel: ellers opfinder folk om seks måneder
+"Guide Header Photo v2", "Editorial Banner", "Inline Mood Image"
+og andre kreative katastrofer. Kataloget er begrænset af **vilje**,
+ikke af mangel på fantasi.
 
 ### Identitets-strip
 
@@ -309,25 +358,94 @@ Hver komponent har: **rolle, hvornår, felter, signatur, kode-link**.
 
 ---
 
-## 8. Bibliotek-layout
+## 8. Guide-forbindelser
+
+Potalot kommer ikke til at være 20 guides. Det bliver **500 arter,
+5.000 sorter, hundredevis af teknikguides**. Derfor er guidernes
+**indbyrdes forbindelser** ikke en navigation-detalje — det er
+arkitekturen der gør Potalot værdifuld.
+
+En guide er aldrig en isoleret artikel. Hver guide er en knude
+i et netværk.
+
+### Den typiske brugerrejse
+
+```
+[Artsguide: Tomat]
+     ↓ next-guide / sortsvarianter
+[Sortsguide: San Marzano]
+     ↓ :::guide
+[Teknikguide: Prikling]
+     ↓ relateret-problem
+[Problemguide: Griffelråd]
+     ↓ kalender-link
+[Måned: Juni]
+```
+
+Rejsen behøver ikke gå én vej — brugeren kan komme ind på et
+hvilket som helst niveau (fx via et notifikations-link, en
+frøbank-kobling eller en søgning) og bevæge sig op, ned eller
+sidelæns.
+
+### Link-typer der findes mellem guides
+
+| Type | Hvor | Hvor det peger hen |
+|---|---|---|
+| **`parentGuideId`** | Felt på sortsguide | Til artsguide den hviler på |
+| **`:::next-guide`** | Sidst i en guide | Det redaktionelle "store næste skridt" |
+| **`:::guide`** | Inline i body | Til en teknikguide |
+| **`:::related-guides`** | Sektion i body | Til flere beslægtede sorter/guider |
+| **Sortsvarianter-grid** | Auto-genereret på artsguide | Til alle sorter med `parentGuideId = arts.id` |
+| **`calendarRules`** | Felt på guide | Til måneder hvor en handling er relevant |
+| **Frøbank-kobling** | Via `inventory.guideId` | Til brugerens egne frø af denne sort |
+| **Aktive planter** | Via `plant.guideId` | Til brugerens igangværende dyrkninger |
+
+### Regler for forbindelser
+
+| ✅ Gør | ❌ Gør IKKE |
+|---|---|
+| Hver guide skal pege på **mindst én** anden guide | Lad en guide stå som *ø* uden næste-skridt |
+| `:::next-guide` skal være redaktionelt **bevidst** — ikke automatisk | Bygge "Du kan også læse…"-lister af alle relaterede |
+| Teknikguider linkes via `:::guide` når de virkelig hører til | Spamme `:::guide` for hver mulig teknik |
+| Sortsguider får automatisk sortsvarianter-grid på parent | Kræve at redaktøren manuelt linker mellem søsken |
+| Problemløsning peger til den teknik der løser problemet | Lade problemguider være selvstændige opslag uden vej ud |
+
+### Hvorfor det matter for V2.5+ AI-fabrikken
+
+Når AI-fabrikken (se [`../AI_GUIDE_FABRIK.md`](../AI_GUIDE_FABRIK.md))
+en dag genererer hundredevis af sortsguider, skal hver enkelt
+**automatisk landes i netværket**:
+
+- Få `parentGuideId` korrekt sat
+- Få relevante `:::guide`-blokke til allerede-eksisterende teknikker
+- Få `:::next-guide` til den mest naturlige relaterede sort
+- Få `calendarRules` der trækker den ind i månedssiderne
+
+Hvis netværket ikke er strukturen, ender vi med 5.000 isolerede
+opslagssider og en søgefelt der gør al opdagelses-arbejdet for
+brugeren. Det er præcis hvad Potalot ikke vil være.
+
+---
+
+## 9. Bibliotek-layout
 
 Bibliotekssiden (`/guides`) skal vokse i tre faser efter
 katalog-størrelse.
 
-### Fase 1: 1-10 guides (i dag)
+### Fase 1: 1-8 guides
 
 - Editorial grid med store kort
 - Hver guide har plads til primary image, badge, navn, summary
 - Single column på mobil, 2-kolonne på desktop ≥ 1024px
 
-### Fase 2: 10-50 guides (snart)
+### Fase 2: 8-40 guides
 
 - Editorial **list** — horisontal række med thumbnail venstre, tekst højre
 - Tighter kort, mere indhold pr. skærm
 - Filtrer/søg flyttes til vedvarende toolbar øverst
 - Kategori-tabs over listen (Frugt · Grøntsag · Krydderurt · Pryd)
 
-### Fase 3: 50+ guides
+### Fase 3: 40+ guides
 
 - Kategoriseret kataloglook — sektioner pr. kategori
 - Søgning bliver primær indgang
@@ -338,9 +456,14 @@ katalog-størrelse.
 ved fase 1 eller **uoverskueligt** ved fase 3. Tjek viewet før
 hvert nyt sæt guides committes.
 
+**Bemærk:** Grænserne er bevidst sat tidligt. Det visuelle
+sammenbrud opstår omkring 10 guides — og biblioteket skal være
+i Fase 2 **inden** vi rammer det. Vi rammer ikke væggen, vi
+skifter vej før den.
+
 ---
 
-## 9. Mobile vs desktop
+## 10. Mobile vs desktop
 
 | Element | Mobil | Desktop |
 |---|---|---|
@@ -358,7 +481,7 @@ medium hvor 80% af brugerne læser.
 
 ---
 
-## 10. Farvepalette
+## 11. Farvepalette
 
 (Henter fra Annas memory: *"flat saturated blocks, sharp edges
 between blocks, NO gradient inside a block"*)
@@ -379,7 +502,7 @@ er Cormorant-tekst i `#24301F` på creme — alt andet er ornamentik.
 
 ---
 
-## 11. Anti-mønstre
+## 12. Anti-mønstre
 
 Det vi **aktivt undgår** — listen er kort, men hver enkelt vil
 trække Potalot ned hvis den sniger sig ind:
@@ -395,10 +518,13 @@ trække Potalot ned hvis den sniger sig ind:
 | Auto-playing video-headers | Stop |
 | Gennemsigtig "Klar til at dyrke?"-banner i bunden | Marketing-bagrund, ikke natur-bagrund |
 | Captions under hver bleed | Bleeden skal stå nøgent — billedets sprog er nok |
+| **Hero-billeder på alle guidesider i biblioteket** | **Gør biblioteket til en væg af billeder og ødelægger scanning** |
+| Tekst-wrap omkring billeder | Ser elegant ud i tanken, brækker på mobil |
+| Nye billedkategorier udenom det eksisterende system | "Editorial Banner v2", "Inline Mood Image" og andre kreative katastrofer |
 
 ---
 
-## 12. Implementeringsrækkefølge
+## 13. Implementeringsrækkefølge
 
 Når denne doc er låst:
 
