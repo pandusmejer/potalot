@@ -20,6 +20,214 @@
 
 ---
 
+## -2. Billedhierarki & visuel progression (V4.1 — låste regler)
+
+V4.1-opdateringen kom efter at vi kunne se det færdige guidesystem
+i browseren. Landing kom længst; artsguiden er halvvejs; sortsguiden
+kæmpede stadig med identitet. Diagnosen: **det er ikke typografi
+eller farver. Det er billedhierarki.**
+
+### Reglerne der nu er låst
+
+#### A. Sortsguiders 3 billedlag
+
+En sortsguide skal vise **tre forskellige slags billeder** for at
+føles som en sortsguide. Hvis et lag mangler, bliver siden
+ensformig:
+
+```
+San Marzano ↓ San Marzano ↓ San Marzano ↓ San Marzano
+```
+
+— samme visuelle tone hele vejen ned. Brugeren lærer ikke noget
+nyt visuelt.
+
+| Lag | Type | Bruges til |
+|---|---|---|
+| **Lag 1** | Sortsfoto (plantekort) | Hero — "her er sorten" |
+| **Lag 2** | Makrofoto (rolle: atmosphere) | Atmosfærisk baggrund bag faktabokse, sektion-overgange |
+| **Lag 3** | Tekniske sortsfotos (alle andre roller) | Indhold inde i guiden — modning, klase, tværsnit, blomster, struktur |
+
+Lag 1 + Lag 2 alene gør siden smuk men ensformig. **Lag 3 er det
+der tilfører viden.** Det er den nye låste regel.
+
+#### B. Makrofoto er atmosfære — ikke fortælling
+
+> **Makrofotoet skal støtte fortællingen. Det skal sjældent være
+> fortællingen.**
+
+Det er præcis derfor de gamle bleed-elementer føltes døde — de
+forsøgte at gøre makrofotoet til et UI-element. De nye lag-på-lag
+sektioner fungerer fordi makrofotoet igen opfører sig som atmosfære
+og ikke som en firkantet komponent der desperat prøver at ligne
+stemning.
+
+#### C. Visuel progression — ingen gentagelse
+
+Sortsguiden må **ikke** vise det samme makrofoto igen og igen.
+Brugeren skal opleve **visuel progression** gennem siden.
+
+`guide-images.ts` + `selectGuideImage()` håndhæver det automatisk
+via `usedMacroSrcs`-tracking + seeded selection pr. blok.
+
+#### D. Landing gruppering — ARTER → SORTER
+
+Database-rækkefølge skaber visuelle dubletter:
+
+```
+Tomat
+Tomat
+Chili
+Chili
+Café au Lait
+Café au Lait
+San Marzano
+San Marzano
+```
+
+Mennesker læser det som gentagelser. Bibliotekslayoutet skal
+gruppere:
+
+```
+ARTER
+  Tomat
+  Chili
+  Dahlia
+  Peberfrugt
+
+SORTER
+  San Marzano
+  Café au Lait
+  California Wonder
+  Habanero Orange
+```
+
+Så opleves det som **progression** fra "hvilken plante?" til
+"hvilken karakter af planten?".
+
+#### E. Artsfoto er visuel identitet, ikke "én plante"
+
+Allerede dokumenteret i [`../../BILLEDER.md`](../../BILLEDER.md)
+sektion "De 6 billedroller" — gengivet her som låst:
+
+> Artsfotoets opgave er ikke at vise én plante. Artsfotoets opgave
+> er at vise den visuelle identitet af arten.
+
+Tomat = plante. **Hvidløg = mark. Kartofler = rækker.**
+
+---
+
+## -1. Tre specifikke moduler — låste opførsler
+
+V4.1-observationer fra screenshot-review. Alle tre moduler virker
+**teknisk** men ikke endnu som Potalot. De skal låses sådan her:
+
+### A. Næste skridt-kortet
+
+**Problem:** Mangler identitet. Lige nu kunne den lige så godt sige
+*"Lær at skifte olie"* eller *"Lær at lave momsregnskab"*. Ingen
+chili, ingen stemning, ingen visuel belønning.
+
+**Låst regel — vælg én af to:**
+
+| Mulighed A — atmosfærisk lag | Mulighed B — fritlagt objekt |
+|---|---|
+| Makrofoto bag kortet (frost på blad, moden chili, tørret chili, grenstruktur) | Lille botanisk foto (40-60 px) øverst i kortet |
+| 20-30 % opacity, fade ud under papiret | Som *"dette handler om chili"*-signal |
+| Aldrig som banner — kun som atmosfærisk lag | **Ikke emoji. Et lille botanisk foto.** |
+
+**Mål:** Brugeren skal kunne se hvad næste skridt handler om
+**før** de har læst titlen.
+
+### B. Potalot-citatblokken
+
+**Problem:** Tæt på, men mangler karakter. Er lavet som **artikel**.
+Den bør føles som **indstik / brev fra redaktionen**.
+
+**Låst regel:**
+
+- Reducér bredden 5-10 %
+- Reducér tekststørrelse en smule
+- Mere luft, mindre væg af tekst, mere citat
+- Ultra-svagt makrolag bag papiret — ikke synligt, kun mærkbart
+
+**Layout-eksempel:**
+
+```
+POTALOT
+
+"Det er ikke den chili,
+du dyrker for størrelsen…"
+```
+
+### C. Kalender-rytmen — kapitler, ikke parkeringspladser
+
+**Problem:** Største potentiale, største fejl. Lige nu vises:
+
+```
+Forspir
+Prikl
+Afhærd
+Plant ud
+Støt
+Gød
+Høst
+```
+
+som **syv ens bokse**. Det føles som et CRM-system, ikke en
+dyrkningssæson.
+
+**Låst regel:** Tidslinjen vises som **3 kapitler** efter naturlige
+sæson-skift, ikke som N parkeringspladser:
+
+```
+JAN–FEB–MAR
+● Forspir chili
+
+APR–MAJ
+● Prikl planter
+● Begynd afhærdning
+
+JUN–JUL–AUG
+● Gød
+● Bind op
+● Høst løbende
+```
+
+Brugeren skal se sæsonens rytme, ikke en checklist.
+
+### Prioritering (Annas vurdering)
+
+| # | Modul | Hvorfor |
+|---|---|---|
+| 1 | **Kalender-rytmen** | Største gevinst — fylder mest, leverer mindst stemning pr. pixel |
+| 2 | **Næste skridt** | Mangler botanisk identitet helt |
+| 3 | **Potalot-citatet** | Tæt på, men for artikel-agtigt |
+
+---
+
+## -1.5. Claude vs. Codex — territorier
+
+Tilføjet som låst arbejdsdeling efter V4.1-review:
+
+| **Claude (arkitekt)** | **Codex (håndværker)** |
+|---|---|
+| Beslutter designprincipper | Bygger komponenter |
+| Bestemmer billedhierarki | Flytter pixels |
+| Definerer hvilke komponenter der skal eksistere | Skriver React |
+| Beslutter hvilke billeder bruges hvor | Implementerer LayeredFactBlock, AtmosphericImageLayer |
+| Skriver guides.md + BILLEDER.md | Tilføjer props og logik |
+| Designer UX, informationsarkitektur og stemning | |
+
+**Hvis problemet er "endnu en komponent" → Codex. Hvis problemet
+er "hvilke billeder, hvor, hvornår" → Claude.**
+
+Når en designregel som ovenstående diagnosticeres, kommer den
+**altid først til Claude** for at blive låst i docs. Codex bygger
+bagefter.
+
+---
+
 ## -1. Lag, ikke komponenter (V4 — den vigtigste regel)
 
 > **Hvis man kan tegne en tydelig rektangulær boks rundt om et

@@ -9,12 +9,16 @@ en ny fil hører hjemme — uden at skulle gætte.
 
 ---
 
-## De 5 billedtyper — den mentale model
+## De 6 billedroller — den mentale model
 
-Potalot har **5 hovedtyper** billeder. Hver type har ét specifikt
-formål; ingen type må overlappe med en anden. Hvis du er i tvivl om
-hvilken type et nyt billede tilhører — så er det sandsynligvis et
-forsøg på at opfinde en sjette type. Stop.
+Potalot har **6 roller** for billeder. En rolle er ikke nødvendigvis
+en separat billedfil — det er **funktionen** billedet tjener i en
+specifik kontekst. Samme billedfil kan spille **én** eller **flere**
+roller (fx plantekort-billede der genbruges som sortsfoto), men hver
+rolle har sit eget formål og sine egne regler.
+
+Hvis du er i tvivl om hvilken rolle et nyt billede tilhører — så
+er det sandsynligvis et forsøg på at opfinde en syvende rolle. Stop.
 
 ### 1. Frøkort-billede
 
@@ -99,9 +103,33 @@ zoom, placering og opacity.
 Tonal og kompositorisk spec er låst i
 [`design-system/prompts/makro-fotos.md`](./design-system/prompts/makro-fotos.md).
 
-### 5. Thumbnails / crops
+### 5. Tekniske sortsfotos
 
-**Formål:** Afledte beskæringer af de 4 andre typer. **Ikke en
+**Formål:** Tilfører **viden** om den konkrete sort inde i en
+sortsguide. Modning, klase, tværsnit, opbinding, blomsterstand,
+struktur. **Ny information**, ikke stemning.
+
+**Bruges på:** Inde i sortsguiden som indhold (ikke baggrund).
+
+**Eksempel:** Klase af San Marzano i forskellige modningsstadier,
+tværsnit af peberfrugt, hvordan agurken klatrer.
+
+**Hvor de lever:** Samme `makro/<slug>/`-mappe som atmosfæriske
+makros. **Forskellen er rollen**, ikke filplaceringen.
+
+**🔒 Låst regel — visuel progression i sortsguider:**
+
+> Sortsguiden må **ikke** vise det samme makrofoto igen og igen.
+> Brugeren skal opleve **visuel progression** gennem siden.
+
+**Implementering:** `guide-images.ts` annoterer hver makro med en
+rolle (`atmosphere` / `detail` / `structure` / `flower` / `fruit` /
+`leaf` / `seed`). Atmosfæriske bruges som baggrund (rolle =
+`atmosphere`); tekniske bruges som indhold (alle andre roller).
+
+### 6. Thumbnails / crops
+
+**Formål:** Afledte beskæringer af de 5 andre typer. **Ikke en
 separat billedproduktion.**
 
 **Bruges på:** Lister, søgeresultater, relaterede guides, små kort.
@@ -111,15 +139,36 @@ makro. Aldrig en ny billedfil.
 
 ---
 
+## Plantekort vs. sortsfoto — samme fil, to roller
+
+Plantekort-billedet og sortsfotoet er **ofte samme fil** i
+`plantekort/<slug>.jpg`. Forskellen er rollen den spiller:
+
+| Som plantekort | Som sortsfoto |
+|---|---|
+| Vises på Planter-siden (aktive dyrkninger) | Vises på sortsguider, sortsoversigter, landing |
+| *"Her er **din** plante."* | *"Her er **sorten**."* |
+| Brugerens haveinventar | Potalots vidensbibliotek |
+
+Når vi siger "plantekort-foto" mener vi typisk **filen**.
+Når vi siger "sortsfoto" mener vi **rollen den spiller i guides**.
+
+---
+
 ## Den korte regel
 
 ```
-Frøkort     viser sorten som ikon.
-Plantekort  viser sorten som levende plante.
-Artsfoto    viser arten som visuel identitet (ikke "én plante").
-Makrofoto   viser planten som sanseligt materiale.
-Thumbnails  er bare beskæringer, ikke nye billeder.
+Frøkort           viser sorten som ikon.
+Plantekort        viser sorten som levende plante.
+Artsfoto          viser arten som visuel identitet.
+Makrofoto         viser planten som sanseligt materiale (atmosfære).
+Teknisk sortsfoto viser sorten som ny viden (indhold).
+Thumbnails        er beskæringer, ikke nye billeder.
 ```
+
+**Makrofoto skal støtte fortællingen. Det skal sjældent være
+fortællingen.** Det er præcis derfor de gamle bleed-elementer
+føltes døde — de forsøgte at gøre makrofotoet til et UI-element.
 
 Resten er bare AI'er der prøver at opfinde
 `image_final_v7_actual_use_this_one.jpg`.
@@ -135,7 +184,7 @@ Resten er bare AI'er der prøver at opfinde
 | Aktive planter | Plantekort | Makro-crops |
 | Plantekort-detail | Plantekort | Ingen eller makro-lag |
 | Artsguide | Artsfoto | 2-3 artsdetaljer + makro |
-| Sortsguide | Plantekort (eller frøkort afh. kontekst) | Makrofotos |
+| Sortsguide | **Sortsfoto** (plantekort-filen) | **Makro-atmosfære + tekniske sortsfotos** |
 | Guides landing — artsguide-kort | Artsfoto | Atmosfæriske makrolag |
 | Guides landing — sortsguide-kort | Plantekort / sortsfoto | Atmosfæriske makrolag |
 | Faktabokse i guides | Makrofoto som baggrundslag | — |
