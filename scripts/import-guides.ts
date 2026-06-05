@@ -20,7 +20,7 @@
  * meddelelserne direkte.
  */
 
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join, basename } from 'node:path'
 
 // ─────────────────────────────────────────────────────────────────
@@ -549,6 +549,24 @@ function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+/**
+ * Auto-detekter hero-billede ud fra slug og guideLevel.
+ *
+ * Konventioner (fra public/images/README.md):
+ *   species → arts/<slug>.{jpg,png}
+ *   variety → plantekort/<slug>.{jpg,png}
+ *
+ * Returnerer /images/... path hvis fundet, ellers null.
+ */
+function detectPrimaryImage(slug: string, guideLevel: string): string | null {
+  const folder = guideLevel === 'species' ? 'arts' : 'plantekort'
+  for (const ext of ['jpg', 'png']) {
+    const rel = `public/images/${folder}/${slug}.${ext}`
+    if (existsSync(rel)) return `/images/${folder}/${slug}.${ext}`
+  }
+  return null
+}
+
 function buildGuide(
   file: string,
   raw: RawFrontmatter,
@@ -637,6 +655,11 @@ function buildGuide(
   if (!calRaw.length) warnings.push({ file, message: 'ingen calendarRules — guide bidrager ikke til kalenderen' })
   if (!asStringArray(raw.sourceLinks).length) warnings.push({ file, message: 'ingen sourceLinks' })
   if (sections.length < 3) warnings.push({ file, message: `kun ${sections.length} sektioner — virker tyndt for en ${raw.guideLevel}-guide` })
+  const heroPath = detectPrimaryImage(slug, asString(raw.guideLevel)!)
+  if (!heroPath) {
+    const folder = asString(raw.guideLevel) === 'species' ? 'arts' : 'plantekort'
+    warnings.push({ file, message: `intet hero-billede fundet (forventet public/images/${folder}/${slug}.jpg)` })
+  }
 
   return {
     id: slug,
@@ -654,7 +677,7 @@ function buildGuide(
     sections,
     calendarRules,
     mediaIds: [],
-    primaryImageId: null,
+    primaryImageId: detectPrimaryImage(slug, asString(raw.guideLevel)!),
     sourceLinks: asStringArray(raw.sourceLinks),
     status: 'published',
     visibility: 'public',

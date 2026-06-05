@@ -18,6 +18,7 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import { ALL_GUIDES } from '@/data/guides-demo'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { ArrowLeft, BookOpen, Package, Sprout, ArrowRight } from 'lucide-react'
 
 interface Props {
@@ -48,11 +49,13 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
   const { id } = await params
   const { returnTo } = await searchParams
 
-  // Demo-fallback: hvis ID matcher en demo-guide og DB-opslaget fejler/
-  // returnerer null, prøv demo-bibliotek. Det gør at læsere kan klikke
-  // sig ind på de demo-kort listen viser.
-  let original = await getGuide(id)
-  let isDemo = false
+  // Imported guides (platforms-indhold fra content/guides/*.md) vinder
+  // altid over DB. Fald derefter tilbage til DB, derefter til demo.
+  let original: any = IMPORTED_GUIDES.find(g => g.id === id) ?? null
+  let isDemo = original !== null  // imported behandles som read-only ligesom demo
+  if (!original) {
+    original = await getGuide(id)
+  }
   if (!original) {
     const demoMatch = ALL_GUIDES.find(g => g.id === id)
     if (demoMatch) {

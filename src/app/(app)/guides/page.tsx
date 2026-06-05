@@ -6,6 +6,7 @@ import {
   ALL_GUIDES,
   DEMO_AI_GUIDE_IDS,
 } from '@/data/guides-demo'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,8 +45,14 @@ export default async function GuidesPage() {
 
   // Demo-fallback: ingen guides i DB → vis demo-bibliotek så
   // designvisionen er synlig for nye/anonyme brugere.
+  // Imported guides (fra content/guides/*.md) er platforms-indhold og
+  // skal ALTID være synlige — også når en bruger har egne guides i DB.
+  // DB-guides tilføjes ovenpå; duplicate slugs vinder importen.
   const isDemo = guides.length === 0
-  const visibleGuides = isDemo ? ALL_GUIDES : guides
+  const importedIds = new Set(IMPORTED_GUIDES.map((g) => g.id))
+  const visibleGuides = isDemo
+    ? ALL_GUIDES
+    : [...IMPORTED_GUIDES, ...guides.filter((g) => !importedIds.has(g.id))]
   const aiGuideIds = isDemo ? DEMO_AI_GUIDE_IDS : null
 
   // "I din frøbank"-markør: hvilke guides matcher en sort i frøbanken
