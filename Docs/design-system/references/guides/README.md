@@ -57,23 +57,19 @@ kig på den her.**
 - Bemærk: teknikguider har samme generelle layout som arts/sorts,
   men "handlings-rytmen" er mere markant (steps, tjekmærker, tips)
 
-### 04. Farvepalette — låst kerne
+### 04. Farvepalette — moodboard-reference
 
 **Fil:** [`04-farvepalette-locked.png`](./04-farvepalette-locked.png)
 
-**Hvad det viser:** De 5 kernefarver med hex-codes, mod eucalyptus-blade:
+**Hvad det viser:** Tidlig moodboard-palette med Eucalyptus / Peach /
+Ivory / Pistachio / Clay mod eucalyptus-blade. Bruges som
+**stemnings-reference**.
 
-| Navn | Hex |
-|---|---|
-| **EUCALYPTUS** | `#C0D481` |
-| **PEACH** | `#FEECD0` |
-| **IVORY** | `#FFF9E2` |
-| **PISTACHIO** | `#EBECCC` |
-| **CLAY** | `#DCA278` |
-
-**Det her er paletten.** Sæson-accenter (sienna, tuscan sun, terracotta,
-autumn bronze, coastal blue) ligger i `Farver/`-mappen og bruges som
-sekundære toner i specifikke kontekster — ikke som kerne.
+> ⚠ **Note (V3):** De autoritative hex-codes ligger i
+> [`../../guides.md`](../../guides.md) **sektion 15.14**. Dette
+> billede er en visual mood-anker — Primær tekst `#2D2A24`, Salvie
+> `#7F8F6A`, Ler `#A57A52`, Tomat `#B85C46` osv. er det der **låses
+> i kode**.
 
 ### 05. Form — organic blob-mask
 
