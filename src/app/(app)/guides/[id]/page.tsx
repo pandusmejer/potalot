@@ -17,7 +17,7 @@ import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser } from '@/lib/auth'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
-import { ALL_DEMO_GUIDES } from '@/data/guides-demo'
+import { ALL_GUIDES } from '@/data/guides-demo'
 import { ArrowLeft, BookOpen, Package, Sprout, ArrowRight } from 'lucide-react'
 
 interface Props {
@@ -54,7 +54,7 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
   let original = await getGuide(id)
   let isDemo = false
   if (!original) {
-    const demoMatch = ALL_DEMO_GUIDES.find(g => g.id === id)
+    const demoMatch = ALL_GUIDES.find(g => g.id === id)
     if (demoMatch) {
       original = demoMatch
       isDemo = true
@@ -72,7 +72,7 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
   // I demo-mode kalder vi ikke DB-actions for de relaterede ting — vi
   // har stadig brug for at vise koblinger og noter, men fra demo-kilder.
   const [allGuides, inventory, plants, myNote] = await Promise.all([
-    isDemo ? Promise.resolve(ALL_DEMO_GUIDES) : getAllGuides(),
+    isDemo ? Promise.resolve(ALL_GUIDES) : getAllGuides(),
     getAllInventoryItems(),
     getAllPlants(),
     !isDemo && currentUser ? getMyGuideNote(id) : Promise.resolve(null),

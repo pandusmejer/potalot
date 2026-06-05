@@ -3,7 +3,7 @@ import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
 import { getAllGuides } from '@/actions/guides'
 import { getAllInventoryItems } from '@/actions/froebank'
 import {
-  ALL_DEMO_GUIDES,
+  ALL_GUIDES,
   DEMO_AI_GUIDE_IDS,
 } from '@/data/guides-demo'
 
@@ -45,7 +45,7 @@ export default async function GuidesPage() {
   // Demo-fallback: ingen guides i DB → vis demo-bibliotek så
   // designvisionen er synlig for nye/anonyme brugere.
   const isDemo = guides.length === 0
-  const visibleGuides = isDemo ? ALL_DEMO_GUIDES : guides
+  const visibleGuides = isDemo ? ALL_GUIDES : guides
   const aiGuideIds = isDemo ? DEMO_AI_GUIDE_IDS : null
 
   // "I din frøbank"-markør: hvilke guides matcher en sort i frøbanken

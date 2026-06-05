@@ -16,6 +16,7 @@
  */
 
 import type { Guide } from '@/lib/types'
+import { IMPORTED_GUIDES } from './guides-imported'
 
 // ════════════════════════════════════════════════════════════════
 // POPULÆRE EMNER — redaktionelle indgange, ikke kategorier
@@ -861,3 +862,19 @@ export const ALL_DEMO_GUIDES: Guide[] = [
   ...DEMO_EGNE_GUIDES,
   ...DEMO_AI_GUIDES,
 ]
+
+/**
+ * App-vendt guide-samling.
+ *
+ * Imported guides (fra content/guides/*.md → guides-imported.ts) er
+ * **primær kilde**. Demo-guides bruges som fallback for slugs som
+ * importen endnu ikke dækker (fx hvidloeg, sukkeraert, AI-udkast).
+ *
+ * Når importen dækker alle render-stier, kan guides-demo.ts slettes
+ * og denne konstant erstattes af IMPORTED_GUIDES direkte.
+ */
+export const ALL_GUIDES: Guide[] = (() => {
+  const importedIds = new Set(IMPORTED_GUIDES.map((g) => g.id))
+  const demoFallback = ALL_DEMO_GUIDES.filter((g) => !importedIds.has(g.id))
+  return [...IMPORTED_GUIDES, ...demoFallback]
+})()
