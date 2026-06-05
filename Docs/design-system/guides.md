@@ -38,7 +38,20 @@ Potalot er ikke "én ting" — det er en kuratereret blanding:
 - **Modernistisk magasinlayout** for asymmetri og luft
 
 **Godkendte visuelle referencer ligger i**
-[`./references/guides/`](./references/guides/).
+[`./references/guides/`](./references/guides/). Otte kanoniske
+billeder, alle dokumenteret i mappens README:
+
+| # | Reference | Hvad det er |
+|---|---|---|
+| 01 | [Master-mockup — sortsguide + teknik](./references/guides/01-master-mockup-sortsguide-plus-teknik.png) | Den vigtigste enkelt-reference |
+| 02 | [Artsguide-mockup — Agurk](./references/guides/02-artsguide-mockup-agurk.png) | Fuldt arts-opslag |
+| 03 | [Teknikguide-mockup — Knibning](./references/guides/03-teknikguide-mockup-knibning.png) | Fuldt teknik-opslag |
+| 04 | [Farvepalette — låst](./references/guides/04-farvepalette-locked.png) | De 5 kerne-farver med hex |
+| 05 | [Form — organic blob-mask](./references/guides/05-form-organic-blob-mask.png) | Asymmetriske masker |
+| 06 | [Form — fade-overgange](./references/guides/06-form-fade-overgange-social.png) | Bløde fade-overgange |
+| 07 | [Form — S-maske](./references/guides/07-form-asymmetric-papaya-mask.png) | Sjælden asymmetri |
+| 08 | [Aesop — editorial grid](./references/guides/08-reference-aesop-editorial-grid.png) | Inspirations-tone |
+
 Den mappe er den endelige sandhed. Tekst-beskrivelserne i resten
 af denne doc er en understøttende dokumentation af det, billederne
 viser.
@@ -587,38 +600,50 @@ medium hvor 80% af brugerne læser.
 Se også sektion 0 — **Farvefilosofi** — for hvilke farver der hører
 til Potalots familie og hvilke der eksplicit ikke gør.
 
-### Kerne (altid synlig)
+**Den endelige paletspec er låst i**
+[`./references/guides/04-farvepalette-locked.png`](./references/guides/04-farvepalette-locked.png).
 
-| Rolle | Værdi | Note |
+### Kerne — fem farver (låst)
+
+| Navn | Hex | Hvor |
 |---|---|---|
-| Baggrund — creme | `#F4F0E6` / `var(--background)` | Den faste base |
-| Tekst — primær | `#24301F` (dæmpet skov-mørk) | Næsten sort, varm undertone |
-| Tekst — sekundær | `rgba(36,48,31,0.72)` | Body-prosa |
-| Tekst — meta | `rgba(36,48,31,0.55)` | Eyebrows, badges, timestamps |
-| Card-border | `rgba(36,48,31,0.08)` | Diskret, aldrig hård |
+| **EUCALYPTUS** | `#C0D481` | Primær plante-accent, kategori-tags |
+| **PEACH** | `#FEECD0` | Fact-card-baggrund, bløde tilstande |
+| **IVORY** | `#FFF9E2` | Sekundær baggrund, kort-fyld |
+| **PISTACHIO** | `#EBECCC` | Frisk-spire-tilstande, vækst-momenter |
+| **CLAY** | `#DCA278` | Jord, frø, knolde, modne frugter |
 
-### Naturpalette (rotation gennem sæsonerne)
+### Sekundære (tekst + struktur)
 
-Disse farver bruges som **accent** i guides — på fact-card-kanter,
-botanical bleed-overgange, kategori-eyebrows, sæson-stemninger.
-Værdierne er **omtrentlige** — låses endeligt af Anna mod
-referencefilerne i `references/guides/farvepalette-*.png`.
+| Rolle | Værdi |
+|---|---|
+| Tekst — primær | `#24301F` (dæmpet skov-mørk, næsten sort) |
+| Tekst — sekundær | `rgba(36,48,31,0.72)` |
+| Tekst — meta | `rgba(36,48,31,0.55)` |
+| Baggrund — creme | `var(--background)` (matcher Ivory tonalt) |
+| Card-border | `rgba(36,48,31,0.08)` |
 
-| Navn | Cirka værdi | Sæson | Hvor |
-|---|---|---|---|
-| Støvet salvie | `~#A8B5A0` | Forår | Fact-card-eyebrows |
-| Pistacie | `~#C8D4A4` | Forår-sommer | Fresh-spire-tilstande |
-| Ler | `~#C9A982` | Sommer | Frø-emballage-look |
-| Sienna | `~#A56743` | Sommer-efterår | Tomat-, peberfrugt-accent |
-| Tuscan sun | `~#D9A654` | Sommer | Modne-frugter-accent |
-| Terracotta | `~#B5604A` | Efterår | "Udløber snart"-tilstande |
-| Autumn bronze | `~#8C5A2E` | Efterår | Knold- og rod-accent |
-| Dæmpet oliven | `~#7B8A5F` | Hele sæsonen | Standard-plante-accent |
-| Coastal blue | `~#7A93A8` | Vinter | Vinter-only accent, sparsom |
+### Sæson-accenter (sparsom brug)
 
-**Brug af farve:** Sparsom. Kort har ingen gradient. Hovedfarven er
-Cormorant-tekst i `#24301F` på creme — alt andet er ornamentik.
-**Aldrig mere end 2 accentfarver på samme guide-opslag.**
+Trukket fra `Photo references design/Farver/`-mappen. Bruges KUN
+når sæson-konteksten kalder på det — fx efterårs-rotation, vinter-
+tilstande, "udløber snart"-advarsel.
+
+| Navn | Cirka værdi | Når |
+|---|---|---|
+| Sienna | `~#A56743` | Tomat, peberfrugt, modning |
+| Tuscan sun | `~#D9A654` | Sensommer, sol-tilstande |
+| Terracotta | `~#B5604A` | "Udløber snart" + efterår |
+| Autumn bronze | `~#8C5A2E` | Knolde, rødder, oktober-stemning |
+| Coastal blue | `~#7A93A8` | Vinter-only, sparsom |
+
+**Reglerne:**
+
+1. Hovedfarven er Cormorant-tekst i `#24301F` på creme.
+   Alt andet er ornamentik.
+2. **Maks. 2 farver fra kerne + 1 sæson-accent på samme guide-opslag.**
+3. Ingen gradient inde i en blok.
+4. Sæson-accenter må ikke konkurrere med kerne-farverne i hierarkiet.
 
 ---
 

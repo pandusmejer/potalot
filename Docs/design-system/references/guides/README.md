@@ -1,57 +1,129 @@
 # Guides — kanoniske visuelle referencer
 
-> Mappen er **tom som udgangspunkt**. Den fyldes med 8-12 referencer
-> der definerer Potalot-guides' visuelle DNA.
+> **Disse 8 billeder er den endelige sandhed om Potalot-guides ser ud.**
 >
-> Anna kuraterer — Claude og kommende redaktører kigger her, ikke
-> andre steder.
+> Når reglerne i [`../../guides.md`](../../guides.md) og billederne her
+> er i strid — så vinder billederne. Mennesker husker billeder bedre
+> end regler.
 
 ---
 
-## Foreslået kurations-liste
+## De 8 kanoniske referencer
 
-8-12 godkendte referencer, valgt fra Anna's arbejdsmappe og fra
-Potalots egne mockups de sidste uger.
+### 01. Master-mockup — sortsguide + teknik side-by-side
 
-| # | Navn | Hvad det kommunikerer |
-|---|---|---|
-| 01 | `hero-arts-foto.png` | Fotohero på artsguide — beskæring, typografi, sektion-overgang |
-| 02 | `hero-sorts-foto.png` | Fotohero på sortsguide — varianten med plantekort-foto |
-| 03 | `hero-teknik-flatblock.png` | Flat colour-block hero på teknikguide — den anden retning |
-| 04 | `botanical-bleed-eksempel.png` | Edge-to-edge makro-bleed mellem sektioner |
-| 05 | `detail-bleed-eksempel.png` | Asymmetrisk detail-udsnit i kolonne |
-| 06 | `organic-mask-card.png` | Organisk masket billedkort (blob-form) |
-| 07 | `papirlabel-tag.png` | Papirlabel-look — den haptiske kant |
-| 08 | `kapsel-button-or-strip.png` | Kapsel-formet UI-element |
-| 09 | `overlap-foldere-chartek.png` | Overlappende kort (manila-mappe-DNA) |
-| 10 | `fact-card-flat-colour.png` | Fact-kort med flat colour-block |
-| 11 | `farvepalette-stovet-naturtoner.png` | Den faktiske palette: salvie, pistacie, creme, ler, terracotta |
-| 12 | `mockup-guide-tomat-fuld.png` | Et fuldt guide-mockup som ledestjerne |
+**Fil:** [`01-master-mockup-sortsguide-plus-teknik.png`](./01-master-mockup-sortsguide-plus-teknik.png)
+
+**Hvad det viser:**
+- Venstre: sortsguide for **Tomat 'San Marzano'** med Potalot-badge,
+  organisk-masket hero-foto, sektioner *Om sorten / Forspiring /
+  Udplantning / Pleje gennem sæsonen*, fact-blok med ranke vs busk-
+  sammenligning, fact-blokke med ikoner, sortskort-link nederst.
+- Midt: teknikguide **Sådan kniber du tomater** med stort foto,
+  nummererede steps (01, 02, 03), tip-boks, sammenligning.
+- Højre: **DESIGN-PRINCIPPER** (organiske former, bløde indfald,
+  tekstlige detaljer, rolig typografi, naturlige farver) +
+  **eksempler på blokke** + **farveinspiration**.
+- Bund: kortsamling — Plantekort · Teknikguide · Inspirationskort.
+
+**Det er den enkelt-vigtigste reference. Hvis du har 30 sekunder,
+kig på den her.**
+
+### 02. Artsguide-mockup — Agurk
+
+**Fil:** [`02-artsguide-mockup-agurk.png`](./02-artsguide-mockup-agurk.png)
+
+**Hvad det viser:** Et fuldt artsguide-opslag for Agurk.
+- Hero med fotobaggrund + serif-titel
+- Modulær sektion-arkitektur (Om planten, Typer af agurker, Forspiring,
+  Pleje gennem sæsonen, Sygdomme og udfordringer, månedsrytme nederst)
+- Tre-kolonne fact-blokke (drivhus/friland/snack)
+- Typografi-eksempler i højre side (Ht. Overskrift, KEYWORD, ICON)
+- Step-by-step flows med ikoner
+- Botanical Bleed mellem sektioner (makro af tendril)
+- Måneds-tidslinje i bunden
+
+### 03. Teknikguide-mockup — Sådan kniber du tomater
+
+**Fil:** [`03-teknikguide-mockup-knibning.png`](./03-teknikguide-mockup-knibning.png)
+
+**Hvad det viser:** Teknikguide i fuldt opslag.
+- Stort hero med hånd-kniber-plante-foto
+- Tilbage-knap øverst
+- Nummererede steps med tip-bokse
+- Sammenligning af knibe-metoder
+- Mini-billeder i flow
+- Måneds-rytme i bunden
+- Bemærk: teknikguider har samme generelle layout som arts/sorts,
+  men "handlings-rytmen" er mere markant (steps, tjekmærker, tips)
+
+### 04. Farvepalette — låst kerne
+
+**Fil:** [`04-farvepalette-locked.png`](./04-farvepalette-locked.png)
+
+**Hvad det viser:** De 5 kernefarver med hex-codes, mod eucalyptus-blade:
+
+| Navn | Hex |
+|---|---|
+| **EUCALYPTUS** | `#C0D481` |
+| **PEACH** | `#FEECD0` |
+| **IVORY** | `#FFF9E2` |
+| **PISTACHIO** | `#EBECCC` |
+| **CLAY** | `#DCA278` |
+
+**Det her er paletten.** Sæson-accenter (sienna, tuscan sun, terracotta,
+autumn bronze, coastal blue) ligger i `Farver/`-mappen og bruges som
+sekundære toner i specifikke kontekster — ikke som kerne.
+
+### 05. Form — organic blob-mask
+
+**Fil:** [`05-form-organic-blob-mask.png`](./05-form-organic-blob-mask.png)
+
+**Hvad det viser:** Asymmetriske blob-formede billede-masker mod
+creme-baggrund. Reference for hvordan organiske former kan bære
+fotos uden rektangulær ramme. Brug i Detail Bleed + hero-masker.
+
+### 06. Form — fade-overgange
+
+**Fil:** [`06-form-fade-overgange-social.png`](./06-form-fade-overgange-social.png)
+
+**Hvad det viser:** Social-media template med bølgende fade-overgange
+mellem foto og baggrund. Vigtig reference for hvordan billeder
+"slipper" baggrunden i stedet for at sidde i en hård rektangulær
+ramme. Direkte anvendelig på hero og Botanical Bleed.
+
+### 07. Form — asymmetrisk S-maske
+
+**Fil:** [`07-form-asymmetric-papaya-mask.png`](./07-form-asymmetric-papaya-mask.png)
+
+**Hvad det viser:** Papaya-billeder klippet i S-formet asymmetrisk
+maske med cirkulær tekst rundt om. Reference for mere ekstreme
+asymmetriske masker (sjælden brug — kun til særlige sektioner).
+
+### 08. Reference — Aesop-editorial grid
+
+**Fil:** [`08-reference-aesop-editorial-grid.png`](./08-reference-aesop-editorial-grid.png)
+
+**Hvad det viser:** Aesop-style parfumeemballage-katalog med
+all-caps serif (REINE, RAPIDE), nummererede sektioner (02, 03),
+foto-grid mod sage-grøn baggrund.
+
+**Inspirations-reference, ikke direkte mockup.** Bruges som
+tone-anker — det er denne grad af *"beherskethed og rolig autoritet"*
+Potalot stræber efter.
 
 ---
 
-## Sådan tilføjes referencerne
+## Sådan tilføjes nye referencer
 
-1. Find filerne i `~/potalot/Photo references design/Design guides…/Guides - moodboards design/`
-2. Vælg de 8-12 der **bedst repræsenterer det færdige DNA** — ikke
-   alle der findes, kun dem du ville pege på hvis du skulle forklare
-   en ny redaktør hvad Potalot-guides er
-3. Kopier ind her med kebab-case navne
-4. Opdater tabellen ovenfor med præcis hvad hver enkelt viser
-5. Hvis du laver et nyt mockup der overskriver et eksisterende: **slet
-   det gamle, behold versionsnummeret**
+Hvis et nyt mockup er **kanonisk** (= ville stå her hvis en ny
+redaktør startede i morgen), så:
 
----
-
-## Brug i `guides.md`
-
-Referencer indlejres med relative paths fra `Docs/design-system/`:
-
-```markdown
-![Botanical Bleed mellem sektioner](./references/guides/04-botanical-bleed-eksempel.png)
-```
-
-Hver gang en regel i `guides.md` har en visuel manifestering, bør
-den linke til den relevante reference her.
+1. Kopier ind med navngivning `NN-kort-beskrivelse.png`
+2. Tilføj sektion i denne README med præcis beskrivelse
+3. Reference fra `guides.md` på den regel den illustrerer
+4. Hvis du erstatter et eksisterende mockup: **behold numrene
+   intakte**. Slet det gamle, brug samme nummer. Ellers brækker
+   alle inline-links i guides.md.
 
 🌱
