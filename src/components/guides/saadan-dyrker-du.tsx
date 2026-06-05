@@ -107,22 +107,82 @@ function ProseSection({ title, body }: { title: string; body: string }) {
       >
         {title}
       </h3>
-      <p
-        style={{
-          fontFamily: serif,
-          fontWeight: 400,
-          fontSize: 'clamp(16px, 2.6vw, 18.5px)',
-          lineHeight: 1.65,
-          color: 'rgba(36,48,31,0.82)',
-          margin: 0,
-          maxWidth: 640,
-          whiteSpace: 'pre-line',
-        }}
-      >
-        {body}
-      </p>
+      <ProseBody body={body} />
     </article>
   )
+}
+
+/**
+ * Render guide-body med minimal markdown:
+ *   - Paragraffer (blank linje mellem)
+ *   - Bullet-lister (- foran linje)
+ *   - **bold** og *italic* inline
+ *
+ * Vi parser selv fordi vi vil holde kontrollen over typografi og
+ * undgå en tung markdown-dep i V1. Hvis vi senere har brug for
+ * links, kode-blokke eller H4 i body, så er det tid til react-markdown.
+ */
+function ProseBody({ body }: { body: string }) {
+  const bodyStyle: React.CSSProperties = {
+    fontFamily: serif,
+    fontWeight: 400,
+    fontSize: 'clamp(16px, 2.6vw, 18.5px)',
+    lineHeight: 1.65,
+    color: 'rgba(36,48,31,0.82)',
+    margin: 0,
+    maxWidth: 640,
+  }
+
+  // Split body i paragraffer (blank linje mellem)
+  const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+
+  return (
+    <div className="space-y-3" style={bodyStyle}>
+      {paragraphs.map((para, i) => {
+        const lines = para.split('\n').map((l) => l.trim())
+        const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
+        if (isBulletList) {
+          return (
+            <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-1">
+              {lines.map((l, j) => (
+                <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
+              ))}
+            </ul>
+          )
+        }
+        return (
+          <p key={i} style={{ margin: 0, whiteSpace: 'pre-line' }}>
+            {renderInline(para)}
+          </p>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * Inline markdown: **bold** og *italic*.
+ * Returnerer en flat array af strenge + <strong>/<em>-elementer.
+ */
+function renderInline(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = []
+  // Match **bold** ELLER *italic* (men ikke ** mellem * og *).
+  const re = /(\*\*[^*\n]+?\*\*|\*[^*\n]+?\*)/g
+  let lastIdx = 0
+  let match: RegExpExecArray | null
+  let key = 0
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > lastIdx) parts.push(text.slice(lastIdx, match.index))
+    const token = match[0]
+    if (token.startsWith('**')) {
+      parts.push(<strong key={key++}>{token.slice(2, -2)}</strong>)
+    } else {
+      parts.push(<em key={key++}>{token.slice(1, -1)}</em>)
+    }
+    lastIdx = match.index + token.length
+  }
+  if (lastIdx < text.length) parts.push(text.slice(lastIdx))
+  return parts
 }
 
 function SektionEyebrow({ children }: { children: React.ReactNode }) {
