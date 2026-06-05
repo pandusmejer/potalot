@@ -71,6 +71,10 @@ Disse opstår naturligt når biblioteket vokser.
 - Frøindsamling og frøopbevaring
 - Overvintring af chili *(refereret fra Habanero Orange)*
 - Opbinding af peberfrugt *(refereret fra Corno di Toro Rosso)*
+- Forspiring af dahlia *(refereret fra Dahlia-artsguide — knoldvækkelse, ikke frøspiring)*
+- Plukning af dahlia *(refereret fra Dahlia-artsguide)*
+- Buketter med dahlia *(refereret fra Dahlia-artsguide)*
+- Overvintring af dahlia *(refereret fra Dahlia-artsguide)*
 
 > **Bemærk:** Chili-artsguiden refererer til en `goedning-af-chili`-teknik.
 > Det skal afklares senere om den skal være en selvstændig guide eller
@@ -99,6 +103,19 @@ slug.
 - `goedning-i-koekkenhaven`
 - `beskaering-af-agurker`
 - `knibning-af-agurker`
+
+### Dahlia-guiden refererer til
+
+- `forspiring-af-dahlia`
+- `plukning-af-dahlia`
+- `buketter-med-dahlia`
+- `overvintring-af-dahlia`
+
+### Chili + Peberfrugt-guiderne refererer til
+
+- `overvintring-af-chili` *(fra Habanero Orange)*
+- `opbinding-af-peberfrugt` *(fra Corno di Toro Rosso)*
+- `goedning-af-chili` *(fra Chili-artsguide — afventer afklaring; se note ovenfor)*
 
 ---
 
