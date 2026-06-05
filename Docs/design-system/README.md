@@ -16,6 +16,7 @@ billeder, AI-pipeline), så hører den i `Docs/` root.
 | Doc | Hvad |
 |---|---|
 | [`notifications.md`](./notifications.md) | Notifikationernes DNA — hierarki, tone, format, timing, syv arketyper |
+| [`guides.md`](./guides.md) | Guidernes visuelle + redaktionelle DNA — naturhåndbog-rytmen, Botanical/Detail Bleed, typografi, farver, komponent-katalog, bibliotek-faser, anti-mønstre |
 
 ---
 
