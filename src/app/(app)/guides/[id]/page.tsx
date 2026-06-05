@@ -8,6 +8,7 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
+import { pickAtmosfaeriskMakro } from '@/components/guides/atmosfaerisk-lag'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderKobling } from '@/components/guides/kalender-kobling'
 import { mergeGuide } from '@/lib/guide-merge'
@@ -251,7 +252,10 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       <QuickFactsCard guide={effective} inheritedFields={inheritedFromParent} />
 
       {/* ── 2. SÅDAN DYRKER DU — naturhåndbogslaget ── */}
-      <SaadanDyrkerDu sections={effective.sections} />
+      <SaadanDyrkerDu
+        sections={effective.sections}
+        atmosfaeriskMakro={pickAtmosfaeriskMakro(effective.id)}
+      />
 
       {/* ── 3. RYTME I KALENDEREN — guides → kalender-kobling ── */}
       {effective.calendarRules.length > 0 && (

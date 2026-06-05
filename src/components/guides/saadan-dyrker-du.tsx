@@ -12,15 +12,18 @@ import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
+import { AtmosfaeriskLag } from './atmosfaerisk-lag'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
   sections: GuideSection[]
+  /** Atmosfærisk makro-path til Lag 2 bag faktabokse. */
+  atmosfaeriskMakro?: string | null
 }
 
-export function SaadanDyrkerDu({ sections }: Props) {
+export function SaadanDyrkerDu({ sections, atmosfaeriskMakro }: Props) {
   // `:::next-guide` rendres ikke her — guide-detail-page rendrer den
   // som det allersidste blok på siden (efter sortsvarianter, noter osv).
   const body = sections.filter(s => s.kind !== 'next')
@@ -54,13 +57,25 @@ export function SaadanDyrkerDu({ sections }: Props) {
       {body.map((s, i) => {
         const key = s.key ?? `section-${i}`
         if (s.kind === 'fact') {
+          // V4 Lag 4: faktabokse skal ligge OVENPÅ et makrofoto, ikke
+          // mellem to tekstblokke. Atmosfærisk lag vælges på guide-
+          // detail-page baseret på guide-slug.
           return (
-            <GuideFactCard
+            <AtmosfaeriskLag
               key={key}
-              title={s.title}
-              variant={s.variant}
-              columns={s.columns}
-            />
+              src={atmosfaeriskMakro}
+              focal="right"
+              opacity={0.45}
+              bleed={48}
+              rotate={-1}
+              alt="Atmosfærisk makro-baggrund"
+            >
+              <GuideFactCard
+                title={s.title}
+                variant={s.variant}
+                columns={s.columns}
+              />
+            </AtmosfaeriskLag>
           )
         }
         if (s.kind === 'guide') {
