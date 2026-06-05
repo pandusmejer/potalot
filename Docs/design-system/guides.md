@@ -4,8 +4,11 @@
 >
 > **Dette dokument er V4 og erstatter alle tidligere udkast.**
 >
-> V3 var resultatet af frøbank, plantekort, artsguider, makro/detail-
-> fotos, moodboards (maj 2026) og guide-mockups (juni 2026).
+> V3 var resultatet af frøbank, plantekort, artsguider, makro-fotos,
+> moodboards (maj 2026) og guide-mockups (juni 2026).
+>
+> **Detail som selvstændig billedtype er sløjfet** — makrofotos +
+> beskæringer dækker behovet.
 >
 > **V4 tilføjede den vigtigste opdagelse:**
 > Guides skal bygges som **lag**, ikke som **komponenter stablet
@@ -25,8 +28,8 @@
 
 ### Problemet V4 løser
 
-V3 troede at "Botanical Bleed som modul" + "Detail Bleed som modul"
-løste sansen for nærhed. Det gjorde det ikke. Når billeder bliver
+V3 troede at "Botanical Bleed som modul" løste sansen for nærhed.
+Det gjorde det ikke. Når billeder bliver
 til komponenter — selv med fade — ender de som:
 
 ```
@@ -153,8 +156,6 @@ Reference: master-mockup
 - `BotanicalBleed` som **selvstændig komponent** er forkert tilgang.
   Den producerer rektangulær container med fade — dvs. præcis det
   vi vil væk fra. **Brug i stedet inline atmosfæriske lag.**
-- `DetailBleed` skal ikke være en komponent der wrapper et billede.
-  Det er en **organisk masket img** der lever inden i en sektion.
 - Faktabokse kan IKKE renderes uafhængigt af deres makrofoto-bagrund.
   De skal placeres i en `<section className="relative">` med
   baggrundsbilledet **først** i DOM.
@@ -262,15 +263,14 @@ arts/
 plantekort/
 frokort/
 makro/
-detail/
 teknik/
 ```
 
 Hvis der opstår behov for en ny billedkategori, skal designsystemet
 opdateres **først**.
 
-Tonal og kompositorisk specifikation for makro/detail er låst i
-[`./prompts/makro-detail-fotos.md`](./prompts/makro-detail-fotos.md).
+Tonal og kompositorisk specifikation for makrofotos er låst i
+[`./prompts/makro-fotos.md`](./prompts/makro-fotos.md).
 
 ---
 
@@ -371,7 +371,6 @@ Den største produktionsbesparelse.
 Et stærkt makrofoto kan bruges mange gange. Samme foto kan skabe:
 
 - Botanical Bleed
-- Detail Bleed
 - Hero-baggrund
 - Header-beskæring
 - Mobil-version
@@ -398,40 +397,6 @@ Et enkelt makrofoto leverer **5-10 visuelle anvendelser**.
 | Caption | nej |
 
 Bruges **mellem** sektioner.
-
----
-
-## 10. Detail Bleed
-
-**Formål:** Information. Identifikation. Læring.
-
-| Kendetegn | Værdi |
-|---|---|
-| Makrofoto | ja |
-| Skarp organisk maske | **ja** |
-| Fade | **nej** |
-| Asymmetrisk form | ja |
-| Konkret planteinformation | ja |
-
-Bruges **inde i** sektioner.
-
----
-
-## 11. Organiske masker (låst regel)
-
-**Organiske masker må IKKE fade.**
-
-Ingen:
-
-- transparens
-- glow
-- blur-kanter
-- opløsning
-
-> Masken skal føles som **et fysisk udklip placeret på siden**.
-
-(Botanical Bleed *fader* — men det er ikke en organisk maske. Det er
-en åben rektangulær bleed. De to systemer holdes adskilte.)
 
 ---
 
@@ -677,16 +642,7 @@ Må gerne føles som **note i margen**.
 | CTA | nej |
 | Caption | nej |
 
-### 15.11 Detail Bleed — specifikke værdier
-
-| Felt | Værdi |
-|---|---|
-| Bredde | 55-70 % af kolonne |
-| Placering | venstre, højre — aldrig centreret hver gang |
-| Skarp organisk maske | ja |
-| Fade | nej |
-
-### 15.12 Guidekort
+### 15.11 Guidekort
 
 Teknikguide · Relateret guide · Næste guide — **samme DNA**.
 
@@ -698,7 +654,7 @@ padding: 24px;
 
 **Ingen skygge.**
 
-### 15.13 Ikoner
+### 15.12 Ikoner
 
 Kun outline. Lucide-style.
 
@@ -708,7 +664,7 @@ Stregtykkelse: 1.75px
 
 **Ingen fyldte ikoner. Ingen emojis.** Undtagelse: Potalot-tip.
 
-### 15.14 Farver (autoritativ palette)
+### 15.13 Farver (autoritativ palette)
 
 #### Tekst og struktur
 
@@ -727,7 +683,7 @@ Stregtykkelse: 1.75px
 | Ler | `#A57A52` |
 | Tomat | `#B85C46` |
 
-### 15.15 Accentfarver pr. guide
+### 15.14 Accentfarver pr. guide
 
 **Kun én accentfarve pr. guide.**
 

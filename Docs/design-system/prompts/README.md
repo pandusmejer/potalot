@@ -15,7 +15,7 @@
 
 | Prompt | Billedtype | Mappe |
 |---|---|---|
-| [`makro-detail-fotos.md`](./makro-detail-fotos.md) | Makro + detail (Botanical Bleed, Detail Bleed) | `public/images/makro/<slug>/`, `public/images/detail/<slug>/` |
+| [`makro-fotos.md`](./makro-fotos.md) | Makrofotos (Botanical Bleed, faktaboks-baggrunde, crops) | `public/images/makro/<slug>/` |
 
 ---
 
@@ -34,7 +34,7 @@
 ## Skriv en ny prompt
 
 Når du skriver en ny prompt-doc, så følg samme struktur som
-`makro-detail-fotos.md`:
+`makro-fotos.md`:
 
 1. Hvad billedtypen er + hvor den lever (path)
 2. Masterprompt (brug direkte til AI)

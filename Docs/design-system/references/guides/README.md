@@ -77,7 +77,7 @@ Ivory / Pistachio / Clay mod eucalyptus-blade. Bruges som
 
 **Hvad det viser:** Asymmetriske blob-formede billede-masker mod
 creme-baggrund. Reference for hvordan organiske former kan bære
-fotos uden rektangulær ramme. Brug i Detail Bleed + hero-masker.
+fotos uden rektangulær ramme. Brug i hero-masker og makro-lag.
 
 ### 06. Form — fade-overgange
 

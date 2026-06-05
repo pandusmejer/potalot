@@ -1,16 +1,20 @@
-# Potalot — masterprompt for makro- og detailfotos
+# Potalot — masterprompt for makrofotos
 
-> **Hvad:** Tonal og kompositorisk specifikation for makro- og detail-
-> fotografi i Potalot. Brugt både til AI-genererede billeder
-> (Midjourney, DALL·E, Stable Diffusion, Nano Banana m.fl.) og som
-> rettesnor for fotografer.
+> **Hvad:** Tonal og kompositorisk specifikation for makrofotografi
+> i Potalot. Brugt både til AI-genererede billeder (Midjourney,
+> DALL·E, Stable Diffusion, Nano Banana m.fl.) og som rettesnor
+> for fotografer.
 >
-> **Hvor billederne lever:** `public/images/makro/<slug>/` og
-> `public/images/detail/<slug>/`. Se [`../../BILLEDER.md`](../../BILLEDER.md)
-> for mappestruktur.
+> **Hvor billederne lever:** `public/images/makro/<slug>/`.
+> Se [`../../BILLEDER.md`](../../BILLEDER.md) for mappestruktur.
 >
-> **Hvor de bruges:** Botanical Bleed + Detail Bleed i guides. Se
-> [`../guides.md`](../guides.md) sektion 5 og 6.
+> **Hvor de bruges:** Som atmosfæriske lag i guides — Botanical
+> Bleed (mellem sektioner) og som baggrund bag faktabokse, Potalot-
+> tip og Vidste du-blokke. Plus beskæringer der dækker det behov
+> der tidligere blev kaldt "Detail Bleed".
+>
+> Se [`../guides.md`](../guides.md) sektion 9 (Botanical Bleed)
+> og §15.10.
 
 ---
 

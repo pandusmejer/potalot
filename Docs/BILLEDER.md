@@ -97,7 +97,7 @@ samme billede bruges flere steder, skal systemet variere crop,
 zoom, placering og opacity.
 
 Tonal og kompositorisk spec er låst i
-[`design-system/prompts/makro-detail-fotos.md`](./design-system/prompts/makro-detail-fotos.md).
+[`design-system/prompts/makro-fotos.md`](./design-system/prompts/makro-fotos.md).
 
 ### 5. Thumbnails / crops
 
@@ -192,11 +192,7 @@ public/images/
 ├── heroes-maaneder/         Måneds-hero i kalenderen
 ├── heroes-sider/            Side-hero (frøbank, planter osv.)
 ├── kalender/                Kalender-specifikke grafiske elementer
-├── makro/                   Stemnings-nærbilleder (Botanical Bleed)
-│   ├── tomat/
-│   ├── agurk/
-│   └── …
-├── detail/                  Asymmetriske udsnit (Detail Bleed)
+├── makro/                   Stemnings-nærbilleder (atmosfæriske lag i guides)
 │   ├── tomat/
 │   ├── agurk/
 │   └── …
@@ -259,7 +255,7 @@ en modnet San Marzano-klase, en Habanero-frugt, en Café au Lait-blomst.
 Det er disse der senere får brugeren til at føle "jeg er inde i planten".
 
 > 🌱 **Skal du generere eller bestille et nyt makro-billede?**
-> Læs [`design-system/prompts/makro-detail-fotos.md`](./design-system/prompts/makro-detail-fotos.md)
+> Læs [`design-system/prompts/makro-fotos.md`](./design-system/prompts/makro-fotos.md)
 > — masterprompten der låser tone, komposition, lys og farve på tværs
 > af AI-genererede billeder og fotografer.
 
@@ -297,24 +293,6 @@ Marzanos aflange frugt ser ikke ud som en Marmandes ribbede.
 **Format:** JPG, høj opløsning (1600 × 1200 px eller mere). Beskåret tæt.
 
 **Bruges til:** Det kommende **Botanical Bleed**-modul.
-
----
-
-### `detail/<slug>/` — Asymmetriske udsnit (art **eller** sort)
-
-Samme dual struktur som `makro/`. Folder-navnet er enten art-slug eller
-variety-slug.
-
-**Eksempler:**
-```
-detail/tomat/klase-paa-stand.jpg          (art-niveau)
-detail/tomat-san-marzano/modne-klaser.jpg (sort-niveau)
-detail/agurk-marketmore/op-ad-espalier.jpg
-```
-
-**Anbefalet antal:** 1-2 pr. sort, færre eller ingen pr. art.
-
-**Bruges til:** Det kommende **Detail Bleed**-modul.
 
 ---
 
@@ -489,7 +467,7 @@ rigtige mappe.
 ## Tjekliste — når du tilføjer et nyt billede
 
 1. **Hvad bruges det til?** → vælg mappen (`arts`, `plantekort`,
-   `frokort`, `makro`, `detail`, `teknik`, `historical`, `ui`)
+   `frokort`, `makro`, `teknik`, `historical`, `ui`)
 2. **Hvilken plante er det?** → find slug'en (samme som guidens)
 3. **Hvilket format?** JPG (foto), PNG (gennemsigtig), SVG (logo)
 4. **Opløsning?** Mindst 1200 px på korteste side
