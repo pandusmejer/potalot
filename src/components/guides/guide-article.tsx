@@ -166,13 +166,19 @@ export async function GuideArticle({
   if (tipImage) usedMacroSrcs.add(tipImage.src)
 
   // Bleed-ankre
+  //
+  // V4.3-låsning (Docs/design-system/guides.md §18): artsguider får
+  // INGEN automatiske bleed-blokke. Makrofotos er sortsbestemte;
+  // arts-makros findes som "botaniske referencefotos" men presses
+  // ikke ind i prose-flowet for at fylde plads. Tomme artsguider er
+  // ikke et problem — falske artsguider er.
+  //
+  // Hvis en artsguide har eksplicit anførte slots (fact-bg, evt.
+  // signaturer), bruges arts-makros der. Bleed-blokke er sortsguide-
+  // only fra V4.3.
   const isSpecies = effective.guideLevel === 'species'
   const bleedAnchorPatterns: RegExp[] = isSpecies
-    ? [
-        /^om (planten|arten)/i,
-        /pleje|dyrkningsforhold|udplantning/i,
-        /sygdomme|typiske fejl|udfordringer/i,
-      ]
+    ? []
     : [
         /^om sorten/i,
         /smag|anvendelse/i,

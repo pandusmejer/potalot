@@ -1152,7 +1152,133 @@ Vi rammer ikke væggen — vi skifter vej før den.
 
 ---
 
-## 18. Anti-mønstre
+## 18. Arts vs. sort — vidensniveau-skel
+
+V4.3-låsning. Artsguider og sortsguider løser forskellige opgaver. De
+skal ikke længere behandles som søstertyper med lidt forskelligt
+indhold. Forskellen handler ikke om billeder — den handler om
+**vidensniveau**.
+
+| Niveau | Spørgsmål | Værktøjer |
+|---|---|---|
+| **Artsguide** | "Hvad er en peberfrugt?" | Hero + botaniske kendetegn + dyrkningsindhold |
+| **Sortsguide** | "Hvordan ser Corno di Toro Rosso ud?" | Hero + 5 makro/detailfotos + dyrkningsindhold |
+
+### Den ene regel
+
+> **Artsguider kræver hero-foto.**
+> **Sortsguider kræver hero-foto + 5 makro/detailfotos.**
+> **Artsmakros er valgfrie bonusfotos, ikke et krav.**
+
+### Hvorfor
+
+Makrofotos er fantastiske til at vise *denne specifikke variant*.
+Jo tættere kameraet kommer på planten, jo mere bliver motivet
+sortsbestemt. "En tomatblomst" bliver i samme øjeblik San Marzanos
+blomst — ikke arten Tomat. Derfor giver makrofotos kun begrænset
+mening på artsniveau, og artsguider skal ikke proppes med dem for
+syns skyld.
+
+### Botaniske kendetegn (artsguidens kerne)
+
+Artsguidens vigtigste indhold er ikke fotos, men en strukturel
+beskrivelse af planten:
+
+- Livsform (etårig, flerårig)
+- Højde
+- Bladtype og -form
+- Vækstform (rank, busk, krybende)
+- Rodsystem
+- Blomster
+- Bestøvning
+- Livscyklus
+
+Det rendres som **ren data** inde i guiden — ikke en separat
+designsystem-komponent. Bare ikon + label + værdi, 5-8 gange på
+række. Når 10 artsguider har brugt mønstret kan det blive til en
+formel komponent. Tidligere er det tidlig abstraktion og koster
+mere end det giver.
+
+### Sortsguide-templates pr. plantetype
+
+De fleste sortsguider falder i én af tre kategorier. Bestilling
+af sortsbilleder bliver derved en checklist, ikke en kreativ
+øvelse pr. sort.
+
+#### Frugtbærende planter (tomat, peberfrugt, agurk, chili)
+
+**Reference-case: California Wonder** — 6 distinkte roller, fuldt
+udstyret pr. juni 2026. Brug pool'en som skabelon når nye
+frugt-sorter får billeder.
+
+1. Moden frugt
+2. Umoden frugt
+3. Tværsnit / indre
+4. Blomst
+5. Frugt på plante (struktur/led)
+6. Kernehus (bonus)
+
+#### Blomster (dahlia, …)
+
+**Reference-case: Café au Lait** — 8 makros, 5 distinkte roller.
+
+1. Fuld blomst
+2. Kronbladsmakro
+3. Knop
+4. Blad/stængel
+5. Knold/løg/frøstand
+
+#### Rodfrugter
+
+Ingen reference-case endnu. Afventer første rodfrugt-sortsguide.
+
+1. Høstet rod
+2. Tværsnit
+3. Top/blade
+4. Ung plante
+5. Jord-/rodstruktur
+
+### Eksisterende arts-makros
+
+Tomat, chili, agurk og dahlia har 4-9 arts-makros i pool'en pr.
+juni 2026. Disse klassificeres som **botaniske referencefotos** —
+vi beholder dem fordi de findes, men vi **bestiller ikke flere**.
+Hvis en artsguide har 0 makros, vises ingen bleeds. Det er
+sundere end at presse et tilfældigt makro ind for at fylde plads.
+
+### Resolveren
+
+Resolveren tildeler **ikke automatisk bleed-blokke til artsguider**
+(V4.3-fix på `bleedAnchorPatterns` i `guide-article.tsx`). Hvis en
+artsguide har makros, kan de bruges af eksplicit angivne slots
+(fact-bg, evt. signaturer). Bleed-blokke i prose-flowet er nu et
+sortsguide-fænomen alene.
+
+### Hvidløg
+
+Parkeret som **åben sag**. Hvidløg er hverken en klassisk frugt-
+sort eller blomster-sort, og det passer ikke direkte ind i de tre
+templates ovenfor. Når hvidløg-guiden skrives, må vi tage
+beslutningen specifikt for løg/rod-niveau-planter — formentlig
+som en fjerde template eller en hybrid mellem rodfrugt og
+blomster.
+
+### Hvad denne beslutning forhindrer
+
+Før V4.3 forsøgte systemet at bruge samme værktøj (makrofotos) til
+to forskellige opgaver. Det skabte tre vedvarende problemer:
+
+1. Tomme arts-makro-mapper der så forkerte ud i audits
+2. Bestillingsanmodninger til arts-makros der ikke kunne defineres
+   ("hvilken peberfrugt?")
+3. Bleed-blokke på artsguider der altid endte med samme tilfældige
+   makro fordi pool'en var for lille
+
+Den ene regel ovenfor løser alle tre.
+
+---
+
+## 19. Anti-mønstre
 
 Det vi **aktivt undgår**:
 
