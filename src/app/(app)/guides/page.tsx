@@ -7,6 +7,7 @@ import {
   DEMO_AI_GUIDE_IDS,
 } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
 
 export const dynamic = 'force-dynamic'
 
@@ -68,6 +69,18 @@ export default async function GuidesPage() {
     parentPlantNameById.set(g.id, g.plantName)
   }
 
+  // Editorial bro mellem "Begynd her" og "Guides i felten" — én
+  // EditorialBleedCard med atmospheric makrofoto. Resolved server-side
+  // så client-component kan vise billed-stien uden at kalde resolveren
+  // selv. Tomat valgt fordi sættet har den mest udbyggede atmosphere-
+  // pool (2 makros: blad-lys, kondens). Returnerer null hvis ingen
+  // makro kunne findes → broen skjules helt i client-laget.
+  const bridgeMacro = resolvePotalotMacro({
+    guideId: 'tomat',
+    slot: 'landing-bridge',
+    preferredRoles: ['atmosphere'],
+  })
+
   return (
     <div className="relative -mx-4 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
@@ -95,6 +108,8 @@ export default async function GuidesPage() {
           aiGuideIds={aiGuideIds}
           parentPlantNameById={parentPlantNameById}
           iFroebankIds={inFroebankIds}
+          bridgeMacroSrc={bridgeMacro?.src}
+          bridgeMacroAlt={bridgeMacro?.alt}
         />
       </div>
     </div>

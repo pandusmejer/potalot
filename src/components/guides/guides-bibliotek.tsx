@@ -5,6 +5,7 @@ import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
 import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
+import { EditorialBleedCard } from './editorial-bleed-card'
 import { TrustBadge, guideKindFor, type GuideKind } from './trust-badge'
 import {
   POPULAERE_EMNER,
@@ -21,6 +22,14 @@ interface Props {
   aiGuideIds: ReadonlySet<string> | null
   parentPlantNameById: Map<string, string>
   iFroebankIds: ReadonlySet<string>
+  /**
+   * Atmospheric makro-billede til EditorialBleedCard-broen mellem
+   * "Begynd her" og "Guides i felten". Resolved server-side i
+   * /guides/page.tsx via resolvePotalotMacro. Hvis null/undefined
+   * skjules broen helt (ingen død blok uden billede).
+   */
+  bridgeMacroSrc?: string | null
+  bridgeMacroAlt?: string | null
 }
 
 export function GuidesBibliotek({
@@ -28,6 +37,8 @@ export function GuidesBibliotek({
   aiGuideIds,
   parentPlantNameById,
   iFroebankIds,
+  bridgeMacroSrc,
+  bridgeMacroAlt,
 }: Props) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('alle')
@@ -38,7 +49,7 @@ export function GuidesBibliotek({
     setSearch('')
     if (typeof document !== 'undefined') {
       requestAnimationFrame(() => {
-        document.getElementById('guide-feltet')?.scrollIntoView({
+        document.getElementById('guides-i-felten')?.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         })
@@ -96,8 +107,30 @@ export function GuidesBibliotek({
         className="-mt-3 sm:-mt-1"
       />
 
+      {/*
+       * Editorial bro: én EditorialBleedCard variant="band" der knytter
+       * "Begynd her"-laget til "Guides i felten"-listen. Per Annas spec:
+       * maks 1 pr. side, atmospheric makrofoto, ctaHref scroller til
+       * sektionen nedenunder. Skjules hvis ingen makro kunne resolves
+       * (ingen død blok uden billede).
+       */}
+      {bridgeMacroSrc && (
+        <EditorialBleedCard
+          variant="band"
+          eyebrow="Dyrkningsguides"
+          title="Fra første frø til sidste høst"
+          description="Brug guides som en rolig vej gennem sæsonen — fra valg af sort til såning, udplantning, pleje og høst."
+          ctaLabel="Se alle guides"
+          ctaHref="#guides-i-felten"
+          imageSrc={bridgeMacroSrc}
+          imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
+          objectPosition="50% 45%"
+          imageScale={1.08}
+        />
+      )}
+
       {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
-      <section id="guide-feltet" className="relative pt-2">
+      <section id="guides-i-felten" className="relative pt-2">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
           <div className="max-w-[360px]">
