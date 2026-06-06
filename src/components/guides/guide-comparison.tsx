@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 export type ComparisonRow = {
@@ -14,6 +15,12 @@ export type GuideComparisonListProps = {
   rightTitle: string
   rows: ComparisonRow[]
   ctaLabel?: string
+  /**
+   * Hvis sat: CTA bliver et <Link> der navigerer til href.
+   * Hvis ikke sat men onCtaClick er sat: CTA bliver en <button>.
+   * Hvis ingen af delene: CTA skjules.
+   */
+  ctaHref?: string
   onCtaClick?: () => void
 }
 
@@ -43,28 +50,37 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 
 function ComparisonCta({
   label,
+  href,
   onClick,
 }: {
   label?: string
+  href?: string
   onClick?: () => void
 }) {
   if (!label) return null
 
+  const ctaClass = 'mx-auto mt-7 flex rounded-full px-[18px] py-2.5'
+  const ctaStyle = {
+    background: 'rgba(244,240,229,0.80)',
+    border: '1px solid rgba(36,48,31,0.12)',
+    color: ink,
+    fontFamily: sans,
+    fontSize: 13,
+    fontWeight: 700,
+    lineHeight: 1,
+    textDecoration: 'none',
+  } as const
+
+  if (href) {
+    return (
+      <Link href={href} className={ctaClass} style={ctaStyle}>
+        {label}
+      </Link>
+    )
+  }
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="mx-auto mt-7 flex rounded-full px-[18px] py-2.5"
-      style={{
-        background: 'rgba(244,240,229,0.80)',
-        border: '1px solid rgba(36,48,31,0.12)',
-        color: ink,
-        fontFamily: sans,
-        fontSize: 13,
-        fontWeight: 700,
-        lineHeight: 1,
-      }}
-    >
+    <button type="button" onClick={onClick} className={ctaClass} style={ctaStyle}>
       {label}
     </button>
   )
@@ -95,6 +111,7 @@ export function GuideComparisonList({
   rightTitle,
   rows,
   ctaLabel,
+  ctaHref,
   onCtaClick,
 }: GuideComparisonListProps) {
   return (
@@ -194,7 +211,7 @@ export function GuideComparisonList({
         ))}
       </div>
 
-      <ComparisonCta label={ctaLabel} onClick={onCtaClick} />
+      <ComparisonCta label={ctaLabel} href={ctaHref} onClick={onCtaClick} />
     </section>
   )
 }

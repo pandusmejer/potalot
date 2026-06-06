@@ -13,6 +13,11 @@ import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
 import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
+import {
+  GuideComparisonList,
+  type ComparisonRow,
+} from '@/components/guides/guide-comparison'
+import { CalendarDays, Circle, Leaf, Sprout as SproutIcon } from 'lucide-react'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -574,17 +579,69 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       })()}
 
       {/* ── 9. NEXT-GUIDE — det redaktionelle sidste skub ── */}
+      {/*
+       * San Marzano-undtagelse: vi viser GuideComparisonList med konkrete
+       * attributter (frugt/konsistens/anvendelse/modning) i stedet for den
+       * generiske NextCard. Det er sortsguidens "beslutningsblok", ikke
+       * et tilbageblik. Per Annas valg: standard er GuideComparisonList,
+       * specialvariant (Badge) bevares til highlights. Integrationen
+       * gælder kun denne testside indtil andre sortsguider får tilsvarende
+       * comparison-data.
+       */}
       {nextGuide && nextGuide.kind === 'next' && (
-        <GuideNextCard
-          title={nextGuide.title}
-          description={nextGuide.description}
-          slug={nextGuide.slug}
-          label={nextGuide.label}
-        />
+        effective.variety === 'San Marzano' ? (
+          <GuideComparisonList
+            leftTitle="San Marzano"
+            rightTitle="Roma"
+            rows={SAN_MARZANO_VS_ROMA_ROWS}
+            ctaLabel="Se guide til Roma"
+            ctaHref={`/guides/${nextGuide.slug}`}
+          />
+        ) : (
+          <GuideNextCard
+            title={nextGuide.title}
+            description={nextGuide.description}
+            slug={nextGuide.slug}
+            label={nextGuide.label}
+          />
+        )
       )}
     </article>
   )
 }
+
+// ─── San Marzano vs Roma — comparison data ────────────────────────
+//
+// Kopieret fra guide-comparison-demo.tsx så denne side er selvforsynet
+// hvis demo-filen senere flyttes/slettes. Demo'en blev godkendt som
+// rigtig prøve på "Sammenlign med"-blokken; vi bruger den direkte
+// indtil Roma-guiden faktisk har eget faktisk indhold.
+const SAN_MARZANO_VS_ROMA_ROWS: ComparisonRow[] = [
+  {
+    label: 'Frugt',
+    icon: <Circle />,
+    left: 'Slanke, aflange frugter',
+    right: 'Ovale, bredere frugter',
+  },
+  {
+    label: 'Konsistens',
+    icon: <Leaf />,
+    left: 'Få kerner og fast frugtkød',
+    right: 'Mere kød end San Marzano',
+  },
+  {
+    label: 'Anvendelse',
+    icon: <SproutIcon />,
+    left: 'Perfekt til sauce',
+    right: 'God til sauce og konservering',
+  },
+  {
+    label: 'Modning',
+    icon: <CalendarDays />,
+    left: 'Middeltidlig sort',
+    right: 'Middeltidlig sort',
+  },
+]
 
 // ─── Kalender-rytme-grupperinger ──────────────────────────────────
 //
