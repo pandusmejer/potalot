@@ -7,7 +7,21 @@ import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
-import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+
+/**
+ * Konverter fri tekst til kebab-case slug for asset-convention lookup
+ * når item.guideId mangler (legacy DB-items uden guide-kobling).
+ */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[æ]/g, 'ae')
+    .replace(/[ø]/g, 'oe')
+    .replace(/[å]/g, 'aa')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 interface Props {
   item: InventoryItem
@@ -58,13 +72,19 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   // mod manifest), guide-images entry, asset-convention pr. slug,
   // placeholder. Brudte/stale DB-paths (fx /images/froebank/froekort-…
   // som aldrig har eksisteret) falder automatisk til asset-convention.
-  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 3.
-  const { src: heroImage } = resolvePotalotImageLegacy({
+  // Canonical resolver, rolle: seed-card. Falder gennem 4 lag:
+  //   1. preferredSrc (item.primaryImageId, valideret mod manifest)
+  //   2. POTALOT_IMAGE_SETS_BY_ID[guideId].seedCard
+  //   3. /images/frokort/<varietySlug>.{png,jpg}
+  //   4. placeholder
+  // Ingen cross-role fald — Corno bliver ikke til California Wonder.
+  const varietySlug =
+    item.guideId ??
+    (item.variety ? slugify(`${item.name}-${item.variety}`) : null)
+  const { src: heroImage } = resolvePotalotImage({
     guideId: item.guideId,
-    slug: item.guideId,
-    plantType: item.name,
-    variety: item.variety,
-    imageRole: 'frokort',
+    varietySlug,
+    role: 'seed-card',
     preferredSrc: item.primaryImageId,
   })
   const { field } = plantColor(item.name, item.variety)
