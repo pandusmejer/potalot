@@ -1002,6 +1002,68 @@ to ting er ens, er bare en velklædt måde at spilde pixels på.
       `content/guides/tomat-roma.md` lander og importeres,
       aktiverer CTA sig automatisk.
 
+### 15.12.6 EditorialBleedCard (tekst-i-foto)
+
+EditorialBleedCard er en **specialkomponent** hvor tekst og foto
+smelter sammen i én blok via en fade-zone i selve billedet. Det
+løser "blok på blok"-problemet for bestemte editorial overgange,
+men må ikke bruges som almindelig prose-pause.
+
+#### Formål
+
+Foto og tekst SKAL opleves som samme bestanddel — ikke som to
+objekter stablet på hinanden. Brug kun når den editorial overgang
+er det centrale anslag, ikke som dekorativ pause.
+
+#### Hårde regler
+
+- **Maks 1 EditorialBleedCard pr. side.** Mere reproducerer
+  blok-på-blok-problemet med en ny komponent.
+- **Må aldrig stå tæt på BleedFromLeft, BleedFromRight eller
+  BleedBand.** Begge har "foto med fade" og konkurrerer om samme
+  visuelle plads. Stilkonflikt.
+- **Må aldrig bruges som almindelig prose-pause.** Det er
+  bleed-blokkenes job — de er KUN billede, EditorialBleedCard har
+  tekst INDE i billedet. Forskellige problemer.
+- **Bruges kun når tekst og billede skal smelte sammen i én
+  editorial overgang.** Hero-hooks, sektion-introer, redaktionelle
+  anslag — ikke informations-blokke.
+
+#### Variant pr. kontekst
+
+| Kontekst | Variant | Hvorfor |
+|---|---|---|
+| Guides landing | `band` | Full-bleed bånd er sektion-overgang, ikke kort |
+| Sortsguide | `left` eller `right` | Container-bredde, ikke konkurrerer med BleedBand |
+| Artsguide | `band` eller `right` | Vælges efter billede-orientering |
+
+#### CTA-tilstande
+
+CTA på EditorialBleedCard har tre tilstande (samme princip som
+GuideComparisonList — se 15.12.5):
+
+**Hvis `ctaHref` er sat:**
+- render som `<Link>` (server-component-venlig, foretrukken)
+
+**Hvis kun `onCtaClick` er sat:**
+- render som `<button>` (client-only, til dialog-triggers)
+
+**Hvis hverken `ctaHref` eller `onCtaClick`:**
+- render INGEN CTA (ingen død knap som standard)
+
+Aldrig en disabled CTA medmindre data eksplicit kræver det.
+
+#### Hvor må den IKKE bruges
+
+- Mellem prose-sektioner inde i guide-body (bleed-blokke har det job)
+- Som faktablok (LayeredFactBlock/GuideFactCard har det job)
+- Som comparison-blok (GuideComparisonList har det job)
+- Som hero (HeroIdentityStack/GuideHeroEditorial har det job)
+- Som signatur-blok (VidsteDuMedMakro/PotalotTipMedMakro har det job)
+
+EditorialBleedCard er en **smal kniv** — den løser præcis ét problem:
+foto + tekst i samme overgang. Brug den sparsomt.
+
 ### 15.13 Farver (autoritativ palette)
 
 #### Tekst og struktur

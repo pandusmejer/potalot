@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { CSSProperties } from 'react'
 
 export type EditorialBleedCardVariant = 'left' | 'right' | 'band'
@@ -11,6 +12,16 @@ export type EditorialBleedCardProps = {
   title: string
   description?: string
   ctaLabel?: string
+  /**
+   * Hvis sat: CTA bliver et <Link> der navigerer til href.
+   * Praktisk i server-component-træer hvor function-props ikke kan
+   * passes ned. Foretrukken til alle nye integrationer.
+   */
+  ctaHref?: string
+  /**
+   * Hvis sat OG ctaHref ikke er sat: CTA bliver en <button>.
+   * Kun til client-component-brug (fx dialog-triggers).
+   */
   onCtaClick?: () => void
   variant?: EditorialBleedCardVariant
   objectPosition?: string
@@ -102,6 +113,7 @@ export function EditorialBleedCard({
   title,
   description,
   ctaLabel,
+  ctaHref,
   onCtaClick,
   variant = 'left',
   objectPosition = '50% 50%',
@@ -194,7 +206,30 @@ export function EditorialBleedCard({
           </p>
         )}
 
-        {ctaLabel && (
+        {/*
+         * CTA-rendering pr. Annas regel:
+         *   - ctaHref → <Link>     (server-component-venlig, foretrukken)
+         *   - onCtaClick → <button> (client-only, til dialog-triggers)
+         *   - hverken/eller → render INGENTING (ingen død knap som standard)
+         */}
+        {ctaLabel && ctaHref ? (
+          <Link
+            href={ctaHref}
+            className="mt-5 inline-flex w-fit rounded-full px-4 py-2.5"
+            style={{
+              background: 'rgba(244,240,229,0.78)',
+              border: '1px solid rgba(36,48,31,0.12)',
+              color: bodyInk,
+              fontFamily: sans,
+              fontSize: 12,
+              fontWeight: 700,
+              lineHeight: 1,
+              textDecoration: 'none',
+            }}
+          >
+            {ctaLabel}
+          </Link>
+        ) : ctaLabel && onCtaClick ? (
           <button
             type="button"
             onClick={onCtaClick}
@@ -211,7 +246,7 @@ export function EditorialBleedCard({
           >
             {ctaLabel}
           </button>
-        )}
+        ) : null}
       </div>
     </section>
   )
