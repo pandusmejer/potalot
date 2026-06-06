@@ -11,7 +11,7 @@ import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
 import { VidsteDuMedMakro } from '@/components/guides/vidste-du-med-makro'
 import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
-import { KalenderKobling } from '@/components/guides/kalender-kobling'
+import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -352,10 +352,12 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         </>
       )}
 
-      {/* ── 3. RYTME I KALENDEREN — guides → kalender-kobling ── */}
-      {effective.calendarRules.length > 0 && (
-        <KalenderKobling rules={effective.calendarRules} />
-      )}
+      {/* ── 3. RYTME I KALENDEREN — guides → editorial sæson-kapitler ── */}
+      {(() => {
+        const chapters = buildKalenderChapters(effective.calendarRules)
+        if (chapters.length === 0) return null
+        return <KalenderRytmeKapitel chapters={chapters} />
+      })()}
 
       {/* ── 4. DINE EGNE — frøbank + plante-kobling ── */}
       {(linkedInventory.length > 0 || linkedPlants.length > 0) && (
@@ -473,4 +475,67 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       )}
     </article>
   )
+}
+
+// ─── Kalender-rytme-grupperinger ──────────────────────────────────
+//
+// Transformerer en GuideCalendarRule[] til 3 sæson-kapitler — det editorial
+// alternativ til 7 ens checklist-bokse. Sæsonerne følger en dyrkningsår-
+// rytme: forspirings-vindue → udplantning og vækst → høst og vedligehold.
+// En sektion uden rules skjules (ingen tomme stubbe).
+
+interface KalenderChapter {
+  title: string
+  monthRange: string
+  description?: string
+  actions: string[]
+}
+
+const KALENDER_SAESONER: Array<{
+  range: [number, number]
+  title: string
+  monthRange: string
+  description: string
+}> = [
+  {
+    range: [1, 3],
+    title: 'Start sæsonen',
+    monthRange: 'JAN-MAR',
+    description: 'Planlæg varme, lys og en rolig start, før planterne får fart på.',
+  },
+  {
+    range: [4, 6],
+    title: 'Ud i vækst',
+    monthRange: 'APR-JUN',
+    description: 'Plant ud, når jorden er lun, og hold planterne i jævn vækst.',
+  },
+  {
+    range: [7, 12],
+    title: 'Høst og vedligehold',
+    monthRange: 'JUL-OKT',
+    description: 'Hold rytmen jævn med vand og løbende høst gennem sæsonen.',
+  },
+]
+
+function buildKalenderChapters(
+  rules: Guide['calendarRules'],
+): KalenderChapter[] {
+  if (rules.length === 0) return []
+  const chapters: KalenderChapter[] = []
+  for (const saeson of KALENDER_SAESONER) {
+    const seasonRules = rules.filter((r) => {
+      const months = r.recommendedMonths
+      if (!months || months.length === 0) return false
+      const first = Math.min(...months)
+      return first >= saeson.range[0] && first <= saeson.range[1]
+    })
+    if (seasonRules.length === 0) continue
+    chapters.push({
+      title: saeson.title,
+      monthRange: saeson.monthRange,
+      description: saeson.description,
+      actions: seasonRules.map((r) => r.title),
+    })
+  }
+  return chapters
 }
