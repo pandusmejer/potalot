@@ -2,14 +2,18 @@
 
 import Link from 'next/link'
 import type { Plant, PlantStatus } from '@/lib/types'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 
 /**
  * Demo-planter der vises når brugeren ikke har egne planter.
- * MATCHER de kort vi designede i seed.sql (samme billeder, navne,
- * sorter). Skifter automatisk til brugerens egen data så snart de
- * tilføjer noget under Mine planter.
+ * MATCHER seed.sql (samme guideId, navne, sorter). Skifter
+ * automatisk til brugerens egen data så snart de tilføjer noget
+ * under Mine planter.
+ *
+ * V4.2: ingen hardcoded primaryImageId — billeder hentes via
+ * resolvePotalotImage med guideId som varietySlug.
  */
 const DEMO_PLANTS: Plant[] = [
   {
@@ -23,7 +27,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 6,
     imageIds: [],
-    primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
+    guideId: 'tomat-san-marzano',
     logIds: [],
     isArchived: false,
     createdAt: '2026-03-15T00:00:00Z',
@@ -40,7 +44,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 12,
     imageIds: [],
-    primaryImageId: '/images/plantekort/sukkeraert-sugar-snap.jpg',
+    guideId: 'sukkeraert-sugar-snap',
     logIds: [],
     isArchived: false,
     createdAt: '2026-04-10T00:00:00Z',
@@ -57,7 +61,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 5,
     imageIds: [],
-    primaryImageId: '/images/plantekort/chili-habanero-orange.jpg',
+    guideId: 'chili-habanero-orange',
     logIds: [],
     isArchived: false,
     createdAt: '2026-02-20T00:00:00Z',
@@ -74,7 +78,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 14,
     imageIds: [],
-    primaryImageId: '/images/plantekort/agurk-marketmore.png',
+    guideId: 'agurk-marketmore',
     logIds: [],
     isArchived: false,
     createdAt: '2026-04-10T00:00:00Z',
@@ -93,7 +97,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 6,
     imageIds: [],
-    primaryImageId: '/images/plantekort/stangboenne-cobra.jpg',
+    guideId: 'stangboenne-cobra',
     logIds: [],
     isArchived: false,
     createdAt: '2026-05-05T00:00:00Z',
@@ -111,7 +115,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 8,
     imageIds: [],
-    primaryImageId: '/images/plantekort/dild-bouquet.jpg',
+    guideId: 'dild-bouquet',
     logIds: [],
     isArchived: false,
     createdAt: '2026-04-15T00:00:00Z',
@@ -128,7 +132,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 3,
     imageIds: [],
-    primaryImageId: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+    guideId: 'dahlia-cafe-au-lait',
     logIds: [],
     isArchived: false,
     createdAt: '2026-01-01T00:00:00Z',
@@ -259,7 +263,15 @@ export function DinDyrkning({ plants }: Props) {
  * den rå status.
  */
 function MiniPlantCard({ plant, action }: { plant: Plant; action: Aktion }) {
-  const heroImage = plant.primaryImageId || null
+  // Canonical resolver med rolle plant-card. preferredSrc validates;
+  // hvis null falder den til guide-images eller asset-convention.
+  const { src: heroImage, source } = resolvePotalotImage({
+    guideId: plant.guideId,
+    varietySlug: plant.guideId,
+    role: 'plant-card',
+    preferredSrc: plant.primaryImageId,
+  })
+  const showImage = source !== 'fallback'
   return (
     <Link
       href={`/mine-planter/${plant.id}`}
@@ -271,7 +283,7 @@ function MiniPlantCard({ plant, action }: { plant: Plant; action: Aktion }) {
         textDecoration: 'none',
       }}
     >
-      {heroImage ? (
+      {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={heroImage}

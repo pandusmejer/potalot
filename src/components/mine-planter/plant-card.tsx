@@ -8,7 +8,21 @@ import { estimateNextTask } from '@/lib/next-plant-task'
 import { Sprout, Calendar, Scissors, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
-import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+
+/**
+ * Konverter fri tekst til kebab-case slug for asset-convention lookup
+ * når plant.guideId mangler (legacy DB-items uden guide-kobling).
+ */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[æ]/g, 'ae')
+    .replace(/[ø]/g, 'oe')
+    .replace(/[å]/g, 'aa')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 interface Props {
   plant: Plant
@@ -80,13 +94,19 @@ function statusPosition(status: PlantStatus): number {
 export function PlantCard({ plant, nextTask }: Props) {
   // V4.1: canonical resolver. preferredSrc valideres mod manifest;
   // stale DB-paths falder automatisk til asset-convention.
-  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 4.
-  const { src: heroImage } = resolvePotalotImageLegacy({
+  // Canonical resolver, rolle: plant-card. Falder gennem 4 lag:
+  //   1. preferredSrc (plant.primaryImageId, valideret mod manifest)
+  //   2. POTALOT_IMAGE_SETS_BY_ID[guideId].plantCard
+  //   3. /images/plantekort/<varietySlug>.{jpg,png}
+  //   4. placeholder
+  // Ingen cross-role fald — sortsbillede falder aldrig til arts-niveau.
+  const varietySlug =
+    plant.guideId ??
+    (plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null)
+  const { src: heroImage } = resolvePotalotImage({
     guideId: plant.guideId,
-    slug: plant.guideId,
-    plantType: plant.name,
-    variety: plant.variety,
-    imageRole: 'plantekort',
+    varietySlug,
+    role: 'plant-card',
     preferredSrc: plant.primaryImageId,
   })
   const statusMeta = PLANT_STATUS_META[plant.status]
