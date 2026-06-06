@@ -100,10 +100,16 @@ export const GUIDE_IMAGES_BY_ID: Record<string, GuideImages> = {
     ],
   },
 
+  'peberfrugt-corno-di-toro-rosso': {
+    // Stub-entry: hero + seedCard er produceret, makros mangler endnu.
+    // Når makros lander, udvid med rolle-annoterede entries.
+    hero: '/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg',
+    seedCard: '/images/frokort/peberfrugt-corno-di-toro-rosso.png',
+  },
+
   // agurk-marketmore, peberfrugt-california-wonder,
-  // peberfrugt-corno-di-toro-rosso, dahlia-cafe-au-lait:
-  // makros endnu ikke produceret (V4.1 audit). Tilføj her når de
-  // lander.
+  // dahlia-cafe-au-lait: makros (og plantekort for California Wonder)
+  // mangler endnu — V4.1 audit. Tilføj her når de lander.
 
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
