@@ -77,8 +77,23 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     ],
   },
 
-  // peberfrugt + dahlia: makro-mapperne er endnu tomme (V4.1 audit).
-  // Tilføj entries her når makros lander, så resolveren får materiale.
+  dahlia: {
+    // V4.3 — arts-makros er nu klassificeret som "botaniske referencefotos"
+    // (Annas vidensniveau-skel): vis dem hvis de findes, kræv dem ikke.
+    // Dahlia-arts handler om vækstform + knold som genkendelsestegn —
+    // disse 4 fotos viser præcis det.
+    speciesHero: { src: '/images/arts/dahlia.jpg', alt: 'Dahlia — artsfoto' },
+    macro: [
+      { src: '/images/makro/dahlia/knolde.jpg', alt: 'Dahliaknolde — overvintringsform',           role: 'seed',       focalPoint: 'center' },
+      { src: '/images/makro/dahlia/skud_1.jpg', alt: 'Spirende dahliaskud, oversigt',              role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dahlia/skud_2.jpg', alt: 'Spirende dahliaskud, struktur',              role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/dahlia/skud_3.jpg', alt: 'Spirende dahliaskud, detalje',               role: 'detail',     focalPoint: 'center' },
+    ],
+  },
+
+  // peberfrugt: makro-mappen er endnu tom (V4.1 audit).
+  // Per V4.3 vidensniveau-skel er det IKKE et krav — arts-makros er
+  // valgfrie bonusfotos. Tilføj entry her hvis billeder lander.
 
   // ── SORTSGUIDER ─────────────────────────────────────────────
   // plantCard og varietyHero peger på samme fil — to roller, samme aktiv.
