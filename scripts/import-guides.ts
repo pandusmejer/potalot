@@ -255,6 +255,23 @@ function parseBody(body: string, file: string, warnings: ImportWarning[]): Block
     if (!currentProse) return
     const body = currentProse.lines.join('\n').trim()
     if (body) {
+      // Continuation prose (fri tekst efter ::: blok men før næste ##) får
+      // SAMME title som forrige prose-sektion. For at undgå dublet-keys
+      // mergeer vi continuation ind i den nærmeste tidligere prose-block
+      // med samme title. Hvis ingen tidligere findes, opretter vi en ny
+      // (det er stadig samme title — keys vil kollidere, men kun hvis to
+      // separate ## faktisk har samme overskrift, hvilket er en ægte
+      // markdown-fejl).
+      if (currentProse.isContinuation) {
+        for (let j = blocks.length - 1; j >= 0; j--) {
+          const b = blocks[j]
+          if (b.kind === 'prose' && b.title === currentProse.title) {
+            b.body = `${b.body}\n\n${body}`
+            currentProse = null
+            return
+          }
+        }
+      }
       blocks.push({ kind: 'prose', title: currentProse.title, body })
     }
     if (!currentProse.isContinuation) lastProseTitle = currentProse.title

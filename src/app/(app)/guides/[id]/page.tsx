@@ -10,6 +10,7 @@ import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
 import { VidsteDuMedMakro } from '@/components/guides/vidste-du-med-makro'
 import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
+import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { mergeGuide } from '@/lib/guide-merge'
@@ -161,9 +162,14 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         /sygdomme|typiske fejl|udfordringer/i,     // ankr 3: Sygdomme
       ]
     : [
-        /^om sorten/i,                             // ankr 1: Om sorten
-        /smag|anvendelse/i,                        // ankr 2: Smag og anvendelse
-        /opmærksom|tips|fejl/i,                    // ankr 3: Dyrkningstips
+        // V4.2 audit-justering: spred bleed-ankrene jævnt over siden i
+        // stedet for at clustre 3 bleeds i midten. Tredje anker matcher
+        // tekniker-sektioner (opbinding/knibning) eller flyttes til nedre
+        // del — så bleed-fordelingen bliver øvre/midten/nedre i stedet
+        // for 3-i-træk-i-midten.
+        /^om sorten/i,                             // ankr 1: Om sorten — øvre
+        /smag|anvendelse/i,                        // ankr 2: Smag/anvendelse — midten
+        /næste|kalender|opbind|knib/i,             // ankr 3: tekniker/CTA — nedre
       ]
   const bleedAfter: Record<string, NonNullable<ReturnType<typeof resolvePotalotMacro>>> = {}
   const matchedAnchors = new Set<number>()
@@ -336,20 +342,11 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         bleedAfter={bleedAfter}
       />
 
+      {/* Vidste du? — bliver mellem prose-flow og kalender. */}
       {effective.variety === 'San Marzano' && (
-        <>
-          <VidsteDuMedMakro
-            macroImage={noteImage}
-            intensity="soft"
-          >
-            San Marzano har fast frugtkød og lavt vandindhold, hvilket gør sorten særlig velegnet til sauce og konservering.
-          </VidsteDuMedMakro>
-          <PotalotTipMedMakro
-            macroImage={tipImage}
-          >
-            Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano kvitterer for jævn fugt med færre revner og mere koncentreret smag.
-          </PotalotTipMedMakro>
-        </>
+        <VidsteDuMedMakro macroImage={noteImage} intensity="soft">
+          San Marzano har fast frugtkød og lavt vandindhold, hvilket gør sorten særlig velegnet til sauce og konservering.
+        </VidsteDuMedMakro>
       )}
 
       {/* ── 3. RYTME I KALENDEREN — guides → editorial sæson-kapitler ── */}
@@ -464,7 +461,23 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         </section>
       )}
 
-      {/* ── 7. NEXT-GUIDE — det redaktionelle sidste skub ── */}
+      {/* ── 7. POTALOT-TIP — sidste praktiske råd før lukning ── */}
+      {effective.variety === 'San Marzano' && (
+        <PotalotTipMedMakro macroImage={tipImage}>
+          Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano kvitterer for jævn fugt med færre revner og mere koncentreret smag.
+        </PotalotTipMedMakro>
+      )}
+
+      {/* ── 8. POTALOT-NOTE — lukke-blok, før Næste guide ── */}
+      {(() => {
+        const noteSection = effective.sections.find(
+          s => 'title' in s && s.title && /potalot[-\s]?note/i.test(s.title),
+        )
+        if (!noteSection || !('body' in noteSection) || !noteSection.body) return null
+        return <GuidePotalotNote body={noteSection.body} />
+      })()}
+
+      {/* ── 9. NEXT-GUIDE — det redaktionelle sidste skub ── */}
       {nextGuide && nextGuide.kind === 'next' && (
         <GuideNextCard
           title={nextGuide.title}

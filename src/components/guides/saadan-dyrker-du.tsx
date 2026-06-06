@@ -14,7 +14,6 @@ import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
-import { AtmosphericImageLayer } from './layered-guide'
 import { BleedFromLeft, BleedFromRight, BleedBand } from './bleed-blocks'
 
 const sans = 'var(--font-manrope)'
@@ -39,9 +38,13 @@ interface Props {
 }
 
 export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) {
-  // `:::next-guide` rendres ikke her — guide-detail-page rendrer den
-  // som det allersidste blok på siden (efter sortsvarianter, noter osv).
-  const body = sections.filter(s => s.kind !== 'next')
+  // V4.2 audit: vi udelukker BÅDE next-guide OG Potalot-note fra body —
+  // begge rendres explicit på page-niveau (Potalot-note som lukke-blok
+  // næstsidst, next-guide som CTA allersidst). Det forhindrer "Anna
+  // taler"-cluster i bunden af prose-strømmen.
+  const body = sections.filter(
+    s => s.kind !== 'next' && !('title' in s && s.title && isPotalotNoteSection(s.title)),
+  )
 
   if (body.length === 0) {
     return (
@@ -110,26 +113,13 @@ function renderSection(
   factMacroImage: PotalotMacroOutput | null | undefined,
 ): { node: React.ReactNode; nextChapter: number } {
   if (s.kind === 'fact') {
+    // V4.2: fact-cardet står RENT — ingen AtmosphericImageLayer bag det.
+    // Med bleed-blokke integreret andre steder på siden gav makro-bg på
+    // fact-cards visuel overload (Guide Experience Audit V1, pkt 1C).
+    // factMacroImage-prop beholdes som no-op for bagudkompatibilitet
+    // indtil page-laget også slettes — fjernes ved Commit 4D.
     return {
-      node: (
-        <div className="relative isolate overflow-visible">
-          {factMacroImage && (
-            <AtmosphericImageLayer
-              src={factMacroImage.src}
-              alt={factMacroImage.alt}
-              fade="right"
-              focal="right"
-              opacity={0.42}
-              rotate={-1}
-              scale={factMacroImage.scale}
-              className="inset-[-40px]"
-            />
-          )}
-          <div className="relative z-10">
-            <GuideFactCard title={s.title} variant={s.variant} columns={s.columns} />
-          </div>
-        </div>
-      ),
+      node: <GuideFactCard title={s.title} variant={s.variant} columns={s.columns} />,
       nextChapter: chapterCounter,
     }
   }

@@ -502,7 +502,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "forskellige-typer-dahlia",
         "title": "Forskellige typer dahlia",
-        "body": "Der findes tusindvis af sorter, men de fleste kan placeres i nogle få hovedgrupper."
+        "body": "Der findes tusindvis af sorter, men de fleste kan placeres i nogle få hovedgrupper.\n\nSelvom blomsterne ser meget forskellige ud, dyrkes de fleste dahlia efter de samme grundprincipper."
       },
       {
         "kind": "fact",
@@ -543,11 +543,6 @@ export const IMPORTED_GUIDES: Guide[] = [
             ]
           }
         ]
-      },
-      {
-        "key": "forskellige-typer-dahlia",
-        "title": "Forskellige typer dahlia",
-        "body": "Selvom blomsterne ser meget forskellige ud, dyrkes de fleste dahlia efter de samme grundprincipper."
       },
       {
         "key": "knolde-og-froe",
@@ -983,7 +978,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "om-arten",
         "title": "Om arten",
-        "body": "Tomater stammer oprindeligt fra Sydamerika og dyrkes i dag over hele verden. Tomater findes i et enormt antal former, størrelser og farver. Nogle dyrkes for deres sødme, andre for deres høje udbytte eller særlige anvendelse i køkkenet.\n\nTomater er varmeelskende planter med en lang sæson. De fleste sorter trives bedst, når de får en tidlig start indendørs, masser af lys og en lun placering senere på året. I Danmark dyrker mange tomater i drivhus, men flere sorter kan også klare sig på en varm altan eller et læfyldt sted på friland."
+        "body": "Tomater stammer oprindeligt fra Sydamerika og dyrkes i dag over hele verden. Tomater findes i et enormt antal former, størrelser og farver. Nogle dyrkes for deres sødme, andre for deres høje udbytte eller særlige anvendelse i køkkenet.\n\nTomater er varmeelskende planter med en lang sæson. De fleste sorter trives bedst, når de får en tidlig start indendørs, masser af lys og en lun placering senere på året. I Danmark dyrker mange tomater i drivhus, men flere sorter kan også klare sig på en varm altan eller et læfyldt sted på friland.\n\nTomater dyrkes til forskellige formål. Nogle sorter egner sig bedst til frisk spisning, andre til sauce, tørring eller konservering. Før du vælger sort, kan det derfor være en fordel at overveje, hvordan du ønsker at bruge høsten."
       },
       {
         "kind": "fact",
@@ -1009,11 +1004,6 @@ export const IMPORTED_GUIDES: Guide[] = [
             ]
           }
         ]
-      },
-      {
-        "key": "om-arten",
-        "title": "Om arten",
-        "body": "Tomater dyrkes til forskellige formål. Nogle sorter egner sig bedst til frisk spisning, andre til sauce, tørring eller konservering. Før du vælger sort, kan det derfor være en fordel at overveje, hvordan du ønsker at bruge høsten."
       },
       {
         "key": "forskellige-typer-tomater",
@@ -1802,7 +1792,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "det-skal-du-vaere-opmaerksom-paa",
         "title": "Det skal du være opmærksom på",
-        "body": "San Marzano er en ranketomat med kraftig vækst, og den kræver opbinding fra start."
+        "body": "San Marzano er en ranketomat med kraftig vækst, og den kræver opbinding fra start.\n\nSorten har en lang sæson, og den bruger længere tid på at modne end mange cherrytomater.\nHvis sommeren er kølig, kan de sidste frugter have svært ved at nå fuld modenhed på friland. Derfor vælger mange at dyrke San Marzano i drivhus eller på en meget lun placering."
       },
       {
         "kind": "guide",
@@ -1817,11 +1807,6 @@ export const IMPORTED_GUIDES: Guide[] = [
         "title": "Sådan kniber du tomater",
         "slug": "knibning-af-tomater",
         "description": "Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten."
-      },
-      {
-        "key": "det-skal-du-vaere-opmaerksom-paa",
-        "title": "Det skal du være opmærksom på",
-        "body": "Sorten har en lang sæson, og den bruger længere tid på at modne end mange cherrytomater.\nHvis sommeren er kølig, kan de sidste frugter have svært ved at nå fuld modenhed på friland. Derfor vælger mange at dyrke San Marzano i drivhus eller på en meget lun placering."
       },
       {
         "key": "potalot-note",
