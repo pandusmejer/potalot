@@ -22,6 +22,13 @@ export type GuideComparisonListProps = {
    */
   ctaHref?: string
   onCtaClick?: () => void
+  /**
+   * Hvis true: CTA rendres som ikke-klikbar placeholder med dæmpet
+   * styling. Bruges når target-guide ikke eksisterer endnu — siden
+   * skal stadig vise hvad sammenligningen lover, men brugeren skal
+   * ikke kunne klikke til en 404.
+   */
+  ctaDisabled?: boolean
 }
 
 export type ComparisonItem = {
@@ -52,10 +59,12 @@ function ComparisonCta({
   label,
   href,
   onClick,
+  disabled,
 }: {
   label?: string
   href?: string
   onClick?: () => void
+  disabled?: boolean
 }) {
   if (!label) return null
 
@@ -70,6 +79,27 @@ function ComparisonCta({
     lineHeight: 1,
     textDecoration: 'none',
   } as const
+
+  // Disabled: vises som ikke-interaktiv placeholder med dæmpet farve.
+  // Bruges når target-guide endnu ikke findes, så brugeren ikke
+  // navigerer til 404. Komponenten holder sin form i siden.
+  if (disabled) {
+    return (
+      <span
+        aria-disabled="true"
+        className={ctaClass}
+        style={{
+          ...ctaStyle,
+          opacity: 0.55,
+          cursor: 'not-allowed',
+          background: 'rgba(244,240,229,0.55)',
+        }}
+        title="Guiden er endnu ikke skrevet"
+      >
+        {label}
+      </span>
+    )
+  }
 
   if (href) {
     return (
@@ -113,6 +143,7 @@ export function GuideComparisonList({
   ctaLabel,
   ctaHref,
   onCtaClick,
+  ctaDisabled,
 }: GuideComparisonListProps) {
   return (
     <section
@@ -211,7 +242,12 @@ export function GuideComparisonList({
         ))}
       </div>
 
-      <ComparisonCta label={ctaLabel} href={ctaHref} onClick={onCtaClick} />
+      <ComparisonCta
+        label={ctaLabel}
+        href={ctaHref}
+        onClick={onCtaClick}
+        disabled={ctaDisabled}
+      />
     </section>
   )
 }

@@ -590,13 +590,22 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
        */}
       {nextGuide && nextGuide.kind === 'next' && (
         effective.variety === 'San Marzano' ? (
-          <GuideComparisonList
-            leftTitle="San Marzano"
-            rightTitle="Roma"
-            rows={SAN_MARZANO_VS_ROMA_ROWS}
-            ctaLabel="Se guide til Roma"
-            ctaHref={`/guides/${nextGuide.slug}`}
-          />
+          (() => {
+            // CTA disables hvis target-guide ikke findes endnu — komponenten
+            // vises stadig (Annas regel), men brugeren skal ikke kunne
+            // klikke til en 404.
+            const targetExists = allGuides.some((g) => g.id === nextGuide.slug)
+            return (
+              <GuideComparisonList
+                leftTitle="San Marzano"
+                rightTitle="Roma"
+                rows={SAN_MARZANO_VS_ROMA_ROWS}
+                ctaLabel="Se guide til Roma"
+                ctaHref={targetExists ? `/guides/${nextGuide.slug}` : undefined}
+                ctaDisabled={!targetExists}
+              />
+            )
+          })()
         ) : (
           <GuideNextCard
             title={nextGuide.title}
