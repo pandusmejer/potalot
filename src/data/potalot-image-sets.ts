@@ -196,10 +196,16 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     varietyHero: { src: '/images/plantekort/peberfrugt-california-wonder.jpg', alt: 'California Wonder peberfrugt — sortsfoto' },
     seedCard:    { src: '/images/frokort/peberfrugt-california-wonder.png',    alt: 'California Wonder peberfrugt — frøkort' },
     macro: [
-      // Kun 1 makro-fil findes pt. — audit pkt 2.C anbefaler 2-3 ekstra
-      // for rigtig pool-fordeling. indre.jpg som atmosphere så R3 (mindst
-      // 1 atmosphere pr. sortsguide) er opfyldt.
-      { src: '/images/makro/peberfrugt-california-wonder/indre.jpg', alt: 'Indre struktur i California Wonder', role: 'atmosphere', focalPoint: 'center' },
+      // Audit 2.C: pool udvidet til 6 makros — hver med en distinkt rolle.
+      // Følger frugtbærende sortsguide-template: moden frugt, umoden frugt,
+      // tværsnit (indre), blomst, struktur (led), kernehus.
+      // indre.jpg behold som atmosphere (R3).
+      { src: '/images/makro/peberfrugt-california-wonder/indre.jpg',       alt: 'Indre struktur i California Wonder',    role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/blomst.jpg',      alt: 'California Wonder-blomst',              role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/led.jpg',         alt: 'Forgreningsled på California Wonder',   role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/peberfrugt-california-wonder/moden-frugt.jpg', alt: 'Moden California Wonder-frugt',         role: 'fruit',      focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/umoden.jpg',      alt: 'Umoden California Wonder-frugt',        role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/kernehus.jpg',    alt: 'Kernehus og frø i California Wonder',   role: 'seed',       focalPoint: 'center' },
     ],
   },
 

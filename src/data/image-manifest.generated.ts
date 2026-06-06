@@ -111,7 +111,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/peberfrugt-california-wonder/indre.jpg",
   "/images/makro/peberfrugt-california-wonder/kernehus.jpg",
   "/images/makro/peberfrugt-california-wonder/led.jpg",
-  "/images/makro/peberfrugt-california-wonder/moden frugt.jpg",
+  "/images/makro/peberfrugt-california-wonder/moden-frugt.jpg",
   "/images/makro/peberfrugt-california-wonder/umoden.jpg",
   "/images/makro/peberfrugt-corno-di-toro-rosso/blomst.jpg",
   "/images/makro/peberfrugt-corno-di-toro-rosso/kerner.jpg",
