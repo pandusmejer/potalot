@@ -142,6 +142,52 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
   })
   if (tipImage) usedMacroSrcs.add(tipImage.src)
 
+  // ── BLEED-BLOKKE — makros som visuelle pauser mellem kapitler ─
+  // Annas spec: maks 3 bleeds pr. sortsguide, én pr. anker-sektion,
+  // rolle-prioritet [detail, structure, fruit, atmosphere].
+  //
+  //   Sortsguider:  efter "Om sorten", "Smag og anvendelse", "Tips/fejl"
+  //   Artsguider:   efter "Om planten", "Dyrkningsforhold", "Sygdomme"
+  //
+  // Hver anker matches kun ÉN gang — første sektion der matcher
+  // mønstret får bleeden. Andre matchende sektioner får ingen.
+  // Hero-foto, plantCard og seedCard kan ikke ryge med fordi
+  // resolvePotalotMacro kun læser fra POTALOT_IMAGE_SETS.macro[].
+  const isSpecies = effective.guideLevel === 'species'
+  const bleedAnchorPatterns: RegExp[] = isSpecies
+    ? [
+        /^om (planten|arten)/i,                    // ankr 1: Om planten
+        /pleje|dyrkningsforhold|udplantning/i,     // ankr 2: Dyrkningsforhold
+        /sygdomme|typiske fejl|udfordringer/i,     // ankr 3: Sygdomme
+      ]
+    : [
+        /^om sorten/i,                             // ankr 1: Om sorten
+        /smag|anvendelse/i,                        // ankr 2: Smag og anvendelse
+        /opmærksom|tips|fejl/i,                    // ankr 3: Dyrkningstips
+      ]
+  const bleedAfter: Record<string, NonNullable<ReturnType<typeof resolvePotalotMacro>>> = {}
+  const matchedAnchors = new Set<number>()
+  for (const section of effective.sections) {
+    if (matchedAnchors.size >= 3) break
+    const title = section.title
+    const sectionKey = section.key
+    if (!title || !sectionKey) continue
+    const anchorIdx = bleedAnchorPatterns.findIndex(
+      (re, idx) => !matchedAnchors.has(idx) && re.test(title),
+    )
+    if (anchorIdx === -1) continue
+    const bleed = resolvePotalotMacro({
+      guideId: effective.id,
+      slot: `bleed:${sectionKey}`,
+      preferredRoles: ['detail', 'structure', 'fruit', 'atmosphere'],
+      avoidSrcs: usedMacroSrcs,
+    })
+    if (!bleed) continue  // ingen flere unikke makros
+    usedMacroSrcs.add(bleed.src)
+    bleedAfter[sectionKey] = bleed
+    matchedAnchors.add(anchorIdx)
+  }
+
   return (
     <article className="max-w-3xl space-y-10 overflow-x-clip pb-6 sm:space-y-12">
       {/* ── HEADER — identitet ── */}
@@ -287,6 +333,7 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       <SaadanDyrkerDu
         sections={effective.sections}
         factMacroImage={factImage}
+        bleedAfter={bleedAfter}
       />
 
       {effective.variety === 'San Marzano' && (

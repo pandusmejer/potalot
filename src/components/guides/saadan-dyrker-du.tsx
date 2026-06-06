@@ -7,6 +7,7 @@
  * Bygger på Guide.sections (key, title, body) — eksisterende datafelt.
  */
 
+import { Fragment } from 'react'
 import type { GuideSection } from '@/lib/types'
 import type { PotalotMacroOutput } from '@/lib/images/types'
 import { GuideFactCard } from './guide-fact-card'
@@ -14,6 +15,7 @@ import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
 import { AtmosphericImageLayer } from './layered-guide'
+import { BleedFromLeft, BleedFromRight, BleedBand } from './bleed-blocks'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -27,9 +29,16 @@ interface Props {
    * så uden makro-baggrund (ingen hardcoded fallback).
    */
   factMacroImage?: PotalotMacroOutput | null
+  /**
+   * Bleed-blokke pr. sektion. Indekseret efter sektion-key. Hver bleed
+   * vises EFTER den givne sektion. Maks 3 bleeds pr. guide håndhæves i
+   * page-laget (guides/[id]/page.tsx). Komponent-valget (Left/Right/Band)
+   * træffes her baseret på makroens rolle.
+   */
+  bleedAfter?: Record<string, PotalotMacroOutput | undefined>
 }
 
-export function SaadanDyrkerDu({ sections, factMacroImage }: Props) {
+export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) {
   // `:::next-guide` rendres ikke her — guide-detail-page rendrer den
   // som det allersidste blok på siden (efter sortsvarianter, noter osv).
   const body = sections.filter(s => s.kind !== 'next')
@@ -58,78 +67,123 @@ export function SaadanDyrkerDu({ sections, factMacroImage }: Props) {
   // kapitler nummereres men sidebars ikke.
   let chapterCounter = 0
 
+  // Spor allerede-renderede bleed-keys så samme bleed ikke vises
+  // to gange. Forsikrer mod data-tilfælde hvor to sektioner deler
+  // samme key (fx imported guide med dubletter).
+  const renderedBleedKeys = new Set<string>()
+
   return (
     <section className="space-y-[56px] sm:space-y-[72px]">
       {body.map((s, i) => {
         const key = s.key ?? `section-${i}`
-        if (s.kind === 'fact') {
-          // V4 Lag 4: faktabokse ligger OVENPÅ et makrofoto, ikke
-          // mellem to tekstblokke. Bruger AtmosphericImageLayer som
-          // lav-level baggrundslag — stikker ud over fact-cardens kant
-          // og fader rundt med radial mask.
-          return (
-            <div
-              key={key}
-              className="relative isolate overflow-visible"
-            >
-              {factMacroImage && (
-                <AtmosphericImageLayer
-                  src={factMacroImage.src}
-                  alt={factMacroImage.alt}
-                  fade="right"
-                  focal="right"
-                  opacity={0.42}
-                  rotate={-1}
-                  scale={factMacroImage.scale}
-                  className="inset-[-40px]"
-                />
-              )}
-              <div className="relative z-10">
-                <GuideFactCard
-                  title={s.title}
-                  variant={s.variant}
-                  columns={s.columns}
-                />
-              </div>
-            </div>
-          )
-        }
-        if (s.kind === 'guide') {
-          return (
-            <GuideTechniqueCard
-              key={key}
-              slug={s.slug}
-              title={s.title}
-              description={s.description}
-            />
-          )
-        }
-        if (s.kind === 'related') {
-          return (
-            <GuideRelatedList
-              key={key}
-              title={s.title}
-              items={s.items}
-            />
-          )
-        }
-        // Prose-fald — men hvis titlen starter med "Potalot", render
-        // som signatur-blok i stedet for almindelig sektion.
-        if (isPotalotNoteSection(s.title)) {
-          return <GuidePotalotNote key={key} body={s.body} />
-        }
-        chapterCounter++
+        const bleed = bleedAfter?.[key]
+        const showBleed = !!bleed && !renderedBleedKeys.has(key)
+        if (showBleed) renderedBleedKeys.add(key)
+        const rendered = renderSection(s, key, chapterCounter, factMacroImage)
+        // chapterCounter må kun øges når sektionen faktisk er en prose-
+        // sektion. renderSection returnerer det nye chapter-tal sammen
+        // med jsx'et så vi ikke dobbelt-tæller.
+        chapterCounter = rendered.nextChapter
+        // React kræver unik key for hvert Fragment-barn — dubletter
+        // i sektion.key får tilføjet indeks-suffix.
+        const fragmentKey = `${key}-${i}`
         return (
-          <ProseSection
-            key={key}
-            chapter={chapterCounter}
-            title={s.title}
-            body={s.body}
-          />
+          <Fragment key={fragmentKey}>
+            {rendered.node}
+            {showBleed && bleed && <BleedSlot image={bleed} />}
+          </Fragment>
         )
       })}
     </section>
   )
+}
+
+/**
+ * Renderer én sektion + returnerer det opdaterede kapitelnummer.
+ * Faktatekst, teknik-guide, related list, potalot-note bliver IKKE
+ * tællet som kapitler — kun ProseSection øger nummereringen.
+ */
+function renderSection(
+  s: GuideSection,
+  key: string,
+  chapterCounter: number,
+  factMacroImage: PotalotMacroOutput | null | undefined,
+): { node: React.ReactNode; nextChapter: number } {
+  if (s.kind === 'fact') {
+    return {
+      node: (
+        <div className="relative isolate overflow-visible">
+          {factMacroImage && (
+            <AtmosphericImageLayer
+              src={factMacroImage.src}
+              alt={factMacroImage.alt}
+              fade="right"
+              focal="right"
+              opacity={0.42}
+              rotate={-1}
+              scale={factMacroImage.scale}
+              className="inset-[-40px]"
+            />
+          )}
+          <div className="relative z-10">
+            <GuideFactCard title={s.title} variant={s.variant} columns={s.columns} />
+          </div>
+        </div>
+      ),
+      nextChapter: chapterCounter,
+    }
+  }
+  if (s.kind === 'guide') {
+    return {
+      node: <GuideTechniqueCard slug={s.slug} title={s.title} description={s.description} />,
+      nextChapter: chapterCounter,
+    }
+  }
+  if (s.kind === 'related') {
+    return {
+      node: <GuideRelatedList title={s.title} items={s.items} />,
+      nextChapter: chapterCounter,
+    }
+  }
+  // Tilbage: prose-section (efter at fact/guide/related/next er
+  // håndteret tidligere). GuideProseSection har title + body som
+  // required, men TypeScript kan ikke narrowe os til prose-kind her
+  // — vi henter felter med fallback for at undgå type-fejl uden at
+  // ændre semantikken.
+  const title = 'title' in s ? s.title ?? '' : ''
+  const body = 'body' in s ? s.body ?? '' : ''
+  if (isPotalotNoteSection(title)) {
+    return { node: <GuidePotalotNote body={body} />, nextChapter: chapterCounter }
+  }
+  const next = chapterCounter + 1
+  return {
+    node: <ProseSection chapter={next} title={title} body={body} />,
+    nextChapter: next,
+  }
+}
+
+/**
+ * Vælger Bleed-komponent baseret på makroens rolle.
+ *
+ *   leaf, structure       → BleedFromLeft  (blade, stængler, vækst-
+ *                                          punkter, rodhals, struktur)
+ *   fruit, flower         → BleedFromRight (frugter, blomster, høst,
+ *                                          modne afgrøder)
+ *   atmosphere, detail,   → BleedBand      (sanseligt, kronblade,
+ *   seed                                   klaser, frøstande,
+ *                                          atmosfæriske makroer)
+ *
+ * Tekstløs som udgangspunkt (Annas regel: label/description bruges
+ * kun til Vidste du? / Potalot-tip / kort observation).
+ */
+function BleedSlot({ image }: { image: PotalotMacroOutput }) {
+  if (image.role === 'leaf' || image.role === 'structure') {
+    return <BleedFromLeft imageSrc={image.src} alt={image.alt} />
+  }
+  if (image.role === 'fruit' || image.role === 'flower') {
+    return <BleedFromRight imageSrc={image.src} alt={image.alt} />
+  }
+  return <BleedBand imageSrc={image.src} alt={image.alt} />
 }
 
 /**
