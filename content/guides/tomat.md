@@ -17,6 +17,31 @@ quickFacts:
   light: full_sun
   water: regular
   soil: "Næringsrig, veldrænende muldjord med jævn fugt."
+botaniskeKendetegn:
+  - icon: CalendarClock
+    label: "Livsform"
+    value: "Etårig i Danmark (flerårig i sit oprindelige klima)"
+  - icon: Ruler
+    label: "Højde"
+    value: "60-220 cm afhængigt af vækstform"
+  - icon: Leaf
+    label: "Bladtype"
+    value: "Sammensatte, dybt indskårne blade med karakteristisk duft"
+  - icon: Sprout
+    label: "Vækstform"
+    value: "Rank- eller busktype — ranketomater skal opbindes, busktomater står selv"
+  - icon: Network
+    label: "Rodsystem"
+    value: "Kraftig pælerod med tæt biroddannelse; kan slå rod fra stængel ved jordkontakt"
+  - icon: Flower2
+    label: "Blomster"
+    value: "Små, gule, stjerneformede i klaser på 4-12 blomster"
+  - icon: Bug
+    label: "Bestøvning"
+    value: "Selvbestøvende — vibration (vind, humlebier, fingerknips) frigør pollen"
+  - icon: Clock
+    label: "Livscyklus"
+    value: "80-100 dage fra udplantning til første modne frugt"
 calendarRules:
   - title: "Forspir tomater indendørs"
     type: sowing

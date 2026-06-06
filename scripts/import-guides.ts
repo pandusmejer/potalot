@@ -474,6 +474,7 @@ interface RawFrontmatter {
   difficulty?: unknown
   tags?: unknown
   quickFacts?: unknown
+  botaniskeKendetegn?: unknown
   calendarRules?: unknown
   sourceLinks?: unknown
 }
@@ -550,6 +551,28 @@ function validateFrontmatter(raw: RawFrontmatter, file: string): void {
       const w = asString(qf.water)
       if (!WATERS.includes(w as any)) {
         throw new ImportError(file, `quickFacts.water "${w}" — skal være ${WATERS.join('/')}`)
+      }
+    }
+  }
+
+  // botaniskeKendetegn: validate shape if present
+  // Hvert item kræver label + value (strings); icon valgfri.
+  // Fri tekst i V4.3 — ingen enum-låsning indtil vi har 10+ arts-
+  // eksempler og kender et fælles vokabular.
+  if (raw.botaniskeKendetegn !== undefined && raw.botaniskeKendetegn !== null) {
+    if (!Array.isArray(raw.botaniskeKendetegn)) {
+      throw new ImportError(file, 'botaniskeKendetegn skal være en liste')
+    }
+    for (const [idx, item] of (raw.botaniskeKendetegn as any[]).entries()) {
+      if (!item || typeof item !== 'object') {
+        throw new ImportError(file, `botaniskeKendetegn[${idx}] skal være et objekt`)
+      }
+      const label = asString(item.label)
+      const value = asString(item.value)
+      if (!label) throw new ImportError(file, `botaniskeKendetegn[${idx}].label er påkrævet`)
+      if (!value) throw new ImportError(file, `botaniskeKendetegn[${idx}].value er påkrævet`)
+      if (item.icon !== undefined && item.icon !== null && !asString(item.icon)) {
+        throw new ImportError(file, `botaniskeKendetegn[${idx}].icon skal være en string hvis sat`)
       }
     }
   }
@@ -668,6 +691,21 @@ function buildGuide(
   if (qfRaw.maturityDays) quickFacts.maturityDays = asString(qfRaw.maturityDays)
   if (qfRaw.primaryUse) quickFacts.primaryUse = asString(qfRaw.primaryUse)
 
+  // botaniskeKendetegn — kun udfyldt hvis frontmatter har feltet.
+  // Validation er allerede sket i validateFrontmatter.
+  let botaniskeKendetegn: Array<{ icon?: string; label: string; value: string }> | undefined
+  if (Array.isArray(raw.botaniskeKendetegn)) {
+    botaniskeKendetegn = (raw.botaniskeKendetegn as any[]).map((item) => {
+      const out: { icon?: string; label: string; value: string } = {
+        label: asString(item.label)!,
+        value: asString(item.value)!,
+      }
+      const icon = asString(item.icon)
+      if (icon) out.icon = icon
+      return out
+    })
+  }
+
   // warnings
   if (!calRaw.length) warnings.push({ file, message: 'ingen calendarRules — guide bidrager ikke til kalenderen' })
   if (!asStringArray(raw.sourceLinks).length) warnings.push({ file, message: 'ingen sourceLinks' })
@@ -691,6 +729,7 @@ function buildGuide(
     difficulty: asString(raw.difficulty),
     tags: asStringArray(raw.tags),
     quickFacts,
+    ...(botaniskeKendetegn ? { botaniskeKendetegn } : {}),
     sections,
     calendarRules,
     mediaIds: [],

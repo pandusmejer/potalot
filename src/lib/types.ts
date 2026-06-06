@@ -454,6 +454,32 @@ export interface GuideCalendarRule {
   priority: TaskPriority
 }
 
+/**
+ * Botanisk kendetegn — én række data om planten på artsniveau.
+ *
+ * V4.3 (§18 i guides.md): artsguidens kerne er ikke fotos, men en
+ * strukturel beskrivelse af planten — livsform, højde, bladtype,
+ * vækstform, rodsystem, blomster, bestøvning, livscyklus, osv.
+ *
+ * Bevidst minimal shape: tre felter, ingen enum på label. Vi har
+ * ikke set 10 arts-eksempler endnu, og det er tidligt at låse et
+ * fast vokabularium. Når mønstret stabiliserer sig, kan label
+ * promoveres til en union.
+ *
+ * `icon` er en valgfri lucide-icon-navn (fx 'Sprout', 'Ruler',
+ * 'Flower2'). UI-laget bestemmer hvordan/om ikonet renderes —
+ * datalaget kender ikke ikoner.
+ *
+ * Renderes som inline data (ikon + label + værdi, 5-8 gange på
+ * række), ikke en separat designsystem-komponent. UI eksisterer
+ * endnu ikke (V4.3 lock).
+ */
+export interface BotaniskKendetegn {
+  icon?: string                      // lucide-icon-navn, valgfri
+  label: string                      // fx 'Livsform', 'Vækstform'
+  value: string                      // fx 'Etårig (i Danmark)'
+}
+
 export interface Guide {
   id: string
 
@@ -473,6 +499,12 @@ export interface Guide {
   difficulty: Difficulty
   tags: string[]
   quickFacts: GuideQuickFacts
+  /**
+   * Botaniske kendetegn — artsguidens strukturelle data om planten.
+   * Typisk udfyldt på species-guider; sortsguider arver fra art.
+   * Ingen UI-render i V4.3; feltet er forberedt til V4.4-render.
+   */
+  botaniskeKendetegn?: BotaniskKendetegn[]
   sections: GuideSection[]
   calendarRules: GuideCalendarRule[]
 

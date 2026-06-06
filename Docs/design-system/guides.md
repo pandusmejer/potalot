@@ -1201,7 +1201,7 @@ mere end det giver.
 
 ### Sortsguide-templates pr. plantetype
 
-De fleste sortsguider falder i én af tre kategorier. Bestilling
+De fleste sortsguider falder i én af fire kategorier. Bestilling
 af sortsbilleder bliver derved en checklist, ikke en kreativ
 øvelse pr. sort.
 
@@ -1238,6 +1238,21 @@ Ingen reference-case endnu. Afventer første rodfrugt-sortsguide.
 4. Ung plante
 5. Jord-/rodstruktur
 
+#### Knolde og løg (hvidløg, dahlia-knold, …)
+
+Ingen reference-case endnu. Skabelonen rammer planter hvis
+identitet sidder i et underjordisk lager — ikke en frugt eller
+en blomst. Bruges som primær template for hvidløg, og kan
+sekundært bruges som "knolde-og-rødder"-supplement på blomster-
+sorter med markante knolde (Café au Lait kan trække fra både
+Blomster- og Knolde-templates uden konflikt).
+
+1. Høstet løg/knold
+2. Tværsnit/indre struktur
+3. Top/blade/skud
+4. Ung plante i jord
+5. Jord/rod/propagationsdetalje
+
 ### Eksisterende arts-makros
 
 Tomat, chili, agurk og dahlia har 4-9 arts-makros i pool'en pr.
@@ -1256,12 +1271,13 @@ sortsguide-fænomen alene.
 
 ### Hvidløg
 
-Parkeret som **åben sag**. Hvidløg er hverken en klassisk frugt-
-sort eller blomster-sort, og det passer ikke direkte ind i de tre
-templates ovenfor. Når hvidløg-guiden skrives, må vi tage
-beslutningen specifikt for løg/rod-niveau-planter — formentlig
-som en fjerde template eller en hybrid mellem rodfrugt og
-blomster.
+Falder ind under **Knolde og løg**-templaten ovenfor. Hvidløg er
+hverken en klassisk frugt-sort eller blomster-sort, og forsøget
+på at presse den ind i en af de to skemaer gav forkerte
+bestillingsanmodninger ("blomst af hvidløg?"). Knolde og løg-
+templaten beskriver præcis hvad der skal fotograferes — løget
+selv, fed-tværsnit, top, ung plante, propagationsdetalje — og
+holder hvidløg fri af antagelser den ikke opfylder.
 
 ### Hvad denne beslutning forhindrer
 

@@ -974,6 +974,48 @@ export const IMPORTED_GUIDES: Guide[] = [
       "water": "regular",
       "soil": "Næringsrig, veldrænende muldjord med jævn fugt."
     },
+    "botaniskeKendetegn": [
+      {
+        "label": "Livsform",
+        "value": "Etårig i Danmark (flerårig i sit oprindelige klima)",
+        "icon": "CalendarClock"
+      },
+      {
+        "label": "Højde",
+        "value": "60-220 cm afhængigt af vækstform",
+        "icon": "Ruler"
+      },
+      {
+        "label": "Bladtype",
+        "value": "Sammensatte, dybt indskårne blade med karakteristisk duft",
+        "icon": "Leaf"
+      },
+      {
+        "label": "Vækstform",
+        "value": "Rank- eller busktype — ranketomater skal opbindes, busktomater står selv",
+        "icon": "Sprout"
+      },
+      {
+        "label": "Rodsystem",
+        "value": "Kraftig pælerod med tæt biroddannelse; kan slå rod fra stængel ved jordkontakt",
+        "icon": "Network"
+      },
+      {
+        "label": "Blomster",
+        "value": "Små, gule, stjerneformede i klaser på 4-12 blomster",
+        "icon": "Flower2"
+      },
+      {
+        "label": "Bestøvning",
+        "value": "Selvbestøvende — vibration (vind, humlebier, fingerknips) frigør pollen",
+        "icon": "Bug"
+      },
+      {
+        "label": "Livscyklus",
+        "value": "80-100 dage fra udplantning til første modne frugt",
+        "icon": "Clock"
+      }
+    ],
     "sections": [
       {
         "key": "om-arten",
