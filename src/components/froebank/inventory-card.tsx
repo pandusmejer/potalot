@@ -7,7 +7,7 @@ import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
 
 interface Props {
   item: InventoryItem
@@ -58,7 +58,8 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   // mod manifest), guide-images entry, asset-convention pr. slug,
   // placeholder. Brudte/stale DB-paths (fx /images/froebank/froekort-…
   // som aldrig har eksisteret) falder automatisk til asset-convention.
-  const { src: heroImage } = resolvePotalotImage({
+  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 3.
+  const { src: heroImage } = resolvePotalotImageLegacy({
     guideId: item.guideId,
     slug: item.guideId,
     plantType: item.name,

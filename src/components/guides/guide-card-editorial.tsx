@@ -28,7 +28,7 @@ import type { Guide } from '@/lib/types'
 import { TrustBadge, type GuideKind } from './trust-badge'
 import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -265,8 +265,9 @@ export function GuideCardEditorial({
  * returnerer placeholder hvis intet matches.
  */
 function pickGuideListImage(guide: Guide): string {
+  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 2.
   const role = guide.guideLevel === 'species' ? 'arts' : 'plantekort'
-  const { src } = resolvePotalotImage({
+  const { src } = resolvePotalotImageLegacy({
     guideId: guide.id,
     slug: guide.id,
     plantType: guide.plantName,

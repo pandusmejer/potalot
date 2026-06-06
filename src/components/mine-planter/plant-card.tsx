@@ -8,7 +8,7 @@ import { estimateNextTask } from '@/lib/next-plant-task'
 import { Sprout, Calendar, Scissors, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
 
 interface Props {
   plant: Plant
@@ -80,7 +80,8 @@ function statusPosition(status: PlantStatus): number {
 export function PlantCard({ plant, nextTask }: Props) {
   // V4.1: canonical resolver. preferredSrc valideres mod manifest;
   // stale DB-paths falder automatisk til asset-convention.
-  const { src: heroImage } = resolvePotalotImage({
+  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 4.
+  const { src: heroImage } = resolvePotalotImageLegacy({
     guideId: plant.guideId,
     slug: plant.guideId,
     plantType: plant.name,
