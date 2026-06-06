@@ -1,13 +1,16 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { SelectedGuideImage } from '@/lib/guides/select-guide-image'
+import type { PotalotMacroOutput } from '@/lib/images/types'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
-  macroSrc: string
-  macroAlt?: string
-  macroImage?: SelectedGuideImage | null
+  /**
+   * Atmosfærisk makro-foto fra resolvePotalotMacro().
+   * Hvis null renderes blokken UDEN makro-baggrund — ingen hardcoded
+   * fallback-path. Forkert billede er værre end intet billede.
+   */
+  macroImage: PotalotMacroOutput | null
   title?: string
   children: ReactNode
   variant?: 'soft' | 'paper'
@@ -20,48 +23,44 @@ interface Props {
  * Lag 5 = Potalot typography.
  */
 export function PotalotTipMedMakro({
-  macroSrc,
-  macroAlt = '',
   macroImage,
   title = 'Potalot-tip',
   children,
   variant = 'soft',
   accent = '#7F8F6A',
 }: Props) {
-  const imageSrc = macroImage?.src ?? macroSrc
-  const imageAlt = macroImage?.alt ?? macroAlt
-  const objectPosition = macroImage?.objectPosition ?? '56% center'
-  const scale = macroImage?.scale ?? 1
-  const rotation = macroImage?.rotation ?? '1deg'
-
-  const macroStyle: CSSProperties = {
-    position: 'absolute',
-    inset: '-48px 10px',
-    backgroundImage: `url(${imageSrc})`,
-    backgroundSize: 'cover',
-    backgroundPosition: objectPosition,
-    opacity: variant === 'paper' ? 0.32 : 0.4,
-    mixBlendMode: 'multiply',
-    filter: 'blur(0.75px) saturate(0.9)',
-    transform: `rotate(${rotation}) scale(${scale})`,
-    maskImage:
-      'radial-gradient(ellipse 54% 68% at center, black 0%, rgba(0,0,0,0.76) 38%, transparent 74%)',
-    WebkitMaskImage:
-      'radial-gradient(ellipse 54% 68% at center, black 0%, rgba(0,0,0,0.76) 38%, transparent 74%)',
-    pointerEvents: 'none',
-    zIndex: 0,
-  }
+  const macroStyle: CSSProperties | null = macroImage
+    ? {
+        position: 'absolute',
+        inset: '-48px 10px',
+        backgroundImage: `url(${macroImage.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: macroImage.objectPosition,
+        opacity: variant === 'paper' ? 0.32 : 0.4,
+        mixBlendMode: 'multiply',
+        filter: 'blur(0.75px) saturate(0.9)',
+        transform: `rotate(${macroImage.rotation}) scale(${macroImage.scale})`,
+        maskImage:
+          'radial-gradient(ellipse 54% 68% at center, black 0%, rgba(0,0,0,0.76) 38%, transparent 74%)',
+        WebkitMaskImage:
+          'radial-gradient(ellipse 54% 68% at center, black 0%, rgba(0,0,0,0.76) 38%, transparent 74%)',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }
+    : null
 
   return (
     <aside
       className="relative isolate my-14 overflow-visible px-6 py-9"
       style={{ maxWidth: '100%' }}
     >
-      <div
-        aria-label={imageAlt}
-        role={imageAlt ? 'img' : 'presentation'}
-        style={macroStyle}
-      />
+      {macroStyle && (
+        <div
+          aria-label={macroImage?.alt ?? ''}
+          role={macroImage?.alt ? 'img' : 'presentation'}
+          style={macroStyle}
+        />
+      )}
 
       <div
         className="relative z-[2] max-w-[560px] rounded-r-[28px] py-6 pr-6 pl-[22px]"

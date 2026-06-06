@@ -1,14 +1,17 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import type { SelectedGuideImage } from '@/lib/guides/select-guide-image'
+import type { PotalotMacroOutput } from '@/lib/images/types'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
-  macroSrc: string
-  macroAlt?: string
-  macroImage?: SelectedGuideImage | null
+  /**
+   * Atmosfærisk makro-foto fra resolvePotalotMacro().
+   * Hvis null renderes blokken UDEN makro-baggrund — ingen hardcoded
+   * fallback-path. Forkert billede er værre end intet billede.
+   */
+  macroImage: PotalotMacroOutput | null
   title?: string
   children: ReactNode
   align?: 'left' | 'right' | 'center'
@@ -32,37 +35,31 @@ const opacity: Record<NonNullable<Props['intensity']>, number> = {
  * Lag 5 = Cormorant/Manrope typography.
  */
 export function VidsteDuMedMakro({
-  macroSrc,
-  macroAlt = '',
   macroImage,
   title = 'Vidste du?',
   children,
   align = 'left',
   intensity = 'soft',
 }: Props) {
-  const imageSrc = macroImage?.src ?? macroSrc
-  const imageAlt = macroImage?.alt ?? macroAlt
-  const objectPosition = macroImage?.objectPosition ?? (align === 'right' ? '58% center' : '42% center')
-  const scale = macroImage?.scale ?? 1
-  const rotation = macroImage?.rotation ?? (align === 'right' ? '1.4deg' : '-1.6deg')
-
-  const macroStyle: CSSProperties = {
-    position: 'absolute',
-    inset: '-40px 16px',
-    backgroundImage: `url(${imageSrc})`,
-    backgroundSize: 'cover',
-    backgroundPosition: objectPosition,
-    opacity: opacity[intensity],
-    mixBlendMode: 'multiply',
-    filter: 'blur(0.5px) saturate(0.9)',
-    transform: `rotate(${rotation}) scale(${scale})`,
-    maskImage:
-      'radial-gradient(ellipse 48% 62% at center, black 0%, rgba(0,0,0,0.72) 34%, transparent 68%)',
-    WebkitMaskImage:
-      'radial-gradient(ellipse 48% 62% at center, black 0%, rgba(0,0,0,0.72) 34%, transparent 68%)',
-    pointerEvents: 'none',
-    zIndex: 0,
-  }
+  const macroStyle: CSSProperties | null = macroImage
+    ? {
+        position: 'absolute',
+        inset: '-40px 16px',
+        backgroundImage: `url(${macroImage.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: macroImage.objectPosition,
+        opacity: opacity[intensity],
+        mixBlendMode: 'multiply',
+        filter: 'blur(0.5px) saturate(0.9)',
+        transform: `rotate(${macroImage.rotation}) scale(${macroImage.scale})`,
+        maskImage:
+          'radial-gradient(ellipse 48% 62% at center, black 0%, rgba(0,0,0,0.72) 34%, transparent 68%)',
+        WebkitMaskImage:
+          'radial-gradient(ellipse 48% 62% at center, black 0%, rgba(0,0,0,0.72) 34%, transparent 68%)',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }
+    : null
 
   return (
     <aside
@@ -71,11 +68,13 @@ export function VidsteDuMedMakro({
         maxWidth: '100%',
       }}
     >
-      <div
-        aria-label={imageAlt}
-        role={imageAlt ? 'img' : 'presentation'}
-        style={macroStyle}
-      />
+      {macroStyle && (
+        <div
+          aria-label={macroImage?.alt ?? ''}
+          role={macroImage?.alt ? 'img' : 'presentation'}
+          style={macroStyle}
+        />
+      )}
 
       <div
         className={cn('relative z-10 max-w-[520px] border-t pt-5', alignClass[align])}

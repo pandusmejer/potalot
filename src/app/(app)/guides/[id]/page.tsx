@@ -8,7 +8,6 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
-import { pickAtmosfaeriskMakroFallback } from '@/lib/guides/legacy-fallback-macros'
 import { VidsteDuMedMakro } from '@/components/guides/vidste-du-med-makro'
 import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
@@ -23,8 +22,7 @@ import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
-import { getGuideImages } from '@/data/guide-images'
-import { selectGuideImage } from '@/lib/guides/select-guide-image'
+import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
 import { ArrowLeft, BookOpen, Package, Sprout, ArrowRight } from 'lucide-react'
 
 interface Props {
@@ -114,53 +112,35 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
     ? new Set((await import('@/data/guides-demo')).DEMO_AI_GUIDE_IDS)
     : null
   const kind = guideKindFor(original, aiIds)
-  const guideImages = getGuideImages(effective.id)
+  // Makro-strategi: hver slot får et unikt seed + preferredRoles. Brugte
+  // src'er deles via usedMacroSrcs så samme makro ikke vises i to slots
+  // på samme guide. Hvis ingen makros findes → null → blokken renderes
+  // uden baggrund (ingen hardcoded fallback til "tomat-san-marzano/dug").
   const usedMacroSrcs = new Set<string>()
-  const factMacro = selectGuideImage({
-    images: guideImages?.macro,
+  const factImage = resolvePotalotMacro({
+    guideId: effective.id,
+    slot: 'fact',
     preferredRoles: ['structure', 'fruit', 'detail'],
     avoidSrcs: usedMacroSrcs,
-    seed: `${effective.id}:fact`,
-    fallbackIndex: 0,
     cropProfile: 'soft-right',
   })
-  if (factMacro) usedMacroSrcs.add(factMacro.src)
-  const noteMacro = selectGuideImage({
-    images: guideImages?.macro,
+  if (factImage) usedMacroSrcs.add(factImage.src)
+  const noteImage = resolvePotalotMacro({
+    guideId: effective.id,
+    slot: 'note',
     preferredRoles: ['atmosphere', 'detail', 'fruit'],
     avoidSrcs: usedMacroSrcs,
-    seed: `${effective.id}:note`,
-    fallbackIndex: 1,
     cropProfile: 'soft-left',
   })
-  if (noteMacro) usedMacroSrcs.add(noteMacro.src)
-  const tipMacro = selectGuideImage({
-    images: guideImages?.macro,
+  if (noteImage) usedMacroSrcs.add(noteImage.src)
+  const tipImage = resolvePotalotMacro({
+    guideId: effective.id,
+    slot: 'tip',
     preferredRoles: ['leaf', 'structure', 'atmosphere'],
     avoidSrcs: usedMacroSrcs,
-    seed: `${effective.id}:tip`,
-    fallbackIndex: 2,
     cropProfile: 'top-band',
   })
-  if (tipMacro) usedMacroSrcs.add(tipMacro.src)
-
-  // Legacy fallback: guides der ikke har entries i guide-images.ts
-  // får en simpel makro-path som baggrundslag. Når alle guides er
-  // dækket af GUIDE_IMAGES_BY_ID, slettes denne fallback.
-  const fallbackMacroSrc = pickAtmosfaeriskMakroFallback(effective.id)
-  const fallbackAsSelected: typeof factMacro = fallbackMacroSrc
-    ? {
-        src: fallbackMacroSrc,
-        alt: 'Atmosfærisk makro',
-        objectPosition: '65% 50%',
-        cropProfile: 'soft-right',
-        scale: 1.08,
-        rotation: '-1deg',
-      }
-    : null
-  const factImage = factMacro ?? fallbackAsSelected
-  const noteImage = noteMacro ?? fallbackAsSelected
-  const tipImage = tipMacro ?? fallbackAsSelected
+  if (tipImage) usedMacroSrcs.add(tipImage.src)
 
   return (
     <article className="max-w-3xl space-y-10 overflow-x-clip pb-6 sm:space-y-12">
@@ -312,16 +292,12 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
       {effective.variety === 'San Marzano' && (
         <>
           <VidsteDuMedMakro
-            macroSrc={noteImage?.src ?? '/images/makro/tomat-san-marzano/dug.jpg'}
-            macroAlt={noteImage?.alt ?? 'Makro af San Marzano tomat'}
             macroImage={noteImage}
             intensity="soft"
           >
             San Marzano har fast frugtkød og lavt vandindhold, hvilket gør sorten særlig velegnet til sauce og konservering.
           </VidsteDuMedMakro>
           <PotalotTipMedMakro
-            macroSrc={tipImage?.src ?? '/images/makro/tomat-san-marzano/dug.jpg'}
-            macroAlt={tipImage?.alt ?? 'Makro af San Marzano tomat'}
             macroImage={tipImage}
           >
             Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano kvitterer for jævn fugt med færre revner og mere koncentreret smag.

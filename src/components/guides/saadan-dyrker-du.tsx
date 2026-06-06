@@ -8,7 +8,7 @@
  */
 
 import type { GuideSection } from '@/lib/types'
-import type { SelectedGuideImage } from '@/lib/guides/select-guide-image'
+import type { PotalotMacroOutput } from '@/lib/images/types'
 import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
@@ -22,10 +22,11 @@ interface Props {
   sections: GuideSection[]
   /**
    * Atmosfærisk makro-billede (V4 Lag 2) bag fact-blokke.
-   * Vælges på guide-detail-page via selectGuideImage(); kan være null
-   * for guides der ikke har makro-entries endnu.
+   * Vælges på guide-detail-page via resolvePotalotMacro(); kan være null
+   * for guides der ikke har makro-entries endnu — fact-blokken renderer
+   * så uden makro-baggrund (ingen hardcoded fallback).
    */
-  factMacroImage?: SelectedGuideImage | null
+  factMacroImage?: PotalotMacroOutput | null
 }
 
 export function SaadanDyrkerDu({ sections, factMacroImage }: Props) {

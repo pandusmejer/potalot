@@ -28,7 +28,7 @@ import type { Guide } from '@/lib/types'
 import { TrustBadge, type GuideKind } from './trust-badge'
 import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { resolvePotalotImageLegacy } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -57,7 +57,14 @@ export function GuideCardEditorial({
 }: Props) {
   const isCompact = size === 'compact'
   const isVariety = guide.guideLevel === 'variety' || !!guide.variety
-  const hero = pickGuideListImage(guide)
+  // Artsguider får speciesHero (artsfoto); sortsguider får varietyHero (sortsfoto).
+  // V4.1 §-2.F: arts-niveau må aldrig vise sortsspecifikke fotos.
+  const { src: hero } = resolvePotalotImage({
+    guideId: guide.id,
+    speciesSlug: isVariety ? guide.parentGuideId : guide.id,
+    varietySlug: isVariety ? guide.id : null,
+    role: isVariety ? 'variety-hero' : 'species-hero',
+  })
 
   const title = guide.variety ?? guide.plantName
   const subtitleName = guide.variety ? guide.plantName : null
@@ -258,21 +265,3 @@ export function GuideCardEditorial({
   )
 }
 
-/**
- * V4.1 image-pipeline fix: bruger den canonical resolver.
- * Ingen hardcoded fallbacks (forkert billede er værre end intet
- * billede). Resolveren håndhæver eksistens via IMAGE_MANIFEST og
- * returnerer placeholder hvis intet matches.
- */
-function pickGuideListImage(guide: Guide): string {
-  // Bruger midlertidigt legacy-aliaset; migreres til ny API i Commit 2.
-  const role = guide.guideLevel === 'species' ? 'arts' : 'plantekort'
-  const { src } = resolvePotalotImageLegacy({
-    guideId: guide.id,
-    slug: guide.id,
-    plantType: guide.plantName,
-    variety: guide.variety,
-    imageRole: role,
-  })
-  return src
-}
