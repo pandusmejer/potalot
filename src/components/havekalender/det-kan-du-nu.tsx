@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { InventoryItem, Guide, Plant } from '@/lib/types'
 import { Sprout, Lightbulb, ArrowRight, X, Eye, EyeOff, CheckCircle2, Leaf } from 'lucide-react'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 interface Props {
   month: number
@@ -242,10 +243,18 @@ function FroeCard({
 }) {
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
   const handling = decideHandling(item, month)
+  // Canonical resolver — aldrig hardcoded paths. seed-card fordi
+  // dette er en frøbank-foreslår-sektion.
+  const { src: thumbSrc, source: thumbSource } = resolvePotalotImage({
+    guideId: item.guideId,
+    varietySlug: item.guideId,
+    role: 'seed-card',
+    preferredSrc: item.primaryImageId,
+  })
   return (
     <div className="snap-start shrink-0 w-44 rounded-xl border border-border bg-card overflow-hidden flex flex-col">
       <div className="relative">
-        <Thumb url={item.primaryImageId} />
+        <Thumb url={thumbSource !== 'fallback' ? thumbSrc : null} />
         {!skipped && onSkip && (
           <button
             type="button"
@@ -296,12 +305,21 @@ function FroeCard({
 }
 
 function GuideCard({ guide }: { guide: Guide }) {
+  // Canonical resolver pr. guide-niveau: arts→species-hero, sort→variety-hero.
+  const isVariety = guide.guideLevel === 'variety' || !!guide.variety
+  const { src: thumbSrc, source: thumbSource } = resolvePotalotImage({
+    guideId: guide.id,
+    speciesSlug: isVariety ? guide.parentGuideId : guide.id,
+    varietySlug: isVariety ? guide.id : null,
+    role: isVariety ? 'variety-hero' : 'species-hero',
+    preferredSrc: guide.primaryImageId,
+  })
   return (
     <Link
       href={`/guides/${guide.id}`}
       className="snap-start shrink-0 w-44 rounded-xl border border-border bg-card overflow-hidden flex flex-col hover:shadow-sm transition-shadow group"
     >
-      <Thumb url={guide.primaryImageId} />
+      <Thumb url={thumbSource !== 'fallback' ? thumbSrc : null} />
       <div className="p-2.5 flex-1 flex flex-col">
         <p className="text-sm font-medium text-foreground leading-tight line-clamp-1">
           {guide.plantName}

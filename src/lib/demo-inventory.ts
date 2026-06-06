@@ -38,7 +38,9 @@ export const DEMO_INVENTORY: InventoryItem[] = [
     isFavorite: true,
     isPinned: false,
     imageIds: [],
-    guideId: 'cherrytomat',
+    // Canonical slug der matcher /images/frokort/tomat-cherrytomat.png.
+    // (Tidligere 'cherrytomat' faldt til placeholder pga. slug-mismatch.)
+    guideId: 'tomat-cherrytomat',
     linkedPlantIds: [],
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-04-15T00:00:00Z',

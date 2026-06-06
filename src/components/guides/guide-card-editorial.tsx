@@ -64,6 +64,9 @@ export function GuideCardEditorial({
     speciesSlug: isVariety ? guide.parentGuideId : guide.id,
     varietySlug: isVariety ? guide.id : null,
     role: isVariety ? 'variety-hero' : 'species-hero',
+    // Lader demo-guides (og brugerens egne guides) lande på korrekt
+    // canonical billede når deres slug ikke matcher POTALOT_IMAGE_SETS.
+    preferredSrc: guide.primaryImageId,
   })
 
   const title = guide.variety ?? guide.plantName

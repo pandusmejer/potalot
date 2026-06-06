@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant } from '@/lib/types'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 interface GreenhouseNowProps {
   plants: Plant[]
@@ -18,16 +19,28 @@ export function GreenhouseNow({ plants }: GreenhouseNowProps) {
       </div>
       <div className="-mx-4 overflow-hidden sm:mx-0">
         <div className="scrollbar-hide flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 sm:px-0 [-webkit-overflow-scrolling:touch]">
-          {visiblePlants.map(plant => (
+          {visiblePlants.map(plant => {
+            // Canonical resolver — aldrig hardcoded paths. Hvis ingen
+            // gyldig kilde findes returnerer resolveren placeholder, og
+            // vi viser i stedet en neutral pattern-baggrund. Forkert
+            // billede er værre end intet billede.
+            const { src, source } = resolvePotalotImage({
+              guideId: plant.guideId,
+              varietySlug: plant.guideId,
+              role: 'plant-card',
+              preferredSrc: plant.primaryImageId,
+            })
+            const showImage = source !== 'fallback'
+            return (
             <Link
               key={plant.id}
               href={`/mine-planter/${plant.id}`}
               className="group relative h-28 min-w-[31%] max-w-[31%] snap-start overflow-hidden rounded-2xl bg-secondary shadow-soft min-[390px]:min-w-[29%] min-[390px]:max-w-[29%]"
             >
-              {plant.primaryImageId ? (
+              {showImage ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
-                  src={plant.primaryImageId}
+                  src={src}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
@@ -47,7 +60,8 @@ export function GreenhouseNow({ plants }: GreenhouseNowProps) {
                 </p>
               </div>
             </Link>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
