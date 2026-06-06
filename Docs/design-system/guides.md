@@ -959,17 +959,28 @@ Hvis der **hverken** findes struktureret comparison-data eller en
 redaktionel anbefaling, bruges den almindelige `GuideNextCard` (rolig
 prose-CTA der pejler videre uden at love sammenligning).
 
-#### Disabled CTA-regel
+#### CTA-tilstande (permanent regel)
 
-Hvis target-guiden ikke findes endnu i `IMPORTED_GUIDES`/`allGuides`,
-skal CTA enten:
+CTA på `GuideComparisonList` har to tilstande afhængigt af om
+target-guiden eksisterer i `IMPORTED_GUIDES` / `allGuides`:
 
-- **Disables** (`ctaDisabled: true` → ikke-klikbart span, opacity 0.55,
-  cursor: not-allowed, tooltip "Guiden er endnu ikke skrevet"), ELLER
-- **Pege på planlagt route** og være markeret i data som "kommer snart"
+**Hvis target-guide findes:**
 
-Komponenten skal **stadig vises** — siden må ikke springe i layout
-mellem brugere der har/ikke har adgang til target-guiden.
+- render som `<Link>`
+- fuld opacity
+- normal cursor
+
+**Hvis target-guide ikke findes:**
+
+- render som `<span>`
+- `aria-disabled="true"`
+- opacity `0.55`
+- cursor `not-allowed`
+- `title="Guiden er endnu ikke skrevet"`
+
+ComparisonList må **stadig vises** uden aktiv CTA, fordi selve
+sammenligningen leverer værdi på siden. Siden må ikke springe i
+layout mellem brugere der har/ikke har adgang til target-guiden.
 
 **Aldrig:** lad en live CTA pege på en 404.
 
