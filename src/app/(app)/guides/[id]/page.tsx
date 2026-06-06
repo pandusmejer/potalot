@@ -356,8 +356,8 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
         return <KalenderRytmeKapitel chapters={chapters} />
       })()}
 
-      {/* ── 4. DINE EGNE — frøbank + plante-kobling ── */}
-      {(linkedInventory.length > 0 || linkedPlants.length > 0) && (
+      {/* ── 4. DINE EGNE — frøbank + plante-kobling (eller tom-tilstand) ── */}
+      {(linkedInventory.length > 0 || linkedPlants.length > 0) ? (
         <Card className="bg-secondary/20 border-secondary">
           <CardContent className="space-y-3 py-4">
             <p
@@ -418,6 +418,102 @@ export default async function GuideDetailPage({ params, searchParams }: Props) {
             )}
           </CardContent>
         </Card>
+      ) : (
+        /*
+         * Tom-tilstand for "Dine egne" (audit V1, rettelse 4F).
+         * Vises kun når brugeren ikke har tilknyttede frø/planter — så
+         * sortsguiden ikke hopper direkte fra kalender til Potalot-tip.
+         * Rolig CTA, ingen onboarding-modal-følelse. Buffer mellem
+         * kalender og signatur-blokkene.
+         */
+        <section
+          className="rounded-[28px] px-6 py-7"
+          style={{
+            background: '#F4F0E5',
+            border: '1px solid rgba(36,48,31,0.10)',
+          }}
+        >
+          <p
+            className="m-0 uppercase"
+            style={{
+              fontFamily: 'var(--font-manrope)',
+              fontSize: 11,
+              fontWeight: 800,
+              letterSpacing: '0.18em',
+              lineHeight: 1.25,
+              color: '#7F8F6A',
+            }}
+          >
+            Din have
+          </p>
+          <h3
+            className="mt-3"
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: 'clamp(24px, 6vw, 28px)',
+              fontWeight: 500,
+              letterSpacing: 0,
+              lineHeight: 1.05,
+              color: '#2D2A24',
+              margin: 0,
+              maxWidth: '24ch',
+            }}
+          >
+            Dyrk {effective.variety ?? effective.plantName} i din egen have
+          </h3>
+          <p
+            className="mt-3"
+            style={{
+              fontFamily: 'var(--font-cormorant), Georgia, serif',
+              fontSize: 'clamp(15px, 3.8vw, 17px)',
+              fontStyle: 'italic',
+              lineHeight: 1.45,
+              color: 'rgba(36,48,31,0.68)',
+              margin: 0,
+              maxWidth: '36ch',
+            }}
+          >
+            Tilføj sorten til din frøbank eller opret den som plante, så
+            Potalot kan følge med gennem sæsonen.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            <Link
+              href="/froebank/tilfoej"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 hover:opacity-90 transition"
+              style={{
+                background: '#7F8F6A',
+                color: '#F4F0E5',
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                lineHeight: 1,
+                textDecoration: 'none',
+              }}
+            >
+              <Package className="h-3.5 w-3.5" />
+              Tilføj til frøbank
+            </Link>
+            <Link
+              href="/mine-planter"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 hover:bg-secondary/30 transition"
+              style={{
+                background: 'transparent',
+                color: '#2D2A24',
+                border: '1px solid rgba(36,48,31,0.20)',
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                lineHeight: 1,
+                textDecoration: 'none',
+              }}
+            >
+              <Sprout className="h-3.5 w-3.5" />
+              Opret plante
+            </Link>
+          </div>
+        </section>
       )}
 
       {/* ── 5. EGNE NOTER PÅ GUIDEN ── */}
