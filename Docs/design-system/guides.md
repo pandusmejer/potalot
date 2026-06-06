@@ -115,6 +115,52 @@ sektion "De 6 billedroller" — gengivet her som låst:
 
 Tomat = plante. **Hvidløg = mark. Kartofler = rækker.**
 
+#### F. "Begynd her" er artsniveau-navigation — sortsfotos forbudt
+
+**Problem:** "Begynd her" siger tekstligt *"Tomater · Agurker · Chili
+· Dahliaer"* — men bruger sortsfotos (San Marzano, Habanero Orange,
+Marketmore, Café au Lait). Brugerens hjerne læser det som:
+
+```
+Tomater
+↓
+San Marzano
+
+Chili
+↓
+Habanero Orange
+```
+
+— og senere på siden dukker de samme sortsfotos op igen i
+sortskortene. Resultat: kognitiv konflikt + ubevidst *"har jeg ikke
+allerede set det her?"*.
+
+**Låst regel:** *"Begynd her"-sektionen må aldrig bruge sorts-
+specifikke fotos. Sektionen repræsenterer artsniveau-navigation.
+Alle kort skal bruge artsfotos.*
+
+| ✅ Gør | ❌ Gør IKKE |
+|---|---|
+| Brug `arts/<art>.jpg` | Brug `plantekort/<art-sort>.jpg` |
+| Tomater = tomatplante / drivhus / mange frugter | Tomater = San Marzano |
+| Chili = blandede sorter / chiliplante / høst | Chili = Habanero Orange |
+| Dahliaer = bed / flere blomster | Dahliaer = Café au Lait |
+| Agurker = drivhus / mange frugter | Agurker = Marketmore |
+
+**Reservation:** Sortsfotos forbeholdes:
+
+- Sortslister
+- Sortsguider (som hero)
+- Relaterede sorter
+- Frøbanken
+
+**Testen:** *Brugeren skal kunne forstå forskellen mellem art og
+sort alene ved at kigge på billederne.*
+
+> Det svarer til at lave en side om hunde og bruge et nærbillede
+> af én bestemt labrador som ikon for hele dyregruppen. Det virker
+> indtil man begynder at tænke over det.
+
 ---
 
 ## -1. Tre specifikke moduler — låste opførsler

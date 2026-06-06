@@ -32,30 +32,33 @@ export interface PopulaertEmne {
   imageUrl: string
 }
 
+// V4.1 låst regel (-2.F): "Begynd her" er ARTSNIVEAU-navigation.
+// imageUrl skal pege på arts/<art>.jpg — IKKE plantekort/<sort>.
+// Sortsspecifikke fotos sniger sig ellers ind hvor teksten siger art.
 export const POPULAERE_EMNER: PopulaertEmne[] = [
   {
     matchPlantName: 'tomat',
     navn: 'Tomater',
     byline: 'Fra frø til høst',
-    imageUrl: '/images/plantekort/tomat-san-marzano.jpg',
+    imageUrl: '/images/arts/tomat.jpg',
   },
   {
     matchPlantName: 'dahlia',
     navn: 'Dahliaer',
     byline: 'Flere blomster hele sommeren',
-    imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+    imageUrl: '/images/arts/dahlia.jpg',
   },
   {
     matchPlantName: 'agurk',
     navn: 'Agurker',
     byline: 'Sprøde høster gennem sommeren',
-    imageUrl: '/images/plantekort/agurk-marketmore.png',
+    imageUrl: '/images/arts/agurk.jpg',
   },
   {
     matchPlantName: 'chili',
     navn: 'Chili',
     byline: 'Lang sæson, stor belønning',
-    imageUrl: '/images/plantekort/chili-habanero-orange.jpg',
+    imageUrl: '/images/arts/chili.jpg',
   },
 ]
 
