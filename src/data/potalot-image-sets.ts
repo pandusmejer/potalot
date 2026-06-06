@@ -138,6 +138,23 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     ],
   },
 
+  'agurk-marketmore': {
+    plantCard:   { src: '/images/plantekort/agurk-marketmore.png', alt: 'Marketmore agurk — plantekort' },
+    varietyHero: { src: '/images/plantekort/agurk-marketmore.png', alt: 'Marketmore agurk — sortsfoto' },
+    seedCard:    { src: '/images/frokort/agurk-marketmore.png',    alt: 'Marketmore agurk — frøkort' },
+    macro: [
+      // Audit 2.A: 5 makro-filer fundet — annoteret med distinkte roller
+      // så Marketmore-sortsguiden får bleed-blokke på niveau med Tomat-SM
+      // og Habanero. blad valgt som atmosphere (sanseligt bladlys/dug)
+      // for at opfylde R3 — mindst 1 atmosphere pr. sortsguide.
+      { src: '/images/makro/agurk-marketmore/blad.jpg',         alt: 'Marketmore-blad i nærbillede',           role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/agurk-marketmore/blomst.jpg',       alt: 'Åben Marketmore-blomst',                 role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/agurk-marketmore/slyngtraad.jpg',   alt: 'Slyngtråd på Marketmore-plante',         role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/agurk-marketmore/tidlig-frugt.jpg', alt: 'Ung Marketmore-agurk på planten',        role: 'fruit',      focalPoint: 'center' },
+      { src: '/images/makro/agurk-marketmore/udsnit.jpg',       alt: 'Detalje af Marketmore — udsnit',         role: 'detail',     focalPoint: 'center' },
+    ],
+  },
+
   'dahlia-cafe-au-lait': {
     plantCard:   { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — plantekort' },
     varietyHero: { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — sortsfoto' },
