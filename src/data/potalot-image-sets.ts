@@ -120,12 +120,22 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   },
 
   'peberfrugt-corno-di-toro-rosso': {
-    // Stub-entry: hero + seedCard er produceret, makros mangler endnu.
-    // Når makros lander, udvid med rolle-annoterede entries.
     plantCard:   { src: '/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg', alt: 'Corno di Toro Rosso — plantekort' },
     varietyHero: { src: '/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg', alt: 'Corno di Toro Rosso — sortsfoto' },
     seedCard:    { src: '/images/frokort/peberfrugt-corno-di-toro-rosso.png',    alt: 'Corno di Toro Rosso — frøkort' },
-    macro: [],
+    macro: [
+      // Rolle-fordeling efter audit-task 1A: 5 makro-filer fundet på disk
+      // (blomst, kerner, led, moden-frugt, ny-knop) annoteret med distinkte
+      // roller så Corno-guiden får bleed-blokke og signatur-baggrund på
+      // niveau med Tomat-SM og Habanero. ny-knop valgt som atmosphere så
+      // R3 (visuel progression) er opfyldt — alle 5 makros får hver sin
+      // rolle, ingen dubletter.
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/ny-knop.jpg',     alt: 'Spirende blomsterknop på Corno-plante',     role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/blomst.jpg',     alt: 'Åben Corno-blomst',                          role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/led.jpg',        alt: 'Forgreningspunkt på Corno-plante',           role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg', alt: 'Moden Corno di Toro Rosso-frugt',           role: 'fruit',      focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/kerner.jpg',     alt: 'Corno-frø og frøkammer',                    role: 'seed',       focalPoint: 'center' },
+    ],
   },
 
   // agurk-marketmore, peberfrugt-california-wonder, dahlia-cafe-au-lait:
