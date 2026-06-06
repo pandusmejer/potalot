@@ -1716,7 +1716,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg",
     "sourceLinks": [],
     "status": "published",
     "visibility": "public",
