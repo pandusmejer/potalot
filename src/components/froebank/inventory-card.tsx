@@ -7,6 +7,7 @@ import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 interface Props {
   item: InventoryItem
@@ -53,7 +54,18 @@ const LIGHT_LABEL: Record<string, string> = {
  * ensfarvet fallback indtil det komponerede foto findes.
  */
 export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect, hideEyebrow = false, nameScale = 1, hideOverlay = false }: Props) {
-  const heroImage = item.primaryImageId || null
+  // V4.1: faldback til frokort via canonical resolver hvis brugeren
+  // ikke har uploadet eget billede. Resolveren returnerer altid en
+  // gyldig src (placeholder hvis intet matches), så vi får aldrig
+  // tomt heroImage og dermed aldrig den grå field-fallback.
+  const resolved = resolvePotalotImage({
+    guideId: item.guideId,
+    slug: item.guideId,
+    plantType: item.name,
+    variety: item.variety,
+    imageRole: 'frokort',
+  })
+  const heroImage = item.primaryImageId || resolved.src
   const { field } = plantColor(item.name, item.variety)
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'
   const eyebrow = `Min frøbank · ${kategori}`

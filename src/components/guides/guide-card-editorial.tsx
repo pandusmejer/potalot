@@ -28,8 +28,7 @@ import type { Guide } from '@/lib/types'
 import { TrustBadge, type GuideKind } from './trust-badge'
 import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { getGuideImages } from '@/data/guide-images'
-import { selectGuideImage } from '@/lib/guides/select-guide-image'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -259,27 +258,20 @@ export function GuideCardEditorial({
   )
 }
 
-function pickGuideListImage(guide: Guide): string | null | undefined {
-  if (guide.guideLevel === 'species' || !guide.variety) return guide.primaryImageId
-
-  const registered = getGuideImages(guide.id)
-  const selected = selectGuideImage({
-    images: registered?.macro,
-    preferredRoles: ['fruit', 'structure', 'detail'],
-    seed: `${guide.id}:guideCard`,
-    fallbackIndex: 0,
-    cropProfile: 'detail-close',
+/**
+ * V4.1 image-pipeline fix: bruger den canonical resolver.
+ * Ingen hardcoded fallbacks (forkert billede er værre end intet
+ * billede). Resolveren håndhæver eksistens via IMAGE_MANIFEST og
+ * returnerer placeholder hvis intet matches.
+ */
+function pickGuideListImage(guide: Guide): string {
+  const role = guide.guideLevel === 'species' ? 'arts' : 'plantekort'
+  const { src } = resolvePotalotImage({
+    guideId: guide.id,
+    slug: guide.id,
+    plantType: guide.plantName,
+    variety: guide.variety,
+    imageRole: role,
   })
-  if (selected) return selected.src
-
-  const key = `${guide.plantName} ${guide.variety}`.toLowerCase()
-  if (key.includes('san marzano')) return '/images/makro/tomat-san-marzano/dug.jpg'
-  if (key.includes('marketmore')) return '/images/makro/agurk/frugt-med-blomst.jpg'
-  if (key.includes('habanero')) return '/images/makro/chili-habanero-orange/skin.jpg'
-  if (key.includes('california wonder')) return '/images/makro/peberfrugt-california-wonder/indre.jpg'
-  if (key.includes('café au lait') || key.includes('cafe au lait')) {
-    return '/images/plantekort/dahlia-cafe-au-lait.jpg'
-  }
-  if (key.includes('corno')) return '/images/makro/peberfrugt-california-wonder/indre.jpg'
-  return guide.primaryImageId
+  return src
 }

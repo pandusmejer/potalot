@@ -29,7 +29,7 @@ export const GUIDE_IMAGES_BY_ID: Record<string, GuideImages> = {
       { src: '/images/makro/tomat/blad.jpg', alt: 'Tomatblad i nærbillede', role: 'leaf', focalPoint: 'left' },
       { src: '/images/makro/tomat/blomst.jpg', alt: 'Tomatblomst i fuld udfoldelse', role: 'flower', focalPoint: 'center' },
       { src: '/images/makro/tomat/blomster.jpg', alt: 'Flere tomatblomster på klase', role: 'flower', focalPoint: 'right' },
-      { src: '/images/makro/tomat/top-hår.jpg', alt: 'Fine hår på tomatplantens top', role: 'detail', focalPoint: 'top' },
+      { src: '/images/makro/tomat/top-haar.jpg', alt: 'Fine hår på tomatplantens top', role: 'detail', focalPoint: 'top' },
     ],
   },
 
@@ -40,7 +40,7 @@ export const GUIDE_IMAGES_BY_ID: Record<string, GuideImages> = {
       { src: '/images/makro/agurk/blade.jpg', alt: 'Flere agurkeblade', role: 'leaf', focalPoint: 'center' },
       { src: '/images/makro/agurk/frugt.jpg', alt: 'Agurkefrugt på planten', role: 'fruit', focalPoint: 'center' },
       { src: '/images/makro/agurk/frugt-med-blomst.jpg', alt: 'Agurkefrugt med vissen blomst', role: 'fruit', focalPoint: 'left' },
-      { src: '/images/makro/agurk/slyngtråd-hår.jpg', alt: 'Slyngtråd på agurkeplante', role: 'structure', focalPoint: 'top' },
+      { src: '/images/makro/agurk/slyngtraad-haar.jpg', alt: 'Slyngtråd på agurkeplante', role: 'structure', focalPoint: 'top' },
       { src: '/images/makro/agurk/udfoldet-blomst.jpg', alt: 'Udfoldet agurkeblomst', role: 'flower', focalPoint: 'center' },
     ],
   },

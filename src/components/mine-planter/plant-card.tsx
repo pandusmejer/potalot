@@ -8,6 +8,7 @@ import { estimateNextTask } from '@/lib/next-plant-task'
 import { Sprout, Calendar, Scissors, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 interface Props {
   plant: Plant
@@ -77,7 +78,16 @@ function statusPosition(status: PlantStatus): number {
  * AKTIVE planter (tilstedeværelse — IKKE rest af noget).
  */
 export function PlantCard({ plant, nextTask }: Props) {
-  const heroImage = plant.primaryImageId || null
+  // V4.1: fallback til plantekort/arts via canonical resolver hvis
+  // brugeren ikke har uploadet eget foto af planten.
+  const resolved = resolvePotalotImage({
+    guideId: plant.guideId,
+    slug: plant.guideId,
+    plantType: plant.name,
+    variety: plant.variety,
+    imageRole: 'plantekort',
+  })
+  const heroImage = plant.primaryImageId || resolved.src
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
   const color = statusColor(plant.status)

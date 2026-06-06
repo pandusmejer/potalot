@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+  <rect width="400" height="500" fill="#EAE6D8"/>
+  <g transform="translate(200 250)" fill="none" stroke="#7F8F6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.55">
+    <circle r="44"/>
+    <path d="M-44 8 L-20 -16 L-4 -4 L20 -28 L44 -4"/>
+    <circle cx="-16" cy="-20" r="4" fill="#7F8F6A"/>
+  </g>
+  <text x="200" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" font-weight="700" letter-spacing="3" fill="#7F8F6A" opacity="0.7">
+    BILLEDE MANGLER
+  </text>
+</svg>
