@@ -54,18 +54,18 @@ const LIGHT_LABEL: Record<string, string> = {
  * ensfarvet fallback indtil det komponerede foto findes.
  */
 export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect, hideEyebrow = false, nameScale = 1, hideOverlay = false }: Props) {
-  // V4.1: faldback til frokort via canonical resolver hvis brugeren
-  // ikke har uploadet eget billede. Resolveren returnerer altid en
-  // gyldig src (placeholder hvis intet matches), så vi får aldrig
-  // tomt heroImage og dermed aldrig den grå field-fallback.
-  const resolved = resolvePotalotImage({
+  // V4.1: canonical resolver håndterer ALT — eget upload (valideret
+  // mod manifest), guide-images entry, asset-convention pr. slug,
+  // placeholder. Brudte/stale DB-paths (fx /images/froebank/froekort-…
+  // som aldrig har eksisteret) falder automatisk til asset-convention.
+  const { src: heroImage } = resolvePotalotImage({
     guideId: item.guideId,
     slug: item.guideId,
     plantType: item.name,
     variety: item.variety,
     imageRole: 'frokort',
+    preferredSrc: item.primaryImageId,
   })
-  const heroImage = item.primaryImageId || resolved.src
   const { field } = plantColor(item.name, item.variety)
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'
   const eyebrow = `Min frøbank · ${kategori}`

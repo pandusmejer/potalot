@@ -78,16 +78,16 @@ function statusPosition(status: PlantStatus): number {
  * AKTIVE planter (tilstedeværelse — IKKE rest af noget).
  */
 export function PlantCard({ plant, nextTask }: Props) {
-  // V4.1: fallback til plantekort/arts via canonical resolver hvis
-  // brugeren ikke har uploadet eget foto af planten.
-  const resolved = resolvePotalotImage({
+  // V4.1: canonical resolver. preferredSrc valideres mod manifest;
+  // stale DB-paths falder automatisk til asset-convention.
+  const { src: heroImage } = resolvePotalotImage({
     guideId: plant.guideId,
     slug: plant.guideId,
     plantType: plant.name,
     variety: plant.variety,
     imageRole: 'plantekort',
+    preferredSrc: plant.primaryImageId,
   })
-  const heroImage = plant.primaryImageId || resolved.src
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
   const color = statusColor(plant.status)

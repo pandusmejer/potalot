@@ -47,6 +47,15 @@ export interface PotalotImageInput {
   variety?: string | null
   /** Hvilken rolle skal billedet spille i UI'et. */
   imageRole: PotalotImageRole
+  /**
+   * Brugerens explicit billede — typisk fra DB (item.primaryImageId,
+   * plant.primaryImageId). Valideres:
+   *   - Eksternt URL (https://...) → tillid, returneres som er
+   *   - Lokal /images/... → tjekkes mod manifest; falder til
+   *     asset-convention hvis brudt (gammel/stale DB-data)
+   *   - null/undefined → springes over
+   */
+  preferredSrc?: string | null
 }
 
 export interface PotalotImageOutput {
@@ -135,7 +144,31 @@ function conventionPaths(slug: string, role: PotalotImageRole): string[] {
 export function resolvePotalotImage(
   input: PotalotImageInput,
 ): PotalotImageOutput {
-  const { guideId, imageRole } = input
+  const { guideId, imageRole, preferredSrc } = input
+
+  // ── 0. preferredSrc — brugerens explicit valg ──────────────
+  // Eksternt URL: stol på den (kan ikke validere).
+  // Lokal /images/...: tjek manifest. Brudt → fortsæt til 1-4.
+  if (preferredSrc) {
+    const isExternal = /^https?:\/\//.test(preferredSrc)
+    const isLocal = preferredSrc.startsWith('/images/')
+    if (isExternal) {
+      return {
+        src: preferredSrc,
+        alt: input.variety ?? input.plantType ?? '',
+        source: 'imported-guide',
+      }
+    }
+    if (isLocal && IMAGE_MANIFEST.has(preferredSrc)) {
+      return {
+        src: preferredSrc,
+        alt: input.variety ?? input.plantType ?? '',
+        source: 'imported-guide',
+      }
+    }
+    // Lokal sti der ikke findes (stale DB-data, fantasi-path) →
+    // fortsæt til de andre lag. Returnerer aldrig brudt sti.
+  }
 
   // ── 1. imported-guide (kun hero — primaryImageId) ──────────
   // Bruges når imageRole matcher den rolle primaryImageId udfylder:
