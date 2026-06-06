@@ -10,7 +10,10 @@ import type { PotalotImageSet } from '@/lib/images/types'
  *   - speciesHero  (arter)
  *   - varietyHero  (sorter — visning i sortsguider/sortskort)
  *   - plantCard    (sorter — visning på Mine planter/Kalender/vækst)
- *   - seedCard     (sorter — frøbank/frødetalje)
+ *   - seedCard     (sorter — Primary acquisition card image for seeds,
+ *                   bulbs, tubers, sets and similar propagation material.
+ *                   Vises i Frøbank/frødetalje. ÉN rolle dækker alle
+ *                   indkøbskort — ingen separat bulb-card.)
  *
  * For nu peger plantCard og varietyHero på samme fysiske fil
  * (typisk /images/plantekort/<slug>.jpg). Forskellen er ROLLEN.

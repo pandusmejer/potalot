@@ -41,7 +41,16 @@ export interface MacroImage extends ImageAsset {
 }
 
 export interface PotalotImageSet {
-  /** Frøkort til frøbank, frødetalje, frø-relaterede previews. */
+  /**
+   * Primary acquisition card image for seeds, bulbs, tubers, sets and
+   * similar propagation material. Vises i Frøbank, frødetalje og
+   * frø-relaterede previews.
+   *
+   * Rollen hedder `seed-card` af historiske grunde, men dækker
+   * SEMANTISK: frø, knolde, løg, sætteløg, stiklinger og lignende
+   * propagation-/indkøbskort. Ingen separat `bulb-card`-rolle —
+   * pipelinen holdes simpel: ét indkøbskort pr. PotalotImageSet.
+   */
   seedCard?: ImageAsset
   /** Plantekort til Mine planter, Kalender, aktive planter, vækst. */
   plantCard?: ImageAsset
@@ -54,6 +63,11 @@ export interface PotalotImageSet {
 }
 
 export type PotalotImageRole =
+  /**
+   * Primary acquisition card. Dækker frø, knolde, løg, sætteløg,
+   * stiklinger og lignende propagation-/indkøbskort. Vises i Frøbank
+   * og frødetalje. Asset-convention: /images/frokort/<varietySlug>.{png,jpg}
+   */
   | 'seed-card'
   | 'plant-card'
   | 'species-hero'

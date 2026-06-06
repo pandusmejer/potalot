@@ -114,6 +114,10 @@ function conventionPaths(
 ): string[] {
   switch (role) {
     case 'seed-card':
+      // Dækker SEMANTISK alle indkøbskort: frø, knolde, løg, sætteløg,
+      // stiklinger og lignende propagation-materiale. Mappen hedder
+      // historisk "frokort" — vi indfører ikke separate bulb-card- eller
+      // tuber-card-mapper.
       if (!varietySlug) return []
       return [
         `/images/frokort/${varietySlug}.png`, // png er primær (transparens)

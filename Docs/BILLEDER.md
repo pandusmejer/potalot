@@ -284,15 +284,34 @@ en modnet San Marzano-klase, en Habanero-frugt, en Café au Lait-blomst.
 
 ---
 
-### `frokort/` — Frø i frøbanken
+### `frokort/` — Indkøbskort i frøbanken
 
-**Hvad:** Fritlagt billede af frøet eller frøposen, neutral baggrund.
+**Hvad:** Fritlagt billede af det propagation-materiale brugeren har
+købt — neutral baggrund.
+
+**Semantik:** Rollen hedder historisk `seed-card` / "frokort", men
+dækker ALLE indkøbskort:
+
+- frø (poser eller løse korn)
+- knolde (dahlia, kartoffel)
+- løg (allium, narcis, tulipan)
+- sætteløg (perleløg, skalotter)
+- stiklinger
+
+> *Primary acquisition card image for seeds, bulbs, tubers, sets and
+> similar propagation material.*
+
+Ingen separat `bulb-card`- eller `tuber-card`-mappe. Pipelinen holdes
+simpel: én rolle, én mappe, ét indkøbskort pr. PotalotImageSet.
 
 **Eksempler:**
-- `frokort/tomat-san-marzano.jpg`
-- `frokort/agurk-marketmore.jpg`
+- `frokort/tomat-san-marzano.png` (frø)
+- `frokort/agurk-marketmore.png` (frø)
+- `frokort/dahlia-cafe-au-lait.png` (knold — når den lander)
+- `frokort/hvidlog-therados.png` (sætteløg — når den lander)
 
 **Format:** JPG eller PNG (PNG hvis baggrunden skal være gennemsigtig).
+Frøkort bruger primært PNG pga. transparens-behov.
 
 **Bruges på:** Kortene i frøbanken og på frø-detalje-siden.
 
