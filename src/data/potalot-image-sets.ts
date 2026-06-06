@@ -159,7 +159,21 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     plantCard:   { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — plantekort' },
     varietyHero: { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — sortsfoto' },
     seedCard:    { src: '/images/frokort/dahlia-cafe-au-lait.jpg',    alt: 'Café au Lait dahlia — knold-kort' },
-    macro: [],  // afventer makro-pool (audit pkt 2.B)
+    macro: [
+      // Audit 2.B: 8 makro-filer fundet — annoteret efter Annas
+      // blomster-template (fuld blomst / kronbladsmakro / knop /
+      // blad-stængel / kerne). kronblade-creme valgt som atmosphere
+      // for at opfylde R3 (mindst 1 atmosphere). Pool-størrelse 8
+      // giver fuld variation på alle bleed-slots uden duplikater.
+      { src: '/images/makro/dahlia-cafe-au-lait/hoved.jpg',           alt: 'Café au Lait i fuld blomst',              role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/kronblade-creme.jpg', alt: 'Bløde creme-kronblade på Café au Lait',   role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/kronblade.jpg',       alt: 'Detalje af Café au Lait-kronblade',        role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/kronblade-rosa.jpg',  alt: 'Rosa-skær på Café au Lait-kronblade',      role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/bagside.jpg',         alt: 'Bagside af Café au Lait-blomst',           role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/knop.jpg',            alt: 'Café au Lait-knop på spring',              role: 'flower',     focalPoint: 'top' },
+      { src: '/images/makro/dahlia-cafe-au-lait/stilk.jpg',           alt: 'Stængel på Café au Lait-plante',           role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/dahlia-cafe-au-lait/kerne.jpg',           alt: 'Kerne i Café au Lait-blomst',              role: 'seed',       focalPoint: 'center' },
+    ],
   },
 
   'peberfrugt-california-wonder': {
