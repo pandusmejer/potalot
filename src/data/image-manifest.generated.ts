@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 102
+ * Fil-tæller: 117
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -18,8 +18,10 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/dild.jpg",
   "/images/arts/peberfrugt.jpg",
   "/images/arts/tomat.jpg",
+  "/images/frokort/Hvidløg.png",
   "/images/frokort/agurk-marketmore.png",
   "/images/frokort/chili-habanero-orange.png",
+  "/images/frokort/dahlia-cafe-au-lait.jpg",
   "/images/frokort/dild-bouquet.png",
   "/images/frokort/peberfrugt-california-wonder.png",
   "/images/frokort/peberfrugt-corno-di-toro-rosso.png",
@@ -47,6 +49,11 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/kalender/havekalender-februar.png",
   "/images/kalender/havekalender-januar.png",
   "/images/kalender/havekalender-marts.png",
+  "/images/makro/agurk-marketmore/blad.jpg",
+  "/images/makro/agurk-marketmore/blomst.jpg",
+  "/images/makro/agurk-marketmore/slyngtraad.jpg",
+  "/images/makro/agurk-marketmore/tidlig-frugt.jpg",
+  "/images/makro/agurk-marketmore/udsnit.jpg",
   "/images/makro/agurk/blad.jpg",
   "/images/makro/agurk/blade.jpg",
   "/images/makro/agurk/frugt-med-blomst.jpg",
@@ -89,6 +96,11 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/dild/stilk-2.jpg",
   "/images/makro/dild/stilk.jpg",
   "/images/makro/peberfrugt-california-wonder/indre.jpg",
+  "/images/makro/peberfrugt-corno-di-toro-rosso/blomst.jpg",
+  "/images/makro/peberfrugt-corno-di-toro-rosso/kerner.jpg",
+  "/images/makro/peberfrugt-corno-di-toro-rosso/led.jpg",
+  "/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg",
+  "/images/makro/peberfrugt-corno-di-toro-rosso/ny-knop.jpg",
   "/images/makro/squash/blomst-jord.jpg",
   "/images/makro/squash/blomster.jpg",
   "/images/makro/tomat-san-marzano/blad-dug.jpg",
@@ -105,11 +117,14 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/tomat/blomster.jpg",
   "/images/makro/tomat/kondens.jpg",
   "/images/makro/tomat/top-haar.jpg",
+  "/images/plantekort/ChatGPT Image 6. jun. 2026, 21.47.03.png",
   "/images/plantekort/agurk-marketmore.png",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/dahlia-cafe-au-lait.jpg",
   "/images/plantekort/dild-bouquet.jpg",
+  "/images/plantekort/peberfrugt-california-wonder.jpg",
   "/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg",
+  "/images/plantekort/plantekort-hvidlog.jpg",
   "/images/plantekort/stangboenne-cobra.jpg",
   "/images/plantekort/sukkeraert-sugar-snap.jpg",
   "/images/plantekort/tomat-san-marzano.jpg",

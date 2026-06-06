@@ -138,9 +138,27 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     ],
   },
 
-  // agurk-marketmore, peberfrugt-california-wonder, dahlia-cafe-au-lait:
-  // makros (og plantekort for California Wonder) mangler endnu — V4.1 audit.
-  // Tilføj her når de lander.
+  'dahlia-cafe-au-lait': {
+    plantCard:   { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — plantekort' },
+    varietyHero: { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — sortsfoto' },
+    seedCard:    { src: '/images/frokort/dahlia-cafe-au-lait.jpg',    alt: 'Café au Lait dahlia — knold-kort' },
+    macro: [],  // afventer makro-pool (audit pkt 2.B)
+  },
+
+  'peberfrugt-california-wonder': {
+    plantCard:   { src: '/images/plantekort/peberfrugt-california-wonder.jpg', alt: 'California Wonder peberfrugt — plantekort' },
+    varietyHero: { src: '/images/plantekort/peberfrugt-california-wonder.jpg', alt: 'California Wonder peberfrugt — sortsfoto' },
+    seedCard:    { src: '/images/frokort/peberfrugt-california-wonder.png',    alt: 'California Wonder peberfrugt — frøkort' },
+    macro: [
+      // Kun 1 makro-fil findes pt. — audit pkt 2.C anbefaler 2-3 ekstra
+      // for rigtig pool-fordeling. indre.jpg som atmosphere så R3 (mindst
+      // 1 atmosphere pr. sortsguide) er opfyldt.
+      { src: '/images/makro/peberfrugt-california-wonder/indre.jpg', alt: 'Indre struktur i California Wonder', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  // agurk-marketmore: makros mangler endnu — V4.1 audit. Tilføj her
+  // når de lander.
 
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 

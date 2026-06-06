@@ -1581,7 +1581,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/peberfrugt-california-wonder.jpg",
     "sourceLinks": [],
     "status": "published",
     "visibility": "public",
