@@ -908,6 +908,10 @@ padding: 24px;
 
 **Ingen skygge.**
 
+> "Næste guide" som **sortsguidens sidste blok** er en specialregel —
+> se 15.12.5 for hvornår `GuideComparisonList` eller `GuideComparisonBadge`
+> erstatter `GuideNextCard`.
+
 ### 15.12 Ikoner
 
 Kun outline. Lucide-style.
@@ -917,6 +921,75 @@ Stregtykkelse: 1.75px
 ```
 
 **Ingen fyldte ikoner. Ingen emojis.** Undtagelse: Potalot-tip.
+
+### 15.12.5 Sammenligningsblok ("Sammenlign med X")
+
+Sortsguider får en sammenligningsblok som **siden's sidste blok**
+(efter Potalot-note, før footeren). To komponenter dækker to roller:
+
+#### `GuideComparisonList` — STANDARD
+
+Tabel-stil med attribut-rækker (frugt, smag, anvendelse, modning).
+Brugeren får **konkret data så de kan vælge** uden at klikke videre.
+VS-badge i ikon-kolonnen. CTA "Se guide til [target]" rendres som
+`<Link>` (eller disabled `<span>` hvis target endnu ikke findes).
+
+**Bruges når:** der findes struktureret comparison-data for sorten.
+
+**Bruges aldrig som:** dekorativ pause, top-blok, eller mellem prose.
+
+#### `GuideComparisonBadge` — SPECIALVARIANT
+
+Portræt-stil med to runde fotos + sage-grøn highlight-pill + kort
+beskrivelse. Mere reklame-/anbefalings-orienteret.
+
+**Bruges KUN til redaktionelle anbefalinger** med ét klart udsagn:
+
+- "GOD TIL SAUCE"
+- "BEDST TIL DRIVHUS"
+- "NEM BEGYNDER-SORT"
+- "BEDST TIL TØRRING"
+
+**Bruges aldrig som standard.** Hvis "anbefalingen" er en neutral
+data-sammenligning ("middeltidlig sort"), så er det List, ikke Badge.
+
+#### Fallback
+
+Hvis der **hverken** findes struktureret comparison-data eller en
+redaktionel anbefaling, bruges den almindelige `GuideNextCard` (rolig
+prose-CTA der pejler videre uden at love sammenligning).
+
+#### Disabled CTA-regel
+
+Hvis target-guiden ikke findes endnu i `IMPORTED_GUIDES`/`allGuides`,
+skal CTA enten:
+
+- **Disables** (`ctaDisabled: true` → ikke-klikbart span, opacity 0.55,
+  cursor: not-allowed, tooltip "Guiden er endnu ikke skrevet"), ELLER
+- **Pege på planlagt route** og være markeret i data som "kommer snart"
+
+Komponenten skal **stadig vises** — siden må ikke springe i layout
+mellem brugere der har/ikke har adgang til target-guiden.
+
+**Aldrig:** lad en live CTA pege på en 404.
+
+#### Forbudt: identiske rækker
+
+Hvis venstre og højre side viser **samme tekst** i samme attribut
+("Middeltidlig sort × 2"), skal rækken enten fjernes eller
+sammenflettes til én "begge"-celle. En sammenligningsboks der siger
+to ting er ens, er bare en velklædt måde at spilde pixels på.
+
+#### TODO
+
+- [ ] Opret comparison-data pr. sort i separat datafil
+      (fx `src/data/guide-comparisons.ts` med struktur
+       `Record<guideId, ComparisonRow[]>`). Indtil da bor data
+      inline i `guides/[id]/page.tsx` for Tomat San Marzano kun.
+- [ ] Tomat Roma-guiden mangler stadig — derfor er CTA disabled
+      på `/guides/tomat-san-marzano` lige nu. Når
+      `content/guides/tomat-roma.md` lander og importeres,
+      aktiverer CTA sig automatisk.
 
 ### 15.13 Farver (autoritativ palette)
 
