@@ -151,6 +151,11 @@ export interface HeroNarrative {
   personalText: string[]
   /** Skal stats-linjen vises? Default false for ny bruger — den er kun støj uden data */
   showStats: boolean
+  /**
+   * Brugerens "modenhed" i Havebogen — bruges af hero-foto-resolveren
+   * til at vælge passende foto-stemning (V3.2, juni 2026).
+   */
+  userState: 'new' | 'active' | 'year2plus'
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -195,6 +200,7 @@ export const DEMO_HERO_NARRATIVE: HeroNarrative = {
     'Du har skrevet 3 noter denne uge.',
   ],
   showStats: true,
+  userState: 'active',
 }
 
 /**

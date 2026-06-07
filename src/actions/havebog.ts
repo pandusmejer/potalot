@@ -249,6 +249,7 @@ function buildHeroNarrative(
       seasonLine: `Velkommen tilbage til ${month}`,
       personalText,
       showStats: heroStats.notes > 0,
+      userState: 'year2plus',
     }
   }
 
@@ -266,6 +267,7 @@ function buildHeroNarrative(
       // Stats er bare 0-tal for ny bruger — skjul dem så heroen
       // ikke siger "tom" tre gange i træk.
       showStats: false,
+      userState: 'new',
     }
   }
 
@@ -288,6 +290,7 @@ function buildHeroNarrative(
     seasonLine: `${capitalize(month)} i haven`,
     personalText: beats,
     showStats: true,
+    userState: 'active',
   }
 }
 

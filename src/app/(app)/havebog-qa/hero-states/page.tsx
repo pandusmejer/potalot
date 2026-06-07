@@ -191,6 +191,7 @@ const NEW_USER_NARRATIVE: HeroNarrative = {
     'Om lidt begynder de første minder at samle sig her.',
   ],
   showStats: false,
+  userState: 'new',
 }
 
 const MEDIUM_STATS: HeroStats = {
@@ -211,6 +212,7 @@ const MEDIUM_NARRATIVE: HeroNarrative = {
     'Du har skrevet 3 noter denne uge.',
   ],
   showStats: true,
+  userState: 'active',
 }
 
 const EXPERIENCED_STATS: HeroStats = {
@@ -230,6 +232,7 @@ const EXPERIENCED_NARRATIVE: HeroNarrative = {
     'Du har skrevet 4 noter denne uge.',
   ],
   showStats: true,
+  userState: 'year2plus',
 }
 
 // ─────────────────────────────────────────────────────────

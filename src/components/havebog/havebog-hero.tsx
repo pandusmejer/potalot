@@ -1,19 +1,21 @@
 import type { HeroStats, Tidslinje, HeroNarrative } from '@/data/havebog-demo'
 import { aktuelMaaned } from '@/lib/datetime'
+import { pickHavebogHero } from '@/lib/havebog-hero-photo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
-
-const MAANED_SLUG = [
-  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
-  'juli', 'august', 'september', 'oktober', 'november', 'december',
-] as const
 
 interface Props {
   /** Eksisterende men ikke længere renderet i V3 — bevaret som API-kontrakt */
   stats?: HeroStats | null
   tidslinje?: Tidslinje
   narrative?: HeroNarrative
+  /**
+   * Override foto-stien — bruges i QA-routes for at vise specifikke
+   * varianter side-om-side. I produktion sat til undefined så
+   * pickHavebogHero(month, userState) vælger automatisk.
+   */
+  photoOverride?: string
 }
 
 /**
@@ -29,23 +31,27 @@ interface Props {
  *   - Tekst hvid på mørk overlay (fotografi som hovedperson)
  *   - 70-80vh høj — heroen ER første viewport, ikke første sektion
  *
- * Foto vælges per aktuel måned fra heroes-maaneder/. Samme pool som
- * Kalender bruger; identiske sæson-anker, forskellig komposition:
- * Kalender skriver om timing (over fotoet), Havebog skriver fortælling.
+ * V3.2 (juni 2026): Foto vælges nu fra heroes-havebog/-poolen via
+ * pickHavebogHero(måned, userState). Havebog har sin EGEN foto-
+ * arkitektur, separat fra Kalender's månedsheroes — minder og
+ * observationer, ikke katalogfotos. Hvis ingen havebog-specifik
+ * variant findes for måneden, falder vi tilbage til
+ * heroes-maaneder/-poolen.
  *
- * Tekst-arkitektur (Anna's spec):
- *   Cormorant 72-88px       — "Din Havebog"
- *   Cormorant Italic 30-36px — sæsonlinje ("Juni i haven")
- *   Cormorant 22-26px        — narrative-linjer
- *   Manrope 13px             — dato/metadata
+ * Tekst-arkitektur (Anna's spec V3.2):
+ *   Cormorant 72px max       — "Din Havebog"
+ *   Cormorant Italic 40px max — sæsonlinje ("Juni i haven")
+ *   Cormorant 28px max        — narrative-linjer
+ *   Manrope 13px              — dato/metadata
  *
  * Stats-linjen ("0 noter · 8 sorter · 0 høster") er FORBUDT i V3.
  * Hvis brugeren skal se tal, hører de hjemme inde i Historik-sektionen.
  * Hero er fortælling, ikke status.
  */
-export function HavebogHero({ tidslinje, narrative }: Props) {
+export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
   const month = aktuelMaaned() // 1-12
-  const fotoPath = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1]}-foto.png`
+  const userState = narrative?.userState ?? 'active'
+  const fotoPath = photoOverride ?? pickHavebogHero(month, userState)
 
   return (
     <section
@@ -53,38 +59,39 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
       // -mt-6 bryder app-layoutets py-6 (top)
       className="relative -mx-4 -mt-6 overflow-hidden"
       style={{
-        // 85vh — den større del af første viewport. Hero er IKKE et
-        // banner; den er åbningssiden i et magasin. Mere luft, færre
-        // ord, større billede. minHeight sikrer hero føles substantiel
-        // selv på korte landscape-skærme.
-        height: '85vh',
-        minHeight: 640,
+        // 78vh — Anna's spec (75-80vh). Hero er åbningssiden i et
+        // magasin; mere luft, færre ord, større billede. minHeight
+        // sikrer hero føles substantiel selv på korte landscape-skærme.
+        height: '78vh',
+        minHeight: 600,
       }}
     >
-      {/* Foto — fylder hele heroen, ingen subtilitet, ingen tilbageholdenhed */}
+      {/* Foto — fylder hele heroen.
+          backgroundPosition justeret så stokrosens centrum (rødt
+          element) ligger i højre 2/3, solen øverst, venstre side
+          relativt rolig til tekst. */}
       <div
         aria-hidden
         className="absolute inset-0 bg-cover"
         style={{
           backgroundImage: `url('${fotoPath}')`,
-          backgroundPosition: 'center 38%',
+          backgroundPosition: '60% center',
         }}
       />
 
-      {/* Tekstlæsbarheds-gradient.
-          Mørkere nederst hvor teksten ligger, fader ud opad så fotoets
-          øvre del beholder sin lysstyrke og farve. */}
+      {/* Tekstlæsbarheds-gradient — Anna's spec V3.2.
+          MEGET lettere end V3.1: top 8%, midte 18%, bund 42%.
+          Bevidst at lade fotoet trække vejret. Mørkere bund alene
+          giver tekst i nederste tredjedel nok kontrast. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
             'linear-gradient(180deg, ' +
-            'rgba(12,18,8,0.18) 0%, ' +
-            'rgba(12,18,8,0.05) 28%, ' +
-            'rgba(12,18,8,0.32) 55%, ' +
-            'rgba(12,18,8,0.72) 88%, ' +
-            'rgba(12,18,8,0.86) 100%)',
+            'rgba(0,0,0,0.08) 0%, ' +
+            'rgba(0,0,0,0.18) 35%, ' +
+            'rgba(0,0,0,0.42) 100%)',
         }}
       />
 
@@ -100,46 +107,41 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
         }}
       />
 
-      {/* Tekst-blok nederst venstre. Bund-padding 56px placerer teksten
-          tæt på heroens bundkant — som en kolofon i bunden af et
-          bogopslag, ikke som et banner-overlay midt på siden. */}
+      {/* Tekst-blok nederst venstre.
+          Anna's spec: nederste tredjedel, venstre side. */}
       <div
         className="relative z-10 flex h-full flex-col justify-end"
-        style={{ padding: '0 24px 56px 24px' }}
+        style={{ padding: '0 24px 60px 24px' }}
       >
-        <div style={{ maxWidth: 440 }}>
-          {/* Lag 1: Titel.
-              Dæmpet fra 88px → 72px max. "Når alt er stort, er intet
-              stort" (Anna). Mindre titel giver de andre lag plads til
-              at vejre selvstændigt. */}
+        <div style={{ maxWidth: 460 }}>
+          {/* Lag 1: Titel — Cormorant 72px max, hvid. */}
           <h1
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: 'clamp(48px, 11vw, 72px)',
+              fontSize: 'clamp(54px, 12vw, 72px)',
               lineHeight: 0.92,
               letterSpacing: '-0.022em',
-              color: '#F4EFDC',
-              textShadow: '0 2px 18px rgba(12,18,8,0.45), 0 1px 3px rgba(12,18,8,0.35)',
+              color: '#FFFFFF',
+              textShadow: '0 2px 22px rgba(0,0,0,0.42), 0 1px 4px rgba(0,0,0,0.32)',
               margin: 0,
             }}
           >
             Din Havebog
           </h1>
 
-          {/* Lag 2: Sæsonlinje (italic).
-              Større luft fra titel — 22px marginTop. */}
+          {/* Lag 2: Sæsonlinje — Cormorant Italic 40px max, hvid 92%. */}
           {narrative && (
             <p
               style={{
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(26px, 5.5vw, 36px)',
+                fontSize: 'clamp(28px, 6vw, 40px)',
                 lineHeight: 1.15,
                 letterSpacing: '-0.005em',
-                color: 'rgba(244,239,220,0.95)',
-                textShadow: '0 1px 14px rgba(12,18,8,0.55)',
+                color: 'rgba(255,255,255,0.92)',
+                textShadow: '0 1px 16px rgba(0,0,0,0.50)',
                 margin: 0,
                 marginTop: 22,
               }}
@@ -148,20 +150,19 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
             </p>
           )}
 
-          {/* Lag 3: Personlig narrativ.
-              Større luft mellem lag (28px) og mellem linjer (space-y-2). */}
+          {/* Lag 3: Brødtekst — Cormorant 28px max, hvid 88%. */}
           {narrative && narrative.personalText.length > 0 && (
-            <div className="space-y-2" style={{ maxWidth: 400, marginTop: 28 }}>
+            <div className="space-y-2" style={{ maxWidth: 420, marginTop: 28 }}>
               {narrative.personalText.map((line, i) => (
                 <p
                   key={i}
                   style={{
                     fontFamily: serif,
                     fontWeight: 400,
-                    fontSize: 'clamp(20px, 3.8vw, 26px)',
+                    fontSize: 'clamp(22px, 4.4vw, 28px)',
                     lineHeight: 1.4,
-                    color: 'rgba(244,239,220,0.88)',
-                    textShadow: '0 1px 12px rgba(12,18,8,0.55)',
+                    color: 'rgba(255,255,255,0.88)',
+                    textShadow: '0 1px 14px rgba(0,0,0,0.50)',
                     margin: 0,
                   }}
                 >
@@ -171,18 +172,17 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
             </div>
           )}
 
-          {/* Metadata (Manrope, ren tekst). Tidslinjens dato.
-              Større mellemrum end før (32px) — som en lille publicering
-              s-tag nederst i et magasin. */}
+          {/* Dato — Manrope 14px, hvid 70%. */}
           {tidslinje && (
             <p
               style={{
                 fontFamily: sans,
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 500,
                 lineHeight: 1.4,
                 letterSpacing: '0.02em',
-                color: 'rgba(244,239,220,0.65)',
+                color: 'rgba(255,255,255,0.70)',
+                textShadow: '0 1px 8px rgba(0,0,0,0.45)',
                 margin: 0,
                 marginTop: 32,
               }}
