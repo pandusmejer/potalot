@@ -22,11 +22,13 @@ import type {
   ArchivedPlant,
   LogType,
   Tidslinje,
+  HeroNarrative,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
   heroStats: HeroStats
   tidslinje: Tidslinje
+  heroNarrative: HeroNarrative
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
   history: HistoryYear[]
@@ -103,6 +105,104 @@ function daysBetween(from: Date, to: Date): number {
   const fromMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate()).getTime()
   const toMidnight = new Date(to.getFullYear(), to.getMonth(), to.getDate()).getTime()
   return Math.round((toMidnight - fromMidnight) / 86400000)
+}
+
+const MAANED_FULD_LOWER = [
+  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+  'juli', 'august', 'september', 'oktober', 'november', 'december',
+]
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+/**
+ * Bygger HeroNarrative ud fra brugerens tilstand.
+ *
+ * State-detektion:
+ *   - Ny bruger: heroStats.notes === 0
+ *     → "Din første sæson" + invitation
+ *   - Lidt data: notes > 0, men kun nuværende år i historik
+ *     → "{Måned} i haven" + milestones fra denne uge
+ *   - År 1+: har historik fra tidligere år
+ *     → "Velkommen tilbage til {måned}" + på-denne-tid-sidste-år
+ *
+ * Hver linje i personalText er en hel sætning med punktum — så de
+ * kan rendres som adskilte typografiske beats uden at læse som
+ * fragmenter.
+ */
+function buildHeroNarrative(
+  heroStats: HeroStats,
+  tidslinje: Tidslinje,
+  history: HistoryYear[],
+  onThisDay: OnThisDayEntry[],
+  today: Date,
+): HeroNarrative {
+  const month = MAANED_FULD_LOWER[today.getMonth()]
+  const currentYear = today.getFullYear()
+  const hasYearOnePlusHistory = history.some(h => h.year < currentYear)
+
+  // ── År 1+: brugeren har tidligere sæsoner ────────────────
+  if (hasYearOnePlusHistory) {
+    const personalText: string[] = []
+    if (onThisDay[0]) {
+      const ent = onThisDay[0]
+      const yearText = ent.yearsAgo === 1 ? 'sidste år' : `${ent.yearsAgo} år siden`
+      const subject = ent.variety ? `${ent.plantName} ${ent.variety}` : ent.plantName
+      personalText.push(`På denne tid ${yearText} ${ent.text ? 'noterede du om ' + subject + '.' : 'havde du ' + subject + ' i haven.'}`)
+    }
+    if (tidslinje.weekNoteCount > 0) {
+      personalText.push(
+        `Du har skrevet ${tidslinje.weekNoteCount} ${tidslinje.weekNoteCount === 1 ? 'note' : 'noter'} denne uge.`,
+      )
+    }
+    if (personalText.length === 0) {
+      personalText.push(`Du dyrker ${heroStats.varieties} ${heroStats.varieties === 1 ? 'sort' : 'sorter'} i år.`)
+    }
+    return {
+      seasonLine: `Velkommen tilbage til ${month}`,
+      personalText,
+      showStats: heroStats.notes > 0,
+    }
+  }
+
+  // ── Ny bruger: ingen noter overhovedet ────────────────────
+  if (heroStats.notes === 0) {
+    const sortsLine = heroStats.varieties > 0
+      ? `Du dyrker ${heroStats.varieties} ${heroStats.varieties === 1 ? 'sort' : 'sorter'} i år.`
+      : 'Sæsonen venter på din første sort.'
+    return {
+      seasonLine: 'Din første sæson',
+      personalText: [
+        sortsLine,
+        'Om lidt begynder de første minder at samle sig her.',
+      ],
+      // Stats er bare 0-tal for ny bruger — skjul dem så heroen
+      // ikke siger "tom" tre gange i træk.
+      showStats: false,
+    }
+  }
+
+  // ── Lidt data: nuværende år, har skrevet noter ───────────
+  const beats: string[] = []
+  if (tidslinje.milestoneText) {
+    // tidslinje.milestoneText er "12 dage siden du satte agurkerne ud"
+    // → som hel sætning behøver det bare punktum.
+    beats.push(`${tidslinje.milestoneText}.`)
+  }
+  if (tidslinje.weekNoteCount > 0) {
+    beats.push(
+      `Du har skrevet ${tidslinje.weekNoteCount} ${tidslinje.weekNoteCount === 1 ? 'note' : 'noter'} denne uge.`,
+    )
+  }
+  if (beats.length === 0) {
+    beats.push(`Du dyrker ${heroStats.varieties} ${heroStats.varieties === 1 ? 'sort' : 'sorter'} i år.`)
+  }
+  return {
+    seasonLine: `${capitalize(month)} i haven`,
+    personalText: beats,
+    showStats: true,
+  }
 }
 
 interface PlantLogRow {
@@ -330,7 +430,18 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           (p.archived_at ? new Date(p.archived_at).getFullYear() : currentYear),
       }))
 
-    return { heroStats, tidslinje, onThisDay, recentNotes, history, denneSaeson, archivedPlants }
+    const heroNarrative = buildHeroNarrative(heroStats, tidslinje, history, onThisDay, today)
+
+    return {
+      heroStats,
+      tidslinje,
+      heroNarrative,
+      onThisDay,
+      recentNotes,
+      history,
+      denneSaeson,
+      archivedPlants,
+    }
   } catch {
     return null
   }

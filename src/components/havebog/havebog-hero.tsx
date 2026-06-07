@@ -1,4 +1,4 @@
-import type { HeroStats, Tidslinje } from '@/data/havebog-demo'
+import type { HeroStats, Tidslinje, HeroNarrative } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -6,32 +6,46 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 interface Props {
   stats: HeroStats | null
   tidslinje?: Tidslinje
+  narrative?: HeroNarrative
 }
 
 /**
  * "Din Havebog" — eget hero-layout for Havebog.
  *
+ * V2 (juni 2026): Anna's diagnose — heroen var en OVERSKRIFT, ikke
+ * en FORTÆLLER. Den fortalte "Din dyrkningsrejse samlet ét sted" +
+ * stats — administrativt sprog. V2 erstatter det med 3 lag:
+ *
+ *   Lag 1 (h1):        "Din Havebog"
+ *   Lag 2 (eyebrow):   "Din første sæson" / "Juni i haven" / "Velkommen tilbage til juni"
+ *                      — Cormorant italic, sæsonbaseret
+ *   Lag 3 (narrative): 1-3 personlige linjer der placerer brugeren
+ *                      i sin egen sæson
+ *
+ * Genereres server-side i actions/havebog.ts → buildHeroNarrative.
+ *
+ * Stats-linjen er nu skjult som default — den var "0 noter · 8 sorter
+ * · 0 høster" for ny bruger, hvilket er præcis det administrative
+ * sprog der gjorde heroen tom. Den vises kun hvis narrative.showStats
+ * er sand (sat når brugeren har meningsfulde tal).
+ *
+ * Heroen bærer den tomhed brugeren ellers ville møde gentaget på
+ * 5 sektioner længere nede. "Din første sæson er begyndt" gør det
+ * meningsfuldt at Historik er tom — det er forklaringen på resten
+ * af siden.
+ *
+ * Tidslinjen (Søndag d. 7. juni) er forbliveligt low-key under
+ * narrativen — den er ren tidsorientering, ikke fortælling.
+ *
  * IKKE en wrapper om PageHero. Havebog er den første side folk åbner;
- * den skal have sin egen identitet. Greeting-pattern ("Godaften Maj /
- * Din havebog") tilhører dashboard-verdenen og er bevidst fraværende
- * her.
- *
- * Visuelt: rolig vertikal stacking, kraftig Cormorant-titel som første
- * blik, dæmpet Manrope-tagline, og en lille faktuel metadata-pille
- * (noter · sorter · høster). Ingen kicker. Ingen CTA.
- *
- * Designunivers: bruger eksisterende fonte-tokens (Manrope + Cormorant)
- * og master-spacing — ingen nye design-spor.
+ * den skal have sin egen identitet. Greeting-pattern ("Godaften Maj")
+ * tilhører dashboard-verdenen og er bevidst fraværende her.
  */
-export function HavebogHero({ stats, tidslinje }: Props) {
-  const hasData =
-    stats !== null && (stats.notes > 0 || stats.varieties > 0 || stats.harvests > 0)
-  const tagline = hasData
-    ? 'Din dyrkningsrejse samlet ét sted.'
-    : 'Din første sæson begynder her.'
+export function HavebogHero({ stats, tidslinje, narrative }: Props) {
+  const showStats = narrative?.showStats && stats !== null
 
   return (
-    <section className="space-y-5 pt-2 sm:pt-3">
+    <section className="space-y-4 pt-2 sm:pt-3">
       <h1
         style={{
           fontFamily: serif,
@@ -45,44 +59,92 @@ export function HavebogHero({ stats, tidslinje }: Props) {
       >
         Din Havebog
       </h1>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 'clamp(15px, 2.4vw, 18px)',
-          fontWeight: 400,
-          lineHeight: 1.45,
-          color: 'rgba(36,48,31,0.62)',
-          margin: 0,
-          maxWidth: 460,
-        }}
-      >
-        {tagline}
-      </p>
-      {tidslinje && <TidslinjeLine tidslinje={tidslinje} />}
-      {hasData && stats && <StatsLine stats={stats} />}
+
+      {narrative && <SeasonLine text={narrative.seasonLine} />}
+      {narrative && <PersonalNarrative lines={narrative.personalText} />}
+
+      {/* Tidslinje + stats lever som sekundære, low-key signaler.
+          De er ikke længere første-indtryk; de orienterer dem der
+          har scrollet ind på siden uden at åbne en specifik sektion. */}
+      <div className="space-y-2 pt-2">
+        {tidslinje && <TidslinjeLine tidslinje={tidslinje} />}
+        {showStats && stats && <StatsLine stats={stats} />}
+      </div>
     </section>
   )
 }
 
 /**
- * "Du er her"-linjen — én rolig editorial sætning under tagline.
+ * Sæsonlinjen — Lag 2. Korte, sætningsagtige eyebrows i Cormorant
+ * italic. Skiftet fra "tagline" til "season line" er det vigtigste
+ * typografiske skred: brugeren læser nu en sætning der placerer
+ * dem i tid og kontekst, ikke en marketing-tagline.
  *
- * Format:
- *   Ny bruger:        "Søndag d. 7. juni"
- *   Med milestone:    "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud"
- *   Aktiv bruger:     "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud
- *                      · 3 noter fra denne uge"
+ * Eksempler:
+ *   "Din første sæson"
+ *   "Juni i haven"
+ *   "Velkommen tilbage til juni"
+ */
+function SeasonLine({ text }: { text: string }) {
+  return (
+    <p
+      style={{
+        fontFamily: serif,
+        fontStyle: 'italic',
+        fontWeight: 400,
+        fontSize: 'clamp(22px, 4.4vw, 30px)',
+        lineHeight: 1.2,
+        letterSpacing: '-0.005em',
+        color: 'rgba(36,48,31,0.78)',
+        margin: 0,
+        maxWidth: 460,
+      }}
+    >
+      {text}
+    </p>
+  )
+}
+
+/**
+ * Lag 3 — den personlige fortælling. 1-3 hele sætninger, hver med
+ * eget afsnit. Cormorant regular (ikke italic, ikke bold) — det
+ * læser som forfatter-prose, ikke metadata.
  *
- * Cormorant italic — bevidst LITTERÆR, ikke metadata. Manrope ville
- * have læst som "endnu en stats-linje under den eksisterende stats-
- * linje". Serif italic placerer den som forfatter-stemme: en lille
- * dagbogs-overskrift, ikke en data-rapport.
+ * Hvorfor adskilte <p> per linje: hver sætning er en selvstændig
+ * narrativ beat. "Agurkerne har stået ude i 12 dage. Tomaterne
+ * begynder at tage fart. Du har skrevet 3 noter denne uge." læser
+ * meget mere fortællende som 3 linjer end som én lang sætning.
+ */
+function PersonalNarrative({ lines }: { lines: string[] }) {
+  if (lines.length === 0) return null
+  return (
+    <div className="space-y-1">
+      {lines.map((line, i) => (
+        <p
+          key={i}
+          style={{
+            fontFamily: serif,
+            fontWeight: 400,
+            fontSize: 'clamp(17px, 2.8vw, 20px)',
+            lineHeight: 1.45,
+            color: 'rgba(36,48,31,0.70)',
+            margin: 0,
+            maxWidth: 480,
+          }}
+        >
+          {line}
+        </p>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * "Du er her"-linjen — én rolig editorial sætning med dato + milestone.
  *
- * Tom-tilstand er sin egen typografi (bare datoen, ingen ·) — vi
- * tvinger ikke separatorer ind i en sætning der består af én del.
- *
- * BEVIDST IKKE en CTA, IKKE en panel-sektion, IKKE en dashboard-
- * statuslinje. Bare tids-orientering.
+ * V2-rolle: low-key tids-orientering UNDER narrativen. Den er ikke
+ * længere første-indtryk; den siger bare hvilken dag det er, og
+ * hvad der sidst skete af substans.
  */
 function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
   const parts: string[] = [tidslinje.dateText]
@@ -95,13 +157,12 @@ function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
   return (
     <p
       style={{
-        fontFamily: serif,
-        fontStyle: 'italic',
-        fontWeight: 400,
-        fontSize: 18,
+        fontFamily: sans,
+        fontSize: 12.5,
+        fontWeight: 500,
         lineHeight: 1.5,
-        color: 'rgba(36,48,31,0.58)',
-        letterSpacing: 0,
+        color: 'rgba(36,48,31,0.45)',
+        letterSpacing: '0.01em',
         margin: 0,
         maxWidth: 520,
       }}
@@ -113,7 +174,7 @@ function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
               aria-hidden
               style={{
                 display: 'inline-block',
-                marginInline: 10,
+                marginInline: 8,
                 opacity: 0.55,
               }}
             >
@@ -127,6 +188,11 @@ function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
   )
 }
 
+/**
+ * Stats — kun vist hvis narrative.showStats er sand. Det skåner
+ * ny bruger fra at se "0 noter · 8 sorter · 0 høster" som første
+ * indtryk.
+ */
 function StatsLine({ stats }: { stats: HeroStats }) {
   const items: { value: number; label: string }[] = [
     { value: stats.notes, label: stats.notes === 1 ? 'note' : 'noter' },
@@ -140,9 +206,9 @@ function StatsLine({ stats }: { stats: HeroStats }) {
     <p
       style={{
         fontFamily: sans,
-        fontSize: 13.5,
+        fontSize: 12.5,
         fontWeight: 600,
-        color: 'rgba(36,48,31,0.55)',
+        color: 'rgba(36,48,31,0.45)',
         letterSpacing: '0.01em',
         margin: 0,
       }}

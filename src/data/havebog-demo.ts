@@ -113,6 +113,46 @@ export interface Tidslinje {
   weekNoteCount: number
 }
 
+/**
+ * Hero-fortællingen — heroen som FORTÆLLER, ikke overskrift.
+ *
+ * V2 (juni 2026): Anna's diagnose efter screenshots. Den tidligere
+ * tagline + stats-linje var administrativ, ikke fortællende. Heroens
+ * rolle er at give brugeren et svar på "hvor er jeg i sæsonen og
+ * hvad sker der lige nu", FØR de møder noter, minder og historik.
+ *
+ * Tre lag, alle valgfri (kun titel er garanteret):
+ *
+ *   Lag 1 (h1):      "Din Havebog"                — uændret
+ *   Lag 2 (eyebrow): "Din første sæson"            — sæsonlinje, Cormorant italic
+ *   Lag 3 (narrative): ["Du dyrker 8 sorter i år.",
+ *                       "Om lidt begynder de første minder at samle sig her."]
+ *                                                  — 1-3 personlige linjer
+ *
+ * Genereres server-side ud fra bruger-state:
+ *   - Ny bruger (notes=0):    "Din første sæson" + invitation
+ *   - Lidt data (notes>0):    "Juni i haven" + milestones fra denne uge
+ *   - År 1+ (har historik):   "Velkommen tilbage til juni" + På-denne-tid-sidste-år
+ *
+ * Heroen kan derved bære den tomhed brugeren ellers ville møde
+ * gentaget på 5 sektioner længere nede. Hvis heroen siger "Din
+ * første sæson er begyndt", giver det mening at Historik er tom.
+ *
+ * Stats-linjen er nu skjult som default — den var "0 noter · 8
+ * sorter · 0 høster" i Anna's case, hvilket er præcis det
+ * administrative sprog der ikke hører hjemme på første viewport.
+ * Den vises stadig hvis erfaren bruger har meningsfulde tal
+ * (notes > 0 OG harvests > 0).
+ */
+export interface HeroNarrative {
+  /** Sæsonlinje — fx "Din første sæson", "Juni i haven", "Velkommen tilbage til juni" */
+  seasonLine: string
+  /** 1-3 personlige narrativlinjer der placerer brugeren i sin egen sæson */
+  personalText: string[]
+  /** Skal stats-linjen vises? Default false for ny bruger — den er kun støj uden data */
+  showStats: boolean
+}
+
 // ════════════════════════════════════════════════════════════════
 // DEMO-INDHOLD — fabrikerede data der viser Havebogens designvision
 // for nye brugere uden egen historie
@@ -139,6 +179,22 @@ export const DEMO_TIDSLINJE: Tidslinje = {
   dateText: 'Søndag d. 7. juni',
   milestoneText: '12 dage siden du satte agurkerne ud',
   weekNoteCount: 3,
+}
+
+/**
+ * Demo-fortællingen viser "lidt data"-tilstanden — den mest
+ * fortællende af de tre states. Den hardcodes så snapshot'et er
+ * stabilt; real-data-flowet genererer den fra heroStats + tidslinje
+ * + history i actions/havebog.ts.
+ */
+export const DEMO_HERO_NARRATIVE: HeroNarrative = {
+  seasonLine: 'Juni i haven',
+  personalText: [
+    'Agurkerne har stået ude i 12 dage.',
+    'Tomaterne begynder at tage fart.',
+    'Du har skrevet 3 noter denne uge.',
+  ],
+  showStats: true,
 }
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
