@@ -60,17 +60,15 @@ export function NaturenLigeNu({
           I haven lige nu
         </p>
 
-        {/* Det store tal — niveau 1-typografi.
-            Bevidst tæt på samme størrelse som hero-titlen.
-            "Når alt er stort, er intet stort" gælder mellem sektioner,
-            ikke inden for en. Her er pointen at tallet HÆVER sig over
-            alt andet på siden lige her. */}
+        {/* Det store tal — V3.7 (Annas præcise spec).
+            font-size: clamp(72px, 20vw, 124px) — fra max 112px → 124px.
+            line-height: 0.82 — strammere så tallet "vejer" mere visuelt. */}
         <p
           style={{
             fontFamily: serif,
             fontWeight: 500,
-            fontSize: 'clamp(72px, 18vw, 112px)',
-            lineHeight: 0.88,
+            fontSize: 'clamp(72px, 20vw, 124px)',
+            lineHeight: 0.82,
             letterSpacing: '-0.03em',
             color: '#24301F',
             margin: 0,
@@ -79,18 +77,19 @@ export function NaturenLigeNu({
           {fakta.value}
         </p>
 
-        {/* Editorial statement — niveau 2-typografi.
-            Forklarer hvad tallet betyder, i én rolig sætning. */}
+        {/* Editorial statement — V3.7 (Annas spec):
+            max-width: 15ch — meget smal kolonne, tvinger naturlig wrapping
+            line-height: 1.2 — stram, læser som magasin-pull-quote */}
         <p
           style={{
             fontFamily: serif,
             fontWeight: 400,
             fontSize: 'clamp(18px, 3.4vw, 24px)',
-            lineHeight: 1.35,
+            lineHeight: 1.2,
             color: 'rgba(36,48,31,0.72)',
             margin: 0,
             marginTop: 14,
-            maxWidth: 320,
+            maxWidth: '15ch',
           }}
         >
           {fakta.statement}

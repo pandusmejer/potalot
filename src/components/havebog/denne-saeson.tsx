@@ -174,13 +174,16 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
 
           {hasVarieties ? (
             <>
-              {/* Niveau 1: det store tal */}
+              {/* Niveau 1: det store tal — V3.7 (Annas præcise spec).
+                  Samme typografi-skala som NaturenLigeNu's "14°".
+                  Forskellig komposition (denne her er delt med foto)
+                  sikrer at de ikke føles som to mini-dashboards. */}
               <p
                 style={{
                   fontFamily: serif,
                   fontWeight: 500,
-                  fontSize: 'clamp(56px, 14vw, 84px)',
-                  lineHeight: 0.86,
+                  fontSize: 'clamp(72px, 20vw, 124px)',
+                  lineHeight: 0.82,
                   letterSpacing: '-0.025em',
                   color: '#3A2B1B',
                   margin: 0,
@@ -189,33 +192,37 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
                 {varieties}
               </p>
 
-              {/* Niveau 3: caps-label under tallet */}
+              {/* Niveau 3: caps-label under tallet — V3.7 spec:
+                  margin-top: -2px (signatur under tallet)
+                  letter-spacing: 0.22em (bredere tracking) */}
               <p
                 style={{
                   fontFamily: sans,
                   fontSize: 10.5,
                   fontWeight: 700,
-                  letterSpacing: '0.18em',
+                  letterSpacing: '0.22em',
                   textTransform: 'uppercase',
                   color: 'rgba(58,43,27,0.55)',
                   margin: 0,
-                  marginTop: 4,
+                  marginTop: -2,
                 }}
               >
                 {varieties === 1 ? 'Sort i haven' : 'Sorter i haven'}
               </p>
 
-              {/* Niveau 2: editorial body */}
+              {/* Niveau 2: editorial body — V3.7 spec:
+                  line-height: 1.2 (strammere som magasin-pull-quote) */}
               <p
                 style={{
                   fontFamily: serif,
                   fontStyle: 'italic',
                   fontWeight: 400,
                   fontSize: 'clamp(15px, 2.6vw, 17px)',
-                  lineHeight: 1.45,
+                  lineHeight: 1.2,
                   color: 'rgba(58,43,27,0.65)',
                   margin: 0,
                   marginTop: 14,
+                  maxWidth: '15ch',
                 }}
               >
                 Om lidt begynder Havebogen at samle minder for dig.
