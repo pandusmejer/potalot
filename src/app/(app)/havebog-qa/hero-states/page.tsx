@@ -1,5 +1,7 @@
 import { HavebogHero } from '@/components/havebog/havebog-hero'
-import type { HeroStats, Tidslinje, HeroNarrative } from '@/data/havebog-demo'
+import { DenneSaeson } from '@/components/havebog/denne-saeson'
+import { NaturenLigeNu } from '@/components/havebog/naturen-lige-nu'
+import type { HeroStats, Tidslinje, HeroNarrative, DenneSaesonFacts, NaturObservation } from '@/data/havebog-demo'
 
 /**
  * QA-route: Havebog hero i alle tre bruger-tilstande.
@@ -67,6 +69,36 @@ export default function HavebogHeroStatesPage() {
         tidslinje={NEW_USER_TIDSLINJE}
         narrative={NEW_USER_NARRATIVE}
       />
+
+      <section className="space-y-4">
+        <div style={{ padding: '8px 14px', background: 'rgba(36,48,31,0.04)', borderLeft: '3px solid rgba(36,48,31,0.25)' }}>
+          <p style={{ fontFamily: 'var(--font-manrope)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.75)', margin: 0 }}>
+            Naturen lige nu (uafhængig komponent)
+          </p>
+        </div>
+        <NaturenLigeNu observations={DEMO_NATUR_OBS} />
+      </section>
+
+      <section className="space-y-4">
+        <div style={{ padding: '8px 14px', background: 'rgba(36,48,31,0.04)', borderLeft: '3px solid rgba(36,48,31,0.25)' }}>
+          <p style={{ fontFamily: 'var(--font-manrope)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.75)', margin: 0 }}>
+            DenneSæson — ny bruger (FirstSeasonBlock editorial)
+          </p>
+          <p style={{ fontFamily: 'var(--font-manrope)', fontSize: 12, color: 'rgba(36,48,31,0.55)', margin: '4px 0 0 0' }}>
+            Asymmetrisk papir-card, spire-illustration, terracotta eyebrow
+          </p>
+        </div>
+        <DenneSaeson facts={NEW_USER_FACTS} varieties={8} />
+      </section>
+
+      <section className="space-y-4">
+        <div style={{ padding: '8px 14px', background: 'rgba(36,48,31,0.04)', borderLeft: '3px solid rgba(36,48,31,0.25)' }}>
+          <p style={{ fontFamily: 'var(--font-manrope)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.75)', margin: 0 }}>
+            DenneSæson — erfaren bruger (3 fact-cards som hidtil)
+          </p>
+        </div>
+        <DenneSaeson facts={EXPERIENCED_FACTS} varieties={12} />
+      </section>
 
       <StateBlock
         label="State 2 — Lidt data (samme år, har skrevet noter)"
@@ -199,3 +231,41 @@ const EXPERIENCED_NARRATIVE: HeroNarrative = {
   ],
   showStats: true,
 }
+
+// ─────────────────────────────────────────────────────────
+// DenneSæson + NaturenLigeNu mock-data
+// ─────────────────────────────────────────────────────────
+
+const NEW_USER_FACTS: DenneSaesonFacts = {
+  senesteHoest: null,
+  senesteNote: null,
+  senesteBillede: null,
+}
+
+const EXPERIENCED_FACTS: DenneSaesonFacts = {
+  senesteHoest: {
+    plantName: 'Salat',
+    variety: 'Crispy Mint',
+    date: '2026-05-18',
+    text: 'Første portion plukket — knapt 90 g.',
+  },
+  senesteNote: {
+    plantName: 'Chili',
+    variety: 'Habanero Orange',
+    date: '2026-05-26',
+    text: 'Bladene ser lidt lyse ud — mangler nok kvælstof.',
+    type: 'observation',
+  },
+  senesteBillede: {
+    plantName: 'Tomat',
+    variety: 'San Marzano',
+    date: '2026-05-22',
+    imageUrl: '/images/plantekort/tomat-san-marzano.jpg',
+  },
+}
+
+const DEMO_NATUR_OBS: NaturObservation[] = [
+  { symbol: '☀', text: 'Solen varmer jorden op' },
+  { symbol: '🐝', text: 'Bierne besøger de første blomster' },
+  { symbol: '🌱', text: 'Væksten tager fart' },
+]

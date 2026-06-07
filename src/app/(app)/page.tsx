@@ -76,7 +76,7 @@ export default async function HavebogPage() {
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
       <NaturenLigeNu observations={naturenLigeNu} />
       {/* Forsidehistorie: "hvordan går det med min have?" */}
-      <DenneSaeson facts={denneSaeson} />
+      <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
       <PaaDenneDag entries={onThisDay} />
       <Historik years={history} />
       <SenesteNoter notes={recentNotes} />
