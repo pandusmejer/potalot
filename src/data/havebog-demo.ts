@@ -88,6 +88,31 @@ export interface ArchivedPlant {
   summary?: string
 }
 
+/**
+ * Editorial tidslinje under hero — én rolig "du er her"-sætning.
+ *
+ * Renderes som: "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud · 3 noter fra denne uge"
+ *
+ * BEVIDST IKKE et dashboard. Ingen CTA, ingen actions, ingen
+ * "gør nu". Bare tidsorientering: hvor er jeg i året, hvad gjorde
+ * jeg sidst der havde substans, og hvor aktiv har min uge været.
+ *
+ * Rolle-grænse: Havebog viser hvad der sker i brugerens have over
+ * tid. Kalender svarer på hvad brugeren skal gøre i haven lige nu.
+ * Tidslinjen orienterer — den dirigerer ikke.
+ *
+ * Hver del kan være null og bliver bare ladt ud; sætningen graceful-
+ * downgrader fra fuld erfaren bruger til helt ny bruger (kun dato).
+ */
+export interface Tidslinje {
+  /** Lokaliseret dato, beregnet server-side — fx "Søndag d. 7. juni" */
+  dateText: string
+  /** "12 dage siden du satte agurkerne ud" — null hvis ingen milestone fundet */
+  milestoneText: string | null
+  /** Antal noter logget de seneste 7 dage — 0 hvis ingen */
+  weekNoteCount: number
+}
+
 // ════════════════════════════════════════════════════════════════
 // DEMO-INDHOLD — fabrikerede data der viser Havebogens designvision
 // for nye brugere uden egen historie
@@ -97,6 +122,23 @@ export const DEMO_HERO_STATS: HeroStats = {
   notes: 24,
   varieties: 8,
   harvests: 3,
+}
+
+/**
+ * Demo-tidslinje. Datoen beregnes ikke server-side i demo-flowet —
+ * den hardcodes så snapshot'et er stabilt på tværs af visningstidspunkt.
+ * Real-data-flowet beregner alle tre felter fra plant_logs.
+ *
+ * Bevidst valg: weekNoteCount=3 selv om de hardcodede DEMO_RECENT_NOTES
+ * ikke falder inden for "denne uge" (de er fra 16.-26. maj, demo-dato
+ * 7. juni). Tidslinjens 3 repræsenterer en plausibel hverdag for en
+ * bruger der bruger appen — ikke det demoarrayet ved et tilfælde
+ * indeholder.
+ */
+export const DEMO_TIDSLINJE: Tidslinje = {
+  dateText: 'Søndag d. 7. juni',
+  milestoneText: '12 dage siden du satte agurkerne ud',
+  weekNoteCount: 3,
 }
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [

@@ -21,15 +21,88 @@ import type {
   DenneSaesonFacts,
   ArchivedPlant,
   LogType,
+  Tidslinje,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
   heroStats: HeroStats
+  tidslinje: Tidslinje
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
   history: HistoryYear[]
   denneSaeson: DenneSaesonFacts
   archivedPlants: ArchivedPlant[]
+}
+
+/**
+ * Milestone-værdige log-typer — handlinger med tydeligt dato-anker.
+ * "Sætte ud" / "så" / "høste" markerer skred i sæsonen; "note" og
+ * "observation" gør ikke (de er løse). Listen er bevidst kort så
+ * milestone-sætningen aldrig fortæller om en triviel handling.
+ *
+ * Format-strenge bruger {plant}-placeholder — beregneren udfylder
+ * planten + variety i samme stil som "agurkerne" eller
+ * "tomatplanterne", afhængigt af bestemt form.
+ */
+const MILESTONE_LABEL: Record<string, string> = {
+  sowing: 'såede {plant}',
+  plant_out: 'satte {plant} ud',
+  harvest: 'høstede første {plant}',
+  repot: 'priklede {plant} om',
+  pruning: 'knibede sideskud på {plant}',
+}
+
+/**
+ * Bestemt form (plural-flertal) af de almindeligste planter, så
+ * milestone-sætningen lyder naturligt: "satte agurkerne ud", ikke
+ * "satte Agurk Marketmore ud". Falder tilbage til simpel pluralis-
+ * konstruktion hvis navnet ikke er i ordbogen.
+ */
+const BESTEMT_FLERTAL: Record<string, string> = {
+  agurk: 'agurkerne',
+  tomat: 'tomatplanterne',
+  chili: 'chiliplanterne',
+  peberfrugt: 'peberfrugterne',
+  salat: 'salaten',
+  dild: 'dillen',
+  basilikum: 'basilikummen',
+  dahlia: 'dahliaerne',
+  sukkeraert: 'ærterne',
+  stangboenne: 'stangbønnerne',
+}
+
+function bestemtFlertal(plantName: string): string {
+  const key = plantName.toLowerCase().replace(/[æ]/g, 'ae').replace(/[ø]/g, 'oe').replace(/[å]/g, 'aa').split(/[\s-]/)[0]
+  return BESTEMT_FLERTAL[key] ?? `${plantName.toLowerCase()}en`
+}
+
+const WEEKDAY_NAMES_DA = [
+  'Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag',
+]
+
+const MONTH_NAMES_DA_LOWER = [
+  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+  'juli', 'august', 'september', 'oktober', 'november', 'december',
+]
+
+/**
+ * Format en dato som "Søndag d. 7. juni" — editorial standardform.
+ * Året udelades fordi tidslinjen altid handler om i dag.
+ */
+function formatDateText(d: Date): string {
+  const weekday = WEEKDAY_NAMES_DA[d.getDay()]
+  const day = d.getDate()
+  const month = MONTH_NAMES_DA_LOWER[d.getMonth()]
+  return `${weekday} d. ${day}. ${month}`
+}
+
+/**
+ * Beregn antal hele dage mellem to datoer (ignorer klokkeslæt).
+ */
+function daysBetween(from: Date, to: Date): number {
+  const fromMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate()).getTime()
+  const toMidnight = new Date(to.getFullYear(), to.getMonth(), to.getDate()).getTime()
+  return Math.round((toMidnight - fromMidnight) / 86400000)
 }
 
 interface PlantLogRow {
@@ -104,6 +177,41 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       varieties: inventoryCount,
       harvests: harvestsThisYear,
     }
+
+    // ── Tidslinje (editorial "du er her"-linje under hero) ───
+    // dateText: i dag, lokaliseret
+    // milestoneText: nyeste milestone-værdige log (sowing/plant_out/
+    //   harvest/repot/pruning) → "12 dage siden du satte agurkerne ud"
+    // weekNoteCount: alle logs de seneste 7 dage (alle typer tæller)
+    //
+    // Alle felter kan stå alene; HavebogHero render'er kun de dele
+    // der har værdi.
+    const dateText = formatDateText(today)
+
+    const milestoneLog = logs.find(l => l.type in MILESTONE_LABEL)
+    let milestoneText: string | null = null
+    if (milestoneLog) {
+      const daysAgo = daysBetween(new Date(milestoneLog.date), today)
+      // Kun vis milestones inden for det sidste år — ældre er ikke
+      // længere "lige nu"-relevant og dræber tonen.
+      if (daysAgo >= 0 && daysAgo <= 365) {
+        const plant = bestemtFlertal(plantName(milestoneLog.plant_id))
+        const verb = MILESTONE_LABEL[milestoneLog.type].replace('{plant}', plant)
+        const dayWord = daysAgo === 0
+          ? 'I dag'
+          : daysAgo === 1
+            ? 'I går'
+            : `${daysAgo} dage siden`
+        milestoneText = daysAgo <= 1
+          ? `${dayWord} ${verb}`
+          : `${dayWord} du ${verb}`
+      }
+    }
+
+    const weekAgo = new Date(today.getTime() - 7 * 86400000)
+    const weekNoteCount = logs.filter(l => new Date(l.date) >= weekAgo).length
+
+    const tidslinje: Tidslinje = { dateText, milestoneText, weekNoteCount }
 
     // ── På denne dag ─────────────────────────────────────────
     const todayMonth = today.getMonth() + 1
@@ -222,7 +330,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           (p.archived_at ? new Date(p.archived_at).getFullYear() : currentYear),
       }))
 
-    return { heroStats, onThisDay, recentNotes, history, denneSaeson, archivedPlants }
+    return { heroStats, tidslinje, onThisDay, recentNotes, history, denneSaeson, archivedPlants }
   } catch {
     return null
   }

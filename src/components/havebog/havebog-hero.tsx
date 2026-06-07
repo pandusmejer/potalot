@@ -1,10 +1,11 @@
-import type { HeroStats } from '@/data/havebog-demo'
+import type { HeroStats, Tidslinje } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
   stats: HeroStats | null
+  tidslinje?: Tidslinje
 }
 
 /**
@@ -22,7 +23,7 @@ interface Props {
  * Designunivers: bruger eksisterende fonte-tokens (Manrope + Cormorant)
  * og master-spacing — ingen nye design-spor.
  */
-export function HavebogHero({ stats }: Props) {
+export function HavebogHero({ stats, tidslinje }: Props) {
   const hasData =
     stats !== null && (stats.notes > 0 || stats.varieties > 0 || stats.harvests > 0)
   const tagline = hasData
@@ -57,8 +58,64 @@ export function HavebogHero({ stats }: Props) {
       >
         {tagline}
       </p>
+      {tidslinje && <TidslinjeLine tidslinje={tidslinje} />}
       {hasData && stats && <StatsLine stats={stats} />}
     </section>
+  )
+}
+
+/**
+ * "Du er her"-linjen — én rolig editorial sætning under tagline.
+ *
+ * Format: "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud · 3 noter fra denne uge"
+ *
+ * BEVIDST IKKE en CTA, IKKE en panel-sektion, IKKE en dashboard-
+ * statuslinje. Bare tids-orientering. Hvis dele mangler (ny bruger,
+ * stille uge) falder de helt ud — sætningen forkortes naturligt.
+ *
+ * Visuelt: samme baseline-grid som tagline ovenfor (Manrope, dæmpet
+ * farve), men én tand mindre + endnu lavmæltere kontrast så den
+ * læser som metadata frem for indhold.
+ */
+function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
+  const parts: string[] = [tidslinje.dateText]
+  if (tidslinje.milestoneText) parts.push(tidslinje.milestoneText)
+  if (tidslinje.weekNoteCount > 0) {
+    parts.push(
+      `${tidslinje.weekNoteCount} ${tidslinje.weekNoteCount === 1 ? 'note' : 'noter'} fra denne uge`,
+    )
+  }
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 13.5,
+        fontWeight: 400,
+        lineHeight: 1.5,
+        color: 'rgba(36,48,31,0.48)',
+        letterSpacing: '0.005em',
+        margin: 0,
+        maxWidth: 520,
+      }}
+    >
+      {parts.map((part, i) => (
+        <span key={i}>
+          {i > 0 && (
+            <span
+              aria-hidden
+              style={{
+                display: 'inline-block',
+                marginInline: 8,
+                opacity: 0.65,
+              }}
+            >
+              ·
+            </span>
+          )}
+          {part}
+        </span>
+      ))}
+    </p>
   )
 }
 

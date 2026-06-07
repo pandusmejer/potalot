@@ -8,6 +8,7 @@ import { ArkiverdePlanter } from '@/components/havebog/arkiverede-planter'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import {
   DEMO_HERO_STATS,
+  DEMO_TIDSLINJE,
   DEMO_ON_THIS_DAY,
   DEMO_RECENT_NOTES,
   DEMO_HISTORY,
@@ -49,6 +50,7 @@ export default async function HavebogPage() {
   const isDemo = data === null
 
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats
+  const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
   const history = isDemo ? DEMO_HISTORY : data.history
   const recentNotes = isDemo ? DEMO_RECENT_NOTES : data.recentNotes
@@ -63,7 +65,7 @@ export default async function HavebogPage() {
 
   return (
     <div className="space-y-12 sm:space-y-14 pb-6">
-      <HavebogHero stats={heroStats} />
+      <HavebogHero stats={heroStats} tidslinje={tidslinje} />
       <PaaDenneDag entries={onThisDay} />
       <Historik years={history} />
       {/* Stille åndepause efter den store historik-sektion. */}
