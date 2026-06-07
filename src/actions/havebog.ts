@@ -39,10 +39,19 @@ export interface HavebogData {
 }
 
 /**
- * Sæson-observations-pool. 3 observationer pr. måned, redaktionelt
- * skrevet — disse er ikke handlings-prompts (det er Kalender's job)
- * men sensoriske/naturhistoriske notater. "Bierne besøger de første
- * blomster" frem for "vand tomaterne".
+ * Sæson-observations-pool. 3 observationer pr. måned.
+ *
+ * V3.3 (juni 2026 — Annas redaktionelle prioriteringsfeedback):
+ *
+ * Tidligere udgaver var STEMNINGS-observationer ("Solen varmer
+ * jorden op", "Bierne besøger blomster"). Problemet: heroens
+ * foto + narrativ fortæller allerede stemningen. Sektionen
+ * gentog samme historie og blev derved svagere, ikke stærkere.
+ *
+ * V3.3 skifter til KONKRETE fakta-observationer der ER brugbare:
+ * jordtemperatur, plantnings-vinduer, dyrelivs-status. Det er
+ * stadig observation (Havebog-DNA), men på et niveau hvor det
+ * tilfører information snarere end at gentage stemning.
  *
  * Roterer pr. måned. Real-data action vælger den indeks-baserede
  * variant for aktuel måned.
@@ -50,75 +59,75 @@ export interface HavebogData {
 const NATUREN_LIGE_NU_BY_MONTH: NaturObservation[][] = [
   // Januar
   [
-    { symbol: '❄', text: 'Frosten holder jorden i ro' },
-    { symbol: '🌰', text: 'Frøkapsler bryder under sneen' },
-    { symbol: '🪶', text: 'Mejserne fouragerer i nøgne grene' },
+    { symbol: '❄', text: 'Jordtemperatur omkring frysepunktet' },
+    { symbol: '📖', text: 'Sæsonen begynder i frøkataloget' },
+    { symbol: '🪶', text: 'Mejserne tjekker fugleforet' },
   ],
   // Februar
   [
-    { symbol: '🌱', text: 'Vintergækkernes første spirer' },
-    { symbol: '☀', text: 'Lyset bliver længere hver dag' },
-    { symbol: '🪶', text: 'Solsorten øver sig på foråret' },
+    { symbol: '☀', text: '+90 min ekstra dagslys siden januar' },
+    { symbol: '🌱', text: 'Tid til at så chili og peberfrugt indendørs' },
+    { symbol: '🪶', text: 'Solsorten øver sig på sin sang' },
   ],
   // Marts
   [
-    { symbol: '🌱', text: 'Krokus og erantis bryder igennem' },
-    { symbol: '☀', text: 'Solen får styrke nok til at varme' },
-    { symbol: '🐝', text: 'De første humlebier kommer ud' },
+    { symbol: '🌡', text: 'Jordtemperatur når 5° i sydvendte bede' },
+    { symbol: '🌱', text: 'Tid til at forspire tomat og agurk' },
+    { symbol: '🐝', text: 'De første humlebier vågner' },
   ],
   // April
   [
-    { symbol: '🌸', text: 'Mirabel og kirsebær blomstrer' },
-    { symbol: '🐝', text: 'Bierne arbejder for alvor igen' },
-    { symbol: '🌱', text: 'Forspirerne kalder på lys i vindueskarmen' },
+    { symbol: '🌡', text: 'Jordtemperatur omkring 8-10°' },
+    { symbol: '🌱', text: 'Tid til direkte såning af kålrabi, gulerod, salat' },
+    { symbol: '🐝', text: 'Bierne arbejder i kirsebærblomsterne' },
   ],
   // Maj
   [
-    { symbol: '☀', text: 'Solen står højt på himlen' },
-    { symbol: '🌸', text: 'Forårsblomsterne tager over' },
-    { symbol: '🌱', text: 'Jorden er klar til udplantning' },
+    { symbol: '🌡', text: 'Jordtemperatur passerer 12° i den varme uge' },
+    { symbol: '🌱', text: 'Hærdning af forspirede planter begynder' },
+    { symbol: '🐝', text: 'Bestøverne er aktive i bedene' },
   ],
-  // Juni (matcher Anna's mockup-spec)
+  // Juni
   [
-    { symbol: '☀', text: 'Solen varmer jorden op' },
-    { symbol: '🐝', text: 'Bierne besøger de første blomster' },
-    { symbol: '🌱', text: 'Væksten tager fart' },
+    { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
+    { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
+    { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
   ],
   // Juli
   [
-    { symbol: '☀', text: 'Sommerlyset er hårdt og højt' },
-    { symbol: '🍅', text: 'Tomaterne modner i drivhuset' },
-    { symbol: '🦋', text: 'Sommerfuglene besøger lavendlen' },
+    { symbol: '🍅', text: 'Første tomater modner i drivhuset' },
+    { symbol: '💧', text: 'Vandbehovet topper — tjek hver morgen' },
+    { symbol: '🦋', text: 'Sommerfuglene er fuldt aktive' },
   ],
   // August
   [
-    { symbol: '🌾', text: 'Høsten samler sig i kurvene' },
-    { symbol: '🐝', text: 'Bierne haster mod blomster der er tilbage' },
-    { symbol: '☀', text: 'Aftnerne bliver mærkbart kortere' },
+    { symbol: '🌾', text: 'Hovedhøst i køkkenhaven' },
+    { symbol: '🌱', text: 'Tid til efterårssalat og spinat' },
+    { symbol: '☀', text: 'Solen står 2 timer kortere end i juni' },
   ],
   // September
   [
-    { symbol: '🌧', text: 'Lyset bliver blødere efter regn' },
-    { symbol: '🍎', text: 'Æbler og pærer falder modne' },
-    { symbol: '🌰', text: 'Frø samles til næste sæson' },
+    { symbol: '🌰', text: 'Tid til at samle modne frø fra blomster' },
+    { symbol: '🍎', text: 'Æbler og pærer i hovedhøst' },
+    { symbol: '🌧', text: 'Regnen vender tilbage til de tørre bede' },
   ],
   // Oktober
   [
-    { symbol: '🍂', text: 'Bladene skifter farve' },
-    { symbol: '🌾', text: 'De sidste afgrøder kommer ind' },
-    { symbol: '🍄', text: 'Skovsvampe dukker op under træerne' },
+    { symbol: '🍂', text: 'Tid til at grave dahlia-knolde op' },
+    { symbol: '🌾', text: 'Sidste høst af kål og rodfrugter' },
+    { symbol: '🍄', text: 'Skovsvampe i de fugtige skove' },
   ],
   // November
   [
-    { symbol: '🍂', text: 'Bedene falder til ro' },
-    { symbol: '🪶', text: 'Trækfuglene er for længst rejst' },
-    { symbol: '🌰', text: 'Knolde gemmes til foråret' },
+    { symbol: '🌱', text: 'Tid til at sætte hvidløg og forårsløg' },
+    { symbol: '🍂', text: 'Bedene dækkes med blad-kompost' },
+    { symbol: '🪶', text: 'Fugleforet sættes ud igen' },
   ],
   // December
   [
-    { symbol: '❄', text: 'Frosten lægger sig på jorden' },
-    { symbol: '🪶', text: 'Fuglene tager fugleforet i brug' },
-    { symbol: '🌲', text: 'Stedsegrønne planter bærer haven' },
+    { symbol: '🌲', text: 'Granpyntning af krukker og bede' },
+    { symbol: '📖', text: 'Sæsonens noter samles og evalueres' },
+    { symbol: '🪶', text: 'Vinterfuglene er flittige ved foderet' },
   ],
 ]
 

@@ -131,7 +131,9 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
         style={{
           padding: '24px 22px 26px 22px',
           display: 'grid',
-          gridTemplateColumns: '37% 1fr',
+          // V3.3 (Anna): foto bumpet fra 37% → 47%. Lad fotoet
+          // bære mere af sektionens vægt.
+          gridTemplateColumns: '47% 1fr',
           gap: 20,
           alignItems: 'start',
         }}

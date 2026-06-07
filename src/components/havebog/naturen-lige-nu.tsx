@@ -59,7 +59,7 @@ export function NaturenLigeNu({
             margin: 0,
           }}
         >
-          Naturen lige nu
+          I haven lige nu
         </p>
 
         <ul className="space-y-2.5" style={{ listStyle: 'none', padding: 0, margin: 0 }}>

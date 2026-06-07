@@ -268,7 +268,7 @@ const EXPERIENCED_FACTS: DenneSaesonFacts = {
 }
 
 const DEMO_NATUR_OBS: NaturObservation[] = [
-  { symbol: '☀', text: 'Solen varmer jorden op' },
-  { symbol: '🐝', text: 'Bierne besøger de første blomster' },
-  { symbol: '🌱', text: 'Væksten tager fart' },
+  { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
+  { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
+  { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
 ]

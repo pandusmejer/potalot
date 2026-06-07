@@ -5,6 +5,11 @@ import { pickHavebogHero } from '@/lib/havebog-hero-photo'
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
+const MAANED_KORT_UPPER = [
+  'JAN', 'FEB', 'MAR', 'APR', 'MAJ', 'JUN',
+  'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEC',
+] as const
+
 interface Props {
   /** Eksisterende men ikke længere renderet i V3 — bevaret som API-kontrakt */
   stats?: HeroStats | null
@@ -52,6 +57,14 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
   const month = aktuelMaaned() // 1-12
   const userState = narrative?.userState ?? 'active'
   const fotoPath = photoOverride ?? pickHavebogHero(month, userState)
+
+  // Redaktionel datomarkering — uddrages fra tidslinjen.
+  // Tidslinjens dateText er fx "Søndag d. 7. juni" — vi parser
+  // dagstal ud. Måned/år tages fra serverens nuværende dato.
+  const today = new Date()
+  const dayNum = today.getDate()
+  const monthShort = MAANED_KORT_UPPER[month - 1]
+  const yearNum = today.getFullYear()
 
   return (
     <section
@@ -106,6 +119,61 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
             'linear-gradient(180deg, rgba(234,230,216,0) 0%, rgba(234,230,216,0.85) 100%)',
         }}
       />
+
+      {/* Redaktionel datomarkering øverst højre.
+          IKKE et badge, IKKE en chip — bare typografi, som i en
+          gammel havemagasin-forside eller avis-mastehoved.
+          Tre lag: stort dagstal (Cormorant), månedsnavn (Manrope
+          tracking-wide), år (Manrope smaller). */}
+      <div
+        className="absolute z-10 flex flex-col items-end"
+        style={{
+          top: 22,
+          right: 24,
+          gap: 2,
+          textAlign: 'right',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: serif,
+            fontWeight: 400,
+            fontSize: 'clamp(48px, 11vw, 64px)',
+            lineHeight: 0.85,
+            letterSpacing: '-0.02em',
+            color: 'rgba(255,255,255,0.95)',
+            textShadow: '0 2px 18px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35)',
+          }}
+        >
+          {dayNum}
+        </span>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.24em',
+            color: 'rgba(255,255,255,0.85)',
+            textShadow: '0 1px 8px rgba(0,0,0,0.45)',
+            marginTop: 4,
+          }}
+        >
+          {monthShort}
+        </span>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 10,
+            fontWeight: 500,
+            letterSpacing: '0.16em',
+            color: 'rgba(255,255,255,0.65)',
+            textShadow: '0 1px 8px rgba(0,0,0,0.45)',
+            marginTop: 2,
+          }}
+        >
+          {yearNum}
+        </span>
+      </div>
 
       {/* Tekst-blok nederst venstre.
           Anna's spec: nederste tredjedel, venstre side. */}
@@ -172,24 +240,12 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
             </div>
           )}
 
-          {/* Dato — Manrope 14px, hvid 70%. */}
-          {tidslinje && (
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 14,
-                fontWeight: 500,
-                lineHeight: 1.4,
-                letterSpacing: '0.02em',
-                color: 'rgba(255,255,255,0.70)',
-                textShadow: '0 1px 8px rgba(0,0,0,0.45)',
-                margin: 0,
-                marginTop: 32,
-              }}
-            >
-              {tidslinje.dateText}
-            </p>
-          )}
+          {/*
+           * Datolinjen nederst er FJERNET i V3.3 — den redaktionelle
+           * datomarkering øverst højre har overtaget rollen.
+           * tidslinje-propen bevares som API-kontrakt for fremtidige
+           * milestone-tekster der måtte komme tilbage i hero-narrativen.
+           */}
         </div>
       </div>
     </section>

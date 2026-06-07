@@ -219,9 +219,9 @@ export interface NaturObservation {
 }
 
 export const DEMO_NATUREN_LIGE_NU: NaturObservation[] = [
-  { symbol: '☀', text: 'Solen varmer jorden op' },
-  { symbol: '🐝', text: 'Bierne besøger de første blomster' },
-  { symbol: '🌱', text: 'Væksten tager fart' },
+  { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
+  { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
+  { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
 ]
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
