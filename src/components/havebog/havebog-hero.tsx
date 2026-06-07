@@ -53,11 +53,12 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
       // -mt-6 bryder app-layoutets py-6 (top)
       className="relative -mx-4 -mt-6 overflow-hidden"
       style={{
-        // 70vh på mobil, lidt mere generøst på desktop hvor viewport
-        // er højere. minHeight sikrer hero føles substantiel selv på
-        // korte skærme.
-        height: '75vh',
-        minHeight: 560,
+        // 85vh — den større del af første viewport. Hero er IKKE et
+        // banner; den er åbningssiden i et magasin. Mere luft, færre
+        // ord, større billede. minHeight sikrer hero føles substantiel
+        // selv på korte landscape-skærme.
+        height: '85vh',
+        minHeight: 640,
       }}
     >
       {/* Foto — fylder hele heroen, ingen subtilitet, ingen tilbageholdenhed */}
@@ -99,25 +100,25 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
         }}
       />
 
-      {/* Tekst-blok nederst venstre. */}
+      {/* Tekst-blok nederst venstre. Bund-padding 56px placerer teksten
+          tæt på heroens bundkant — som en kolofon i bunden af et
+          bogopslag, ikke som et banner-overlay midt på siden. */}
       <div
         className="relative z-10 flex h-full flex-col justify-end"
-        style={{
-          // Padding skal afspejle papirets margin: generøs nederst,
-          // venstre. paddingBottom = 96px holder teksten klart af
-          // bund-faden uden at trække den væk fra magasin-feelet.
-          padding: '0 24px 96px 24px',
-        }}
+        style={{ padding: '0 24px 56px 24px' }}
       >
-        <div className="space-y-4" style={{ maxWidth: 440 }}>
-          {/* Lag 1: Titel */}
+        <div style={{ maxWidth: 440 }}>
+          {/* Lag 1: Titel.
+              Dæmpet fra 88px → 72px max. "Når alt er stort, er intet
+              stort" (Anna). Mindre titel giver de andre lag plads til
+              at vejre selvstændigt. */}
           <h1
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: 'clamp(56px, 13vw, 88px)',
-              lineHeight: 0.88,
-              letterSpacing: '-0.025em',
+              fontSize: 'clamp(48px, 11vw, 72px)',
+              lineHeight: 0.92,
+              letterSpacing: '-0.022em',
               color: '#F4EFDC',
               textShadow: '0 2px 18px rgba(12,18,8,0.45), 0 1px 3px rgba(12,18,8,0.35)',
               margin: 0,
@@ -126,7 +127,8 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
             Din Havebog
           </h1>
 
-          {/* Lag 2: Sæsonlinje (italic) */}
+          {/* Lag 2: Sæsonlinje (italic).
+              Større luft fra titel — 22px marginTop. */}
           {narrative && (
             <p
               style={{
@@ -139,15 +141,17 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
                 color: 'rgba(244,239,220,0.95)',
                 textShadow: '0 1px 14px rgba(12,18,8,0.55)',
                 margin: 0,
+                marginTop: 22,
               }}
             >
               {narrative.seasonLine}
             </p>
           )}
 
-          {/* Lag 3: Personlig narrativ */}
+          {/* Lag 3: Personlig narrativ.
+              Større luft mellem lag (28px) og mellem linjer (space-y-2). */}
           {narrative && narrative.personalText.length > 0 && (
-            <div className="space-y-1" style={{ maxWidth: 400 }}>
+            <div className="space-y-2" style={{ maxWidth: 400, marginTop: 28 }}>
               {narrative.personalText.map((line, i) => (
                 <p
                   key={i}
@@ -155,7 +159,7 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
                     fontFamily: serif,
                     fontWeight: 400,
                     fontSize: 'clamp(20px, 3.8vw, 26px)',
-                    lineHeight: 1.35,
+                    lineHeight: 1.4,
                     color: 'rgba(244,239,220,0.88)',
                     textShadow: '0 1px 12px rgba(12,18,8,0.55)',
                     margin: 0,
@@ -167,7 +171,9 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
             </div>
           )}
 
-          {/* Metadata (Manrope, ren tekst). Tidslinjens dato + optional milestone. */}
+          {/* Metadata (Manrope, ren tekst). Tidslinjens dato.
+              Større mellemrum end før (32px) — som en lille publicering
+              s-tag nederst i et magasin. */}
           {tidslinje && (
             <p
               style={{
@@ -178,7 +184,7 @@ export function HavebogHero({ tidslinje, narrative }: Props) {
                 letterSpacing: '0.02em',
                 color: 'rgba(244,239,220,0.65)',
                 margin: 0,
-                marginTop: 18,
+                marginTop: 32,
               }}
             >
               {tidslinje.dateText}

@@ -1,41 +1,53 @@
 /**
- * "Naturen lige nu" — V3 (juni 2026, Anna's arkitektur-ordre).
+ * "Naturen lige nu" — V3.1 (juni 2026, Anna's herbarium-feedback).
  *
- * IKKE et card. IKKE en boks. IKKE en border. IKKE en baggrund.
- * Tre observationer i kolonne, hver med et lille ikon. Til højre
- * ligger en botanisk stregillustration ved 10-15% opacity — som
- * pencilstreger i et gammelt planteatlas.
+ * V3.0 brugte SVG-stregillustration højre side. Den læste som
+ * "UI-illustration fra Figma" frem for "herbarium-prøve fra notesbog".
+ * V3.1 erstatter den med en LILLE makrofoto-prøve — en beskåret
+ * smal flade af et ægte makro (blad-dug), let roteret, holdt i
+ * højre side med en antydet papirtape.
  *
- * Sætter den naturhistoriske tone for siden. Skal placeres direkte
- * under Hero så hele første viewport er fortælling, ikke data.
+ * IKKE et card. IKKE en boks. IKKE en border. Tre observationer
+ * i kolonne, hver med et lille emoji-ikon. Til højre ligger
+ * foto-prøven som hovedobjektet i sektionen.
  *
- * Observationerne er sæson-relevante og roterer pr. måned. De er
- * ikke handlings-prompts; de er observations-prompts. Forskellen
- * mellem "vand tomaterne" og "duggen er væk klokken 9".
+ * Anti-regel V3 håndhævet: hver sektion skal have ét visuelt
+ * hovedobjekt. For NaturenLigeNu er hovedobjektet ikke teksten —
+ * det er den lille foto-prøve.
  */
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Observation {
-  symbol: string         // emoji eller mini-SVG-ikon (bare brug emoji for nu)
+  symbol: string         // emoji
   text: string
 }
 
 interface Props {
   observations: Observation[]
+  /** Sti til lille makrofoto-prøve. Falder tilbage til chili/blad-dug.jpg. */
+  herbariumPhoto?: string
 }
 
-export function NaturenLigeNu({ observations }: Props) {
+export function NaturenLigeNu({
+  observations,
+  herbariumPhoto = '/images/makro/chili/blad-dug.jpg',
+}: Props) {
   return (
-    <section className="relative" style={{ paddingBlock: '16px 8px' }}>
-      {/* Botanisk stregillustration højre — yderst svag, som et
-          motiv-anker for sektionen. Position 'absolute' fordi den
-          ikke må påvirke layoutet af observations-listen.
-          SVG inline så vi ikke afhænger af et asset der ikke findes. */}
-      <BotaniskStreg className="absolute right-2 top-0 sm:right-4" />
+    <section className="relative" style={{ paddingBlock: '8px 8px', minHeight: 160 }}>
+      {/* Foto-prøve højre side — som en presset blad-prøve fastgjort
+          i et herbarium. Let rotation, smal kasse, papirtape ovenpå.
+          IKKE midt på sektionen; sidder i højre side hvor den ikke
+          forstyrrer læseflowet men giver øjet et objekt at lande på. */}
+      <HerbariumProeve
+        src={herbariumPhoto}
+        className="absolute right-1 top-1 sm:right-3"
+      />
 
-      <div className="space-y-3">
+      {/* Observations-liste fylder venstre 2/3 af sektionen.
+          paddingRight giver foto-prøven plads til at trække vejret. */}
+      <div className="space-y-3" style={{ paddingRight: 88, maxWidth: 360 }}>
         <p
           style={{
             fontFamily: sans,
@@ -62,7 +74,6 @@ export function NaturenLigeNu({ observations }: Props) {
                 lineHeight: 1.45,
                 color: 'rgba(36,48,31,0.78)',
                 margin: 0,
-                maxWidth: 340,
               }}
             >
               <span
@@ -73,8 +84,6 @@ export function NaturenLigeNu({ observations }: Props) {
                   fontSize: 17,
                   lineHeight: 1.45,
                   flexShrink: 0,
-                  // Lille top-margin for at ikonet visuelt sidder
-                  // på linje med x-højden i serif-teksten.
                   marginTop: 1,
                 }}
               >
@@ -90,42 +99,77 @@ export function NaturenLigeNu({ observations }: Props) {
 }
 
 /**
- * Botanisk stregillustration — minimal SVG der antyder en plante.
- * Bevidst SIMPEL (få streger) så den læser som baggrundsmotiv, ikke
- * forgrundselement. 10-12% opacity gør den til atmosfære snarere
- * end indhold.
+ * Lille makrofoto-prøve — som en presset blad-prøve fastgjort i et
+ * herbarium. Smal, høj, let roteret, med antydet papirtape ovenpå.
  *
- * Motivet: en lille kvist med 4 blade og en knop øverst. Hentet
- * efter forsidet på Flora Danica's mindre planteatlas — minimal,
- * organisk, ingen perfekt symmetri.
+ * Specs:
+ *   - 76×130 px (smal vertikal flade)
+ *   - rotate(2.5deg) — den uregelmæssighed der signalerer "håndlavet"
+ *   - Mat papirfarve rundt om fotoet (lille kant)
+ *   - Tape: lille mørkere-creme rektangel øverst, tilt(-3deg)
+ *
+ * Visuelt: når du squinter, ser du IKKE en SVG. Du ser en lille
+ * ægte prøve fastsat på siden.
  */
-function BotaniskStreg({ className }: { className?: string }) {
+function HerbariumProeve({
+  src,
+  className,
+}: {
+  src: string
+  className?: string
+}) {
   return (
-    <svg
+    <div
       className={className}
-      width={92}
-      height={140}
-      viewBox="0 0 92 140"
-      fill="none"
-      stroke="rgba(36,48,31,0.30)"
-      strokeWidth={1.1}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      style={{ pointerEvents: 'none' }}
+      style={{
+        position: 'absolute',
+        width: 78,
+        height: 134,
+        transform: 'rotate(2.2deg)',
+        pointerEvents: 'none',
+      }}
     >
-      {/* Hovedstilk */}
-      <path d="M48 138 C 48 110, 46 88, 49 60 C 51 38, 50 18, 50 6" />
-      {/* Knop øverst */}
-      <ellipse cx="50" cy="5" rx="4" ry="6" />
-      {/* Blad 1 — venstre top */}
-      <path d="M49 38 C 34 30, 22 28, 12 32 C 22 38, 38 42, 49 42" fill="rgba(36,48,31,0.06)" />
-      {/* Blad 2 — højre øverste */}
-      <path d="M50 58 C 64 50, 76 50, 86 56 C 76 62, 60 64, 50 62" fill="rgba(36,48,31,0.06)" />
-      {/* Blad 3 — venstre nederste */}
-      <path d="M47 84 C 32 76, 22 76, 10 82 C 22 90, 38 90, 47 88" fill="rgba(36,48,31,0.06)" />
-      {/* Blad 4 — højre nederste */}
-      <path d="M48 110 C 60 102, 74 102, 84 108 C 74 116, 60 116, 48 114" fill="rgba(36,48,31,0.06)" />
-    </svg>
+      {/* Papir-baggrund — lidt bredere end fotoet, så der er en
+          synlig matkant ligesom på en presset prøve fastgjort på
+          herbarium-karton. */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: '#EEE5CF',
+          boxShadow: '0 1px 2px rgba(48,38,18,0.08), 0 6px 14px rgba(48,38,18,0.10)',
+        }}
+      />
+      {/* Selve fotoet — beskåret indenfor papir-kanten (4px inset) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        style={{
+          position: 'absolute',
+          inset: 4,
+          width: 'calc(100% - 8px)',
+          height: 'calc(100% - 8px)',
+          objectFit: 'cover',
+          filter: 'saturate(0.85) contrast(0.95)',
+        }}
+      />
+      {/* Tape øverst — lille creme-strimmel med modsat rotation
+          så det ser ud som om papiret er fastgjort der. */}
+      <div
+        style={{
+          position: 'absolute',
+          top: -6,
+          left: '50%',
+          width: 38,
+          height: 12,
+          background: 'rgba(245,236,210,0.78)',
+          transform: 'translateX(-50%) rotate(-4deg)',
+          boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
+          // Subtilt mat-look — som papirtape, ikke som plastik.
+          border: '1px solid rgba(180,160,120,0.20)',
+        }}
+      />
+    </div>
   )
 }

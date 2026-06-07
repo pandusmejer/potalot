@@ -84,15 +84,24 @@ export function DenneSaeson({ facts, varieties = 0 }: Props) {
 }
 
 /**
- * Ny-bruger-tilstandens hovedfortælling — én stor editorial blok.
+ * Ny-bruger-tilstandens hovedfortælling — editorial opslag med
+ * makrofoto som hovedperson.
  *
- * Visuelle spec'er pr. Anna's mockup:
- *   - Varm papir-farve (#F1E9D6 — varmere end sidens creme)
- *   - Asymmetrisk radius (større nederst-venstre, mindre øverst-højre)
- *   - Stor spire-illustration nederst højre — jord, frøskal, lille
- *     plante. SVG inline så vi ikke afventer assets.
+ * V3.1 (Anna's spire-feedback): SVG-illustrationen virkede børnebogs-
+ * agtig. Erstattet med ægte makrofoto (dahlia/skud_1.jpg — et skud
+ * der vokser frem). Fotoet ER hovedobjektet; teksten følger ved
+ * siden af.
+ *
+ * Layout: venstre = makrofoto i smal vertikal kolonne (37%),
+ * højre = tekst (eyebrow + titel + body). Fotoet stikker en lille
+ * smule ud af card'en øverst (-6px) for scrapbook-følelse.
+ *
+ * Visuelle spec'er:
+ *   - Varm papir-farve #F1E9D6 (varmere end sidens creme)
+ *   - Asymmetrisk radius (14/26/28/18)
+ *   - Foto: makro/dahlia/skud_1.jpg, beskåret som høj kolonne
  *   - Terracotta eyebrow "DIN FØRSTE SÆSON"
- *   - Cormorant 30px titel + 19px italic kropstekst
+ *   - Cormorant titel + italic body
  */
 function FirstSeasonBlock({ varieties }: { varieties: number }) {
   const titleText = varieties > 0
@@ -103,169 +112,104 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
     : 'Den første sort, du planter, bliver Havebogens første minde.'
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative"
       style={{
         background: '#F1E9D6',
         // Asymmetrisk radius — som et papirstykke der ikke er
         // industrielt skåret. Større nederst-venstre.
         borderRadius: '14px 26px 28px 18px',
         boxShadow: '0 1px 2px rgba(48,38,18,0.04), 0 8px 22px rgba(48,38,18,0.06)',
-        // Tekstur via subtilt papir-radial. Næsten umærkeligt, men
-        // bryder den flade overflade.
         backgroundImage:
           'radial-gradient(at 78% 18%, rgba(220,200,160,0.18) 0%, transparent 55%),' +
           'radial-gradient(at 12% 92%, rgba(220,200,160,0.12) 0%, transparent 65%)',
+        // Bevidst IKKE overflow-hidden — fotoet skal kunne stikke
+        // lidt ud af card-kanten for scrapbook-overlap.
       }}
     >
       <div
-        className="relative z-10"
-        style={{ padding: '26px 24px 30px 24px' }}
-      >
-        <p
-          style={{
-            fontFamily: sans,
-            fontSize: 10.5,
-            fontWeight: 700,
-            letterSpacing: '0.24em',
-            textTransform: 'uppercase',
-            // Terracotta — varm, jord-tone, distinkt fra sidens grøn
-            color: '#A55A2B',
-            margin: 0,
-            marginBottom: 14,
-          }}
-        >
-          Din første sæson
-        </p>
-
-        <h2
-          style={{
-            fontFamily: serif,
-            fontWeight: 500,
-            fontSize: 'clamp(28px, 5.5vw, 38px)',
-            lineHeight: 1.1,
-            letterSpacing: '-0.015em',
-            color: '#3A2B1B',
-            margin: 0,
-            maxWidth: 320,
-          }}
-        >
-          {titleText}
-        </h2>
-
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            fontSize: 'clamp(17px, 3vw, 20px)',
-            lineHeight: 1.45,
-            color: 'rgba(58,43,27,0.72)',
-            margin: 0,
-            marginTop: 14,
-            maxWidth: 280,
-          }}
-        >
-          {bodyText}
-        </p>
-      </div>
-
-      {/* Spire-illustration nederst højre. Position absolute så
-          den kan stikke lidt ud af klipningen og foroverlejre tekst
-          i en organisk overlap. */}
-      <SpireIllustration
-        className="absolute"
+        className="relative"
         style={{
-          right: -8,
-          bottom: -4,
-          width: 132,
-          height: 124,
-          opacity: 0.92,
+          padding: '24px 22px 26px 22px',
+          display: 'grid',
+          gridTemplateColumns: '37% 1fr',
+          gap: 20,
+          alignItems: 'start',
         }}
-      />
+      >
+        {/* Foto-kolonne — makrofoto af dahlia-skud (et skud der
+            vokser frem). Stikker -6px op for scrapbook-følelse. */}
+        <div
+          style={{
+            position: 'relative',
+            aspectRatio: '0.78 / 1',
+            marginTop: -6,
+            borderRadius: '6px 10px 8px 12px',
+            overflow: 'hidden',
+            boxShadow: '0 2px 6px rgba(48,38,18,0.12), 0 12px 24px rgba(48,38,18,0.08)',
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/makro/dahlia/skud_1.jpg"
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 35%',
+              filter: 'saturate(0.92)',
+            }}
+          />
+        </div>
+
+        {/* Tekst-kolonne */}
+        <div>
+          <p
+            style={{
+              fontFamily: sans,
+              fontSize: 10.5,
+              fontWeight: 700,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: '#A55A2B',
+              margin: 0,
+              marginBottom: 12,
+            }}
+          >
+            Din første sæson
+          </p>
+
+          <h2
+            style={{
+              fontFamily: serif,
+              fontWeight: 500,
+              fontSize: 'clamp(24px, 5vw, 32px)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.015em',
+              color: '#3A2B1B',
+              margin: 0,
+            }}
+          >
+            {titleText}
+          </h2>
+
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: 'italic',
+              fontWeight: 400,
+              fontSize: 'clamp(16px, 2.8vw, 19px)',
+              lineHeight: 1.45,
+              color: 'rgba(58,43,27,0.72)',
+              margin: 0,
+              marginTop: 14,
+            }}
+          >
+            {bodyText}
+          </p>
+        </div>
+      </div>
     </section>
-  )
-}
-
-/**
- * Spire der er ved at bryde gennem jord, med frøskal-rest til venstre.
- *
- * Bevidst HAND-DRAWN (ikke geometrisk perfekt). Bløde streger, små
- * organiske skiftevise tykkelser. Ingen kontur — alle linjer er
- * konturløse fyldte former, så det ligner blæk eller akvarel.
- */
-function SpireIllustration({
-  className,
-  style,
-}: {
-  className?: string
-  style?: React.CSSProperties
-}) {
-  return (
-    <svg
-      className={className}
-      style={style}
-      viewBox="0 0 132 124"
-      fill="none"
-      aria-hidden
-    >
-      {/* Jord-fladen — uregelmæssig kurve som en brun horisont */}
-      <path
-        d="M 0 92 C 18 86, 38 90, 58 88 C 78 86, 96 92, 112 90 C 122 89, 130 92, 132 94 L 132 124 L 0 124 Z"
-        fill="#6B4A28"
-      />
-      {/* Lysere jord-strøg ovenpå — variation, ikke flad farve */}
-      <path
-        d="M 8 92 C 26 88, 52 90, 78 89 C 100 88, 118 92, 130 91 L 132 96 C 116 98, 88 96, 60 97 C 32 98, 12 96, 0 98 Z"
-        fill="#8B6438"
-        opacity="0.6"
-      />
-      {/* Små jord-prikker — granuleret tekstur */}
-      <circle cx="22" cy="98" r="1.5" fill="#5A3D20" />
-      <circle cx="42" cy="104" r="1" fill="#5A3D20" />
-      <circle cx="68" cy="100" r="1.4" fill="#5A3D20" />
-      <circle cx="96" cy="106" r="1.2" fill="#5A3D20" />
-      <circle cx="116" cy="98" r="1.3" fill="#5A3D20" />
-
-      {/* Frøskal — halvt åben skal til venstre nede */}
-      <path
-        d="M 20 84 C 18 80, 22 76, 28 76 C 34 76, 38 80, 36 86 C 34 90, 26 90, 22 88 Z"
-        fill="#C9A572"
-      />
-      <path
-        d="M 22 86 C 22 84, 26 82, 30 84 C 32 85, 32 87, 30 88 C 26 88, 22 87, 22 86 Z"
-        fill="#A0824F"
-        opacity="0.5"
-      />
-
-      {/* Spirens stilk — let bøjet */}
-      <path
-        d="M 66 92 C 64 78, 68 64, 66 48 C 65 38, 67 30, 66 22"
-        stroke="#4A6B2D"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        fill="none"
-      />
-
-      {/* To kimblade øverst — hjerteform */}
-      <path
-        d="M 66 26 C 60 20, 50 18, 44 22 C 42 26, 46 32, 54 32 C 60 32, 66 30, 66 26 Z"
-        fill="#7BA050"
-      />
-      <path
-        d="M 66 26 C 72 20, 82 18, 88 22 C 90 26, 86 32, 78 32 C 72 32, 66 30, 66 26 Z"
-        fill="#8FB562"
-      />
-
-      {/* Midte-knop hvor spiren bryder */}
-      <ellipse cx="66" cy="22" rx="2.5" ry="3" fill="#5A8038" />
-
-      {/* Lille ekstra kimblad-detalje — variation */}
-      <path
-        d="M 54 30 C 56 28, 60 28, 60 30 C 60 31, 56 32, 54 30 Z"
-        fill="#5A8038"
-        opacity="0.55"
-      />
-    </svg>
   )
 }
 
