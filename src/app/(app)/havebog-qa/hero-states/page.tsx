@@ -1,7 +1,7 @@
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { DenneSaeson } from '@/components/havebog/denne-saeson'
 import { NaturenLigeNu } from '@/components/havebog/naturen-lige-nu'
-import type { HeroStats, Tidslinje, HeroNarrative, DenneSaesonFacts, NaturObservation } from '@/data/havebog-demo'
+import type { HeroStats, Tidslinje, HeroNarrative, DenneSaesonFacts, NaturFakta } from '@/data/havebog-demo'
 
 /**
  * QA-route: Havebog hero i alle tre bruger-tilstande.
@@ -76,7 +76,7 @@ export default function HavebogHeroStatesPage() {
             Naturen lige nu (uafhængig komponent)
           </p>
         </div>
-        <NaturenLigeNu observations={DEMO_NATUR_OBS} />
+        <NaturenLigeNu fakta={DEMO_NATUR_FAKTA} />
       </section>
 
       <section className="space-y-4">
@@ -267,8 +267,7 @@ const EXPERIENCED_FACTS: DenneSaesonFacts = {
   },
 }
 
-const DEMO_NATUR_OBS: NaturObservation[] = [
-  { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
-  { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
-  { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
-]
+const DEMO_NATUR_FAKTA: NaturFakta = {
+  value: '14°',
+  statement: 'Jordtemperaturen er nu høj nok til tomater og chili.',
+}

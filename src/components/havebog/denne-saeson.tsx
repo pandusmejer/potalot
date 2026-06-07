@@ -104,42 +104,33 @@ export function DenneSaeson({ facts, varieties = 0 }: Props) {
  *   - Cormorant titel + italic body
  */
 function FirstSeasonBlock({ varieties }: { varieties: number }) {
-  const titleText = varieties > 0
-    ? `Du dyrker ${varieties} ${varieties === 1 ? 'sort' : 'sorter'}.`
-    : 'Sæsonen står åben.'
-  const bodyText = varieties > 0
-    ? 'Om lidt begynder Havebogen at samle minder for dig.'
-    : 'Den første sort, du planter, bliver Havebogens første minde.'
+  // V3.5 (Anna's reference-opslag-feedback): tallet er nu hovedpersonen,
+  // ikke embedded i en sætning. "Du dyrker 8 sorter." læste som
+  // brødtekst. "8" som Cormorant 80px læser som magasin.
+  const hasVarieties = varieties > 0
   return (
     <section
       className="relative"
       style={{
         background: '#F1E9D6',
-        // Asymmetrisk radius — som et papirstykke der ikke er
-        // industrielt skåret. Større nederst-venstre.
         borderRadius: '14px 26px 28px 18px',
         boxShadow: '0 1px 2px rgba(48,38,18,0.04), 0 8px 22px rgba(48,38,18,0.06)',
         backgroundImage:
           'radial-gradient(at 78% 18%, rgba(220,200,160,0.18) 0%, transparent 55%),' +
           'radial-gradient(at 12% 92%, rgba(220,200,160,0.12) 0%, transparent 65%)',
-        // Bevidst IKKE overflow-hidden — fotoet skal kunne stikke
-        // lidt ud af card-kanten for scrapbook-overlap.
       }}
     >
       <div
         className="relative"
         style={{
-          padding: '24px 22px 26px 22px',
+          padding: '24px 22px 28px 22px',
           display: 'grid',
-          // V3.3 (Anna): foto bumpet fra 37% → 47%. Lad fotoet
-          // bære mere af sektionens vægt.
           gridTemplateColumns: '47% 1fr',
           gap: 20,
           alignItems: 'start',
         }}
       >
-        {/* Foto-kolonne — makrofoto af dahlia-skud (et skud der
-            vokser frem). Stikker -6px op for scrapbook-følelse. */}
+        {/* Foto-kolonne — makrofoto af dahlia-skud */}
         <div
           style={{
             position: 'relative',
@@ -164,7 +155,7 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
           />
         </div>
 
-        {/* Tekst-kolonne */}
+        {/* Tekst-kolonne — big-number-hierarki */}
         <div>
           <p
             style={{
@@ -175,40 +166,94 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
               textTransform: 'uppercase',
               color: '#A55A2B',
               margin: 0,
-              marginBottom: 12,
+              marginBottom: 8,
             }}
           >
             Din første sæson
           </p>
 
-          <h2
-            style={{
-              fontFamily: serif,
-              fontWeight: 500,
-              fontSize: 'clamp(24px, 5vw, 32px)',
-              lineHeight: 1.1,
-              letterSpacing: '-0.015em',
-              color: '#3A2B1B',
-              margin: 0,
-            }}
-          >
-            {titleText}
-          </h2>
+          {hasVarieties ? (
+            <>
+              {/* Niveau 1: det store tal */}
+              <p
+                style={{
+                  fontFamily: serif,
+                  fontWeight: 500,
+                  fontSize: 'clamp(56px, 14vw, 84px)',
+                  lineHeight: 0.86,
+                  letterSpacing: '-0.025em',
+                  color: '#3A2B1B',
+                  margin: 0,
+                }}
+              >
+                {varieties}
+              </p>
 
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontWeight: 400,
-              fontSize: 'clamp(16px, 2.8vw, 19px)',
-              lineHeight: 1.45,
-              color: 'rgba(58,43,27,0.72)',
-              margin: 0,
-              marginTop: 14,
-            }}
-          >
-            {bodyText}
-          </p>
+              {/* Niveau 3: caps-label under tallet */}
+              <p
+                style={{
+                  fontFamily: sans,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(58,43,27,0.55)',
+                  margin: 0,
+                  marginTop: 4,
+                }}
+              >
+                {varieties === 1 ? 'Sort i haven' : 'Sorter i haven'}
+              </p>
+
+              {/* Niveau 2: editorial body */}
+              <p
+                style={{
+                  fontFamily: serif,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 'clamp(15px, 2.6vw, 17px)',
+                  lineHeight: 1.45,
+                  color: 'rgba(58,43,27,0.65)',
+                  margin: 0,
+                  marginTop: 14,
+                }}
+              >
+                Om lidt begynder Havebogen at samle minder for dig.
+              </p>
+            </>
+          ) : (
+            // Edge-case: ingen sorter endnu (frøbank tom). Vis editorial
+            // sætning i niveau-2-typografi uden big-number-stunt.
+            <>
+              <h2
+                style={{
+                  fontFamily: serif,
+                  fontWeight: 500,
+                  fontSize: 'clamp(24px, 5vw, 32px)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.015em',
+                  color: '#3A2B1B',
+                  margin: 0,
+                }}
+              >
+                Sæsonen står åben.
+              </h2>
+              <p
+                style={{
+                  fontFamily: serif,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 'clamp(15px, 2.6vw, 17px)',
+                  lineHeight: 1.45,
+                  color: 'rgba(58,43,27,0.65)',
+                  margin: 0,
+                  marginTop: 14,
+                }}
+              >
+                Den første sort, du planter, bliver Havebogens første minde.
+              </p>
+            </>
+          )}
         </div>
       </div>
     </section>

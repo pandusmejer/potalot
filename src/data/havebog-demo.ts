@@ -204,25 +204,37 @@ export const DEMO_HERO_NARRATIVE: HeroNarrative = {
 }
 
 /**
- * "Naturen lige nu" — 3 sæson-observationer.
+ * "I haven lige nu" — ÉT stort tal + ÉN editorial sætning per måned.
  *
- * Observations-prompts, ikke handlings-prompts. Forskellen mellem
- * "vand tomaterne" (kommando, Kalender's job) og "duggen er væk
- * klokken 9" (observation, Havebog's job).
+ * V3.5 (Anna's reference-opslag-feedback): hierarki skabes med
+ * størrelse, ikke med farve eller bokse. Et tal læses på under et
+ * sekund. Sammenlign:
+ *
+ *   Før V3.5:                        V3.5:
+ *   • Jordtemperatur over 14°        14°
+ *   • Tid til udplantning            Jordtemperaturen er nu høj nok
+ *   • Bierne er aktive               til tomater og chili.
+ *
+ * Samme information. 10 gange stærkere. Det er "magasiner vælger
+ * én ting og hvisker resten"-princippet i praksis.
+ *
+ * value-feltet er en kort string (kan være "14°", "+90 min", "3",
+ * "127" — alt der kan rendres som Cormorant 72px). statement er
+ * den editoriale forklaring i 1-2 sætninger.
  *
  * Roterer pr. måned i real-data-flowet (actions/havebog.ts).
- * Her i demo bruges juni-versionen som snapshot.
  */
-export interface NaturObservation {
-  symbol: string         // emoji
-  text: string
+export interface NaturFakta {
+  /** Den store typografiske skuespiller — fx "14°", "+90 min", "3" */
+  value: string
+  /** Editorial statement under tallet, 1-2 korte sætninger */
+  statement: string
 }
 
-export const DEMO_NATUREN_LIGE_NU: NaturObservation[] = [
-  { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
-  { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
-  { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
-]
+export const DEMO_NATUREN_LIGE_NU: NaturFakta = {
+  value: '14°',
+  statement: 'Jordtemperaturen er nu høj nok til tomater og chili.',
+}
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
   {

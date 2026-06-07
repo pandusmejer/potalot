@@ -23,14 +23,14 @@ import type {
   LogType,
   Tidslinje,
   HeroNarrative,
-  NaturObservation,
+  NaturFakta,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
   heroStats: HeroStats
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
-  naturenLigeNu: NaturObservation[]
+  naturenLigeNu: NaturFakta
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
   history: HistoryYear[]
@@ -39,96 +39,83 @@ export interface HavebogData {
 }
 
 /**
- * Sæson-observations-pool. 3 observationer pr. måned.
+ * Sæson-fakta-pool. ÉT tal + ÉN editorial sætning per måned.
  *
- * V3.3 (juni 2026 — Annas redaktionelle prioriteringsfeedback):
+ * V3.5 (juni 2026 — Annas magasin-typografi-feedback):
  *
- * Tidligere udgaver var STEMNINGS-observationer ("Solen varmer
- * jorden op", "Bierne besøger blomster"). Problemet: heroens
- * foto + narrativ fortæller allerede stemningen. Sektionen
- * gentog samme historie og blev derved svagere, ikke stærkere.
+ * Tidligere udgaver var 3 lige-store observation-linjer.
+ * Anna's reference-opslag rammer det Havebogen mangler: hierarki
+ * skabes med STØRRELSE, ikke med farve eller bokse. Et tal læses
+ * på under et sekund. "Samme information. 10 gange stærkere."
  *
- * V3.3 skifter til KONKRETE fakta-observationer der ER brugbare:
- * jordtemperatur, plantnings-vinduer, dyrelivs-status. Det er
- * stadig observation (Havebog-DNA), men på et niveau hvor det
- * tilfører information snarere end at gentage stemning.
+ * Tallet behøver ikke være temperatur — det kan være +90 min dagslys,
+ * 3 planter klar, 127 dage siden såning. Hvad der gør sæsonen
+ * konkret denne måned.
  *
- * Roterer pr. måned. Real-data action vælger den indeks-baserede
- * variant for aktuel måned.
+ * Roterer pr. måned. Real-data action vælger den måneds-baserede
+ * variant.
  */
-const NATUREN_LIGE_NU_BY_MONTH: NaturObservation[][] = [
+const NATUREN_LIGE_NU_BY_MONTH: NaturFakta[] = [
   // Januar
-  [
-    { symbol: '❄', text: 'Jordtemperatur omkring frysepunktet' },
-    { symbol: '📖', text: 'Sæsonen begynder i frøkataloget' },
-    { symbol: '🪶', text: 'Mejserne tjekker fugleforet' },
-  ],
+  {
+    value: '0°',
+    statement: 'Sæsonen begynder i frøkataloget.',
+  },
   // Februar
-  [
-    { symbol: '☀', text: '+90 min ekstra dagslys siden januar' },
-    { symbol: '🌱', text: 'Tid til at så chili og peberfrugt indendørs' },
-    { symbol: '🪶', text: 'Solsorten øver sig på sin sang' },
-  ],
+  {
+    value: '+90 min',
+    statement: 'Lyset er ved at vende. Tid til at så chili og peberfrugt.',
+  },
   // Marts
-  [
-    { symbol: '🌡', text: 'Jordtemperatur når 5° i sydvendte bede' },
-    { symbol: '🌱', text: 'Tid til at forspire tomat og agurk' },
-    { symbol: '🐝', text: 'De første humlebier vågner' },
-  ],
+  {
+    value: '5°',
+    statement: 'Krokus og humlebier vender tilbage til de varme pletter.',
+  },
   // April
-  [
-    { symbol: '🌡', text: 'Jordtemperatur omkring 8-10°' },
-    { symbol: '🌱', text: 'Tid til direkte såning af kålrabi, gulerod, salat' },
-    { symbol: '🐝', text: 'Bierne arbejder i kirsebærblomsterne' },
-  ],
+  {
+    value: '8°',
+    statement: 'Tid til direkte såning af salat, kålrabi og gulerod.',
+  },
   // Maj
-  [
-    { symbol: '🌡', text: 'Jordtemperatur passerer 12° i den varme uge' },
-    { symbol: '🌱', text: 'Hærdning af forspirede planter begynder' },
-    { symbol: '🐝', text: 'Bestøverne er aktive i bedene' },
-  ],
-  // Juni
-  [
-    { symbol: '🌡', text: 'Jordtemperatur stabilt over 14°' },
-    { symbol: '🌱', text: 'Tid til at udplante varmekrævende sorter' },
-    { symbol: '🐝', text: 'Bierne har travlt med lavendel og ærteblomst' },
-  ],
+  {
+    value: '12°',
+    statement: 'Jorden er klar til hærdning og første udplantning.',
+  },
+  // Juni (matcher Anna's reference-eksempel)
+  {
+    value: '14°',
+    statement: 'Jordtemperaturen er nu høj nok til tomater og chili.',
+  },
   // Juli
-  [
-    { symbol: '🍅', text: 'Første tomater modner i drivhuset' },
-    { symbol: '💧', text: 'Vandbehovet topper — tjek hver morgen' },
-    { symbol: '🦋', text: 'Sommerfuglene er fuldt aktive' },
-  ],
+  {
+    value: '18°',
+    statement: 'Tomaterne modner i drivhuset. Vandbehovet topper.',
+  },
   // August
-  [
-    { symbol: '🌾', text: 'Hovedhøst i køkkenhaven' },
-    { symbol: '🌱', text: 'Tid til efterårssalat og spinat' },
-    { symbol: '☀', text: 'Solen står 2 timer kortere end i juni' },
-  ],
+  {
+    value: '16°',
+    statement: 'Hovedhøsten samler sig i kurvene. Aftnerne bliver kortere.',
+  },
   // September
-  [
-    { symbol: '🌰', text: 'Tid til at samle modne frø fra blomster' },
-    { symbol: '🍎', text: 'Æbler og pærer i hovedhøst' },
-    { symbol: '🌧', text: 'Regnen vender tilbage til de tørre bede' },
-  ],
+  {
+    value: '14°',
+    statement: 'Frø modner og samles til næste sæson.',
+  },
   // Oktober
-  [
-    { symbol: '🍂', text: 'Tid til at grave dahlia-knolde op' },
-    { symbol: '🌾', text: 'Sidste høst af kål og rodfrugter' },
-    { symbol: '🍄', text: 'Skovsvampe i de fugtige skove' },
-  ],
+  {
+    value: '10°',
+    statement: 'Tid til at grave dahlia-knolde op og dække bede.',
+  },
   // November
-  [
-    { symbol: '🌱', text: 'Tid til at sætte hvidløg og forårsløg' },
-    { symbol: '🍂', text: 'Bedene dækkes med blad-kompost' },
-    { symbol: '🪶', text: 'Fugleforet sættes ud igen' },
-  ],
+  {
+    value: '4°',
+    statement: 'Tid til at sætte hvidløg og forårsløg i den kølige jord.',
+  },
   // December
-  [
-    { symbol: '🌲', text: 'Granpyntning af krukker og bede' },
-    { symbol: '📖', text: 'Sæsonens noter samles og evalueres' },
-    { symbol: '🪶', text: 'Vinterfuglene er flittige ved foderet' },
-  ],
+  {
+    value: '0°',
+    statement: 'Sæsonens noter samles og evalueres.',
+  },
 ]
 
 /**
@@ -530,7 +517,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const heroNarrative = buildHeroNarrative(heroStats, tidslinje, history, onThisDay, today)
 
-    // Naturen lige nu — indeks per aktuel måned (0-baseret)
+    // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
     return {

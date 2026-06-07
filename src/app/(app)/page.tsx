@@ -79,7 +79,7 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-10 sm:space-y-12 pb-6">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
-      <NaturenLigeNu observations={naturenLigeNu} />
+      <NaturenLigeNu fakta={naturenLigeNu} />
       {/* Forsidehistorie: "hvordan går det med min have?" */}
       <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
       <PaaDenneDag entries={onThisDay} />
