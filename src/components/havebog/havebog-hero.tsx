@@ -120,29 +120,35 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
         }}
       />
 
-      {/* Redaktionel datomarkering øverst højre — V3.6 (Anna's
-          eksakte CSS-spec).
-          IKKE et badge, IKKE en chip, IKKE en dato-widget — bare
-          typografi, som på forsiden af et magasin.
-          Året er FJERNET (brugeren ved hvilket år de er i).
-          Måneden trækker -4px op under dagen — gør den til en
-          "underskrift" til dagstallet snarere end en separat linje. */}
+      {/* Redaktionel datomarkering øverst højre — V3.8 (Anna's
+          asymmetri-spec).
+          IKKE et badge, IKKE en chip, IKKE en dato-widget — magasinforside.
+          Dagstallet er hovedpersonen, måneden er støttekarakter.
+          Søjlen er centreret (JUN under 7's midte) og let skubbet
+          mod højre kant — så datoen rører kanten frem for at sidde
+          pænt inden for et grid. */}
       <div
-        className="absolute z-10 flex flex-col items-end"
+        className="absolute z-10 flex flex-col items-center"
         style={{
-          top: 28,
-          right: 32,
-          textAlign: 'right',
+          top: 24,
+          right: 8,
+          // Bredden bestemmes af det bredeste element (dagstallet).
+          // JUN centreres horisontalt indenfor søjlen.
         }}
       >
         <span
           style={{
             fontFamily: serif,
             fontWeight: 400,
-            fontSize: 'clamp(64px, 16vw, 88px)',
+            // V3.8: dagstallet vokser yderligere — 88 → 104px max.
+            fontSize: 'clamp(80px, 18vw, 104px)',
             lineHeight: 0.8,
             color: 'rgba(255,255,255,0.95)',
-            textShadow: '0 2px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.35)',
+            textShadow: '0 2px 22px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.35)',
+            // Stram letter-spacing for de typiske flertydige tal-glyfer.
+            // Cormorant tal har naturlig bred kapside.
+            letterSpacing: '-0.02em',
+            display: 'block',
           }}
         >
           {dayNum}
@@ -150,18 +156,21 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
         <span
           style={{
             fontFamily: sans,
-            fontSize: 15,
+            // V3.8: 15 → 12px. Måneden er nu STØTTEKARAKTER, ikke
+            // jævnbyrdig partner. "JUN" må ikke læses som lige så
+            // vigtig som "7".
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: '0.35em',
-            // Negativ margin: månedssignaturen trækker op under dagstallet
-            // i stedet for at sidde som en separat linje. Magasin-effekt.
-            marginTop: -4,
-            // Hæng -i'en symmetrisk i forhold til tracking — sidste char
-            // har 0.35em tracking efter sig som ellers skubber til højre.
-            marginRight: '-0.35em',
-            paddingRight: '0.35em',
-            color: 'rgba(255,255,255,0.88)',
+            // V3.8: positiv margin-top — der er nu LUFT mellem 7 og JUN.
+            // Tidligere -4px læste som ét logo; +8px gør JUN til en
+            // separat editorial note under tallet.
+            marginTop: 8,
+            // Korrigér letter-spacing-offset så "JUN" centreres optisk.
+            paddingLeft: '0.35em', // tracker tilføjer space efter sidste char
+            color: 'rgba(255,255,255,0.85)',
             textShadow: '0 1px 8px rgba(0,0,0,0.45)',
+            display: 'block',
           }}
         >
           {monthShort}
