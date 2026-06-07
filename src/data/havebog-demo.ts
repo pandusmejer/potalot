@@ -197,6 +197,27 @@ export const DEMO_HERO_NARRATIVE: HeroNarrative = {
   showStats: true,
 }
 
+/**
+ * "Naturen lige nu" — 3 sæson-observationer.
+ *
+ * Observations-prompts, ikke handlings-prompts. Forskellen mellem
+ * "vand tomaterne" (kommando, Kalender's job) og "duggen er væk
+ * klokken 9" (observation, Havebog's job).
+ *
+ * Roterer pr. måned i real-data-flowet (actions/havebog.ts).
+ * Her i demo bruges juni-versionen som snapshot.
+ */
+export interface NaturObservation {
+  symbol: string         // emoji
+  text: string
+}
+
+export const DEMO_NATUREN_LIGE_NU: NaturObservation[] = [
+  { symbol: '☀', text: 'Solen varmer jorden op' },
+  { symbol: '🐝', text: 'Bierne besøger de første blomster' },
+  { symbol: '🌱', text: 'Væksten tager fart' },
+]
+
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
   {
     yearsAgo: 1,

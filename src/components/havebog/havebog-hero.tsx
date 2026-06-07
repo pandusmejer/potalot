@@ -1,237 +1,191 @@
 import type { HeroStats, Tidslinje, HeroNarrative } from '@/data/havebog-demo'
+import { aktuelMaaned } from '@/lib/datetime'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
+const MAANED_SLUG = [
+  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+  'juli', 'august', 'september', 'oktober', 'november', 'december',
+] as const
+
 interface Props {
-  stats: HeroStats | null
+  /** Eksisterende men ikke længere renderet i V3 — bevaret som API-kontrakt */
+  stats?: HeroStats | null
   tidslinje?: Tidslinje
   narrative?: HeroNarrative
 }
 
 /**
- * "Din Havebog" — eget hero-layout for Havebog.
+ * "Din Havebog" — V3-hero (juni 2026, Anna's arkitektur-ordre).
  *
- * V2 (juni 2026): Anna's diagnose — heroen var en OVERSKRIFT, ikke
- * en FORTÆLLER. Den fortalte "Din dyrkningsrejse samlet ét sted" +
- * stats — administrativt sprog. V2 erstatter det med 3 lag:
+ * VENDEPUNKTET: V2 var typografisk — creme baggrund, mørkegrøn tekst,
+ * stack af fonte. Det læste som "smukt CMS". V3 er REDAKTIONELT —
+ * fuldbredde sæsonfoto med tekst-overlay, som åbningen af et magasin.
  *
- *   Lag 1 (h1):        "Din Havebog"
- *   Lag 2 (eyebrow):   "Din første sæson" / "Juni i haven" / "Velkommen tilbage til juni"
- *                      — Cormorant italic, sæsonbaseret
- *   Lag 3 (narrative): 1-3 personlige linjer der placerer brugeren
- *                      i sin egen sæson
+ * Anti-regler V3 håndhæver:
+ *   - INGEN container, INGEN rounded corners, INGEN cards
+ *   - Foto bryder app-layoutets 480px max-width via -mx-4
+ *   - Tekst hvid på mørk overlay (fotografi som hovedperson)
+ *   - 70-80vh høj — heroen ER første viewport, ikke første sektion
  *
- * Genereres server-side i actions/havebog.ts → buildHeroNarrative.
+ * Foto vælges per aktuel måned fra heroes-maaneder/. Samme pool som
+ * Kalender bruger; identiske sæson-anker, forskellig komposition:
+ * Kalender skriver om timing (over fotoet), Havebog skriver fortælling.
  *
- * Stats-linjen er nu skjult som default — den var "0 noter · 8 sorter
- * · 0 høster" for ny bruger, hvilket er præcis det administrative
- * sprog der gjorde heroen tom. Den vises kun hvis narrative.showStats
- * er sand (sat når brugeren har meningsfulde tal).
+ * Tekst-arkitektur (Anna's spec):
+ *   Cormorant 72-88px       — "Din Havebog"
+ *   Cormorant Italic 30-36px — sæsonlinje ("Juni i haven")
+ *   Cormorant 22-26px        — narrative-linjer
+ *   Manrope 13px             — dato/metadata
  *
- * Heroen bærer den tomhed brugeren ellers ville møde gentaget på
- * 5 sektioner længere nede. "Din første sæson er begyndt" gør det
- * meningsfuldt at Historik er tom — det er forklaringen på resten
- * af siden.
- *
- * Tidslinjen (Søndag d. 7. juni) er forbliveligt low-key under
- * narrativen — den er ren tidsorientering, ikke fortælling.
- *
- * IKKE en wrapper om PageHero. Havebog er den første side folk åbner;
- * den skal have sin egen identitet. Greeting-pattern ("Godaften Maj")
- * tilhører dashboard-verdenen og er bevidst fraværende her.
+ * Stats-linjen ("0 noter · 8 sorter · 0 høster") er FORBUDT i V3.
+ * Hvis brugeren skal se tal, hører de hjemme inde i Historik-sektionen.
+ * Hero er fortælling, ikke status.
  */
-export function HavebogHero({ stats, tidslinje, narrative }: Props) {
-  const showStats = narrative?.showStats && stats !== null
+export function HavebogHero({ tidslinje, narrative }: Props) {
+  const month = aktuelMaaned() // 1-12
+  const fotoPath = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1]}-foto.png`
 
   return (
-    <section className="space-y-4 pt-2 sm:pt-3">
-      <h1
+    <section
+      // -mx-4 bryder app-layoutets px-4
+      // -mt-6 bryder app-layoutets py-6 (top)
+      className="relative -mx-4 -mt-6 overflow-hidden"
+      style={{
+        // 70vh på mobil, lidt mere generøst på desktop hvor viewport
+        // er højere. minHeight sikrer hero føles substantiel selv på
+        // korte skærme.
+        height: '75vh',
+        minHeight: 560,
+      }}
+    >
+      {/* Foto — fylder hele heroen, ingen subtilitet, ingen tilbageholdenhed */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-cover"
         style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(48px, 12vw, 84px)',
-          lineHeight: 0.92,
-          letterSpacing: '-0.025em',
-          color: '#24301F',
-          margin: 0,
+          backgroundImage: `url('${fotoPath}')`,
+          backgroundPosition: 'center 38%',
+        }}
+      />
+
+      {/* Tekstlæsbarheds-gradient.
+          Mørkere nederst hvor teksten ligger, fader ud opad så fotoets
+          øvre del beholder sin lysstyrke og farve. */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, ' +
+            'rgba(12,18,8,0.18) 0%, ' +
+            'rgba(12,18,8,0.05) 28%, ' +
+            'rgba(12,18,8,0.32) 55%, ' +
+            'rgba(12,18,8,0.72) 88%, ' +
+            'rgba(12,18,8,0.86) 100%)',
+        }}
+      />
+
+      {/* Bund-fade ned mod sidens creme-baggrund — så heroen smelter
+          ind i resten af siden uden hård kant. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0"
+        style={{
+          height: 80,
+          background:
+            'linear-gradient(180deg, rgba(234,230,216,0) 0%, rgba(234,230,216,0.85) 100%)',
+        }}
+      />
+
+      {/* Tekst-blok nederst venstre. */}
+      <div
+        className="relative z-10 flex h-full flex-col justify-end"
+        style={{
+          // Padding skal afspejle papirets margin: generøs nederst,
+          // venstre. paddingBottom = 96px holder teksten klart af
+          // bund-faden uden at trække den væk fra magasin-feelet.
+          padding: '0 24px 96px 24px',
         }}
       >
-        Din Havebog
-      </h1>
+        <div className="space-y-4" style={{ maxWidth: 440 }}>
+          {/* Lag 1: Titel */}
+          <h1
+            style={{
+              fontFamily: serif,
+              fontWeight: 500,
+              fontSize: 'clamp(56px, 13vw, 88px)',
+              lineHeight: 0.88,
+              letterSpacing: '-0.025em',
+              color: '#F4EFDC',
+              textShadow: '0 2px 18px rgba(12,18,8,0.45), 0 1px 3px rgba(12,18,8,0.35)',
+              margin: 0,
+            }}
+          >
+            Din Havebog
+          </h1>
 
-      {narrative && <SeasonLine text={narrative.seasonLine} />}
-      {narrative && <PersonalNarrative lines={narrative.personalText} />}
-
-      {/* Tidslinje + stats lever som sekundære, low-key signaler.
-          De er ikke længere første-indtryk; de orienterer dem der
-          har scrollet ind på siden uden at åbne en specifik sektion. */}
-      <div className="space-y-2 pt-2">
-        {tidslinje && <TidslinjeLine tidslinje={tidslinje} />}
-        {showStats && stats && <StatsLine stats={stats} />}
-      </div>
-    </section>
-  )
-}
-
-/**
- * Sæsonlinjen — Lag 2. Korte, sætningsagtige eyebrows i Cormorant
- * italic. Skiftet fra "tagline" til "season line" er det vigtigste
- * typografiske skred: brugeren læser nu en sætning der placerer
- * dem i tid og kontekst, ikke en marketing-tagline.
- *
- * Eksempler:
- *   "Din første sæson"
- *   "Juni i haven"
- *   "Velkommen tilbage til juni"
- */
-function SeasonLine({ text }: { text: string }) {
-  return (
-    <p
-      style={{
-        fontFamily: serif,
-        fontStyle: 'italic',
-        fontWeight: 400,
-        fontSize: 'clamp(22px, 4.4vw, 30px)',
-        lineHeight: 1.2,
-        letterSpacing: '-0.005em',
-        color: 'rgba(36,48,31,0.78)',
-        margin: 0,
-        maxWidth: 460,
-      }}
-    >
-      {text}
-    </p>
-  )
-}
-
-/**
- * Lag 3 — den personlige fortælling. 1-3 hele sætninger, hver med
- * eget afsnit. Cormorant regular (ikke italic, ikke bold) — det
- * læser som forfatter-prose, ikke metadata.
- *
- * Hvorfor adskilte <p> per linje: hver sætning er en selvstændig
- * narrativ beat. "Agurkerne har stået ude i 12 dage. Tomaterne
- * begynder at tage fart. Du har skrevet 3 noter denne uge." læser
- * meget mere fortællende som 3 linjer end som én lang sætning.
- */
-function PersonalNarrative({ lines }: { lines: string[] }) {
-  if (lines.length === 0) return null
-  return (
-    <div className="space-y-1">
-      {lines.map((line, i) => (
-        <p
-          key={i}
-          style={{
-            fontFamily: serif,
-            fontWeight: 400,
-            fontSize: 'clamp(17px, 2.8vw, 20px)',
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.70)',
-            margin: 0,
-            maxWidth: 480,
-          }}
-        >
-          {line}
-        </p>
-      ))}
-    </div>
-  )
-}
-
-/**
- * "Du er her"-linjen — én rolig editorial sætning med dato + milestone.
- *
- * V2-rolle: low-key tids-orientering UNDER narrativen. Den er ikke
- * længere første-indtryk; den siger bare hvilken dag det er, og
- * hvad der sidst skete af substans.
- */
-function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
-  const parts: string[] = [tidslinje.dateText]
-  if (tidslinje.milestoneText) parts.push(tidslinje.milestoneText)
-  if (tidslinje.weekNoteCount > 0) {
-    parts.push(
-      `${tidslinje.weekNoteCount} ${tidslinje.weekNoteCount === 1 ? 'note' : 'noter'} fra denne uge`,
-    )
-  }
-  return (
-    <p
-      style={{
-        fontFamily: sans,
-        fontSize: 12.5,
-        fontWeight: 500,
-        lineHeight: 1.5,
-        color: 'rgba(36,48,31,0.45)',
-        letterSpacing: '0.01em',
-        margin: 0,
-        maxWidth: 520,
-      }}
-    >
-      {parts.map((part, i) => (
-        <span key={i}>
-          {i > 0 && (
-            <span
-              aria-hidden
+          {/* Lag 2: Sæsonlinje (italic) */}
+          {narrative && (
+            <p
               style={{
-                display: 'inline-block',
-                marginInline: 8,
-                opacity: 0.55,
+                fontFamily: serif,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: 'clamp(26px, 5.5vw, 36px)',
+                lineHeight: 1.15,
+                letterSpacing: '-0.005em',
+                color: 'rgba(244,239,220,0.95)',
+                textShadow: '0 1px 14px rgba(12,18,8,0.55)',
+                margin: 0,
               }}
             >
-              ·
-            </span>
+              {narrative.seasonLine}
+            </p>
           )}
-          {part}
-        </span>
-      ))}
-    </p>
-  )
-}
 
-/**
- * Stats — kun vist hvis narrative.showStats er sand. Det skåner
- * ny bruger fra at se "0 noter · 8 sorter · 0 høster" som første
- * indtryk.
- */
-function StatsLine({ stats }: { stats: HeroStats }) {
-  const items: { value: number; label: string }[] = [
-    { value: stats.notes, label: stats.notes === 1 ? 'note' : 'noter' },
-    { value: stats.varieties, label: stats.varieties === 1 ? 'sort' : 'sorter' },
-    {
-      value: stats.harvests,
-      label: `${stats.harvests === 1 ? 'høst' : 'høster'} i år`,
-    },
-  ]
-  return (
-    <p
-      style={{
-        fontFamily: sans,
-        fontSize: 12.5,
-        fontWeight: 600,
-        color: 'rgba(36,48,31,0.45)',
-        letterSpacing: '0.01em',
-        margin: 0,
-      }}
-    >
-      {items.map((it, i) => (
-        <span key={it.label} className="inline-flex items-center gap-2.5">
-          {i > 0 && (
-            <span
-              aria-hidden
-              style={{
-                display: 'inline-block',
-                width: 3,
-                height: 3,
-                borderRadius: '50%',
-                background: 'currentColor',
-                opacity: 0.5,
-                marginInline: 6,
-              }}
-            />
+          {/* Lag 3: Personlig narrativ */}
+          {narrative && narrative.personalText.length > 0 && (
+            <div className="space-y-1" style={{ maxWidth: 400 }}>
+              {narrative.personalText.map((line, i) => (
+                <p
+                  key={i}
+                  style={{
+                    fontFamily: serif,
+                    fontWeight: 400,
+                    fontSize: 'clamp(20px, 3.8vw, 26px)',
+                    lineHeight: 1.35,
+                    color: 'rgba(244,239,220,0.88)',
+                    textShadow: '0 1px 12px rgba(12,18,8,0.55)',
+                    margin: 0,
+                  }}
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
           )}
-          {it.value} {it.label}
-        </span>
-      ))}
-    </p>
+
+          {/* Metadata (Manrope, ren tekst). Tidslinjens dato + optional milestone. */}
+          {tidslinje && (
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 13,
+                fontWeight: 500,
+                lineHeight: 1.4,
+                letterSpacing: '0.02em',
+                color: 'rgba(244,239,220,0.65)',
+                margin: 0,
+                marginTop: 18,
+              }}
+            >
+              {tidslinje.dateText}
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
   )
 }

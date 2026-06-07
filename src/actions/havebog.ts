@@ -23,18 +23,104 @@ import type {
   LogType,
   Tidslinje,
   HeroNarrative,
+  NaturObservation,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
   heroStats: HeroStats
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
+  naturenLigeNu: NaturObservation[]
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
   history: HistoryYear[]
   denneSaeson: DenneSaesonFacts
   archivedPlants: ArchivedPlant[]
 }
+
+/**
+ * Sæson-observations-pool. 3 observationer pr. måned, redaktionelt
+ * skrevet — disse er ikke handlings-prompts (det er Kalender's job)
+ * men sensoriske/naturhistoriske notater. "Bierne besøger de første
+ * blomster" frem for "vand tomaterne".
+ *
+ * Roterer pr. måned. Real-data action vælger den indeks-baserede
+ * variant for aktuel måned.
+ */
+const NATUREN_LIGE_NU_BY_MONTH: NaturObservation[][] = [
+  // Januar
+  [
+    { symbol: '❄', text: 'Frosten holder jorden i ro' },
+    { symbol: '🌰', text: 'Frøkapsler bryder under sneen' },
+    { symbol: '🪶', text: 'Mejserne fouragerer i nøgne grene' },
+  ],
+  // Februar
+  [
+    { symbol: '🌱', text: 'Vintergækkernes første spirer' },
+    { symbol: '☀', text: 'Lyset bliver længere hver dag' },
+    { symbol: '🪶', text: 'Solsorten øver sig på foråret' },
+  ],
+  // Marts
+  [
+    { symbol: '🌱', text: 'Krokus og erantis bryder igennem' },
+    { symbol: '☀', text: 'Solen får styrke nok til at varme' },
+    { symbol: '🐝', text: 'De første humlebier kommer ud' },
+  ],
+  // April
+  [
+    { symbol: '🌸', text: 'Mirabel og kirsebær blomstrer' },
+    { symbol: '🐝', text: 'Bierne arbejder for alvor igen' },
+    { symbol: '🌱', text: 'Forspirerne kalder på lys i vindueskarmen' },
+  ],
+  // Maj
+  [
+    { symbol: '☀', text: 'Solen står højt på himlen' },
+    { symbol: '🌸', text: 'Forårsblomsterne tager over' },
+    { symbol: '🌱', text: 'Jorden er klar til udplantning' },
+  ],
+  // Juni (matcher Anna's mockup-spec)
+  [
+    { symbol: '☀', text: 'Solen varmer jorden op' },
+    { symbol: '🐝', text: 'Bierne besøger de første blomster' },
+    { symbol: '🌱', text: 'Væksten tager fart' },
+  ],
+  // Juli
+  [
+    { symbol: '☀', text: 'Sommerlyset er hårdt og højt' },
+    { symbol: '🍅', text: 'Tomaterne modner i drivhuset' },
+    { symbol: '🦋', text: 'Sommerfuglene besøger lavendlen' },
+  ],
+  // August
+  [
+    { symbol: '🌾', text: 'Høsten samler sig i kurvene' },
+    { symbol: '🐝', text: 'Bierne haster mod blomster der er tilbage' },
+    { symbol: '☀', text: 'Aftnerne bliver mærkbart kortere' },
+  ],
+  // September
+  [
+    { symbol: '🌧', text: 'Lyset bliver blødere efter regn' },
+    { symbol: '🍎', text: 'Æbler og pærer falder modne' },
+    { symbol: '🌰', text: 'Frø samles til næste sæson' },
+  ],
+  // Oktober
+  [
+    { symbol: '🍂', text: 'Bladene skifter farve' },
+    { symbol: '🌾', text: 'De sidste afgrøder kommer ind' },
+    { symbol: '🍄', text: 'Skovsvampe dukker op under træerne' },
+  ],
+  // November
+  [
+    { symbol: '🍂', text: 'Bedene falder til ro' },
+    { symbol: '🪶', text: 'Trækfuglene er for længst rejst' },
+    { symbol: '🌰', text: 'Knolde gemmes til foråret' },
+  ],
+  // December
+  [
+    { symbol: '❄', text: 'Frosten lægger sig på jorden' },
+    { symbol: '🪶', text: 'Fuglene tager fugleforet i brug' },
+    { symbol: '🌲', text: 'Stedsegrønne planter bærer haven' },
+  ],
+]
 
 /**
  * Milestone-værdige log-typer — handlinger med tydeligt dato-anker.
@@ -432,10 +518,14 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const heroNarrative = buildHeroNarrative(heroStats, tidslinje, history, onThisDay, today)
 
+    // Naturen lige nu — indeks per aktuel måned (0-baseret)
+    const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
+
     return {
       heroStats,
       tidslinje,
       heroNarrative,
+      naturenLigeNu,
       onThisDay,
       recentNotes,
       history,
