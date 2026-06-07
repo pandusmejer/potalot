@@ -34,13 +34,25 @@ export const dynamic = 'force-dynamic'
  *   Kalender = timing
  *   Havebog  = hukommelse   ← her
  *
- * Sektion-rækkefølge (Historik er produktets hjerte og visuelt størst):
+ * Sektion-rækkefølge (V1, juni 2026):
  *   1. Hero
- *   2. På denne dag
- *   3. Historik    ← primær
- *   4. Seneste noter
- *   5. Denne sæson
- *   6. Arkiverede planter
+ *   2. Denne sæson    ← åbnings-sektion / forsidehistorie
+ *   3. På denne dag
+ *   4. Historik       ← primær vægt
+ *   5. Have-stemning  ← stille åndepause
+ *   6. Seneste noter
+ *   7. Arkiverede planter
+ *
+ * Hvorfor DenneSæson som åbnings-sektion (Anna's diagnose, juni 2026):
+ * de andre primær-sider har alle en tydelig HOVEDPERSON: Frøbank = "mine
+ * frø", Planter = "mine planter", Kalender = "min sæson", Guides = "det
+ * jeg vil lære". Havebog skulle have det samme — et svar på "hvordan
+ * går det egentlig med min have?" — FØR brugeren møder noter, minder
+ * og historik. DenneSæson besvarer præcis det spørgsmål (seneste høst,
+ * note, billede) og findes allerede; den hørte bare et forkert sted.
+ *
+ * Historik er stadig sidens visuelt tungeste indhold, men er ikke
+ * længere første kontakt — den er belønningen for at scrolle.
  *
  * Demo-fallback: hvis ingen logget-ind bruger, vises lokal demo-data
  * fra src/data/havebog-demo.ts (ikke en global mekanisme).
@@ -66,12 +78,13 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-12 sm:space-y-14 pb-6">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} />
+      {/* Forsidehistorie: "hvordan går det med min have?" */}
+      <DenneSaeson facts={denneSaeson} />
       <PaaDenneDag entries={onThisDay} />
       <Historik years={history} />
       {/* Stille åndepause efter den store historik-sektion. */}
       <HaveStemning text={gardenNote} />
       <SenesteNoter notes={recentNotes} />
-      <DenneSaeson facts={denneSaeson} />
       <ArkiverdePlanter plants={archivedPlants} />
     </div>
   )
