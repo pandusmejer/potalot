@@ -58,13 +58,13 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
   const userState = narrative?.userState ?? 'active'
   const fotoPath = photoOverride ?? pickHavebogHero(month, userState)
 
-  // Redaktionel datomarkering — uddrages fra tidslinjen.
-  // Tidslinjens dateText er fx "Søndag d. 7. juni" — vi parser
-  // dagstal ud. Måned/år tages fra serverens nuværende dato.
+  // Redaktionel datomarkering — magasin-forside-stil.
+  // V3.6 (Anna): året er FJERNET. "Magasiner skriver sjældent 2026
+  // med store typer. Redaktøren ved allerede hvad der er vigtigt.
+  // Brugeren skal bare mærke dagen."
   const today = new Date()
   const dayNum = today.getDate()
   const monthShort = MAANED_KORT_UPPER[month - 1]
-  const yearNum = today.getFullYear()
 
   return (
     <section
@@ -120,17 +120,18 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
         }}
       />
 
-      {/* Redaktionel datomarkering øverst højre.
-          IKKE et badge, IKKE en chip — bare typografi, som i en
-          gammel havemagasin-forside eller avis-mastehoved.
-          Tre lag: stort dagstal (Cormorant), månedsnavn (Manrope
-          tracking-wide), år (Manrope smaller). */}
+      {/* Redaktionel datomarkering øverst højre — V3.6 (Anna's
+          eksakte CSS-spec).
+          IKKE et badge, IKKE en chip, IKKE en dato-widget — bare
+          typografi, som på forsiden af et magasin.
+          Året er FJERNET (brugeren ved hvilket år de er i).
+          Måneden trækker -4px op under dagen — gør den til en
+          "underskrift" til dagstallet snarere end en separat linje. */}
       <div
         className="absolute z-10 flex flex-col items-end"
         style={{
-          top: 22,
-          right: 24,
-          gap: 2,
+          top: 28,
+          right: 32,
           textAlign: 'right',
         }}
       >
@@ -138,11 +139,10 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
           style={{
             fontFamily: serif,
             fontWeight: 400,
-            fontSize: 'clamp(48px, 11vw, 64px)',
-            lineHeight: 0.85,
-            letterSpacing: '-0.02em',
+            fontSize: 'clamp(64px, 16vw, 88px)',
+            lineHeight: 0.8,
             color: 'rgba(255,255,255,0.95)',
-            textShadow: '0 2px 18px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35)',
+            textShadow: '0 2px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.35)',
           }}
         >
           {dayNum}
@@ -150,28 +150,21 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
         <span
           style={{
             fontFamily: sans,
-            fontSize: 11,
+            fontSize: 15,
             fontWeight: 700,
-            letterSpacing: '0.24em',
-            color: 'rgba(255,255,255,0.85)',
+            letterSpacing: '0.35em',
+            // Negativ margin: månedssignaturen trækker op under dagstallet
+            // i stedet for at sidde som en separat linje. Magasin-effekt.
+            marginTop: -4,
+            // Hæng -i'en symmetrisk i forhold til tracking — sidste char
+            // har 0.35em tracking efter sig som ellers skubber til højre.
+            marginRight: '-0.35em',
+            paddingRight: '0.35em',
+            color: 'rgba(255,255,255,0.88)',
             textShadow: '0 1px 8px rgba(0,0,0,0.45)',
-            marginTop: 4,
           }}
         >
           {monthShort}
-        </span>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 10,
-            fontWeight: 500,
-            letterSpacing: '0.16em',
-            color: 'rgba(255,255,255,0.65)',
-            textShadow: '0 1px 8px rgba(0,0,0,0.45)',
-            marginTop: 2,
-          }}
-        >
-          {yearNum}
         </span>
       </div>
 
