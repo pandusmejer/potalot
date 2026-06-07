@@ -38,19 +38,22 @@ export function SenesteNoter({ notes }: Props) {
       </h2>
 
       {notes.length === 0 ? (
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontSize: 17,
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.50)',
-            margin: 0,
-            maxWidth: 460,
-          }}
-        >
-          Endnu ingen noter — den første kommer på en plantes detalje-side.
-        </p>
+        <div style={{ paddingBlock: '4px 0' }}>
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: 'italic',
+              fontSize: 19,
+              lineHeight: 1.55,
+              color: 'rgba(36,48,31,0.55)',
+              margin: 0,
+              maxWidth: 460,
+            }}
+          >
+            Ingen noter endnu.<br />
+            Den første skriver du fra en plantes detalje-side.
+          </p>
+        </div>
       ) : (
         <Card>
           <CardContent className="p-0">

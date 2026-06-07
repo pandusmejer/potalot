@@ -42,7 +42,7 @@ export function DenneSaeson({ facts }: Props) {
           variety={facts.senesteHoest?.variety}
           date={facts.senesteHoest?.date}
           body={facts.senesteHoest?.text}
-          emptyText="Endnu ingen høst i år"
+          emptyText="Den første høst venter."
         />
         <FactCard
           label="Seneste note"
@@ -50,7 +50,7 @@ export function DenneSaeson({ facts }: Props) {
           variety={facts.senesteNote?.variety}
           date={facts.senesteNote?.date}
           body={facts.senesteNote?.text}
-          emptyText="Ingen note endnu"
+          emptyText="Den første note venter."
         />
         <FactCard
           label="Seneste billede"
@@ -58,7 +58,7 @@ export function DenneSaeson({ facts }: Props) {
           variety={facts.senesteBillede?.variety}
           date={facts.senesteBillede?.date}
           image={facts.senesteBillede?.imageUrl}
-          emptyText="Endnu intet billede"
+          emptyText="Det første billede venter."
         />
       </div>
     </section>

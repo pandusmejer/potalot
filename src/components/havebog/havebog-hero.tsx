@@ -67,15 +67,22 @@ export function HavebogHero({ stats, tidslinje }: Props) {
 /**
  * "Du er her"-linjen — én rolig editorial sætning under tagline.
  *
- * Format: "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud · 3 noter fra denne uge"
+ * Format:
+ *   Ny bruger:        "Søndag d. 7. juni"
+ *   Med milestone:    "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud"
+ *   Aktiv bruger:     "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud
+ *                      · 3 noter fra denne uge"
+ *
+ * Cormorant italic — bevidst LITTERÆR, ikke metadata. Manrope ville
+ * have læst som "endnu en stats-linje under den eksisterende stats-
+ * linje". Serif italic placerer den som forfatter-stemme: en lille
+ * dagbogs-overskrift, ikke en data-rapport.
+ *
+ * Tom-tilstand er sin egen typografi (bare datoen, ingen ·) — vi
+ * tvinger ikke separatorer ind i en sætning der består af én del.
  *
  * BEVIDST IKKE en CTA, IKKE en panel-sektion, IKKE en dashboard-
- * statuslinje. Bare tids-orientering. Hvis dele mangler (ny bruger,
- * stille uge) falder de helt ud — sætningen forkortes naturligt.
- *
- * Visuelt: samme baseline-grid som tagline ovenfor (Manrope, dæmpet
- * farve), men én tand mindre + endnu lavmæltere kontrast så den
- * læser som metadata frem for indhold.
+ * statuslinje. Bare tids-orientering.
  */
 function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
   const parts: string[] = [tidslinje.dateText]
@@ -88,12 +95,13 @@ function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
   return (
     <p
       style={{
-        fontFamily: sans,
-        fontSize: 13.5,
+        fontFamily: serif,
+        fontStyle: 'italic',
         fontWeight: 400,
+        fontSize: 18,
         lineHeight: 1.5,
-        color: 'rgba(36,48,31,0.48)',
-        letterSpacing: '0.005em',
+        color: 'rgba(36,48,31,0.58)',
+        letterSpacing: 0,
         margin: 0,
         maxWidth: 520,
       }}
@@ -105,8 +113,8 @@ function TidslinjeLine({ tidslinje }: { tidslinje: Tidslinje }) {
               aria-hidden
               style={{
                 display: 'inline-block',
-                marginInline: 8,
-                opacity: 0.65,
+                marginInline: 10,
+                opacity: 0.55,
               }}
             >
               ·

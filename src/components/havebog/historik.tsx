@@ -56,19 +56,26 @@ export function Historik({ years }: Props) {
       </header>
 
       {years.length === 0 ? (
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontSize: 17,
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.50)',
-            margin: 0,
-            maxWidth: 460,
-          }}
-        >
-          Din historik begynder med din første note.
-        </p>
+        // Historik er sidens primære sektion; tom-tilstand skal have
+        // tilsvarende vægt. To linjer der placerer brugeren i en
+        // gennemførbar fremtid — "din første note" er konkret, ikke
+        // abstrakt "kom igang med at logge".
+        <div style={{ paddingBlock: '4px 0' }}>
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: 'italic',
+              fontSize: 19,
+              lineHeight: 1.55,
+              color: 'rgba(36,48,31,0.55)',
+              margin: 0,
+              maxWidth: 460,
+            }}
+          >
+            Endnu har haven ingen historik.<br />
+            Din første note bliver sidens første side.
+          </p>
+        </div>
       ) : (
         <div className="space-y-8 sm:space-y-10">
           {years.map((y, idx) => (

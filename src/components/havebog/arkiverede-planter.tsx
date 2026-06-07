@@ -38,19 +38,22 @@ export function ArkiverdePlanter({ plants }: Props) {
       </h2>
 
       {plants.length === 0 ? (
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontSize: 17,
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.50)',
-            margin: 0,
-            maxWidth: 460,
-          }}
-        >
-          Når en sæson er ovre, finder du planterne her.
-        </p>
+        <div style={{ paddingBlock: '4px 0' }}>
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: 'italic',
+              fontSize: 19,
+              lineHeight: 1.55,
+              color: 'rgba(36,48,31,0.55)',
+              margin: 0,
+              maxWidth: 460,
+            }}
+          >
+            Når en sæson er ovre, hører planterne hjemme her.<br />
+            Din første sæson er endnu ikke slut.
+          </p>
+        </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {plants.map(p => (

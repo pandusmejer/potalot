@@ -31,19 +31,27 @@ export function PaaDenneDag({ entries }: Props) {
       </h2>
 
       {entries.length === 0 ? (
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontSize: 17,
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.50)',
-            margin: 0,
-            maxWidth: 460,
-          }}
-        >
-          Din havebogs første år — vi husker med dig fra næste sæson.
-        </p>
+        // Ceremoniel tom-tilstand. Bevidst 2 linjer for at give
+        // sektionen vægt — uden indhold er sektionen ellers så lille
+        // at den læser som en glemt label snarere end et meningsfuldt
+        // afsnit i Havebogen. To linjer + større size signalerer at
+        // "her sker noget om et år", ikke "her mangler data".
+        <div style={{ paddingBlock: '4px 0' }}>
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: 'italic',
+              fontSize: 19,
+              lineHeight: 1.55,
+              color: 'rgba(36,48,31,0.55)',
+              margin: 0,
+              maxWidth: 460,
+            }}
+          >
+            Dette er din første sæson i Havebogen.<br />
+            Om et år begynder minderne at dukke op her.
+          </p>
+        </div>
       ) : (
         <div className="space-y-3">
           {entries.map((e, i) => (
