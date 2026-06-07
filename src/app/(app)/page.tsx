@@ -71,6 +71,11 @@ export default async function HavebogPage() {
   const denneSaeson = isDemo ? DEMO_DENNE_SAESON : data.denneSaeson
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
+  // V3.4 (Anna's hierarki-feedback): for erfaren bruger med noter
+  // er SenesteNoter sidens egentlige fortælling. Den skal komme FØR
+  // Historik når data findes — empty-state-rækkefølge bevares ellers.
+  const hasNotes = recentNotes.length > 0
+
   return (
     <div className="space-y-10 sm:space-y-12 pb-6">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
@@ -78,8 +83,17 @@ export default async function HavebogPage() {
       {/* Forsidehistorie: "hvordan går det med min have?" */}
       <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
       <PaaDenneDag entries={onThisDay} />
-      <Historik years={history} />
-      <SenesteNoter notes={recentNotes} />
+      {hasNotes ? (
+        <>
+          <SenesteNoter notes={recentNotes} prominent />
+          <Historik years={history} />
+        </>
+      ) : (
+        <>
+          <Historik years={history} />
+          <SenesteNoter notes={recentNotes} />
+        </>
+      )}
       <ArkiverdePlanter plants={archivedPlants} />
     </div>
   )

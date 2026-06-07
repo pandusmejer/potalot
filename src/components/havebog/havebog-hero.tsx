@@ -218,33 +218,23 @@ export function HavebogHero({ tidslinje, narrative, photoOverride }: Props) {
             </p>
           )}
 
-          {/* Lag 3: Brødtekst — Cormorant 28px max, hvid 88%. */}
-          {narrative && narrative.personalText.length > 0 && (
-            <div className="space-y-2" style={{ maxWidth: 420, marginTop: 28 }}>
-              {narrative.personalText.map((line, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontFamily: serif,
-                    fontWeight: 400,
-                    fontSize: 'clamp(22px, 4.4vw, 28px)',
-                    lineHeight: 1.4,
-                    color: 'rgba(255,255,255,0.88)',
-                    textShadow: '0 1px 14px rgba(0,0,0,0.50)',
-                    margin: 0,
-                  }}
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-          )}
-
           {/*
-           * Datolinjen nederst er FJERNET i V3.3 — den redaktionelle
-           * datomarkering øverst højre har overtaget rollen.
-           * tidslinje-propen bevares som API-kontrakt for fremtidige
-           * milestone-tekster der måtte komme tilbage i hero-narrativen.
+           * V3.4 (Anna's stripping-feedback): personalText FJERNET fra hero.
+           *
+           * Anna: "Magasiner forklarer ikke forsiden på forsiden."
+           * Hero har kun ét budskab: titel + sæsonlinje. Det er det.
+           *
+           * For ny bruger lever de tekster der før var her ("Du dyrker
+           * 8 sorter / Om lidt begynder de første minder...") nu nede
+           * i DenneSæson FirstSeasonBlock — sektionen direkte under hero.
+           *
+           * For aktiv og år 2+ taler DenneSæson for sig selv via
+           * fact-cards (seneste høst / note / billede).
+           *
+           * Datolinjen nederst er fjernet — den redaktionelle datomarkering
+           * øverst højre har overtaget rollen.
+           *
+           * tidslinje-propen bevares som API-kontrakt men render'es ikke.
            */}
         </div>
       </div>
