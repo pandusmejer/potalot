@@ -35,29 +35,27 @@ export function PaaDenneDag({ entries }: Props) {
       </h2>
 
       {entries.length === 0 ? (
-        // Hovedobjekt-tom-tilstand: foto + tekst i journal-opslag.
-        // Fotoet er beslægtet med "minde" (dahlia hoved) — det er
-        // ikke en abstrakt illustration, men et faktisk havefoto
-        // der placerer brugeren i den naturhistorie sektionen handler om.
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '38% 1fr',
-            gap: 18,
-            alignItems: 'start',
-            paddingBlock: '4px 0',
-          }}
-        >
-          {/* Foto — let roteret, papir-baggrund som let stikker ud */}
+        // V3.9 (Anna's kompositions-regel): IKKE side-om-side grid.
+        // Tidligere 38/1fr split læste som "to-kolonne CMS"-mønstret
+        // — samme komposition som 3 andre sektioner. Nu vertikal
+        // stack: foto øverst, tekst nedenunder. Som et magasinopslag,
+        // ikke et databasekort.
+        <div className="flex flex-col" style={{ gap: 24, paddingBlock: '4px 0' }}>
+          {/* Foto — bredere end før, fylder ~60% af sektionsbredden
+              i en let asymmetri til venstre. Polaroidlignende papir-
+              ramme + rotation. */}
           <div
             style={{
               position: 'relative',
-              aspectRatio: '0.78 / 1',
+              aspectRatio: '1.4 / 1',
+              maxWidth: 320,
               transform: 'rotate(-1.4deg)',
-              padding: 5,
+              padding: 7,
               background: '#F2EAD3',
-              boxShadow: '0 1px 2px rgba(48,38,18,0.10), 0 8px 18px rgba(48,38,18,0.08)',
+              boxShadow:
+                '0 1px 2px rgba(48,38,18,0.10), 0 10px 22px rgba(48,38,18,0.10)',
               borderRadius: 2,
+              alignSelf: 'flex-start', // bevidst venstre — IKKE centreret
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -73,20 +71,18 @@ export function PaaDenneDag({ entries }: Props) {
             />
           </div>
 
+          {/* Tekst nedenunder — som en billed-tekst i et magasinopslag */}
           <div>
-            {/* V3.3 (Anna): dagbogs-sprog frem for software-sprog.
-                "Dette er din første sæson i Havebogen" var korrekt
-                men intet menneske skriver sådan i en dagbog. */}
             <p
               style={{
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(18px, 3.2vw, 22px)',
-                lineHeight: 1.4,
-                color: 'rgba(36,48,31,0.68)',
+                fontSize: 'clamp(20px, 3.6vw, 26px)',
+                lineHeight: 1.35,
+                color: 'rgba(36,48,31,0.72)',
                 margin: 0,
-                maxWidth: 240,
+                maxWidth: 340,
               }}
             >
               Den første side er stadig tom.
@@ -101,7 +97,7 @@ export function PaaDenneDag({ entries }: Props) {
                 color: 'rgba(36,48,31,0.50)',
                 margin: 0,
                 marginTop: 12,
-                maxWidth: 240,
+                maxWidth: 340,
               }}
             >
               Om et år vil du kunne bladre tilbage og se hvad der voksede netop nu.

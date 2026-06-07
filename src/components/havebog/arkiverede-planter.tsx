@@ -61,25 +61,73 @@ export function ArkiverdePlanter({ plants }: Props) {
  * frøet manglede.
  */
 function ArkivEmpty() {
+  // V3.9 (Anna's kompositions-regel): VENDT layout.
+  // Sektionerne over har "foto venstre, tekst højre" eller foto-stak.
+  // Her gælder modsat: STOR TEKST dominerer, en lille presset prøve
+  // sidder som DETAIL nederst-højre. Det er "tekst-dominerer"-mønstret
+  // der bryder rytmen efter SenesteNoter's polaroid-stak.
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '40% 1fr',
-        gap: 22,
-        alignItems: 'center',
+        gridTemplateColumns: '1fr 26%',
+        gap: 18,
+        // Tekst og foto læser ikke som parallelle elementer; teksten
+        // strækker sig op, billedet sidder lavt.
+        alignItems: 'end',
         paddingBlock: '4px 0',
       }}
     >
-      {/* Presset prøve — let roteret, mat papir-baggrund */}
+      {/* Tekst — bærer sektionen alene. Større typografi end andre
+          empty-states, fordi den IKKE deler vægt med fotoet. */}
+      <div>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(22px, 4vw, 28px)',
+            lineHeight: 1.3,
+            color: 'rgba(36,48,31,0.72)',
+            margin: 0,
+            maxWidth: '18ch',
+          }}
+        >
+          Når en sæson er ovre,<br />
+          hører planterne hjemme her.
+        </p>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(15px, 2.6vw, 17px)',
+            lineHeight: 1.5,
+            color: 'rgba(36,48,31,0.50)',
+            margin: 0,
+            marginTop: 10,
+            maxWidth: '22ch',
+          }}
+        >
+          Din første sæson er endnu ikke slut.
+        </p>
+      </div>
+
+      {/* Lille presset prøve nederst-højre — som en bagsidefoto i et
+          herbarium-album. Mindre og roligere end før (76px).
+          Den fortæller "her ligger noget arkiveret" uden at konkurrere
+          med teksten. */}
       <div
         style={{
           position: 'relative',
+          width: 76,
           aspectRatio: '0.85 / 1',
-          transform: 'rotate(1.8deg)',
-          padding: 6,
+          justifySelf: 'end',
+          transform: 'rotate(2.8deg)',
+          padding: 5,
           background: '#F2EAD3',
-          boxShadow: '0 1px 2px rgba(48,38,18,0.10), 0 8px 18px rgba(48,38,18,0.08)',
+          boxShadow:
+            '0 1px 2px rgba(48,38,18,0.10), 0 6px 14px rgba(48,38,18,0.08)',
           borderRadius: 2,
         }}
       >
@@ -91,58 +139,22 @@ function ArkivEmpty() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            // Lavere saturation + lidt mat — som en gemt prøve.
-            // Sepia-tonen er dæmpet (5%) for dahlia-knolde da
-            // de allerede er jord-farvede; mere ville gøre dem grå.
             filter: 'saturate(0.78) contrast(0.96) sepia(0.05)',
           }}
         />
-        {/* Antydet tape */}
         <div
           style={{
             position: 'absolute',
-            top: -7,
+            top: -6,
             left: '50%',
-            width: 36,
-            height: 12,
+            width: 28,
+            height: 10,
             background: 'rgba(245,236,210,0.78)',
             transform: 'translateX(-50%) rotate(-3deg)',
             boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
             border: '1px solid rgba(180,160,120,0.20)',
           }}
         />
-      </div>
-
-      <div>
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            fontSize: 'clamp(17px, 3vw, 21px)',
-            lineHeight: 1.4,
-            color: 'rgba(36,48,31,0.65)',
-            margin: 0,
-            maxWidth: 240,
-          }}
-        >
-          Når en sæson er ovre, hører planterne hjemme her.
-        </p>
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            fontSize: 'clamp(15px, 2.6vw, 17px)',
-            lineHeight: 1.5,
-            color: 'rgba(36,48,31,0.48)',
-            margin: 0,
-            marginTop: 8,
-            maxWidth: 240,
-          }}
-        >
-          Din første sæson er endnu ikke slut.
-        </p>
       </div>
     </div>
   )
