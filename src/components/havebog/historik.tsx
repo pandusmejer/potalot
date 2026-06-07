@@ -23,6 +23,14 @@ interface Props {
  * tidligere år collapsed. Ingen JavaScript påkrævet.
  */
 export function Historik({ years }: Props) {
+  // V3.1 (Anna's feedback): tom-tilstand fjerner header HELT.
+  // "Sådan har haven set ud" virker som en forbrydelse på en side
+  // hvor haven endnu ikke har set ud af noget. I stedet: stort
+  // foto + tekst-overlay som hovedobjekt.
+  if (years.length === 0) {
+    return <HistorikEmpty />
+  }
+
   return (
     <section className="space-y-6 sm:space-y-7">
       <header className="space-y-2">
@@ -55,34 +63,99 @@ export function Historik({ years }: Props) {
         </h2>
       </header>
 
-      {years.length === 0 ? (
-        // Historik er sidens primære sektion; tom-tilstand skal have
-        // tilsvarende vægt. To linjer der placerer brugeren i en
-        // gennemførbar fremtid — "din første note" er konkret, ikke
-        // abstrakt "kom igang med at logge".
-        <div style={{ paddingBlock: '4px 0' }}>
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontSize: 19,
-              lineHeight: 1.55,
-              color: 'rgba(36,48,31,0.55)',
-              margin: 0,
-              maxWidth: 460,
-            }}
-          >
-            Endnu har haven ingen historik.<br />
-            Din første note bliver sidens første side.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-8 sm:space-y-10">
-          {years.map((y, idx) => (
-            <YearBlock key={y.year} year={y} defaultOpen={idx === 0} />
-          ))}
-        </div>
-      )}
+      <div className="space-y-8 sm:space-y-10">
+        {years.map((y, idx) => (
+          <YearBlock key={y.year} year={y} defaultOpen={idx === 0} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/**
+ * Tom-tilstand med foto som hovedobjekt — Anna's spec:
+ *
+ *   [dug på blad]
+ *   Historien begynder her.
+ *   Din første note bliver
+ *   Havebogens første side.
+ *
+ * Ingen "HISTORIK"-eyebrow, ingen "Sådan har haven set ud"-overskrift.
+ * Når der er nul historik, er det forkert at annoncere det med en
+ * label. Et stort foto + én rolig sætning fortæller historien.
+ */
+function HistorikEmpty() {
+  return (
+    <section
+      className="relative overflow-hidden"
+      style={{
+        // Bryd app-container så fotoet får magasin-bredde
+        // (samme mønster som hero, mindre udtalt).
+        marginInline: -16,
+        aspectRatio: '1.5 / 1',
+        maxHeight: 380,
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/makro/chili/blad-dug.jpg"
+        alt=""
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center 45%',
+          filter: 'saturate(0.92)',
+        }}
+      />
+      {/* Tekstlæsbarhed-gradient — venstre side hvor teksten ligger */}
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'linear-gradient(90deg, rgba(12,18,8,0.50) 0%, rgba(12,18,8,0.30) 45%, rgba(12,18,8,0.10) 80%, rgba(12,18,8,0) 100%)',
+        }}
+      />
+      {/* Tekst-overlay venstre */}
+      <div
+        className="relative z-10 flex h-full flex-col justify-center"
+        style={{ padding: '0 26px', maxWidth: 360 }}
+      >
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(22px, 4.5vw, 30px)',
+            lineHeight: 1.2,
+            color: 'rgba(244,239,220,0.95)',
+            textShadow: '0 1px 14px rgba(12,18,8,0.55)',
+            margin: 0,
+          }}
+        >
+          Historien begynder her.
+        </p>
+        <p
+          style={{
+            fontFamily: serif,
+            fontWeight: 400,
+            fontSize: 'clamp(16px, 3vw, 20px)',
+            lineHeight: 1.45,
+            color: 'rgba(244,239,220,0.78)',
+            textShadow: '0 1px 12px rgba(12,18,8,0.55)',
+            margin: 0,
+            marginTop: 14,
+          }}
+        >
+          Din første note bliver
+          <br />
+          Havebogens første side.
+        </p>
+      </div>
     </section>
   )
 }

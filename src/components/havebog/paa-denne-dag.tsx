@@ -12,6 +12,10 @@ interface Props {
  * "På denne dag" — historiske hændelser fra samme dato tidligere år.
  * Som Facebook Memories eller Timehop, men for haven. Vækker minder
  * frem, peger ikke fremad.
+ *
+ * V3.1 (Anna's feedback): tom-tilstand har nu et HOVEDOBJEKT —
+ * stort foto til venstre + tekst til højre. Tom-tilstande må ikke
+ * være tekst alene.
  */
 export function PaaDenneDag({ entries }: Props) {
   return (
@@ -31,26 +35,75 @@ export function PaaDenneDag({ entries }: Props) {
       </h2>
 
       {entries.length === 0 ? (
-        // Ceremoniel tom-tilstand. Bevidst 2 linjer for at give
-        // sektionen vægt — uden indhold er sektionen ellers så lille
-        // at den læser som en glemt label snarere end et meningsfuldt
-        // afsnit i Havebogen. To linjer + større size signalerer at
-        // "her sker noget om et år", ikke "her mangler data".
-        <div style={{ paddingBlock: '4px 0' }}>
-          <p
+        // Hovedobjekt-tom-tilstand: foto + tekst i journal-opslag.
+        // Fotoet er beslægtet med "minde" (dahlia hoved) — det er
+        // ikke en abstrakt illustration, men et faktisk havefoto
+        // der placerer brugeren i den naturhistorie sektionen handler om.
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '38% 1fr',
+            gap: 18,
+            alignItems: 'start',
+            paddingBlock: '4px 0',
+          }}
+        >
+          {/* Foto — let roteret, papir-baggrund som let stikker ud */}
+          <div
             style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontSize: 19,
-              lineHeight: 1.55,
-              color: 'rgba(36,48,31,0.55)',
-              margin: 0,
-              maxWidth: 460,
+              position: 'relative',
+              aspectRatio: '0.78 / 1',
+              transform: 'rotate(-1.4deg)',
+              padding: 5,
+              background: '#F2EAD3',
+              boxShadow: '0 1px 2px rgba(48,38,18,0.10), 0 8px 18px rgba(48,38,18,0.08)',
+              borderRadius: 2,
             }}
           >
-            Dette er din første sæson i Havebogen.<br />
-            Om et år begynder minderne at dukke op her.
-          </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/makro/dahlia-cafe-au-lait/hoved.jpg"
+              alt=""
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                filter: 'saturate(0.90)',
+              }}
+            />
+          </div>
+
+          <div>
+            <p
+              style={{
+                fontFamily: serif,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: 'clamp(17px, 3vw, 21px)',
+                lineHeight: 1.5,
+                color: 'rgba(36,48,31,0.62)',
+                margin: 0,
+                maxWidth: 240,
+              }}
+            >
+              Dette er din første sæson i Havebogen.
+            </p>
+            <p
+              style={{
+                fontFamily: serif,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: 'clamp(15px, 2.6vw, 18px)',
+                lineHeight: 1.5,
+                color: 'rgba(36,48,31,0.50)',
+                margin: 0,
+                marginTop: 10,
+                maxWidth: 240,
+              }}
+            >
+              Om et år begynder minderne at dukke op her.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="space-y-3">

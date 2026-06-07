@@ -38,22 +38,7 @@ export function ArkiverdePlanter({ plants }: Props) {
       </h2>
 
       {plants.length === 0 ? (
-        <div style={{ paddingBlock: '4px 0' }}>
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontSize: 19,
-              lineHeight: 1.55,
-              color: 'rgba(36,48,31,0.55)',
-              margin: 0,
-              maxWidth: 460,
-            }}
-          >
-            Når en sæson er ovre, hører planterne hjemme her.<br />
-            Din første sæson er endnu ikke slut.
-          </p>
-        </div>
+        <ArkivEmpty />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {plants.map(p => (
@@ -62,6 +47,97 @@ export function ArkiverdePlanter({ plants }: Props) {
         </div>
       )}
     </section>
+  )
+}
+
+/**
+ * Tom-tilstand for arkiverede planter — "presset tørret plante"-tilgang
+ * pr. Anna's spec. Lille foto af en plante-detalje (chili-frø) som om
+ * den var presset og fastgjort i et herbarium-album.
+ */
+function ArkivEmpty() {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '40% 1fr',
+        gap: 22,
+        alignItems: 'center',
+        paddingBlock: '4px 0',
+      }}
+    >
+      {/* Presset prøve — let roteret, mat papir-baggrund */}
+      <div
+        style={{
+          position: 'relative',
+          aspectRatio: '0.85 / 1',
+          transform: 'rotate(1.8deg)',
+          padding: 6,
+          background: '#F2EAD3',
+          boxShadow: '0 1px 2px rgba(48,38,18,0.10), 0 8px 18px rgba(48,38,18,0.08)',
+          borderRadius: 2,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/makro/chili/froe-2.jpg"
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            // Lavere saturation + lidt mat — som en gemt prøve
+            filter: 'saturate(0.75) contrast(0.95) sepia(0.08)',
+          }}
+        />
+        {/* Antydet tape */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -7,
+            left: '50%',
+            width: 36,
+            height: 12,
+            background: 'rgba(245,236,210,0.78)',
+            transform: 'translateX(-50%) rotate(-3deg)',
+            boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
+            border: '1px solid rgba(180,160,120,0.20)',
+          }}
+        />
+      </div>
+
+      <div>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(17px, 3vw, 21px)',
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.65)',
+            margin: 0,
+            maxWidth: 240,
+          }}
+        >
+          Når en sæson er ovre, hører planterne hjemme her.
+        </p>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(15px, 2.6vw, 17px)',
+            lineHeight: 1.5,
+            color: 'rgba(36,48,31,0.48)',
+            margin: 0,
+            marginTop: 8,
+            maxWidth: 240,
+          }}
+        >
+          Din første sæson er endnu ikke slut.
+        </p>
+      </div>
+    </div>
   )
 }
 

@@ -38,22 +38,7 @@ export function SenesteNoter({ notes }: Props) {
       </h2>
 
       {notes.length === 0 ? (
-        <div style={{ paddingBlock: '4px 0' }}>
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontSize: 19,
-              lineHeight: 1.55,
-              color: 'rgba(36,48,31,0.55)',
-              margin: 0,
-              maxWidth: 460,
-            }}
-          >
-            Ingen noter endnu.<br />
-            Den første skriver du fra en plantes detalje-side.
-          </p>
-        </div>
+        <NoterEmpty />
       ) : (
         <Card>
           <CardContent className="p-0">
@@ -126,4 +111,110 @@ function formatDate(iso: string): string {
     'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
   ]
   return `${d.getDate()}. ${months[d.getMonth()]}`
+}
+
+/**
+ * Polaroid-empty-state — Anna's spec.
+ *
+ * Et lille foto i polaroid-rammen (bred hvid kant nederst, smal top),
+ * let roteret, med håndskreven-følelse tekst ved siden af.
+ *
+ * Visuelt: en polaroid lagt skævt på siden med tekst ved siden af,
+ * som om en bruger har taget billedet ud af albummet og lagt det
+ * fri.
+ */
+function NoterEmpty() {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '40% 1fr',
+        gap: 22,
+        alignItems: 'center',
+        paddingBlock: '8px 4px',
+      }}
+    >
+      {/* Polaroid — bred hvid kant nederst (klassisk polaroid-format) */}
+      <div
+        style={{
+          position: 'relative',
+          aspectRatio: '0.84 / 1',
+          transform: 'rotate(-2.8deg)',
+          background: '#FBFAF1',
+          padding: '8px 8px 32px 8px',
+          boxShadow: '0 2px 4px rgba(48,38,18,0.10), 0 12px 26px rgba(48,38,18,0.10)',
+        }}
+      >
+        {/* Foto inde i polaroid-rammen */}
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            background: 'rgba(36,48,31,0.06)',
+            overflow: 'hidden',
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/makro/agurk-marketmore/blad.jpg"
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: 'saturate(0.88) contrast(0.96)',
+            }}
+          />
+        </div>
+        {/* Tape-strimmel øverst — antydet, ikke realistisk */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -8,
+            left: '50%',
+            width: 44,
+            height: 14,
+            background: 'rgba(245,236,210,0.82)',
+            transform: 'translateX(-50%) rotate(3deg)',
+            boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
+            border: '1px solid rgba(180,160,120,0.20)',
+          }}
+        />
+      </div>
+
+      {/* Tekst — håndskreven-stemning. Cormorant italic, lav kontrast,
+          som om noten ligger ovenpå en gammel side. */}
+      <div>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(18px, 3.2vw, 22px)',
+            lineHeight: 1.35,
+            color: 'rgba(36,48,31,0.65)',
+            margin: 0,
+            maxWidth: 230,
+          }}
+        >
+          Ingen noter endnu.
+        </p>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: 'clamp(15px, 2.6vw, 17px)',
+            lineHeight: 1.45,
+            color: 'rgba(36,48,31,0.50)',
+            margin: 0,
+            marginTop: 10,
+            maxWidth: 230,
+          }}
+        >
+          Skriv den første fra en plante.
+        </p>
+      </div>
+    </div>
+  )
 }
