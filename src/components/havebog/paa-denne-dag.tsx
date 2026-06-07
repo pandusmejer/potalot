@@ -74,34 +74,37 @@ export function PaaDenneDag({ entries }: Props) {
           </div>
 
           <div>
+            {/* V3.3 (Anna): dagbogs-sprog frem for software-sprog.
+                "Dette er din første sæson i Havebogen" var korrekt
+                men intet menneske skriver sådan i en dagbog. */}
             <p
               style={{
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(17px, 3vw, 21px)',
-                lineHeight: 1.5,
-                color: 'rgba(36,48,31,0.62)',
+                fontSize: 'clamp(18px, 3.2vw, 22px)',
+                lineHeight: 1.4,
+                color: 'rgba(36,48,31,0.68)',
                 margin: 0,
                 maxWidth: 240,
               }}
             >
-              Dette er din første sæson i Havebogen.
+              Den første side er stadig tom.
             </p>
             <p
               style={{
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(15px, 2.6vw, 18px)',
+                fontSize: 'clamp(15px, 2.6vw, 17px)',
                 lineHeight: 1.5,
                 color: 'rgba(36,48,31,0.50)',
                 margin: 0,
-                marginTop: 10,
+                marginTop: 12,
                 maxWidth: 240,
               }}
             >
-              Om et år begynder minderne at dukke op her.
+              Om et år vil du kunne bladre tilbage og se hvad der voksede netop nu.
             </p>
           </div>
         </div>

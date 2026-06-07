@@ -114,76 +114,61 @@ function formatDate(iso: string): string {
 }
 
 /**
- * Polaroid-empty-state — Anna's spec.
+ * Polaroid-stack-empty-state — V3.3 (Anna's "bord fyldt med minder"-spec).
  *
- * Et lille foto i polaroid-rammen (bred hvid kant nederst, smal top),
- * let roteret, med håndskreven-følelse tekst ved siden af.
+ * Tre polaroider med forskellig størrelse, rotation og let overlap —
+ * som om brugeren har taget tre billeder ud af albummet og lagt dem
+ * fri på et bord. Bryder "component-library/polaroid.tsx"-følelsen
+ * fra V3.1 hvor en enkelt polaroid sad pænt centreret.
  *
- * Visuelt: en polaroid lagt skævt på siden med tekst ved siden af,
- * som om en bruger har taget billedet ud af albummet og lagt det
- * fri.
+ * Forskellig rotation, forskellig z-index, hver polaroid har sit
+ * eget foto. Polaroiderne overlapper let så de føles som en
+ * fysisk stak frem for et grid.
  */
 function NoterEmpty() {
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '40% 1fr',
-        gap: 22,
+        gridTemplateColumns: '52% 1fr',
+        gap: 8,
         alignItems: 'center',
-        paddingBlock: '8px 4px',
+        paddingBlock: '8px 16px',
       }}
     >
-      {/* Polaroid — bred hvid kant nederst (klassisk polaroid-format) */}
+      {/* Polaroid-stak: 3 overlappende polaroider med varierende
+          rotation og størrelse. Position relative + nested absolute
+          så de kan overlappe naturligt. */}
       <div
         style={{
           position: 'relative',
-          aspectRatio: '0.84 / 1',
-          transform: 'rotate(-2.8deg)',
-          background: '#FBFAF1',
-          padding: '8px 8px 32px 8px',
-          boxShadow: '0 2px 4px rgba(48,38,18,0.10), 0 12px 26px rgba(48,38,18,0.10)',
+          height: 220,
         }}
       >
-        {/* Foto inde i polaroid-rammen */}
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            background: 'rgba(36,48,31,0.06)',
-            overflow: 'hidden',
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/makro/agurk-marketmore/blad.jpg"
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              filter: 'saturate(0.88) contrast(0.96)',
-            }}
-          />
-        </div>
-        {/* Tape-strimmel øverst — antydet, ikke realistisk */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -8,
-            left: '50%',
-            width: 44,
-            height: 14,
-            background: 'rgba(245,236,210,0.82)',
-            transform: 'translateX(-50%) rotate(3deg)',
-            boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
-            border: '1px solid rgba(180,160,120,0.20)',
-          }}
+        <Polaroid
+          src="/images/makro/agurk-marketmore/blad.jpg"
+          rotation={-7.5}
+          width={106}
+          tapeRotation={4}
+          style={{ position: 'absolute', left: 0, top: 12, zIndex: 1 }}
+        />
+        <Polaroid
+          src="/images/makro/dahlia-cafe-au-lait/knop.jpg"
+          rotation={4.5}
+          width={118}
+          tapeRotation={-3}
+          style={{ position: 'absolute', left: 58, top: 0, zIndex: 3 }}
+        />
+        <Polaroid
+          src="/images/makro/chili/blomsterknop.jpg"
+          rotation={-2}
+          width={98}
+          tapeRotation={5}
+          style={{ position: 'absolute', left: 134, top: 40, zIndex: 2 }}
         />
       </div>
 
-      {/* Tekst — håndskreven-stemning. Cormorant italic, lav kontrast,
-          som om noten ligger ovenpå en gammel side. */}
+      {/* Tekst — håndskreven-stemning */}
       <div>
         <p
           style={{
@@ -215,6 +200,77 @@ function NoterEmpty() {
           Skriv den første fra en plante.
         </p>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Enkel polaroid-komponent — genbrugelig i scrapbook-empty-states.
+ * Bred hvid kant nederst (klassisk polaroid-format), let roteret,
+ * antydet papirtape øverst.
+ */
+function Polaroid({
+  src,
+  rotation,
+  width,
+  tapeRotation,
+  style,
+}: {
+  src: string
+  rotation: number
+  width: number
+  tapeRotation: number
+  style?: React.CSSProperties
+}) {
+  const height = width * 1.18 // standard polaroid-aspect
+  return (
+    <div
+      style={{
+        ...style,
+        width,
+        height,
+        transform: `rotate(${rotation}deg)`,
+        background: '#FBFAF1',
+        padding: '6px 6px 26px 6px',
+        boxShadow:
+          '0 2px 4px rgba(48,38,18,0.10), 0 10px 22px rgba(48,38,18,0.12)',
+      }}
+    >
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          background: 'rgba(36,48,31,0.06)',
+          overflow: 'hidden',
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'saturate(0.88) contrast(0.96)',
+          }}
+        />
+      </div>
+      {/* Tape øverst */}
+      <div
+        style={{
+          position: 'absolute',
+          top: -7,
+          left: '50%',
+          width: Math.round(width * 0.42),
+          height: 12,
+          background: 'rgba(245,236,210,0.82)',
+          transform: `translateX(-50%) rotate(${tapeRotation}deg)`,
+          boxShadow: '0 1px 2px rgba(48,38,18,0.10)',
+          border: '1px solid rgba(180,160,120,0.20)',
+        }}
+      />
     </div>
   )
 }

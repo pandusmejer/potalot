@@ -89,11 +89,12 @@ function HistorikEmpty() {
     <section
       className="relative overflow-hidden"
       style={{
-        // Bryd app-container så fotoet får magasin-bredde
-        // (samme mønster som hero, mindre udtalt).
+        // V3.3 (Anna): "Dugbladet er bedre end hele heroet — det
+        // foeles som et fund". Bump aspect 1.5:1 → 1.2:1 og fjern
+        // maxHeight, sa fotoet faar feature-article-vægt og laeses
+        // som hovedperson, ikke som thumbnail.
         marginInline: -16,
-        aspectRatio: '1.5 / 1',
-        maxHeight: 380,
+        aspectRatio: '1.2 / 1',
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

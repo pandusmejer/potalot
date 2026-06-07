@@ -51,9 +51,14 @@ export function ArkiverdePlanter({ plants }: Props) {
 }
 
 /**
- * Tom-tilstand for arkiverede planter — "presset tørret plante"-tilgang
- * pr. Anna's spec. Lille foto af en plante-detalje (chili-frø) som om
- * den var presset og fastgjort i et herbarium-album.
+ * Tom-tilstand for arkiverede planter — V3.3 (Anna's "ikke krydderi"-spec).
+ *
+ * V3.1 brugte chili-froe-2.jpg, men det "ligner krydderi, ikke
+ * havebog". Skiftet til dahlia/knolde.jpg — knoldene er præcis
+ * efter-sæson-tilstanden for en plante: graves op om efteråret,
+ * gemmes i kælderen, ventes på næste sæson. Knolde-fotoet HAR den
+ * "afsluttet dyrkning, ventes på næste runde"-stemning som chili-
+ * frøet manglede.
  */
 function ArkivEmpty() {
   return (
@@ -80,14 +85,16 @@ function ArkivEmpty() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/makro/chili/froe-2.jpg"
+          src="/images/makro/dahlia/knolde.jpg"
           alt=""
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            // Lavere saturation + lidt mat — som en gemt prøve
-            filter: 'saturate(0.75) contrast(0.95) sepia(0.08)',
+            // Lavere saturation + lidt mat — som en gemt prøve.
+            // Sepia-tonen er dæmpet (5%) for dahlia-knolde da
+            // de allerede er jord-farvede; mere ville gøre dem grå.
+            filter: 'saturate(0.78) contrast(0.96) sepia(0.05)',
           }}
         />
         {/* Antydet tape */}
