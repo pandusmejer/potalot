@@ -29,6 +29,20 @@ læse et essay om årstidernes gang.
 Hver primær-sektion har sit eget formål, sin egen følelse og sit
 eget designsprog. De skal føles **beslægtede, men ikke identiske**.
 
+> **Fem søskende, ikke fem tvillinger.**
+>
+> Det er den vigtigste mentale model for hele systemet. Sektionerne
+> deler DNA (forældrene), men de er ikke kopier af hinanden. Apple
+> Fotos ligner ikke Apple Regneark. National Geographic-artikler
+> ligner ikke deres abonnements-sider. Men man kan stadig mærke at
+> det er samme familie.
+>
+> Den klassiske faldgrube: at iterere på Havebog og hver gang den
+> bliver spændende tænke "passer det stadig til Frøbanken?", og hver
+> gang den passer tænke "nu blev den kedelig". Begge observationer
+> er korrekte. Konflikten opløses kun ved at acceptere at Havebog
+> ER et andet rum end Frøbank — ikke et andet hjørne af samme rum.
+
 ### Havebog
 | | |
 |---|---|
