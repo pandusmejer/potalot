@@ -45,3 +45,29 @@ Principper for ændringer
 - undgå unødvendige dependencies
 - fokuser på MVP
 - UI skal fungere godt på mobil
+
+Design-filosofi
+Potalot er et digitalt haveredskab. Havebogen er den personlige
+havejournal inde i det digitale haveredskab.
+
+Den ene sætning: "Byg en havejournal, ikke et dashboard." Den gælder
+især for Havebog (/) — og hjælper med at undgå at drive resten af
+appen mod produktivitetsværktøj-territorium.
+
+Sektion-DNA (Docs/design-system/potalot.md har det fulde):
+- Havebog = minder, editorial, Cormorant/Instrument Serif + Manrope
+- Frøbank = samling, system, Gabarito + Manrope
+- Planter = pleje, handling, Gabarito + Manrope
+- Kalender = timing, planlægning, Gabarito + Manrope
+- Guides = læring, magasin, Cormorant + Manrope (samme univers som Havebog)
+
+Designsystem-dokumenter (læs FØR redesign):
+- Docs/design-system/potalot.md — Overordnet filosofi + 3-lags arkitektur
+- Docs/design-system/havebog.md — Havebog-manifest (10 principper)
+- Docs/design-system/guides.md — Guide-systemet (V4.3)
+
+Beslutningsrækkefølge når noget føles forkert:
+1. Hierarki  2. Rytme  3. Komposition  4. Typografi
+5. Farver    6. Skygger/radius   7. Komponentdetaljer
+
+Store problemer løses næsten aldrig med flere komponenter.
