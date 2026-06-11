@@ -96,11 +96,22 @@ export function parseGerminationDays(
 }
 
 /**
- * Forventet spiring for en sået plante.
+ * Forventet spiring for en sået plante — fire-trins-progression
+ * (V1.2, Annas spec). Teksterne afspejler hvad systemet FAKTISK
+ * ved: en forventning er en forventning, en passeret dato er et
+ * spørgsmål. "Spirer nu" ville lyde som om systemet står og glor
+ * ned i potten — det gør det ikke (endnu).
  *
- *   Før vinduet:    "Spiring om ~3 dage"        (info)
- *   I vinduet:      "Spiring ventes netop nu"   (attention — kig i bakken)
- *   Efter vinduet:  "Sået for 17 dage siden — spiret?" (attention, P5-anomali)
+ *   3+ dage tilbage:       "Spiring om ~4 dage"   (info, forventning)
+ *   1-2 dage tilbage:      "Snart spiring"        (info, forventning)
+ *   Forventet dato passeret
+ *   (inde i vinduet):      "Er den spiret?"       (attention, verificering)
+ *   Langt over tid
+ *   (vinduet passeret):    "Tjek spiring"         (attention, anomali)
+ *
+ * Kort tekst er et krav, ikke et stilvalg: statuslinjen på sort-
+ * kortet truncater, og det er netop de vigtige beskeder der skal
+ * kunne læses.
  *
  * Returnerer null hvis sowDate eller spiretid mangler (stilhed).
  */
@@ -113,20 +124,17 @@ export function forventetSpiring(plant: Plant): AfledtStatus | null {
   const dage = dageSiden(plant.sowDate)
   if (dage < 0) return null
 
-  if (dage < germ.min) {
-    const tilbage = germ.min - dage
-    return {
-      kind: 'info',
-      text: `Spiring om ~${tilbage} ${tilbage === 1 ? 'dag' : 'dage'}`,
-    }
+  const tilbage = germ.min - dage
+  if (tilbage >= 3) {
+    return { kind: 'info', text: `Spiring om ~${tilbage} dage` }
+  }
+  if (tilbage >= 1) {
+    return { kind: 'info', text: 'Snart spiring' }
   }
   if (dage <= germ.max) {
-    return { kind: 'attention', text: 'Spiring ventes netop nu' }
+    return { kind: 'attention', text: 'Er den spiret?' }
   }
-  return {
-    kind: 'attention',
-    text: `Sået for ${dage} dage siden — spiret?`,
-  }
+  return { kind: 'attention', text: 'Tjek spiring' }
 }
 
 // ─────────────────────────────────────────────────────────────
