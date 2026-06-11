@@ -14,7 +14,10 @@ export function GreenhouseNow({ plants }: GreenhouseNowProps) {
   return (
     <section className="space-y-2.5">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-serif text-xl leading-tight text-foreground">Dit drivhus lige nu</h2>
+        {/* "I fokus" — IKKE "Dit drivhus lige nu". Folk dyrker på
+            friland, i højbede og altankasser; drivhus-framingen var
+            for snæver. Strippen viser de første 6 aktive planter. */}
+        <h2 className="font-serif text-xl leading-tight text-foreground">I fokus</h2>
         <p className="text-xs font-medium text-muted-foreground">{visiblePlants.length} i gang</p>
       </div>
       <div className="-mx-4 overflow-hidden sm:mx-0">

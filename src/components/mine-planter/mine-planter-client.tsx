@@ -67,7 +67,7 @@ interface Props {
 }
 
 export function MinePlanterClient({ plants: realPlants }: Props) {
-  const [activeFilter, setActiveFilter] = useState<PlantFilterStatus>('alle')
+  const [activeFilter, setActiveFilter] = useState<PlantFilterStatus>('lige_nu')
 
   const isDemo = realPlants.length === 0
   // Bemærk: mockPlants extends Plant, så typen er Plant-kompatibel
@@ -84,9 +84,10 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
     }
   }, [plants])
 
-  // Status-chips filtrerer KUN inden for Aktive-bucket'en.
+  // Handlings-chips filtrerer KUN inden for Aktive-bucket'en.
+  // "Lige nu" (default) = alle aktive.
   const filteredAktive = useMemo(() => {
-    if (activeFilter === 'alle') return aktive
+    if (activeFilter === 'lige_nu') return aktive
     return aktive.filter(p => statusToFilter(p.status) === activeFilter)
   }, [aktive, activeFilter])
 

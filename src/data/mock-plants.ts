@@ -1,12 +1,23 @@
 import type { CalendarTask, Plant, PlantStatus } from '@/lib/types'
 
+/**
+ * Handlings-orienterede filtre (V2.2 — Annas feedback).
+ *
+ * Efter art-opdelingen blev de gamle status-chips (Sået/Spiret/
+ * Ompottet/Udplantet/Klar til høst) en anden måde at organisere de
+ * samme ting på — database-sprog. De nye chips svarer i stedet på
+ * "hvad vil jeg se?":
+ *
+ *   Lige nu          → alle aktive (default)
+ *   I vækst          → saaet, spirer, i_vaekst, udplantet (trives, intet kræves)
+ *   Kræver handling  → klar_til_udplantning (du skal gøre noget)
+ *   Klar til høst    → hoestklar (belønningen venter)
+ */
 export type PlantFilterStatus =
-  | 'alle'
-  | 'saaet'
-  | 'spirer'
+  | 'lige_nu'
   | 'i_vaekst'
-  | 'udplantet'
-  | 'hoestklar'
+  | 'kraever_handling'
+  | 'klar_til_hoest'
 
 export interface MockPlantImage {
   id: string
@@ -65,12 +76,10 @@ export interface MockPlant extends Plant {
 const DEMO_USER_ID = 'demo-user'
 
 export const plantStatusFilters: Array<{ id: PlantFilterStatus; label: string }> = [
-  { id: 'alle', label: 'Alle' },
-  { id: 'saaet', label: 'Sået' },
-  { id: 'spirer', label: 'Spiret' },
-  { id: 'i_vaekst', label: 'Ompottet' },
-  { id: 'udplantet', label: 'Udplantet' },
-  { id: 'hoestklar', label: 'Klar til høst' },
+  { id: 'lige_nu', label: 'Lige nu' },
+  { id: 'i_vaekst', label: 'I vækst' },
+  { id: 'kraever_handling', label: 'Kræver handling' },
+  { id: 'klar_til_hoest', label: 'Klar til høst' },
 ]
 
 export const mockPlants: MockPlant[] = [
@@ -786,18 +795,19 @@ export function getMockPlantById(id: string): MockPlant | undefined {
   return mockPlants.find(plant => plant.id === id)
 }
 
-export function filterMockPlantsByStatus(plants: MockPlant[], status: PlantFilterStatus): MockPlant[] {
-  if (status === 'alle') return plants.filter(plant => !plant.isArchived)
-  return plants.filter(plant => !plant.isArchived && statusToFilter(plant.status) === status)
-}
-
 export function formatPlantDate(date: string | null | undefined): string {
   if (!date) return 'Ikke endnu'
   return new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
 }
 
+/**
+ * Map en plante-status til den handlings-chip den hører under.
+ * planlagt/afsluttet rammer aldrig denne funktion i praksis (de er
+ * udenfor Aktive-bucket'en), men mapper harmløst til 'lige_nu'.
+ */
 export function statusToFilter(status: PlantStatus): PlantFilterStatus {
-  if (status === 'klar_til_udplantning') return 'i_vaekst'
-  if (status === 'planlagt' || status === 'afsluttet') return 'alle'
-  return status
+  if (status === 'hoestklar') return 'klar_til_hoest'
+  if (status === 'klar_til_udplantning') return 'kraever_handling'
+  if (status === 'planlagt' || status === 'afsluttet') return 'lige_nu'
+  return 'i_vaekst' // saaet, spirer, i_vaekst, udplantet
 }
