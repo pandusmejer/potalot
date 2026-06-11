@@ -163,6 +163,25 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
 
       {/* ── AKTIVE: Art → Sorter ─────────────────────────────── */}
       <section className="space-y-7">
+        {/* Niveau-markør (V2.3.1): uden den hopper øjet direkte
+            fra fokuslaget til "TOMAT" — det virker, men føles
+            abrupt. "Mine arter" giver hjernen kapitel-skiftet. */}
+        {artGroups.length > 0 && (
+          <h2
+            className="uppercase px-0.5"
+            style={{
+              fontFamily: 'var(--font-manrope)',
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: '0.14em',
+              color: 'rgba(36,48,31,0.55)',
+              margin: 0,
+              marginBottom: -8, // strammere mod første art-række
+            }}
+          >
+            Mine arter
+          </h2>
+        )}
         {artGroups.length > 0 ? (
           artGroups.map(([artName, group]) => (
             <PlantArtRow key={artName} artName={artName} plants={group} />

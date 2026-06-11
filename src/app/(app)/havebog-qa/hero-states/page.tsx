@@ -205,7 +205,7 @@ const MEDIUM_TIDSLINJE: Tidslinje = {
   weekNoteCount: 3,
 }
 const MEDIUM_NARRATIVE: HeroNarrative = {
-  seasonLine: 'Juni i haven',
+  seasonLine: 'Dag 98 af din første sæson',
   personalText: [
     'Agurkerne har stået ude i 12 dage.',
     'Tomaterne begynder at tage fart.',

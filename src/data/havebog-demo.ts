@@ -193,7 +193,10 @@ export const DEMO_TIDSLINJE: Tidslinje = {
  * + history i actions/havebog.ts.
  */
 export const DEMO_HERO_NARRATIVE: HeroNarrative = {
-  seasonLine: 'Juni i haven',
+  // Dagbogs-stemmen (V3.10): "Dag 98" = første såning 2. marts →
+  // demo-datoen 7. juni, inklusiv. Den ene sætning der gør
+  // Havebogen til en kaptajns logbog frem for et banner.
+  seasonLine: 'Dag 98 af din første sæson',
   personalText: [
     'Agurkerne har stået ude i 12 dage.',
     'Tomaterne begynder at tage fart.',

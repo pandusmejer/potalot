@@ -219,10 +219,21 @@ function buildHeroNarrative(
   history: HistoryYear[],
   onThisDay: OnThisDayEntry[],
   today: Date,
+  /** Første sånings-dato i indeværende år — sæsonens "Dag 1". Null hvis intet er sået. */
+  seasonStart: string | null = null,
 ): HeroNarrative {
   const month = MAANED_FULD_LOWER[today.getMonth()]
   const currentYear = today.getFullYear()
   const hasYearOnePlusHistory = history.some(h => h.year < currentYear)
+
+  // Sæsondag — dagbogs-stemmen ("Dag 66 af din første sæson").
+  // Dag 1 = første såning i året. Tæller kun når der ER en såning;
+  // en bruger uden noget i jorden har ingen sæsondag (ærlighed
+  // over poesi). Kun rimelige værdier (1-365) bruges.
+  const saesonDag = seasonStart
+    ? daysBetween(new Date(seasonStart), today) + 1
+    : null
+  const harSaesonDag = saesonDag !== null && saesonDag >= 1 && saesonDag <= 365
 
   // ── År 1+: brugeren har tidligere sæsoner ────────────────
   if (hasYearOnePlusHistory) {
@@ -282,8 +293,15 @@ function buildHeroNarrative(
   if (beats.length === 0) {
     beats.push(`Du dyrker ${heroStats.varieties} ${heroStats.varieties === 1 ? 'sort' : 'sorter'} i år.`)
   }
+  // Dagbogs-stemmen (V3.10): "Dag 98 af din første sæson" erstatter
+  // "Juni i haven" når der ER en sæson at tælle. Det er den ene
+  // sætning der gør Havebogen til en dagbog frem for en app —
+  // kaptajnens logbog, ikke et banner. Fallback til måneds-linjen
+  // når intet er sået endnu.
   return {
-    seasonLine: `${capitalize(month)} i haven`,
+    seasonLine: harSaesonDag
+      ? `Dag ${saesonDag} af din første sæson`
+      : `${capitalize(month)} i haven`,
     personalText: beats,
     showStats: true,
     userState: 'active',
@@ -515,7 +533,20 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           (p.archived_at ? new Date(p.archived_at).getFullYear() : currentYear),
       }))
 
-    const heroNarrative = buildHeroNarrative(heroStats, tidslinje, history, onThisDay, today)
+    // Sæsonstart = første sånings-log i indeværende år (fallback:
+    // tidligste log i året overhovedet — en plante købt som plante
+    // starter også en sæson).
+    const currentYearLogs = logs.filter(l => l.date.startsWith(String(currentYear)))
+    const sowingDates = currentYearLogs
+      .filter(l => l.type === 'sowing')
+      .map(l => l.date)
+      .sort()
+    const allDates = currentYearLogs.map(l => l.date).sort()
+    const seasonStart = sowingDates[0] ?? allDates[0] ?? null
+
+    const heroNarrative = buildHeroNarrative(
+      heroStats, tidslinje, history, onThisDay, today, seasonStart,
+    )
 
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]

@@ -244,11 +244,20 @@ export function froeRaekkevidde(item: {
 export function planterMentorLinje(plants: Plant[]): string | null {
   if (plants.length === 0) return null
 
-  const klar = plants.filter(
-    p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning',
-  ).length
-  if (klar === 1) return 'Én plante er klar til næste skridt.'
-  if (klar > 1) return `${klar} planter er klar til næste skridt.`
+  // Specificitet vinder (V2.3.1): "klar til udplantning" er
+  // stærkere end "klar til næste skridt", fordi den fortæller
+  // hvad næste skridt faktisk ER. Generisk formulering bruges
+  // kun når statusserne er blandede.
+  const hoest = plants.filter(p => p.status === 'hoestklar').length
+  const udplant = plants.filter(p => p.status === 'klar_til_udplantning').length
+
+  if (hoest > 0 && udplant > 0) {
+    return `${hoest + udplant} planter er klar til næste skridt.`
+  }
+  if (udplant === 1) return 'Én plante er klar til udplantning.'
+  if (udplant > 1) return `${udplant} planter er klar til udplantning.`
+  if (hoest === 1) return 'Én plante er høstklar.'
+  if (hoest > 1) return `${hoest} planter er høstklare.`
 
   const spiringTjek = plants.filter(
     p => p.status === 'saaet' && forventetSpiring(p)?.kind === 'attention',
@@ -267,16 +276,22 @@ export function planterMentorLinje(plants: Plant[]): string | null {
  * — og falder tilbage til "N i vækst" når intet presser.
  */
 export function fokusOpsummering(plants: Plant[]): string {
+  // V2.3.1: ental dropper tallet ("Høstklar" frem for "1 høstklar")
+  // — teksten skal ikke konkurrere med sektionstitlen på mobil.
+  // Flertal beholder tallet, for dér ER tallet informationen.
   const hoestklar = plants.filter(p => p.status === 'hoestklar').length
-  if (hoestklar > 0) return `${hoestklar} høstklar`
+  if (hoestklar === 1) return 'Høstklar'
+  if (hoestklar > 1) return `${hoestklar} høstklare`
 
   const klar = plants.filter(p => p.status === 'klar_til_udplantning').length
-  if (klar > 0) return `${klar} klar til udplantning`
+  if (klar === 1) return 'Klar til udplantning'
+  if (klar > 1) return `${klar} klar til udplantning`
 
   const tjek = plants.filter(
     p => p.status === 'saaet' && forventetSpiring(p)?.kind === 'attention',
   ).length
-  if (tjek > 0) return `${tjek} bør tjekkes`
+  if (tjek === 1) return 'Bør tjekkes'
+  if (tjek > 1) return `${tjek} bør tjekkes`
 
   return `${plants.length} i vækst`
 }
