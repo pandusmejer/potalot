@@ -169,21 +169,23 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
         </div>
       </div>
 
-      {/* ORGANISK BØLGE — overgangen til sidens creme. Asymmetrisk:
-          højt sving venstre-midt, roligere mod højre (mockup'et).
+      {/* ORGANISK BØLGE — overgangen til sidens baggrund. ÉT stort
+          sving (mockup'et): høj kam mod venstre, langt elegant fald
+          mod højre. Amplitude ~96px så bølgen reelt skærer ind i
+          fotoet i stedet for at kante det.
           preserveAspectRatio="none" strækker den til fuld bredde. */}
       <svg
         aria-hidden
         className="absolute inset-x-0 bottom-0 z-10 w-full"
-        style={{ height: 64, display: 'block' }}
-        viewBox="0 0 375 64"
+        style={{ height: 96, display: 'block' }}
+        viewBox="0 0 375 96"
         preserveAspectRatio="none"
       >
         {/* Fill følger sidens sæson-baggrund (var(--background)) —
             hardcoded creme ville stikke af fra canvas når sæsonen
             skifter tone (sommer er #F6F0DF, ikke #EAE6D8). */}
         <path
-          d="M0,44 C50,10 120,2 185,26 C240,46 310,38 375,16 L375,64 L0,64 Z"
+          d="M0,26 C70,0 145,8 215,40 C275,66 330,70 375,60 L375,96 L0,96 Z"
           style={{ fill: 'var(--background)' }}
         />
       </svg>
