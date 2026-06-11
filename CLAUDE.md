@@ -70,6 +70,7 @@ Designsystem-dokumenter (læs FØR redesign):
 
 Produkt-dokumenter:
 - Docs/product/kalender-v2.md — Kalenderens hjerne (datakilder, prioritering, mentor-trappen)
+- Docs/product/afledningsmotoren.md — Hvad Potalot kan udlede af eksisterende data (24 afledninger, prioriteret)
 
 Beslutningsrækkefølge når noget føles forkert:
 1. Hierarki  2. Rytme  3. Komposition  4. Typografi
