@@ -68,6 +68,9 @@ Designsystem-dokumenter (læs FØR redesign):
 - Docs/design-system/havebog.md — Havebog-manifest (10 principper)
 - Docs/design-system/guides.md — Guide-systemet (V4.3)
 
+Produkt-dokumenter:
+- Docs/product/kalender-v2.md — Kalenderens hjerne (datakilder, prioritering, mentor-trappen)
+
 Beslutningsrækkefølge når noget føles forkert:
 1. Hierarki  2. Rytme  3. Komposition  4. Typografi
 5. Farver    6. Skygger/radius   7. Komponentdetaljer
