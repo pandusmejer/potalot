@@ -179,9 +179,12 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
         viewBox="0 0 375 64"
         preserveAspectRatio="none"
       >
+        {/* Fill følger sidens sæson-baggrund (var(--background)) —
+            hardcoded creme ville stikke af fra canvas når sæsonen
+            skifter tone (sommer er #F6F0DF, ikke #EAE6D8). */}
         <path
           d="M0,44 C50,10 120,2 185,26 C240,46 310,38 375,16 L375,64 L0,64 Z"
-          fill="#EAE6D8"
+          style={{ fill: 'var(--background)' }}
         />
       </svg>
     </section>
