@@ -3,13 +3,51 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant } from '@/lib/types'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { statusColor } from '@/components/mine-planter/plant-card'
+import { forventetSpiring } from '@/lib/afledninger'
 
 interface GreenhouseNowProps {
   plants: Plant[]
 }
 
+/**
+ * Fokus-prioritet — strippen hedder "I fokus", så den skal vise de
+ * 6 mest fokus-værdige planter, ikke de første 6 i arrayet ("en
+ * teknisk sandhed der visuelt lyver").
+ *
+ *   0  Høstklar                    (belønningen venter)
+ *   1  Klar til udplantning        (kræver handling)
+ *   2  Spiring bør tjekkes         (afledt: "Er den spiret?" /
+ *                                   "Tjek spiring" — sået + vinduet
+ *                                   nået eller passeret)
+ *   3  I vækst / spirer / udplantet
+ *   4  Sået, afventer (alt går som planlagt — ingen grund til fokus)
+ *
+ * Stabil sort bevarer array-rækkefølgen inden for hvert trin.
+ */
+function fokusPrioritet(plant: Plant): number {
+  switch (plant.status) {
+    case 'hoestklar':
+      return 0
+    case 'klar_til_udplantning':
+      return 1
+    case 'saaet': {
+      const spiring = forventetSpiring(plant)
+      return spiring?.kind === 'attention' ? 2 : 4
+    }
+    case 'spirer':
+    case 'i_vaekst':
+    case 'udplantet':
+      return 3
+    default:
+      return 5
+  }
+}
+
 export function GreenhouseNow({ plants }: GreenhouseNowProps) {
-  const visiblePlants = plants.filter(plant => !plant.isArchived).slice(0, 6)
+  const visiblePlants = plants
+    .filter(plant => !plant.isArchived)
+    .sort((a, b) => fokusPrioritet(a) - fokusPrioritet(b))
+    .slice(0, 6)
   if (!visiblePlants.length) return null
 
   return (
