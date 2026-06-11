@@ -4,10 +4,11 @@ import Link from 'next/link'
 import { MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
 import type { InventoryItem } from '@/lib/types'
-import { Sprout, Check, ArrowDownToLine, Sun } from 'lucide-react'
+import { Sprout, Check, ArrowDownToLine, Sun, Hourglass } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { froeRaekkevidde } from '@/lib/afledninger'
 
 /**
  * Konverter fri tekst til kebab-case slug for asset-convention lookup
@@ -94,11 +95,21 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   const harSeed = item.seedCount != null
   const tilbage = harSeed ? (item.seedsRemaining ?? item.seedCount ?? 0) : null
 
+  // Sprint 1 (afledningsmotoren, F4): "Rækker ~7 sæsoner" — afledt
+  // af seedsRemaining / seedsSown. For et frø PÅ LAGER er rækkevidden
+  // mere relevant end sådybden (som hører til så-øjeblikket og stadig
+  // findes i detail + så-dialog). Sådybde-cellen viger derfor når
+  // afledningen findes; ved datahuller (aldrig sået fra) vises
+  // Sådybde som hidtil — stilhed, ingen advarsler.
+  const raekkevidde = froeRaekkevidde(item)
+
   const fakta: { label: string; value: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }[] = [
     item.germinationDays
       ? { label: 'Spiring', value: item.germinationDays, Icon: Sprout }
       : { label: 'Sås', value: formatMonths(item.sowingMonths), Icon: Sprout },
-    { label: 'Sådybde', value: formatSaadybde(item.sowingDepthMm), Icon: ArrowDownToLine },
+    raekkevidde
+      ? { label: 'Rækker', value: raekkevidde.text, Icon: Hourglass }
+      : { label: 'Sådybde', value: formatSaadybde(item.sowingDepthMm), Icon: ArrowDownToLine },
     { label: 'Placering', value: item.light ? (LIGHT_LABEL[item.light] ?? '—') : '—', Icon: Sun },
   ]
 

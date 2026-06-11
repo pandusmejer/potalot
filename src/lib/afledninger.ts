@@ -136,10 +136,15 @@ export function forventetSpiring(plant: Plant): AfledtStatus | null {
 /**
  * Forventet høstvindue ud fra guidens harvestMonths.
  *
- *   Før vinduet:   "Høst fra ~august"
+ *   Før vinduet:   "Høst fra august"
  *   I vinduet:     "Høstsæson nu"
  *   Efter vinduet: null (sæsonen er reelt slut — planten bør
  *                  snart være 'afsluttet'; vi gnider det ikke ind)
+ *
+ * Tilde-reglen (V1.1): "~" bruges KUN ved beregnede dag-estimater
+ * ("om ~3 dage"). Måneds-vinduer er guidens datapunkt, og "fra"
+ * signalerer allerede åbningen — en tilde oveni er estimat-støj.
+ * Hvis alt er et estimat, ignorerer brugeren estimaterne.
  */
 export function forventetHoest(
   plant: Plant,
@@ -154,14 +159,58 @@ export function forventetHoest(
   const last = Math.max(...months)
 
   if (nu < first) {
-    return { kind: 'info', text: `Høst fra ~${MAANED_KORT[first - 1]}` }
+    return { kind: 'info', text: `Høst fra ${MAANED_KORT[first - 1]}` }
   }
   if (nu <= last) {
     return months.includes(nu)
       ? { kind: 'attention', text: 'Høstsæson nu' }
-      : { kind: 'info', text: `Høst fra ~${MAANED_KORT[first - 1]}` }
+      : { kind: 'info', text: `Høst fra ${MAANED_KORT[first - 1]}` }
   }
   return null
+}
+
+// ─────────────────────────────────────────────────────────────
+// F4: Frø-rækkevidde ("nok frø til ~7 sæsoner")
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Hvor mange sæsoner rækker frøposen?
+ *
+ * Forbrugstempo = seedsSown i indeværende sæson (med kun én sæsons
+ * historik er det den ærligste proxy; med flere sæsoner bliver det
+ * et gennemsnit — samme funktion, bedre input).
+ *
+ *   rest/tempo ≥ 20:    "20+ sæsoner"        (kærligt: frøskuffer
+ *                                             bliver fyldt — havefolk
+ *                                             er optimistiske)
+ *   rest/tempo ≥ 1.5:   "~7 sæsoner"          (info, tilde = beregnet)
+ *   rest/tempo ≥ 1:     "sæsonen ud"          (info)
+ *   rest/tempo < 1:     "tør denne sæson"     (attention)
+ *
+ * Returnerer null (stilhed) hvis der ingen forbrugsdata er —
+ * en pose der aldrig er sået fra kan ikke have et tempo, og vi
+ * gætter ikke.
+ *
+ * Teksten er VALUE-delen ("~7 sæsoner") så overflader selv kan
+ * komponere: frøkortets fakta-celle bruger label "Rækker";
+ * en sætnings-overflade kan skrive "Du har nok frø til ~7 sæsoner".
+ */
+export function froeRaekkevidde(item: {
+  seedCount?: number | null
+  seedsSown?: number
+  seedsRemaining?: number
+}): AfledtStatus | null {
+  const remaining = item.seedsRemaining ?? item.seedCount
+  const tempo = item.seedsSown
+  if (remaining == null || !tempo || tempo <= 0) return null
+
+  const seasons = remaining / tempo
+  if (seasons >= 20) return { kind: 'info', text: '20+ sæsoner' }
+  if (seasons >= 1.5) {
+    return { kind: 'info', text: `~${Math.round(seasons)} sæsoner` }
+  }
+  if (seasons >= 1) return { kind: 'info', text: 'sæsonen ud' }
+  return { kind: 'attention', text: 'tør denne sæson' }
 }
 
 // ─────────────────────────────────────────────────────────────
