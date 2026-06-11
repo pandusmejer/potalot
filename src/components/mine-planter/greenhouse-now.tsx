@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant } from '@/lib/types'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { statusColor } from '@/components/mine-planter/plant-card'
 
 interface GreenhouseNowProps {
   plants: Plant[]
@@ -48,7 +49,23 @@ export function GreenhouseNow({ plants }: GreenhouseNowProps) {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
               ) : (
-                <div className="absolute inset-0 bg-pattern-botanical bg-secondary" />
+                // Foto-løs fallback: flad status-farvet blok med
+                // sortens forbogstav — samme ærlige sprog som
+                // VarietyCard i art-rækkerne. Det udvaskede
+                // botanical-mønster lignede en fejl i en foto-strip.
+                // "Forkert billede er værre end intet billede" —
+                // vi viser aldrig en anden sorts foto.
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{ background: statusColor(plant.status) }}
+                >
+                  <span
+                    className="text-[26px] font-extrabold text-white/85"
+                    aria-hidden
+                  >
+                    {(plant.variety ?? plant.name).charAt(0).toUpperCase()}
+                  </span>
+                </div>
               )}
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.08),rgba(18,14,10,0.72))]" />
               <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
