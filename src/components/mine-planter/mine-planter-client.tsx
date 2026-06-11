@@ -11,15 +11,49 @@ import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
 import { RecentPlantActivity } from '@/components/mine-planter/recent-plant-activity'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
 import {
-  filterMockPlantsByStatus,
   mockPlantActions,
   mockPlantActivities,
   mockPlants,
   plantStatusFilters,
+  statusToFilter,
   type PlantFilterStatus,
 } from '@/data/mock-plants'
 import type { Plant, PlantStatus } from '@/lib/types'
-import { ArrowRight, BookOpen } from 'lucide-react'
+import { ArrowRight, BookOpen, Archive } from 'lucide-react'
+
+const sans = 'var(--font-manrope)'
+
+/**
+ * Lifecycle-definition (låst af Anna, juni 2026):
+ *
+ *   PLANLAGT   — besluttet, men intet er i jord endnu.
+ *                Hører tættere på Frøbank/Kalender; vises her som
+ *                kompakt chip-række, IKKE som art-rækker.
+ *   AKTIVE     — fysisk i dyrkning lige nu:
+ *                sået → spirer → i vækst → klar til udplantning
+ *                → udplantet → høstklar.
+ *                KUN disse får "Art → Sorter"-rækkerne.
+ *   AFSLUTTET  — sæsonen er slut, men endnu ikke arkiveret.
+ *                Vises som "Klar til arkiv" med forslag om at
+ *                gemme i Havebogen. Bliver IKKE stående i Aktive.
+ *   ARKIVERET  — tidligere sæsoner. Bor i Havebogen.
+ *
+ * Reglen: "Aktive" må kun indeholde planter der fysisk er i gang.
+ * Ellers bliver det en rodekasse med planer, levende planter og
+ * døde planter.
+ *
+ * Planter = det levende, jeg skal holde øje med nu.
+ * Frøbank ejer beholdningen. Kalender ejer timing. Havebog ejer
+ * historikken. Planter ejer det, der gror.
+ */
+const GROWING_STATUSES: ReadonlySet<PlantStatus> = new Set([
+  'saaet',
+  'spirer',
+  'i_vaekst',
+  'klar_til_udplantning',
+  'udplantet',
+  'hoestklar',
+])
 
 interface Props {
   /**
@@ -40,27 +74,32 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   // begge veje. Vi kalder den bare "plants" i komponentkroppen.
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
-  const activePlants = useMemo(
-    () =>
-      isDemo
-        ? filterMockPlantsByStatus(mockPlants, activeFilter)
-        : filterRealPlantsByStatus(realPlants, activeFilter),
-    [isDemo, realPlants, activeFilter],
-  )
+  // ── Lifecycle-buckets ─────────────────────────────────────
+  const { aktive, planlagte, klarTilArkiv } = useMemo(() => {
+    const nonArchived = plants.filter(p => !p.isArchived)
+    return {
+      aktive: nonArchived.filter(p => GROWING_STATUSES.has(p.status)),
+      planlagte: nonArchived.filter(p => p.status === 'planlagt'),
+      klarTilArkiv: nonArchived.filter(p => p.status === 'afsluttet'),
+    }
+  }, [plants])
+
+  // Status-chips filtrerer KUN inden for Aktive-bucket'en.
+  const filteredAktive = useMemo(() => {
+    if (activeFilter === 'alle') return aktive
+    return aktive.filter(p => statusToFilter(p.status) === activeFilter)
+  }, [aktive, activeFilter])
 
   const varietyCount = useMemo(() => {
     const varieties = new Set(
-      plants
-        .filter(plant => !plant.isArchived)
-        .map(plant => `${plant.name}-${plant.variety ?? ''}`),
+      aktive.map(plant => `${plant.name}-${plant.variety ?? ''}`),
     )
     return varieties.size
-  }, [plants])
+  }, [aktive])
 
   // V2-arkitektur: "Aktive → Art → Sorter".
-  // Gruppér de filtrerede planter efter art (plant.name). Hver art
-  // bliver en sektion med horisontal scroll af sort-kort, i stedet
-  // for den gamle uendelige lodrette liste af store kort.
+  // Gruppér de filtrerede aktive planter efter art (plant.name).
+  // Hver art bliver en sektion med horisontal scroll af sort-kort.
   //
   // Art-grupper sorteres: grupper med opmærksomheds-status
   // (høstklar / klar til udplantning) først, derefter flest planter,
@@ -68,15 +107,14 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   // i prioriteret rækkefølge: dem der har brug for dig står øverst.
   const artGroups = useMemo(() => {
     const byArt = new Map<string, Plant[]>()
-    for (const plant of activePlants) {
+    for (const plant of filteredAktive) {
       const key = plant.name
       if (!byArt.has(key)) byArt.set(key, [])
       byArt.get(key)!.push(plant)
     }
     const needsAttention = (group: Plant[]) =>
       group.some(
-        p => (p.status as PlantStatus) === 'hoestklar' ||
-             (p.status as PlantStatus) === 'klar_til_udplantning',
+        p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning',
       )
     return [...byArt.entries()].sort(([nameA, groupA], [nameB, groupB]) => {
       const attA = needsAttention(groupA) ? 0 : 1
@@ -85,16 +123,13 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       if (groupA.length !== groupB.length) return groupB.length - groupA.length
       return nameA.localeCompare(nameB, 'da')
     })
-  }, [activePlants])
+  }, [filteredAktive])
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-8">
-      <PlantHero
-        activeCount={plants.filter(plant => !plant.isArchived).length}
-        varietyCount={varietyCount}
-      />
+      <PlantHero activeCount={aktive.length} varietyCount={varietyCount} />
 
-      <GreenhouseNow plants={plants} />
+      <GreenhouseNow plants={aktive} />
 
       <PlantStatusFilter
         filters={plantStatusFilters}
@@ -102,6 +137,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         onChange={setActiveFilter}
       />
 
+      {/* ── AKTIVE: Art → Sorter ─────────────────────────────── */}
       <section className="space-y-7">
         {artGroups.length > 0 ? (
           artGroups.map(([artName, group]) => (
@@ -111,6 +147,146 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
           <PlantEmptyState />
         )}
       </section>
+
+      {/* ── PLANLAGT: kompakt chip-række ─────────────────────── */}
+      {planlagte.length > 0 && (
+        <section className="space-y-3">
+          <header className="flex items-baseline justify-between gap-3 px-0.5">
+            <h2
+              className="uppercase"
+              style={{
+                fontFamily: sans,
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                color: 'rgba(36,48,31,0.55)',
+                margin: 0,
+              }}
+            >
+              Planlagt
+            </h2>
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'rgba(36,48,31,0.45)',
+                margin: 0,
+              }}
+            >
+              Endnu ikke sået
+            </p>
+          </header>
+          <div className="flex flex-wrap gap-2">
+            {planlagte.map(plant => (
+              <Link
+                key={plant.id}
+                href={`/mine-planter/${plant.id}`}
+                className="inline-flex items-center gap-1.5 transition-colors hover:bg-[rgba(36,48,31,0.06)]"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.72)',
+                  background: 'rgba(36,48,31,0.04)',
+                  border: '1px solid rgba(36,48,31,0.10)',
+                  borderRadius: 999,
+                  paddingInline: 14,
+                  paddingBlock: 7,
+                }}
+              >
+                {plant.name}
+                {plant.variety && (
+                  <span style={{ fontWeight: 400, color: 'rgba(36,48,31,0.50)' }}>
+                    {plant.variety}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── KLAR TIL ARKIV: foreslå Havebogen ────────────────── */}
+      {klarTilArkiv.length > 0 && (
+        <section className="space-y-3">
+          <header className="px-0.5">
+            <h2
+              className="uppercase"
+              style={{
+                fontFamily: sans,
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                color: 'rgba(36,48,31,0.55)',
+                margin: 0,
+              }}
+            >
+              Klar til arkiv
+            </h2>
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 12.5,
+                fontWeight: 500,
+                color: 'rgba(36,48,31,0.50)',
+                margin: 0,
+                marginTop: 4,
+              }}
+            >
+              Sæsonen er slut for de her — gem dem i Havebogen.
+            </p>
+          </header>
+          <div className="space-y-2">
+            {klarTilArkiv.map(plant => (
+              <Link
+                key={plant.id}
+                href={`/mine-planter/${plant.id}`}
+                className="flex items-center justify-between gap-3 transition-colors hover:bg-[rgba(36,48,31,0.04)]"
+                style={{
+                  background: 'rgba(36,48,31,0.03)',
+                  border: '1px dashed rgba(36,48,31,0.14)',
+                  borderRadius: 14,
+                  paddingInline: 16,
+                  paddingBlock: 12,
+                }}
+              >
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <Archive
+                    className="h-4 w-4 shrink-0"
+                    style={{ color: 'rgba(36,48,31,0.45)' }}
+                    aria-hidden
+                  />
+                  <span
+                    className="truncate"
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: 'rgba(36,48,31,0.72)',
+                    }}
+                  >
+                    {plant.name}
+                    {plant.variety ? ` ${plant.variety}` : ''}
+                    {plant.growingYear ? ` · ${plant.growingYear}` : ''}
+                  </span>
+                </span>
+                <span
+                  className="shrink-0"
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    color: '#7B816F',
+                  }}
+                >
+                  Gem i Havebogen →
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Mock-drevne demo-sektioner — vises kun i demo-mode, fordi de
           har ingen real-data ækvivalent endnu. Når real users har data
@@ -143,14 +319,4 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       </section>
     </div>
   )
-}
-
-/** Status-filter for ægte Plant-objekter (uden Mock-extras). */
-function filterRealPlantsByStatus(
-  plants: Plant[],
-  status: PlantFilterStatus,
-): Plant[] {
-  if (status === 'alle') return plants.filter(p => !p.isArchived)
-  // PlantFilterStatus matches PlantStatus minus 'alle'
-  return plants.filter(p => !p.isArchived && (p.status as string) === status)
 }
