@@ -1,7 +1,7 @@
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
-import { IDinHave } from '@/components/havebog/i-din-have'
-import { NaturenLigeNu } from '@/components/havebog/naturen-lige-nu'
+import { KapitelLigeNu } from '@/components/havebog/kapitel-lige-nu'
+import { SaesonensHistorie } from '@/components/havebog/saesonens-historie'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
 import { Historik } from '@/components/havebog/historik'
 import { SenesteNoter } from '@/components/havebog/seneste-noter'
@@ -11,8 +11,8 @@ import {
   DEMO_HERO_STATS,
   DEMO_TIDSLINJE,
   DEMO_HERO_NARRATIVE,
-  DEMO_I_DIN_HAVE,
-  DEMO_NATUREN_LIGE_NU,
+  DEMO_KAPITEL_LIGE_NU,
+  DEMO_SAESONENS_HISTORIE,
   DEMO_ON_THIS_DAY,
   DEMO_RECENT_NOTES,
   DEMO_HISTORY,
@@ -66,8 +66,8 @@ export default async function HavebogPage() {
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats
   const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
   const heroNarrative = isDemo ? DEMO_HERO_NARRATIVE : data.heroNarrative
-  const iDinHave = isDemo ? DEMO_I_DIN_HAVE : data.iDinHave
-  const naturenLigeNu = isDemo ? DEMO_NATUREN_LIGE_NU : data.naturenLigeNu
+  const kapitelLigeNu = isDemo ? DEMO_KAPITEL_LIGE_NU : data.kapitelLigeNu
+  const saesonensHistorie = isDemo ? DEMO_SAESONENS_HISTORIE : data.saesonensHistorie
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
   const history = isDemo ? DEMO_HISTORY : data.history
   const recentNotes = isDemo ? DEMO_RECENT_NOTES : data.recentNotes
@@ -82,19 +82,22 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-10 sm:space-y-12 pb-6">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
-      {/* V4-mockup: åbningstallene direkte under heroens bølge.
-          IDinHave overtager "8 sorter"-rollen fra FirstSeasonBlock. */}
-      <IDinHave
-        aktiveSorter={iDinHave.aktiveSorter}
-        klarTilUdplantning={iDinHave.klarTilUdplantning}
-        arterRigere={iDinHave.arterRigere}
-      />
-      <NaturenLigeNu fakta={naturenLigeNu} />
-      {/* "Hvordan går det"-fakta — kun for brugere MED data.
-          Ny-bruger-varianten (FirstSeasonBlock) er pensioneret;
-          IDinHave bærer nu åbningstallene. */}
-      <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
+      {/* BOGEN (havebog.md V2): Havebogen fortæller, den rapporterer
+          ikke. Tal-sektionerne (IDinHave, NaturenLigeNu/14°) er ude —
+          lobby-reglen: tal-form hører til Planter/Kalender. */}
+
+      {/* Kapitel 1: Lige nu — prosa om havens øjeblik */}
+      <KapitelLigeNu saetninger={kapitelLigeNu} />
+
+      {/* Kapitel 2: På denne dag — sæsonhukommelsen */}
       <PaaDenneDag entries={onThisDay} />
+
+      {/* Kapitel 3: Sæsonens historie — måneds-krøniken */}
+      <SaesonensHistorie maaneder={saesonensHistorie} />
+
+      {/* "Hvordan går det"-fakta — kun for brugere MED data
+          (ny bruger får stilhed; kapitlerne bærer åbningen) */}
+      <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
       {hasNotes ? (
         <>
           <SenesteNoter notes={recentNotes} prominent />

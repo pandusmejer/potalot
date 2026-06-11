@@ -25,6 +25,7 @@ import type {
   HeroNarrative,
   NaturFakta,
   IDinHaveTal,
+  SaesonMaaned,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
@@ -32,6 +33,10 @@ export interface HavebogData {
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
   iDinHave: IDinHaveTal
+  /** Kapitel 1: fortællende sætninger — Havebogen rapporterer ikke */
+  kapitelLigeNu: string[]
+  /** Kapitel 3: måneds-krøniken */
+  saesonensHistorie: SaesonMaaned[]
   naturenLigeNu: NaturFakta
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
@@ -189,6 +194,65 @@ function daysBetween(from: Date, to: Date): number {
   const fromMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate()).getTime()
   const toMidnight = new Date(to.getFullYear(), to.getMonth(), to.getDate()).getTime()
   return Math.round((toMidnight - fromMidnight) / 86400000)
+}
+
+function hasYearOnePlus(history: HistoryYear[], currentYear: number): boolean {
+  return history.some(h => h.year < currentYear)
+}
+
+/**
+ * Kapitel 3-byggeren: én krønike-linje pr. måned, afledt af månedens
+ * mest betydningsfulde log. Prioritet (mest milepæls-agtig først):
+ * harvest > planting_out > sowing > germination.
+ *
+ * Templaterne er bevidst simple — strukturen er det låste (havebog.md
+ * V2); AI kan skrive smukkere linjer senere uden at røre formen.
+ */
+function byggSaesonensHistorie(
+  logs: PlantLogRow[],
+  plantById: Map<string, PlantRow>,
+  currentYear: number,
+  today: Date,
+): SaesonMaaned[] {
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+  const TYPE_PRIORITY = ['harvest', 'planting_out', 'sowing', 'germination'] as const
+
+  const out: SaesonMaaned[] = []
+  const sidsteMaaned = today.getMonth() + 1 // til og med nu
+
+  for (let m = 1; m <= sidsteMaaned; m++) {
+    const prefix = `${currentYear}-${String(m).padStart(2, '0')}`
+    const monthLogs = logs.filter(l => l.date.startsWith(prefix))
+    if (monthLogs.length === 0) continue
+
+    let linje: string | null = null
+    for (const type of TYPE_PRIORITY) {
+      const log = monthLogs.find(l => l.type === type)
+      if (!log) continue
+      const plant = plantById.get(log.plant_id)
+      if (!plant) continue
+      const navn = bestemtFlertal(plant.name)
+      switch (type) {
+        case 'harvest':
+          linje = `${cap(navn)} begyndte at give høst.`
+          break
+        case 'planting_out':
+          linje = `${cap(navn)} blev plantet ud.`
+          break
+        case 'sowing':
+          linje = `Du såede ${navn}.`
+          break
+        case 'germination':
+          linje = `${cap(navn)} spirede.`
+          break
+      }
+      break
+    }
+    if (linje) {
+      out.push({ maaned: MONTH_NAMES_DA[m - 1], linje })
+    }
+  }
+  return out
 }
 
 const MAANED_FULD_LOWER = [
@@ -583,6 +647,28 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       arterRigere,
     }
 
+    // ── Kapitel 1: "Lige nu" — fortælling, ikke rapport ───────
+    // Lobby-reglen (havebog.md V2): tal-form hører til Planter/
+    // Kalender. Her oversættes samme data til prosa.
+    const kapitelLigeNu: string[] = []
+    const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
+    if (ligeNuFakta) kapitelLigeNu.push(ligeNuFakta.statement)
+    if (klarTilUdplantning > 0) {
+      kapitelLigeNu.push(
+        hasYearOnePlus(history, currentYear)
+          ? 'Flere af dine planter er klar til at komme udenfor.'
+          : 'Dine første planter er klar til at komme udenfor.',
+      )
+    }
+
+    // ── Kapitel 3: Sæsonens historie — måneds-krøniken ────────
+    // Én linje pr. måned, afledt af månedens mest betydningsfulde
+    // log (sowing > planting_out > harvest > germination). Linjerne
+    // kan senere skrives af AI; strukturen er låst nu.
+    const saesonensHistorie = byggSaesonensHistorie(
+      logs, plantById, currentYear, today,
+    )
+
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
@@ -591,6 +677,8 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       tidslinje,
       heroNarrative,
       iDinHave,
+      kapitelLigeNu,
+      saesonensHistorie,
       naturenLigeNu,
       onThisDay,
       recentNotes,

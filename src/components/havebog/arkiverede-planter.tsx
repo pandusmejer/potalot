@@ -81,6 +81,9 @@ function ArkivEmpty() {
       {/* Tekst — bærer sektionen alene. Større typografi end andre
           empty-states, fordi den IKKE deler vægt med fotoet. */}
       <div>
+        {/* Kapitel 5 (havebog.md V2): kortere, roligere — ikke
+            melankolsk. Den gamle andenlinje ("Din første sæson er
+            endnu ikke slut") er droppet. */}
         <p
           style={{
             fontFamily: serif,
@@ -93,23 +96,8 @@ function ArkivEmpty() {
             maxWidth: '18ch',
           }}
         >
-          Når en sæson er ovre,<br />
-          hører planterne hjemme her.
-        </p>
-        <p
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            fontSize: 'clamp(15px, 2.6vw, 17px)',
-            lineHeight: 1.5,
-            color: 'rgba(36,48,31,0.50)',
-            margin: 0,
-            marginTop: 10,
-            maxWidth: '22ch',
-          }}
-        >
-          Din første sæson er endnu ikke slut.
+          Når sæsonen er ovre,<br />
+          samles planterne her.
         </p>
       </div>
 

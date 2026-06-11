@@ -240,8 +240,10 @@ export const DEMO_NATUREN_LIGE_NU: NaturFakta = {
 }
 
 /**
- * "I DIN HAVE" — åbningstallene under heroens bølge (V4-mockup).
- * Tre tilstande i tal-form, forskudt stak. Demo matcher mockup'et.
+ * "I DIN HAVE"-tal — bruges som DATAGRUNDLAG for Kapitel 1's
+ * fortællende sætninger (V5-bogen). Tallene selv vises IKKE på
+ * Havebogen (lobby-reglen: tal-form hører til Planter/Kalender) —
+ * de oversættes til prosa i kapitel-laget.
  */
 export interface IDinHaveTal {
   aktiveSorter: number
@@ -254,6 +256,32 @@ export const DEMO_I_DIN_HAVE: IDinHaveTal = {
   klarTilUdplantning: 3,
   arterRigere: 11,
 }
+
+/**
+ * Kapitel 1: "Lige nu" — fortællende sætninger om havens øjeblik.
+ * Ingen tal, ingen store gradtal. Havebogen fortæller, den
+ * rapporterer ikke (lobby-reglen i havebog.md V2).
+ */
+export const DEMO_KAPITEL_LIGE_NU: string[] = [
+  'Jorden er nu varm nok til tomater og chili.',
+  'Dine første planter er klar til at komme udenfor.',
+]
+
+/**
+ * Kapitel 3: "Sæsonens historie" — måned for måned som krønike.
+ * Linjerne kan senere skrives af AI; strukturen er låst nu.
+ */
+export interface SaesonMaaned {
+  maaned: string
+  linje: string
+}
+
+export const DEMO_SAESONENS_HISTORIE: SaesonMaaned[] = [
+  { maaned: 'Marts', linje: 'Du såede årets første tomater.' },
+  { maaned: 'April', linje: 'Chiliplanterne fik deres første rigtige blade.' },
+  { maaned: 'Maj', linje: 'De første salater blev høstet.' },
+  { maaned: 'Juni', linje: 'Peberfrugterne er klar til drivhuset.' },
+]
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
   {

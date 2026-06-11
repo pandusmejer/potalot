@@ -1,4 +1,4 @@
-# Havebog — Design-manifest (V1, juni 2026)
+# Havebog — Design-manifest (V2, 11. juni 2026)
 
 > ## Status
 >
@@ -11,6 +11,67 @@
 >
 > Når en designbeslutning på Havebogen føles forkert, skal vi vende
 > tilbage til dette dokument før vi rører kode.
+>
+> **V2 (11. juni 2026) tilføjer bog-modellen** — svaret på "hvad er
+> Havebogen egentlig", fundet efter ugers iteration. Hvis V2 er i
+> konflikt med et princip længere nede, vinder V2.
+
+---
+
+## Bogen — den mentale model (V2-låst)
+
+Den gamle Havebog prøvede at være dashboard, statusside,
+introduktion, dagbog, kalender-light og statistik på én gang.
+Svaret:
+
+> **Havebogen er ikke stedet, hvor jeg finder ud af hvad jeg skal
+> gøre. Havebogen er stedet, hvor jeg forstår min rejse.**
+
+De tre sektionsspørgsmål side om side:
+
+| Sektion | Spørgsmål |
+|---|---|
+| Planter | Hvordan har mine planter det? |
+| Kalender | Hvad skal jeg gøre? |
+| **Havebog** | **Hvad er historien om min have?** |
+
+Byggeordren er ikke "byg flere kort". Den er: **byg en bog.**
+
+### Lobby-reglen
+
+Havebogen må ikke være et lobbyområde for de andre sektioner.
+"8 aktive sorter", "1 klar til udplantning" og "14°" er alle
+informationer der allerede har et hjem (Planter, Planter, Kalender).
+Hvis et stykke information vises i tal-form på Havebogen, er det
+sandsynligvis det forkerte sted eller den forkerte form.
+
+Havebogen **fortæller** — den **rapporterer ikke**:
+
+| Rapport (forbudt her) | Fortælling (Havebogens stemme) |
+|---|---|
+| 14° | Jorden er nu varm nok til tomater og chili. |
+| 1 klar til udplantning | Dine første planter er klar til at komme udenfor. |
+| 8 aktive sorter | (hører slet ikke hjemme her — det er Planter) |
+
+### Bogens fem kapitler
+
+1. **Lige nu** — fortællende sætninger om havens øjeblik. Ingen tal,
+   ingen store gradtal. Prosa.
+2. **På denne dag** — sæsonhukommelsen. "11. juni 2026: Dahlia Café
+   au Lait fik sin første knop." Om to år: "For to år siden fik Café
+   au Lait sin første knop." Det er den slags Excel aldrig kan.
+3. **Sæsonens historie** — måned for måned som krønike: "Maj — Du
+   såede årets første tomater. Juni — De første chili blev plantet
+   ud." AI kan skrive linjerne automatisk senere; strukturen skal
+   være der nu.
+4. **Minder** — kuraterede øjeblikke, ikke alle billeder. Potalot
+   vælger: første knop, første høst, største tomat, første frost.
+   Google Photos-princippet, men for haven.
+5. **Tidligere sæsoner** — arkivet. Rolig tone, ikke melankolsk:
+   "Når sæsonen er ovre, samles planterne her."
+
+Heroen står foran kapitlerne og sætter stemningen: "Dette er MIN
+have" — ikke "her er mine data". Den del er på plads.
 
 ---
 
