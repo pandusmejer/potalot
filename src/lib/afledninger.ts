@@ -222,6 +222,66 @@ export function froeRaekkevidde(item: {
 }
 
 // ─────────────────────────────────────────────────────────────
+// Mentor-linjen — én sætning der viser at der sidder en hjerne bag
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Én sætning under Planter-heroen. Ingen knap, ingen CTA — bare et
+ * tegn på at appen har kigget på planterne før brugeren gjorde.
+ *
+ * Grænsereglen overholdes: Planter taler TILSTAND ("3 planter er
+ * klar til næste skridt"), aldrig bydeform (det er Kalenders job).
+ *
+ * Prioritet:
+ *   1. Klar til næste skridt (høstklar + klar til udplantning)
+ *   2. Spiring kan være sket (attention fra forventetSpiring)
+ *   3. Alt gror roligt (stilhed-er-en-feature: positivt fravær
+ *      af noget at gøre er OGSÅ en indsigt)
+ *
+ * Returnerer null hvis der ingen aktive planter er (sektionen har
+ * sin egen empty-state).
+ */
+export function planterMentorLinje(plants: Plant[]): string | null {
+  if (plants.length === 0) return null
+
+  const klar = plants.filter(
+    p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning',
+  ).length
+  if (klar === 1) return 'Én plante er klar til næste skridt.'
+  if (klar > 1) return `${klar} planter er klar til næste skridt.`
+
+  const spiringTjek = plants.filter(
+    p => p.status === 'saaet' && forventetSpiring(p)?.kind === 'attention',
+  ).length
+  if (spiringTjek === 1) return 'Én såning kan være spiret.'
+  if (spiringTjek > 1) return `${spiringTjek} såninger kan være spiret.`
+
+  return 'Alt gror roligt lige nu.'
+}
+
+/**
+ * Kort opsummering til "I fokus"-headerens højre side.
+ *
+ * "6 i gang" sagde ingenting. Den mest presserende bucket siger
+ * noget: "1 høstklar" / "2 klar til udplantning" / "1 bør tjekkes"
+ * — og falder tilbage til "N i vækst" når intet presser.
+ */
+export function fokusOpsummering(plants: Plant[]): string {
+  const hoestklar = plants.filter(p => p.status === 'hoestklar').length
+  if (hoestklar > 0) return `${hoestklar} høstklar`
+
+  const klar = plants.filter(p => p.status === 'klar_til_udplantning').length
+  if (klar > 0) return `${klar} klar til udplantning`
+
+  const tjek = plants.filter(
+    p => p.status === 'saaet' && forventetSpiring(p)?.kind === 'attention',
+  ).length
+  if (tjek > 0) return `${tjek} bør tjekkes`
+
+  return `${plants.length} i vækst`
+}
+
+// ─────────────────────────────────────────────────────────────
 // Samlet statuslinje-picker til sort-kortet
 // ─────────────────────────────────────────────────────────────
 

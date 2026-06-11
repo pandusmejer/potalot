@@ -3,7 +3,7 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant } from '@/lib/types'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { statusColor } from '@/components/mine-planter/plant-card'
-import { forventetSpiring } from '@/lib/afledninger'
+import { forventetSpiring, fokusOpsummering } from '@/lib/afledninger'
 
 interface GreenhouseNowProps {
   plants: Plant[]
@@ -55,9 +55,14 @@ export function GreenhouseNow({ plants }: GreenhouseNowProps) {
       <div className="flex items-baseline justify-between gap-3">
         {/* "I fokus" — IKKE "Dit drivhus lige nu". Folk dyrker på
             friland, i højbede og altankasser; drivhus-framingen var
-            for snæver. Strippen viser de første 6 aktive planter. */}
+            for snæver. */}
         <h2 className="font-serif text-xl leading-tight text-foreground">I fokus</h2>
-        <p className="text-xs font-medium text-muted-foreground">{visiblePlants.length} i gang</p>
+        {/* "6 i gang" sagde ingenting — den mest presserende bucket
+            siger noget: "1 høstklar" / "2 klar til udplantning".
+            Beregnes på HELE det aktive sæt, ikke kun de 6 viste. */}
+        <p className="text-xs font-medium text-muted-foreground">
+          {fokusOpsummering(plants.filter(p => !p.isArchived))}
+        </p>
       </div>
       <div className="-mx-4 overflow-hidden sm:mx-0">
         <div className="scrollbar-hide flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 sm:px-0 [-webkit-overflow-scrolling:touch]">

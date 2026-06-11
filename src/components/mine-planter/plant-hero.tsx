@@ -8,12 +8,11 @@ interface PlantHeroProps {
 }
 
 export function PlantHero({ activeCount, varietyCount }: PlantHeroProps) {
-  // Kompakt hero (V2.2): højde reduceret ~30%. Det er Planter-siden,
-  // ikke en kampagneside — heroen må ikke stjæle fokus fra planterne.
-  // Tagline droppet (sidens indhold forklarer sig selv); CTA flyttet
-  // op på højre side så hero kun er ét tekstblok højt.
+  // Kompakt hero (V2.3): yderligere ~17% ned (V2.2 tog de første 30%).
+  // "Når jeg åbner Planter, vil jeg se planter. Ikke en plakat for
+  // Planter." Kicker droppet, titel en tand mindre, strammere padding.
   return (
-    <section className="relative min-h-[128px] overflow-hidden rounded-[1.75rem] bg-[#24301f] px-5 py-4 text-white shadow-lift sm:min-h-[140px]">
+    <section className="relative min-h-[104px] overflow-hidden rounded-[1.75rem] bg-[#24301f] px-5 py-3.5 text-white shadow-lift sm:min-h-[112px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/heroes-sider/hero-planter-spirer.png"
@@ -21,12 +20,9 @@ export function PlantHero({ activeCount, varietyCount }: PlantHeroProps) {
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,28,16,0.86),rgba(18,28,16,0.52)_55%,rgba(18,28,16,0.18))]" />
-      <div className="relative flex h-full min-h-[96px] items-end justify-between gap-3">
+      <div className="relative flex h-full min-h-[76px] items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">
-            Levende dyrkning
-          </p>
-          <h1 className="mt-1 font-serif text-3xl leading-none text-white">
+          <h1 className="font-serif text-[26px] leading-none text-white">
             Mine planter
           </h1>
           <p className="mt-2 inline-flex rounded-full bg-white/14 px-2.5 py-1 text-xs font-medium text-white/78 backdrop-blur-sm">

@@ -19,6 +19,7 @@ import {
   type PlantFilterStatus,
 } from '@/data/mock-plants'
 import type { Plant, PlantStatus } from '@/lib/types'
+import { planterMentorLinje } from '@/lib/afledninger'
 import { ArrowRight, BookOpen, Archive } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
@@ -126,9 +127,31 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
     })
   }, [filteredAktive])
 
+  // Mentor-linjen: én sætning, ingen knap, ingen CTA — bare et tegn
+  // på at der sidder en hjerne bagved. Tilstand-stemme (grænsereglen).
+  const mentorLinje = planterMentorLinje(aktive)
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-8">
       <PlantHero activeCount={aktive.length} varietyCount={varietyCount} />
+
+      {mentorLinje && (
+        <p
+          className="px-0.5"
+          style={{
+            fontFamily: 'var(--font-manrope)',
+            fontSize: 15,
+            fontWeight: 600,
+            lineHeight: 1.4,
+            letterSpacing: '-0.01em',
+            color: 'rgba(36,48,31,0.78)',
+            margin: 0,
+            marginTop: -8, // tættere på heroen end på strippen — den hører til som heroens efterskrift
+          }}
+        >
+          {mentorLinje}
+        </p>
+      )}
 
       <GreenhouseNow plants={aktive} />
 
