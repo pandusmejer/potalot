@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 134
+ * Fil-tæller: 142
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -18,18 +18,26 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/dild.jpg",
   "/images/arts/peberfrugt.jpg",
   "/images/arts/tomat.jpg",
-  "/images/frokort/Hvidløg.png",
   "/images/frokort/agurk-marketmore.png",
+  "/images/frokort/agurk-telegraph.png",
   "/images/frokort/chili-habanero-orange.png",
-  "/images/frokort/dahlia-cafe-au-lait.jpg",
+  "/images/frokort/chili-jalapeno-groen.png",
+  "/images/frokort/chili-lemon-drop.png",
+  "/images/frokort/dahlia-cafe-au-lait.png",
   "/images/frokort/dild-bouquet.png",
+  "/images/frokort/hvidloeg.png",
   "/images/frokort/peberfrugt-california-wonder.png",
   "/images/frokort/peberfrugt-corno-di-toro-rosso.png",
   "/images/frokort/salat-crispy-mint.png",
   "/images/frokort/squash-eight-ball.png",
   "/images/frokort/stangboenne-cobra.png",
   "/images/frokort/tomat-cherrytomat.png",
+  "/images/frokort/tomat-green-tiger.png",
   "/images/frokort/tomat-san-marzano.png",
+  "/images/frokort/tomat-sungold.png",
+  "/images/heroes-havebog/juni/havebog-hero-juni-aar2.jpg",
+  "/images/heroes-havebog/juni/havebog-hero-juni-bruger2.jpg",
+  "/images/heroes-havebog/juni/havebog-hero-juni-ny.jpg",
   "/images/heroes-maaneder/hero-april-foto.png",
   "/images/heroes-maaneder/hero-august-foto.png",
   "/images/heroes-maaneder/hero-december-foto.png",

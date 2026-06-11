@@ -173,7 +173,7 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   'dahlia-cafe-au-lait': {
     plantCard:   { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — plantekort' },
     varietyHero: { src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Café au Lait dahlia — sortsfoto' },
-    seedCard:    { src: '/images/frokort/dahlia-cafe-au-lait.jpg',    alt: 'Café au Lait dahlia — knold-kort' },
+    seedCard:    { src: '/images/frokort/dahlia-cafe-au-lait.png',    alt: 'Café au Lait dahlia — knold-kort' },
     macro: [
       // Audit 2.B: 8 makro-filer fundet — annoteret efter Annas
       // blomster-template (fuld blomst / kronbladsmakro / knop /
@@ -211,6 +211,72 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
 
   // agurk-marketmore: makros mangler endnu — V4.1 audit. Tilføj her
   // når de lander.
+
+  // ── FRØKORT-ONLY ENTRIES (11. juni 2026) ────────────────────
+  //
+  // Sorter med produceret frøkort men (endnu) ingen guide. Keyed på
+  // slug — resolveren søger POTALOT_IMAGE_SETS_BY_ID på BÅDE guideId
+  // og varietySlug, så frit-tekst-oprettelser i Frøbanken matcher:
+  // "Tomat" + "Sungold" → slugify → 'tomat-sungold' → entry her.
+  //
+  // Når en sort senere får en guide med samme slug, udvides entry'en
+  // bare med plantCard/varietyHero/makros — nøglen er allerede rigtig.
+
+  'tomat-sungold': {
+    seedCard: { src: '/images/frokort/tomat-sungold.png', alt: 'Sungold tomat — frøkort' },
+    macro: [],
+  },
+
+  'tomat-green-tiger': {
+    seedCard: { src: '/images/frokort/tomat-green-tiger.png', alt: 'Green Tiger tomat — frøkort' },
+    macro: [],
+  },
+
+  'tomat-cherrytomat': {
+    seedCard: { src: '/images/frokort/tomat-cherrytomat.png', alt: 'Cherrytomat — frøkort' },
+    macro: [],
+  },
+
+  'chili-jalapeno-groen': {
+    seedCard: { src: '/images/frokort/chili-jalapeno-groen.png', alt: 'Jalapeño Grøn chili — frøkort' },
+    macro: [],
+  },
+
+  'chili-lemon-drop': {
+    seedCard: { src: '/images/frokort/chili-lemon-drop.png', alt: 'Lemon Drop chili — frøkort' },
+    macro: [],
+  },
+
+  'dild-bouquet': {
+    seedCard: { src: '/images/frokort/dild-bouquet.png', alt: 'Bouquet dild — frøkort' },
+    macro: [],
+  },
+
+  'salat-crispy-mint': {
+    seedCard: { src: '/images/frokort/salat-crispy-mint.png', alt: 'Crispy Mint salat — frøkort' },
+    macro: [],
+  },
+
+  'squash-eight-ball': {
+    seedCard: { src: '/images/frokort/squash-eight-ball.png', alt: 'Eight Ball squash — frøkort' },
+    macro: [],
+  },
+
+  'stangboenne-cobra': {
+    seedCard: { src: '/images/frokort/stangboenne-cobra.png', alt: 'Cobra stangbønne — frøkort' },
+    macro: [],
+  },
+
+  // Hvidløg sælges og registreres typisk uden sortsnavn — entry'en
+  // er keyed på arts-slugget så "Hvidløg" uden sort matcher direkte.
+  // En sorts-specifik oprettelse ("Hvidløg Vallelado" →
+  // 'hvidloeg-vallelado') matcher BEVIDST ikke — vi viser ikke et
+  // generisk kort som om det var sorten (jf. "forkert billede"-reglen);
+  // det afventer arts-fallback-mekanismen på backloggen.
+  'hvidloeg': {
+    seedCard: { src: '/images/frokort/hvidloeg.png', alt: 'Hvidløg — sætteløg-kort' },
+    macro: [],
+  },
 
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 

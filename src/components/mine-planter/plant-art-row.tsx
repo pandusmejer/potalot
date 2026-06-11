@@ -297,6 +297,11 @@ function slugify(text: string): string {
     .replace(/[æ]/g, 'ae')
     .replace(/[ø]/g, 'oe')
     .replace(/[å]/g, 'aa')
+    // Accent-normalisering (é→e, ñ→n): 'Café au Lait' og 'Jalapeño'
+    // skal matche filnavne uden accenter. æøå håndteres FØR NFD,
+    // da å ellers dekomponeres til 'a' i stedet for 'aa'.
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
