@@ -22,6 +22,7 @@ tags:
   - hotsauce
 
 quickFacts:
+  germinationDays: "10-21 dage"
   preCultivation: true
   sowingMonths: [1, 2, 3]
   plantingOutMonths: [5, 6]

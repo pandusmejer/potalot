@@ -5,6 +5,7 @@ import type { Plant, PlantStatus } from '@/lib/types'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { statusColor } from '@/components/mine-planter/plant-card'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { afledtStatuslinje } from '@/lib/afledninger'
 
 const sans = 'var(--font-manrope)'
 
@@ -160,8 +161,16 @@ function VarietyCard({ plant }: { plant: Plant }) {
   })
   const isPlaceholder = !photo || photo.includes('placeholder')
   const color = statusColor(plant.status)
-  const statusLabel = PLANT_STATUS_META[plant.status].label
   const displayName = plant.variety ?? plant.name
+
+  // Sprint 1 (afledningsmotoren): vis en FREMADSKUENDE linje når
+  // den kan afledes — "Spiring om ~3 dage", "Høst fra ~august",
+  // "Sået for 17 dage siden — spiret?" — i stedet for den rå
+  // status-label. Falder tilbage til status-label hvis intet kan
+  // afledes (stilhed ved datahuller, aldrig advarsler).
+  const afledt = afledtStatuslinje(plant)
+  const statusLabel = afledt?.text ?? PLANT_STATUS_META[plant.status].label
+  const dotColor = afledt?.kind === 'attention' ? '#C89A35' : color
 
   return (
     <Link
@@ -271,7 +280,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
               width: 7,
               height: 7,
               borderRadius: '50%',
-              background: color,
+              background: dotColor,
               flexShrink: 0,
             }}
           />

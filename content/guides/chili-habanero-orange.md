@@ -18,6 +18,7 @@ tags:
   - drivhus
 
 quickFacts:
+  germinationDays: "14-28 dage"
   growthType: busket
   height: "60-100 cm"
   maturityDays: "90-110 dage"

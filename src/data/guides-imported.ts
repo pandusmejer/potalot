@@ -49,7 +49,8 @@ export const IMPORTED_GUIDES: Guide[] = [
       "preCultivation": true,
       "light": "full_sun",
       "water": "regular",
-      "soil": "Næringsrig, veldrænet og fugtighedsbevarende jord med højt indhold af organisk materiale."
+      "soil": "Næringsrig, veldrænet og fugtighedsbevarende jord med højt indhold af organisk materiale.",
+      "germinationDays": "5-8 dage"
     },
     "sections": [
       {
@@ -250,7 +251,8 @@ export const IMPORTED_GUIDES: Guide[] = [
       "preCultivation": true,
       "light": "full_sun",
       "water": "regular",
-      "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme."
+      "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
+      "germinationDays": "10-21 dage"
     },
     "sections": [
       {
@@ -760,7 +762,8 @@ export const IMPORTED_GUIDES: Guide[] = [
       "preCultivation": true,
       "light": "full_sun",
       "water": "regular",
-      "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme."
+      "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
+      "germinationDays": "10-21 dage"
     },
     "sections": [
       {
@@ -972,7 +975,8 @@ export const IMPORTED_GUIDES: Guide[] = [
       "preCultivation": true,
       "light": "full_sun",
       "water": "regular",
-      "soil": "Næringsrig, veldrænende muldjord med jævn fugt."
+      "soil": "Næringsrig, veldrænende muldjord med jævn fugt.",
+      "germinationDays": "6-10 dage"
     },
     "botaniskeKendetegn": [
       {
@@ -1212,6 +1216,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         8,
         9
       ],
+      "germinationDays": "5-8 dage",
       "growthType": "slyngplante",
       "height": "150-250 cm",
       "maturityDays": "60-70 dage",
@@ -1291,6 +1296,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "germinationDays": "14-28 dage",
       "growthType": "busket",
       "height": "60-100 cm",
       "maturityDays": "90-110 dage",
@@ -1538,6 +1544,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "60-90 cm",
       "maturityDays": "75-90 dage",
@@ -1663,6 +1670,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "70-120 cm",
       "maturityDays": "80-95 dage",
@@ -1784,6 +1792,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "germinationDays": "6-10 dage",
       "growthType": "ranketomat",
       "height": "180-220 cm",
       "maturityDays": "80-85 dage",

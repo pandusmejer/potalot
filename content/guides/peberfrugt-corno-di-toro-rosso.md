@@ -24,6 +24,7 @@ tags:
   - spisekammer
 
 quickFacts:
+  germinationDays: "10-21 dage"
   growthType: busket
   height: "70-120 cm"
   maturityDays: "80-95 dage"

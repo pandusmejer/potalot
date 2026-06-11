@@ -17,6 +17,7 @@ tags:
   - spisekammer
   - selvforsyning
 quickFacts:
+  germinationDays: "5-8 dage"
   preCultivation: true
   sowingMonths: [4, 5]
   directSowingMonths: [5, 6]

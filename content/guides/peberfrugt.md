@@ -19,6 +19,7 @@ tags:
   - frugtgroentsag
 
 quickFacts:
+  germinationDays: "10-21 dage"
   preCultivation: true
   sowingMonths: [2, 3, 4]
   plantingOutMonths: [5, 6]

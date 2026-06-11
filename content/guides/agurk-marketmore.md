@@ -21,6 +21,7 @@ tags:
   - selvforsyning
 
 quickFacts:
+  germinationDays: "5-8 dage"
   growthType: slyngplante
   height: "150-250 cm"
   maturityDays: "60-70 dage"
