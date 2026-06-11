@@ -247,6 +247,11 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
+  'agurk-telegraph': {
+    seedCard: { src: '/images/frokort/agurk-telegraph.png', alt: 'Telegraph agurk — frøkort' },
+    macro: [],
+  },
+
   'dild-bouquet': {
     seedCard: { src: '/images/frokort/dild-bouquet.png', alt: 'Bouquet dild — frøkort' },
     macro: [],
