@@ -216,6 +216,45 @@ at få brugeren til at udføre administrativt arbejde.
 
 ---
 
+## Princip #2: Lifecycle-routing — hver fase har ét hjem
+
+En plantes livscyklus passerer fire faser, og hver fase hører hjemme
+ét bestemt sted i appen. Denne routing er låst:
+
+```
+Planlagt   →  Frøbank / Kalender   (en intention, ikke en plante)
+Aktiv      →  Planter              (det der fysisk gror)
+Afsluttet  →  "Klar til arkiv"     (venlig oprydning, foreslå Havebogen)
+Arkiveret  →  Havebog              (historik og minder)
+```
+
+### Hvorfor denne regel er låst
+
+Uden den opfinder hver fremtidig feature (diktat, billeder, autofyld,
+høst, spisekammer, rapporter) sin egen sandhed om hvor en plante "er".
+Og så er vi tilbage ved Excel med pæne farver.
+
+Med den ved enhver feature præcis hvor dens data skal lande:
+
+- Diktat "jeg vil så chili til efteråret" → **planlagt** → Frøbank/Kalender
+- Diktat "såede 12 California Wonder" → **aktiv** → Planter
+- Diktat "hvidløgene er høstet færdig" → **afsluttet** → Klar til arkiv
+- Bruger trykker "Gem i Havebogen" → **arkiveret** → Havebog
+
+### Aktive-definitionen (gentaget fordi den er vigtig)
+
+> "Aktive" må kun indeholde planter der fysisk er i gang:
+> sået → spirer → i vækst → klar til udplantning → udplantet → høstklar.
+>
+> Planlagte sorter vises separat. Afsluttede planter bliver ikke
+> stående i Aktive, men foreslås arkiveret i Havebogen.
+
+Ellers bliver Aktive en rodekasse med planer, levende planter og døde
+planter — den slags kategorifejl der får et pænt UI til at lugte af
+Excel.
+
+---
+
 ## Implementerings-status (gap-analyse, juni 2026)
 
 Hvad datamodellen kan i dag vs. hvad princippet kræver:
