@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { PlantCard } from '@/components/mine-planter/plant-card'
+import { PlantArtRow } from '@/components/mine-planter/plant-art-row'
 import { PlantHero } from '@/components/mine-planter/plant-hero'
 import { GreenhouseNow } from '@/components/mine-planter/greenhouse-now'
 import { PlantStatusFilter } from '@/components/mine-planter/plant-status-filter'
@@ -14,12 +14,11 @@ import {
   filterMockPlantsByStatus,
   mockPlantActions,
   mockPlantActivities,
-  mockPlantTasks,
   mockPlants,
   plantStatusFilters,
   type PlantFilterStatus,
 } from '@/data/mock-plants'
-import type { Plant, CalendarTask } from '@/lib/types'
+import type { Plant, PlantStatus } from '@/lib/types'
 import { ArrowRight, BookOpen } from 'lucide-react'
 
 interface Props {
@@ -58,15 +57,35 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
     return varieties.size
   }, [plants])
 
-  const nextTaskFor = (plantId: string): CalendarTask | null => {
-    if (!isDemo) {
-      // Real-data path: vi har ingen task-kobling endnu i Planter-flowet.
-      // Næste-handling vises stadig via PlantCard's egen estimateNextTask
-      // (asset-drevet, statusbaseret) — så denne returner null.
-      return null
+  // V2-arkitektur: "Aktive → Art → Sorter".
+  // Gruppér de filtrerede planter efter art (plant.name). Hver art
+  // bliver en sektion med horisontal scroll af sort-kort, i stedet
+  // for den gamle uendelige lodrette liste af store kort.
+  //
+  // Art-grupper sorteres: grupper med opmærksomheds-status
+  // (høstklar / klar til udplantning) først, derefter flest planter,
+  // derefter alfabetisk. Det besvarer "hvordan har mine planter det"
+  // i prioriteret rækkefølge: dem der har brug for dig står øverst.
+  const artGroups = useMemo(() => {
+    const byArt = new Map<string, Plant[]>()
+    for (const plant of activePlants) {
+      const key = plant.name
+      if (!byArt.has(key)) byArt.set(key, [])
+      byArt.get(key)!.push(plant)
     }
-    return mockPlantTasks.find(task => task.linkedPlantId === plantId) ?? null
-  }
+    const needsAttention = (group: Plant[]) =>
+      group.some(
+        p => (p.status as PlantStatus) === 'hoestklar' ||
+             (p.status as PlantStatus) === 'klar_til_udplantning',
+      )
+    return [...byArt.entries()].sort(([nameA, groupA], [nameB, groupB]) => {
+      const attA = needsAttention(groupA) ? 0 : 1
+      const attB = needsAttention(groupB) ? 0 : 1
+      if (attA !== attB) return attA - attB
+      if (groupA.length !== groupB.length) return groupB.length - groupA.length
+      return nameA.localeCompare(nameB, 'da')
+    })
+  }, [activePlants])
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-8">
@@ -83,10 +102,10 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         onChange={setActiveFilter}
       />
 
-      <section className="space-y-5">
-        {activePlants.length > 0 ? (
-          activePlants.map(plant => (
-            <PlantCard key={plant.id} plant={plant} nextTask={nextTaskFor(plant.id)} />
+      <section className="space-y-7">
+        {artGroups.length > 0 ? (
+          artGroups.map(([artName, group]) => (
+            <PlantArtRow key={artName} artName={artName} plants={group} />
           ))
         ) : (
           <PlantEmptyState />

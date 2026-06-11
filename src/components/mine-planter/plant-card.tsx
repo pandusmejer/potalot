@@ -41,7 +41,7 @@ const sans = 'var(--font-manrope)'
  * Planlagt og afsluttet får en neutral muted farve så de ikke
  * konkurrerer med de aktive stadier.
  */
-function statusColor(status: PlantStatus): string {
+export function statusColor(status: PlantStatus): string {
   switch (status) {
     case 'planlagt':
     case 'afsluttet':
