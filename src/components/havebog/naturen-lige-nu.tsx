@@ -57,7 +57,7 @@ export function NaturenLigeNu({
             marginBottom: 14,
           }}
         >
-          I haven lige nu
+          Lige nu
         </p>
 
         {/* Det store tal — V3.7 (Annas præcise spec).

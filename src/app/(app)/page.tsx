@@ -1,5 +1,6 @@
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
+import { IDinHave } from '@/components/havebog/i-din-have'
 import { NaturenLigeNu } from '@/components/havebog/naturen-lige-nu'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
 import { Historik } from '@/components/havebog/historik'
@@ -10,6 +11,7 @@ import {
   DEMO_HERO_STATS,
   DEMO_TIDSLINJE,
   DEMO_HERO_NARRATIVE,
+  DEMO_I_DIN_HAVE,
   DEMO_NATUREN_LIGE_NU,
   DEMO_ON_THIS_DAY,
   DEMO_RECENT_NOTES,
@@ -64,6 +66,7 @@ export default async function HavebogPage() {
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats
   const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
   const heroNarrative = isDemo ? DEMO_HERO_NARRATIVE : data.heroNarrative
+  const iDinHave = isDemo ? DEMO_I_DIN_HAVE : data.iDinHave
   const naturenLigeNu = isDemo ? DEMO_NATUREN_LIGE_NU : data.naturenLigeNu
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
   const history = isDemo ? DEMO_HISTORY : data.history
@@ -79,8 +82,17 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-10 sm:space-y-12 pb-6">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
+      {/* V4-mockup: åbningstallene direkte under heroens bølge.
+          IDinHave overtager "8 sorter"-rollen fra FirstSeasonBlock. */}
+      <IDinHave
+        aktiveSorter={iDinHave.aktiveSorter}
+        klarTilUdplantning={iDinHave.klarTilUdplantning}
+        arterRigere={iDinHave.arterRigere}
+      />
       <NaturenLigeNu fakta={naturenLigeNu} />
-      {/* Forsidehistorie: "hvordan går det med min have?" */}
+      {/* "Hvordan går det"-fakta — kun for brugere MED data.
+          Ny-bruger-varianten (FirstSeasonBlock) er pensioneret;
+          IDinHave bærer nu åbningstallene. */}
       <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
       <PaaDenneDag entries={onThisDay} />
       {hasNotes ? (

@@ -33,8 +33,11 @@ export function DenneSaeson({ facts, varieties = 0 }: Props) {
   const isNewUser =
     !facts.senesteHoest && !facts.senesteNote && !facts.senesteBillede
 
+  // V4 (11. juni 2026): ny bruger får STILHED her — IDinHave-stakken
+  // under heroen bærer nu åbningstallene ("8 aktive sorter").
+  // FirstSeasonBlock var en duplikering af samme tal én sektion nede.
   if (isNewUser) {
-    return <FirstSeasonBlock varieties={varieties} />
+    return null
   }
 
   return (

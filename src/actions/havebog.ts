@@ -24,12 +24,14 @@ import type {
   Tidslinje,
   HeroNarrative,
   NaturFakta,
+  IDinHaveTal,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
   heroStats: HeroStats
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
+  iDinHave: IDinHaveTal
   naturenLigeNu: NaturFakta
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
@@ -322,6 +324,7 @@ interface PlantRow {
   id: string
   name: string
   variety: string | null
+  status: string
   is_archived: boolean
   archived_year: number | null
   archived_at: string | null
@@ -351,7 +354,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .order('date', { ascending: false }),
       supabase
         .from('plants_v2')
-        .select('id, name, variety, is_archived, archived_year, archived_at, primary_image_url')
+        .select('id, name, variety, status, is_archived, archived_year, archived_at, primary_image_url')
         .eq('user_id', me.id),
       supabase
         .from('inventory_items')
@@ -548,6 +551,38 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       heroStats, tidslinje, history, onThisDay, today, seasonStart,
     )
 
+    // "I DIN HAVE" — åbningstallene (V4-mockup). Stilhed ved huller:
+    //   aktiveSorter      = frøbankens sorter (findes altid som tal)
+    //   klarTilUdplantning= status-count på ikke-arkiverede planter
+    //   arterRigere       = distinkte arter i år vs. sidste år (logs);
+    //                       kun vist når begge år har data og
+    //                       differencen er positiv
+    const klarTilUdplantning = plants.filter(
+      p => !p.is_archived && p.status === 'klar_til_udplantning',
+    ).length
+
+    const arterPrAar = (yr: number) => {
+      const arter = new Set<string>()
+      for (const l of logs) {
+        if (!l.date.startsWith(String(yr))) continue
+        const p = plantById.get(l.plant_id)
+        if (p) arter.add(p.name)
+      }
+      return arter.size
+    }
+    const arterIAar = arterPrAar(currentYear)
+    const arterSidsteAar = arterPrAar(currentYear - 1)
+    const arterRigere =
+      arterSidsteAar > 0 && arterIAar > arterSidsteAar
+        ? arterIAar - arterSidsteAar
+        : null
+
+    const iDinHave: IDinHaveTal = {
+      aktiveSorter: heroStats.varieties,
+      klarTilUdplantning: klarTilUdplantning > 0 ? klarTilUdplantning : null,
+      arterRigere,
+    }
+
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
@@ -555,6 +590,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       heroStats,
       tidslinje,
       heroNarrative,
+      iDinHave,
       naturenLigeNu,
       onThisDay,
       recentNotes,

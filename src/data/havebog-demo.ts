@@ -239,6 +239,22 @@ export const DEMO_NATUREN_LIGE_NU: NaturFakta = {
   statement: 'Jordtemperaturen er nu høj nok til tomater og chili.',
 }
 
+/**
+ * "I DIN HAVE" — åbningstallene under heroens bølge (V4-mockup).
+ * Tre tilstande i tal-form, forskudt stak. Demo matcher mockup'et.
+ */
+export interface IDinHaveTal {
+  aktiveSorter: number
+  klarTilUdplantning: number | null
+  arterRigere: number | null
+}
+
+export const DEMO_I_DIN_HAVE: IDinHaveTal = {
+  aktiveSorter: 8,
+  klarTilUdplantning: 3,
+  arterRigere: 11,
+}
+
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
   {
     yearsAgo: 1,

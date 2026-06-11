@@ -46,13 +46,16 @@ const MAANED_SLUG = [
 const HAVEBOG_HERO_MANIFEST: {
   [month: number]: Partial<Record<HavebogUserState, string>>
 } = {
-  // ── Juni (juni 2026 — første produktion) ─────────────────
+  // ── Juni (komplet trippel pr. 11. juni 2026) ──────────────
   6: {
+    // Ny bruger: valmue-eng med strå i modlys — mockup'ets foto.
+    // Mørk top giver tekstplads; "noget man lagde mærke til".
+    new: '/images/heroes-havebog/juni/havebog-hero-juni-ny.jpg',
+    // Aktiv: stokroser i modlys ("sommer i haven", Annas valg).
     active: '/images/heroes-havebog/juni/havebog-hero-juni-bruger2.jpg',
-    // 'new' og 'year2plus' afventer egne fotos.
-    // 'new' fortjener: spire, jord, dug, første kimblad
-    // 'year2plus' fortjener: stokroser, sensommerlys, frøstande —
-    //                       ting der signalerer "du har været her før"
+    // År 2+: tæt valmueflor i gyldent aftenlys — nostalgisk,
+    // "du har været her før".
+    year2plus: '/images/heroes-havebog/juni/havebog-hero-juni-aar2.jpg',
   },
   // Andre måneder afventer egne fotos; falder tilbage til
   // heroes-maaneder/-poolen indtil de produceres.
