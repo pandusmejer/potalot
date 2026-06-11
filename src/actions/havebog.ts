@@ -13,6 +13,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
+import { laantErfaring } from '@/lib/havevisdom'
 import type {
   HeroStats,
   OnThisDayEntry,
@@ -659,6 +660,12 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           ? 'Flere af dine planter er klar til at komme udenfor.'
           : 'Dine første planter er klar til at komme udenfor.',
       )
+    }
+    // V6 (lånt erfaring, niveau 0): en helt ny bruger uden egne
+    // beats får en fællesskabs-linje — Havebogen taler som en
+    // erfaren dyrker indtil brugerens egen historie tager over.
+    if (heroNarrative.userState === 'new' && kapitelLigeNu.length < 2) {
+      kapitelLigeNu.push(laantErfaring(today.getMonth() + 1).ligeNu)
     }
 
     // ── Kapitel 3: Sæsonens historie — måneds-krøniken ────────

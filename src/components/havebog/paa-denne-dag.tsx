@@ -1,5 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import type { OnThisDayEntry } from '@/data/havebog-demo'
+import { laantErfaring } from '@/lib/havevisdom'
+import { aktuelMaaned } from '@/lib/datetime'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -71,21 +73,25 @@ export function PaaDenneDag({ entries }: Props) {
             />
           </div>
 
-          {/* Tekst nedenunder — som en billed-tekst i et magasinopslag */}
+          {/* Tekst nedenunder — som en billed-tekst i et magasinopslag.
+              V6 (lånt erfaring, niveau 0): i stedet for at konstatere
+              tomhed ("Den første side er stadig tom") låner vi
+              fællesskabets erfaring — måneds-relevant havevisdom.
+              Sandt-men-kedeligt er erstattet af lånt-men-værdifuldt. */}
           <div>
             <p
               style={{
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(20px, 3.6vw, 26px)',
+                fontSize: 'clamp(19px, 3.4vw, 24px)',
                 lineHeight: 1.35,
                 color: 'rgba(36,48,31,0.72)',
                 margin: 0,
                 maxWidth: 340,
               }}
             >
-              Den første side er stadig tom.
+              {laantErfaring(aktuelMaaned()).paaDenneDag}
             </p>
             <p
               style={{
@@ -100,7 +106,7 @@ export function PaaDenneDag({ entries }: Props) {
                 maxWidth: 340,
               }}
             >
-              Om et år vil du kunne bladre tilbage og se hvad der voksede netop nu.
+              Dine egne minder samles her, efterhånden som sæsonen skrider frem.
             </p>
           </div>
         </div>

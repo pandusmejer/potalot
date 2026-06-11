@@ -1,4 +1,6 @@
 import type { HistoryYear, HistoryMonth } from '@/data/havebog-demo'
+import { laantErfaring } from '@/lib/havevisdom'
+import { aktuelMaaned } from '@/lib/datetime'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -126,25 +128,29 @@ function HistorikEmpty() {
         className="relative z-10 flex h-full flex-col justify-center"
         style={{ padding: '0 26px', maxWidth: 360 }}
       >
+        {/* V6 (lånt erfaring, niveau 0): den primære linje låner
+            fællesskabets erfaring i stedet for kun at love fremtid.
+            "Historien begynder her" bevares som sekundær — det er
+            stadig sandt, det bærer bare ikke alene. */}
         <p
           style={{
             fontFamily: serif,
             fontStyle: 'italic',
             fontWeight: 400,
-            fontSize: 'clamp(22px, 4.5vw, 30px)',
-            lineHeight: 1.2,
+            fontSize: 'clamp(19px, 3.8vw, 25px)',
+            lineHeight: 1.3,
             color: 'rgba(244,239,220,0.95)',
             textShadow: '0 1px 14px rgba(12,18,8,0.55)',
             margin: 0,
           }}
         >
-          Historien begynder her.
+          {laantErfaring(aktuelMaaned()).historik}
         </p>
         <p
           style={{
             fontFamily: serif,
             fontWeight: 400,
-            fontSize: 'clamp(16px, 3vw, 20px)',
+            fontSize: 'clamp(15px, 2.8vw, 18px)',
             lineHeight: 1.45,
             color: 'rgba(244,239,220,0.78)',
             textShadow: '0 1px 12px rgba(12,18,8,0.55)',
@@ -152,9 +158,8 @@ function HistorikEmpty() {
             marginTop: 14,
           }}
         >
-          Din første note bliver
-          <br />
-          Havebogens første side.
+          Din egen historie begynder her —<br />
+          med den første note.
         </p>
       </div>
     </section>

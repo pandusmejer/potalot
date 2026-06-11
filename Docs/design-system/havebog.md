@@ -53,6 +53,59 @@ Havebogen **fortæller** — den **rapporterer ikke**:
 | 1 klar til udplantning | Dine første planter er klar til at komme udenfor. |
 | 8 aktive sorter | (hører slet ikke hjemme her — det er Planter) |
 
+### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
+
+Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
+aldrig møde "Du har ingen minder. Du har ingen historik. Du har
+ingen erfaring." — sandt, men kedeligt. Den nye produktlogik:
+
+```
+Ingen data
+  ↓
+Lån erfaring fra fællesskabet     (niveau 0)
+  ↓
+Byg egen erfaring                  (niveau 1)
+  ↓
+Lær af egne mønstre                (niveau 2)
+  ↓
+Personlig mentor                   (niveau 3)
+```
+
+**Niveau 0 — Lånt erfaring.** Havebogen fungerer som en erfaren
+dyrker: "Indtil vi kender din have, kan du læne dig op ad andres
+erfaringer." Eksempel i stedet for tom På denne dag: "På denne tid
+af året begynder mange dyrkere at hærde tomater og chili af før
+udplantning."
+
+**Niveau 1 — Egne erfaringer.** Så snart brugeren skaber data
+(første knop, første høst), træder fællesskabet i baggrunden.
+
+**Niveau 2 — Egne mønstre.** Sammenligninger: "Du såede tomater 9
+dage tidligere end sidste år."
+
+**Niveau 3 — Personlig mentor.** "Sidste år lykkedes dine tomater
+bedst, når du såede i første halvdel af marts."
+
+Jo længere brugeren dyrker med Potalot, desto mindre taler appen
+om fællesskabet — og desto mere om brugeren. Målet efter 3-5
+sæsoner: den eneste havebog i verden der kan sige **"Sådan dyrker
+DU bedst."**
+
+#### Designregel for lånt erfaring
+
+Må ALDRIG formuleres som "VIDSTE DU AT..." / "FAKTA" / "TIP" —
+det er ikke et blogindlæg, ikke internet anno 2012. Skriv som
+havevisdom, erfaring, observation — og helst relevant for netop
+denne bruger.
+
+#### Ærligheds-regel (Potalot-tilføjelse)
+
+Lånt erfaring må ikke bære opfundet præcision. Ingen fabrikerede
+procenter ("85% af danske dyrkere…") før reel fællesskabs-data
+findes. Kvalitative formuleringer ("mange dyrkere", "de fleste")
+eller tal forankret i guide-data ("110-130 dage efter såning" =
+hortikulturel fakta) er de ærlige former.
+
 ### Bogens fem kapitler
 
 1. **Lige nu** — fortællende sætninger om havens øjeblik. Ingen tal,
