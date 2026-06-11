@@ -11,6 +11,7 @@
 import type { InventoryItem, Plant, PlantStatus } from './types'
 import type { GardenAlert } from '@/actions/weather'
 import { saeson } from './datetime'
+import { forventetSpiring } from './afledninger'
 
 export type SuggestionKind = 'sow' | 'plant_out' | 'harvest' | 'tend'
 
@@ -124,15 +125,40 @@ export function computeWeekSuggestions(
         href,
         weight: KIND_META.plant_out.weight,
       })
-    } else if (status === 'saaet' && p.sowDate && dageSiden(p.sowDate) >= 21) {
+    } else if (status === 'saaet') {
+      // Sprint 1c: per-sort spirings-vindue via afledningsmotoren i
+      // stedet for den gamle hardcodede 21-dages grænse (forkert for
+      // både agurk 5-8 dage og chili 14-28 dage). Kun attention-
+      // tilstandene ("Er den spiret?" / "Tjek spiring") bliver til
+      // en kalender-handling — en plante hvis vindue ikke er nået
+      // endnu skal ikke fylde i ugens rytme.
+      const spiring = forventetSpiring(p)
+      if (spiring?.kind === 'attention' && p.sowDate) {
+        out.push({
+          id: `tend-germ-${p.id}`,
+          kind: 'tend',
+          icon: 'Leaf',
+          title: `Tjek spiring på ${navn}`,
+          detail:
+            spiring.text === 'Er den spiret?'
+              ? 'Spiringsvinduet er nået — kig i bakken.'
+              : `Sået for ${dageSiden(p.sowDate)} dage siden — over forventet spiretid.`,
+          href,
+          weight: 70,
+        })
+      }
+    } else if (status === 'spirer') {
+      // Sprint 1c: prikl-handlingen manglede helt — "Tid til at
+      // prikle tomater" er en af de mest almindelige forårs-
+      // handlinger. Status-afledt (grænsereglen): spirer → prikl.
       out.push({
-        id: `tend-germ-${p.id}`,
+        id: `tend-prikl-${p.id}`,
         kind: 'tend',
-        icon: 'Leaf',
-        title: `Tjek spiring på ${navn}`,
-        detail: `Sået for ${dageSiden(p.sowDate)} dage siden — burde være spiret nu.`,
+        icon: 'Sprout',
+        title: `Prikl ${navn}`,
+        detail: 'Spirerne er oppe — prikl om i egne potter når andet bladpar viser sig.',
         href,
-        weight: 70,
+        weight: 65,
       })
     } else if (status === 'udplantet') {
       out.push({
