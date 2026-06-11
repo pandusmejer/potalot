@@ -266,6 +266,57 @@ Krydsreferencer skal være **lette** (et link, en knap), ikke tunge
 
 ---
 
+## Grænsereglen: Planter vs. Kalender — tilstand vs. handling
+
+Den hyppigste grænsekonflikt i appen er mellem Planter ("hvordan har
+mine planter det?") og Kalender ("hvad skal jeg gøre?"). Samme
+underliggende data er ofte relevant begge steder. Reglen er låst:
+
+> **Planter må vise plante-status.**
+> **Kalender må vise plante-handlinger.**
+>
+> Hvis samme data kan vises begge steder:
+> - **Planter formulerer det som tilstand.**
+> - **Kalender formulerer det som næste handling.**
+
+### Eksempel
+
+```
+Data:
+Chili Habanero Orange · klar_til_udplantning
+
+Planter (tilstand):
+3 chili er klar til udplantning.
+
+Kalender (handling):
+Udplant chili i løbet af ugen.
+```
+
+Samme data. To forskellige formuleringer. Det er ikke duplikering —
+det er intelligent genbrug af information i to forskellige kontekster.
+
+### Hvad hver side derfor må eje
+
+**Planter må gerne vise** (tilstande):
+- I vækst · Klar til høst · Kræver opmærksomhed · Afventer spiring
+- "7 aktive planter" · "Tomat har 6 planter" · "Hvidløg er klar til arkiv"
+
+**Kalender skal eje** (handlinger):
+- "Udplant i dag" · "Prikl inden weekenden" · "Vand hvis jorden er tør"
+- "Høst nu" · "Så direkte denne uge" · "Dæk mod nattefrost"
+
+### Lakmustest
+
+Læs sætningen højt. Hvis den starter med (eller kan omskrives til at
+starte med) et **verbum i bydeform** — udplant, prikl, vand, høst, så,
+dæk — hører den hjemme i Kalender. Hvis den beskriver en **tilstand**
+— er klar, trives, venter, vokser — hører den hjemme på Planter.
+
+Med denne regel kan "hvad skal jeg gøre i dag?"-laget bygges uden at
+kopiere Planter-siden — og uden at Havebogen bliver et dashboard igen.
+
+---
+
 ## Beslutningsregel — hvor hører en ny feature hjemme?
 
 Når en ny feature foreslås, spørg:
@@ -331,12 +382,14 @@ bagefter.
 
 ---
 
-## Næste skridt (når dette dokument er læst)
+## Status og næste skridt (opdateret juni 2026)
 
-1. **Prioritet 2**: Planter-redesign baseret på "Aktive → Art →
-   Sorter"-arkitekturen. Sektionsspørgsmålet er låst:
-   "Hvordan har mine planter det?"
-2. **Prioritet 3**: `registration-principles.md` — hvordan
-   registrering kommer ind i hver sektion uden friktion.
-3. **Prioritet 4**: Havebog V4-koncept — kun når sektionsspørgsmålet
-   ovenfor har vist sig at holde i mindst én ny iteration.
+1. ~~**Prioritet 2**: Planter-redesign "Aktive → Art → Sorter"~~ —
+   ✅ bygget (V2.2, launchbar som informationsarkitektur)
+2. ~~**Prioritet 3**: `registrering.md`~~ — ✅ låst (frø→sået→plante
+   + lifecycle-routing)
+3. **Næste løft**: "Hvad skal jeg gøre i dag?"-laget — bygges på
+   grænsereglen ovenfor (Planter = tilstand, Kalender = handling).
+   Kalender ejer handlings-formuleringerne.
+4. **Prioritet 4**: Havebog V4-koncept — kun når sektionsspørgsmålene
+   har vist sig at holde i mindst én ny iteration.
