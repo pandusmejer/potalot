@@ -64,6 +64,7 @@ Sektion-DNA (Docs/design-system/potalot.md har det fulde):
 Designsystem-dokumenter (læs FØR redesign):
 - Docs/design-system/potalot.md — Overordnet filosofi + 3-lags arkitektur
 - Docs/design-system/sektion-roller.md — Hvad hver sektion ER (spørgsmål, primær/sekundær handling, må-aldrig-blive)
+- Docs/design-system/registrering.md — Registreringsprincipper (autoudfyld alt; frø→sået→plante)
 - Docs/design-system/havebog.md — Havebog-manifest (10 principper)
 - Docs/design-system/guides.md — Guide-systemet (V4.3)
 
