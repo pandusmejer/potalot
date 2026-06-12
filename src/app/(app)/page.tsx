@@ -5,6 +5,8 @@ import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
 import { Vendepunkter } from '@/components/havebog/vendepunkter'
 import { Minder } from '@/components/havebog/minder'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
+import { vaelgLevendeLag } from '@/lib/levende-lag'
+import { aktuelMaaned } from '@/lib/datetime'
 import {
   DEMO_HERO_STATS,
   DEMO_TIDSLINJE,
@@ -19,31 +21,29 @@ import {
 export const dynamic = 'force-dynamic'
 
 /**
- * 📖 HAVEBOG — brugerens personlige dyrkningshistorie.
- *
- * V7 (havebog.md V3): STOP MED AT DESIGNE SEKTIONER. DESIGN EN BOG.
+ * 📖 HAVEBOG — havens stue (V9) i to lag (V10).
  *
  * Havebogen er den eneste side i Potalot der ikke forsøger at hjælpe
  * brugeren med at gøre noget. Planter hjælper. Kalender hjælper.
  * Frøbank organiserer. Havebogen FORTOLKER.
  *
- * Siden består af kapitler — ikke sektioner. Hvert kapitel har sit
- * eget tempo og sin egen komposition (kapitel-tempo-reglen):
+ * Strukturen (V10 — magasin, ikke dashboard):
  *
- *   Omslag — hero, fuldbredde foto
- *   Kapitel 1: Lige nu             — ÉN opdagelse (V8: forfatter, ikke sekretær)
- *   Kapitel 2: På denne dag        — foto dominerer; ét billede, én historie
- *   Kapitel 3: Sæsonens vendepunkter — begivenheder, ikke måneder (vigtigst)
- *   Kapitel 4: Minder              — asymmetrisk højre, kuraterede førster
- *   Kapitel 5: Historien fortsætter— bred, rolig; arkiv + refleksion, ingen CTA
+ *   DET FASTE LAG (vises hver gang — Havebogens forside):
+ *     Omslag — hero: personlig hilsen + dagtæller + sæsonfoto
+ *     I dag i haven — ÉN indsigt, roterer dagligt (V8-opdagelser)
  *
- * Venstre → foto → centreret → højre → bred: brugeren skal føle
- * BEVÆGELSE gennem siden, som at bladre gennem sin sæson.
+ *   DET LEVENDE LAG (1-2 moduler, kurateret pr. sæson — levende-lag.ts):
+ *     På denne dag · Sæsonens vendepunkter · Minder
+ *     (+ kommende: Tal til din have, Inspirér mig, Bedrifter,
+ *      Fra have til køkken, Dyrkerniveau)
  *
- * V7 fjernede fra siden: DenneSaeson (kortene var "hvordan går
- * det"-data), SenesteNoter (kortliste = log, og polaroid-empty =
- * kitsch), Historik (måneds-mosaik = datagennemgang; arkivet bor nu
- * stille i Kapitel 5, detail-browsing er en senere arkiv-side).
+ *   BAGSIDEN (altid):
+ *     Historien fortsætter — arkiv + refleksion, ingen CTA
+ *
+ * Kapitel-tempoet (V7) gælder fortsat for de enkelte moduler;
+ * lagene afgør kun HVILKE kapitler dagens side viser. Magasiner
+ * viser ikke alle rubrikker på alle sider — de kuraterer.
  *
  * Demo-fallback: hvis ingen logget-ind bruger, vises lokal demo-data
  * fra src/data/havebog-demo.ts (ikke en global mekanisme).
@@ -61,11 +61,20 @@ export default async function HavebogPage() {
   const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
+  // Det levende lag — sæsonens 1-2 moduler. Tomme moduler tier
+  // selv stille, så kuratering og stilhed komponerer.
+  const levendeLag = vaelgLevendeLag(aktuelMaaned())
+  const MODULER = {
+    paaDenneDag: <PaaDenneDag key="paaDenneDag" entries={onThisDay} />,
+    vendepunkter: <Vendepunkter key="vendepunkter" vendepunkter={vendepunkter} />,
+    minder: <Minder key="minder" minder={minder} />,
+  } as const
+
   // Kapitel-luft V8 (luft-balancen): mindre luft MELLEM kapitlerne,
-  // mere luft INDE i dem. V7's space-y-16/24 fik siden til at føles
-  // både tung og tom på dag 98 — magasin-luft kræver magasin-indhold.
+  // mere luft INDE i dem.
   return (
     <div className="space-y-12 sm:space-y-16 pb-10">
+      {/* ── Det faste lag — forsiden ── */}
       <HavebogHero
         stats={heroStats}
         tidslinje={tidslinje}
@@ -75,12 +84,10 @@ export default async function HavebogPage() {
 
       <KapitelLigeNu saetninger={kapitelLigeNu} />
 
-      <PaaDenneDag entries={onThisDay} />
+      {/* ── Det levende lag — sæsonens kuraterede moduler ── */}
+      {levendeLag.map(modul => MODULER[modul])}
 
-      <Vendepunkter vendepunkter={vendepunkter} />
-
-      <Minder minder={minder} />
-
+      {/* ── Bagsiden ── */}
       <HistorienFortsaetter plants={archivedPlants} />
     </div>
   )

@@ -44,6 +44,17 @@ Annas "design et sted man har lyst til at være"-prompt. Hero V2
 disse fem er egne sprints. Principperne står i havebog.md §V9 —
 læs dem FØR implementering.
 
+PRIORITERING (Annas, 12. juni 2026): 1. Tal til din have →
+2. Inspirér mig → 3. Bedrifter → 4. Fra have til køkken →
+5. Dyrkerniveau. "De fire sidste bliver stærkere af data; Tal til
+din have skaber data uden at føles som registrering."
+
+STRUKTUR-KRAV (havebog.md §V10): nye moduler får IKKE egne faste
+pladser på siden — de registreres i det levende lags kuratering
+(src/lib/levende-lag.ts, 1-2 moduler ad gangen). Undtagelse:
+Tal til din have placeres som Havebogens HOVED-CTA efter dagens
+indsigt — bogens ene aktive handling.
+
 ### Tal til din have (stor — kræver lyd + AI-pipeline)
 
 Den PRIMÆRE registreringsoplevelse, ikke en note-funktion. Bruger

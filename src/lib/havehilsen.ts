@@ -132,13 +132,66 @@ function dagINummer(d: Date): number {
   return Math.floor((d.getTime() - start.getTime()) / 86400000)
 }
 
+/**
+ * Tidsforankrede stemningslinjer (V10 — "tælleren handler om tid;
+ * hilsnen kan også handle om tid"). Beregnet af kalenderen, så de
+ * skifter af sig selv hen over måneden — uden nye data og uden
+ * påstande om brugerens planter (ærligheds-reglen).
+ */
+function tidslinjer(now: Date): string[] {
+  const lines: string[] = []
+  const m = now.getMonth()
+  const dag = now.getDate()
+  const sidsteDag = new Date(now.getFullYear(), m + 1, 0).getDate()
+  const navn = MAANED[m].charAt(0).toUpperCase() + MAANED[m].slice(1)
+
+  // Månedens fremdrift — "Juni er næsten halvvejs gennem haven."
+  if (dag <= 5) lines.push(`${navn} er lige begyndt i haven.`)
+  else if (dag <= 12) lines.push(`${navn} er godt i gang i haven.`)
+  else if (dag <= 17) lines.push(`${navn} er næsten halvvejs gennem haven.`)
+  else if (dag <= sidsteDag - 5) lines.push(`${navn} er mere end halvvejs gennem haven.`)
+  else lines.push(`${navn} rinder ud i haven.`)
+
+  // Nedtælling til næste årstid — "Der er 81 dage til den første
+  // efterårsmåned." Årstidsmåneder: 1. mar / 1. jun / 1. sep / 1. dec.
+  const SKIFTE: Array<{ maaned0: number; label: string }> = [
+    { maaned0: 2, label: 'forårsmåned' },
+    { maaned0: 5, label: 'sommermåned' },
+    { maaned0: 8, label: 'efterårsmåned' },
+    { maaned0: 11, label: 'vintermåned' },
+  ]
+  for (const s of SKIFTE.map(s => ({
+    ...s,
+    dato: new Date(
+      now.getFullYear() + (now.getMonth() >= s.maaned0 ? 1 : 0),
+      s.maaned0,
+      1,
+    ),
+  })).sort((a, b) => a.dato.getTime() - b.dato.getTime())) {
+    const dage = Math.round(
+      (s.dato.getTime() - new Date(now.getFullYear(), m, dag).getTime()) / 86400000,
+    )
+    if (dage >= 2) {
+      lines.push(
+        dage === 2
+          ? `Der er to dage til den første ${s.label}.`
+          : `Der er ${dage} dage til den første ${s.label}.`,
+      )
+      break
+    }
+  }
+
+  return lines
+}
+
 export function dagensHilsen(now: Date, fornavn?: string | null): DagensHilsen {
   const del = dagsdel(now.getHours())
   const tid = aarstid(now.getMonth())
-  const pulje = STEMNING[tid][del]
-  // Deterministisk dag-for-dag variation — ingen Math.random
-  // (server og klient skal rendre ens, og brugeren skal opleve
-  // at bogen skifter side hver dag, ikke hvert reload).
+  // Puljen = tidsforankrede linjer + årstids-stemninger. Deterministisk
+  // dag-for-dag rotation — ingen Math.random (server og klient skal
+  // rendre ens, og brugeren skal opleve at bogen skifter side hver
+  // dag, ikke hvert reload).
+  const pulje = [...tidslinjer(now), ...STEMNING[tid][del]]
   const valg = pulje[dagINummer(now) % pulje.length]
   const stemning = valg.replace(
     '{maaned}',

@@ -253,6 +253,64 @@ det går"* — ikke fordi noget kræver handling, men fordi Havebogen
 er det digitale sted hvor forholdet til haven bor. Lykkes det, er
 Havebogen ikke et menupunkt. Den er hjertet i hele Potalot.
 
+### V10: To lag — fast og levende (låst, 12. juni 2026)
+
+Status efter V9 (Annas vurdering: 4/10 → 7,5/10): identiteten er
+der, men siden mangler OVERRASKELSE. "Hvis jeg åbner siden fem dage
+i træk, hvad har ændret sig?" Et smukt museum er stadig et museum.
+Samtidig truer en ny risiko: med fem kommende features kan Havebogen
+ende som "siden der gør alt" — og så er vi tilbage ved dashboardet.
+
+Svaret er to lag:
+
+#### Det faste lag (Havebogens forside — vises hver gang)
+
+1. Hero: personlig hilsen + dagtæller + sæsonfoto
+2. Dagens indsigt ("I dag i haven")
+
+ALT i det faste lag skal kunne skifte dagligt. Hilsnen roterer
+gennem tidsforankrede linjer ("Juni er næsten halvvejs gennem
+haven", "Der er 81 dage til den første efterårsmåned") + årstids-
+stemninger. Indsigten roterer gennem sin pulje. Tælleren tæller.
+Én daglig overraskelse er minimum — det er grunden til at åbne
+siden igen i morgen.
+
+#### Det levende lag (kurateret — kun 1-2 moduler ad gangen)
+
+Skifter med sæsonen (`src/lib/levende-lag.ts`):
+
+| Sæson | Moduler | Følelse |
+|---|---|---|
+| Vinter | På denne dag · Minder | At huske |
+| Forår | Vendepunkter · På denne dag | At komme i gang |
+| Sommer | Vendepunkter · Minder | Sæsonen lever |
+| Efterår | Minder · Vendepunkter | At samle op |
+
+Kommende moduler (Tal til din have, Inspirér mig, Bedrifter, Fra
+have til køkken, Dyrkerniveau) registreres i SAMME kuratering —
+de får ikke egne faste pladser. Magasiner viser ikke alle
+rubrikker på alle sider. De kuraterer.
+
+#### Bagsiden (altid)
+
+"Historien fortsætter" lukker bogen hver gang — en bog har altid
+sin bagside. Rolig, ingen CTA.
+
+#### Tal til din have = Havebogens hoved-CTA (besluttet, ubygget)
+
+Ikke en knap. Ikke gemt væk. Ikke i en menu. Placeres som bogens
+ene aktive handling efter dagens indsigt. Brugeren står i
+drivhuset, trykker, siger "De første agurker er kommet" — færdig.
+Ingen formular, ingen felter, ingen "vælg plante". Det er den
+funktion der SKABER de data (minder, vendepunkter, erfaringer)
+som resten af Havebogen lever af — registrering der ikke føles
+som registrering.
+
+Byggeprioritering (Annas rækkefølge): 1. Tal til din have →
+2. Inspirér mig → 3. Bedrifter → 4. Fra have til køkken →
+5. Dyrkerniveau. De fire sidste bliver stærkere af data; den
+første skaber dataene.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må

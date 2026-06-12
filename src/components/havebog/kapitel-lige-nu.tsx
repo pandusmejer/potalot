@@ -26,7 +26,17 @@ interface Props {
 }
 
 export function KapitelLigeNu({ saetninger }: Props) {
-  const indsigt = saetninger[0]
+  // V10 (én daglig overraskelse): indsigten roterer dag for dag
+  // gennem puljen i stedet for at stå fast på den første linje.
+  // "Hvis jeg åbner siden fem dage i træk, hvad har ændret sig?"
+  // Deterministisk på dagsnummer — ingen reload-lotteri.
+  const now = new Date()
+  const dagNr = Math.floor(
+    (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000,
+  )
+  const indsigt = saetninger.length > 0
+    ? saetninger[dagNr % saetninger.length]
+    : undefined
   if (!indsigt) return null
 
   return (
