@@ -192,6 +192,8 @@ const NEW_USER_NARRATIVE: HeroNarrative = {
   ],
   showStats: false,
   userState: 'new',
+  saesonDag: null,
+  saesonEtiket: null,
 }
 
 const MEDIUM_STATS: HeroStats = {
@@ -213,6 +215,8 @@ const MEDIUM_NARRATIVE: HeroNarrative = {
   ],
   showStats: true,
   userState: 'active',
+  saesonDag: 98,
+  saesonEtiket: 'af din første sæson',
 }
 
 const EXPERIENCED_STATS: HeroStats = {
@@ -233,6 +237,8 @@ const EXPERIENCED_NARRATIVE: HeroNarrative = {
   ],
   showStats: true,
   userState: 'year2plus',
+  saesonDag: 98,
+  saesonEtiket: 'af din tredje sæson',
 }
 
 // ─────────────────────────────────────────────────────────

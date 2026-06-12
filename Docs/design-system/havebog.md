@@ -73,7 +73,7 @@ kapitel har sit eget tempo, sin egen komposition og sin egen rytme:
 
 | Kapitel | Komposition | Indhold |
 |---|---|---|
-| 1 — Lige nu | Tekst venstre, STOR typografi, meget luft | ÉN indsigt — helst en OPDAGELSE (V8). |
+| 1 — I dag i haven | Tekst venstre, STOR typografi, meget luft | ÉN indsigt — helst en OPDAGELSE (V8). |
 | 2 — På denne dag | Foto dominerer | ÉT billede. Én historie. Ikke galleri. |
 | 3 — Sæsonens vendepunkter | Centreret, vertikal, nyeste vendepunkt størst | Vigtigste kapitel. Begivenheder, ikke måneder (V8). |
 | 4 — Minder | Asymmetrisk højre | Kuraterede højdepunkter — kun de bedste. |
@@ -170,6 +170,88 @@ V7-luften sad det forkerte sted: for meget luft MELLEM kapitlerne,
 for lidt INDE i dem. Resultatet var paradoksalt — siden føltes
 både tung og tom. Reglen: kapitel-afstand moderat, indre luft
 generøs. Indholdet skal eje sin flade, ikke svømme i den.
+
+### V9: Havens stue (låst, 12. juni 2026 — Annas "V8"-prompt nr. 2)
+
+Havebogens egentlige rolle:
+
+> Hvis Planter er værkstedet, Kalender er arbejdsplanen, Frøbank
+> er lageret og Guides er biblioteket — så er **Havebogen stuen**.
+> Det sted brugeren opholder sig, når de ikke er ude i haven.
+
+Når man åbner Havebogen skal følelsen være *"Jeg er tilbage i min
+have"* — ikke *"Jeg er tilbage i min app"*. Havebogen er den eneste
+side i Potalot hvor **værdi > funktion, stemning > effektivitet,
+nysgerrighed > produktivitet**.
+
+#### Vintertesten (den vigtigste test)
+
+> Ville jeg åbne Havebogen i januar?
+
+Ikke juli. Ikke august. Januar. Havebogen skal holde havedrømmen
+levende mellem sæsonerne — i regnvejr, på arbejde, i sofaen og på
+de mørke februardage hvor intet spirer endnu. Nej → byg videre.
+
+#### Hero = den daglige åbning (implementeret)
+
+Heroen er ikke en overskrift; den er brugerens daglige velkomst.
+Tre lag i fast hierarki: **personlig hilsen → dagtæller → dagens
+indsigt** (fotoet er sæson-stemningen bagved).
+
+- Hilsnen bruger fornavn, skifter med tid på dagen + årstid + dag,
+  og må ALDRIG føles som en chatbot ("Hvordan har du det i dag?" /
+  "Klar til at dyrke?" er forbudt). Den må ikke stå statisk i ugevis.
+- Dagtælleren er TAKTIL — gammeldags flip-counter der klikker på
+  plads (400-800 ms), ikke digital KPI. Den minder om sæsonens
+  rytme, fremdrift, ventetid og forventning. Følelsen: "tiden går"
+  — ikke "her er en statistik".
+
+#### Dagens indsigt — fire niveauer (Kapitel 1: "I dag i haven")
+
+Ikke "Vidste du at...", ikke "Fun fact", ikke "Tip" — det er
+internet anno 2012. Indsigterne udvikler sig med brugerens data:
+
+| Niveau | Kilde | Eksempel |
+|---|---|---|
+| 0 | Generel havevisdom | Trivsels-/sæsonindsigt |
+| 1 | Frøbanken | "Du har ingen rodfrugter i din frøbank." |
+| 2 | Aktive planter | Sortskombinationer, spiretid mod guiden |
+| 3 | Historik | "Spirede på 12 dage — sidste år tog det 18." |
+
+(Niveau 2-3 = V8's opdagelses-motor. Niveau 1 kræver frøbank-
+kategorier i havebog-actionen — næste sprint.)
+
+#### Kommende rum i stuen (principper låst, bygges som egne sprints)
+
+- **Tal til din have** — den PRIMÆRE registreringsoplevelse, ikke
+  en note-funktion. Tal i 15 sekunder ("Tomaterne ser triste ud
+  efter regnen"), Potalot finder selv opgaver/noter/minder/læring.
+  Frisk luft før skærmtid.
+- **Dyrkerniveau** — spejdermærker/håndværkergrader, ikke
+  gamification: Spirer → Dyrker → Selvforsyner → Haveentusiast →
+  Havekender. Fortjent, ikke optjent. Ingen XP, points, achievements.
+- **Bedrifter** — kapitler i brugerens historie, ikke badges:
+  "Første tomat høstet", "Første succes med hvidløg", "100 planter
+  dyrket".
+- **Inspirér mig** — én magisk knap, ÉT forslag ad gangen. Ingen
+  feed, ingen endeløs scroll, ingen Pinterest. Anbefal muligheder,
+  ikke produkter.
+- **Fra have til køkken** — spisekammeret bor i Havebogen, ikke som
+  separat univers: "Du har 4 høstklare auberginer → moussaka, baba
+  ganoush."
+
+#### Dyrkeren er hovedpersonen
+
+Havebogen handler om dyrkeren, ikke planterne. Spørgsmålet er ikke
+"Hvordan går det planterne?" (det besvarer Planter) men **"Hvilken
+slags dyrker er jeg ved at blive?"**
+
+#### Slutmålet
+
+Brugeren åbner Havebogen med følelsen *"Jeg skal lige se hvordan
+det går"* — ikke fordi noget kræver handling, men fordi Havebogen
+er det digitale sted hvor forholdet til haven bor. Lykkes det, er
+Havebogen ikke et menupunkt. Den er hjertet i hele Potalot.
 
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 

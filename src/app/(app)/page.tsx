@@ -66,7 +66,12 @@ export default async function HavebogPage() {
   // både tung og tom på dag 98 — magasin-luft kræver magasin-indhold.
   return (
     <div className="space-y-12 sm:space-y-16 pb-10">
-      <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
+      <HavebogHero
+        stats={heroStats}
+        tidslinje={tidslinje}
+        narrative={heroNarrative}
+        fornavn={isDemo ? null : data.fornavn}
+      />
 
       <KapitelLigeNu saetninger={kapitelLigeNu} />
 

@@ -1,9 +1,12 @@
 /**
- * Kapitel 1: "Lige nu" — bogens åbningskapitel (V7, havebog.md V3).
+ * Kapitel 1: "I dag i haven" — bogens åbningskapitel (V9-navn;
+ * V7-tempo, V8-indhold).
  *
  * Kapitel-tempo: tekst venstre, STOR typografi, meget luft.
- * ÉN indsigt. Ikke fem. (V5 viste 1-3 sætninger — V7 strammer til én;
- * den vigtigste sætning bærer hele kapitlet alene.)
+ * ÉN indsigt. Ikke fem. Og helst en OPDAGELSE (V8) — indsigterne
+ * udvikler sig gennem fire niveauer: 0 generel havevisdom →
+ * 1 frøbank → 2 aktive planter → 3 historik. Ikke "vidste du at",
+ * ikke "fun fact", ikke "tip" — det er internet anno 2012.
  *
  * Havebogen FORTÆLLER, den rapporterer ikke. Lobby-reglen:
  *   "14°"                    → "Jorden er nu varm nok til tomater og chili."
@@ -40,7 +43,7 @@ export function KapitelLigeNu({ saetninger }: Props) {
           marginBottom: 20,
         }}
       >
-        Lige nu
+        I dag i haven
       </p>
 
       <p

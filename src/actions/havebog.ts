@@ -35,6 +35,8 @@ export interface HavebogData {
   heroStats: HeroStats
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
+  /** V9 (personlig hilsen): første ord af profiles.display_name */
+  fornavn: string | null
   iDinHave: IDinHaveTal
   /** Kapitel 1: fortællende sætninger — helst en OPDAGELSE (V8) */
   kapitelLigeNu: string[]
@@ -424,6 +426,21 @@ function buildHeroNarrative(
     : null
   const harSaesonDag = saesonDag !== null && saesonDag >= 1 && saesonDag <= 365
 
+  // V9 (dagtælleren): hvilken sæson er det? Antal distinkte år
+  // med historik + indeværende år → "af din tredje sæson".
+  const ORDINAL = [
+    'første', 'anden', 'tredje', 'fjerde', 'femte',
+    'sjette', 'syvende', 'ottende', 'niende', 'tiende',
+  ]
+  const saesonNr = new Set(history.map(h => h.year)).add(currentYear).size
+  const saesonEtiket = harSaesonDag
+    ? `af din ${ORDINAL[Math.min(saesonNr, ORDINAL.length) - 1]} sæson`
+    : null
+  const taeller = {
+    saesonDag: harSaesonDag ? saesonDag : null,
+    saesonEtiket,
+  }
+
   // ── År 1+: brugeren har tidligere sæsoner ────────────────
   if (hasYearOnePlusHistory) {
     const personalText: string[] = []
@@ -446,6 +463,7 @@ function buildHeroNarrative(
       personalText,
       showStats: heroStats.notes > 0,
       userState: 'year2plus',
+      ...taeller,
     }
   }
 
@@ -464,6 +482,7 @@ function buildHeroNarrative(
       // ikke siger "tom" tre gange i træk.
       showStats: false,
       userState: 'new',
+      ...taeller,
     }
   }
 
@@ -494,6 +513,7 @@ function buildHeroNarrative(
     personalText: beats,
     showStats: true,
     userState: 'active',
+    ...taeller,
   }
 }
 
@@ -533,7 +553,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
   // fallback. Hvis noget går galt, returnerer vi null → demo-data
   // overtager i page.tsx (bedre end at blokere siden).
   try {
-    const [logsRes, plantsRes, inventoryRes] = await Promise.all([
+    const [logsRes, plantsRes, inventoryRes, profilRes] = await Promise.all([
       supabase
         .from('plant_logs_v2')
         .select('id, plant_id, date, type, title, note, image_urls')
@@ -547,11 +567,19 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .from('inventory_items')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', me.id),
+      supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', me.id)
+        .maybeSingle(),
     ])
 
     const logs = (logsRes.data ?? []) as PlantLogRow[]
     const plants = (plantsRes.data ?? []) as PlantRow[]
     const inventoryCount = inventoryRes.count ?? 0
+    // V9 (personlig hilsen): fornavn = første ord af display_name
+    const fornavn =
+      profilRes.data?.display_name?.trim().split(/\s+/)[0] || null
 
     const plantById = new Map(plants.map(p => [p.id, p]))
     const plantName = (id: string): string => plantById.get(id)?.name ?? '—'
@@ -811,6 +839,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       heroStats,
       tidslinje,
       heroNarrative,
+      fornavn,
       iDinHave,
       kapitelLigeNu,
       vendepunkter,

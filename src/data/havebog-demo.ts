@@ -156,6 +156,14 @@ export interface HeroNarrative {
    * til at vælge passende foto-stemning (V3.2, juni 2026).
    */
   userState: 'new' | 'active' | 'year2plus'
+  /**
+   * V9 (dagtælleren): sæsondagen som tal + etiket, struktureret så
+   * heroen kan rendre den taktile flip-tæller. Null når intet er
+   * sået endnu — ærlighed over poesi: ingen såning, ingen sæsondag.
+   */
+  saesonDag: number | null
+  /** "af din første sæson" / "af din tredje sæson" */
+  saesonEtiket: string | null
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -204,6 +212,8 @@ export const DEMO_HERO_NARRATIVE: HeroNarrative = {
   ],
   showStats: true,
   userState: 'active',
+  saesonDag: 98,
+  saesonEtiket: 'af din første sæson',
 }
 
 /**
