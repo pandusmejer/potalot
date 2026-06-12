@@ -227,8 +227,10 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
-  'tomat-green-tiger': {
-    seedCard: { src: '/images/frokort/tomat-green-tiger.png', alt: 'Green Tiger tomat — frøkort' },
+  // Omdøbt 12. juni 2026: sorten hed fejlagtigt "Green Tiger" —
+  // fotoet viser (og har altid vist) Green Zebra. Samme fil, nyt navn.
+  'tomat-green-zebra': {
+    seedCard: { src: '/images/frokort/tomat-green-zebra.png', alt: 'Green Zebra tomat — frøkort' },
     macro: [],
   },
 
@@ -350,6 +352,91 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
 
   'zinnia-queen-lime': {
     seedCard: { src: '/images/frokort/zinnia-queen-lime.png', alt: 'Queen Lime zinnia — frøkort' },
+    macro: [],
+  },
+
+  // ── FRØKORT-ONLY ENTRIES (12. juni 2026, tredje leverance) ──
+  //
+  // Alle indholdsverificeret mod sortsnavnene én for én. Nye arter:
+  // græskar, grønkål, jordbær, radise, rucola, spinat.
+  // radise.cherry-belle.png leveret med punktum — omdøbt til
+  // bindestreg (asset-konventionen).
+
+  'tomat-gardeners-delight': {
+    seedCard: { src: '/images/frokort/tomat-gardeners-delight.png', alt: 'Gardeners Delight tomat — frøkort' },
+    macro: [],
+  },
+
+  'chili-cayenne': {
+    seedCard: { src: '/images/frokort/chili-cayenne.png', alt: 'Cayenne chili — frøkort' },
+    macro: [],
+  },
+
+  'chili-padron': {
+    seedCard: { src: '/images/frokort/chili-padron.png', alt: 'Padrón chili — frøkort' },
+    macro: [],
+  },
+
+  'cosmos-candy-stripe': {
+    seedCard: { src: '/images/frokort/cosmos-candy-stripe.png', alt: 'Candy Stripe cosmos — frøkort' },
+    macro: [],
+  },
+
+  'graeskar-hokkaido': {
+    seedCard: { src: '/images/frokort/graeskar-hokkaido.png', alt: 'Hokkaido græskar — frøkort' },
+    macro: [],
+  },
+
+  'groenkaal-red-russian': {
+    seedCard: { src: '/images/frokort/groenkaal-red-russian.png', alt: 'Red Russian grønkål — frøkort' },
+    macro: [],
+  },
+
+  'jordbaer-korona': {
+    seedCard: { src: '/images/frokort/jordbaer-korona.png', alt: 'Korona jordbær — frøkort' },
+    macro: [],
+  },
+
+  'jordbaer-polka': {
+    seedCard: { src: '/images/frokort/jordbaer-polka.png', alt: 'Polka jordbær — frøkort' },
+    macro: [],
+  },
+
+  'peberfrugt-corno-di-toro-giallo': {
+    seedCard: { src: '/images/frokort/peberfrugt-corno-di-toro-giallo.png', alt: 'Corno di Toro Giallo peberfrugt — frøkort' },
+    macro: [],
+  },
+
+  'radise-french-breakfast': {
+    seedCard: { src: '/images/frokort/radise-french-breakfast.png', alt: 'French Breakfast radise — frøkort' },
+    macro: [],
+  },
+
+  'radise-saxa-2': {
+    seedCard: { src: '/images/frokort/radise-saxa-2.png', alt: 'Saxa 2 radise — frøkort' },
+    macro: [],
+  },
+
+  'radise-cherry-belle': {
+    seedCard: { src: '/images/frokort/radise-cherry-belle.png', alt: 'Cherry Belle radise — frøkort' },
+    macro: [],
+  },
+
+  'spinat-matador': {
+    seedCard: { src: '/images/frokort/spinat-matador.png', alt: 'Matador spinat — frøkort' },
+    macro: [],
+  },
+
+  // Rucola dyrkes og sælges oftest uden sortsnavn — keyed på BÅDE
+  // arts-slugget ("Rucola" uden sort) og sorts-slugget ("Rucola
+  // Standard"), samme foto, samme hvidløgs-mønster som ovenfor.
+  'rucola': {
+    seedCard: { src: '/images/frokort/rucola-standard.png', alt: 'Rucola — frøkort' },
+    macro: [],
+  },
+
+  'rucola-standard': {
+    seedCard: { src: '/images/frokort/rucola-standard.png', alt: 'Rucola — frøkort' },
     macro: [],
   },
 
