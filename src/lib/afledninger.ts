@@ -83,6 +83,21 @@ function quickFactsFor(plant: Plant) {
   return artsGuide?.quickFacts ?? null
 }
 
+/**
+ * QuickFacts-opslag ud fra navne alene — til lag der ikke har et
+ * fuldt Plant-objekt (fx Havebogens opdagelses-bygger, der arbejder
+ * på plant_logs-rækker). Prøver sortsguiden ('tomat-san-marzano')
+ * først, derefter artsguiden ('tomat'). Intet match → null.
+ */
+export function quickFactsForNavn(name: string, variety?: string | null) {
+  if (variety) {
+    const sortsGuide = guideById.get(slugify(`${name} ${variety}`))
+    if (sortsGuide) return sortsGuide.quickFacts
+  }
+  const artsGuide = guideById.get(slugify(name))
+  return artsGuide?.quickFacts ?? null
+}
+
 // ─────────────────────────────────────────────────────────────
 // P2: Forventet spiring (+ P5: anomali)
 // ─────────────────────────────────────────────────────────────

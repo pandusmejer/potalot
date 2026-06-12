@@ -14,6 +14,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { laantErfaring } from '@/lib/havevisdom'
+import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
   OnThisDayEntry,
@@ -26,7 +27,7 @@ import type {
   HeroNarrative,
   NaturFakta,
   IDinHaveTal,
-  SaesonMaaned,
+  Vendepunkt,
   Minde,
 } from '@/data/havebog-demo'
 
@@ -35,10 +36,10 @@ export interface HavebogData {
   tidslinje: Tidslinje
   heroNarrative: HeroNarrative
   iDinHave: IDinHaveTal
-  /** Kapitel 1: fortællende sætninger — Havebogen rapporterer ikke */
+  /** Kapitel 1: fortællende sætninger — helst en OPDAGELSE (V8) */
   kapitelLigeNu: string[]
-  /** Kapitel 3: måneds-krøniken */
-  saesonensHistorie: SaesonMaaned[]
+  /** Kapitel 3: sæsonens vendepunkter — begivenheder, ikke måneder */
+  vendepunkter: Vendepunkt[]
   /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
   minder: Minde[]
   naturenLigeNu: NaturFakta
@@ -204,6 +205,12 @@ function hasYearOnePlus(history: HistoryYear[], currentYear: number): boolean {
   return history.some(h => h.year < currentYear)
 }
 
+/** "2026-05-18" → "18. maj" — bogens datostemme, uden år. */
+function formatDagMaaned(iso: string): string {
+  const d = new Date(iso)
+  return `${d.getDate()}. ${MONTH_NAMES_DA[d.getMonth()].toLowerCase()}`
+}
+
 /**
  * Kapitel 4-byggeren: kuraterede minder — årets FØRSTE af hver
  * milepæls-type. Potalot vælger; brugeren skal ikke kuratere selv.
@@ -220,10 +227,6 @@ function byggMinder(
     { type: 'planting_out', titel: 'Første udplantning' },
     { type: 'sowing', titel: 'Sæsonens første såning' },
   ]
-  const fmt = (iso: string) => {
-    const d = new Date(iso)
-    return `${d.getDate()}. ${MONTH_NAMES_DA[d.getMonth()].toLowerCase()}`
-  }
 
   const out: Array<Minde & { _date: string }> = []
   for (const m of MILEPAELE) {
@@ -240,7 +243,7 @@ function byggMinder(
     out.push({
       titel: m.titel,
       detalje: foerste.note ? `${navn} — ${foerste.note}` : navn,
-      dato: fmt(foerste.date),
+      dato: formatDagMaaned(foerste.date),
       _date: foerste.date,
     })
   }
@@ -252,57 +255,127 @@ function byggMinder(
 
 /**
  * Kapitel 3-byggeren: én krønike-linje pr. måned, afledt af månedens
- * mest betydningsfulde log. Prioritet (mest milepæls-agtig først):
- * harvest > planting_out > sowing > germination.
+ * V8 afløste måneds-krøniken: mennesker husker ikke deres have som
+ * marts/april/maj — de husker begivenheder. Historien organiseres
+ * derfor omkring VENDEPUNKTER: årets første af hver fase, fortalt
+ * kronologisk som sæsonens buer. Samme data, anden fortælling.
  *
- * Templaterne er bevidst simple — strukturen er det låste (havebog.md
- * V2); AI kan skrive smukkere linjer senere uden at røre formen.
+ * Templaterne er bevidst simple — strukturen er det låste; AI kan
+ * skrive smukkere linjer senere uden at røre formen.
  */
-function byggSaesonensHistorie(
+function byggVendepunkter(
   logs: PlantLogRow[],
   plantById: Map<string, PlantRow>,
   currentYear: number,
-  today: Date,
-): SaesonMaaned[] {
-  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
-  const TYPE_PRIORITY = ['harvest', 'planting_out', 'sowing', 'germination'] as const
+): Vendepunkt[] {
+  const FASER: Array<{ type: string; titel: string; linje: (navn: string, dato: string) => string }> = [
+    { type: 'sowing',       titel: 'Sæsonen begyndte', linje: (n, d) => `${n} blev sået ${d}.` },
+    { type: 'germination',  titel: 'Væksten tog fart', linje: (n, d) => `${n} spirede ${d}.` },
+    { type: 'planting_out', titel: 'Ud i det fri',     linje: (n, d) => `${n} flyttede ud ${d}.` },
+    { type: 'harvest',      titel: 'Første høst',      linje: (n, d) => `${n} blev høstet ${d}.` },
+  ]
 
-  const out: SaesonMaaned[] = []
-  const sidsteMaaned = today.getMonth() + 1 // til og med nu
+  const out: Array<Vendepunkt & { _date: string }> = []
+  for (const fase of FASER) {
+    // logs er sorteret nyeste-først — årets FØRSTE af typen er den
+    // sidste i listen inden for året.
+    const aaretsLogs = logs.filter(
+      l => l.type === fase.type && l.date.startsWith(String(currentYear)),
+    )
+    const foerste = aaretsLogs[aaretsLogs.length - 1]
+    if (!foerste) continue
+    const plant = plantById.get(foerste.plant_id)
+    if (!plant) continue
+    const navn = plant.variety ? `${plant.name} ${plant.variety}` : plant.name
+    out.push({
+      titel: fase.titel,
+      detalje: fase.linje(navn, formatDagMaaned(foerste.date)),
+      _date: foerste.date,
+    })
+  }
+  // Kronologisk — sæsonens bue fortælles forfra
+  return out
+    .sort((a, b) => a._date.localeCompare(b._date))
+    .map(v => ({ titel: v.titel, detalje: v.detalje }))
+}
 
-  for (let m = 1; m <= sidsteMaaned; m++) {
-    const prefix = `${currentYear}-${String(m).padStart(2, '0')}`
-    const monthLogs = logs.filter(l => l.date.startsWith(prefix))
-    if (monthLogs.length === 0) continue
+/**
+ * V8: Forfatteren, ikke sekretæren — find en OPDAGELSE.
+ *
+ * En opdagelse er noget brugeren ikke selv har set: en målt
+ * spiretid holdt op mod noget. Mod sidste års spiretid hvis den
+ * findes (mest personligt), ellers mod guidens interval (ærligt
+ * tilgængeligt allerede på dag 98 — dag 98-reglen).
+ *
+ * Ingen markant afvigelse → null → Kapitel 1 falder tilbage på
+ * status-linjerne. En opdagelse skal være værd at fortælle;
+ * "midt i intervallet" er det ikke.
+ */
+function byggOpdagelse(
+  logs: PlantLogRow[],
+  plantById: Map<string, PlantRow>,
+  currentYear: number,
+): string | null {
+  // Spiretid pr. plante pr. år: dage fra sowing-log til germination-log
+  const spiretider = new Map<number, Array<{ art: string; variety: string | null; dage: number }>>()
+  const sowingByPlant = new Map<string, Map<number, string>>()
+  for (const l of logs) {
+    if (l.type !== 'sowing') continue
+    const yr = parseInt(l.date.slice(0, 4), 10)
+    const m = sowingByPlant.get(l.plant_id) ?? new Map()
+    // nyeste-først: behold den TIDLIGSTE såning i året
+    m.set(yr, l.date)
+    sowingByPlant.set(l.plant_id, m)
+  }
+  for (const l of logs) {
+    if (l.type !== 'germination') continue
+    const yr = parseInt(l.date.slice(0, 4), 10)
+    const sow = sowingByPlant.get(l.plant_id)?.get(yr)
+    if (!sow) continue
+    const dage = Math.round(
+      (new Date(l.date).getTime() - new Date(sow).getTime()) / 86400000,
+    )
+    if (dage <= 0 || dage > 90) continue
+    const plant = plantById.get(l.plant_id)
+    if (!plant) continue
+    const arr = spiretider.get(yr) ?? []
+    arr.push({ art: plant.name, variety: plant.variety, dage })
+    spiretider.set(yr, arr)
+  }
 
-    let linje: string | null = null
-    for (const type of TYPE_PRIORITY) {
-      const log = monthLogs.find(l => l.type === type)
-      if (!log) continue
-      const plant = plantById.get(log.plant_id)
-      if (!plant) continue
-      const navn = bestemtFlertal(plant.name)
-      switch (type) {
-        case 'harvest':
-          linje = `${cap(navn)} begyndte at give høst.`
-          break
-        case 'planting_out':
-          linje = `${cap(navn)} blev plantet ud.`
-          break
-        case 'sowing':
-          linje = `Du såede ${navn}.`
-          break
-        case 'germination':
-          linje = `${cap(navn)} spirede.`
-          break
-      }
-      break
-    }
-    if (linje) {
-      out.push({ maaned: MONTH_NAMES_DA[m - 1], linje })
+  const iAar = spiretider.get(currentYear) ?? []
+  if (iAar.length === 0) return null
+
+  // 1) År-over-år pr. art — den mest personlige opdagelse
+  const sidsteAar = spiretider.get(currentYear - 1) ?? []
+  for (const nu of iAar) {
+    const foer = sidsteAar.find(s => s.art === nu.art)
+    if (foer && Math.abs(nu.dage - foer.dage) >= 3) {
+      const navn = capitalize(bestemtFlertal(nu.art))
+      return `${navn} spirede på ${nu.dage} dage i år — sidste år tog det ${foer.dage}.`
     }
   }
-  return out
+
+  // 2) Mod guidens interval — tilgængelig allerede i første sæson
+  let bedste: { tekst: string; afvigelse: number } | null = null
+  for (const nu of iAar) {
+    const germ = parseGerminationDays(quickFactsForNavn(nu.art, nu.variety)?.germinationDays)
+    if (!germ) continue
+    const navn = nu.variety ? `${nu.art} ${nu.variety}` : capitalize(bestemtFlertal(nu.art))
+    let tekst: string | null = null
+    let afvigelse = 0
+    if (nu.dage < germ.min) {
+      afvigelse = germ.min - nu.dage
+      tekst = `${navn} spirede på ${nu.dage} dage — guiden regner med ${germ.min}-${germ.max}.`
+    } else if (nu.dage > germ.max) {
+      afvigelse = nu.dage - germ.max
+      tekst = `${navn} brugte ${nu.dage} dage på at spire — guiden regner med ${germ.min}-${germ.max}.`
+    }
+    if (tekst && (!bedste || afvigelse > bedste.afvigelse)) {
+      bedste = { tekst, afvigelse }
+    }
+  }
+  return bedste?.tekst ?? null
 }
 
 const MAANED_FULD_LOWER = [
@@ -698,9 +771,12 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     }
 
     // ── Kapitel 1: "Lige nu" — fortælling, ikke rapport ───────
-    // Lobby-reglen (havebog.md V2): tal-form hører til Planter/
-    // Kalender. Her oversættes samme data til prosa.
+    // V8 (forfatter, ikke sekretær): en OPDAGELSE går forrest når
+    // den findes — noget systemet har set, som brugeren ikke selv
+    // havde opdaget. Status-linjerne er fallback, ikke hovedperson.
     const kapitelLigeNu: string[] = []
+    const opdagelse = byggOpdagelse(logs, plantById, currentYear)
+    if (opdagelse) kapitelLigeNu.push(opdagelse)
     const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
     if (ligeNuFakta) kapitelLigeNu.push(ligeNuFakta.statement)
     if (klarTilUdplantning > 0) {
@@ -717,13 +793,11 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       kapitelLigeNu.push(laantErfaring(today.getMonth() + 1).ligeNu)
     }
 
-    // ── Kapitel 3: Sæsonens historie — måneds-krøniken ────────
-    // Én linje pr. måned, afledt af månedens mest betydningsfulde
-    // log (sowing > planting_out > harvest > germination). Linjerne
-    // kan senere skrives af AI; strukturen er låst nu.
-    const saesonensHistorie = byggSaesonensHistorie(
-      logs, plantById, currentYear, today,
-    )
+    // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
+    // Begivenheder, ikke måneder: årets første af hver fase,
+    // fortalt kronologisk. Linjerne kan senere skrives af AI;
+    // strukturen er låst nu.
+    const vendepunkter = byggVendepunkter(logs, plantById, currentYear)
 
     // ── Kapitel 4: Minder — kuraterede førster (V7) ───────────
     // Potalot VÆLGER: årets første af hver milepæls-type, max 4.
@@ -739,7 +813,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       heroNarrative,
       iDinHave,
       kapitelLigeNu,
-      saesonensHistorie,
+      vendepunkter,
       minder,
       naturenLigeNu,
       onThisDay,

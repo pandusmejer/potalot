@@ -49,13 +49,16 @@ export function Minder({ minder }: Props) {
         Minder
       </p>
 
+      {/* V8 (luft-balancen): bredere blok og mere luft INDE i
+          kapitlet — minderne må ikke stå klemt i et hav af beige.
+          Asymmetrien bevares; det er bredden der gav klemthed. */}
       <div
         style={{
-          width: 'min(82%, 420px)',
+          width: 'min(94%, 460px)',
           borderRight: '1px solid rgba(36,48,31,0.16)',
-          paddingRight: 22,
+          paddingRight: 24,
         }}
-        className="space-y-8"
+        className="space-y-10"
       >
         {minder.map((m, i) => (
           <div key={`${m.titel}-${m.dato}`}>

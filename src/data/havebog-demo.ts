@@ -258,29 +258,37 @@ export const DEMO_I_DIN_HAVE: IDinHaveTal = {
 }
 
 /**
- * Kapitel 1: "Lige nu" — fortællende sætninger om havens øjeblik.
- * Ingen tal, ingen store gradtal. Havebogen fortæller, den
- * rapporterer ikke (lobby-reglen i havebog.md V2).
+ * Kapitel 1: "Lige nu" — ÉN indsigt (V7), og helst en OPDAGELSE (V8).
+ *
+ * V8 (forfatter, ikke sekretær): den stærkeste linje er noget
+ * systemet har OPDAGET, ikke noget brugeren selv har gjort.
+ * "Du såede tomater" er en kvittering; "spirede på 9 dage —
+ * guiden regner med 10-21" er en forfatter-sætning. Kun den
+ * første linje vises; resten er fallback.
  */
 export const DEMO_KAPITEL_LIGE_NU: string[] = [
+  'Chilierne spirede på 9 dage — guiden regner med 10-21.',
   'Jorden er nu varm nok til tomater og chili.',
-  'Dine første planter er klar til at komme udenfor.',
 ]
 
 /**
- * Kapitel 3: "Sæsonens historie" — måned for måned som krønike.
- * Linjerne kan senere skrives af AI; strukturen er låst nu.
+ * Kapitel 3: "Sæsonens vendepunkter" (V8 — afløser måneds-krøniken).
+ *
+ * Mennesker husker ikke deres have som marts/april/maj — de husker
+ * begivenheder: første høst, første blomst, ugen det regnede.
+ * Historien organiseres derfor omkring VENDEPUNKTER, kronologisk.
+ * Samme data som før, helt anden fortælling.
  */
-export interface SaesonMaaned {
-  maaned: string
-  linje: string
+export interface Vendepunkt {
+  titel: string          // "Sæsonen begyndte", "Første høst"
+  detalje: string        // "Tomaterne blev sået 18. marts."
 }
 
-export const DEMO_SAESONENS_HISTORIE: SaesonMaaned[] = [
-  { maaned: 'Marts', linje: 'Du såede årets første tomater.' },
-  { maaned: 'April', linje: 'Chiliplanterne fik deres første rigtige blade.' },
-  { maaned: 'Maj', linje: 'De første salater blev høstet.' },
-  { maaned: 'Juni', linje: 'Peberfrugterne er klar til drivhuset.' },
+export const DEMO_VENDEPUNKTER: Vendepunkt[] = [
+  { titel: 'Sæsonen begyndte', detalje: 'Tomaterne blev sået 18. marts.' },
+  { titel: 'Væksten tog fart', detalje: 'Chilierne fik deres første rigtige blade.' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint blev høstet 18. maj.' },
+  { titel: 'Ud i drivhuset', detalje: 'Peberfrugterne flyttede ud 4. juni.' },
 ]
 
 /**

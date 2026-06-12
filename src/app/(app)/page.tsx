@@ -2,7 +2,7 @@ import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { KapitelLigeNu } from '@/components/havebog/kapitel-lige-nu'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
-import { SaesonensHistorie } from '@/components/havebog/saesonens-historie'
+import { Vendepunkter } from '@/components/havebog/vendepunkter'
 import { Minder } from '@/components/havebog/minder'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
 import {
@@ -10,7 +10,7 @@ import {
   DEMO_TIDSLINJE,
   DEMO_HERO_NARRATIVE,
   DEMO_KAPITEL_LIGE_NU,
-  DEMO_SAESONENS_HISTORIE,
+  DEMO_VENDEPUNKTER,
   DEMO_MINDER,
   DEMO_ON_THIS_DAY,
   DEMO_ARCHIVED_PLANTS,
@@ -31,9 +31,9 @@ export const dynamic = 'force-dynamic'
  * eget tempo og sin egen komposition (kapitel-tempo-reglen):
  *
  *   Omslag — hero, fuldbredde foto
- *   Kapitel 1: Lige nu             — tekst venstre, STOR typografi, luft
+ *   Kapitel 1: Lige nu             — ÉN opdagelse (V8: forfatter, ikke sekretær)
  *   Kapitel 2: På denne dag        — foto dominerer; ét billede, én historie
- *   Kapitel 3: Sæsonens historie   — centreret tidslinje, stor afstand (vigtigst)
+ *   Kapitel 3: Sæsonens vendepunkter — begivenheder, ikke måneder (vigtigst)
  *   Kapitel 4: Minder              — asymmetrisk højre, kuraterede førster
  *   Kapitel 5: Historien fortsætter— bred, rolig; arkiv + refleksion, ingen CTA
  *
@@ -57,22 +57,22 @@ export default async function HavebogPage() {
   const heroNarrative = isDemo ? DEMO_HERO_NARRATIVE : data.heroNarrative
   const kapitelLigeNu = isDemo ? DEMO_KAPITEL_LIGE_NU : data.kapitelLigeNu
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
-  const saesonensHistorie = isDemo ? DEMO_SAESONENS_HISTORIE : data.saesonensHistorie
+  const vendepunkter = isDemo ? DEMO_VENDEPUNKTER : data.vendepunkter
   const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
-  // Kapitel-luft: meget store luftområder er tilladt og ønskede (V7).
-  // Bogens tempo skabes af afstanden mellem kapitlerne — ikke af
-  // skillelinjer eller baggrundsskift.
+  // Kapitel-luft V8 (luft-balancen): mindre luft MELLEM kapitlerne,
+  // mere luft INDE i dem. V7's space-y-16/24 fik siden til at føles
+  // både tung og tom på dag 98 — magasin-luft kræver magasin-indhold.
   return (
-    <div className="space-y-16 sm:space-y-24 pb-10">
+    <div className="space-y-12 sm:space-y-16 pb-10">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
 
       <KapitelLigeNu saetninger={kapitelLigeNu} />
 
       <PaaDenneDag entries={onThisDay} />
 
-      <SaesonensHistorie maaneder={saesonensHistorie} />
+      <Vendepunkter vendepunkter={vendepunkter} />
 
       <Minder minder={minder} />
 

@@ -73,9 +73,9 @@ kapitel har sit eget tempo, sin egen komposition og sin egen rytme:
 
 | Kapitel | Komposition | Indhold |
 |---|---|---|
-| 1 — Lige nu | Tekst venstre, STOR typografi, meget luft | ÉN indsigt. Ikke fem. |
+| 1 — Lige nu | Tekst venstre, STOR typografi, meget luft | ÉN indsigt — helst en OPDAGELSE (V8). |
 | 2 — På denne dag | Foto dominerer | ÉT billede. Én historie. Ikke galleri. |
-| 3 — Sæsonens historie | Centreret, vertikal tidslinje, stor afstand | Vigtigste kapitel. Fortælling, ikke logdata. |
+| 3 — Sæsonens vendepunkter | Centreret, vertikal, nyeste vendepunkt størst | Vigtigste kapitel. Begivenheder, ikke måneder (V8). |
 | 4 — Minder | Asymmetrisk højre | Kuraterede højdepunkter — kun de bedste. |
 | 5 — Historien fortsætter | Bred, rolig | Fremtid, arkiv, refleksion. Ingen CTA. |
 
@@ -108,6 +108,68 @@ papirrammer — den var et forsøg værd, men endte som kitsch.)
 Når man scroller gennem Havebogen skal følelsen være: *"Jeg læser
 historien om min have"* — ikke *"jeg gennemgår data om mine
 planter".*
+
+### V8: Forfatteren, ikke sekretæren (låst, 12. juni 2026)
+
+Det dybeste problem efter V7: Havebogen føltes stadig som noget
+der var blevet **genereret** — ikke som noget der var blevet
+**opdaget**.
+
+> "Du såede årets første tomater" er korrekt. Men det er ikke
+> interessant. Det svarer til en bank der skriver: "Du brugte
+> penge på dagligvarer." Ja. Tak. Det var mig selv der gjorde det.
+
+#### Opdagelses-reglen
+
+Det stærke øjeblik opstår når systemet opdager noget, brugeren
+ikke selv havde set:
+
+- *"Chilierne spirede på 12 dage — sidste år tog det 18."*
+- *"Tomat San Marzano spirede på 9 dage — guiden regner med 10-21."*
+- *"Ingen af dine salater gik i stok i år."*
+
+En loglinje omskrevet til en hel sætning er en kvittering.
+En måling holdt op mod noget — sidste år, guiden, de andre bede —
+er en fortælling. **Havebogen er en forfatter, ikke en sekretær.**
+
+Ærligheds-reglen gælder stadig: opdagelser skal være målt i
+brugerens egne data eller guidernes faktiske intervaller — aldrig
+opfundne sammenligninger. Ingen markant afvigelse → stilhed, og
+Kapitel 1 falder tilbage på status-linjerne.
+
+#### Vendepunkts-reglen (Kapitel 3)
+
+Mennesker husker ikke deres have som *marts, april, maj*. De husker
+*første tomat, første blomst, ugen det regnede*. Historier
+organiseres omkring **begivenheder, ikke måneder**:
+
+```
+SÆSONEN BEGYNDTE          (ikke: MARTS)
+Tomaterne blev sået 18. marts.
+
+FØRSTE HØST               (ikke: MAJ)
+Salat Crispy Mint blev høstet 18. maj.
+```
+
+Samme data. Helt anden fortælling. Og blokkene må ikke have ens
+vægt — det nyeste vendepunkt er størst og mørkest (det er dér
+sæsonen ER); de tidligere træder tilbage, som minder falmer.
+
+#### Dag 98-reglen
+
+> Design ikke Havebogen til den perfekte bruger med tre sæsoner
+> bag sig. Design den til brugeren på dag 98.
+
+Det er dér næsten alle nye brugere møder produktet. Magasiner kan
+tillade sig store tomme flader fordi de har stærke billeder og
+mange sider — tre korte linjer alene i et hav af beige kan ikke.
+
+#### Luft-balancen
+
+V7-luften sad det forkerte sted: for meget luft MELLEM kapitlerne,
+for lidt INDE i dem. Resultatet var paradoksalt — siden føltes
+både tung og tom. Reglen: kapitel-afstand moderat, indre luft
+generøs. Indholdet skal eje sin flade, ikke svømme i den.
 
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
