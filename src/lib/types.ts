@@ -148,6 +148,8 @@ export type PlantStatus =
   | 'hoestklar'
   | 'afsluttet'
 
+export type PlantImageSource = 'guide_reference' | 'user_upload' | null
+
 export interface Plant {
   id: string
   userId: string
@@ -169,6 +171,7 @@ export interface Plant {
   // Medier og relationer
   imageIds: string[]
   primaryImageId?: string | null
+  imageSource?: PlantImageSource
   logIds: string[]
   guideId?: string | null
 
@@ -343,13 +346,103 @@ export interface GuideQuickFacts {
   sowingDepthMm?: number
   frostSensitive?: boolean
   minimumTemperature?: string
+
+  // Sortsguide-felter (typisk udfyldt på variety, ikke species).
+  // Fri tekst i V1 — kan blive enum/struktureret når vi har set
+  // 5-10 rigtige sortsguider og kender variansen.
+  growthType?: string                // fx 'ranketomat', 'busktomat', 'klatretomat'
+  height?: string                    // fx '180-220 cm'
+  maturityDays?: string              // fx '80-85 dage' (fra udplantning)
+  primaryUse?: string                // fx 'Sauce og madlavning', 'Frisk spisning'
 }
 
-export interface GuideSection {
+/**
+ * Sektion på en guide — to varianter.
+ *
+ * **prose** (default): det editoriale læselag — overskrift + brødtekst.
+ *   Format som hidtil; `kind` kan udelades for bagudkompatibilitet med
+ *   eksisterende DB-rækker og demo-data.
+ *
+ * **fact**: et faktakort — illustration i en naturhåndbog. Renderes
+ *   som <GuideFactCard>. Indtil videre kun `comparison`-varianten
+ *   (to søjler side om side, fx "Ranketomat vs Busktomat").
+ *
+ * `body?` på fact-varianten findes kun for at admin-editoren (som
+ *   redigerer alle sektioner som prose) ikke smider TypeScript-fejl;
+ *   feltet ignoreres ved render.
+ */
+export interface GuideFactColumn {
+  heading: string
+  items: string[]
+}
+
+export interface GuideProseSection {
+  kind?: 'prose'
   key: string                        // fx 'intro', 'pre_cultivation'
   title: string
   body: string
 }
+
+export interface GuideFactSection {
+  kind: 'fact'
+  key: string
+  title: string
+  variant: 'comparison'
+  columns: GuideFactColumn[]
+  body?: string                      // editor-compat; ikke renderet
+}
+
+/**
+ * `:::guide` — inline teknik-/færdighedskort i brødteksten.
+ * Renderes som <GuideTechniqueCard>. Peger på en teknikguide via slug.
+ */
+export interface GuideTechniqueSection {
+  kind: 'guide'
+  key: string
+  title: string                      // fx 'Sådan opbinder du tomater'
+  slug: string                       // → target guide
+  description: string
+  body?: string                      // editor-compat
+}
+
+/**
+ * `:::related-guides` — container med flere beslægtede sorter/guides.
+ * Renderes som <GuideRelatedList>. Hvert item er en mini-kort-reference.
+ */
+export interface GuideRelatedItem {
+  slug: string
+  heading: string                    // #### Navn
+  description: string
+}
+
+export interface GuideRelatedSection {
+  kind: 'related'
+  key: string
+  title?: string                     // valgfri eyebrow ("Beslægtede sorter")
+  items: GuideRelatedItem[]
+  body?: string                      // editor-compat
+}
+
+/**
+ * `:::next-guide` — det redaktionelle "store næste skridt", typisk
+ * allersidst på siden. Højst én pr. guide.
+ */
+export interface GuideNextSection {
+  kind: 'next'
+  key: string
+  title: string                      // fx 'Vælg en sort'
+  description: string
+  slug: string                       // target guide
+  label: string                      // CTA-tekst, fx 'Tomat San Marzano'
+  body?: string                      // editor-compat
+}
+
+export type GuideSection =
+  | GuideProseSection
+  | GuideFactSection
+  | GuideTechniqueSection
+  | GuideRelatedSection
+  | GuideNextSection
 
 export interface GuideCalendarRule {
   taskType: TaskType
@@ -359,6 +452,32 @@ export interface GuideCalendarRule {
   relativeOffsetDays?: number
   condition?: string
   priority: TaskPriority
+}
+
+/**
+ * Botanisk kendetegn — én række data om planten på artsniveau.
+ *
+ * V4.3 (§18 i guides.md): artsguidens kerne er ikke fotos, men en
+ * strukturel beskrivelse af planten — livsform, højde, bladtype,
+ * vækstform, rodsystem, blomster, bestøvning, livscyklus, osv.
+ *
+ * Bevidst minimal shape: tre felter, ingen enum på label. Vi har
+ * ikke set 10 arts-eksempler endnu, og det er tidligt at låse et
+ * fast vokabularium. Når mønstret stabiliserer sig, kan label
+ * promoveres til en union.
+ *
+ * `icon` er en valgfri lucide-icon-navn (fx 'Sprout', 'Ruler',
+ * 'Flower2'). UI-laget bestemmer hvordan/om ikonet renderes —
+ * datalaget kender ikke ikoner.
+ *
+ * Renderes som inline data (ikon + label + værdi, 5-8 gange på
+ * række), ikke en separat designsystem-komponent. UI eksisterer
+ * endnu ikke (V4.3 lock).
+ */
+export interface BotaniskKendetegn {
+  icon?: string                      // lucide-icon-navn, valgfri
+  label: string                      // fx 'Livsform', 'Vækstform'
+  value: string                      // fx 'Etårig (i Danmark)'
 }
 
 export interface Guide {
@@ -380,6 +499,12 @@ export interface Guide {
   difficulty: Difficulty
   tags: string[]
   quickFacts: GuideQuickFacts
+  /**
+   * Botaniske kendetegn — artsguidens strukturelle data om planten.
+   * Typisk udfyldt på species-guider; sortsguider arver fra art.
+   * Ingen UI-render i V4.3; feltet er forberedt til V4.4-render.
+   */
+  botaniskeKendetegn?: BotaniskKendetegn[]
   sections: GuideSection[]
   calendarRules: GuideCalendarRule[]
 

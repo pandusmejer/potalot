@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useMemo, useTransition, useEffect } from 'react'
+import { useState, useMemo, useTransition, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CategoryTabs } from './category-tabs'
 import { InventoryCard } from './inventory-card'
+import { InventoryTab } from './inventory-tab'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -303,21 +304,146 @@ export function InventoryListView({ inventory, customSubcategories = [] }: Props
           }
         />
       ) : (
-        <div className="flex flex-col">
-          {filtered.map((item, i) => (
-            <div
-              key={item.id}
-              className="relative"
-              style={{ marginTop: i === 0 ? 0 : -16, zIndex: i + 1 }}
-            >
-              <InventoryCard
-                item={item}
-                selectMode={selectMode}
-                selected={selected.has(item.id)}
-                onToggleSelect={() => toggleSelected(item.id)}
-              />
-            </div>
-          ))}
+        <StackedIndexList
+          items={filtered}
+          selectMode={selectMode}
+          selectedSet={selected}
+          onToggleSelect={toggleSelected}
+        />
+      )}
+    </div>
+  )
+}
+
+/**
+ * "Stacked Index Card System" — frøbankens samling vises som
+ * stablede arkivkort i stedet for en lineær feed. Ét kort er aktivt
+ * (fuldt synligt); de øvrige er kollapsede så kun deres TOP-sektion
+ * peeker frem (~18-26% af kortets højde) — nok til at vise eyebrow,
+ * titel, sort og frø-tag, men ikke kortets fulde detalje.
+ *
+ * Reference-følelse:
+ *   • indekskort i en kartoteksboks
+ *   • vinyl-sleeves i en hylde
+ *   • herbarium-arkiv
+ *
+ * IKKE: social feed, lineær liste, dashboard-grid.
+ *
+ * Interaktion:
+ *   • Klik på et kollapset kort → det glider åbent og smelter
+ *     ind i fokus. Det forrige aktive kort lukker.
+ *   • Aktivt kort scrolles ind i view så det altid er synligt
+ *     efter en åbning.
+ *
+ * Visuel behandling:
+ *   • Aktivt kort: fuld saturation, ingen filter, fuld højde.
+ *   • Inaktivt kort: let dæmpet (saturate 0.82, contrast 0.92,
+ *     brightness 0.88) så det træder visuelt tilbage uden at
+ *     miste sin farveidentitet.
+ *   • Subtil "compression"-skygge over hver inaktiv kort-top
+ *     skaber en groove-følelse mellem kortene — som om de er
+ *     pressede sammen fysisk.
+ */
+function StackedIndexList({
+  items,
+  selectMode,
+  selectedSet,
+  onToggleSelect,
+}: {
+  items: InventoryItem[]
+  selectMode: boolean
+  selectedSet: Set<string>
+  onToggleSelect: (id: string) => void
+}) {
+  const [openIdx, setOpenIdx] = useState(0)
+  const cardRefs = useRef<Map<number, HTMLDivElement>>(new Map())
+
+  // Hvis vi filtrerer og listen ændres, sørg for at openIdx er
+  // gyldig (peg på et eksisterende element).
+  useEffect(() => {
+    if (openIdx >= items.length) setOpenIdx(0)
+  }, [items.length, openIdx])
+
+  // Når et kort bliver aktivt: scroll det ind i view så brugeren
+  // ikke skal scrolle manuelt for at se det fulde indhold.
+  const handleActivate = (idx: number) => {
+    setOpenIdx(idx)
+    // Vent på max-height-transition så scroll-positionen er korrekt
+    requestAnimationFrame(() => {
+      const el = cardRefs.current.get(idx)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    })
+  }
+
+  const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
+
+  // Split: aktivt kort står frit ovenfor; resten af mapperne sidder
+  // i en warm-beige "archive frame" container — 1:1 efter spec.
+  const activeItem = items[openIdx]
+  const collapsedItems = items
+    .map((item, i) => ({ item, i }))
+    .filter(({ i }) => i !== openIdx)
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {/* Aktivt fuldt frøkort — låst design, sidder frit over arkivet. */}
+      {activeItem && (
+        <div
+          ref={(el) => {
+            if (el) cardRefs.current.set(openIdx, el)
+            else cardRefs.current.delete(openIdx)
+          }}
+        >
+          <InventoryCard
+            item={activeItem}
+            selectMode={selectMode}
+            selected={selectedSet.has(activeItem.id)}
+            onToggleSelect={() => onToggleSelect(activeItem.id)}
+          />
+        </div>
+      )}
+
+      {/* Archive frame — warm beige container med kollapsede mapper.
+          Spec: 40 px radius, 24 px sideinset, 28 px top/bund-inset,
+          14 px gap mellem mapper. */}
+      {collapsedItems.length > 0 && (
+        <div
+          style={{
+            background: '#FFFEF7',
+            borderRadius: 40,
+            paddingInline: 18,
+            paddingTop: 28,
+            paddingBottom: 28,
+            boxShadow: 'inset 0 1px 0 rgba(0,0,0,0.04)',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {collapsedItems.map(({ item, i }) => (
+              <div
+                key={item.id}
+                ref={(el) => {
+                  if (el) cardRefs.current.set(i, el)
+                  else cardRefs.current.delete(i)
+                }}
+                onClick={() => {
+                  if (selectMode) {
+                    onToggleSelect(item.id)
+                    return
+                  }
+                  handleActivate(i)
+                }}
+                style={{
+                  position: 'relative',
+                  cursor: selectMode ? 'default' : 'pointer',
+                  transition: `transform 280ms ${EASING}`,
+                }}
+              >
+                <InventoryTab item={item} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

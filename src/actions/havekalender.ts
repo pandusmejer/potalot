@@ -144,11 +144,15 @@ export interface CreateTaskInput {
   linkedGuideId?: string
   isRecurring?: boolean
   recurrenceRule?: string
+  /** Default 'open'. Brug 'completed' når task'en er "allerede gjort"
+   *  (fx fra månedens gøremål → "Gjort"-knap). */
+  status?: TaskStatus
 }
 
 export async function createTask(input: CreateTaskInput): Promise<{ id: string } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
+  const status = input.status ?? 'open'
   const { data, error } = await supabase
     .from('calendar_tasks')
     .insert({
@@ -159,7 +163,8 @@ export async function createTask(input: CreateTaskInput): Promise<{ id: string }
       due_date: input.dueDate || null,
       task_type: input.taskType ?? 'custom',
       priority: input.priority ?? 'medium',
-      status: 'open',
+      status,
+      completed_at: status === 'completed' ? new Date().toISOString() : null,
       source: input.source ?? 'manual',
       source_id: input.sourceId || null,
       linked_plant_id: input.linkedPlantId || null,

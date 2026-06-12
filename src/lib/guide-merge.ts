@@ -55,11 +55,16 @@ export function mergeGuide(guide: Guide, allGuides: Guide[]): MergedGuide {
   })
   merged.quickFacts = mergedQF
 
-  // Sections: hvis sortsguide har sektion med samme key → override; ellers brug parent
-  const sectionMap = new Map<string, GuideSection>()
-  parent.sections.forEach(s => sectionMap.set(s.key, s))
-  guide.sections.forEach(s => sectionMap.set(s.key, s))
-  merged.sections = Array.from(sectionMap.values())
+  // Sections: sortsguider STÅR PÅ EGNE BEN. Vi inheriter IKKE parent-
+  // sektioner — sortsguiden er sin egen narrative og må ikke fyldes
+  // med tekst om hele arten. Det matcher den redaktionelle regel
+  // "Beskriv planten ud fra dens egne behov, ikke i forhold til en
+  // anden plante". Artsguiden tilgås via parent-link-banneret øverst.
+  merged.sections = guide.sections
+
+  // primaryImageId: sortsguider skal have eget plantekort (eller intet).
+  // Vi inheriter IKKE artsguide-billedet — det ville bryde sortsidentitet.
+  merged.primaryImageId = guide.primaryImageId ?? null
 
   // Calendar rules: union
   const seen = new Set<string>()

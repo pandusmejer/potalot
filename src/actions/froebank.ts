@@ -126,6 +126,14 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
 }
 
 export async function getInventoryItem(id: string): Promise<InventoryItem | null> {
+  // Demo-fallback: hvis id'et starter med "demo-inv-", findes det
+  // ikke i databasen — så slå op i DEMO_INVENTORY i stedet. Bruges
+  // når Frøbank-arkivet viser demo-frø til en ikke-logget bruger.
+  if (id.startsWith('demo-inv-')) {
+    const { DEMO_INVENTORY } = await import('@/lib/demo-inventory')
+    return DEMO_INVENTORY.find(item => item.id === id) ?? null
+  }
+
   const user = await getCurrentUser()
   if (!user) return null
   const userId = user.id

@@ -51,15 +51,9 @@ export function PlantList({ plants, tasks }: Props) {
       )
     }
     return (
-      <div className="flex flex-col">
-        {filtered.map((p, i) => (
-          <div
-            key={p.id}
-            className="relative"
-            style={{ marginTop: i === 0 ? 0 : -16, zIndex: i + 1 }}
-          >
-            <PlantCard plant={p} nextTask={nextTaskFor(p.id)} />
-          </div>
+      <div className="flex flex-col gap-4">
+        {filtered.map(p => (
+          <PlantCard key={p.id} plant={p} nextTask={nextTaskFor(p.id)} />
         ))}
       </div>
     )

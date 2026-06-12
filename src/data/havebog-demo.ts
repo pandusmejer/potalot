@@ -1,0 +1,527 @@
+/**
+ * Lokal demo-data til Havebog.
+ *
+ * KUN brugt af Havebog-flowet (src/app/(app)/page.tsx + komponenter
+ * under src/components/havebog/). Ikke en global app-demo-mekanisme.
+ *
+ * Følger samme mønster som:
+ *   - DEMO_PLANTS i din-dyrkning.tsx (Kalender)
+ *   - DEMO_INVENTORY i lib/demo-inventory.ts (Frøbank)
+ *   - mock-plants.ts i data/ (Planter)
+ *
+ * Bruges når der ikke er nogen logget-ind bruger (demo-mode).
+ * Logget-ind brugere ser deres egen historie via actions/havebog.ts.
+ */
+
+export interface HeroStats {
+  notes: number
+  varieties: number
+  harvests: number
+}
+
+export type LogType = 'note' | 'observation' | 'reminder' | 'harvest'
+
+export interface OnThisDayEntry {
+  yearsAgo: number
+  plantName: string
+  variety?: string
+  text: string
+  imageUrl?: string | null
+}
+
+export interface RecentNote {
+  type: LogType
+  plantName: string
+  variety?: string
+  text: string
+  date: string
+}
+
+export interface HistoryMonth {
+  monthIdx: number
+  monthName: string
+  noteCount: number
+  imageCount: number
+  varietyCount: number
+  imageUrls: string[]
+}
+
+export interface HistoryYear {
+  year: number
+  months: HistoryMonth[]
+}
+
+export interface SaesonFactHoest {
+  plantName: string
+  variety?: string
+  date: string
+  text?: string
+}
+
+export interface SaesonFactNote {
+  plantName: string
+  variety?: string
+  date: string
+  text: string
+  type: LogType
+}
+
+export interface SaesonFactBillede {
+  plantName: string
+  variety?: string
+  date: string
+  imageUrl: string
+}
+
+export interface DenneSaesonFacts {
+  senesteHoest: SaesonFactHoest | null
+  senesteNote: SaesonFactNote | null
+  senesteBillede: SaesonFactBillede | null
+}
+
+export interface ArchivedPlant {
+  id: string
+  name: string
+  variety: string | null
+  primaryImageId: string | null
+  archivedYear: number
+  summary?: string
+}
+
+/**
+ * Editorial tidslinje under hero — én rolig "du er her"-sætning.
+ *
+ * Renderes som: "Søndag d. 7. juni · 12 dage siden du satte agurkerne ud · 3 noter fra denne uge"
+ *
+ * BEVIDST IKKE et dashboard. Ingen CTA, ingen actions, ingen
+ * "gør nu". Bare tidsorientering: hvor er jeg i året, hvad gjorde
+ * jeg sidst der havde substans, og hvor aktiv har min uge været.
+ *
+ * Rolle-grænse: Havebog viser hvad der sker i brugerens have over
+ * tid. Kalender svarer på hvad brugeren skal gøre i haven lige nu.
+ * Tidslinjen orienterer — den dirigerer ikke.
+ *
+ * Hver del kan være null og bliver bare ladt ud; sætningen graceful-
+ * downgrader fra fuld erfaren bruger til helt ny bruger (kun dato).
+ */
+export interface Tidslinje {
+  /** Lokaliseret dato, beregnet server-side — fx "Søndag d. 7. juni" */
+  dateText: string
+  /** "12 dage siden du satte agurkerne ud" — null hvis ingen milestone fundet */
+  milestoneText: string | null
+  /** Antal noter logget de seneste 7 dage — 0 hvis ingen */
+  weekNoteCount: number
+}
+
+/**
+ * Hero-fortællingen — heroen som FORTÆLLER, ikke overskrift.
+ *
+ * V2 (juni 2026): Anna's diagnose efter screenshots. Den tidligere
+ * tagline + stats-linje var administrativ, ikke fortællende. Heroens
+ * rolle er at give brugeren et svar på "hvor er jeg i sæsonen og
+ * hvad sker der lige nu", FØR de møder noter, minder og historik.
+ *
+ * Tre lag, alle valgfri (kun titel er garanteret):
+ *
+ *   Lag 1 (h1):      "Din Havebog"                — uændret
+ *   Lag 2 (eyebrow): "Din første sæson"            — sæsonlinje, Cormorant italic
+ *   Lag 3 (narrative): ["Du dyrker 8 sorter i år.",
+ *                       "Om lidt begynder de første minder at samle sig her."]
+ *                                                  — 1-3 personlige linjer
+ *
+ * Genereres server-side ud fra bruger-state:
+ *   - Ny bruger (notes=0):    "Din første sæson" + invitation
+ *   - Lidt data (notes>0):    "Juni i haven" + milestones fra denne uge
+ *   - År 1+ (har historik):   "Velkommen tilbage til juni" + På-denne-tid-sidste-år
+ *
+ * Heroen kan derved bære den tomhed brugeren ellers ville møde
+ * gentaget på 5 sektioner længere nede. Hvis heroen siger "Din
+ * første sæson er begyndt", giver det mening at Historik er tom.
+ *
+ * Stats-linjen er nu skjult som default — den var "0 noter · 8
+ * sorter · 0 høster" i Anna's case, hvilket er præcis det
+ * administrative sprog der ikke hører hjemme på første viewport.
+ * Den vises stadig hvis erfaren bruger har meningsfulde tal
+ * (notes > 0 OG harvests > 0).
+ */
+export interface HeroNarrative {
+  /** Sæsonlinje — fx "Din første sæson", "Juni i haven", "Velkommen tilbage til juni" */
+  seasonLine: string
+  /** 1-3 personlige narrativlinjer der placerer brugeren i sin egen sæson */
+  personalText: string[]
+  /** Skal stats-linjen vises? Default false for ny bruger — den er kun støj uden data */
+  showStats: boolean
+  /**
+   * Brugerens "modenhed" i Havebogen — bruges af hero-foto-resolveren
+   * til at vælge passende foto-stemning (V3.2, juni 2026).
+   */
+  userState: 'new' | 'active' | 'year2plus'
+  /**
+   * V9 (dagtælleren): sæsondagen som tal + etiket, struktureret så
+   * heroen kan rendre den taktile flip-tæller. Null når intet er
+   * sået endnu — ærlighed over poesi: ingen såning, ingen sæsondag.
+   */
+  saesonDag: number | null
+  /** "af din første sæson" / "af din tredje sæson" */
+  saesonEtiket: string | null
+}
+
+// ════════════════════════════════════════════════════════════════
+// DEMO-INDHOLD — fabrikerede data der viser Havebogens designvision
+// for nye brugere uden egen historie
+// ════════════════════════════════════════════════════════════════
+
+export const DEMO_HERO_STATS: HeroStats = {
+  notes: 24,
+  varieties: 8,
+  harvests: 3,
+}
+
+/**
+ * Demo-tidslinje. Datoen beregnes ikke server-side i demo-flowet —
+ * den hardcodes så snapshot'et er stabilt på tværs af visningstidspunkt.
+ * Real-data-flowet beregner alle tre felter fra plant_logs.
+ *
+ * Bevidst valg: weekNoteCount=3 selv om de hardcodede DEMO_RECENT_NOTES
+ * ikke falder inden for "denne uge" (de er fra 16.-26. maj, demo-dato
+ * 7. juni). Tidslinjens 3 repræsenterer en plausibel hverdag for en
+ * bruger der bruger appen — ikke det demoarrayet ved et tilfælde
+ * indeholder.
+ */
+export const DEMO_TIDSLINJE: Tidslinje = {
+  dateText: 'Søndag d. 7. juni',
+  milestoneText: '12 dage siden du satte agurkerne ud',
+  weekNoteCount: 3,
+}
+
+/**
+ * Demo-fortællingen viser "lidt data"-tilstanden — den mest
+ * fortællende af de tre states. Den hardcodes så snapshot'et er
+ * stabilt; real-data-flowet genererer den fra heroStats + tidslinje
+ * + history i actions/havebog.ts.
+ */
+export const DEMO_HERO_NARRATIVE: HeroNarrative = {
+  // Dagbogs-stemmen (V3.10): "Dag 98" = første såning 2. marts →
+  // demo-datoen 7. juni, inklusiv. Den ene sætning der gør
+  // Havebogen til en kaptajns logbog frem for et banner.
+  seasonLine: 'Dag 98 af din første sæson',
+  personalText: [
+    'Agurkerne har stået ude i 12 dage.',
+    'Tomaterne begynder at tage fart.',
+    'Du har skrevet 3 noter denne uge.',
+  ],
+  showStats: true,
+  userState: 'active',
+  saesonDag: 98,
+  saesonEtiket: 'af din første sæson',
+}
+
+/**
+ * "I haven lige nu" — ÉT stort tal + ÉN editorial sætning per måned.
+ *
+ * V3.5 (Anna's reference-opslag-feedback): hierarki skabes med
+ * størrelse, ikke med farve eller bokse. Et tal læses på under et
+ * sekund. Sammenlign:
+ *
+ *   Før V3.5:                        V3.5:
+ *   • Jordtemperatur over 14°        14°
+ *   • Tid til udplantning            Jordtemperaturen er nu høj nok
+ *   • Bierne er aktive               til tomater og chili.
+ *
+ * Samme information. 10 gange stærkere. Det er "magasiner vælger
+ * én ting og hvisker resten"-princippet i praksis.
+ *
+ * value-feltet er en kort string (kan være "14°", "+90 min", "3",
+ * "127" — alt der kan rendres som Cormorant 72px). statement er
+ * den editoriale forklaring i 1-2 sætninger.
+ *
+ * Roterer pr. måned i real-data-flowet (actions/havebog.ts).
+ */
+export interface NaturFakta {
+  /** Den store typografiske skuespiller — fx "14°", "+90 min", "3" */
+  value: string
+  /** Editorial statement under tallet, 1-2 korte sætninger */
+  statement: string
+}
+
+export const DEMO_NATUREN_LIGE_NU: NaturFakta = {
+  value: '14°',
+  statement: 'Jordtemperaturen er nu høj nok til tomater og chili.',
+}
+
+/**
+ * "I DIN HAVE"-tal — bruges som DATAGRUNDLAG for Kapitel 1's
+ * fortællende sætninger (V5-bogen). Tallene selv vises IKKE på
+ * Havebogen (lobby-reglen: tal-form hører til Planter/Kalender) —
+ * de oversættes til prosa i kapitel-laget.
+ */
+export interface IDinHaveTal {
+  aktiveSorter: number
+  klarTilUdplantning: number | null
+  arterRigere: number | null
+}
+
+export const DEMO_I_DIN_HAVE: IDinHaveTal = {
+  aktiveSorter: 8,
+  klarTilUdplantning: 3,
+  arterRigere: 11,
+}
+
+/**
+ * Kapitel 1: "Lige nu" — ÉN indsigt (V7), og helst en OPDAGELSE (V8).
+ *
+ * V8 (forfatter, ikke sekretær): den stærkeste linje er noget
+ * systemet har OPDAGET, ikke noget brugeren selv har gjort.
+ * "Du såede tomater" er en kvittering; "spirede på 9 dage —
+ * guiden regner med 10-21" er en forfatter-sætning. Kun den
+ * første linje vises; resten er fallback.
+ */
+export const DEMO_KAPITEL_LIGE_NU: string[] = [
+  'Chilierne spirede på 9 dage — guiden regner med 10-21.',
+  'Jorden er nu varm nok til tomater og chili.',
+]
+
+/**
+ * Kapitel 3: "Sæsonens vendepunkter" (V8 — afløser måneds-krøniken).
+ *
+ * Mennesker husker ikke deres have som marts/april/maj — de husker
+ * begivenheder: første høst, første blomst, ugen det regnede.
+ * Historien organiseres derfor omkring VENDEPUNKTER, kronologisk.
+ * Samme data som før, helt anden fortælling.
+ */
+export interface Vendepunkt {
+  titel: string          // "Sæsonen begyndte", "Første høst"
+  detalje: string        // "Tomaterne blev sået 18. marts."
+}
+
+export const DEMO_VENDEPUNKTER: Vendepunkt[] = [
+  { titel: 'Sæsonen begyndte', detalje: 'Tomaterne blev sået 18. marts.' },
+  { titel: 'Væksten tog fart', detalje: 'Chilierne fik deres første rigtige blade.' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint blev høstet 18. maj.' },
+  { titel: 'Ud i drivhuset', detalje: 'Peberfrugterne flyttede ud 4. juni.' },
+]
+
+/**
+ * Kapitel 4: "Minder" — kuraterede højdepunkter (V7).
+ * Ikke alle billeder, ikke alle logs — kun sæsonens førster og
+ * største øjeblikke. Emotionelt indhold, Potalot vælger.
+ */
+export interface Minde {
+  titel: string          // "Første knop", "Første høst"
+  detalje: string        // "Dahlia Café au Lait"
+  dato: string           // "4. juni"
+}
+
+export const DEMO_MINDER: Minde[] = [
+  // Nyeste først — samme rækkefølge som byggMinder i actions/havebog.ts.
+  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint — knapt 90 gram, perfekt sprød', dato: '18. maj' },
+  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano — seks frø i bakke med varme under', dato: '18. marts' },
+]
+
+export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
+  {
+    yearsAgo: 1,
+    plantName: 'Dahlia',
+    variety: 'Café au Lait',
+    text: 'Du plantede dine første dahliaer i havens sydbed. De voksede sig store og bar over 30 blomster den sommer.',
+    imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+  },
+  {
+    yearsAgo: 2,
+    plantName: 'Tomat',
+    variety: 'San Marzano',
+    text: 'Du noterede: "Spirerne er stærkere end sidste år — solen flytter sig pænt over jorden."',
+  },
+]
+
+export const DEMO_RECENT_NOTES: RecentNote[] = [
+  {
+    type: 'observation',
+    plantName: 'Chili',
+    variety: 'Habanero Orange',
+    text: 'Bladene ser lidt lyse ud — mangler nok kvælstof.',
+    date: '2026-05-26',
+  },
+  {
+    type: 'reminder',
+    plantName: 'Agurk',
+    variety: 'Marketmore',
+    text: 'Husk at afhærde inden udplantning næste weekend.',
+    date: '2026-05-24',
+  },
+  {
+    type: 'note',
+    plantName: 'Tomat',
+    variety: 'San Marzano',
+    text: 'San Marzano klarede sig bedst i drivhusets sydside. Plant samme sted næste år.',
+    date: '2026-05-20',
+  },
+  {
+    type: 'harvest',
+    plantName: 'Salat',
+    variety: 'Crispy Mint',
+    text: 'Første portion plukket — knapt 90 g, perfekt sprød.',
+    date: '2026-05-18',
+  },
+  {
+    type: 'observation',
+    plantName: 'Dild',
+    variety: 'Bouquet',
+    text: 'Står tæt og frodig efter regn-ugen.',
+    date: '2026-05-16',
+  },
+]
+
+export const DEMO_HISTORY: HistoryYear[] = [
+  {
+    year: 2026,
+    months: [
+      {
+        monthIdx: 5,
+        monthName: 'Maj',
+        noteCount: 12,
+        imageCount: 8,
+        varietyCount: 6,
+        imageUrls: [
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/agurk-marketmore.png',
+          '/images/plantekort/dahlia-cafe-au-lait.jpg',
+          '/images/plantekort/dild-bouquet.jpg',
+          '/images/plantekort/stangboenne-cobra.jpg',
+          '/images/plantekort/tomat-san-marzano.jpg',
+        ],
+      },
+      {
+        monthIdx: 4,
+        monthName: 'April',
+        noteCount: 8,
+        imageCount: 5,
+        varietyCount: 5,
+        imageUrls: [
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/agurk-marketmore.png',
+          '/images/plantekort/dild-bouquet.jpg',
+        ],
+      },
+      {
+        monthIdx: 3,
+        monthName: 'Marts',
+        noteCount: 4,
+        imageCount: 3,
+        varietyCount: 3,
+        imageUrls: [
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/dahlia-cafe-au-lait.jpg',
+        ],
+      },
+    ],
+  },
+  {
+    year: 2025,
+    months: [
+      {
+        monthIdx: 10,
+        monthName: 'Oktober',
+        noteCount: 6,
+        imageCount: 4,
+        varietyCount: 4,
+        imageUrls: [
+          '/images/plantekort/stangboenne-cobra.jpg',
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/dahlia-cafe-au-lait.jpg',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+        ],
+      },
+      {
+        monthIdx: 8,
+        monthName: 'August',
+        noteCount: 14,
+        imageCount: 11,
+        varietyCount: 7,
+        imageUrls: [
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/agurk-marketmore.png',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/dild-bouquet.jpg',
+          '/images/plantekort/dahlia-cafe-au-lait.jpg',
+          '/images/plantekort/stangboenne-cobra.jpg',
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/agurk-marketmore.png',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+        ],
+      },
+      {
+        monthIdx: 5,
+        monthName: 'Maj',
+        noteCount: 9,
+        imageCount: 6,
+        varietyCount: 5,
+        imageUrls: [
+          '/images/plantekort/tomat-san-marzano.jpg',
+          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/dahlia-cafe-au-lait.jpg',
+          '/images/plantekort/chili-habanero-orange.jpg',
+          '/images/plantekort/agurk-marketmore.png',
+          '/images/plantekort/dild-bouquet.jpg',
+        ],
+      },
+    ],
+  },
+]
+
+export const DEMO_DENNE_SAESON: DenneSaesonFacts = {
+  senesteHoest: {
+    plantName: 'Salat',
+    variety: 'Crispy Mint',
+    date: '2026-05-18',
+    text: 'Første portion plukket — knapt 90 g.',
+  },
+  senesteNote: {
+    plantName: 'Chili',
+    variety: 'Habanero Orange',
+    date: '2026-05-26',
+    text: 'Bladene ser lidt lyse ud — mangler nok kvælstof.',
+    type: 'observation',
+  },
+  senesteBillede: {
+    plantName: 'Tomat',
+    variety: 'San Marzano',
+    date: '2026-05-22',
+    imageUrl: '/images/plantekort/tomat-san-marzano.jpg',
+  },
+}
+
+export const DEMO_ARCHIVED_PLANTS: ArchivedPlant[] = [
+  {
+    id: 'demo-arch-tomat-2025',
+    name: 'Tomat',
+    variety: 'San Marzano',
+    primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
+    archivedYear: 2025,
+    summary: '4,2 kg høstet · sluttede oktober',
+  },
+  {
+    id: 'demo-arch-agurk-2025',
+    name: 'Agurk',
+    variety: 'Marketmore',
+    primaryImageId: '/images/plantekort/agurk-marketmore.png',
+    archivedYear: 2025,
+    summary: '11 frugter · sluttede september',
+  },
+  {
+    id: 'demo-arch-dahlia-2025',
+    name: 'Dahlia',
+    variety: 'Café au Lait',
+    primaryImageId: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+    archivedYear: 2025,
+    summary: '30+ blomster · sluttede november',
+  },
+]

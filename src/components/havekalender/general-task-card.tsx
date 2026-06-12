@@ -20,6 +20,9 @@ interface Props {
   alreadyAdded: boolean
   /** Indeværende år til 'tilføj'-action */
   year: number
+  /** Blødere look: skjul kategori/prioritet-badges (timing
+   *  vises i stedet via sektions-headeren) — mindre admin-agtigt */
+  soft?: boolean
 }
 
 /**
@@ -29,7 +32,7 @@ interface Props {
  * Knapper: 'Tilføj til Mine opgaver' (eller status hvis allerede tilføjet)
  * + 'Ikke relevant for min have' (skjul-funktion).
  */
-export function GeneralTaskCard({ task, alreadyAdded, year }: Props) {
+export function GeneralTaskCard({ task, alreadyAdded, year, soft = false }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -96,8 +99,8 @@ export function GeneralTaskCard({ task, alreadyAdded, year }: Props) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-medium text-foreground">{task.title}</p>
-            {isHigh && <Badge variant="warning" className="text-[10px]">{pri.label}</Badge>}
-            {task.category && (
+            {!soft && isHigh && <Badge variant="warning" className="text-[10px]">{pri.label}</Badge>}
+            {!soft && task.category && (
               <Badge variant="outline" className="text-[10px]">{task.category}</Badge>
             )}
             {alreadyAdded && (

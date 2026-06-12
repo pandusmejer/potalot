@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display } from 'next/font/google'
+import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -12,6 +12,24 @@ const dmSerif = DM_Serif_Display({
   variable: '--font-dm-serif',
   subsets: ['latin'],
   weight: '400',
+})
+
+// Cormorant Garamond — hero-månedsnavn (normal 600), kursiv 600 til
+// det organiske inventar-skilt på frøkort, og weight 400/500 til
+// editoriale headlines som "Juni nærmer sig"-card'et (anticipations-
+// lag) hvor en mere delikat serif giver magasin-følelse.
+const cormorant = Cormorant_Garamond({
+  variable: '--font-cormorant',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+})
+
+// Manrope — hero-sans (kicker, undertitel, brødtekst, tags).
+const manrope = Manrope({
+  variable: '--font-manrope',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -46,7 +64,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} antialiased`}>
         {children}
       </body>
     </html>

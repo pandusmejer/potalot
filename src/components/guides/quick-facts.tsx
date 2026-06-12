@@ -37,6 +37,9 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
         <p className="text-sm text-foreground mb-4 leading-relaxed">{guide.summary}</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {qf.growthType && (
+            <Fact label="Vækstform" value={qf.growthType} />
+          )}
           {qf.preCultivation !== undefined && (
             <Fact
               label="Forspiring"
@@ -79,6 +82,13 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
               icon={<Wheat className="h-3.5 w-3.5" />}
             />
           )}
+          {qf.maturityDays && (
+            <Fact
+              label="Modning"
+              value={qf.maturityDays}
+              icon={<Calendar className="h-3.5 w-3.5" />}
+            />
+          )}
           {qf.light && (
             <Fact
               label="Lys"
@@ -108,6 +118,9 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
             <Fact label="Afstand" value={qf.plantSpacing} icon={<Ruler className="h-3.5 w-3.5" />} />
           )}
           {qf.rowSpacing && <Fact label="Rækkeafstand" value={qf.rowSpacing} />}
+          {qf.height && (
+            <Fact label="Højde" value={qf.height} icon={<Ruler className="h-3.5 w-3.5" />} />
+          )}
           {qf.frostSensitive && (
             <Fact
               label="Frost"
@@ -117,6 +130,9 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
           )}
           {qf.minimumTemperature && (
             <Fact label="Min. temp" value={qf.minimumTemperature} />
+          )}
+          {qf.primaryUse && (
+            <Fact label="Anvendelse" value={qf.primaryUse} />
           )}
         </div>
 

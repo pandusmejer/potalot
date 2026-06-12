@@ -22,7 +22,12 @@ const slugify = (s: string): string =>
  */
 export function SectionsEditor({ value, onChange }: Props) {
   function update(idx: number, patch: Partial<GuideSection>) {
-    const next = value.map((s, i) => (i === idx ? { ...s, ...patch } : s))
+    // TS narrower kan ikke afgøre at spread bevarer discriminator-fieldet
+    // 'kind'; cast tilbage til GuideSection[]. Sektion-editoren rør kun
+    // ved title/body (prose-felter), så den semantiske kontrakt holder.
+    const next = value.map((s, i) =>
+      i === idx ? ({ ...s, ...patch } as GuideSection) : s,
+    )
     onChange(next)
   }
   function remove(idx: number) {

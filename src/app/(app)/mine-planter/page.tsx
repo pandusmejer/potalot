@@ -1,30 +1,23 @@
-import { PlantList } from '@/components/mine-planter/plant-list'
-import { PageHero } from '@/components/ui/page-hero'
-import { NewPlantDialog } from '@/components/mine-planter/new-plant-dialog'
+import { MinePlanterClient } from '@/components/mine-planter/mine-planter-client'
 import { getAllPlants } from '@/actions/mine-planter'
-import { getAllTasks } from '@/actions/havekalender'
-import { getAllInventoryItems } from '@/actions/froebank'
 
 export const dynamic = 'force-dynamic'
 
+/**
+ * 🌱 PLANTER — aktiv dyrkning, handling.
+ *
+ * Henter brugerens ægte planter server-side og sender dem til
+ * MinePlanterClient. Tomt array → demo-mode (mock-plants overtager
+ * UI'et), så designvisionen er synlig for anonyme/nye brugere.
+ *
+ * Rolle-fordeling:
+ *   Frøbank  = ejerskab
+ *   Planter  = handling             ← her
+ *   Kalender = timing
+ *   Havebog  = hukommelse
+ *   Guides   = viden
+ */
 export default async function MinePlanterPage() {
-  const [plants, tasks, inventory] = await Promise.all([
-    getAllPlants(),
-    getAllTasks(),
-    getAllInventoryItems(),
-  ])
-
-  return (
-    <div className="space-y-6">
-      <PageHero
-        tone="coral"
-        kicker="I jorden nu"
-        title="Planter"
-        subtitle="Aktive dyrkninger — det du har gang i lige nu."
-        actions={<NewPlantDialog inventory={inventory} />}
-      />
-
-      <PlantList plants={plants} tasks={tasks} />
-    </div>
-  )
+  const plants = await getAllPlants()
+  return <MinePlanterClient plants={plants} />
 }
