@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 142
+ * Fil-tæller: 154
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -20,21 +20,33 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/tomat.jpg",
   "/images/frokort/agurk-marketmore.png",
   "/images/frokort/agurk-telegraph.png",
+  "/images/frokort/basilikum-genovese.png",
   "/images/frokort/chili-habanero-orange.png",
   "/images/frokort/chili-jalapeno-groen.png",
   "/images/frokort/chili-lemon-drop.png",
+  "/images/frokort/cosmos-apricotta.png",
+  "/images/frokort/dahlia-arabian-night.png",
   "/images/frokort/dahlia-cafe-au-lait.png",
+  "/images/frokort/dahlia-thomas-edison.png",
   "/images/frokort/dild-bouquet.png",
   "/images/frokort/hvidloeg.png",
+  "/images/frokort/majs-golden-bantam.png",
+  "/images/frokort/majs-incredible-f1.png",
+  "/images/frokort/majs-sweet-nugget.png",
   "/images/frokort/peberfrugt-california-wonder.png",
   "/images/frokort/peberfrugt-corno-di-toro-rosso.png",
   "/images/frokort/salat-crispy-mint.png",
+  "/images/frokort/salat-little-gem.png",
+  "/images/frokort/solsikke-russian-giant.png",
   "/images/frokort/squash-eight-ball.png",
   "/images/frokort/stangboenne-cobra.png",
+  "/images/frokort/sukkeraert-sugar-snap.png",
+  "/images/frokort/tomat-black-cherry.png",
   "/images/frokort/tomat-cherrytomat.png",
   "/images/frokort/tomat-green-tiger.png",
   "/images/frokort/tomat-san-marzano.png",
   "/images/frokort/tomat-sungold.png",
+  "/images/frokort/zinnia-queen-lime.png",
   "/images/heroes-havebog/juni/havebog-hero-juni-aar2.jpg",
   "/images/heroes-havebog/juni/havebog-hero-juni-bruger2.jpg",
   "/images/heroes-havebog/juni/havebog-hero-juni-ny.jpg",

@@ -283,6 +283,76 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
+  // ── FRØKORT-ONLY ENTRIES (12. juni 2026) ────────────────────
+  //
+  // Anden leverance. Indholdsverificeret mod sortsnavnene én for én.
+  // OBS: leveret som "agurk-sugar-snap.png", men fotoet viser
+  // sukkerærter — omdøbt til sukkeraert-sugar-snap.png (ærligheds-
+  // reglen: forkert billede er værre end intet billede). Matcher
+  // sorten Sukkerært Sugar Snap som allerede findes i plantekort/.
+
+  'sukkeraert-sugar-snap': {
+    seedCard: { src: '/images/frokort/sukkeraert-sugar-snap.png', alt: 'Sugar Snap sukkerært — frøkort' },
+    macro: [],
+  },
+
+  'basilikum-genovese': {
+    seedCard: { src: '/images/frokort/basilikum-genovese.png', alt: 'Genovese basilikum — frøkort' },
+    macro: [],
+  },
+
+  'cosmos-apricotta': {
+    seedCard: { src: '/images/frokort/cosmos-apricotta.png', alt: 'Apricotta cosmos — frøkort' },
+    macro: [],
+  },
+
+  'dahlia-arabian-night': {
+    seedCard: { src: '/images/frokort/dahlia-arabian-night.png', alt: 'Arabian Night dahlia — frøkort' },
+    macro: [],
+  },
+
+  'dahlia-thomas-edison': {
+    seedCard: { src: '/images/frokort/dahlia-thomas-edison.png', alt: 'Thomas Edison dahlia — frøkort' },
+    macro: [],
+  },
+
+  'majs-golden-bantam': {
+    seedCard: { src: '/images/frokort/majs-golden-bantam.png', alt: 'Golden Bantam majs — frøkort' },
+    macro: [],
+  },
+
+  // Leveret som majs-incredible-F1.png — omdøbt til lowercase efter
+  // asset-konventionen; slugify("Incredible F1") giver 'incredible-f1'.
+  'majs-incredible-f1': {
+    seedCard: { src: '/images/frokort/majs-incredible-f1.png', alt: 'Incredible F1 majs — frøkort' },
+    macro: [],
+  },
+
+  'majs-sweet-nugget': {
+    seedCard: { src: '/images/frokort/majs-sweet-nugget.png', alt: 'Sweet Nugget majs — frøkort' },
+    macro: [],
+  },
+
+  'salat-little-gem': {
+    seedCard: { src: '/images/frokort/salat-little-gem.png', alt: 'Little Gem salat — frøkort' },
+    macro: [],
+  },
+
+  'solsikke-russian-giant': {
+    seedCard: { src: '/images/frokort/solsikke-russian-giant.png', alt: 'Russian Giant solsikke — frøkort' },
+    macro: [],
+  },
+
+  'tomat-black-cherry': {
+    seedCard: { src: '/images/frokort/tomat-black-cherry.png', alt: 'Black Cherry tomat — frøkort' },
+    macro: [],
+  },
+
+  'zinnia-queen-lime': {
+    seedCard: { src: '/images/frokort/zinnia-queen-lime.png', alt: 'Queen Lime zinnia — frøkort' },
+    macro: [],
+  },
+
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
   'demo-guide-tomat-sm': {
