@@ -27,6 +27,7 @@ import type {
   NaturFakta,
   IDinHaveTal,
   SaesonMaaned,
+  Minde,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
@@ -38,6 +39,8 @@ export interface HavebogData {
   kapitelLigeNu: string[]
   /** Kapitel 3: måneds-krøniken */
   saesonensHistorie: SaesonMaaned[]
+  /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
+  minder: Minde[]
   naturenLigeNu: NaturFakta
   onThisDay: OnThisDayEntry[]
   recentNotes: RecentNote[]
@@ -199,6 +202,52 @@ function daysBetween(from: Date, to: Date): number {
 
 function hasYearOnePlus(history: HistoryYear[], currentYear: number): boolean {
   return history.some(h => h.year < currentYear)
+}
+
+/**
+ * Kapitel 4-byggeren: kuraterede minder — årets FØRSTE af hver
+ * milepæls-type. Potalot vælger; brugeren skal ikke kuratere selv.
+ * Max 4, sorteret med det nyeste øverst (det friskeste minde først).
+ */
+function byggMinder(
+  logs: PlantLogRow[],
+  plantById: Map<string, PlantRow>,
+  currentYear: number,
+): Minde[] {
+  const MILEPAELE: Array<{ type: string; titel: string }> = [
+    { type: 'harvest', titel: 'Første høst' },
+    { type: 'germination', titel: 'Første spire' },
+    { type: 'planting_out', titel: 'Første udplantning' },
+    { type: 'sowing', titel: 'Sæsonens første såning' },
+  ]
+  const fmt = (iso: string) => {
+    const d = new Date(iso)
+    return `${d.getDate()}. ${MONTH_NAMES_DA[d.getMonth()].toLowerCase()}`
+  }
+
+  const out: Array<Minde & { _date: string }> = []
+  for (const m of MILEPAELE) {
+    // logs er sorteret nyeste-først — årets FØRSTE af typen er den
+    // sidste i listen inden for året.
+    const aaretsLogs = logs.filter(
+      l => l.type === m.type && l.date.startsWith(String(currentYear)),
+    )
+    const foerste = aaretsLogs[aaretsLogs.length - 1]
+    if (!foerste) continue
+    const plant = plantById.get(foerste.plant_id)
+    if (!plant) continue
+    const navn = plant.variety ? `${plant.name} ${plant.variety}` : plant.name
+    out.push({
+      titel: m.titel,
+      detalje: foerste.note ? `${navn} — ${foerste.note}` : navn,
+      dato: fmt(foerste.date),
+      _date: foerste.date,
+    })
+  }
+  return out
+    .sort((a, b) => b._date.localeCompare(a._date))
+    .slice(0, 4)
+    .map(m => ({ titel: m.titel, detalje: m.detalje, dato: m.dato }))
 }
 
 /**
@@ -676,6 +725,11 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       logs, plantById, currentYear, today,
     )
 
+    // ── Kapitel 4: Minder — kuraterede førster (V7) ───────────
+    // Potalot VÆLGER: årets første af hver milepæls-type, max 4.
+    // Ikke alle logs, ikke et galleri — kun højdepunkterne.
+    const minder = byggMinder(logs, plantById, currentYear)
+
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
@@ -686,6 +740,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       iDinHave,
       kapitelLigeNu,
       saesonensHistorie,
+      minder,
       naturenLigeNu,
       onThisDay,
       recentNotes,

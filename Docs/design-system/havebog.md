@@ -1,4 +1,4 @@
-# Havebog — Design-manifest (V2, 11. juni 2026)
+# Havebog — Design-manifest (V3, 11. juni 2026)
 
 > ## Status
 >
@@ -52,6 +52,62 @@ Havebogen **fortæller** — den **rapporterer ikke**:
 | 14° | Jorden er nu varm nok til tomater og chili. |
 | 1 klar til udplantning | Dine første planter er klar til at komme udenfor. |
 | 8 aktive sorter | (hører slet ikke hjemme her — det er Planter) |
+
+### V7: Stop med at designe sektioner — design en bog (låst)
+
+Den dybeste regel i hele manifestet:
+
+> **Havebogen er den eneste side i Potalot der ikke forsøger at
+> hjælpe brugeren med at gøre noget.**
+>
+> Planter hjælper. Kalender hjælper. Frøbank organiserer.
+> **Havebogen fortolker.**
+>
+> Hvis et element føles som Planter, Kalender eller Frøbank:
+> fjern det.
+
+#### Kapitel-tempo-reglen
+
+Havebogen består ikke af sektioner — den består af kapitler. Hvert
+kapitel har sit eget tempo, sin egen komposition og sin egen rytme:
+
+| Kapitel | Komposition | Indhold |
+|---|---|---|
+| 1 — Lige nu | Tekst venstre, STOR typografi, meget luft | ÉN indsigt. Ikke fem. |
+| 2 — På denne dag | Foto dominerer | ÉT billede. Én historie. Ikke galleri. |
+| 3 — Sæsonens historie | Centreret, vertikal tidslinje, stor afstand | Vigtigste kapitel. Fortælling, ikke logdata. |
+| 4 — Minder | Asymmetrisk højre | Kuraterede højdepunkter — kun de bedste. |
+| 5 — Historien fortsætter | Bred, rolig | Fremtid, arkiv, refleksion. Ingen CTA. |
+
+Tre visuelle dødssynder rytmen modvirker: alt i venstre kolonne,
+alt med samme vægt, alt der konkurrerer om opmærksomheden. Kun én
+ting må være vigtig ad gangen — og meget store luftområder er
+tilladt og ønskede.
+
+#### Fotoreglen
+
+Billeder må KUN bruges hvis de understøtter fortællingen — aldrig
+fordi der "mangler noget visuelt". Findes der ikke et meningsfuldt
+billede: brug tekst. **Luft er bedre end ligegyldige billeder.**
+
+#### FORBUD (kitsch-listen)
+
+Ingen: polaroider · tape · scrapbog · 90'er-collage · papirklip ·
+Pinterest-æstetik · "memory board".
+
+Potalot er ikke en hobbyblog. Det er et digitalt haveredskab.
+
+Visuel reference: **moderne magasin + naturbog + Apple editorial +
+Kinfolk.** Ikke Pinterest + bullet journal + scrapbook.
+
+(Dette forbud annullerer V3.x-æstetikken med polaroider, tape og
+papirrammer — den var et forsøg værd, men endte som kitsch.)
+
+#### Følelses-testen
+
+Når man scroller gennem Havebogen skal følelsen være: *"Jeg læser
+historien om min have"* — ikke *"jeg gennemgår data om mine
+planter".*
 
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 

@@ -1,22 +1,18 @@
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { KapitelLigeNu } from '@/components/havebog/kapitel-lige-nu'
-import { SaesonensHistorie } from '@/components/havebog/saesonens-historie'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
-import { Historik } from '@/components/havebog/historik'
-import { SenesteNoter } from '@/components/havebog/seneste-noter'
-import { DenneSaeson } from '@/components/havebog/denne-saeson'
-import { ArkiverdePlanter } from '@/components/havebog/arkiverede-planter'
+import { SaesonensHistorie } from '@/components/havebog/saesonens-historie'
+import { Minder } from '@/components/havebog/minder'
+import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
 import {
   DEMO_HERO_STATS,
   DEMO_TIDSLINJE,
   DEMO_HERO_NARRATIVE,
   DEMO_KAPITEL_LIGE_NU,
   DEMO_SAESONENS_HISTORIE,
+  DEMO_MINDER,
   DEMO_ON_THIS_DAY,
-  DEMO_RECENT_NOTES,
-  DEMO_HISTORY,
-  DEMO_DENNE_SAESON,
   DEMO_ARCHIVED_PLANTS,
 } from '@/data/havebog-demo'
 
@@ -25,36 +21,29 @@ export const dynamic = 'force-dynamic'
 /**
  * 📖 HAVEBOG — brugerens personlige dyrkningshistorie.
  *
- * Formål: huske øjeblikke · dokumentere erfaringer · følge sin udvikling
- * gennem sæsoner · genbesøge tidligere dyrkning · lære af egne erfaringer.
+ * V7 (havebog.md V3): STOP MED AT DESIGNE SEKTIONER. DESIGN EN BOG.
  *
- * IKKE dashboard. IKKE kalender. IKKE planteoversigt. IKKE kontrolcenter.
+ * Havebogen er den eneste side i Potalot der ikke forsøger at hjælpe
+ * brugeren med at gøre noget. Planter hjælper. Kalender hjælper.
+ * Frøbank organiserer. Havebogen FORTOLKER.
  *
- * Rolle-fordeling i Potalot:
- *   Frøbank  = ejerskab
- *   Planter  = handling
- *   Kalender = timing
- *   Havebog  = hukommelse   ← her
+ * Siden består af kapitler — ikke sektioner. Hvert kapitel har sit
+ * eget tempo og sin egen komposition (kapitel-tempo-reglen):
  *
- * Sektion-rækkefølge (V3, juni 2026 — magasin-arkitektur):
- *   1. Hero (fuldbredde foto, ~75vh — åbningen i et magasin)
- *   2. Naturen lige nu (3 observationer, botanisk illustration)
- *   3. Denne sæson (forsidehistorie)
- *   4. På denne dag
- *   5. Historik
- *   6. Seneste noter
- *   7. Arkiverede planter
+ *   Omslag — hero, fuldbredde foto
+ *   Kapitel 1: Lige nu             — tekst venstre, STOR typografi, luft
+ *   Kapitel 2: På denne dag        — foto dominerer; ét billede, én historie
+ *   Kapitel 3: Sæsonens historie   — centreret tidslinje, stor afstand (vigtigst)
+ *   Kapitel 4: Minder              — asymmetrisk højre, kuraterede førster
+ *   Kapitel 5: Historien fortsætter— bred, rolig; arkiv + refleksion, ingen CTA
  *
- * V3 vendepunkt (Anna's arkitektur-ordre, juni 2026):
- * Havebog komponeres ikke som software. Den komponeres som
- * redaktionelt indhold. Hver sektion skal have sin egen visuelle
- * rytme — to sektioner i træk med samme creme-baggrund og samme
- * struktur er FORBUDT. Heroen er nu fuldbredde foto, naturen-
- * lige-nu er ikon-streger med botanisk illustration, etc.
+ * Venstre → foto → centreret → højre → bred: brugeren skal føle
+ * BEVÆGELSE gennem siden, som at bladre gennem sin sæson.
  *
- * V2-tankegangen ("DenneSæson er forsidehistorien") gælder stadig —
- * men forsidehistorien er nu *efter* en visuel åbning, ikke selve
- * åbningen.
+ * V7 fjernede fra siden: DenneSaeson (kortene var "hvordan går
+ * det"-data), SenesteNoter (kortliste = log, og polaroid-empty =
+ * kitsch), Historik (måneds-mosaik = datagennemgang; arkivet bor nu
+ * stille i Kapitel 5, detail-browsing er en senere arkiv-side).
  *
  * Demo-fallback: hvis ingen logget-ind bruger, vises lokal demo-data
  * fra src/data/havebog-demo.ts (ikke en global mekanisme).
@@ -67,49 +56,27 @@ export default async function HavebogPage() {
   const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
   const heroNarrative = isDemo ? DEMO_HERO_NARRATIVE : data.heroNarrative
   const kapitelLigeNu = isDemo ? DEMO_KAPITEL_LIGE_NU : data.kapitelLigeNu
-  const saesonensHistorie = isDemo ? DEMO_SAESONENS_HISTORIE : data.saesonensHistorie
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
-  const history = isDemo ? DEMO_HISTORY : data.history
-  const recentNotes = isDemo ? DEMO_RECENT_NOTES : data.recentNotes
-  const denneSaeson = isDemo ? DEMO_DENNE_SAESON : data.denneSaeson
+  const saesonensHistorie = isDemo ? DEMO_SAESONENS_HISTORIE : data.saesonensHistorie
+  const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
-  // V3.4 (Anna's hierarki-feedback): for erfaren bruger med noter
-  // er SenesteNoter sidens egentlige fortælling. Den skal komme FØR
-  // Historik når data findes — empty-state-rækkefølge bevares ellers.
-  const hasNotes = recentNotes.length > 0
-
+  // Kapitel-luft: meget store luftområder er tilladt og ønskede (V7).
+  // Bogens tempo skabes af afstanden mellem kapitlerne — ikke af
+  // skillelinjer eller baggrundsskift.
   return (
-    <div className="space-y-10 sm:space-y-12 pb-6">
+    <div className="space-y-16 sm:space-y-24 pb-10">
       <HavebogHero stats={heroStats} tidslinje={tidslinje} narrative={heroNarrative} />
-      {/* BOGEN (havebog.md V2): Havebogen fortæller, den rapporterer
-          ikke. Tal-sektionerne (IDinHave, NaturenLigeNu/14°) er ude —
-          lobby-reglen: tal-form hører til Planter/Kalender. */}
 
-      {/* Kapitel 1: Lige nu — prosa om havens øjeblik */}
       <KapitelLigeNu saetninger={kapitelLigeNu} />
 
-      {/* Kapitel 2: På denne dag — sæsonhukommelsen */}
       <PaaDenneDag entries={onThisDay} />
 
-      {/* Kapitel 3: Sæsonens historie — måneds-krøniken */}
       <SaesonensHistorie maaneder={saesonensHistorie} />
 
-      {/* "Hvordan går det"-fakta — kun for brugere MED data
-          (ny bruger får stilhed; kapitlerne bærer åbningen) */}
-      <DenneSaeson facts={denneSaeson} varieties={heroStats.varieties} />
-      {hasNotes ? (
-        <>
-          <SenesteNoter notes={recentNotes} prominent />
-          <Historik years={history} />
-        </>
-      ) : (
-        <>
-          <Historik years={history} />
-          <SenesteNoter notes={recentNotes} />
-        </>
-      )}
-      <ArkiverdePlanter plants={archivedPlants} />
+      <Minder minder={minder} />
+
+      <HistorienFortsaetter plants={archivedPlants} />
     </div>
   )
 }

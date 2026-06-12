@@ -283,6 +283,24 @@ export const DEMO_SAESONENS_HISTORIE: SaesonMaaned[] = [
   { maaned: 'Juni', linje: 'Peberfrugterne er klar til drivhuset.' },
 ]
 
+/**
+ * Kapitel 4: "Minder" — kuraterede højdepunkter (V7).
+ * Ikke alle billeder, ikke alle logs — kun sæsonens førster og
+ * største øjeblikke. Emotionelt indhold, Potalot vælger.
+ */
+export interface Minde {
+  titel: string          // "Første knop", "Første høst"
+  detalje: string        // "Dahlia Café au Lait"
+  dato: string           // "4. juni"
+}
+
+export const DEMO_MINDER: Minde[] = [
+  // Nyeste først — samme rækkefølge som byggMinder i actions/havebog.ts.
+  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint — knapt 90 gram, perfekt sprød', dato: '18. maj' },
+  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano — seks frø i bakke med varme under', dato: '18. marts' },
+]
+
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
   {
     yearsAgo: 1,
