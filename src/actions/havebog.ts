@@ -30,6 +30,8 @@ import type {
   IDinHaveTal,
   Vendepunkt,
   Minde,
+  Takt,
+  DagensOpslag,
 } from '@/data/havebog-demo'
 
 export interface HavebogData {
@@ -39,8 +41,8 @@ export interface HavebogData {
   /** V9 (personlig hilsen): første ord af profiles.display_name */
   fornavn: string | null
   iDinHave: IDinHaveTal
-  /** Ildstedet (V15): havens stemme i dag — vævede takter */
-  dagensOpslag: string[]
+  /** Ildstedet (V16): dagens side — hovedhistorie + støtte-takter */
+  dagensOpslag: DagensOpslag
   /** Kapitel 3: sæsonens vendepunkter — begivenheder, ikke måneder */
   vendepunkter: Vendepunkt[]
   /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
@@ -825,32 +827,49 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
-    const dagensOpslag: string[] = []
-    // 1. Nutidsanker — havens øjeblik netop nu (sæson/jordtemperatur)
-    if (ligeNuFakta) dagensOpslag.push(ligeNuFakta.statement)
-    // 2. Din have lige nu — en opdagelse, ellers (for ny bruger)
-    //    lånt erfaring så stemmen aldrig står tom
-    if (opdagelse) dagensOpslag.push(opdagelse)
-    else if (erNy) dagensOpslag.push(laantErfaring(maaned1).ligeNu)
-    // 3. Status: planter klar til at komme ud (når det gælder)
-    if (klarTilUdplantning > 0) {
-      dagensOpslag.push(
-        hasYearOnePlus(history, currentYear)
-          ? 'Flere af dine planter er klar til at komme udenfor.'
-          : 'Dine første planter er klar til at komme udenfor.',
-      )
+    // V16: ikke fire ligeværdige afsnit, men en DAGSSIDE med
+    // redaktion — én hovedhistorie + støtte-takter, hver med sin
+    // rubrik-etiket. Takterne bygges typet (kicker + tekst); lead'en
+    // vælges som den mest fængende. Ingen nye data; samme motorer.
+    const present: Takt | null = ligeNuFakta
+      ? { kicker: 'Lige nu i haven', tekst: ligeNuFakta.statement }
+      : null
+    const personlig: Takt | null = opdagelse
+      ? { kicker: 'Fra din have', tekst: opdagelse }
+      : erNy
+        ? { kicker: 'Fra fællesskabet', tekst: laantErfaring(maaned1).ligeNu }
+        : null
+    const statusTakt: Takt | null =
+      klarTilUdplantning > 0
+        ? {
+            kicker: 'Klar nu',
+            tekst: hasYearOnePlus(history, currentYear)
+              ? 'Flere af dine planter er klar til at komme udenfor.'
+              : 'Dine første planter er klar til at komme udenfor.',
+          }
+        : null
+    const inspirationTakt: Takt =
+      inspirationer.length > 0
+        ? { kicker: 'Fra haven', tekst: inspirationer[dagNr % inspirationer.length] }
+        : (() => {
+            const v = havevisdomPulje(maaned1)
+            return { kicker: 'Fra haven', tekst: v[dagNr % v.length] }
+          })()
+    const fremad: Takt = {
+      kicker: 'På denne tid af året',
+      tekst: forventningsLinje(maaned1, dagNr),
     }
-    // 4. Inspiration om egne sorter — én, roteret dag for dag.
-    //    Falder tilbage til almen havevisdom hvis brugeren intet
-    //    dyrker endnu, så takten aldrig mangler.
-    if (inspirationer.length > 0) {
-      dagensOpslag.push(inspirationer[dagNr % inspirationer.length])
-    } else {
-      const visdom = havevisdomPulje(maaned1)
-      dagensOpslag.push(visdom[dagNr % visdom.length])
+
+    // Lead = mest fængende: personlig opdagelse > inspiration >
+    // nutidsanker. Resten følger i læserækkefølge, lead trukket ud.
+    const lead: Takt = personlig ?? inspirationTakt ?? present ?? fremad
+    const beats: Takt[] = [present, personlig, statusTakt, inspirationTakt, fremad]
+      .filter((t): t is Takt => t !== null && t !== lead)
+
+    const dagensOpslag: DagensOpslag = {
+      lead: { kicker: 'Dagens historie', tekst: lead.tekst },
+      beats,
     }
-    // 5. Blik fremad — lukker brevet med forventning, ikke status
-    dagensOpslag.push(forventningsLinje(maaned1, dagNr))
 
     // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
     // Begivenheder, ikke måneder: årets første af hver fase,

@@ -1,82 +1,90 @@
+import type { DagensOpslag } from '@/data/havebog-demo'
+
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
-  /** Vævede takter — nutid → din have → inspiration → blik fremad */
-  takter: string[]
+  /** Dagens dato som folio — "17. juni" */
+  dato: string
+  opslag: DagensOpslag
+}
+
+const kickerStyle = {
+  fontFamily: sans,
+  fontWeight: 700,
+  letterSpacing: '0.24em',
+  textTransform: 'uppercase' as const,
+  color: 'rgba(36,48,31,0.42)',
+  margin: 0,
 }
 
 /**
- * ILDSTEDET (V15) — "Havens stemme i dag".
+ * ILDSTEDET (V16) — "Havens stemme i dag" som en DAGSSIDE.
  *
- * Havebogens centrum. Ikke en sektion blandt mange; det ene sted
- * der samler alt. De eksisterende motorer (nutidsanker, opdagelse,
- * inspiration, blik fremad) væves til ÉN flydende stemme — et
- * dagligt brev fra haven. Fylder næsten en hel viewport.
+ * Ikke et brev med fire ligeværdige afsnit (V15), men en redaktion:
+ * en datolinje, ÉN hovedhistorie (kæmpe — ét bål i centrum), og
+ * støtte-takter med små rubrik-etiketter, stepped down. Apple
+ * Journal / Moleskine / magasin-opslag.
  *
- * Form (Annas brev/redaktørens-note-bud, V15):
- *   - Stor serif, massiv luft, én tanke ad gangen
- *   - Ingen boks, ingen kort, ingen eyebrow-label — ren stemme på
- *     creme. Det MÅ ikke ligne dashboard, widget, feed eller
- *     notifikation.
- *   - Første takt størst (brevets åbning), de øvrige træder en
- *     anelse tilbage — som stemmen falder til ro.
- *
- * Ændrer sig dagligt fordi takterne selv roterer (inspiration +
- * blik fremad vælges pr. dagsnummer i actionen). Ingen nye data.
+ * Ingen boks, intet kort, ingen "sektion" — bare en side man kan
+ * opholde sig ved. Stor serif, massiv luft, hierarki frem for
+ * sammenstilling. Ændrer sig dagligt (takterne roterer i actionen).
  */
-export function HavensStemme({ takter }: Props) {
-  if (takter.length === 0) return null
+export function HavensStemme({ dato, opslag }: Props) {
+  if (!opslag.lead?.tekst) return null
 
   return (
     <section
       style={{
-        // Ildstedet skal eje sin flade — generøs lodret luft, så det
-        // står som et helt opslag, ikke en stribe mellem andre.
-        paddingBlock: 'clamp(24px, 9vw, 64px) clamp(16px, 6vw, 40px)',
+        paddingBlock: 'clamp(20px, 7vw, 52px) clamp(16px, 6vw, 40px)',
       }}
     >
-      {takter.map((takt, i) => {
-        const erAabning = i === 0
-        return (
+      {/* Datolinje — dagens folio, gør det til "i dag" */}
+      <p style={{ ...kickerStyle, fontSize: 11, marginBottom: 'clamp(28px, 8vw, 48px)' }}>
+        {dato}
+      </p>
+
+      {/* Hovedhistorien — ét bål i centrum */}
+      <p style={{ ...kickerStyle, fontSize: 11, color: 'rgba(36,48,31,0.5)' }}>
+        {opslag.lead.kicker}
+      </p>
+      <p
+        style={{
+          fontFamily: serif,
+          fontWeight: 500,
+          fontSize: 'clamp(34px, 8.4vw, 54px)',
+          lineHeight: 1.08,
+          letterSpacing: '-0.02em',
+          color: '#24301F',
+          margin: 0,
+          marginTop: 14,
+          maxWidth: '18ch',
+        }}
+      >
+        {opslag.lead.tekst}
+      </p>
+
+      {/* Støtte-takter — hver med sin rubrik, stepped down */}
+      {opslag.beats.map((b, i) => (
+        <div key={i} style={{ marginTop: 'clamp(34px, 9vw, 56px)' }}>
+          <p style={{ ...kickerStyle, fontSize: 10.5 }}>{b.kicker}</p>
           <p
-            key={i}
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: erAabning
-                ? 'clamp(31px, 7.6vw, 50px)'
-                : 'clamp(24px, 5.6vw, 35px)',
-              lineHeight: erAabning ? 1.14 : 1.26,
-              letterSpacing: '-0.015em',
-              color: erAabning ? '#24301F' : 'rgba(36,48,31,0.78)',
+              fontSize: 'clamp(22px, 5.2vw, 31px)',
+              lineHeight: 1.26,
+              letterSpacing: '-0.01em',
+              color: 'rgba(36,48,31,0.8)',
               margin: 0,
-              // Massiv luft mellem takterne — én tanke ad gangen
-              marginTop: i === 0 ? 0 : 'clamp(28px, 8vw, 52px)',
-              maxWidth: '20ch',
+              marginTop: 10,
+              maxWidth: '24ch',
             }}
           >
-            {takt}
+            {b.tekst}
           </p>
-        )
-      })}
-
-      {/* Diskret signatur — brevet er fra haven, ikke fra appen.
-          Ingen knap, ingen CTA; bare en afsender. */}
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 10.5,
-          fontWeight: 700,
-          letterSpacing: '0.3em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.4)',
-          margin: 0,
-          marginTop: 'clamp(32px, 9vw, 56px)',
-        }}
-      >
-        Fra haven
-      </p>
+        </div>
+      ))}
     </section>
   )
 }

@@ -563,6 +563,31 @@ Den tidligere enkelt-linje "I dag i haven" (KapitelLigeNu) er
 ABSORBERET af ildstedet — ikke en ny sektion, men centrum der
 samler det, der før var spredt. "Stop med at bygge nye sektioner."
 
+### V16: Ildstedet som dagsside, ikke brev (låst, 13. juni 2026)
+
+V15's brev var stadig "tekst genereret af motorer" — fire ligeværdige
+afsnit. Et brev læses; en pejs opholder man sig ved. V16 giver
+ildstedet **redaktion**:
+
+> Et dagligt magasin-opslag med ÉN hovedhistorie — ikke fire
+> ligeværdige datapunkter. (Apple Journal · Moleskine · Martha
+> Stewart · avisens forside.)
+
+Formen (låst):
+- **Datolinje** øverst ("17. juni") — gør det til *i dag*, en side.
+- **Dagens historie** — ÉN lead, kæmpe (clamp 34-54). Ét bål i
+  centrum. Vælges som den mest fængende takt: opdagelse > inspiration
+  > nutidsanker.
+- **Støtte-takter** — hver med sin lille rubrik-etiket ("Lige nu i
+  haven", "Fra haven", "På denne tid af året"), stepped down, massiv
+  luft. Hierarki frem for sammenstilling.
+
+Ingen boks, intet kort, ingen "sektion" — bare en side. Samme
+motorer, samme data; det nye er hierarkiet og rubrikkerne.
+
+Målestokken er stadig **februar-testen**: noget man har lyst til at
+blive siddende ved med en kop kaffe, mens haven ligger frossen ude.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
