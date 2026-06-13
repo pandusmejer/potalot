@@ -555,3 +555,120 @@ export const DEMO_ARCHIVED_PLANTS: ArchivedPlant[] = [
     summary: '30+ blomster · sluttede november',
   },
 ]
+
+// ─────────────────────────────────────────────────────────────
+// HAVEBOG V1.0 — DE NYE RUM (prototyper, 13. juni 2026)
+//
+// Første-versioner så hele huset kan ses, før hierarkiet afgøres.
+// Demo-data driver dem på demo-forsiden. Rum der kræver eksterne
+// kilder (Vejret) eller fællesskabsdata (Populært) er markeret —
+// de må IKKE vise opfundne tal til rigtige brugere (ærligheds-
+// reglen); de lever indtil videre kun som prototyper i demo.
+// ─────────────────────────────────────────────────────────────
+
+// 3 · Tal til din have
+export const DEMO_TAL_EKSEMPLER: string[] = [
+  '"De første agurker er kommet."',
+  '"Tomaterne ser triste ud efter regnen."',
+  '"Næste år skal jeg huske flere salater."',
+]
+
+// 4 · Inspirér mig (som selvstændigt rum)
+export interface InspirerForslag {
+  kicker: string
+  navn: string
+  begrundelse: string
+}
+export const DEMO_INSPIRER: InspirerForslag = {
+  kicker: 'Prøv næste år',
+  navn: 'Malwina jordbær',
+  begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+}
+
+// 5 · Dyrkerstatus
+export interface Dyrkerstatus {
+  titel: string
+  niveau: number
+  afMax: number
+  beskrivelse: string
+}
+export const DEMO_DYRKERSTATUS: Dyrkerstatus = {
+  titel: 'Selvforsyner',
+  niveau: 4,
+  afMax: 7,
+  beskrivelse:
+    'Du producerer allerede en betydelig del af sommerens grøntsager selv.',
+}
+
+// 6 · Dyrkerkompetencer
+export interface Kompetenceomraade {
+  omraade: string
+  faerdigheder: { navn: string; opnaaet: boolean }[]
+}
+export const DEMO_KOMPETENCER: Kompetenceomraade[] = [
+  {
+    omraade: 'Tomatdyrkning',
+    faerdigheder: [
+      { navn: 'Beskæring', opnaaet: true },
+      { navn: 'Opbinding', opnaaet: true },
+      { navn: 'Frøavl', opnaaet: false },
+    ],
+  },
+  {
+    omraade: 'Kompost',
+    faerdigheder: [
+      { navn: 'Køkkenaffald', opnaaet: true },
+      { navn: 'Varm kompost', opnaaet: false },
+    ],
+  },
+]
+
+// 10 · Spisekammer
+export interface SpisekammerData {
+  hoest: { navn: string; antal: string }[]
+  opskrifter: string[]
+}
+export const DEMO_SPISEKAMMER: SpisekammerData = {
+  hoest: [
+    { navn: 'Jordbær', antal: '18' },
+    { navn: 'Agurker', antal: '7' },
+    { navn: 'Tomater', antal: '4' },
+  ],
+  opskrifter: ['Gazpacho', 'Jordbærtærte', 'Tomatsalat'],
+}
+
+// 11 · Populært lige nu — KRÆVER ægte fællesskabsdata. Prototype.
+export const DEMO_POPULAERT: string[] = ['Kompost', 'Dræbersnegle', 'Efterafgrøder']
+
+// 12 · Vejret i haven — KRÆVER vejr-kilde. Prototype.
+export interface VejrData {
+  grader: string
+  forhold: string
+  note: string
+}
+export const DEMO_VEJR: VejrData = {
+  grader: '21°',
+  forhold: 'Delvist skyet',
+  note: 'Perfekt vejr til udplantning.',
+}
+
+// 13 · Projekter
+export interface ProjektForslag {
+  kicker: string
+  titel: string
+}
+export const DEMO_PROJEKT: ProjektForslag = {
+  kicker: 'Næste projekt',
+  titel: 'Byg et insekthotel.',
+}
+
+// 14 · Bedrifter
+export interface Bedrift {
+  titel: string
+  aar: string
+}
+export const DEMO_BEDRIFTER: Bedrift[] = [
+  { titel: 'Første tomathøst', aar: '2025' },
+  { titel: 'Første overvintring', aar: '2025' },
+  { titel: 'Første frøavl', aar: '2024' },
+]
