@@ -17,6 +17,7 @@ import {
 import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
+import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
 import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
 import { parseInventoryFile, confirmImportInventory, type ImportRow } from '@/actions/inventory-import'
 import { cn } from '@/lib/utils'
@@ -84,6 +85,13 @@ export function TilfoejFlow({ initialMode }: Props) {
     const fallbackName = `Frøpose – ${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}`
     const finalName = (fields.name?.trim() || scanName.trim() || fallbackName)
 
+    // Frøkort-reglen: posefotos er KILDEMATERIALE til specs, ikke
+    // hovedbillede. Findes der et kurateret frøkort for sorten, skal DET
+    // være forsidefotoet — posefotos (forside/bagside) gemmes som 2./3.
+    // billede. Brugeren kan aktivt stjernemarkere et posefoto som primært
+    // bagefter; så vinder det (resolverens lag 1).
+    const harFroekort = harKurateretFroekort({ name: finalName, variety: fields.variety })
+
     const res = await createInventoryItem({
       name: finalName,
       latinName: fields.latinName,
@@ -104,7 +112,7 @@ export function TilfoejFlow({ initialMode }: Props) {
       rowSpacing: fields.rowSpacing,
       notes: fields.notes,
       imageUrls: imgs,
-      primaryImageUrl: primary ?? undefined,
+      primaryImageUrl: harFroekort ? undefined : (primary ?? undefined),
     })
 
     if ('error' in res) {

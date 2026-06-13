@@ -18,6 +18,7 @@ import {
 } from '@/lib/constants'
 import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
+import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import {
   ArrowLeft, Package, Calendar, BookOpen, Sprout, ArrowRight,
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
@@ -56,6 +57,19 @@ export default async function InventoryDetailPage({ params }: Props) {
   const waterMeta = item.water ? WATER_META[item.water] : null
   const CatIcon = ((LucideIcons as unknown) as Record<string, ComponentType<SVGProps<SVGSVGElement>>>)[cat.icon] ?? Package
 
+  // Forsidefoto (#1): brugerens primære foto hvis aktivt valgt, ellers det
+  // kuraterede frøkort. Samme resolver-prioritet som frøbank-kortet, så
+  // detaljesiden og kortet altid viser det samme forsidefoto.
+  const heroResolved = resolveSeedCard({
+    guideId: item.guideId,
+    name: item.name,
+    variety: item.variety,
+    preferredSrc: item.primaryImageId,
+  })
+  const hero = heroResolved.source === 'fallback' ? null : heroResolved
+  // Galleri = øvrige uploadede fotos (forsidefotoet vises separat ovenfor).
+  const galleriFotos = item.imageIds.filter((u) => u !== hero?.src)
+
   return (
     <article className="space-y-5 max-w-3xl">
       {/* Header */}
@@ -91,17 +105,28 @@ export default async function InventoryDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Billed-galleri */}
-      {item.imageIds.length > 0 && (
+      {/* Forsidefoto — brugerens primære foto eller det kuraterede frøkort.
+          Vises ikke hvis hverken foto eller frøkort findes (placeholder). */}
+      {hero && (
+        <div
+          className="relative w-full overflow-hidden rounded-2xl bg-muted"
+          style={{ aspectRatio: '4 / 5', maxWidth: 320 }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={hero.src} alt={item.name} className="h-full w-full object-cover" />
+        </div>
+      )}
+
+      {/* Billed-galleri — øvrige uploadede fotos (fx for-/bagside af posen).
+          Forsidefotoet vises allerede ovenfor og gentages ikke her. */}
+      {galleriFotos.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {[item.primaryImageId, ...item.imageIds.filter(u => u !== item.primaryImageId)]
-            .filter((u): u is string => !!u)
-            .map((url, i) => (
-              <div key={url} className="aspect-square rounded-lg overflow-hidden border border-border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`${item.name} billede ${i + 1}`} className="w-full h-full object-cover" />
-              </div>
-            ))}
+          {galleriFotos.map((url, i) => (
+            <div key={url} className="aspect-square rounded-lg overflow-hidden border border-border bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt={`${item.name} billede ${i + 1}`} className="w-full h-full object-cover" />
+            </div>
+          ))}
         </div>
       )}
 
