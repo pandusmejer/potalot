@@ -311,6 +311,58 @@ Byggeprioritering (Annas rækkefølge): 1. Tal til din have →
 5. Dyrkerniveau. De fire sidste bliver stærkere af data; den
 første skaber dataene.
 
+### V11: Oplevelsesarkitektur — objekter, ikke kun tekst (låst, 13. juni 2026)
+
+Annas skarpeste skelnen: informationsarkitekturen er løst, men
+**oplevelsesarkitekturen** mangler. Siden består af hero → tekst →
+foto → tekst → liste — en rapport forklædt som en bog. Mennesker
+kan scrolle gennem enorme mængder tekst uden at huske ét ord.
+
+> Hvis Havebogen er Potalots stue, vinterhave, venteværelse og
+> digitale kolonihave, skal den indeholde **objekter man kan
+> opholde sig ved** — ikke kun læse.
+
+Referencen skærpes: ikke Medium-artikel, men **dagbog + drivhus +
+museum + almanak + frøkatalog + gammelt skrivebord.** Siden skal
+være møbleret med instrumenter, samlinger, artefakter og værktøjer
+— ting man vender tilbage til, ikke afsnit man scroller forbi.
+
+Hvert objekt skal kunne svare ja til: *"Er det noget man opholder
+sig VED, eller bare læser?"*
+
+#### De seks objekter (Annas katalog)
+
+| Objekt | Form | Lag | Status |
+|---|---|---|---|
+| Dagens indsigt | Havejournal-side / dokument, ikke card | Fast | Tekst findes (V10.1); objekt-form afventer |
+| Dyrkerniveau | Vækst-ring eller træ, ikke badge-wall | Levende | Backlog |
+| Tal til din have | Stor varm mikrofon — Havebogens pejs | Fast CTA | Backlog (prioritet 1) |
+| Inspirér mig | Kort der trækkes op, som tarot/frøkatalog | Levende | Backlog (prioritet 2) |
+| Spisekammer | Høst → mad → opskrifter, BOR i Havebogen | Levende | Backlog (prioritet 3) |
+| Bedrifter | Indgraverede botanik-mærker, ikke Xbox-badges | Levende | Backlog |
+
+Byggerækkefølge efter heroen (Annas prioritet): **1. Tal til din
+have** (ankerpunktet) → **2. Inspirér mig** (daglig variation) →
+**3. Spisekammer** (forbinder dyrkning med det virkelige liv).
+Når de tre findes, bliver Havebogen et sted man besøger.
+
+#### Materiale-reglen vs. kitsch-forbuddet — AFVENTER ANNAS BESLUTNING
+
+V7-forbuddet bandlyser "papirklip" og "papirrammer". Annas V11-
+objekter beder om "cremefarvet papir, afrivningskant, skygge" og
+"medaljer i en botanisk bog". Disse to skal forenes med en klar
+grænse, FØR objekterne bygges. Foreslået grænse (ikke låst endnu):
+
+- **Tilladt:** ÉT roligt, præcist artefakt i naturbog/almanak-
+  registret — én journal-side, ét presset botanik-mærke, ét
+  katalog-kort. Materialet tjener fortællingen.
+- **Stadig forbudt:** collage, tape, rotation, overlappende
+  papirstumper, "memory board", Pinterest. Det er mængden og
+  uordenen der bliver kitsch — ikke papiret selv.
+
+Indtil Anna bekræfter grænsen, bygges objekterne IKKE med
+papir-tekstur/afrivningskant.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
