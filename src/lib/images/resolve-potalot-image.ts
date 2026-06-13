@@ -263,6 +263,35 @@ export function resolvePotalotImage(
   }
 }
 
+/**
+ * harKurateretFroekort — findes der et FÆRDIGT, kurateret frøkort
+ * (seed-card) for dette frø, uafhængigt af brugerens eget upload?
+ *
+ * Bruges ved shoplink-import: når vi HAR et komponeret frøkort for
+ * sorten, skal det være standard-fotoet. Så undlader vi at gemme det
+ * skrabede shop-og:image som primært — ellers ville det vinde over
+ * frøkortet i resolverens lag 1 (user-upload). Brugeren kan altid
+ * uploade egne fotos og gøre dem til primære bagefter.
+ *
+ * Genbruger resolvePotalotImage UDEN preferredSrc, så svaret er
+ * GARANTERET identisk med det frøkort der ellers ville blive vist.
+ */
+export function harKurateretFroekort(input: {
+  guideId?: string | null
+  name: string
+  variety?: string | null
+}): boolean {
+  const varietySlug = input.variety
+    ? slugify(`${input.name}-${input.variety}`)
+    : null
+  const { source } = resolvePotalotImage({
+    guideId: input.guideId ?? undefined,
+    varietySlug,
+    role: 'seed-card',
+  })
+  return source === 'guide-images' || source === 'asset-convention'
+}
+
 // ─── Makro-resolver med intelligent slot-selektion ─────────────
 
 /**

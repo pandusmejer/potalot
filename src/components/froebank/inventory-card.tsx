@@ -80,13 +80,20 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   // som aldrig har eksisteret) falder automatisk til asset-convention.
   // Canonical resolver, rolle: seed-card. Falder gennem 4 lag:
   //   1. preferredSrc (item.primaryImageId, valideret mod manifest)
-  //   2. POTALOT_IMAGE_SETS_BY_ID[guideId].seedCard
+  //   2. POTALOT_IMAGE_SETS_BY_ID[guideId | varietySlug].seedCard
   //   3. /images/frokort/<varietySlug>.{png,jpg}
   //   4. placeholder
   // Ingen cross-role fald — Corno bliver ikke til California Wonder.
-  const varietySlug =
-    item.guideId ??
-    (item.variety ? slugify(`${item.name}-${item.variety}`) : null)
+  //
+  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId
+  // sendes separat og prøves først af resolveren; men det kuraterede
+  // frøkort er nøglet på sorts-sluggen (fx "radise-french-breakfast"),
+  // så den skal også med — ellers nås frøkortet aldrig for guide-koblede
+  // frø, og asset-convention ville bygge en /frokort/<UUID>-sti der intet
+  // matcher.
+  const varietySlug = item.variety
+    ? slugify(`${item.name}-${item.variety}`)
+    : null
   const { src: heroImage } = resolvePotalotImage({
     guideId: item.guideId,
     varietySlug,
