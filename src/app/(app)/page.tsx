@@ -1,5 +1,6 @@
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
+import { DagTaeller } from '@/components/havebog/dag-taeller'
 import { KapitelLigeNu } from '@/components/havebog/kapitel-lige-nu'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
 import { Vendepunkter } from '@/components/havebog/vendepunkter'
@@ -70,11 +71,12 @@ export default async function HavebogPage() {
     minder: <Minder key="minder" minder={minder} />,
   } as const
 
-  // Kapitel-luft V8 (luft-balancen): mindre luft MELLEM kapitlerne,
-  // mere luft INDE i dem.
+  // V13 (premium magasin): dobbelt så meget luft. Hver sektion er
+  // sit eget opslag — én ting ad gangen, plads til at trække vejret.
   return (
-    <div className="space-y-12 sm:space-y-16 pb-10">
+    <div className="space-y-20 sm:space-y-28 pb-16">
       {/* ── Det faste lag — forsiden ── */}
+      {/* Hero: KUN hilsnen */}
       <HavebogHero
         stats={heroStats}
         tidslinje={tidslinje}
@@ -82,6 +84,12 @@ export default async function HavebogPage() {
         fornavn={isDemo ? null : data.fornavn}
       />
 
+      {/* Dagtælleren: sin egen sektion, ikke oven på heroen */}
+      {heroNarrative.saesonDag !== null && heroNarrative.saesonEtiket && (
+        <DagTaeller dag={heroNarrative.saesonDag} etiket={heroNarrative.saesonEtiket} />
+      )}
+
+      {/* Dagens indsigt */}
       <KapitelLigeNu saetninger={kapitelLigeNu} />
 
       {/* ── Det levende lag — sæsonens kuraterede moduler ── */}

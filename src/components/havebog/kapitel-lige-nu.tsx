@@ -40,17 +40,17 @@ export function KapitelLigeNu({ saetninger }: Props) {
   if (!indsigt) return null
 
   return (
-    <section style={{ paddingBlock: '20px 12px' }}>
+    <section style={{ paddingBlock: '4px 4px' }}>
       <p
         className="uppercase"
         style={{
           fontFamily: sans,
           fontSize: 11,
           fontWeight: 700,
-          letterSpacing: '0.24em',
+          letterSpacing: '0.26em',
           color: 'rgba(36,48,31,0.50)',
           margin: 0,
-          marginBottom: 20,
+          marginBottom: 24,
         }}
       >
         I dag i haven
@@ -60,12 +60,12 @@ export function KapitelLigeNu({ saetninger }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 400,
-          fontSize: 'clamp(27px, 6.4vw, 40px)',
-          lineHeight: 1.18,
-          letterSpacing: '-0.01em',
+          fontSize: 'clamp(30px, 7.4vw, 46px)',
+          lineHeight: 1.16,
+          letterSpacing: '-0.015em',
           color: '#24301F',
           margin: 0,
-          maxWidth: '17ch',
+          maxWidth: '16ch',
         }}
       >
         {indsigt}

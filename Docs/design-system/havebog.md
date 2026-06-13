@@ -414,6 +414,67 @@ guide-katalog) og almen, sand hortikultur. Ingen fabrikerede tal.
 Og: ingen døde links — en "Se middelhavshaven →" tilføjes KUN når
 destinationen findes. Indtil da står sætningen alene.
 
+### V13: Premium magasin — masterbriefen (låst, 13. juni 2026)
+
+Annas konsoliderede produktmanifest. Dette er den ØVERSTE vision;
+alt andet i dette dokument tjener den.
+
+> **Havebogen er et premium digitalt magasin om brugerens egen have.**
+
+Referencer: Martha Stewart Living · Kinfolk · Magnolia Journal ·
+Apple Photos Memories · Apple Journal · Apple News+ feature stories.
+Følelsen — og det egentlige produkt — er: *"Der er altid noget nyt
+i min have, selv når jeg ikke er ude i den."* Ikke registrering,
+ikke data, ikke funktioner. Følelsen.
+
+Havebogen er havens dagligstue: om sommeren besøger man haven, om
+vinteren besøger man Havebogen. Stedet hvor man kan være i haven
+uden fysisk at være der.
+
+#### Designfilosofi (gælder ALLE moduler, nu og fremover)
+
+- **Dobbelt så meget luft** som før. Hellere for meget end for lidt.
+- **Kæmpe typografi.** Tekst er ikke information — tekst er design.
+  Store overskrifter, store tanker, store indsigter.
+- **Én ting ad gangen.** Ingen sektion siger tre ting. Hero = kun
+  hilsen. Næste opslag = kun dagtæller. Næste = kun dagens indsigt.
+  Næste = kun ét minde. Magasinlogik, ikke dashboardlogik.
+- **Færre elementer.** Færre kort, færre widgets, færre bokse.
+  Mere redaktionel rytme.
+- **Lysere.** Mindre mørke flader, mindre dramatik. Premium magasin,
+  nordisk luksus.
+
+#### Den vigtigste regel (når i tvivl)
+
+> Fjern en feature. Tilføj mere luft. Gør typografien større. Lad
+> Havebogen fortælle ÉN ting ad gangen.
+
+Havebogen skal føles som et sted man har lyst til at blive i ti
+minutter — ikke et sted man besøger for at udfylde noget.
+
+#### Hero + dagtæller (implementeret V13)
+
+- Hero er ikke en titel; det er dagens åbning. KUN hilsnen, kæmpe
+  (navnet på egen linje), sæson-stemningen som undertekst. Lysere
+  fotobehandling. Føles som åbningssiden i et magasin.
+- Dagtælleren er sin EGEN sektion EFTER heroen — ikke oven på den.
+  Stor, taktil, mekanisk (kilometertællerhjul). "Brugeren bygger
+  noget over tid."
+
+#### Dyrkerstatus — IKKE gamification (revideret terminologi)
+
+Ingen XP, levels, Bronze-Tomat, badges, træer, RPG. Tænk luksusur,
+livstidsværk, mesterlære. Titler i stor typografi, stor stolthed,
+lav støj: Spirer · Dyrker · Køkkenhaveejer · Selvforsyner ·
+Frøsamler · Havearkitekt · Mesterdyrker. (Afløser V9's "spejder-
+mærke"-formulering — samme ånd, skarpere reference.)
+
+#### Trends (ny motor, backlog)
+
+Netflix-/Spotify-logik for haven: "Mange dyrkere læser lige nu…",
+"Dyrkere som dig interesserer sig også for…", "Du mangler stadig…".
+Altid hjælpsomt, aldrig dømmende.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
