@@ -439,6 +439,8 @@ export async function generateGuideWithAI(input: {
   latinName?: string
   variety?: string
   primaryCategoryId?: PrimaryCategoryId
+  /** Master arts-guide en sorts-guide skal hænge under (1:1-regel). */
+  parentGuideId?: string | null
 }): Promise<{ id: string } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
@@ -479,15 +481,20 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
   const plantName = typeof parsed.plantName === 'string' ? parsed.plantName : input.plantName
   const summary = typeof parsed.summary === 'string' ? parsed.summary : ''
   const primaryCategoryId = (parsed.primaryCategoryId as PrimaryCategoryId) ?? input.primaryCategoryId ?? 'fro'
+  const variety = typeof parsed.variety === 'string' ? parsed.variety : (input.variety ?? null)
+  // 1:1-regel (vidensmodel): en upload MED sort → sorts-guide, aldrig arts-guide.
+  // Sorten hænger under sin art via parent_guide_id når en master-art findes.
+  const isSort = Boolean((variety && variety.trim()) || input.parentGuideId)
 
   const { data, error } = await supabase
     .from('guides')
     .insert({
       user_id: userId,
       plant_name: plantName,
-      variety: typeof parsed.variety === 'string' ? parsed.variety : (input.variety ?? null),
+      variety,
       latin_name: typeof parsed.latinName === 'string' ? parsed.latinName : (input.latinName ?? null),
-      guide_level: 'art',
+      guide_level: isSort ? 'sort' : 'art',
+      parent_guide_id: input.parentGuideId ?? null,
       primary_category_id: primaryCategoryId,
       summary,
       difficulty: typeof parsed.difficulty === 'string' ? parsed.difficulty : null,
@@ -533,12 +540,16 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
   if (item.guide_id) return { ok: true, alreadyAttached: true }
 
   const plantName = (item.name as string).trim()
+  const variety = (((item.variety as string | null) ?? '').trim()) || null
 
-  // Find eksisterende guide for samme plantName (case-insensitive)
-  const { data: existing } = await supabase
-    .from('guides')
-    .select('id')
-    .ilike('plant_name', plantName)
+  // 1:1-match (vidensmodel): en guide skal matche PRÆCIS det uploadede.
+  // Har item en SORT → match navn+sort (sorts-guide). Ellers navn + ingen sort
+  // (arts-guide). Vi attacher ALDRIG en arts-guide til en sort. Master-guides
+  // (user_id = NULL) foretrækkes via nullsFirst.
+  let matchQuery = supabase.from('guides').select('id').ilike('plant_name', plantName)
+  matchQuery = variety ? matchQuery.ilike('variety', variety) : matchQuery.is('variety', null)
+  const { data: existing } = await matchQuery
+    .order('user_id', { ascending: true, nullsFirst: true })
     .order('created_at', { ascending: true })
     .limit(1)
 
@@ -553,11 +564,26 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
     return { ok: true, guideId, reused: true, generated: false }
   }
 
+  // Ingen 1:1-match → generér. For en sort kobles guiden til en evt. MASTER
+  // arts-guide som forælder, så sorten hænger korrekt under sin art.
+  let parentGuideId: string | null = null
+  if (variety) {
+    const { data: parent } = await supabase
+      .from('guides')
+      .select('id')
+      .ilike('plant_name', plantName)
+      .is('variety', null)
+      .is('user_id', null)
+      .limit(1)
+    parentGuideId = parent && parent.length > 0 ? (parent[0].id as string) : null
+  }
+
   const gen = await generateGuideWithAI({
     plantName,
     latinName: (item.latin_name as string | null) ?? undefined,
-    variety: (item.variety as string | null) ?? undefined,
+    variety: variety ?? undefined,
     primaryCategoryId: item.primary_category_id as PrimaryCategoryId,
+    parentGuideId,
   })
   if ('error' in gen) return { error: gen.error }
 
@@ -567,5 +593,25 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
     .eq('id', inventoryId)
     .eq('user_id', userId)
   revalidatePath(`/froebank/${inventoryId}`)
+
+  // Punkt 3 (vidensmodel): brugeren skal vide, at der er lavet et privat
+  // udkast til deres guide — så de kan gennemlæse og notere på den. actor =
+  // null (systemet), ellers skipper enqueue_notification (afsender=modtager).
+  const guideNavn = variety ? `${plantName} · ${variety}` : plantName
+  try {
+    await supabase.rpc('enqueue_notification', {
+      p_user_id: userId,
+      p_type: 'guide_draft',
+      p_actor_user_id: null,
+      p_title: 'Vi har lavet et udkast til din guide',
+      p_body: `Et udkast til "${guideNavn}" er klar — kig på den og tilføj dine egne noter.`,
+      p_link: `/guides/${gen.id}`,
+      p_group_id: null,
+      p_idea_id: null,
+      p_forum_post_id: null,
+      p_swap_listing_id: null,
+    })
+  } catch { /* notifikation er best-effort */ }
+
   return { ok: true, guideId: gen.id, reused: false, generated: true }
 }
