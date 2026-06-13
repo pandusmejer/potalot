@@ -276,9 +276,18 @@ export const DEMO_I_DIN_HAVE: IDinHaveTal = {
  * guiden regner med 10-21" er en forfatter-sætning. Kun den
  * første linje vises; resten er fallback.
  */
+// V10.1: rig pulje så demo roterer dag for dag (Kapitel 1 vælger
+// dagens linje ud fra dagsnummer). Opdagelsen først (forfatter-
+// reglen), derefter juni/sommer-havevisdom — spejler hvad den
+// rigtige action bygger med havevisdomPulje().
 export const DEMO_KAPITEL_LIGE_NU: string[] = [
   'Chilierne spirede på 9 dage — guiden regner med 10-21.',
-  'Jorden er nu varm nok til tomater og chili.',
+  'Tomater giver mere, hvis sideskuddene nippes løbende.',
+  'Vanding tidligt om morgenen fordamper mindre end vanding midt på dagen.',
+  'En have passet ti minutter om dagen trives bedre end en have passet en time om ugen.',
+  'De fleste salater bliver bitre, når de går i stok — høst hellere for tidligt end for sent.',
+  'Bier og svirrefluer finder lettere de haver, hvor noget altid blomstrer.',
+  'En tur i haven om aftenen afslører mere end et hurtigt blik om morgenen.',
 ]
 
 /**
