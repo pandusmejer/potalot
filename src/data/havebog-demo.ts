@@ -569,8 +569,18 @@ export const DEMO_ARCHIVED_PLANTS: ArchivedPlant[] = [
 // 3 · Tal til din have
 export const DEMO_TAL_EKSEMPLER: string[] = [
   '"De første agurker er kommet."',
-  '"Tomaterne ser triste ud efter regnen."',
-  '"Næste år skal jeg huske flere salater."',
+  '"Husk mig på at nippe tomaterne i weekenden."',
+  '"Jeg så bladlus på roserne i dag."',
+]
+// V18: seneste optagelser — viser at stemmen bliver til noter/minder
+export interface Optagelse {
+  tekst: string
+  tid: string
+}
+export const DEMO_OPTAGELSER: Optagelse[] = [
+  { tekst: 'Tomaterne ser trætte ud efter regnen.', tid: 'I dag, 17.42' },
+  { tekst: 'Husk at så mere salat til efteråret.', tid: 'I går, 10.31' },
+  { tekst: 'Første tomat er ved at få farve!', tid: '8. juni, 18.09' },
 ]
 
 // 4 · Inspirér mig (som selvstændigt rum)
@@ -578,11 +588,21 @@ export interface InspirerForslag {
   kicker: string
   navn: string
   begrundelse: string
+  /** V18: illustration/foto — bruger eksisterende frøkort indtil videre */
+  billede?: string
+  /** V18: sekundært "måske du også vil prøve" */
+  sekundaer?: { kicker: string; titel: string; tekst: string }
 }
 export const DEMO_INSPIRER: InspirerForslag = {
   kicker: 'Prøv næste år',
   navn: 'Malwina jordbær',
   begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+  billede: '/images/frokort/jordbaer-korona.png',
+  sekundaer: {
+    kicker: 'Måske du også vil prøve',
+    titel: 'Prøv frøavl',
+    tekst: 'Du dyrker tomater — måske er det tid til at gemme dine egne frø.',
+  },
 }
 
 // 5 · Dyrkerstatus

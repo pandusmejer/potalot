@@ -626,6 +626,35 @@ brugers produktflade.
 (Afløser V10's `levende-lag.ts`, som kun valgte 1-2 moduler uden
 sæson-vægt eller 7-rums-loft.)
 
+### V18: Højere fidelitet — "mere af det her" (i gang, 13. juni 2026)
+
+Anna delte 12 polerede mockup-skærme og sagde: *"Vi skal have mere
+af det her."* Retningen: løft rummene fra ærlige tekst-prototyper
+til mockup-fidelitet — billeder/illustrationer, rigere sekundære
+lag (seneste optagelser, vis nyt forslag, måske du også, flere
+minder, medaljer, vækst-ring).
+
+**Bygget (rule-safe, eksisterende assets):**
+- Tal til din have: glød-halo bag mikrofonen + "Seneste optagelser"
+  med afspil-knapper.
+- Inspirér mig: billede + "Vis et nyt forslag" + sekundært "Måske
+  du også vil prøve".
+
+**AFVENTER ANNAS BESLUTNING — mockup'ene modsiger låste regler:**
+1. **Polaroid/papirklip/håndskrift** ("På denne dag"-mockup: foto i
+   ramme med papirclips + håndskrevet caption + "flere minder"-strip)
+   modsiger V7's kitsch-forbud (polaroider · tape · papirklip ·
+   håndskrevne labels). Forslag: ÉT roligt indrammet redaktionelt
+   foto + maskinsat caption er OK; collage/tape/håndskrift forbliver
+   ude. Skal bekræftes før byg.
+2. **Træ til Dyrkerstatus** (mockup viser et vækst-træ) modsiger V13's
+   "ikke træer, ikke fantasy" (luksusur/laug/mesterlære). Skal afgøres.
+
+**ASSET-afhængighed (ikke kode):** de frodige botaniske illustrationer,
+opskriftsfotos, vejr-ikon, vækst-træ og medalje-designs skal
+PRODUCERES. Koden bygger strukturen; assets droppes ind. Indtil da
+bruges eksisterende frøkort/plantekort som første-fidelitet.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
