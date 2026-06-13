@@ -1,7 +1,7 @@
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { DagTaeller } from '@/components/havebog/dag-taeller'
-import { KapitelLigeNu } from '@/components/havebog/kapitel-lige-nu'
+import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
 import { Vendepunkter } from '@/components/havebog/vendepunkter'
 import { Minder } from '@/components/havebog/minder'
@@ -12,7 +12,7 @@ import {
   DEMO_HERO_STATS,
   DEMO_TIDSLINJE,
   DEMO_HERO_NARRATIVE,
-  DEMO_KAPITEL_LIGE_NU,
+  DEMO_DAGENS_OPSLAG,
   DEMO_VENDEPUNKTER,
   DEMO_MINDER,
   DEMO_ON_THIS_DAY,
@@ -56,7 +56,7 @@ export default async function HavebogPage() {
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats
   const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
   const heroNarrative = isDemo ? DEMO_HERO_NARRATIVE : data.heroNarrative
-  const kapitelLigeNu = isDemo ? DEMO_KAPITEL_LIGE_NU : data.kapitelLigeNu
+  const dagensOpslag = isDemo ? DEMO_DAGENS_OPSLAG : data.dagensOpslag
   const onThisDay = isDemo ? DEMO_ON_THIS_DAY : data.onThisDay
   const vendepunkter = isDemo ? DEMO_VENDEPUNKTER : data.vendepunkter
   const minder = isDemo ? DEMO_MINDER : data.minder
@@ -89,8 +89,8 @@ export default async function HavebogPage() {
         <DagTaeller dag={heroNarrative.saesonDag} etiket={heroNarrative.saesonEtiket} />
       )}
 
-      {/* Dagens indsigt */}
-      <KapitelLigeNu saetninger={kapitelLigeNu} />
+      {/* ── ILDSTEDET (V15) — havens stemme i dag. Sidens centrum. ── */}
+      <HavensStemme takter={dagensOpslag} />
 
       {/* ── Det levende lag — sæsonens kuraterede moduler ── */}
       {levendeLag.map(modul => MODULER[modul])}

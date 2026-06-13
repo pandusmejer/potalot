@@ -522,6 +522,47 @@ i den efterhånden som motorerne lander — IKKE en omdøbning nu):
 (Kompetence-motoren var #2 i V12 — den er nu #5. Inspiration +
 identitet + køkken bærer "selvstændigt produkt"-ambitionen.)
 
+### V15: Ildstedet — havens stemme i dag (låst, 13. juni 2026)
+
+Annas erkendelse: problemet er ikke længere mangel på indhold, men
+mangel på **centrum**. Havebogen har rum, men mangler pejsen.
+
+> Ét centralt objekt der svarer på: **"Hvad har haven at fortælle
+> mig i dag?"** Alt andet på siden bliver sekundært.
+
+Fem bud blev overvejet (Brevet · Forsiden · Strømmen · Almanak-
+opslaget · Direkte tiltale). **Valgt: Brevet** — det rammer Annas
+eksempel-struktur, fortærer alle eksisterende motorer til én stemme,
+kan ikke forveksles med dashboard/kort/feed, og skalerer ærligt
+(én takt for en ny bruger, fem for en fuld have).
+
+#### Formen (låst)
+
+"Havens stemme i dag" — ÉT dagligt brev, vævet af de eksisterende
+motorer takt for takt:
+
+1. Nutidsanker — havens øjeblik (sæson/jordtemperatur)
+2. Din have lige nu — en opdagelse (ny bruger: lånt erfaring)
+3. (Status: planter klar til at komme ud — kun når det gælder)
+4. Inspiration om egne sorter — én, roteret dag for dag
+5. Blik fremad — lukker med forventning, ikke status
+
+Stor serif, massiv luft, én tanke ad gangen. Første takt størst;
+de øvrige træder en anelse tilbage. Ingen boks, ingen eyebrow,
+ingen knap — signeret diskret "fra haven".
+
+#### Krav (alle opfyldt)
+
+Fylder næsten en viewport · føles levende · ændrer sig dagligt
+(takterne roterer pr. dagsnummer) · bruger kun eksisterende motorer
+· ingen nye data · ikke chatbot · ikke notifikation · ikke dashboard.
+
+#### Det erstattede
+
+Den tidligere enkelt-linje "I dag i haven" (KapitelLigeNu) er
+ABSORBERET af ildstedet — ikke en ny sektion, men centrum der
+samler det, der før var spredt. "Stop med at bygge nye sektioner."
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
