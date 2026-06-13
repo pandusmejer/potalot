@@ -363,6 +363,57 @@ grænse, FØR objekterne bygges. Foreslået grænse (ikke låst endnu):
 Indtil Anna bekræfter grænsen, bygges objekterne IKKE med
 papir-tekstur/afrivningskant.
 
+### V12: Motorer bagved, liv på fladen (låst, 13. juni 2026)
+
+Annas korrektion af V11: jeg tænkte stadig i FEATURES (vise
+"Inspirér mig", "Tal til din have" som knapper). Men det er
+produkt-interne beslutninger — dyrkeren er ligeglad. Dyrkeren
+åbner ikke appen for en feature; de åbner den for en **følelse**:
+
+> "Der er altid noget nyt i min have, selv når jeg ikke er ude
+> i den."
+
+Det er Havebogens egentlige produkt. Resten er værktøjer til at
+levere den følelse.
+
+#### Reglen: features bliver usynlige motorer
+
+Funktionerne forsvinder ned bagved. På fladen står kun liv —
+editorial sætninger om brugerens egen have, i "I dag i haven"-
+stemmen. Samme motor, mindre feature, mere oplevelse:
+
+| Feature (forbudt på fladen) | Liv (det dyrkeren ser) |
+|---|---|
+| "Inspirér mig ✨" | "Du dyrker Corno di Toro Rosso. Mange kombinerer den med basilikum og aubergine." |
+| "Tal til din have" | 🎙️ "Fortæl hvad du lavede i haven i dag…" |
+| "Du har låst 7 af 38 skills op" | "Næste skridt som dyrker: lav din første kompost. Du har allerede styr på tomater og chili." |
+
+Sidste linje er reglen i en nøddeskal: **samme data, mindre
+system, mere menneske.** Et SaaS-dashboard ("7 af 38") er forbudt;
+en menneskelig næste-skridt-sætning er målet.
+
+#### Revideret byggerækkefølge (Annas, erstatter V11's)
+
+1. **Dagens indsigt bliver virkelig god** — fladens vigtigste stemme.
+2. **Inspirér mig som MOTOR** — kombinations-/forslagssætninger om
+   brugerens egne sorter, vævet ind i Dagens indsigt. Ingen knap.
+3. **Dyrkerkompetencer som MOTOR** — "næste skridt som dyrker",
+   aldrig "X af Y skills".
+4. **Tal til din have som stor feature** — til SIDST. En mikrofon
+   oven på en tom side redder ikke oplevelsen; den bliver prikken
+   over i'et, når siden allerede har noget at sige hver dag.
+
+Begrundelsen: Inspirér mig + kompetence-motoren giver Havebogen
+*flere ting at sige hver dag* med det samme. Tal til din have er
+fantastisk, men placeret på tomhed sidder den bare på tomhed.
+
+#### Ærligheds-reglen gælder motorerne
+
+Motor-sætninger må kun bygge på data vi har (frøbank, planter,
+guide-katalog) og almen, sand hortikultur. Ingen fabrikerede tal.
+Og: ingen døde links — en "Se middelhavshaven →" tilføjes KUN når
+destinationen findes. Indtil da står sætningen alene.
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
