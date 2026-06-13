@@ -3,6 +3,7 @@
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { requireUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
+import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
 import type { PrimaryCategoryId } from '@/lib/types'
 
 export interface ExtractedSeedFields {
@@ -248,8 +249,18 @@ export async function extractSeedFromUrl(
     return { error: `AI-fejl: ${msg}` }
   }
 
+  // Hvis der allerede findes et kurateret frøkort for sorten, skal DET
+  // være standard-fotoet — så vi gemmer IKKE shoppens og:image (det
+  // ville ellers blive primært og overskygge frøkortet). Billedet er
+  // stadig brugt til AI-udtrækket ovenfor; vi springer kun lagringen
+  // over. Brugeren kan altid uploade egne fotos og gøre dem til primære.
+  const harFroekort = harKurateretFroekort({
+    name: fields.name ?? '',
+    variety: fields.variety,
+  })
+
   let primaryImageUrl: string | null = null
-  if (absoluteImageUrl && !options?.skipImageDownload) {
+  if (absoluteImageUrl && !options?.skipImageDownload && !harFroekort) {
     try {
       const imgRes = await fetch(absoluteImageUrl, { signal: AbortSignal.timeout(10000) })
       if (imgRes.ok) {

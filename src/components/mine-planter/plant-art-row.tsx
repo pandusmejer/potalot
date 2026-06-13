@@ -150,9 +150,12 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
  * billede" — vi gætter aldrig på et foto fra en anden sort.
  */
 function VarietyCard({ plant }: { plant: Plant }) {
-  const varietySlug =
-    plant.guideId ??
-    (plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null)
+  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId
+  // sendes separat og prøves først; men kurateret plantekort/asset-
+  // convention er nøglet på sorts-sluggen, så den skal også med.
+  const varietySlug = plant.variety
+    ? slugify(`${plant.name}-${plant.variety}`)
+    : null
   const { src: photo } = resolvePotalotImage({
     guideId: plant.guideId,
     varietySlug,

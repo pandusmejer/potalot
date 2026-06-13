@@ -105,9 +105,12 @@ export function PlantCard({ plant, nextTask }: Props) {
   //   3. /images/plantekort/<varietySlug>.{jpg,png}
   //   4. placeholder
   // Ingen cross-role fald — sortsbillede falder aldrig til arts-niveau.
-  const varietySlug =
-    plant.guideId ??
-    (plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null)
+  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId
+  // sendes separat og prøves først; men kurateret plantekort/asset-
+  // convention er nøglet på sorts-sluggen, så den skal også med.
+  const varietySlug = plant.variety
+    ? slugify(`${plant.name}-${plant.variety}`)
+    : null
   const { src: heroImage } = resolvePotalotImage({
     guideId: plant.guideId,
     varietySlug,
