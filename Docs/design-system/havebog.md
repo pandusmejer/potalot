@@ -475,6 +475,53 @@ Netflix-/Spotify-logik for haven: "Mange dyrkere læser lige nu…",
 "Dyrkere som dig interesserer sig også for…", "Du mangler stadig…".
 Altid hjælpsomt, aldrig dømmende.
 
+### V14: Rum, ikke sektioner — og liv før features (låst, 13. juni 2026)
+
+To skift fra Anna, da Havebogen gik fra "have-app med en havebog"
+til selvstændigt produkt:
+
+#### Reframe: tænk i RUM, ikke sektioner
+
+> Havebogen skal ikke være en oversigt over haven. Den skal være
+> **det hus, haven bor i, når brugeren ikke er ude i den.**
+
+Et hus har rum, ikke sektioner. Den voksende model (vokser vi ind
+i den efterhånden som motorerne lander — IKKE en omdøbning nu):
+
+| Rum | Hvad det rummer |
+|---|---|
+| Dagligstuen | Den daglige åbning — hero + dagens indsigt |
+| Biblioteket | Inspiration, viden, det man kan lære |
+| Spisekammeret | Have → høst → køkken |
+| Værkstedet | Kompetencer, det man bliver bedre til |
+| Udkigsposten | Hvad der venter — sæson, trends, det kommende |
+| Arkivet | Minder, vendepunkter, tidligere sæsoner |
+
+#### Revideret rækkefølge (erstatter V12's)
+
+1. **Liv hver dag** — ikke flere features; mere variation, mere
+   redaktion, mere stof. Strukturen står; indholds-motorerne mangler.
+   "Åbner brugeren tre dage i træk og ser næsten det samme, er
+   problemet ikke manglende features — det er manglende liv."
+2. **Inspirationsmotoren EKSPLODERER** — fra "Du dyrker Korona" til
+   "Du dyrker Korona. Hvis du tilføjer Malwina, kan du høste jordbær
+   næsten en måned længere." Observation + indsigt. Kombinationer,
+   mønstre, huller-med-begrundelse. Her bliver Havebogen *klog*.
+3. **Spisekammer** — undervurderet; den mest livsstils-agtige
+   funktion. Have → høst → køkken → liv. Ikke en havefunktion.
+4. **Dyrkerstatus** — identitet, ikke gamification. SELVFORSYNER,
+   FRØSAMLER, DRIVHUSMESTER. Et bælte i kampsport, et laug, et
+   urværk — en titel man har gjort sig fortjent til.
+5. **Kompetencemotor** — flyttet NED. Kompetencer hjælper; de andre
+   giver personlighed. Inspiration + identitet + historier + køkken
+   kommer først.
+6. **Tal til din have** — kronen, til sidst. Bliver Havebogen
+   fantastisk uden mikrofonen, bliver mikrofonen magisk. Mangler der
+   stadig liv, bliver den bare endnu en knap.
+
+(Kompetence-motoren var #2 i V12 — den er nu #5. Inspiration +
+identitet + køkken bærer "selvstændigt produkt"-ambitionen.)
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
