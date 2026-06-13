@@ -28,6 +28,7 @@ import {
   DEMO_ON_THIS_DAY,
   DEMO_ARCHIVED_PLANTS,
   DEMO_TAL_EKSEMPLER,
+  DEMO_OPTAGELSER,
   DEMO_INSPIRER,
   DEMO_DYRKERSTATUS,
   DEMO_KOMPETENCER,
@@ -100,7 +101,7 @@ export default async function HavebogPage() {
     return (
       <div className="space-y-20 sm:space-y-28 pb-16">
         {forside /* 1 + 2 */}
-        <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} /> {/* 3 */}
+        <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} /> {/* 3 */}
         <InspirerMig forslag={DEMO_INSPIRER} /> {/* 4 */}
         <Dyrkerstatus status={DEMO_DYRKERSTATUS} /> {/* 5 */}
         <Dyrkerkompetencer omraader={DEMO_KOMPETENCER} /> {/* 6 */}

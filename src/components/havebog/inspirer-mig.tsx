@@ -8,15 +8,17 @@ interface Props {
 }
 
 /**
- * RUM 4 (V1.0-prototype) · Inspirér mig.
+ * RUM 4 (V18-fidelitet) · Inspirér mig.
  *
  * Opdage nye ting — ÉT forslag ad gangen, aldrig et feed. Trækker
  * forbindelser mellem frøbank, planter, guides, historik og årstid.
- * Motoren findes (src/lib/inspiration.ts); dette er rummet hvor ét
- * forslag får plads til at trække vejret.
  *
- * PROTOTYPE: viser ét kurateret forslag. "Træk et nyt"-interaktion
- * og link til sort/guide er en senere sprint (ingen døde links nu).
+ * V18 (Annas mockup): forslaget får et billede, en "Vis et nyt
+ * forslag"-knap, og et sekundært "Måske du også vil prøve".
+ *
+ * PROTOTYPE: "Vis et nyt forslag" er visuel (ikke koblet til en
+ * forslags-rotation endnu); billedet bruger eksisterende frøkort.
+ * Demo-only. Ingen døde links.
  */
 export function InspirerMig({ forslag }: Props) {
   return (
@@ -35,6 +37,22 @@ export function InspirerMig({ forslag }: Props) {
       >
         {forslag.kicker}
       </p>
+
+      {forslag.billede && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={forslag.billede}
+          alt=""
+          style={{
+            width: '100%',
+            maxWidth: 280,
+            aspectRatio: '1 / 1',
+            objectFit: 'contain',
+            margin: '0 0 8px -8px',
+            filter: 'saturate(0.96)',
+          }}
+        />
+      )}
 
       <p
         style={{
@@ -63,6 +81,82 @@ export function InspirerMig({ forslag }: Props) {
       >
         {forslag.begrundelse}
       </p>
+
+      {/* Vis et nyt forslag — den magiske knap (prototype) */}
+      <button
+        type="button"
+        className="flex items-center"
+        style={{
+          gap: 9,
+          marginTop: 22,
+          padding: '12px 22px',
+          borderRadius: 999,
+          border: 'none',
+          background: '#3B4A2F',
+          color: '#F4EFDC',
+          fontFamily: sans,
+          fontSize: 14,
+          fontWeight: 600,
+          cursor: 'pointer',
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#F4EFDC" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        Vis et nyt forslag
+      </button>
+
+      {/* Sekundært — måske du også vil prøve */}
+      {forslag.sekundaer && (
+        <div
+          style={{
+            marginTop: 36,
+            paddingTop: 26,
+            borderTop: '1px solid rgba(36,48,31,0.12)',
+          }}
+        >
+          <p
+            className="uppercase"
+            style={{
+              fontFamily: sans,
+              fontSize: 10.5,
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              color: 'rgba(36,48,31,0.42)',
+              margin: 0,
+              marginBottom: 10,
+            }}
+          >
+            {forslag.sekundaer.kicker}
+          </p>
+          <p
+            style={{
+              fontFamily: serif,
+              fontWeight: 500,
+              fontSize: 'clamp(22px, 5vw, 28px)',
+              lineHeight: 1.12,
+              color: '#24301F',
+              margin: 0,
+            }}
+          >
+            {forslag.sekundaer.titel}
+          </p>
+          <p
+            style={{
+              fontFamily: serif,
+              fontWeight: 400,
+              fontSize: 'clamp(16px, 3.6vw, 19px)',
+              lineHeight: 1.35,
+              color: 'rgba(36,48,31,0.66)',
+              margin: 0,
+              marginTop: 6,
+              maxWidth: '26ch',
+            }}
+          >
+            {forslag.sekundaer.tekst}
+          </p>
+        </div>
+      )}
     </section>
   )
 }
