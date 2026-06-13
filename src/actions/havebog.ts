@@ -14,6 +14,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje } from '@/lib/havevisdom'
+import { inspirationsSaetninger } from '@/lib/inspiration'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -564,8 +565,10 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .select('id, name, variety, status, is_archived, archived_year, archived_at, primary_image_url')
         .eq('user_id', me.id),
       supabase
+        // V12: hent navn+sort (ikke kun count) — inspirations-motoren
+        // skal kunne sige noget om brugerens egne sorter.
         .from('inventory_items')
-        .select('id', { count: 'exact', head: true })
+        .select('name, variety')
         .eq('user_id', me.id),
       supabase
         .from('profiles')
@@ -576,7 +579,8 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const logs = (logsRes.data ?? []) as PlantLogRow[]
     const plants = (plantsRes.data ?? []) as PlantRow[]
-    const inventoryCount = inventoryRes.count ?? 0
+    const inventoryItems = (inventoryRes.data ?? []) as Array<{ name: string; variety: string | null }>
+    const inventoryCount = inventoryItems.length
     // V9 (personlig hilsen): fornavn = første ord af display_name
     const fornavn =
       profilRes.data?.display_name?.trim().split(/\s+/)[0] || null
@@ -818,6 +822,15 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           : 'Dine første planter er klar til at komme udenfor.',
       )
     }
+    // V12 (Inspirér mig som motor): kombinations-/forslagssætninger
+    // om brugerens EGNE sorter — frøbank + planter. Personligt liv,
+    // ikke en knap. Lægges før den almene havevisdom, så rotationen
+    // ofte rammer noget om netop denne have.
+    const dyrkedeSorter = [
+      ...inventoryItems,
+      ...plants.filter(p => !p.is_archived).map(p => ({ name: p.name, variety: p.variety })),
+    ]
+    kapitelLigeNu.push(...inspirationsSaetninger(dyrkedeSorter))
     // Sæsonens almene havevisdom — den daglige rotation. For en helt
     // ny bruger bærer den Kapitel 1 alene; for andre supplerer den
     // de personlige linjer, så siden aldrig står stille.
