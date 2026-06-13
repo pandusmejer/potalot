@@ -440,6 +440,42 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
+  // ── FRØKORT-ONLY ENTRIES (13. juni 2026, fjerde leverance) ──
+  // Indholdsverificeret mod sortsnavn. Nye agurke-sorter + flere
+  // græskar/peber/bønne.
+  'agurk-delikatess': {
+    seedCard: { src: '/images/frokort/agurk-delikatess.png', alt: 'Delikatesse asier-agurk — frøkort' },
+    macro: [],
+  },
+  'agurk-louisa': {
+    seedCard: { src: '/images/frokort/agurk-louisa.png', alt: 'Louisa slangeagurk — frøkort' },
+    macro: [],
+  },
+  'agurk-passandra': {
+    seedCard: { src: '/images/frokort/agurk-passandra.png', alt: 'Passandra miniagurk — frøkort' },
+    macro: [],
+  },
+  'graeskar-butternut-waltham': {
+    seedCard: { src: '/images/frokort/graeskar-butternut-waltham.png', alt: 'Waltham Butternut græskar — frøkort' },
+    macro: [],
+  },
+  'graeskar-uchiki-kuri': {
+    seedCard: { src: '/images/frokort/graeskar-uchiki-kuri.png', alt: 'Uchiki Kuri græskar — frøkort' },
+    macro: [],
+  },
+  'peberfrugt-purple-beauty': {
+    seedCard: { src: '/images/frokort/peberfrugt-purple-beauty.png', alt: 'Purple Beauty peberfrugt — frøkort' },
+    macro: [],
+  },
+  'peberfrugt-yolo-wonder': {
+    seedCard: { src: '/images/frokort/peberfrugt-yolo-wonder.png', alt: 'Yolo Wonder peberfrugt — frøkort' },
+    macro: [],
+  },
+  'stangboenne-blauhilde': {
+    seedCard: { src: '/images/frokort/stangboenne-blauhilde.png', alt: 'Blauhilde stangbønne — frøkort' },
+    macro: [],
+  },
+
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
   'demo-guide-tomat-sm': {
