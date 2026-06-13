@@ -8,10 +8,11 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 169
+ * Fil-tæller: 178
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
+  "/images/ChatGPT Image 13. jun. 2026, 14.04.26.png",
   "/images/arts/agurk.jpg",
   "/images/arts/chili.jpg",
   "/images/arts/dahlia.jpg",
@@ -19,7 +20,10 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/peberfrugt.jpg",
   "/images/arts/tomat.jpg",
   "/images/frokort/ChatGPT Image 12. jun. 2026, 17.22.01.png",
+  "/images/frokort/agurk-delikatess.png",
+  "/images/frokort/agurk-louisa.png",
   "/images/frokort/agurk-marketmore.png",
+  "/images/frokort/agurk-passandra.png",
   "/images/frokort/agurk-telegraph.png",
   "/images/frokort/basilikum-genovese.png",
   "/images/frokort/chili-cayenne.png",
@@ -33,7 +37,9 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/dahlia-cafe-au-lait.png",
   "/images/frokort/dahlia-thomas-edison.png",
   "/images/frokort/dild-bouquet.png",
+  "/images/frokort/graeskar-butternut-waltham.png",
   "/images/frokort/graeskar-hokkaido.png",
+  "/images/frokort/graeskar-uchiki-kuri.png",
   "/images/frokort/groenkaal-red-russian.png",
   "/images/frokort/hvidloeg.png",
   "/images/frokort/jordbaer-korona.png",
@@ -44,6 +50,8 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/peberfrugt-california-wonder.png",
   "/images/frokort/peberfrugt-corno-di-toro-giallo.png",
   "/images/frokort/peberfrugt-corno-di-toro-rosso.png",
+  "/images/frokort/peberfrugt-purple-beauty.png",
+  "/images/frokort/peberfrugt-yolo-wonder.png",
   "/images/frokort/radise-cherry-belle.png",
   "/images/frokort/radise-french-breakfast.png",
   "/images/frokort/radise-saxa-2.png",
@@ -53,6 +61,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/solsikke-russian-giant.png",
   "/images/frokort/spinat-matador.png",
   "/images/frokort/squash-eight-ball.png",
+  "/images/frokort/stangboenne-blauhilde.png",
   "/images/frokort/stangboenne-cobra.png",
   "/images/frokort/sukkeraert-sugar-snap.png",
   "/images/frokort/tomat-black-cherry.png",
