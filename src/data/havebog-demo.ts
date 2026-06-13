@@ -276,15 +276,40 @@ export const DEMO_I_DIN_HAVE: IDinHaveTal = {
  * guiden regner med 10-21" er en forfatter-sætning. Kun den
  * første linje vises; resten er fallback.
  */
-// ILDSTEDET (V15): "Havens stemme i dag" — de vævede takter som
-// ÉT brev. Spejler hvad den rigtige action bygger: nutidsanker →
-// din have (opdagelse) → inspiration om egne sorter → blik fremad.
-export const DEMO_DAGENS_OPSLAG: string[] = [
-  'Jorden er nu varm nok til tomater og chili.',
-  'Chilierne spirede på 9 dage — guiden regner med 10-21.',
-  'Du dyrker Corno di Toro Rosso. Mange dyrker den sammen med aubergine og basilikum — en lille middelhavshave i bedet.',
-  'Mange dyrkere begynder allerede nu at planlægge efterårets afgrøder.',
-]
+// ILDSTEDET (V16): "Havens stemme i dag" som en DAGSSIDE med
+// redaktion. Én takt = rubrik-etiket + tekst. Lead'en er dagens
+// hovedhistorie (kæmpe); resten er støtte-takter (stepped down).
+export interface Takt {
+  /** Rubrik-etiket — "Dagens historie", "Fra haven", ... */
+  kicker: string
+  tekst: string
+}
+
+export interface DagensOpslag {
+  /** Hovedhistorien — kæmpe, ét bål i centrum */
+  lead: Takt
+  /** Støtte-takter i læserækkefølge */
+  beats: Takt[]
+}
+
+export const DEMO_DAGENS_OPSLAG: DagensOpslag = {
+  lead: {
+    kicker: 'Dagens historie',
+    tekst: 'Chilierne spirede på 9 dage — guiden regner med 10-21.',
+  },
+  beats: [
+    { kicker: 'Lige nu i haven', tekst: 'Jorden er nu varm nok til tomater og chili.' },
+    {
+      kicker: 'Fra haven',
+      tekst:
+        'Du dyrker Corno di Toro Rosso. Mange dyrker den sammen med aubergine og basilikum — en lille middelhavshave i bedet.',
+    },
+    {
+      kicker: 'På denne tid af året',
+      tekst: 'Mange begynder allerede nu at planlægge efterårets afgrøder.',
+    },
+  ],
+}
 
 /**
  * Kapitel 3: "Sæsonens vendepunkter" (V8 — afløser måneds-krøniken).

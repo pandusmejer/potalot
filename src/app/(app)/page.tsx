@@ -62,6 +62,14 @@ export default async function HavebogPage() {
   const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
+  // Ildstedets datolinje — altid i dag, så den følger heroen.
+  const MAANED_DA = [
+    'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+    'juli', 'august', 'september', 'oktober', 'november', 'december',
+  ]
+  const nu = new Date()
+  const idag = `${nu.getDate()}. ${MAANED_DA[nu.getMonth()]}`
+
   // Det levende lag — sæsonens 1-2 moduler. Tomme moduler tier
   // selv stille, så kuratering og stilhed komponerer.
   const levendeLag = vaelgLevendeLag(aktuelMaaned())
@@ -89,8 +97,8 @@ export default async function HavebogPage() {
         <DagTaeller dag={heroNarrative.saesonDag} etiket={heroNarrative.saesonEtiket} />
       )}
 
-      {/* ── ILDSTEDET (V15) — havens stemme i dag. Sidens centrum. ── */}
-      <HavensStemme takter={dagensOpslag} />
+      {/* ── ILDSTEDET (V16) — dagens side. Sidens centrum. ── */}
+      <HavensStemme dato={idag} opslag={dagensOpslag} />
 
       {/* ── Det levende lag — sæsonens kuraterede moduler ── */}
       {levendeLag.map(modul => MODULER[modul])}
