@@ -4,6 +4,7 @@ import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { DagTaeller } from '@/components/havebog/dag-taeller'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
+import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
 import { Dyrkerstatus } from '@/components/havebog/dyrkerstatus'
 import { Dyrkerkompetencer } from '@/components/havebog/dyrkerkompetencer'
@@ -142,6 +143,10 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
+      {/* Råstof-motoren — altid til stede for indloggede. Den ægte
+          "Tal til din have": tal/skriv → Claude-forslag → gem. Det
+          eneste rum der SKABER indhold til alle de andre. */}
+      <TalOptager />
       {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
   )
