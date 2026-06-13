@@ -13,7 +13,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
-import { laantErfaring } from '@/lib/havevisdom'
+import { havevisdomPulje } from '@/lib/havevisdom'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -798,15 +798,19 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       arterRigere,
     }
 
-    // ── Kapitel 1: "Lige nu" — fortælling, ikke rapport ───────
+    // ── Kapitel 1: "I dag i haven" — fortælling, ikke rapport ──
     // V8 (forfatter, ikke sekretær): en OPDAGELSE går forrest når
     // den findes — noget systemet har set, som brugeren ikke selv
-    // havde opdaget. Status-linjerne er fallback, ikke hovedperson.
+    // havde opdaget.
+    // V10.1 (én daglig overraskelse): efter opdagelsen lægges hele
+    // sæsonens visdomspulje i listen. Kapitel 1 roterer dag for dag
+    // gennem den, så fem dage i træk faktisk ser forskellige ud —
+    // opdagelsen (når den findes) er én af de roterende linjer, ikke
+    // en evig statisk åbning. Ærligheds-reglen: visdom er ALMEN
+    // (niveau 0); det personlige er opdagelsen + status-linjerne.
     const kapitelLigeNu: string[] = []
     const opdagelse = byggOpdagelse(logs, plantById, currentYear)
     if (opdagelse) kapitelLigeNu.push(opdagelse)
-    const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
-    if (ligeNuFakta) kapitelLigeNu.push(ligeNuFakta.statement)
     if (klarTilUdplantning > 0) {
       kapitelLigeNu.push(
         hasYearOnePlus(history, currentYear)
@@ -814,12 +818,10 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           : 'Dine første planter er klar til at komme udenfor.',
       )
     }
-    // V6 (lånt erfaring, niveau 0): en helt ny bruger uden egne
-    // beats får en fællesskabs-linje — Havebogen taler som en
-    // erfaren dyrker indtil brugerens egen historie tager over.
-    if (heroNarrative.userState === 'new' && kapitelLigeNu.length < 2) {
-      kapitelLigeNu.push(laantErfaring(today.getMonth() + 1).ligeNu)
-    }
+    // Sæsonens almene havevisdom — den daglige rotation. For en helt
+    // ny bruger bærer den Kapitel 1 alene; for andre supplerer den
+    // de personlige linjer, så siden aldrig står stille.
+    kapitelLigeNu.push(...havevisdomPulje(today.getMonth() + 1))
 
     // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
     // Begivenheder, ikke måneder: årets første af hver fase,

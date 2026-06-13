@@ -110,3 +110,69 @@ export function laantErfaring(month: number): LaantErfaring {
   const m = Math.max(1, Math.min(12, month))
   return LAANT_ERFARING_BY_MONTH[m - 1]
 }
+
+/**
+ * Dagens havevisdom — niveau 0-puljen til Kapitel 1 ("I dag i haven").
+ *
+ * V10.1 (Annas museums-kritik): rotations-mekanikken fandtes, men
+ * puljen sultede — to demo-linjer og én månedlig visdomslinje gør
+ * ikke fem dage i træk forskellige. Her er en rigtig pulje af
+ * almen havevisdom, sæson-opdelt, som Kapitel 1 kan rotere igennem
+ * dag for dag.
+ *
+ * STEMME-REGLER (samme som laantErfaring): aldrig "vidste du at"/
+ * "tip"/"fakta". Observation og håndværk, ikke blogindlæg. Ærligheds-
+ * reglen: kvalitative formuleringer, ingen fabrikerede procenter.
+ * Niveau 0 betyder ALMEN — ingen påstande om brugerens egne planter
+ * (de hører til niveau 1-3, opdagelsesmotoren).
+ *
+ * Sæson-opdeling så en vinterlinje aldrig dukker op i juli. Inden
+ * for sæsonen er rækkefølgen ligegyldig — Kapitel 1 vælger dagens
+ * linje deterministisk ud fra dagsnummer.
+ */
+const HAVEVISDOM_FORAAR: string[] = [
+  'Jorden skal være lun, før de varmekære frø spirer villigt.',
+  'Forspirede planter trives bedst, når de vænnes langsomt til livet udenfor.',
+  'Et tyndt lag kompost nu giver næring sæsonen igennem.',
+  'Tålmodighed i foråret betaler sig om sommeren — koldskudte planter henter sjældent det tabte.',
+  'De fleste fejl i foråret handler om at have for travlt.',
+  'Havearbejde har en dokumenteret positiv effekt på trivsel — også de dage, hvor intet spirer endnu.',
+  'Sås der lidt ad gangen med et par ugers mellemrum, holder høsten længere.',
+]
+const HAVEVISDOM_SOMMER: string[] = [
+  'Tomater giver mere, hvis sideskuddene nippes løbende.',
+  'Vanding tidligt om morgenen fordamper mindre end vanding midt på dagen.',
+  'En have passet ti minutter om dagen trives bedre end en have passet en time om ugen.',
+  'De fleste salater bliver bitre, når de går i stok — høst hellere for tidligt end for sent.',
+  'Bier og svirrefluer finder lettere de haver, hvor noget altid blomstrer.',
+  'Frø sat til lige nu når stadig at give høst inden efteråret.',
+  'En tur i haven om aftenen afslører mere end et hurtigt blik om morgenen.',
+]
+const HAVEVISDOM_EFTERAAR: string[] = [
+  'Frø fra årets bedste planter er ofte de bedste at gemme til næste år.',
+  'Et bed dækket med blade eller halm bevarer livet i jorden vinteren over.',
+  'Efteråret er den bedste tid at plante det, der skal stå klar til foråret.',
+  'Det meste af årets læring ligger i, hvad der gik anderledes end ventet.',
+  'Løg sat nu blomstrer som det første, når foråret vender tilbage.',
+  'En sidste høst smager ofte bedst — den er ventet længst.',
+]
+const HAVEVISDOM_VINTER: string[] = [
+  'De bedste sæsoner planlægges, mens haven hviler.',
+  'Frøkataloger om vinteren er halvdelen af glæden ved at dyrke.',
+  'Jorden hviler nu — det må gartneren også gerne.',
+  'En plan tegnet i januar spirer ofte bedre end et indfald i maj.',
+  'Vinteren er tiden til at læse årets noter, før de glemmes.',
+  'De hårdføre krydderurter i vindueskarmen holder haven i live indtil foråret.',
+]
+
+/**
+ * Sæsonens visdomspulje (1-12). Forår: mar-maj, sommer: jun-aug,
+ * efterår: sep-nov, vinter: dec-feb.
+ */
+export function havevisdomPulje(month: number): string[] {
+  const m = Math.max(1, Math.min(12, month))
+  if (m >= 3 && m <= 5) return HAVEVISDOM_FORAAR
+  if (m >= 6 && m <= 8) return HAVEVISDOM_SOMMER
+  if (m >= 9 && m <= 11) return HAVEVISDOM_EFTERAAR
+  return HAVEVISDOM_VINTER
+}
