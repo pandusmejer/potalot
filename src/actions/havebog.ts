@@ -13,7 +13,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
-import { havevisdomPulje } from '@/lib/havevisdom'
+import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
@@ -39,8 +39,8 @@ export interface HavebogData {
   /** V9 (personlig hilsen): første ord af profiles.display_name */
   fornavn: string | null
   iDinHave: IDinHaveTal
-  /** Kapitel 1: fortællende sætninger — helst en OPDAGELSE (V8) */
-  kapitelLigeNu: string[]
+  /** Ildstedet (V15): havens stemme i dag — vævede takter */
+  dagensOpslag: string[]
   /** Kapitel 3: sæsonens vendepunkter — begivenheder, ikke måneder */
   vendepunkter: Vendepunkt[]
   /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
@@ -802,39 +802,55 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       arterRigere,
     }
 
-    // ── Kapitel 1: "I dag i haven" — fortælling, ikke rapport ──
-    // V8 (forfatter, ikke sekretær): en OPDAGELSE går forrest når
-    // den findes — noget systemet har set, som brugeren ikke selv
-    // havde opdaget.
-    // V10.1 (én daglig overraskelse): efter opdagelsen lægges hele
-    // sæsonens visdomspulje i listen. Kapitel 1 roterer dag for dag
-    // gennem den, så fem dage i træk faktisk ser forskellige ud —
-    // opdagelsen (når den findes) er én af de roterende linjer, ikke
-    // en evig statisk åbning. Ærligheds-reglen: visdom er ALMEN
-    // (niveau 0); det personlige er opdagelsen + status-linjerne.
-    const kapitelLigeNu: string[] = []
+    // ── ILDSTEDET (V15): "Havens stemme i dag" ────────────────
+    // Havebogens centrum. Ikke en sektion blandt mange — det ene
+    // sted der samler alt. De eksisterende motorer væves til ÉN
+    // flydende stemme (brevet), takt for takt: nutid → din have →
+    // inspiration → blik fremad. Ingen nye data, ingen features.
+    //
+    // Daglig variation kommer fra rotationen på inspiration + det
+    // fremadrettede led (dagNr). Opdagelsen er aktuel; nutids-
+    // ankeret skifter pr. måned. Ærligheds-reglen gælder hver takt.
+    const maaned1 = today.getMonth() + 1
+    const dagNr = Math.floor(
+      (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000,
+    )
     const opdagelse = byggOpdagelse(logs, plantById, currentYear)
-    if (opdagelse) kapitelLigeNu.push(opdagelse)
+    const dyrkedeSorter = [
+      ...inventoryItems,
+      ...plants.filter(p => !p.is_archived).map(p => ({ name: p.name, variety: p.variety })),
+    ]
+    const inspirationer = inspirationsSaetninger(dyrkedeSorter)
+    const erNy = heroNarrative.userState === 'new'
+
+    const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
+
+    const dagensOpslag: string[] = []
+    // 1. Nutidsanker — havens øjeblik netop nu (sæson/jordtemperatur)
+    if (ligeNuFakta) dagensOpslag.push(ligeNuFakta.statement)
+    // 2. Din have lige nu — en opdagelse, ellers (for ny bruger)
+    //    lånt erfaring så stemmen aldrig står tom
+    if (opdagelse) dagensOpslag.push(opdagelse)
+    else if (erNy) dagensOpslag.push(laantErfaring(maaned1).ligeNu)
+    // 3. Status: planter klar til at komme ud (når det gælder)
     if (klarTilUdplantning > 0) {
-      kapitelLigeNu.push(
+      dagensOpslag.push(
         hasYearOnePlus(history, currentYear)
           ? 'Flere af dine planter er klar til at komme udenfor.'
           : 'Dine første planter er klar til at komme udenfor.',
       )
     }
-    // V12 (Inspirér mig som motor): kombinations-/forslagssætninger
-    // om brugerens EGNE sorter — frøbank + planter. Personligt liv,
-    // ikke en knap. Lægges før den almene havevisdom, så rotationen
-    // ofte rammer noget om netop denne have.
-    const dyrkedeSorter = [
-      ...inventoryItems,
-      ...plants.filter(p => !p.is_archived).map(p => ({ name: p.name, variety: p.variety })),
-    ]
-    kapitelLigeNu.push(...inspirationsSaetninger(dyrkedeSorter))
-    // Sæsonens almene havevisdom — den daglige rotation. For en helt
-    // ny bruger bærer den Kapitel 1 alene; for andre supplerer den
-    // de personlige linjer, så siden aldrig står stille.
-    kapitelLigeNu.push(...havevisdomPulje(today.getMonth() + 1))
+    // 4. Inspiration om egne sorter — én, roteret dag for dag.
+    //    Falder tilbage til almen havevisdom hvis brugeren intet
+    //    dyrker endnu, så takten aldrig mangler.
+    if (inspirationer.length > 0) {
+      dagensOpslag.push(inspirationer[dagNr % inspirationer.length])
+    } else {
+      const visdom = havevisdomPulje(maaned1)
+      dagensOpslag.push(visdom[dagNr % visdom.length])
+    }
+    // 5. Blik fremad — lukker brevet med forventning, ikke status
+    dagensOpslag.push(forventningsLinje(maaned1, dagNr))
 
     // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
     // Begivenheder, ikke måneder: årets første af hver fase,
@@ -856,7 +872,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       heroNarrative,
       fornavn,
       iDinHave,
-      kapitelLigeNu,
+      dagensOpslag,
       vendepunkter,
       minder,
       naturenLigeNu,

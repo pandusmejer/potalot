@@ -176,3 +176,40 @@ export function havevisdomPulje(month: number): string[] {
   if (m >= 9 && m <= 11) return HAVEVISDOM_EFTERAAR
   return HAVEVISDOM_VINTER
 }
+
+/**
+ * Blik fremad (V15: ildstedets sidste takt). Hvad der venter,
+ * hvad mange dyrkere går i gang med nu — den fremadrettede linje
+ * der lukker "havens stemme" med forventning frem for status.
+ * Almen og sand; ingen påstande om brugerens egne planter.
+ */
+const FORVENTNING_FORAAR = [
+  'Snart er nætterne lune nok til, at de varmekære planter kan komme ud.',
+  'Om kort tid eksploderer haven — maj og juni er årets hurtigste måneder.',
+  'De første udplantninger nærmer sig; haven står på spring.',
+]
+const FORVENTNING_SOMMER = [
+  'Mange dyrkere begynder allerede nu at planlægge efterårets afgrøder.',
+  'Om få uger er det tid til at så efterårssalat og asiatisk bladgrønt.',
+  'Højsommeren er tæt på — snart topper både høst og blomstring.',
+]
+const FORVENTNING_EFTERAAR = [
+  'Nu er det tid til at tænke på, hvad der skal dække jorden vinteren over.',
+  'Snart kan forårsløgene komme i jorden — det første, der vågner næste år.',
+  'De sidste høster gemmes; haven gør sig klar til at hvile.',
+]
+const FORVENTNING_VINTER = [
+  'Om få måneder begynder de første såninger på vindueskarmen.',
+  'Det er nu, årets plan og frøbestilling tager form.',
+  'Foråret er tættere på, end det føles — de tidligste chilier sås snart.',
+]
+
+export function forventningsLinje(month: number, dagNr: number): string {
+  const m = Math.max(1, Math.min(12, month))
+  const pulje =
+    m >= 3 && m <= 5 ? FORVENTNING_FORAAR
+    : m >= 6 && m <= 8 ? FORVENTNING_SOMMER
+    : m >= 9 && m <= 11 ? FORVENTNING_EFTERAAR
+    : FORVENTNING_VINTER
+  return pulje[Math.abs(dagNr) % pulje.length]
+}
