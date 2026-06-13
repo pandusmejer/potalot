@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { DagTaeller } from '@/components/havebog/dag-taeller'
@@ -15,7 +16,7 @@ import { VejretIHaven } from '@/components/havebog/vejret-i-haven'
 import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
-import { vaelgLevendeLag } from '@/lib/levende-lag'
+import { kurater, type RumId } from '@/lib/havebog-kurator'
 import { aktuelMaaned } from '@/lib/datetime'
 import {
   DEMO_HERO_STATS,
@@ -116,19 +117,31 @@ export default async function HavebogPage() {
     )
   }
 
-  // ── LOGGET IND: kurateret to-lags-layout (V10), uændret ──
-  const levendeLag = vaelgLevendeLag(aktuelMaaned())
-  const MODULER = {
-    paaDenneDag: <PaaDenneDag key="paaDenneDag" entries={onThisDay} />,
-    vendepunkter: <Vendepunkter key="vendepunkter" vendepunkter={vendepunkter} />,
-    minder: <Minder key="minder" minder={minder} />,
-  } as const
+  // ── LOGGET IND: kuratoren (V17) — højst 7 rum ──
+  // De 3 faste (forside) + højst 4 kuraterede. Kun rum med ÆGTE data
+  // kommer i betragtning; prototype-rum uden kilde (Tal, Inspirér,
+  // Status, Kompetencer, Spisekammer, Projekter, Bedrifter, Vejret,
+  // Populært) er gated false og vises derfor ikke endnu — de tændes
+  // ét ad gangen, efterhånden som deres deriver/kilde lander.
+  const harData: Partial<Record<RumId, boolean>> = {
+    paaDenneDag: onThisDay.length > 0,
+    minder: minder.length > 0,
+    vendepunkter: vendepunkter.length > 0,
+    historienFortsaetter: archivedPlants.length > 0,
+  }
+  const valgteRum = kurater({ maaned: aktuelMaaned(), harData })
+
+  const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
+    paaDenneDag: <PaaDenneDag entries={onThisDay} />,
+    minder: <Minder minder={minder} />,
+    vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
+    historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
+  }
 
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
-      {levendeLag.map(modul => MODULER[modul])}
-      <HistorienFortsaetter plants={archivedPlants} />
+      {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
   )
 }

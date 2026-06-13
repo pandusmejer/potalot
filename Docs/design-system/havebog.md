@@ -588,6 +588,44 @@ motorer, samme data; det nye er hierarkiet og rubrikkerne.
 Målestokken er stadig **februar-testen**: noget man har lyst til at
 blive siddende ved med en kop kaffe, mens haven ligger frossen ude.
 
+### V17: Kuratoren — redaktøren, ikke flere møbler (låst, 13. juni 2026)
+
+Det fulde hus (V1.0, 15 rum) er en design-lab-version, ikke
+produktet. En rigtig bruger må højst møde **7 rum pr. åbning**.
+Havebogen skal være redaktør, ikke katalog.
+
+#### Rum-lagene
+
+| Lag | Rum | Regel |
+|---|---|---|
+| Faste | Hero · Dagtæller · Ildsted | Altid, øverst (forsiden) |
+| Roterende | Tal · Inspirér · Kompetencer · Spisekammer · På denne dag · Minder · Vendepunkter · Bedrifter · Projekter · Vejret · Status | Vælg 2-4/dag |
+| Nederste | Historien fortsætter · Populært | Kun når relevante |
+
+#### Kuratorens to ufravigelige regler
+
+1. **Maks 7 rum.** De 3 faste + højst 4 kuraterede.
+2. **Intet rum uden ægte data til en rigtig bruger.** `harData` er
+   den hårde gate — ærligheds-reglen. Prototype-rum (Vejret,
+   Populært, og indtil videre Tal/Inspirér/Status/Kompetencer/
+   Spisekammer/Projekter/Bedrifter) er gated, til deres kilde lander.
+   De tændes ét ad gangen.
+
+#### Sæson-prioritet
+
+Sommer → Spisekammer · Minder · Tal til din have · Vendepunkter.
+Vinter → Inspirér mig · Kompetencer · Projekter · På denne dag.
+(Kodet som sæson-vægte 0-3 pr. rum i `src/lib/havebog-kurator.ts`.)
+
+#### Demo vs. produkt
+
+Demo bypasser kuratoren og viser **hele huset** — det er design-
+lab'et til at evaluere rummene. Kuratoren gælder kun den indloggede
+brugers produktflade.
+
+(Afløser V10's `levende-lag.ts`, som kun valgte 1-2 moduler uden
+sæson-vægt eller 7-rums-loft.)
+
 ### Lånt erfaring — niveau-modellen (V6-låst, 11. juni 2026)
 
 Tomme tilstande er korrekte, men ikke værdifulde. En ny bruger må
