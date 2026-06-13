@@ -13,27 +13,25 @@ interface Props {
 }
 
 /**
- * Dagtælleren (V9: havens stue) — heroens taktile tidselement.
+ * Dagtælleren (V13: premium magasin) — sin EGEN sektion efter heroen,
+ * ikke oven på den. Stor, taktil, mekanisk: som et gammelt
+ * kilometertællerhjul. Tre store cifre i midten på creme-bunden,
+ * "DAG" over, "af din første sæson" under.
  *
- * Tænk gammeldags flip-counter, ikke digital KPI: når Havebogen
- * åbnes, klikker tallet på plads med to tik (096 → 097 → 098)
- * over ~520 ms. Følelsen er "tiden går" — ikke "her er en
- * statistik". Dagtælleren minder om sæsonens rytme, fremdrift,
- * ventetid og forventning. Det er et følelsesmæssigt element.
+ * Når Havebogen åbnes, klikker tallet på plads med to tik
+ * (096 → 097 → 098) over ~520 ms — følelsen er "tiden går", ikke
+ * "her er en statistik". Den skal føles vigtig: brugeren bygger
+ * noget over tid.
  *
- * prefers-reduced-motion: tallet står stille på slutværdien.
- *
- * SSR-note: initialværdien (dag-2) renderes på serveren og er
- * identisk på klienten — animationen starter først i useEffect,
- * så der er ingen hydration-mismatch.
+ * prefers-reduced-motion: springer direkte til slutværdien.
+ * SSR: initialværdien (dag-2) er identisk på server og klient;
+ * animationen starter i useEffect → ingen hydration-mismatch.
  */
 export function DagTaeller({ dag, etiket }: Props) {
   const [vist, setVist] = useState(() => Math.max(1, dag - 2))
 
   useEffect(() => {
     if (vist >= dag) return
-    // prefers-reduced-motion: spring direkte til slutværdien (ét
-    // tick uden ventetid) i stedet for at animere hjulene.
     const reduceret = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const t = setTimeout(
       () => setVist(reduceret ? dag : v => Math.min(dag, v + 1)),
@@ -45,72 +43,76 @@ export function DagTaeller({ dag, etiket }: Props) {
   const cifre = String(vist).padStart(3, '0').split('')
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <section
+      className="flex flex-col items-center"
+      style={{ textAlign: 'center', paddingBlock: '8px 4px' }}
+    >
       <style>{`
         @keyframes dagtaeller-tick {
-          from { transform: translateY(-0.55em); opacity: 0.25; }
-          to   { transform: translateY(0);       opacity: 1; }
+          from { transform: translateY(-0.5em); opacity: 0.2; }
+          to   { transform: translateY(0);      opacity: 1; }
         }
       `}</style>
+
       <p
         style={{
           fontFamily: sans,
-          fontSize: 10,
+          fontSize: 11,
           fontWeight: 700,
-          letterSpacing: '0.3em',
+          letterSpacing: '0.34em',
           textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.66)',
-          textShadow: '0 1px 6px rgba(0,0,0,0.45)',
+          color: 'rgba(36,48,31,0.45)',
           margin: 0,
-          marginBottom: 4,
+          marginBottom: 10,
         }}
       >
         Dag
       </p>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-        <span
-          aria-label={`Dag ${dag}`}
-          style={{
-            display: 'inline-flex',
-            overflow: 'hidden',
-            fontFamily: sans,
-            fontSize: 34,
-            fontWeight: 700,
-            lineHeight: 1,
-            letterSpacing: '0.08em',
-            fontVariantNumeric: 'tabular-nums',
-            color: '#FFFFFF',
-            textShadow: '0 2px 14px rgba(0,0,0,0.45)',
-          }}
-        >
-          {cifre.map((c, i) => (
-            <span
-              // Nøglen skifter når cifret skifter → tick-animationen
-              // kører kun på de hjul der faktisk drejer.
-              key={`${i}-${c}`}
-              aria-hidden
-              style={{
-                display: 'inline-block',
-                animation: 'dagtaeller-tick 240ms ease-out',
-              }}
-            >
-              {c}
-            </span>
-          ))}
-        </span>
-        <span
-          style={{
-            fontFamily: serif,
-            fontStyle: 'italic',
-            fontWeight: 400,
-            fontSize: 'clamp(16px, 3.2vw, 19px)',
-            color: 'rgba(255,255,255,0.88)',
-            textShadow: '0 1px 10px rgba(0,0,0,0.5)',
-          }}
-        >
-          {etiket}
-        </span>
-      </div>
-    </div>
+
+      <span
+        aria-label={`Dag ${dag}`}
+        style={{
+          display: 'inline-flex',
+          overflow: 'hidden',
+          fontFamily: sans,
+          fontSize: 'clamp(72px, 22vw, 112px)',
+          fontWeight: 700,
+          lineHeight: 0.9,
+          letterSpacing: '0.04em',
+          fontVariantNumeric: 'tabular-nums',
+          color: '#24301F',
+        }}
+      >
+        {cifre.map((c, i) => (
+          <span
+            // Nøglen skifter med cifret → tick-animationen kører kun
+            // på de hjul der faktisk drejer.
+            key={`${i}-${c}`}
+            aria-hidden
+            style={{
+              display: 'inline-block',
+              animation: 'dagtaeller-tick 240ms ease-out',
+            }}
+          >
+            {c}
+          </span>
+        ))}
+      </span>
+
+      <p
+        style={{
+          fontFamily: serif,
+          fontStyle: 'italic',
+          fontWeight: 400,
+          fontSize: 'clamp(18px, 3.8vw, 22px)',
+          lineHeight: 1.3,
+          color: 'rgba(36,48,31,0.62)',
+          margin: 0,
+          marginTop: 14,
+        }}
+      >
+        {etiket}
+      </p>
+    </section>
   )
 }
