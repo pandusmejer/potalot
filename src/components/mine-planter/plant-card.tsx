@@ -193,23 +193,23 @@ export function PlantCard({ plant, nextTask }: Props) {
       {/* TOP-VENSTRE — fast eyebrow + stor titel + sort.
           Eyebrow er ALTID "MIN HAVE · PLANTE" (ikke status-baseret) —
           status hører hjemme i bundpanelet, ikke i identitets-laget. */}
-      <div className="absolute left-0 top-0 z-10 max-w-[68%] p-[22px]">
+      <div className="absolute left-0 top-0 z-10 max-w-[74%] p-[22px]">
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.90)', textShadow: '0 1px 4px rgba(20,14,8,0.45)' }}
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.92)', textShadow: '0 1px 5px rgba(20,14,8,0.5)' }}
         >
           MIN HAVE · PLANTE
         </p>
         <h3
-          className="mt-3"
-          style={{ fontFamily: sans, fontSize: 46, fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.02em', color: '#FFFFFF', textShadow: '0 3px 16px rgba(20,14,8,0.45)' }}
+          className="mt-3.5"
+          style={{ fontFamily: sans, fontSize: 56, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: '#FFFFFF', textShadow: '0 3px 22px rgba(20,14,8,0.6)' }}
         >
           {plant.name}
         </h3>
         {plant.variety && (
           <p
-            className="mt-2"
-            style={{ fontFamily: sans, fontSize: 22, fontWeight: 500, lineHeight: 1.1, letterSpacing: '-0.01em', color: 'rgba(255,255,255,0.78)', textShadow: '0 1px 8px rgba(20,14,8,0.42)' }}
+            className="mt-2.5"
+            style={{ fontFamily: sans, fontSize: 27, fontWeight: 600, lineHeight: 1.06, letterSpacing: '-0.015em', color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 12px rgba(20,14,8,0.5)' }}
           >
             {plant.variety}
           </p>
