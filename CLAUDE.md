@@ -62,6 +62,7 @@ Sektion-DNA (Docs/design-system/potalot.md har det fulde):
 - Guides = læring, magasin, Cormorant + Manrope (samme univers som Havebog)
 
 Designsystem-dokumenter (læs FØR redesign):
+- Docs/design-system/visuelt-system.md — POTALOT VISUAL SYSTEM V1: "to registre, én familie"; delte primitiver (spacing, typografi, farver, cards, billedhierarki, sektionstyper, CTA'er)
 - Docs/design-system/potalot.md — Overordnet filosofi + 3-lags arkitektur
 - Docs/design-system/sektion-roller.md — Hvad hver sektion ER (spørgsmål, primær/sekundær handling, må-aldrig-blive)
 - Docs/design-system/registrering.md — Registreringsprincipper (autoudfyld alt; frø→sået→plante)
