@@ -16,7 +16,7 @@
  * formen (felterne nedenfor) er sat her.
  */
 
-/** Ét punkt på den vandrette livshistorie-tidslinje. */
+/** Ét punkt på den lodrette livshistorie-tidslinje. */
 export interface DetailMilestone {
   /** Stadie-navn, fx "Sået", "Spiret", "Pottet om". */
   label: string
@@ -24,8 +24,8 @@ export interface DetailMilestone {
   dato: string | null
   /** Ikon-nøgle — afgør hvilken glyph der tegnes. */
   ikon: 'fro' | 'spire' | 'blad' | 'plante' | 'frugt'
-  /** Ekstra note under en fremtidig milepæl, fx "est. 22. juli". */
-  note?: string
+  /** Den narrative linje — historie, ikke proces. Hovedteksten. */
+  historie: string
 }
 
 /** De fire rolige instrument-tal i toppen (Status · Alder · Højde · Sundhed). */
@@ -51,19 +51,12 @@ export interface DetailNaeste {
   fotoAlt: string
 }
 
-/** Sammenligningslaget — perspektiv, ikke score. */
+/** Sammenligningslaget — historie, ikke score (Annas dom: ingen Strava). */
 export interface DetailSammenligning {
-  /** Dommen, fx "Du er foran". */
-  verdict: string
-  /** Forklaringen, fx "Din plante er 6 dage foran gennemsnittet …". */
-  forklaring: string
-  dinValue: string
-  /** 0..1 — hvor langt din plante er på vej (kortere = længere fremme). */
-  dinProgress: number
-  typiskValue: string
-  typiskProgress: number
-  /** Hvad sammenlignes — vises som lille label over begge søjler. */
-  maaling: string
+  /** Rolig serif-dom, fx "Din plante er lidt foran". */
+  overskrift: string
+  /** Havebog-forklaring: den typiske rytme vs. din plante, i prosa. */
+  broedtekst: string
 }
 
 export interface DetailBillede {
@@ -113,11 +106,11 @@ export const PLANT_DETAIL: Record<string, PlantDetail> = {
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },
     tidslinje: [
-      { label: 'Sået', dato: '18. marts', ikon: 'fro' },
-      { label: 'Spiret', dato: '24. marts', ikon: 'spire' },
-      { label: 'Pottet om', dato: '14. april', ikon: 'blad' },
-      { label: 'Udplantet', dato: '4. juni', ikon: 'plante' },
-      { label: 'Første høst', dato: null, ikon: 'frugt', note: 'est. 22. juli' },
+      { label: 'Sået', dato: '18. marts', ikon: 'fro', historie: 'Seks frø lagt i bakke på varmemåtte.' },
+      { label: 'Spiret', dato: '24. marts', ikon: 'spire', historie: 'Alle seks spirer kom op — stærke og lige.' },
+      { label: 'Pottet om', dato: '14. april', ikon: 'blad', historie: 'Flyttet til 11 cm potter; rødderne havde fyldt den gamle.' },
+      { label: 'Udplantet', dato: '4. juni', ikon: 'plante', historie: 'Sat ud i drivhusets lune sydhjørne.' },
+      { label: 'Første høst', dato: null, ikon: 'frugt', historie: 'Forventes omkring 22. juli.' },
     ],
     billeder: [
       { src: `${MAKRO_SM}/y-led.jpg`, alt: 'Kraftigt Y-led på stænglen' },
@@ -127,13 +120,9 @@ export const PLANT_DETAIL: Record<string, PlantDetail> = {
       { src: `${MAKRO_SM}/umodne.jpg`, alt: 'Umodne grønne San Marzano' },
     ],
     sammenligning: {
-      verdict: 'Du er foran',
-      forklaring: 'Din plante er 6 dage foran gennemsnittet for San Marzano.',
-      maaling: 'Første blomster',
-      dinValue: 'om 8–14 dage',
-      dinProgress: 0.66,
-      typiskValue: 'om 14–20 dage',
-      typiskProgress: 0.4,
+      overskrift: 'Din plante er lidt foran',
+      broedtekst:
+        'De fleste San Marzano får først blomster om 14–20 dage. Dine forventes tidligere — et tegn på en god, varm start.',
     },
   },
 }

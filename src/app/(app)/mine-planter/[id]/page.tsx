@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { PlantCard } from '@/components/mine-planter/plant-card'
 import { PlantTimeline } from '@/components/mine-planter/plant-timeline'
-import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
 import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
@@ -230,7 +229,7 @@ function renderDetail(
         </details>
       )}
 
-      <ArkiverSektion />
+      <AdministrerPlante />
     </article>
   )
 }
@@ -275,7 +274,7 @@ function renderEditorial(
 
         <DagbogSektion plant={plant} log={log} />
 
-        <ArkiverSektion />
+        <AdministrerPlante />
     </article>
   )
 }
@@ -344,19 +343,45 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
               Ingen log endnu. Tilføj din første observation.
             </p>
           )
-        ) : plant.logs.length > 0 || plant.notes ? (
-          <div className="space-y-3">
-            {plant.notes && (
-              <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
-                <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
-              </div>
-            )}
-            <div className="grid gap-3">
-              {plant.logs.map(entry => (
-                <PlantLogEntry key={entry.id} entry={entry} />
+        ) : plant.logs.length > 0 ? (
+          // Redaktionel dagbog: noten er hovedpersonen, datoen er diskret.
+          <ol className="space-y-5">
+            {[...plant.logs]
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .map(entry => (
+                <li key={entry.id}>
+                  <p
+                    className="uppercase"
+                    style={{
+                      fontFamily: 'var(--font-manrope)',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.14em',
+                      color: 'rgba(36,48,31,0.5)',
+                      margin: 0,
+                    }}
+                  >
+                    {formatDagbogDato(entry.date)} · {entry.action}
+                  </p>
+                  {entry.note && (
+                    <p
+                      className="mt-1.5 max-w-[46ch]"
+                      style={{
+                        fontFamily: 'var(--font-cormorant), Georgia, serif',
+                        fontSize: 'clamp(17px, 4.6vw, 19px)',
+                        fontWeight: 500,
+                        lineHeight: 1.34,
+                        letterSpacing: '0.004em',
+                        color: '#2D2A24',
+                        margin: '6px 0 0',
+                      }}
+                    >
+                      {entry.note}
+                    </p>
+                  )}
+                </li>
               ))}
-            </div>
-          </div>
+          </ol>
         ) : (
           <p className="py-2 text-sm italic text-muted-foreground">Ingen log endnu.</p>
         )}
@@ -365,25 +390,38 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
   )
 }
 
-function ArkiverSektion() {
+/**
+ * ADMINISTRER PLANTE — stille bund-utility (Annas dom: "Arkivér" er en
+ * systemhandling, ikke en del af plantens historie). Diskret, under en
+ * tynd streg — ikke et selvstændigt rum.
+ */
+function AdministrerPlante() {
   return (
-    <section className="rounded-2xl border border-border bg-surface-2 p-5 shadow-soft">
-      <div className="flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground">
-          <Archive className="h-5 w-5" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-serif text-xl leading-tight text-foreground">Arkivér plante</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Gem sæsonens noter, billeder og høsterfaringer i havebogen, når planten er færdig.
-          </p>
-        </div>
-        <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
-          Arkivér
-        </Button>
-      </div>
-    </section>
+    <div className="mt-3 border-t pt-5" style={{ borderColor: 'rgba(36,48,31,0.10)' }}>
+      <p
+        className="uppercase"
+        style={{
+          fontFamily: 'var(--font-manrope)',
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.16em',
+          color: 'rgba(36,48,31,0.42)',
+          margin: 0,
+        }}
+      >
+        Administrer plante
+      </p>
+      <Button variant="ghost" size="sm" className="-ml-2 mt-1.5 text-muted-foreground">
+        <Archive className="h-4 w-4" />
+        Arkivér plante
+      </Button>
+    </div>
   )
+}
+
+/** Dagbogs-dato: kort dansk form, fx "20. april". */
+function formatDagbogDato(date: string): string {
+  return new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long' }).format(new Date(date))
 }
 
 function Fact({ label, value }: { label: string; value: string }) {

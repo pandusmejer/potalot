@@ -106,7 +106,7 @@ export const mockPlants: MockPlant[] = [
     imageIds: ['/images/plantekort/tomat-san-marzano.jpg'],
     primaryImageId: '/images/plantekort/tomat-san-marzano.jpg',
     imageSource: 'guide_reference',
-    logIds: ['log-tomat-1', 'log-tomat-2'],
+    logIds: ['log-tomat-1', 'log-tomat-2', 'log-tomat-3'],
     guideId: 'tomat-san-marzano',
     isArchived: false,
     createdAt: '2026-03-18T08:00:00.000Z',
@@ -131,8 +131,9 @@ export const mockPlants: MockPlant[] = [
       timing: 'I denne uge',
     },
     logs: [
-      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: '6 frø i bakke med varme under.' },
-      { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter.' },
+      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.' },
+      { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.' },
+      { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.' },
     ],
     guide: {
       title: 'Tomat i krukke og drivhus',
