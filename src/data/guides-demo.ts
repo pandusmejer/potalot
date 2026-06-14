@@ -794,7 +794,7 @@ const EGEN_SUKKERAERT: Guide = {
     { taskType: 'sowing', title: 'Direkte såning', recommendedMonths: [3, 4], priority: 'high' },
     { taskType: 'harvest', title: 'Pluk bælge hver 2.–3. dag', recommendedMonths: [6, 7], priority: 'medium' },
   ],
-  primaryImageId: '/images/plantekort/sukkeraert-sugar-snap.jpg',
+  primaryImageId: '/images/plantekort/aert-sugar-snap.jpg',
   visibility: 'private',
 }
 

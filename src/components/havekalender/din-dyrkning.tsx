@@ -36,7 +36,7 @@ const DEMO_PLANTS: Plant[] = [
   {
     id: 'demo-plant-sukkeraert',
     userId: 'demo',
-    name: 'Sukkerært',
+    name: 'Ært',
     variety: 'Sugar Snap',
     status: 'spirer',
     location: 'Have, sydbed',
@@ -44,7 +44,7 @@ const DEMO_PLANTS: Plant[] = [
     plantingOutDate: null,
     quantity: 12,
     imageIds: [],
-    guideId: 'sukkeraert-sugar-snap',
+    guideId: 'aert-sugar-snap',
     logIds: [],
     isArchived: false,
     createdAt: '2026-04-10T00:00:00Z',

@@ -8,19 +8,18 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 178
+ * Fil-tæller: 175
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
-  "/images/ChatGPT Image 13. jun. 2026, 14.04.26.png",
   "/images/arts/agurk.jpg",
   "/images/arts/chili.jpg",
   "/images/arts/dahlia.jpg",
   "/images/arts/dild.jpg",
   "/images/arts/peberfrugt.jpg",
   "/images/arts/tomat.jpg",
-  "/images/frokort/ChatGPT Image 12. jun. 2026, 17.22.01.png",
-  "/images/frokort/agurk-delikatess.png",
+  "/images/frokort/aert-sugar-snap.png",
+  "/images/frokort/agurk-delikatesse.png",
   "/images/frokort/agurk-louisa.png",
   "/images/frokort/agurk-marketmore.png",
   "/images/frokort/agurk-passandra.png",
@@ -28,7 +27,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/basilikum-genovese.png",
   "/images/frokort/chili-cayenne.png",
   "/images/frokort/chili-habanero-orange.png",
-  "/images/frokort/chili-jalapeno-groen.png",
+  "/images/frokort/chili-jalapeno.png",
   "/images/frokort/chili-lemon-drop.png",
   "/images/frokort/chili-padron.png",
   "/images/frokort/cosmos-apricotta.png",
@@ -63,7 +62,6 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/squash-eight-ball.png",
   "/images/frokort/stangboenne-blauhilde.png",
   "/images/frokort/stangboenne-cobra.png",
-  "/images/frokort/sukkeraert-sugar-snap.png",
   "/images/frokort/tomat-black-cherry.png",
   "/images/frokort/tomat-cherrytomat.png",
   "/images/frokort/tomat-gardeners-delight.png",
@@ -178,7 +176,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/tomat/blomster.jpg",
   "/images/makro/tomat/kondens.jpg",
   "/images/makro/tomat/top-haar.jpg",
-  "/images/plantekort/ChatGPT Image 6. jun. 2026, 21.47.03.png",
+  "/images/plantekort/aert-sugar-snap.jpg",
   "/images/plantekort/agurk-marketmore.png",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/dahlia-cafe-au-lait.jpg",
@@ -187,7 +185,6 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg",
   "/images/plantekort/plantekort-hvidlog.jpg",
   "/images/plantekort/stangboenne-cobra.jpg",
-  "/images/plantekort/sukkeraert-sugar-snap.jpg",
   "/images/plantekort/tomat-san-marzano.jpg",
   "/images/ui/placeholder-card.svg",
 ])

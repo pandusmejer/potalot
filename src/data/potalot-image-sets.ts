@@ -239,8 +239,8 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
-  'chili-jalapeno-groen': {
-    seedCard: { src: '/images/frokort/chili-jalapeno-groen.png', alt: 'Jalapeño Grøn chili — frøkort' },
+  'chili-jalapeno': {
+    seedCard: { src: '/images/frokort/chili-jalapeno.png', alt: 'Jalapeño chili — frøkort' },
     macro: [],
   },
 
@@ -289,12 +289,11 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   //
   // Anden leverance. Indholdsverificeret mod sortsnavnene én for én.
   // OBS: leveret som "agurk-sugar-snap.png", men fotoet viser
-  // sukkerærter — omdøbt til sukkeraert-sugar-snap.png (ærligheds-
-  // reglen: forkert billede er værre end intet billede). Matcher
-  // sorten Sukkerært Sugar Snap som allerede findes i plantekort/.
-
-  'sukkeraert-sugar-snap': {
-    seedCard: { src: '/images/frokort/sukkeraert-sugar-snap.png', alt: 'Sugar Snap sukkerært — frøkort' },
+  // sukkerærter — omdøbt til aert-sugar-snap.png (ærligheds-reglen).
+  // v4-kanonisk slug: art = Ært, sort = Sugar Snap. "Sukkerært" er
+  // visningslabel/type, ikke art-navn (ellers splittes databasen).
+  'aert-sugar-snap': {
+    seedCard: { src: '/images/frokort/aert-sugar-snap.png', alt: 'Sugar Snap ært — frøkort' },
     macro: [],
   },
 
@@ -443,8 +442,8 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   // ── FRØKORT-ONLY ENTRIES (13. juni 2026, fjerde leverance) ──
   // Indholdsverificeret mod sortsnavn. Nye agurke-sorter + flere
   // græskar/peber/bønne.
-  'agurk-delikatess': {
-    seedCard: { src: '/images/frokort/agurk-delikatess.png', alt: 'Delikatesse asier-agurk — frøkort' },
+  'agurk-delikatesse': {
+    seedCard: { src: '/images/frokort/agurk-delikatesse.png', alt: 'Delikatesse asier-agurk — frøkort' },
     macro: [],
   },
   'agurk-louisa': {
