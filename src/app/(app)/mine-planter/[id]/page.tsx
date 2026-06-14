@@ -5,7 +5,9 @@ import { PlantCard } from '@/components/mine-planter/plant-card'
 import { PlantTimeline } from '@/components/mine-planter/plant-timeline'
 import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
 import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
+import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
+import { karakterFor } from '@/data/plant-karakter'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import {
   formatPlantDate,
@@ -117,6 +119,7 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
     ? formatPlantDate(plant.expectedHarvestStart)
     : '—'
   const nextActions: MockPlantNextAction[] = plant.nextAction ? [plant.nextAction] : []
+  const karakter = karakterFor(plant.guideId)
 
   return (
     <article className="mx-auto max-w-3xl space-y-6 pb-8">
@@ -135,6 +138,9 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
           </Button>
         )}
       </div>
+
+      {/* KARAKTER — sortens sjæl, det første du møder (fase 1: oplevelse). */}
+      {karakter && <PlantKarakter karakter={karakter} />}
 
       <section className="grid gap-3 sm:grid-cols-3">
         <Fact label="Status" value={statusMeta.label} />
