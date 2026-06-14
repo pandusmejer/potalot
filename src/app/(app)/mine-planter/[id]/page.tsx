@@ -11,6 +11,8 @@ import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
 import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
+import { LogForm } from '@/components/mine-planter/log-form'
+import { Timeline } from '@/components/mine-planter/timeline'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
 import { detailFor, type PlantDetail } from '@/data/plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
@@ -21,8 +23,8 @@ import {
   type MockPlant,
   type MockPlantNextAction,
 } from '@/data/mock-plants'
-import type { Plant } from '@/lib/types'
-import { getPlant } from '@/actions/mine-planter'
+import type { Plant, PlantLog } from '@/lib/types'
+import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import {
   Archive,
   ArrowLeft,
@@ -31,7 +33,14 @@ import {
   ChevronDown,
   Images,
   NotebookText,
+  Plus,
 } from 'lucide-react'
+
+/** Logging-kontekst: brugerens rigtige logs + om de kan redigeres (logget ind). */
+interface LogContext {
+  logs: PlantLog[]
+  canLog: boolean
+}
 
 interface Props {
   params: Promise<{ id: string }>
@@ -62,14 +71,16 @@ export default async function PlanteDetailPage({ params }: Props) {
   // 1) Real-data path: prøv DB først
   const realPlant = await getPlant(id)
   if (realPlant) {
-    return renderDetail(toMockShape(realPlant), null)
+    // Logget ind med egen plante → hent rigtige logs + tillad logging.
+    const logs = await getPlantLogs(realPlant.id)
+    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true })
   }
 
-  // 2) Demo-fallback: kig i mock-bibliotek
+  // 2) Demo-fallback: kig i mock-bibliotek (anonym → ingen skrivning).
   const mockPlant = getMockPlantById(id)
   if (mockPlant) {
     const nextTask = mockPlantTasks.find(t => t.linkedPlantId === mockPlant.id) ?? null
-    return renderDetail(mockPlant, nextTask)
+    return renderDetail(mockPlant, nextTask, { logs: [], canLog: false })
   }
 
   notFound()
@@ -117,7 +128,11 @@ function toMockShape(plant: Plant): MockPlant {
   }
 }
 
-function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').CalendarTask | null) {
+function renderDetail(
+  plant: MockPlant,
+  nextTask: import('@/lib/types').CalendarTask | null,
+  log: LogContext,
+) {
   const karakter = karakterFor(plant.guideId)
   const detail = detailFor(plant.guideId)
   // For real plants har vi ingen calendar-task; behold nextTask null.
@@ -126,7 +141,7 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
 
   // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
   if (detail) {
-    return renderEditorial(plant, detail, karakter, resolvedNextTask)
+    return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
   }
 
   const statusMeta = PLANT_STATUS_META[plant.status]
@@ -192,34 +207,7 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
         </details>
       )}
 
-      {(plant.logs.length > 0 || plant.notes) && (
-        <details className="group rounded-2xl border border-border bg-card shadow-soft">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-            <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <NotebookText className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-tight text-foreground">Noter</span>
-                <span className="text-xs text-muted-foreground">{plant.logs.length} logpunkter</span>
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="space-y-3 px-5 pb-5 pt-0">
-            {plant.notes && (
-              <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
-                <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
-              </div>
-            )}
-            <div className="grid gap-3">
-              {plant.logs.map(log => (
-                <PlantLogEntry key={log.id} entry={log} />
-              ))}
-            </div>
-          </div>
-        </details>
-      )}
+      <DagbogSektion plant={plant} log={log} />
 
       {plant.guide.title && (
         <details className="group rounded-2xl border border-border bg-card shadow-soft">
@@ -262,6 +250,7 @@ function renderEditorial(
   detail: PlantDetail,
   karakter: Karakter | null,
   nextTask: import('@/lib/types').CalendarTask | null,
+  log: LogContext,
 ) {
   return (
     <article className="space-y-5 pb-4">
@@ -283,37 +272,95 @@ function renderEditorial(
         <PlantGalleri billeder={detail.billeder} />
         {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
-        {(plant.logs.length > 0 || plant.notes) && (
-          <details className="group rounded-2xl border border-border bg-card shadow-soft">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-              <span className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <NotebookText className="h-4 w-4" />
-                </span>
-                <span>
-                  <span className="block font-serif text-2xl leading-tight text-foreground">Noter</span>
-                  <span className="text-xs text-muted-foreground">{plant.logs.length} logpunkter</span>
-                </span>
-              </span>
-              <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-            </summary>
-            <div className="space-y-3 px-5 pb-5 pt-0">
-              {plant.notes && (
-                <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
-                  <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
-                </div>
-              )}
-              <div className="grid gap-3">
-                {plant.logs.map(log => (
-                  <PlantLogEntry key={log.id} entry={log} />
-                ))}
-              </div>
-            </div>
-          </details>
-        )}
+        <DagbogSektion plant={plant} log={log} />
 
         <ArkiverSektion />
     </article>
+  )
+}
+
+/**
+ * DAGBOG — logging på plantesiden (genskabt "som tidligere").
+ *
+ * Ægte (logget-ind) bruger: "Tilføj"-knap (LogForm-dialog med foto) +
+ * Timeline med brugerens logs (redigér/slet). showMilestones=false fordi
+ * den nye Tidslinje-sektion allerede viser milepælene.
+ *
+ * Demo (anonym): kan ikke skrive (createPlantLog kræver requireUser), så
+ * knappen er deaktiveret med en venlig opfordring; demo-noter vises read-
+ * only, så showcasen stadig har indhold.
+ */
+function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
+  const { logs, canLog } = log
+  const antal = canLog ? logs.length : plant.logs.length
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <NotebookText className="h-4 w-4" />
+          </span>
+          <span>
+            <span className="block font-serif text-2xl leading-tight text-foreground">Dagbog</span>
+            <span className="text-xs text-muted-foreground">
+              {antal === 0
+                ? 'Ingen log endnu'
+                : `${antal} ${antal === 1 ? 'logpunkt' : 'logpunkter'}`}
+            </span>
+          </span>
+        </span>
+        {canLog ? (
+          <LogForm
+            plantId={plant.id}
+            trigger={
+              <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
+                <Plus className="h-4 w-4" />
+                Tilføj
+              </Button>
+            }
+          />
+        ) : (
+          <Button variant="outline" size="sm" className="shrink-0 bg-card/70" disabled>
+            <Plus className="h-4 w-4" />
+            Tilføj
+          </Button>
+        )}
+      </div>
+
+      {!canLog && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Opret en bruger for at logge dine egne observationer og fotos.
+        </p>
+      )}
+
+      <div className="mt-4">
+        {canLog ? (
+          logs.length > 0 ? (
+            <Timeline plant={plant} logs={logs} showMilestones={false} />
+          ) : (
+            <p className="py-2 text-sm italic text-muted-foreground">
+              Ingen log endnu. Tilføj din første observation.
+            </p>
+          )
+        ) : plant.logs.length > 0 || plant.notes ? (
+          <div className="space-y-3">
+            {plant.notes && (
+              <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
+                <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
+              </div>
+            )}
+            <div className="grid gap-3">
+              {plant.logs.map(entry => (
+                <PlantLogEntry key={entry.id} entry={entry} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="py-2 text-sm italic text-muted-foreground">Ingen log endnu.</p>
+        )}
+      </div>
+    </section>
   )
 }
 

@@ -45,19 +45,27 @@ const LOG_FARVE: Record<string, string> = {
 interface Props {
   plant: Plant
   logs: PlantLog[]
+  /** Vis strukturerede milepæle (sået/udplantet/høst). Slå fra når en
+   *  separat Tidslinje allerede viser milepælene (plante-detaljen). */
+  showMilestones?: boolean
+  /** Skjul redigér/slet — fx i demo (anonym, kan ikke skrive). */
+  readOnly?: boolean
 }
 
 /**
  * Plante-tidslinje. Viser strukturerede milepæle (sået/spiret/udplantet/første høst)
  * + alle log-events i kronologisk rækkefølge.
  */
-export function Timeline({ plant, logs }: Props) {
+export function Timeline({ plant, logs, showMilestones = true, readOnly = false }: Props) {
   // Strukturerede milepæle fra plant fields
-  const milepaele = [
-    { type: 'sowing', label: 'Sået', date: plant.sowDate },
-    { type: 'planting_out', label: 'Udplantet', date: plant.plantingOutDate },
-    { type: 'harvest', label: 'Første høst', date: plant.firstHarvestDate },
-  ].filter(m => m.date) as { type: string; label: string; date: string }[]
+  const milepaele = (showMilestones
+    ? [
+        { type: 'sowing', label: 'Sået', date: plant.sowDate },
+        { type: 'planting_out', label: 'Udplantet', date: plant.plantingOutDate },
+        { type: 'harvest', label: 'Første høst', date: plant.firstHarvestDate },
+      ]
+    : []
+  ).filter(m => m.date) as { type: string; label: string; date: string }[]
 
   // Filtrer status_change-logs fra — de er infrastruktur til stadie-tracking,
   // ikke meningsfulde brugerevents. Plantens nuværende stadie er synligt i
@@ -124,7 +132,7 @@ export function Timeline({ plant, logs }: Props) {
                   </div>
                 )}
               </div>
-              {editable && (
+              {editable && !readOnly && (
                 <LogActions plantId={plant.id} log={item.log} />
               )}
             </div>
