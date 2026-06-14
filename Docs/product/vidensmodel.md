@@ -200,6 +200,43 @@ App           = visning (læser KUN Supabase)
 Dette er bindeleddet til vidensmodellen: hver række i "Sorter" = en master-guide
 (Lag 1), og "Billeder"-fanen = frøkort/billed-roadmap.
 
+### Master Database — kolonnestruktur (reserveret, Annas dom 14. juni 2026)
+
+Når "Potalot Master Database"-arket oprettes, reserveres disse kolonner fra
+start (én række = én sort):
+
+```
+Identitet:     Art · Sort · Botanisk art · Slægt · Familie
+Billed-status: Har frøkort · Har plantekort · Har artsfoto · Har makrofotos
+Guide-status:  Har artsguide · Har sortsguide · Guide-status · Billede-status
+Styring:       Prioritet · Kilde · Sidst opdateret
+```
+
+**Kilde er den vigtigste på lang sigt — provenance.** Værdier fx: Redaktionel ·
+Brugerobservation · RHS · NordGen · Impecta · Nelson Garden · Egen erfaring.
+Når Potalot lærer af brugerne (vidensmodellen), SKAL man kunne svare på *"hvor
+kommer denne påstand fra?"* — ellers hviler en tomatguide pludselig på én
+entusiast fra Randers. Kilde + kildevægtning (se ovenfor) er det, der gør
+"klogere" til "troværdig".
+
+### Taksonomi-disciplin (LÅST)
+
+Art → Sort, altid. En sort bliver **aldrig** sin egen art:
+
+```
+Ært        → Sugar Snap        (IKKE: Sukkerært, Snapært, Margeært som arter)
+Tomat      → San Marzano, Sungold
+Peberfrugt → California Wonder, Corno di Toro Rosso
+```
+
+Konsekvent disciplin her sparer ~200 fremtidige migreringer. "Sukkerært" o.l.
+er visningslabel/type, ikke art. (Jf. slug-samordningen, commit d7cdd1a.)
+
+### Rækkefølge (Annas prioritet)
+
+1. Opret Google Sheet → 2. Importér v4 → 3. Afstem mod appen →
+4. Lås taksonomien → 5. Byg videre.
+
 ## Launch-rækkefølge (nu → senere)
 
 **Nu (lille, launch-relevant):**
