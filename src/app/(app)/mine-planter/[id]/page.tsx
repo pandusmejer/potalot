@@ -237,8 +237,8 @@ function renderDetail(
 
 /**
  * EDITORIAL-spor — den perfekte planteside som statisk artefakt.
- * Rækkefølge (Annas valg 14. juni): Plantekort-hero → Lige nu → Karakter
- * → Tidslinje → Billeder → Sammenligning. Noter + arkivér diskret nederst.
+ * Rækkefølge (Annas valg): Plantekort-hero → Karakter → Lige nu →
+ * Tidslinje → Billeder → Sammenligning. Dagbog + arkivér diskret nederst.
  *
  * Heroen er det klassiske Plantekort (foto-kort med titel ovenpå + tæller).
  * Dets bundpanel viser Mål-strimlen (Status·Alder·Højde·Sundhed) — den
@@ -266,9 +266,10 @@ function renderEditorial(
         <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} />
       </div>
 
+      {/* KARAKTER = sektion 2, lige efter hero (Annas valg). */}
+      {karakter && <PlantKarakter karakter={karakter} />}
       <PlantNaeste naeste={detail.naeste} />
-        {karakter && <PlantKarakter karakter={karakter} />}
-        <PlantTidslinje milestones={detail.tidslinje} />
+      <PlantTidslinje milestones={detail.tidslinje} />
         <PlantGalleri billeder={detail.billeder} />
         {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
