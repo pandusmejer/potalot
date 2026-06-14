@@ -32,7 +32,6 @@ import {
   Camera,
   ChevronDown,
   Images,
-  NotebookText,
   Plus,
 } from 'lucide-react'
 
@@ -312,24 +311,16 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-      {/* Header — "Plantens historie", ikke "Dagbog". */}
+      {/* Header — kun eyebrow + underlinje. "Denne sæson" var redundant. */}
       <div className="flex items-start justify-between gap-3">
-        <span className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <NotebookText className="h-4 w-4" />
-          </span>
-          <span>
-            <span className="block uppercase" style={{ fontFamily: sansFont, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.5)' }}>
-              Plantens historie
-            </span>
-            <span className="block font-serif text-[26px] leading-none text-foreground" style={{ marginTop: 3 }}>
-              Denne sæson
-            </span>
-            <span className="mt-1 block text-xs text-muted-foreground">
-              Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
-            </span>
-          </span>
-        </span>
+        <div className="min-w-0">
+          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.5)', margin: 0 }}>
+            Plantens historie
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
+          </p>
+        </div>
         {canLog ? (
           <LogForm
             plantId={plant.id}
@@ -379,12 +370,11 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
  * på alle der har en — fyldigt på hero, dæmpet bagud.
  */
 function DagbogKapitel({ entry, tier }: { entry: MockPlant['logs'][number]; tier: number }) {
-  const daySize = tier === 0 ? 56 : tier === 1 ? 42 : 32
-  const dayColor = tier === 0 ? '#24301F' : tier === 1 ? 'rgba(36,48,31,0.66)' : 'rgba(36,48,31,0.42)'
+  const daySize = tier === 0 ? 23 : tier === 1 ? 19 : 17
+  const dayColor = tier === 0 ? '#24301F' : tier === 1 ? 'rgba(36,48,31,0.62)' : 'rgba(36,48,31,0.42)'
+  const monthColor = tier === 0 ? 'rgba(36,48,31,0.5)' : 'rgba(36,48,31,0.4)'
   const noteSize = tier === 0 ? 24 : tier === 1 ? 19 : 16.5
-  const noteColor = tier === 0 ? '#24301F' : tier === 1 ? '#2D2A24' : 'rgba(45,42,36,0.6)'
-  const labelColor = tier === 0 ? '#5A7038' : 'rgba(36,48,31,0.5)'
-  const dotColor = tier === 0 ? '#5A7038' : 'rgba(36,48,31,0.3)'
+  const noteColor = tier === 0 ? '#24301F' : tier === 1 ? '#2D2A24' : 'rgba(45,42,36,0.58)'
 
   return (
     <li
@@ -394,61 +384,46 @@ function DagbogKapitel({ entry, tier }: { entry: MockPlant['logs'][number]; tier
         borderTop: tier === 0 ? 'none' : '1px solid rgba(36,48,31,0.08)',
       }}
     >
-      {/* Masthead: kæmpe dagtal + label + fuld dato ved siden af. */}
-      <div className="flex items-start gap-3.5">
-        <span
-          style={{ fontFamily: serifFont, fontWeight: 600, fontSize: daySize, lineHeight: 0.82, color: dayColor, letterSpacing: '-0.01em' }}
-        >
+      {/* Dato — eneste markør: "09 JUN", intet andet. */}
+      <p style={{ margin: 0 }}>
+        <span style={{ fontFamily: serifFont, fontWeight: 600, fontSize: daySize, letterSpacing: '-0.01em', color: dayColor }}>
           {dagbogDag(entry.date)}
         </span>
-        <div className="min-w-0 pt-1">
-          <p
-            className="flex items-center gap-1.5 uppercase"
-            style={{ fontFamily: sansFont, fontSize: tier === 0 ? 11 : 10, fontWeight: 700, letterSpacing: '0.13em', color: labelColor, margin: 0 }}
-          >
-            <span aria-hidden className="inline-block h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: dotColor }} />
-            {entry.action}
-          </p>
-          <p style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.45)', margin: '3px 0 0' }}>
-            {formatFuldDato(entry.date)}
-          </p>
-        </div>
-      </div>
+        <span className="uppercase" style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: monthColor, marginLeft: 7 }}>
+          {dagbogMaaned(entry.date)}
+        </span>
+      </p>
 
-      {/* Noten — kapitlets brødtekst, i serif. */}
+      {/* Historien — hovedpersonen. (Logtypen er metadata; den vises ikke.) */}
       {entry.note && (
         <p
           className="max-w-[44ch]"
-          style={{ fontFamily: serifFont, fontWeight: 500, fontSize: noteSize, lineHeight: 1.28, letterSpacing: '0.004em', color: noteColor, margin: '10px 0 0' }}
+          style={{ fontFamily: serifFont, fontWeight: 500, fontSize: noteSize, lineHeight: 1.28, letterSpacing: '0.004em', color: noteColor, margin: '8px 0 0' }}
         >
           {entry.note}
         </p>
       )}
 
-      {/* Konsekvens — hvad det BETØD. Fyldigt på hero, dæmpet bagud. */}
+      {/* Konsekvens — Potalots egen stemme. Hero: labelet "DET BETØD".
+          Ældre: én dæmpet → linje. */}
       {entry.konsekvens && tier === 0 && (
-        <div className="mt-4 flex items-start gap-2.5 border-t pt-3.5" style={{ borderColor: 'rgba(36,48,31,0.12)' }}>
-          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ background: 'rgba(90,112,56,0.16)', color: '#5A7038' }}>
-            <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden />
-          </span>
-          <p style={{ fontFamily: sansFont, fontSize: 13.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(45,58,36,0.82)', margin: 0 }}>
+        <div className="mt-4 border-t pt-3.5" style={{ borderColor: 'rgba(36,48,31,0.12)' }}>
+          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#5A7038', margin: 0 }}>
+            Det betød
+          </p>
+          <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '5px 0 0' }}>
             {entry.konsekvens}
           </p>
         </div>
       )}
       {entry.konsekvens && tier > 0 && (
-        <p className="mt-2.5 flex items-start gap-1.5" style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)', margin: '10px 0 0' }}>
+        <p className="mt-2.5 flex items-start gap-1.5" style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)', margin: '8px 0 0' }}>
           <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(90,112,56,0.7)' }} aria-hidden />
           {entry.konsekvens}
         </p>
       )}
     </li>
   )
-}
-
-/** Fuld dansk dato uden årstal, fx "9. juni". */
-function formatFuldDato(date: string): string {
-  return new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long' }).format(new Date(date))
 }
 
 /**
