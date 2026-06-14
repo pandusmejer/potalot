@@ -1,51 +1,30 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { PlantArtRow } from '@/components/mine-planter/plant-art-row'
-import { PlantHero } from '@/components/mine-planter/plant-hero'
-import { GreenhouseNow } from '@/components/mine-planter/greenhouse-now'
-import { PlantStatusFilter } from '@/components/mine-planter/plant-status-filter'
-import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
-import { RecentPlantActivity } from '@/components/mine-planter/recent-plant-activity'
+import { ForsideHero } from '@/components/mine-planter/forside-hero'
+import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
+import { AtSeTilIDag, type AtSeItem } from '@/components/mine-planter/at-se-til-i-dag'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
-import {
-  mockPlantActions,
-  mockPlantActivities,
-  mockPlants,
-  plantStatusFilters,
-  statusToFilter,
-  type PlantFilterStatus,
-} from '@/data/mock-plants'
+import { mockPlants, type MockPlant } from '@/data/mock-plants'
+import { detailFor } from '@/data/plant-detail'
+import { afledtStatuslinje } from '@/lib/afledninger'
+import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant, PlantStatus } from '@/lib/types'
-import { planterMentorLinje } from '@/lib/afledninger'
 import { ArrowRight, BookOpen, Archive } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 
 /**
  * Lifecycle-definition (låst af Anna, juni 2026):
- *
- *   PLANLAGT   — besluttet, men intet er i jord endnu.
- *                Hører tættere på Frøbank/Kalender; vises her som
- *                kompakt chip-række, IKKE som art-rækker.
- *   AKTIVE     — fysisk i dyrkning lige nu:
- *                sået → spirer → i vækst → klar til udplantning
- *                → udplantet → høstklar.
- *                KUN disse får "Art → Sorter"-rækkerne.
- *   AFSLUTTET  — sæsonen er slut, men endnu ikke arkiveret.
- *                Vises som "Klar til arkiv" med forslag om at
- *                gemme i Havebogen. Bliver IKKE stående i Aktive.
- *   ARKIVERET  — tidligere sæsoner. Bor i Havebogen.
- *
- * Reglen: "Aktive" må kun indeholde planter der fysisk er i gang.
- * Ellers bliver det en rodekasse med planer, levende planter og
- * døde planter.
+ *   PLANLAGT   — besluttet, men intet i jord endnu (chip-række).
+ *   AKTIVE     — fysisk i dyrkning: sået → … → høstklar (arts-rækker).
+ *   AFSLUTTET  — sæsonen slut, ikke arkiveret ("Klar til arkiv").
+ *   ARKIVERET  — tidligere sæsoner (bor i Havebogen).
  *
  * Planter = det levende, jeg skal holde øje med nu.
- * Frøbank ejer beholdningen. Kalender ejer timing. Havebog ejer
- * historikken. Planter ejer det, der gror.
  */
 const GROWING_STATUSES: ReadonlySet<PlantStatus> = new Set([
   'saaet',
@@ -56,26 +35,32 @@ const GROWING_STATUSES: ReadonlySet<PlantStatus> = new Set([
   'hoestklar',
 ])
 
+/** Opmærksomheds-rang til hovedperson-/At se til-valg. Lavest = vigtigst. */
+function fokusRank(p: Plant): number {
+  if (p.status === 'hoestklar') return 0
+  if (p.status === 'klar_til_udplantning') return 1
+  return 2
+}
+
+/** Kort, fremadskuende linje til hovedperson + blobs. */
+function forventningFor(p: Plant): string {
+  const detalje = detailFor(p.guideId)?.naeste.forventning
+  if (detalje) return detalje
+  // MockPlant har en konkret nextAction; brug den i demo.
+  const na = (p as Partial<MockPlant>).nextAction?.action
+  if (na) return na
+  return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
+}
+
 interface Props {
-  /**
-   * Brugerens ægte planter. Hvis tomt array → demo-mode (mock-data
-   * driver hele siden). Hvis non-empty → real-data path: ægte planter
-   * vises, og de mock-baserede "Næste handlinger" + "Senest i haven"
-   * skjules (de hører til demo-oplevelsen og har endnu ingen ægte
-   * data-kilde for almindelige brugere).
-   */
+  /** Brugerens ægte planter. Tomt → demo-mode (mock-data driver siden). */
   plants: Plant[]
 }
 
 export function MinePlanterClient({ plants: realPlants }: Props) {
-  const [activeFilter, setActiveFilter] = useState<PlantFilterStatus>('lige_nu')
-
   const isDemo = realPlants.length === 0
-  // Bemærk: mockPlants extends Plant, så typen er Plant-kompatibel
-  // begge veje. Vi kalder den bare "plants" i komponentkroppen.
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
-  // ── Lifecycle-buckets ─────────────────────────────────────
   const { aktive, planlagte, klarTilArkiv } = useMemo(() => {
     const nonArchived = plants.filter(p => !p.isArchived)
     return {
@@ -85,39 +70,55 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
     }
   }, [plants])
 
-  // Handlings-chips filtrerer KUN inden for Aktive-bucket'en.
-  // "Lige nu" (default) = alle aktive.
-  const filteredAktive = useMemo(() => {
-    if (activeFilter === 'lige_nu') return aktive
-    return aktive.filter(p => statusToFilter(p.status) === activeFilter)
-  }, [aktive, activeFilter])
+  // Hero-tal: samlet antal levende planter + antal der kræver handling.
+  const totalIndivid = useMemo(
+    () => aktive.reduce((sum, p) => sum + (p.quantity ?? 0), 0),
+    [aktive],
+  )
+  const attentionCount = useMemo(
+    () =>
+      aktive.filter(
+        p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning',
+      ).length,
+    [aktive],
+  )
 
-  const varietyCount = useMemo(() => {
-    const varieties = new Set(
-      aktive.map(plant => `${plant.name}-${plant.variety ?? ''}`),
+  // Hovedperson: foretræk en sort med redaktionelt indhold (rig
+  // forventning), ellers den mest opmærksomheds-krævende.
+  const hovedperson = useMemo(() => {
+    if (aktive.length === 0) return null
+    return (
+      aktive.find(p => detailFor(p.guideId)) ??
+      [...aktive].sort((a, b) => fokusRank(a) - fokusRank(b))[0]
     )
-    return varieties.size
   }, [aktive])
 
-  // V2-arkitektur: "Aktive → Art → Sorter".
-  // Gruppér de filtrerede aktive planter efter art (plant.name).
-  // Hver art bliver en sektion med horisontal scroll af sort-kort.
-  //
-  // Art-grupper sorteres: grupper med opmærksomheds-status
-  // (høstklar / klar til udplantning) først, derefter flest planter,
-  // derefter alfabetisk. Det besvarer "hvordan har mine planter det"
-  // i prioriteret rækkefølge: dem der har brug for dig står øverst.
+  // At se til i dag: de mest opmærksomheds-krævende planter (op til 3),
+  // én pr. art så formerne føles forskellige.
+  const atSeItems = useMemo<AtSeItem[]>(() => {
+    const sorted = [...aktive].sort((a, b) => fokusRank(a) - fokusRank(b))
+    const items: AtSeItem[] = []
+    const seenArter = new Set<string>()
+    for (const p of sorted) {
+      if (fokusRank(p) === 2) break // kun opmærksomheds-værdige
+      if (seenArter.has(p.name)) continue
+      seenArter.add(p.name)
+      items.push({ art: p.name, action: forventningFor(p), href: `/mine-planter/${p.id}` })
+      if (items.length === 3) break
+    }
+    return items
+  }, [aktive])
+
+  // Arts-rækker: gruppér aktive efter art. Opmærksomheds-arter først,
+  // derefter flest planter, derefter alfabetisk.
   const artGroups = useMemo(() => {
     const byArt = new Map<string, Plant[]>()
-    for (const plant of filteredAktive) {
-      const key = plant.name
-      if (!byArt.has(key)) byArt.set(key, [])
-      byArt.get(key)!.push(plant)
+    for (const plant of aktive) {
+      if (!byArt.has(plant.name)) byArt.set(plant.name, [])
+      byArt.get(plant.name)!.push(plant)
     }
     const needsAttention = (group: Plant[]) =>
-      group.some(
-        p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning',
-      )
+      group.some(p => p.status === 'hoestklar' || p.status === 'klar_til_udplantning')
     return [...byArt.entries()].sort(([nameA, groupA], [nameB, groupB]) => {
       const attA = needsAttention(groupA) ? 0 : 1
       const attB = needsAttention(groupB) ? 0 : 1
@@ -125,73 +126,47 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       if (groupA.length !== groupB.length) return groupB.length - groupA.length
       return nameA.localeCompare(nameB, 'da')
     })
-  }, [filteredAktive])
-
-  // Mentor-linjen: én sætning, ingen knap, ingen CTA — bare et tegn
-  // på at der sidder en hjerne bagved. Tilstand-stemme (grænsereglen).
-  const mentorLinje = planterMentorLinje(aktive)
+  }, [aktive])
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 pb-8">
-      <PlantHero activeCount={aktive.length} varietyCount={varietyCount} />
+    <div className="mx-auto max-w-3xl space-y-8 pb-8">
+      <ForsideHero total={totalIndivid} attention={attentionCount} />
 
-      {mentorLinje && (
-        <p
-          className="px-0.5"
-          style={{
-            fontFamily: 'var(--font-manrope)',
-            fontSize: 15,
-            fontWeight: 600,
-            lineHeight: 1.4,
-            letterSpacing: '-0.01em',
-            color: 'rgba(36,48,31,0.78)',
-            margin: 0,
-            marginTop: -8, // tættere på heroen end på strippen — den hører til som heroens efterskrift
-          }}
-        >
-          {mentorLinje}
-        </p>
+      {/* LIGE NU — hovedpersonen (sidens centrum). */}
+      {hovedperson && (
+        <ForsideLigeNu plant={hovedperson} forventning={forventningFor(hovedperson)} />
       )}
 
-      <GreenhouseNow plants={aktive} />
+      {/* AT SE TIL I DAG — organiske former. */}
+      <AtSeTilIDag items={atSeItems} />
 
-      <PlantStatusFilter
-        filters={plantStatusFilters}
-        active={activeFilter}
-        onChange={setActiveFilter}
-      />
-
-      {/* ── AKTIVE: Art → Sorter ─────────────────────────────── */}
+      {/* MINE ARTER — vertikalt arts-scroll, horisontalt sorts-scroll. */}
       <section className="space-y-7">
-        {/* Niveau-markør (V2.3.1): uden den hopper øjet direkte
-            fra fokuslaget til "TOMAT" — det virker, men føles
-            abrupt. "Mine arter" giver hjernen kapitel-skiftet. */}
-        {artGroups.length > 0 && (
-          <h2
-            className="uppercase px-0.5"
-            style={{
-              fontFamily: 'var(--font-manrope)',
-              fontSize: 13,
-              fontWeight: 700,
-              letterSpacing: '0.14em',
-              color: 'rgba(36,48,31,0.55)',
-              margin: 0,
-              marginBottom: -8, // strammere mod første art-række
-            }}
-          >
-            Mine arter
-          </h2>
-        )}
         {artGroups.length > 0 ? (
-          artGroups.map(([artName, group]) => (
-            <PlantArtRow key={artName} artName={artName} plants={group} />
-          ))
+          <>
+            <h2
+              className="uppercase px-0.5"
+              style={{
+                fontFamily: sans,
+                fontSize: 12.5,
+                fontWeight: 700,
+                letterSpacing: '0.16em',
+                color: 'rgba(36,48,31,0.52)',
+                margin: 0,
+              }}
+            >
+              Mine arter
+            </h2>
+            {artGroups.map(([artName, group]) => (
+              <PlantArtRow key={artName} artName={artName} plants={group} />
+            ))}
+          </>
         ) : (
           <PlantEmptyState />
         )}
       </section>
 
-      {/* ── PLANLAGT: kompakt chip-række ─────────────────────── */}
+      {/* PLANLAGT — kompakt chip-række. */}
       {planlagte.length > 0 && (
         <section className="space-y-3">
           <header className="flex items-baseline justify-between gap-3 px-0.5">
@@ -199,24 +174,16 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               className="uppercase"
               style={{
                 fontFamily: sans,
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 700,
-                letterSpacing: '0.14em',
-                color: 'rgba(36,48,31,0.55)',
+                letterSpacing: '0.16em',
+                color: 'rgba(36,48,31,0.52)',
                 margin: 0,
               }}
             >
               Planlagt
             </h2>
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 12,
-                fontWeight: 600,
-                color: 'rgba(36,48,31,0.45)',
-                margin: 0,
-              }}
-            >
+            <p style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: 'rgba(36,48,31,0.45)', margin: 0 }}>
               Endnu ikke sået
             </p>
           </header>
@@ -240,9 +207,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               >
                 {plant.name}
                 {plant.variety && (
-                  <span style={{ fontWeight: 400, color: 'rgba(36,48,31,0.50)' }}>
-                    {plant.variety}
-                  </span>
+                  <span style={{ fontWeight: 400, color: 'rgba(36,48,31,0.50)' }}>{plant.variety}</span>
                 )}
               </Link>
             ))}
@@ -250,7 +215,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </section>
       )}
 
-      {/* ── KLAR TIL ARKIV: foreslå Havebogen ────────────────── */}
+      {/* KLAR TIL ARKIV — foreslå Havebogen. */}
       {klarTilArkiv.length > 0 && (
         <section className="space-y-3">
           <header className="px-0.5">
@@ -258,25 +223,16 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               className="uppercase"
               style={{
                 fontFamily: sans,
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 700,
-                letterSpacing: '0.14em',
-                color: 'rgba(36,48,31,0.55)',
+                letterSpacing: '0.16em',
+                color: 'rgba(36,48,31,0.52)',
                 margin: 0,
               }}
             >
               Klar til arkiv
             </h2>
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 12.5,
-                fontWeight: 500,
-                color: 'rgba(36,48,31,0.50)',
-                margin: 0,
-                marginTop: 4,
-              }}
-            >
+            <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.50)', margin: '4px 0 0' }}>
               Sæsonen er slut for de her — gem dem i Havebogen.
             </p>
           </header>
@@ -295,34 +251,17 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
                 }}
               >
                 <span className="flex min-w-0 items-center gap-2.5">
-                  <Archive
-                    className="h-4 w-4 shrink-0"
-                    style={{ color: 'rgba(36,48,31,0.45)' }}
-                    aria-hidden
-                  />
+                  <Archive className="h-4 w-4 shrink-0" style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
                   <span
                     className="truncate"
-                    style={{
-                      fontFamily: sans,
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: 'rgba(36,48,31,0.72)',
-                    }}
+                    style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.72)' }}
                   >
                     {plant.name}
                     {plant.variety ? ` ${plant.variety}` : ''}
                     {plant.growingYear ? ` · ${plant.growingYear}` : ''}
                   </span>
                 </span>
-                <span
-                  className="shrink-0"
-                  style={{
-                    fontFamily: sans,
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    color: '#7B816F',
-                  }}
-                >
+                <span className="shrink-0" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#7B816F' }}>
                   Gem i Havebogen →
                 </span>
               </Link>
@@ -331,16 +270,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </section>
       )}
 
-      {/* Mock-drevne demo-sektioner — vises kun i demo-mode, fordi de
-          har ingen real-data ækvivalent endnu. Når real users har data
-          her, kommer en separat real-data variant. */}
-      {isDemo && (
-        <>
-          <NextPlantActions actions={mockPlantActions} />
-          <RecentPlantActivity activities={mockPlantActivities} />
-        </>
-      )}
-
+      {/* TIDLIGERE SÆSONER — bro til Havebogen. */}
       <section className="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,var(--surface-2),var(--card))] p-5 shadow-soft">
         <div className="flex items-start gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
