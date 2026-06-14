@@ -415,7 +415,7 @@ export const DEMO_HISTORY: HistoryYear[] = [
         varietyCount: 6,
         imageUrls: [
           '/images/plantekort/tomat-san-marzano.jpg',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
           '/images/plantekort/chili-habanero-orange.jpg',
           '/images/plantekort/agurk-marketmore.png',
           '/images/plantekort/dahlia-cafe-au-lait.jpg',
@@ -432,7 +432,7 @@ export const DEMO_HISTORY: HistoryYear[] = [
         varietyCount: 5,
         imageUrls: [
           '/images/plantekort/tomat-san-marzano.jpg',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
           '/images/plantekort/chili-habanero-orange.jpg',
           '/images/plantekort/agurk-marketmore.png',
           '/images/plantekort/dild-bouquet.jpg',
@@ -465,7 +465,7 @@ export const DEMO_HISTORY: HistoryYear[] = [
           '/images/plantekort/stangboenne-cobra.jpg',
           '/images/plantekort/tomat-san-marzano.jpg',
           '/images/plantekort/dahlia-cafe-au-lait.jpg',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
         ],
       },
       {
@@ -478,14 +478,14 @@ export const DEMO_HISTORY: HistoryYear[] = [
           '/images/plantekort/tomat-san-marzano.jpg',
           '/images/plantekort/chili-habanero-orange.jpg',
           '/images/plantekort/agurk-marketmore.png',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
           '/images/plantekort/dild-bouquet.jpg',
           '/images/plantekort/dahlia-cafe-au-lait.jpg',
           '/images/plantekort/stangboenne-cobra.jpg',
           '/images/plantekort/tomat-san-marzano.jpg',
           '/images/plantekort/agurk-marketmore.png',
           '/images/plantekort/chili-habanero-orange.jpg',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
         ],
       },
       {
@@ -496,7 +496,7 @@ export const DEMO_HISTORY: HistoryYear[] = [
         varietyCount: 5,
         imageUrls: [
           '/images/plantekort/tomat-san-marzano.jpg',
-          '/images/plantekort/sukkeraert-sugar-snap.jpg',
+          '/images/plantekort/aert-sugar-snap.jpg',
           '/images/plantekort/dahlia-cafe-au-lait.jpg',
           '/images/plantekort/chili-habanero-orange.jpg',
           '/images/plantekort/agurk-marketmore.png',
