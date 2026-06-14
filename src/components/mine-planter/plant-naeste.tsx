@@ -119,14 +119,34 @@ export function PlantNaeste({
           </ul>
         </div>
 
-        {/* FOTO — hvad der er på vej + Se kalender. */}
-        <div className="relative w-[34%] shrink-0 self-stretch overflow-hidden rounded-[16px]">
+        {/* FOTO — hvad der er på vej + Se kalender.
+            Organisk ramme: fotoet klippes til en blød, bølget kontur
+            (venstre kant bølger ind mod teksten). Kun fotoet klippes —
+            "Se kalender"-knappen ligger udenfor clip'en. */}
+        <div className="relative w-[37%] shrink-0 self-stretch">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={naeste.fotoSrc}
             alt={naeste.fotoAlt}
             className="absolute inset-0 h-full w-full object-cover"
+            style={{ clipPath: 'url(#ligenu-organisk-ramme)' }}
           />
+          {/* Responsiv organisk clip (objectBoundingBox, 0–1). Bølget
+              venstre kant + bløde højre hjørner. */}
+          <svg width="0" height="0" aria-hidden className="absolute">
+            <defs>
+              <clipPath id="ligenu-organisk-ramme" clipPathUnits="objectBoundingBox">
+                <path d="M 0.13 0.02
+                  C 0.34 -0.01, 0.70 -0.01, 0.90 0.006
+                  C 0.965 0.012, 1 0.045, 1 0.11
+                  L 1 0.89
+                  C 1 0.955, 0.965 0.988, 0.90 0.994
+                  C 0.70 1.01, 0.34 1.01, 0.13 0.98
+                  C 0.02 0.83, 0.23 0.66, 0.115 0.5
+                  C 0.0 0.34, 0.22 0.18, 0.13 0.02 Z" />
+              </clipPath>
+            </defs>
+          </svg>
           <Link
             href={kalenderHref}
             className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full py-2 text-white backdrop-blur-sm transition-transform active:scale-95"
