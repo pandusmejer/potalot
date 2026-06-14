@@ -237,6 +237,32 @@ er visningslabel/type, ikke art. (Jf. slug-samordningen, commit d7cdd1a.)
 1. Opret Google Sheet → 2. Importér v4 → 3. Afstem mod appen →
 4. Lås taksonomien → 5. Byg videre.
 
+## Master-guides: hvor de bor (launch → senere) — Annas dom 14. juni 2026
+
+**MD-guides og ADMIN er TO forskellige ting. Bland dem ikke sammen.**
+
+- **Redaktionelle Markdown-guides = de officielle master-guides VED LAUNCH.**
+  Skrevet og kurateret af jer, versionsstyret i Git (`content/guides/*.md` →
+  `IMPORTED_GUIDES`). Punktum. Ingen import, ingen DB, ingen synk.
+  ```
+  Master guide  →  Markdown-fil
+  ```
+- **ADMIN håndterer IKKE master-guides (endnu).** ADMIN findes kun til
+  *fremtidige* vidensforslag, brugerindsigter og versionering (vidensmotoren).
+  At `/admin/guides` viser **0 masters er korrekt og forventet** — de
+  redaktionelle guides er Markdown, ikke DB-rækker. Det er IKKE en push-fejl.
+- **Først når vidensekstraktion + versionering er implementeret** (lag 4-8 i
+  launch-rækkefølgen) migreres master-guiderne til den levende DB-model:
+  ```
+  Master guide v1 (MD) + Videnskø + godkendte indsigter  →  Master guide v2 (DB)
+  ```
+  Ikke før.
+
+**Princippet:** byg ikke infrastruktur (import/synk/DB-masters) til et problem
+du endnu ikke har. Hold ÉN sandhed (MD) så længe som muligt. To sandheder
+(MD + DB) tvinger mennesker til at forstå forskellen — og den næste udvikler
+spørger om tre uger, hvorfor ADMIN viser 0. **Dette afsnit er svaret.**
+
 ## Launch-rækkefølge (nu → senere)
 
 **Nu (lille, launch-relevant):**
