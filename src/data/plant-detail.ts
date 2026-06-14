@@ -40,13 +40,19 @@ export interface DetailMaal {
   sundhedNote: string
 }
 
-/** "Det næste, der sker" — sidens vigtigste sektion (hvad gør jeg nu?). */
+/** "Lige nu" + "Denne uge" — to kort: magasin-historie + plejeliste. */
 export interface DetailNaeste {
-  /** Hovedforventningen, fx "Første blomster forventes om 8–14 dage." */
-  forventning: string
-  /** "Hold øje med"-listen — konkrete plejehandlinger. */
-  holdOjeMed: string[]
-  /** Lille foto der viser hvad der er på vej (knop/blomst). */
+  /** Begivenheden lige nu, fx "Første blomster". */
+  overskrift: string
+  /** Timing, fx "forventes om 8–14 dage". */
+  timing: string
+  /** Hvad der sker, i prosa, fx "San Marzano går nu fra vegetativ vækst …". */
+  beskrivelse: string
+  /** "Se guide"-destination. */
+  guideHref: string
+  /** Ugens pleje-tjekliste (kort 2, DENNE UGE). Korte handlinger. */
+  denneUge: string[]
+  /** Foto af det der er på vej (knop/blomst) til kort 1. */
   fotoSrc: string
   fotoAlt: string
 }
@@ -95,13 +101,11 @@ export const PLANT_DETAIL: Record<string, PlantDetail> = {
       sundhedNote: 'stabil vækst',
     },
     naeste: {
-      forventning: 'Første blomster forventes om 8–14 dage.',
-      holdOjeMed: [
-        'Sideskud – fjern jævnligt',
-        'Opbinding – planten vokser hurtigt',
-        'Vanding – hold jævnt fugtigt',
-        'Gødning – fortsæt hver 7.–10. dag',
-      ],
+      overskrift: 'Første blomster',
+      timing: 'forventes om 8–14 dage',
+      beskrivelse: 'San Marzano går nu fra vegetativ vækst til blomstring.',
+      guideHref: '/guides',
+      denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7.–10. dag'],
       fotoSrc: `${MAKRO_SM}/frugtknop.jpg`,
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },

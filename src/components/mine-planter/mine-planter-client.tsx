@@ -46,8 +46,8 @@ function fokusRank(p: Plant): number {
 
 /** Kort, fremadskuende linje til hovedperson + blobs. */
 function forventningFor(p: Plant): string {
-  const detalje = detailFor(p.guideId)?.naeste.forventning
-  if (detalje) return detalje
+  const n = detailFor(p.guideId)?.naeste
+  if (n) return `${n.overskrift} ${n.timing}.`
   // MockPlant har en konkret nextAction; brug den i demo.
   const na = (p as Partial<MockPlant>).nextAction?.action
   if (na) return na
