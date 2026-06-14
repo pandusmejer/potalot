@@ -7,7 +7,14 @@ import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
 import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
-import { karakterFor } from '@/data/plant-karakter'
+import { PlantDetailHero } from '@/components/mine-planter/plant-detail-hero'
+import { PlantMaal } from '@/components/mine-planter/plant-maal'
+import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
+import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
+import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
+import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
+import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
+import { detailFor, type PlantDetail } from '@/data/plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import {
   formatPlantDate,
@@ -43,10 +50,13 @@ export const dynamic = 'force-dynamic'
  * Hvis ikke fundet (UUID matcher ingen plante for current user), prøver vi
  * mock-data (demo-pathen). Hvis stadig ikke fundet → 404.
  *
- * Ægte planter har kun rene Plant-felter (navn, sort, status, billede,
- * isArchived osv.) — de mangler MockPlant-extras (type, pictures, logs,
- * guide). For V1 vises de sektioner derfor som tomme for ægte planter.
- * Plant_logs_v2-integration (rigtige logs/billeder) er post-launch arbejde.
+ * To render-spor:
+ *   • EDITORIAL (ny, fase 1) — når sorten har redaktionelt detalje-
+ *     indhold (src/data/plant-detail.ts). Den perfekte planteside som
+ *     statisk artefakt: Hero → Mål → Lige nu → Karakter → Tidslinje →
+ *     Billeder → Sammenligning. San Marzano er bygget 1:1 efter mockup.
+ *   • KLASSISK (fallback) — alle andre planter beholder det eksisterende
+ *     layout, indtil deres detalje-indhold er skrevet sort for sort.
  */
 export default async function PlanteDetailPage({ params }: Props) {
   const { id } = await params
@@ -110,6 +120,14 @@ function toMockShape(plant: Plant): MockPlant {
 }
 
 function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').CalendarTask | null) {
+  const karakter = karakterFor(plant.guideId)
+  const detail = detailFor(plant.guideId)
+
+  // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
+  if (detail) {
+    return renderEditorial(plant, detail, karakter)
+  }
+
   const statusMeta = PLANT_STATUS_META[plant.status]
   // For real plants har vi ingen calendar-task; behold nextTask null.
   const resolvedNextTask =
@@ -119,7 +137,6 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
     ? formatPlantDate(plant.expectedHarvestStart)
     : '—'
   const nextActions: MockPlantNextAction[] = plant.nextAction ? [plant.nextAction] : []
-  const karakter = karakterFor(plant.guideId)
 
   return (
     <article className="mx-auto max-w-3xl space-y-6 pb-8">
@@ -227,23 +244,88 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
         </details>
       )}
 
-      <section className="rounded-2xl border border-border bg-surface-2 p-5 shadow-soft">
-        <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground">
-            <Archive className="h-5 w-5" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="font-serif text-xl leading-tight text-foreground">Arkivér plante</h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              Gem sæsonens noter, billeder og høsterfaringer i havebogen, når planten er færdig.
-            </p>
-          </div>
-          <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
-            Arkivér
-          </Button>
-        </div>
-      </section>
+      <ArkiverSektion />
     </article>
+  )
+}
+
+/**
+ * EDITORIAL-spor — den perfekte planteside som statisk artefakt.
+ * Rækkefølge er Annas: Hero → Mål → Lige nu → Karakter → Tidslinje →
+ * Billeder → Sammenligning. Noter + arkivér ligger diskret nederst.
+ */
+function renderEditorial(plant: MockPlant, detail: PlantDetail, karakter: Karakter | null) {
+  return (
+    <article className="pb-4">
+      <PlantDetailHero
+        art={plant.name}
+        sort={plant.variety ?? null}
+        beskrivelse={karakter?.beskrivelse ?? null}
+        foto={detail.heroFoto}
+        fotoAlt={detail.heroFotoAlt}
+      />
+
+      <div className="space-y-5">
+        <PlantMaal maal={detail.maal} />
+        <PlantNaeste naeste={detail.naeste} />
+        {karakter && <PlantKarakter karakter={karakter} />}
+        <PlantTidslinje milestones={detail.tidslinje} />
+        <PlantGalleri billeder={detail.billeder} />
+        {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
+
+        {(plant.logs.length > 0 || plant.notes) && (
+          <details className="group rounded-2xl border border-border bg-card shadow-soft">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <NotebookText className="h-4 w-4" />
+                </span>
+                <span>
+                  <span className="block font-serif text-2xl leading-tight text-foreground">Noter</span>
+                  <span className="text-xs text-muted-foreground">{plant.logs.length} logpunkter</span>
+                </span>
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="space-y-3 px-5 pb-5 pt-0">
+              {plant.notes && (
+                <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
+                  <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
+                </div>
+              )}
+              <div className="grid gap-3">
+                {plant.logs.map(log => (
+                  <PlantLogEntry key={log.id} entry={log} />
+                ))}
+              </div>
+            </div>
+          </details>
+        )}
+
+        <ArkiverSektion />
+      </div>
+    </article>
+  )
+}
+
+function ArkiverSektion() {
+  return (
+    <section className="rounded-2xl border border-border bg-surface-2 p-5 shadow-soft">
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground">
+          <Archive className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-serif text-xl leading-tight text-foreground">Arkivér plante</h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            Gem sæsonens noter, billeder og høsterfaringer i havebogen, når planten er færdig.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
+          Arkivér
+        </Button>
+      </div>
+    </section>
   )
 }
 
