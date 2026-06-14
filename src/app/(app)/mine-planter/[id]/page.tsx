@@ -7,8 +7,6 @@ import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
 import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
-import { PlantDetailHero } from '@/components/mine-planter/plant-detail-hero'
-import { PlantMaal } from '@/components/mine-planter/plant-maal'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
@@ -122,16 +120,16 @@ function toMockShape(plant: Plant): MockPlant {
 function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').CalendarTask | null) {
   const karakter = karakterFor(plant.guideId)
   const detail = detailFor(plant.guideId)
-
-  // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
-  if (detail) {
-    return renderEditorial(plant, detail, karakter)
-  }
-
-  const statusMeta = PLANT_STATUS_META[plant.status]
   // For real plants har vi ingen calendar-task; behold nextTask null.
   const resolvedNextTask =
     nextTask ?? mockPlantTasks.find(task => task.linkedPlantId === plant.id) ?? null
+
+  // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
+  if (detail) {
+    return renderEditorial(plant, detail, karakter, resolvedNextTask)
+  }
+
+  const statusMeta = PLANT_STATUS_META[plant.status]
 
   const expectedHarvest = plant.expectedHarvestStart
     ? formatPlantDate(plant.expectedHarvestStart)
@@ -251,23 +249,33 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
 
 /**
  * EDITORIAL-spor — den perfekte planteside som statisk artefakt.
- * Rækkefølge er Annas: Hero → Mål → Lige nu → Karakter → Tidslinje →
- * Billeder → Sammenligning. Noter + arkivér ligger diskret nederst.
+ * Rækkefølge (Annas valg 14. juni): Plantekort-hero → Lige nu → Karakter
+ * → Tidslinje → Billeder → Sammenligning. Noter + arkivér diskret nederst.
+ *
+ * Heroen er det klassiske Plantekort (foto-kort med titel ovenpå, tæller,
+ * vækstbjælke og fakta) — Anna foretrækker det frem for et separat foto +
+ * stats-kort. Mål-kortet er derfor droppet (vækstbjælke + fakta dækker
+ * status og alder; Plantekortet bærer hele toppen).
  */
-function renderEditorial(plant: MockPlant, detail: PlantDetail, karakter: Karakter | null) {
+function renderEditorial(
+  plant: MockPlant,
+  detail: PlantDetail,
+  karakter: Karakter | null,
+  nextTask: import('@/lib/types').CalendarTask | null,
+) {
   return (
-    <article className="pb-4">
-      <PlantDetailHero
-        art={plant.name}
-        sort={plant.variety ?? null}
-        beskrivelse={karakter?.beskrivelse ?? null}
-        foto={detail.heroFoto}
-        fotoAlt={detail.heroFotoAlt}
-      />
+    <article className="space-y-5 pb-4">
+      <div className="space-y-3">
+        <Button asChild variant="ghost" size="sm" className="-ml-2">
+          <Link href="/mine-planter">
+            <ArrowLeft className="h-4 w-4" />
+            Tilbage
+          </Link>
+        </Button>
+        <PlantCard plant={plant} nextTask={nextTask} />
+      </div>
 
-      <div className="space-y-5">
-        <PlantMaal maal={detail.maal} />
-        <PlantNaeste naeste={detail.naeste} />
+      <PlantNaeste naeste={detail.naeste} />
         {karakter && <PlantKarakter karakter={karakter} />}
         <PlantTidslinje milestones={detail.tidslinje} />
         <PlantGalleri billeder={detail.billeder} />
@@ -303,7 +311,6 @@ function renderEditorial(plant: MockPlant, detail: PlantDetail, karakter: Karakt
         )}
 
         <ArkiverSektion />
-      </div>
     </article>
   )
 }
