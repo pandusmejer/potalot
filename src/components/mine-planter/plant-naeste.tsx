@@ -1,22 +1,26 @@
 import Link from 'next/link'
 import type { DetailNaeste } from '@/data/plant-detail'
-import { ArrowRight, BookOpen, CalendarDays, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 const GREEN = '#5A7038'
+const BLAEK = '#24301F'
+/** Fælles kort-baggrund — samme varme creme som "Plantens historie".
+ *  Anna (14. juni 2026): alle kort på plantesiden skal dele bagrundsfarve. */
+const CREME = '#FBF8EC'
+const RAMME = '1px solid rgba(36,48,31,0.08)'
+const STREG = 'rgba(36,48,31,0.08)'
 
 /**
  * LIGE NU + DENNE UGE — to kort, ikke ét.
  *
- * Anna (14. juni 2026): det gamle kort var både magasin OG tjekliste mast
- * sammen. Splittet giver begge pondus. Og baggrunden var en kold "sage
- * green" fremmedlegeme — nu varm creme (#F2F0E7), så PLANTEN leverer det
- * grønne (option A). Fotoet fylder ~60%.
- *
  *   Kort 1 (LIGE NU)   — redaktionelt: hvad sker der nu? Stor serif + foto.
- *   Kort 2 (DENNE UGE) — værktøj: ugens pleje-tjekliste + Se kalender.
+ *   Kort 2 (DENNE UGE) — værktøj: ugens pleje som gitter + Se kalender.
+ *
+ * Begge kort deler den varme creme #FBF8EC; planten leverer det grønne.
+ * Begge CTA'er er outline-piller (Se guide / Se kalender) — samme familie.
  */
 export function PlantNaeste({
   naeste,
@@ -28,12 +32,15 @@ export function PlantNaeste({
   return (
     <>
       {/* ── KORT 1: LIGE NU — magasin ────────────────────────── */}
+      {/* marginBottom 10 = halvt af sidens space-y-5 (20px). I dette Tailwind-
+          setup lægger space-y margin-BOTTOM på ikke-sidste kort, så det er HER
+          afstanden til DENNE UGE styres. Anna: blokkene hører tæt sammen. */}
       <section
         className="relative overflow-hidden rounded-[22px]"
-        style={{ background: '#F2F0E7', border: '1px solid rgba(36,48,31,0.08)', minHeight: 250 }}
+        style={{ background: CREME, border: RAMME, minHeight: 250, marginBottom: 10 }}
       >
-        {/* FOTO — ~60% højre, organisk venstre-kant; planten leverer grønt. */}
-        <div className="absolute right-0 top-0 bottom-0" style={{ width: '58%' }}>
+        {/* FOTO — ~58% højre minus 4 mm (Anna: giv cremefeltet 4 mm mere). */}
+        <div className="absolute right-0 top-0 bottom-0" style={{ width: 'calc(58% - 4mm)' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={naeste.fotoSrc}
@@ -43,8 +50,8 @@ export function PlantNaeste({
           />
         </div>
 
-        {/* TEKST — venstre, magasin-opslag. */}
-        <div className="relative z-10 flex min-h-[250px] flex-col" style={{ width: '46%', padding: '22px 0 20px 22px' }}>
+        {/* TEKST — venstre, magasin-opslag (+4 mm fra fotoet). */}
+        <div className="relative z-10 flex min-h-[250px] flex-col" style={{ width: 'calc(46% + 4mm)', padding: '22px 0 20px 22px' }}>
           <p
             className="uppercase"
             style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.5)', margin: 0 }}
@@ -53,7 +60,7 @@ export function PlantNaeste({
           </p>
           <h2
             className="mt-2.5"
-            style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(30px, 8.5vw, 40px)', lineHeight: 0.98, letterSpacing: '-0.005em', color: '#24301F', margin: '10px 0 0' }}
+            style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(30px, 8.5vw, 40px)', lineHeight: 0.98, letterSpacing: '-0.005em', color: BLAEK, margin: '10px 0 0' }}
           >
             {naeste.overskrift}
           </h2>
@@ -75,8 +82,8 @@ export function PlantNaeste({
             className="mt-auto inline-flex w-fit items-center gap-2 whitespace-nowrap rounded-full transition-transform active:scale-95"
             style={{
               border: '1px solid rgba(36,48,31,0.18)',
-              background: 'rgba(255,255,255,0.5)',
-              color: '#24301F',
+              background: 'transparent',
+              color: BLAEK,
               fontFamily: sans,
               fontSize: 13.5,
               fontWeight: 600,
@@ -108,7 +115,7 @@ export function PlantNaeste({
       {/* ── KORT 2: DENNE UGE — værktøj ──────────────────────── */}
       <section
         className="rounded-[22px]"
-        style={{ background: '#F6F4EC', border: '1px solid rgba(36,48,31,0.08)', padding: 20 }}
+        style={{ background: CREME, border: RAMME, padding: 22 }}
       >
         <p
           className="uppercase"
@@ -117,28 +124,58 @@ export function PlantNaeste({
           Denne uge
         </p>
 
-        <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
-          {naeste.denneUge.map((item) => (
-            <li
-              key={item}
-              className="flex items-start gap-2"
-              style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 500, lineHeight: 1.3, color: '#2E3B24' }}
-            >
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} style={{ color: GREEN }} aria-hidden />
-              <span>{item}</span>
-            </li>
-          ))}
+        {/* 2×2-gitter med tynde kryds-skillelinjer (cell-borders). */}
+        <ul className="mt-4 grid grid-cols-2">
+          {naeste.denneUge.map((item, i) => {
+            const venstre = i % 2 === 0
+            const oeverste = i < 2
+            return (
+              <li
+                key={item}
+                className="flex min-w-0 items-center gap-2"
+                style={{
+                  paddingTop: oeverste ? 0 : 15,
+                  paddingBottom: oeverste ? 15 : 0,
+                  paddingRight: venstre ? 10 : 0,
+                  paddingLeft: venstre ? 0 : 10,
+                  borderRight: venstre ? `1px solid ${STREG}` : 'none',
+                  borderBottom: oeverste ? `1px solid ${STREG}` : 'none',
+                  fontFamily: sans,
+                  fontSize: 13.5,
+                  fontWeight: 500,
+                  lineHeight: 1.3,
+                  color: '#2E3B24',
+                }}
+              >
+                <span
+                  className="flex shrink-0 items-center justify-center"
+                  style={{ width: 24, height: 24, borderRadius: 999, background: '#E7ECDD' }}
+                >
+                  <Check className="h-[13px] w-[13px]" strokeWidth={2.5} style={{ color: GREEN }} aria-hidden />
+                </span>
+                <span>{item}</span>
+              </li>
+            )
+          })}
         </ul>
 
-        <div className="mt-5 flex justify-end">
+        <div className="mt-6 flex justify-end">
           <Link
             href={kalenderHref}
-            className="inline-flex items-center gap-1.5 rounded-full text-white transition-transform active:scale-95"
-            style={{ background: '#24301F', fontFamily: sans, fontSize: 13, fontWeight: 600, padding: '9px 16px' }}
+            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full transition-transform active:scale-95"
+            style={{
+              border: '1px solid rgba(36,48,31,0.18)',
+              background: 'transparent',
+              color: BLAEK,
+              fontFamily: sans,
+              fontSize: 13.5,
+              fontWeight: 600,
+              padding: '9px 16px',
+            }}
           >
-            <CalendarDays className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+            <CalendarDays className="h-4 w-4" strokeWidth={2} style={{ color: GREEN }} aria-hidden />
             Se kalender
-            <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+            <ChevronRight className="h-4 w-4" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
           </Link>
         </div>
       </section>
