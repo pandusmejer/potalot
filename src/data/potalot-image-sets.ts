@@ -280,8 +280,12 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   // 'hvidloeg-vallelado') matcher BEVIDST ikke — vi viser ikke et
   // generisk kort som om det var sorten (jf. "forkert billede"-reglen);
   // det afventer arts-fallback-mekanismen på backloggen.
+  // Generisk 'hvidloeg' har ikke længere et eget frøkort: det blev
+  // erstattet af sorts-specifikke kort (hvidloeg-germidour/messidor/
+  // printanor/sabadrome/thermidrome), som resolves via asset-convention
+  // på deres egen sorts-slug. Generisk hvidløg falder til placeholder
+  // indtil arts-fallback findes (jf. note ovenfor).
   'hvidloeg': {
-    seedCard: { src: '/images/frokort/hvidloeg.png', alt: 'Hvidløg — sætteløg-kort' },
     macro: [],
   },
 

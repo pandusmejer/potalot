@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 175
+ * Fil-tæller: 188
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -25,6 +25,8 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/agurk-passandra.png",
   "/images/frokort/agurk-telegraph.png",
   "/images/frokort/basilikum-genovese.png",
+  "/images/frokort/blaabaer-bluecrop.png",
+  "/images/frokort/blaabaer-duke.png",
   "/images/frokort/chili-cayenne.png",
   "/images/frokort/chili-habanero-orange.png",
   "/images/frokort/chili-jalapeno.png",
@@ -40,12 +42,20 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/graeskar-hokkaido.png",
   "/images/frokort/graeskar-uchiki-kuri.png",
   "/images/frokort/groenkaal-red-russian.png",
-  "/images/frokort/hvidloeg.png",
+  "/images/frokort/gulerod-nantes.png",
+  "/images/frokort/hindbaer-autumn-bliss.png",
+  "/images/frokort/hvidloeg-germidour.png",
+  "/images/frokort/hvidloeg-messidor.png",
+  "/images/frokort/hvidloeg-printanor.png",
+  "/images/frokort/hvidloeg-sabadrome.png",
+  "/images/frokort/hvidloeg-thermidrome.png",
   "/images/frokort/jordbaer-korona.png",
   "/images/frokort/jordbaer-polka.png",
+  "/images/frokort/loeg-sturon.png",
   "/images/frokort/majs-golden-bantam.png",
   "/images/frokort/majs-incredible-f1.png",
   "/images/frokort/majs-sweet-nugget.png",
+  "/images/frokort/pak-choi-joi-choi.png",
   "/images/frokort/peberfrugt-california-wonder.png",
   "/images/frokort/peberfrugt-corno-di-toro-giallo.png",
   "/images/frokort/peberfrugt-corno-di-toro-rosso.png",
@@ -54,9 +64,12 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/radise-cherry-belle.png",
   "/images/frokort/radise-french-breakfast.png",
   "/images/frokort/radise-saxa-2.png",
+  "/images/frokort/roedbede-boltardy.png",
   "/images/frokort/rucola-standard.png",
   "/images/frokort/salat-crispy-mint.png",
   "/images/frokort/salat-little-gem.png",
+  "/images/frokort/salat-lollo-rosso.png",
+  "/images/frokort/solbaer-ben-lomond.png",
   "/images/frokort/solsikke-russian-giant.png",
   "/images/frokort/spinat-matador.png",
   "/images/frokort/squash-eight-ball.png",
