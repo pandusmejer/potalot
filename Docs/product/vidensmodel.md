@@ -166,6 +166,40 @@ det er IKKE et 1:1-match; generér en privat sorts-guide.
 > Bug pr. juni 2026: `generateGuideWithAI` sætter altid `guide_level: 'art'`,
 > også for sorter. Skal rettes.
 
+## Datakilde-arkitektur — hvor sandheden bor (Annas dom, 13. juni 2026)
+
+I den nuværende fase (få/ingen brugere, kataloget ændrer sig konstant) er et
+levende ark mere værd end perfekt databasedisciplin:
+
+```
+Google Sheet  = SANDHEDEN (redaktionelt lag — mennesker kuraterer)
+      ↓ import-script ("Sync fra Master Database")
+Supabase      = produktionskopi / cache
+      ↓
+App           = visning (læser KUN Supabase)
+```
+
+- Ét Google Sheet **"Potalot Master Database"**. Faner: **Arts · Sorter ·
+  Kalender · Billeder · Guides · Status**. Én række = én sort.
+- Claude må: læse arket, validere, generere SQL/import, generere billedlister,
+  generere guides, foreslå næste sorter — men **ikke eje data**. Mennesker
+  ejer arket.
+- **IKKE** repo-som-sandhed (endnu) og **IKKE** løse Excel-filer (de formerer
+  sig). Når Potalot rammer 1.000+ sorter / 50.000 brugere kan sandheden flyttes
+  til Supabase.
+
+**Værktøjs-virkelighed (Google Drive-connector, juni 2026):**
+- Claude kan **læse** ethvert Sheet fuldt ud → import-retningen (Sheet→app) er
+  fuldt dækket.
+- Claude kan **oprette** nye Drive-filer (CSV→Sheet, ét faneblad).
+- Claude kan **ikke** skrive i celler i et eksisterende fler-fane-Sheet.
+  "Claude opdaterer arket" = Claude leverer forslag/tilføjelser (gap-rapport,
+  næste sorter, manglende botanik) som mennesket kuraterer ind — ikke direkte
+  skrivning i masteren.
+
+Dette er bindeleddet til vidensmodellen: hver række i "Sorter" = en master-guide
+(Lag 1), og "Billeder"-fanen = frøkort/billed-roadmap.
+
 ## Launch-rækkefølge (nu → senere)
 
 **Nu (lille, launch-relevant):**
