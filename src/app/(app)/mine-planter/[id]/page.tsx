@@ -20,6 +20,7 @@ import {
   getMockPlantById,
   mockPlantTasks,
   type MockPlant,
+  type MockPlantLog,
   type MockPlantNextAction,
 } from '@/data/mock-plants'
 import type { Plant, PlantLog } from '@/lib/types'
@@ -27,11 +28,14 @@ import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import {
   Archive,
   ArrowLeft,
-  ArrowRight,
   BookOpen,
   Camera,
   ChevronDown,
+  ChevronRight,
+  History,
   Images,
+  Lightbulb,
+  NotebookText,
   Plus,
 } from 'lucide-react'
 
@@ -280,18 +284,22 @@ function renderEditorial(
 }
 
 /**
- * PLANTENS HISTORIE — dagbogen som kapitler, ikke en flad liste.
+ * PLANTENS HISTORIE — én aktuel hændelse stor, resten foldet væk.
  *
- * Anna (14. juni 2026): logpunkterne havde alle samme vægt → "for
- * demokratisk". En avis giver ikke alle historier samme skriftstørrelse.
- * Nu: ÉT aktuelt kapitel med pondus (dominerende dato + stor serif +
- * KONSEKVENS — hvad det betød), derefter historik i aftagende vægt.
+ * Anna (14. juni 2026, mockup): dagbogen er ikke en liste — den er ÉT
+ * opslag. Seneste hændelse fylder det hele: chip + dominerende dato +
+ * handlingen som serif-overskrift + noten som brødtekst + "DET BETØD"-
+ * callout (Potalots stemme, med pære). Resten ligger bag "Se hele
+ * historien". Handlingen ("Bundet op") er nu overskriften — ikke skjult
+ * metadata; noten er fortællingen under den.
  *
  * Ægte (logget-ind) bruger beholder Timeline (redigér/slet via LogForm).
- * Demo viser de redaktionelle kapitler fra mock-loggen.
+ * Demo viser det redaktionelle opslag fra mock-loggen.
  */
 const sansFont = 'var(--font-manrope)'
 const serifFont = 'var(--font-cormorant), Georgia, serif'
+const GROEN = '#5A7038'
+const BLAEK = '#24301F'
 
 function dagbogDag(date: string): string {
   return String(new Date(date).getDate()).padStart(2, '0')
@@ -305,43 +313,58 @@ function dagbogMaaned(date: string): string {
 
 function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
   const { logs, canLog } = log
-  // Nyeste først; falmer gradvist bagud (hero → medium → lille).
+  // Nyeste først: [0] er helten, resten ligger bag "Se hele historien".
   const kapitler = [...plant.logs].sort((a, b) => b.date.localeCompare(a.date))
+  const seneste = kapitler[0]
+  const aeldre = kapitler.slice(1)
   const aar = plant.sowDate ? new Date(plant.sowDate).getFullYear() : ''
 
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-      {/* Header — kun eyebrow + underlinje. "Denne sæson" var redundant. */}
+    <section
+      style={{ background: '#FBF8EC', border: '1px solid rgba(36,48,31,0.08)', borderRadius: 24, padding: 24 }}
+    >
+      {/* Header — ikon-badge + titel/underlinje + Tilføj. */}
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.5)', margin: 0 }}>
-            Plantens historie
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
-          </p>
+        <div className="flex min-w-0 items-center gap-3.5">
+          <span
+            className="flex shrink-0 items-center justify-center"
+            style={{ width: 46, height: 46, borderRadius: 14, background: '#E7ECDD', color: '#3D4A2C' }}
+          >
+            <NotebookText className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          </span>
+          <div className="min-w-0">
+            <p
+              className="uppercase whitespace-nowrap"
+              style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.15em', color: '#3D4A2C', margin: 0 }}
+            >
+              Plantens historie
+            </p>
+            <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 400, color: 'rgba(36,48,31,0.55)', margin: '3px 0 0' }}>
+              Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
+            </p>
+          </div>
         </div>
         {canLog ? (
           <LogForm
             plantId={plant.id}
             trigger={
-              <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
+              <Button variant="outline" size="sm" className="shrink-0 rounded-full bg-card/70">
                 <Plus className="h-4 w-4" />
                 Tilføj
               </Button>
             }
           />
         ) : (
-          <Button variant="outline" size="sm" className="shrink-0 bg-card/70" disabled>
+          <Button variant="outline" size="sm" className="shrink-0 rounded-full bg-card/70" disabled>
             <Plus className="h-4 w-4" />
             Tilføj
           </Button>
         )}
       </div>
 
-      {/* Ægte bruger → funktionel Timeline. Demo → redaktionelle kapitler. */}
+      {/* Ægte bruger → funktionel Timeline. Demo → redaktionelt opslag. */}
       {canLog ? (
-        <div className="mt-4">
+        <div className="mt-5">
           {logs.length > 0 ? (
             <Timeline plant={plant} logs={logs} showMilestones={false} />
           ) : (
@@ -350,78 +373,148 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
             </p>
           )}
         </div>
-      ) : kapitler.length === 0 ? (
-        <p className="mt-4 py-2 text-sm italic text-muted-foreground">Ingen historie endnu.</p>
+      ) : !seneste ? (
+        <p className="mt-5 py-2 text-sm italic text-muted-foreground">Ingen historie endnu.</p>
       ) : (
-        <ol className="mt-5">
-          {kapitler.map((entry, i) => (
-            <DagbogKapitel key={entry.id} entry={entry} tier={Math.min(i, 2)} />
-          ))}
-        </ol>
+        <>
+          <DagbogHero entry={seneste} />
+
+          {/* Se hele historien — folder de ældre kapitler ud. */}
+          {aeldre.length > 0 && (
+            <details className="group">
+              <summary
+                className="mt-6 flex cursor-pointer list-none items-center justify-between border-t pt-4 [&::-webkit-details-marker]:hidden"
+                style={{ borderColor: 'rgba(36,48,31,0.1)' }}
+              >
+                <span className="flex items-center gap-2.5" style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 600, color: BLAEK }}>
+                  <History className="h-[18px] w-[18px]" strokeWidth={2} style={{ color: GROEN }} aria-hidden />
+                  Se hele historien
+                </span>
+                <ChevronRight
+                  className="h-[18px] w-[18px] transition-transform group-open:rotate-90"
+                  strokeWidth={2}
+                  style={{ color: 'rgba(36,48,31,0.4)' }}
+                  aria-hidden
+                />
+              </summary>
+              <ol className="mt-2">
+                {aeldre.map((entry) => (
+                  <DagbogListe key={entry.id} entry={entry} />
+                ))}
+              </ol>
+            </details>
+          )}
+        </>
       )}
     </section>
   )
 }
 
 /**
- * Ét kapitel i plantens historie. Ingen baggrundskasse — hierarki via
- * typografi. tier 0 = hero (kæmpe dato + stor serif), tier 1 = medium,
- * tier 2 = lille/tåget. Konsekvens-callout ("→ derfor betyder det noget")
- * på alle der har en — fyldigt på hero, dæmpet bagud.
+ * Seneste hændelse — opslaget. Chip + dominerende dato | streg | indhold.
+ * Handlingen er serif-overskriften; noten er brødteksten; konsekvensen
+ * bliver "DET BETØD"-callout (Potalots stemme).
  */
-function DagbogKapitel({ entry, tier }: { entry: MockPlant['logs'][number]; tier: number }) {
-  const daySize = tier === 0 ? 23 : tier === 1 ? 19 : 17
-  const dayColor = tier === 0 ? '#24301F' : tier === 1 ? 'rgba(36,48,31,0.62)' : 'rgba(36,48,31,0.42)'
-  const monthColor = tier === 0 ? 'rgba(36,48,31,0.5)' : 'rgba(36,48,31,0.4)'
-  const noteSize = tier === 0 ? 24 : tier === 1 ? 19 : 16.5
-  const noteColor = tier === 0 ? '#24301F' : tier === 1 ? '#2D2A24' : 'rgba(45,42,36,0.58)'
-
+function DagbogHero({ entry }: { entry: MockPlantLog }) {
   return (
-    <li
-      style={{
-        paddingTop: tier === 0 ? 0 : 18,
-        marginTop: tier === 0 ? 0 : 18,
-        borderTop: tier === 0 ? 'none' : '1px solid rgba(36,48,31,0.08)',
-      }}
-    >
-      {/* Dato — eneste markør: "09 JUN", intet andet. */}
-      <p style={{ margin: 0 }}>
-        <span style={{ fontFamily: serifFont, fontWeight: 600, fontSize: daySize, letterSpacing: '-0.01em', color: dayColor }}>
-          {dagbogDag(entry.date)}
-        </span>
-        <span className="uppercase" style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: monthColor, marginLeft: 7 }}>
-          {dagbogMaaned(entry.date)}
-        </span>
-      </p>
+    <div className="mt-6">
+      <span
+        className="inline-block uppercase"
+        style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', color: '#4A5A33', background: '#E3E9D4', borderRadius: 999, padding: '6px 13px' }}
+      >
+        Seneste hændelse
+      </span>
 
-      {/* Historien — hovedpersonen. (Logtypen er metadata; den vises ikke.) */}
-      {entry.note && (
-        <p
-          className="max-w-[44ch]"
-          style={{ fontFamily: serifFont, fontWeight: 500, fontSize: noteSize, lineHeight: 1.28, letterSpacing: '0.004em', color: noteColor, margin: '8px 0 0' }}
-        >
-          {entry.note}
-        </p>
-      )}
-
-      {/* Konsekvens — Potalots egen stemme. Hero: labelet "DET BETØD".
-          Ældre: én dæmpet → linje. */}
-      {entry.konsekvens && tier === 0 && (
-        <div className="mt-4 border-t pt-3.5" style={{ borderColor: 'rgba(36,48,31,0.12)' }}>
-          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#5A7038', margin: 0 }}>
-            Det betød
+      <div className="mt-5 flex gap-5">
+        {/* Dato-søjle. */}
+        <div className="shrink-0" style={{ width: 60 }}>
+          <p style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 50, lineHeight: 0.9, letterSpacing: '-0.01em', color: BLAEK, margin: 0 }}>
+            {dagbogDag(entry.date)}
           </p>
-          <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '5px 0 0' }}>
-            {entry.konsekvens}
+          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(36,48,31,0.5)', margin: '6px 0 0' }}>
+            {dagbogMaaned(entry.date)}
           </p>
         </div>
-      )}
-      {entry.konsekvens && tier > 0 && (
-        <p className="mt-2.5 flex items-start gap-1.5" style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)', margin: '8px 0 0' }}>
-          <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(90,112,56,0.7)' }} aria-hidden />
-          {entry.konsekvens}
+
+        {/* Lodret streg. */}
+        <div style={{ width: 1, alignSelf: 'stretch', background: 'rgba(36,48,31,0.12)' }} aria-hidden />
+
+        {/* Indhold. */}
+        <div className="min-w-0 flex-1">
+          <h3 style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 30, lineHeight: 1.02, letterSpacing: '-0.005em', color: BLAEK, margin: 0 }}>
+            {entry.action}
+          </h3>
+          {entry.note && (
+            <p style={{ fontFamily: sansFont, fontSize: 15.5, fontWeight: 400, lineHeight: 1.5, color: 'rgba(36,48,31,0.72)', margin: '12px 0 0' }}>
+              {entry.note}
+            </p>
+          )}
+
+          {entry.konsekvens && (
+            <div
+              className="mt-5 flex items-start gap-3.5"
+              style={{ background: '#E8EDE0', borderRadius: 16, padding: '16px 18px' }}
+            >
+              <span
+                className="flex shrink-0 items-center justify-center"
+                style={{ width: 40, height: 40, borderRadius: 999, background: 'rgba(255,255,255,0.6)', color: GROEN }}
+              >
+                <Lightbulb className="h-[18px] w-[18px]" strokeWidth={1.9} aria-hidden />
+              </span>
+              <div className="min-w-0">
+                <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: GROEN, margin: 0 }}>
+                  Det betød
+                </p>
+                <p style={{ fontFamily: sansFont, fontSize: 14.5, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '5px 0 0' }}>
+                  {entry.konsekvens}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Ældre kapitel — samme anatomi (dato | streg | indhold), men dæmpet.
+ * Konsekvensen koger ind til én rolig "→"-linje.
+ */
+function DagbogListe({ entry }: { entry: MockPlantLog }) {
+  return (
+    <li
+      className="flex gap-5"
+      style={{ paddingTop: 18, marginTop: 18, borderTop: '1px solid rgba(36,48,31,0.07)' }}
+    >
+      <div className="shrink-0" style={{ width: 60 }}>
+        <p style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 28, lineHeight: 0.95, color: 'rgba(36,48,31,0.6)', margin: 0 }}>
+          {dagbogDag(entry.date)}
         </p>
-      )}
+        <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(36,48,31,0.4)', margin: '5px 0 0' }}>
+          {dagbogMaaned(entry.date)}
+        </p>
+      </div>
+      <div style={{ width: 1, alignSelf: 'stretch', background: 'rgba(36,48,31,0.08)' }} aria-hidden />
+      <div className="min-w-0 flex-1">
+        <h4 style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 21, lineHeight: 1.1, color: '#2D2A24', margin: 0 }}>
+          {entry.action}
+        </h4>
+        {entry.note && (
+          <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 400, lineHeight: 1.45, color: 'rgba(45,42,36,0.6)', margin: '7px 0 0' }}>
+            {entry.note}
+          </p>
+        )}
+        {entry.konsekvens && (
+          <p
+            className="flex items-start gap-1.5"
+            style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)', margin: '9px 0 0' }}
+          >
+            <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(90,112,56,0.7)' }} aria-hidden />
+            {entry.konsekvens}
+          </p>
+        )}
+      </div>
     </li>
   )
 }
