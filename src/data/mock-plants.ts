@@ -133,8 +133,8 @@ export const mockPlants: MockPlant[] = [
       timing: 'I denne uge',
     },
     logs: [
-      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.' },
-      { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.' },
+      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.', konsekvens: 'Varmen under bakken vækkede frøene på under en uge.' },
+      { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.', konsekvens: 'Den ekstra plads satte straks gang i ny vækst ovenpå.' },
       { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten vokser nu mere lodret og bruger energien på frugterne.' },
     ],
     guide: {
