@@ -7,6 +7,8 @@ import { PlantArtRow } from '@/components/mine-planter/plant-art-row'
 import { ForsideHero } from '@/components/mine-planter/forside-hero'
 import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
 import { AtSeTilIDag, type AtSeItem } from '@/components/mine-planter/at-se-til-i-dag'
+import { SaesonensVaekst } from '@/components/mine-planter/saesonens-vaekst'
+import { MineSteder } from '@/components/mine-planter/mine-steder'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { detailFor } from '@/data/plant-detail'
@@ -51,6 +53,16 @@ function forventningFor(p: Plant): string {
   if (na) return na
   return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
 }
+
+// Sæsonens fortælling (statisk i fase 1 — én rolig linje pr. måned).
+// nuMaaned fremhæves. Udledes af sæsonens hændelser senere.
+const SAESON_HISTORIK = [
+  { maaned: 'Marts', historie: 'De første frø kom i jorden.' },
+  { maaned: 'April', historie: 'Spirerne strakte sig mod lyset.' },
+  { maaned: 'Maj', historie: 'Drivhuset fyldtes op.' },
+  { maaned: 'Juni', historie: 'De første blomster åbnede sig.' },
+]
+const NU_MAANED = 'Juni'
 
 interface Props {
   /** Brugerens ægte planter. Tomt → demo-mode (mock-data driver siden). */
@@ -165,6 +177,12 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
           <PlantEmptyState />
         )}
       </section>
+
+      {/* SÆSONENS VÆKST — sæsonen som fortælling. */}
+      <SaesonensVaekst historik={SAESON_HISTORIK} nuMaaned={NU_MAANED} />
+
+      {/* MINE STEDER — hvor planterne bor. */}
+      <MineSteder plants={aktive} />
 
       {/* PLANLAGT — kompakt chip-række. */}
       {planlagte.length > 0 && (
