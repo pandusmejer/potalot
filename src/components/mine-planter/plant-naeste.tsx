@@ -39,8 +39,8 @@ export function PlantNaeste({
         className="relative overflow-hidden rounded-[22px]"
         style={{ background: CREME, border: RAMME, minHeight: 250, marginBottom: 10 }}
       >
-        {/* FOTO — ~58% højre minus 4 mm (Anna: giv cremefeltet 4 mm mere). */}
-        <div className="absolute right-0 top-0 bottom-0" style={{ width: 'calc(58% - 4mm)' }}>
+        {/* FOTO — ~58% højre minus 8 mm (Anna: giv cremefeltet 8 mm i alt). */}
+        <div className="absolute right-0 top-0 bottom-0" style={{ width: 'calc(58% - 8mm)' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={naeste.fotoSrc}
@@ -50,8 +50,8 @@ export function PlantNaeste({
           />
         </div>
 
-        {/* TEKST — venstre, magasin-opslag (+4 mm fra fotoet). */}
-        <div className="relative z-10 flex min-h-[250px] flex-col" style={{ width: 'calc(46% + 4mm)', padding: '22px 0 20px 22px' }}>
+        {/* TEKST — venstre, magasin-opslag (+8 mm fra fotoet). */}
+        <div className="relative z-10 flex min-h-[250px] flex-col" style={{ width: 'calc(46% + 8mm)', padding: '22px 0 20px 22px' }}>
           <p
             className="uppercase"
             style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.5)', margin: 0 }}
