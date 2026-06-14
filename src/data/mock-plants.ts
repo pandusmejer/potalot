@@ -30,6 +30,8 @@ export interface MockPlantLog {
   date: string
   action: string
   note?: string
+  /** Konsekvensen — hvad hændelsen BETØD for planten. Gør log til historie. */
+  konsekvens?: string
 }
 
 export interface MockPlantNextAction {
@@ -133,7 +135,7 @@ export const mockPlants: MockPlant[] = [
     logs: [
       { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.' },
       { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.' },
-      { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.' },
+      { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten vokser nu mere lodret og bruger energien på frugterne.' },
     ],
     guide: {
       title: 'Tomat i krukke og drivhus',

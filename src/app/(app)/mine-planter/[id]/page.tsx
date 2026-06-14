@@ -27,6 +27,7 @@ import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import {
   Archive,
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   Camera,
   ChevronDown,
@@ -280,33 +281,59 @@ function renderEditorial(
 }
 
 /**
- * DAGBOG — logging på plantesiden (genskabt "som tidligere").
+ * PLANTENS HISTORIE — dagbogen som kapitler, ikke en flad liste.
  *
- * Ægte (logget-ind) bruger: "Tilføj"-knap (LogForm-dialog med foto) +
- * Timeline med brugerens logs (redigér/slet). showMilestones=false fordi
- * den nye Tidslinje-sektion allerede viser milepælene.
+ * Anna (14. juni 2026): logpunkterne havde alle samme vægt → "for
+ * demokratisk". En avis giver ikke alle historier samme skriftstørrelse.
+ * Nu: ÉT aktuelt kapitel med pondus (dominerende dato + stor serif +
+ * KONSEKVENS — hvad det betød), derefter historik i aftagende vægt.
  *
- * Demo (anonym): kan ikke skrive (createPlantLog kræver requireUser), så
- * knappen er deaktiveret med en venlig opfordring; demo-noter vises read-
- * only, så showcasen stadig har indhold.
+ * Ægte (logget-ind) bruger beholder Timeline (redigér/slet via LogForm).
+ * Demo viser de redaktionelle kapitler fra mock-loggen.
  */
+const sansFont = 'var(--font-manrope)'
+const serifFont = 'var(--font-cormorant), Georgia, serif'
+
+function dagbogDag(date: string): string {
+  return String(new Date(date).getDate()).padStart(2, '0')
+}
+function dagbogMaaned(date: string): string {
+  return new Intl.DateTimeFormat('da-DK', { month: 'short' })
+    .format(new Date(date))
+    .replace('.', '')
+    .toUpperCase()
+}
+/** Del en note i åbnings-sætning + resten (til det sekundære lag). */
+function delNote(note: string): [string, string] {
+  const i = note.indexOf('. ')
+  if (i === -1) return [note, '']
+  return [note.slice(0, i + 1), note.slice(i + 2)]
+}
+
 function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
   const { logs, canLog } = log
-  const antal = canLog ? logs.length : plant.logs.length
+  const kapitler = [...plant.logs].sort((a, b) => b.date.localeCompare(a.date))
+  const aktuel = kapitler[0]
+  const historik = kapitler.slice(1)
+  const aar = plant.sowDate ? new Date(plant.sowDate).getFullYear() : ''
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-      <div className="flex items-center justify-between gap-3">
-        <span className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+      {/* Header — "Plantens historie", ikke "Dagbog". */}
+      <div className="flex items-start justify-between gap-3">
+        <span className="flex items-start gap-3">
+          <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <NotebookText className="h-4 w-4" />
           </span>
           <span>
-            <span className="block font-serif text-2xl leading-tight text-foreground">Dagbog</span>
-            <span className="text-xs text-muted-foreground">
-              {antal === 0
-                ? 'Ingen log endnu'
-                : `${antal} ${antal === 1 ? 'logpunkt' : 'logpunkter'}`}
+            <span className="block uppercase" style={{ fontFamily: sansFont, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.5)' }}>
+              Plantens historie
+            </span>
+            <span className="block font-serif text-[26px] leading-none text-foreground" style={{ marginTop: 3 }}>
+              Denne sæson
+            </span>
+            <span className="mt-1 block text-xs text-muted-foreground">
+              Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
             </span>
           </span>
         </span>
@@ -328,65 +355,125 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
         )}
       </div>
 
-      {!canLog && (
-        <p className="mt-2 text-xs text-muted-foreground">
-          Opret en bruger for at logge dine egne observationer og fotos.
-        </p>
-      )}
-
-      <div className="mt-4">
-        {canLog ? (
-          logs.length > 0 ? (
+      {/* Ægte bruger → funktionel Timeline. Demo → redaktionelle kapitler. */}
+      {canLog ? (
+        <div className="mt-4">
+          {logs.length > 0 ? (
             <Timeline plant={plant} logs={logs} showMilestones={false} />
           ) : (
             <p className="py-2 text-sm italic text-muted-foreground">
-              Ingen log endnu. Tilføj din første observation.
+              Ingen historie endnu. Tilføj dit første kapitel.
             </p>
-          )
-        ) : plant.logs.length > 0 ? (
-          // Redaktionel dagbog: noten er hovedpersonen, datoen er diskret.
-          <ol className="space-y-5">
-            {[...plant.logs]
-              .sort((a, b) => b.date.localeCompare(a.date))
-              .map(entry => (
-                <li key={entry.id}>
-                  <p
-                    className="uppercase"
+          )}
+        </div>
+      ) : !aktuel ? (
+        <p className="mt-4 py-2 text-sm italic text-muted-foreground">Ingen historie endnu.</p>
+      ) : (
+        <>
+          {/* AKTUELT KAPITEL — pondus: dominerende dato + stor serif + konsekvens. */}
+          <div
+            className="mt-5 overflow-hidden rounded-[18px]"
+            style={{ background: 'linear-gradient(158deg, #EAEFE0 0%, #E3E9D4 100%)', padding: '18px 18px 16px' }}
+          >
+            <div className="flex gap-4">
+              <DagbogDato date={aktuel.date} stor />
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-1.5 uppercase" style={{ fontFamily: sansFont, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: '#5A7038', margin: 0 }}>
+                  <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: '#5A7038' }} />
+                  {aktuel.action}
+                </p>
+                {aktuel.note && (
+                  <p style={{ fontFamily: serifFont, fontWeight: 500, fontSize: 'clamp(21px, 5.6vw, 25px)', lineHeight: 1.22, letterSpacing: '0.004em', color: '#24301F', margin: '8px 0 0' }}>
+                    {aktuel.note}
+                  </p>
+                )}
+                {aktuel.konsekvens && (
+                  <div className="mt-4 flex items-start gap-2.5 border-t pt-3.5" style={{ borderColor: 'rgba(36,48,31,0.12)' }}>
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ background: 'rgba(90,112,56,0.16)', color: '#5A7038' }}>
+                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden />
+                    </span>
+                    <p style={{ fontFamily: sansFont, fontSize: 13.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(45,58,36,0.82)', margin: 0 }}>
+                      {aktuel.konsekvens}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* HISTORIK — aftagende vægt, på en rolig rail. */}
+          {historik.length > 0 && (
+            <ol className="relative mt-5" style={{ paddingLeft: 0 }}>
+              {historik.map((entry, i) => {
+                const [primaer, sekundaer] = entry.note ? delNote(entry.note) : ['', '']
+                return (
+                  <li
+                    key={entry.id}
+                    className="flex gap-4"
                     style={{
-                      fontFamily: 'var(--font-manrope)',
-                      fontSize: 11,
-                      fontWeight: 700,
-                      letterSpacing: '0.14em',
-                      color: 'rgba(36,48,31,0.5)',
-                      margin: 0,
+                      paddingTop: i === 0 ? 0 : 16,
+                      marginTop: i === 0 ? 0 : 0,
+                      borderTop: i === 0 ? 'none' : '1px solid rgba(36,48,31,0.08)',
                     }}
                   >
-                    {formatDagbogDato(entry.date)} · {entry.action}
-                  </p>
-                  {entry.note && (
-                    <p
-                      className="mt-1.5 max-w-[46ch]"
-                      style={{
-                        fontFamily: 'var(--font-cormorant), Georgia, serif',
-                        fontSize: 'clamp(17px, 4.6vw, 19px)',
-                        fontWeight: 500,
-                        lineHeight: 1.34,
-                        letterSpacing: '0.004em',
-                        color: '#2D2A24',
-                        margin: '6px 0 0',
-                      }}
-                    >
-                      {entry.note}
-                    </p>
-                  )}
-                </li>
-              ))}
-          </ol>
-        ) : (
-          <p className="py-2 text-sm italic text-muted-foreground">Ingen log endnu.</p>
-        )}
-      </div>
+                    <DagbogDato date={entry.date} />
+                    <div className="min-w-0 flex-1">
+                      <p className="flex items-center gap-1.5 uppercase" style={{ fontFamily: sansFont, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(36,48,31,0.5)', margin: 0 }}>
+                        <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: 'rgba(36,48,31,0.32)' }} />
+                        {entry.action}
+                      </p>
+                      {primaer && (
+                        <p style={{ fontFamily: serifFont, fontWeight: 500, fontSize: 17, lineHeight: 1.3, letterSpacing: '0.004em', color: '#2D2A24', margin: '5px 0 0' }}>
+                          {primaer}
+                        </p>
+                      )}
+                      {sekundaer && (
+                        <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 400, lineHeight: 1.4, color: 'rgba(36,48,31,0.55)', margin: '3px 0 0' }}>
+                          {sekundaer}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
+          )}
+        </>
+      )}
     </section>
+  )
+}
+
+/** Dominerende dato-kolonne: dag stort, måned lille — gør det til en tidslinje. */
+function DagbogDato({ date, stor = false }: { date: string; stor?: boolean }) {
+  return (
+    <div className="shrink-0 text-center" style={{ width: stor ? 52 : 44 }}>
+      <p
+        style={{
+          fontFamily: serifFont,
+          fontWeight: 600,
+          fontSize: stor ? 38 : 26,
+          lineHeight: 0.92,
+          color: stor ? '#24301F' : 'rgba(36,48,31,0.62)',
+          margin: 0,
+        }}
+      >
+        {dagbogDag(date)}
+      </p>
+      <p
+        className="uppercase"
+        style={{
+          fontFamily: sansFont,
+          fontSize: stor ? 11 : 10,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          color: stor ? '#5A7038' : 'rgba(36,48,31,0.45)',
+          margin: '2px 0 0',
+        }}
+      >
+        {dagbogMaaned(date)}
+      </p>
+    </div>
   )
 }
 
@@ -419,10 +506,6 @@ function AdministrerPlante() {
   )
 }
 
-/** Dagbogs-dato: kort dansk form, fx "20. april". */
-function formatDagbogDato(date: string): string {
-  return new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long' }).format(new Date(date))
-}
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
