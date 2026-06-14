@@ -7,6 +7,7 @@ import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
 import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
+import { PlantMaal } from '@/components/mine-planter/plant-maal'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
@@ -249,13 +250,13 @@ function renderDetail(plant: MockPlant, nextTask: import('@/lib/types').Calendar
 
 /**
  * EDITORIAL-spor — den perfekte planteside som statisk artefakt.
- * Rækkefølge (Annas valg 14. juni): Plantekort-hero → Lige nu → Karakter
- * → Tidslinje → Billeder → Sammenligning. Noter + arkivér diskret nederst.
+ * Rækkefølge (Annas valg 14. juni): Mål-strimmel → Plantekort-hero → Lige
+ * nu → Karakter → Tidslinje → Billeder → Sammenligning. Noter + arkivér
+ * diskret nederst.
  *
  * Heroen er det klassiske Plantekort (foto-kort med titel ovenpå, tæller,
- * vækstbjælke og fakta) — Anna foretrækker det frem for et separat foto +
- * stats-kort. Mål-kortet er derfor droppet (vækstbjælke + fakta dækker
- * status og alder; Plantekortet bærer hele toppen).
+ * vækstbjælke og fakta). Mål-strimlen (Status·Alder·Højde·Sundhed) ligger
+ * ØVERST, over hero-fotoet — en rolig instrument-strimmel.
  */
 function renderEditorial(
   plant: MockPlant,
@@ -272,6 +273,8 @@ function renderEditorial(
             Tilbage
           </Link>
         </Button>
+        {/* Status-strimmel ØVERST, over hero-fotoet (Annas valg 14. juni). */}
+        <PlantMaal maal={detail.maal} />
         <PlantCard plant={plant} nextTask={nextTask} />
       </div>
 
