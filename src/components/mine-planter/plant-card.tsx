@@ -5,10 +5,11 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import type { Plant, PlantStatus, CalendarTask } from '@/lib/types'
 import { estimateNextTask } from '@/lib/next-plant-task'
-import { Sprout, Calendar, Scissors, BookOpen } from 'lucide-react'
+import { Sprout, Calendar, Scissors, BookOpen, Heart, Ruler } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import type { DetailMaal } from '@/data/plant-detail'
 
 /**
  * Konverter fri tekst til kebab-case slug for asset-convention lookup
@@ -33,6 +34,9 @@ interface Props {
   plant: Plant
   /** Næste opgave — bruges ikke i kort-visning v2, holdes for API-kompatibilitet. */
   nextTask?: CalendarTask | null
+  /** Når sat: bundpanelet viser Mål (Status·Alder·Højde·Sundhed) i stedet
+   *  for vækstbjælke + fakta. Bruges på plante-detaljen (editorial-hero). */
+  maal?: DetailMaal | null
 }
 
 const sans = 'var(--font-manrope)'
@@ -96,7 +100,7 @@ function statusPosition(status: PlantStatus): number {
  * pleje-rytme. Top-højre er en mekanisk flip-tæller der viser antal
  * AKTIVE planter (tilstedeværelse — IKKE rest af noget).
  */
-export function PlantCard({ plant, nextTask }: Props) {
+export function PlantCard({ plant, nextTask, maal }: Props) {
   // V4.1: canonical resolver. preferredSrc valideres mod manifest;
   // stale DB-paths falder automatisk til asset-convention.
   // Canonical resolver, rolle: plant-card. Falder gennem 4 lag:
@@ -246,9 +250,13 @@ export function PlantCard({ plant, nextTask }: Props) {
           boxShadow: '0 -4px 14px rgba(36,48,31,0.04)',
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
-          padding: '14px 18px 14px',
+          padding: maal ? '16px 14px 15px' : '14px 18px 14px',
         }}
       >
+        {maal ? (
+          <MaalRow maal={maal} />
+        ) : (
+          <>
         {/* Vækststadie-bjælke. startAnchor varierer mellem "Sået" og
             "Plantet" afhængig af om planten kom fra frø eller potte. */}
         <GrowthStageBar status={plant.status} statusLabel={statusMeta.label} startAnchor={startAnchor} />
@@ -311,8 +319,81 @@ export function PlantCard({ plant, nextTask }: Props) {
             )
           })}
         </div>
+          </>
+        )}
       </div>
     </Link>
+  )
+}
+
+/**
+ * MÅL-RÆKKE — Plantekortets bundpanel på plante-detaljen.
+ *
+ * Anna (14. juni 2026): Mål-strimlen (Status·Alder·Højde·Sundhed) skal
+ * ligge ovenpå heroen, i stedet for vækstbjælke + fakta. Fire rolige
+ * kolonner på det varme papirpanel; grøn prik på Status, hjerte på
+ * Sundhed, sarte grå ikoner på Alder/Højde.
+ */
+function MaalRow({ maal }: { maal: DetailMaal }) {
+  const felter: {
+    label: string
+    value: string
+    note: string
+    dot?: string
+    heart?: boolean
+    Icon: ComponentType<SVGProps<SVGSVGElement>> | null
+  }[] = [
+    { label: 'Status', value: maal.statusValue, note: maal.statusNote, dot: '#617345', Icon: null },
+    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Icon: Sprout },
+    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Icon: Ruler },
+    { label: 'Sundhed', value: maal.sundhedValue, note: maal.sundhedNote, heart: true, Icon: Heart },
+  ]
+  return (
+    <div className="flex items-stretch">
+      {felter.map((f, i) => {
+        const Icon = f.Icon
+        return (
+          <Fragment key={f.label}>
+            {i > 0 && (
+              <div
+                aria-hidden
+                className="shrink-0"
+                style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
+              />
+            )}
+            <div className="flex min-w-0 flex-1 flex-col px-0.5">
+              <span
+                className="flex items-center gap-1 uppercase"
+                style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1 }}
+              >
+                {Icon && <Icon width={12} height={12} strokeWidth={1.75} aria-hidden />}
+                {f.label}
+              </span>
+              <span className="mt-1.5 flex items-center" style={{ gap: 5 }}>
+                {f.dot && (
+                  <span aria-hidden className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: f.dot }} />
+                )}
+                {f.heart && (
+                  <Heart width={14} height={14} strokeWidth={2} style={{ color: '#617345' }} aria-hidden className="shrink-0" />
+                )}
+                <span
+                  className="whitespace-nowrap"
+                  style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1 }}
+                >
+                  {f.value}
+                </span>
+              </span>
+              <span
+                className="mt-1 whitespace-nowrap"
+                style={{ fontFamily: sans, fontSize: 11, fontWeight: 400, color: 'rgba(36,48,31,0.5)', lineHeight: 1 }}
+              >
+                {f.note}
+              </span>
+            </div>
+          </Fragment>
+        )
+      })}
+    </div>
   )
 }
 
