@@ -6,7 +6,7 @@ import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
 import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
 import { EditorialBleedCard } from './editorial-bleed-card'
-import { TrustBadge, guideKindFor, type GuideKind } from './trust-badge'
+import { TrustBadge, guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
   type PopulaertEmne,
@@ -35,7 +35,6 @@ interface Props {
 export function GuidesBibliotek({
   guides,
   aiGuideIds,
-  parentPlantNameById,
   iFroebankIds,
   bridgeMacroSrc,
   bridgeMacroAlt,
@@ -89,8 +88,6 @@ export function GuidesBibliotek({
   }, [withKind, effectiveSearch, filter])
 
   const potalot = filtered.filter(x => x.kind === 'potalot')
-  const egne = filtered.filter(x => x.kind === 'egen')
-  const ai = filtered.filter(x => x.kind === 'ai-udkast')
 
   return (
     <div className="space-y-10 sm:space-y-12">
@@ -182,29 +179,8 @@ export function GuidesBibliotek({
         }}
       />
 
-      {(filter === 'alle' || filter === 'egen') && (
-        <SecondaryGuideSection
-          title="Dine egne erfaringer"
-          empty="Når du tilpasser en Potalot-guide eller skriver din egen, finder du den her."
-          items={egne}
-          iFroebankIds={iFroebankIds}
-          lineage={(guide) => {
-            const parent = guide.parentGuideId
-              ? parentPlantNameById.get(guide.parentGuideId)
-              : null
-            return parent ? `Baseret på Potalot-guiden om ${parent}` : null
-          }}
-        />
-      )}
-
-      {(filter === 'alle' || filter === 'ai-udkast') && ai.length > 0 && (
-        <SecondaryGuideSection
-          title="Udkast til inspiration"
-          items={ai}
-          iFroebankIds={iFroebankIds}
-          aiHelpText
-        />
-      )}
+      {/* Biblioteket viser kun det redaktionelle 'potalot'-lag. Egne
+          guider og AI-udkast åbnes fra frø/plante/notifikation, ikke her. */}
     </div>
   )
 }
@@ -388,8 +364,6 @@ function SoegBar({
   const filterChips: { id: Filter; label: string }[] = [
     { id: 'alle', label: 'Alle' },
     { id: 'potalot', label: 'Potalot' },
-    { id: 'egen', label: 'Egne' },
-    { id: 'ai-udkast', label: 'Udkast' },
   ]
   return (
     <section className="relative pt-2">
@@ -468,47 +442,6 @@ function SoegBar({
           )
         })}
       </div>
-    </section>
-  )
-}
-
-function SecondaryGuideSection({
-  title,
-  empty,
-  items,
-  iFroebankIds,
-  lineage,
-  aiHelpText = false,
-}: {
-  title: string
-  empty?: string
-  items: { guide: Guide; kind: GuideKind }[]
-  iFroebankIds: ReadonlySet<string>
-  lineage?: (guide: Guide) => string | null
-  aiHelpText?: boolean
-}) {
-  return (
-    <section className="space-y-3">
-      <SektionEyebrow>
-        <span>{title}</span>
-      </SektionEyebrow>
-      {items.length === 0 && empty ? (
-        <EmptyNote text={empty} />
-      ) : (
-        <div className="space-y-5">
-          {items.map(({ guide, kind }) => (
-            <GuideCardEditorial
-              key={guide.id}
-              guide={guide}
-              kind={kind}
-              lineageText={lineage?.(guide)}
-              iFroebank={iFroebankIds.has(guide.id)}
-              aiHelpText={aiHelpText}
-              size="compact"
-            />
-          ))}
-        </div>
-      )}
     </section>
   )
 }

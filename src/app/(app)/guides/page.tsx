@@ -28,9 +28,10 @@ export const dynamic = 'force-dynamic'
  *   1. Hero
  *   2. Populære emner    ← redaktionelle indgange
  *   3. Potalot-guides    ← standarden, mest visuel vægt
- *   4. Søg + filtrer
- *   5. Egne guides
- *   6. AI-udkast (V1: kun synlig i demo)
+ *   4. Søg
+ *
+ * Biblioteket viser KUN redaktionelle guides. Egne guider og AI-udkast
+ * vises ikke her — de åbnes fra det konkrete frø/plante/notifikation.
  *
  * Trust-systemet er læser-design, ikke admin-funktion. Ordene
  * Master/Mine/Promote/Flag/Clone eksisterer ikke i denne flow.
@@ -44,16 +45,14 @@ export default async function GuidesPage() {
     getAllInventoryItems(),
   ])
 
-  // Demo-fallback: ingen guides i DB → vis demo-bibliotek så
-  // designvisionen er synlig for nye/anonyme brugere.
-  // Imported guides (fra content/guides/*.md) er platforms-indhold og
-  // skal ALTID være synlige — også når en bruger har egne guides i DB.
-  // DB-guides tilføjes ovenpå; duplicate slugs vinder importen.
+  // Oprydning (vidensmodel — rollefordeling): /guides ER biblioteket og
+  // viser KUN redaktionelle MD-guides (IMPORTED_GUIDES fra content/guides/
+  // *.md). AI-udkast og bruger-guider hører til arbejdsrummet — de åbnes
+  // fra det konkrete frø/plante/notifikation, IKKE her. Derfor flettes
+  // database-guides ikke ind i biblioteket. I demo vises demo-bibliotekets
+  // redaktionelle lag (bibliotek-komponenten render kun 'potalot'-kind).
   const isDemo = guides.length === 0
-  const importedIds = new Set(IMPORTED_GUIDES.map((g) => g.id))
-  const visibleGuides = isDemo
-    ? ALL_GUIDES
-    : [...IMPORTED_GUIDES, ...guides.filter((g) => !importedIds.has(g.id))]
+  const visibleGuides = isDemo ? ALL_GUIDES : IMPORTED_GUIDES
   const aiGuideIds = isDemo ? DEMO_AI_GUIDE_IDS : null
 
   // "I din frøbank"-markør: hvilke guides matcher en sort i frøbanken
