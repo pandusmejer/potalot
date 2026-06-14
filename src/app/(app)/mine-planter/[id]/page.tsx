@@ -32,9 +32,9 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-export function generateStaticParams() {
-  return []
-}
+// Dynamisk: siden henter brugerens plante via getPlant() (cookies/Supabase).
+// Uden dette kaster produktions-renderen DYNAMIC_SERVER_USAGE → 500.
+export const dynamic = 'force-dynamic'
 
 /**
  * Plante-detail — real-data først, mock-fallback for demo-browsing.
