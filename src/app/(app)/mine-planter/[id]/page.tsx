@@ -453,7 +453,7 @@ function DagbogHero({ entry }: { entry: MockPlantLog }) {
           {entry.konsekvens && (
             <div
               className="mt-5"
-              style={{ background: '#E8EDE0', borderRadius: 16, padding: '16px 18px', width: 'calc(100% - 5mm)' }}
+              style={{ background: '#E8EDE0', borderRadius: 16, padding: '16px 18px', width: 'calc(100% - 7mm)' }}
             >
               {/* Pære + overskrift på samme horisontale linje, midterjusteret. */}
               <div className="flex items-center gap-3">
