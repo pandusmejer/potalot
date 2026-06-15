@@ -171,18 +171,18 @@ export function GlyphBlomst(props: GlyphProps) {
   )
 }
 
-/* ── Ært — åben bælg (mørk cradle) + lyse ærter der popper op ── */
+/* ── Ært — mørkegrøn diagonal bælg + lysere ærter ovenpå (Annas valg: B) ── */
 export function GlyphAert(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* slyngtråd */}
-      <path d="M19.4 8.4 C 21.1 8, 21.3 6.1, 19.9 5.7 C 18.9 5.4, 18.5 6.6, 19.3 7.3" stroke={C.greenDeep} strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      {/* bælg — markant, dyb cradle (bærer silhuetten i små størrelser) */}
-      <path d="M2.8 10.6 C 7 12.7, 17 12.7, 21.2 10.6 C 20.6 16.7, 16.7 20.4, 12 20.4 C 7.3 20.4, 3.4 16.7, 2.8 10.6 Z" fill={C.greenDark} />
-      {/* 3 store ærter der popper op af bælgen */}
-      <circle cx="6.7" cy="10.2" r="2.8" fill={C.peaLight} />
-      <circle cx="12" cy="9.7" r="3" fill={C.peaLight} />
-      <circle cx="17.3" cy="10.2" r="2.8" fill={C.peaLight} />
+      <g transform="rotate(-30 12 12)">
+        {/* mørk bælg */}
+        <path d="M2.8 12.6 C 5.4 9.3, 18.6 9.3, 21.2 12.6 C 18.6 15.5, 5.4 15.5, 2.8 12.6 Z" fill={C.greenDark} />
+        {/* lysere ærter ovenpå */}
+        <circle cx="7.4" cy="11.6" r="2.5" fill={C.green} />
+        <circle cx="12" cy="11.2" r="2.7" fill={C.green} />
+        <circle cx="16.6" cy="11.6" r="2.5" fill={C.green} />
+      </g>
     </Glyph>
   )
 }
@@ -221,15 +221,32 @@ export function GlyphLoeg(props: GlyphProps) {
   )
 }
 
-/* ── Drivhus — strukturel, men tung og blød (ikke arkitektur) ── */
+/* ── Drivhus — glashus efter Annas ref: højt pyramidetag, fuldt glas-net + base ── */
 export function GlyphDrivhus(props: GlyphProps) {
+  const bar = C.pane
   return (
     <Glyph {...props}>
-      {/* hus-silhuet — fuldere, blødt afrundet tag + bløde hjørner */}
-      <path d="M12 3.2 C 12.6 3.2, 13.2 3.4, 13.7 3.8 L 19.8 8.5 C 20.3 8.9, 20.6 9.5, 20.6 10.1 L 20.6 18.4 C 20.6 19.7, 19.5 20.8, 18.2 20.8 L 5.8 20.8 C 4.5 20.8, 3.4 19.7, 3.4 18.4 L 3.4 10.1 C 3.4 9.5, 3.7 8.9, 4.2 8.5 L 10.3 3.8 C 10.8 3.4, 11.4 3.2, 12 3.2 Z" fill={C.green} />
-      {/* glas — forenklet: lodret midte + tag-skel (ikke et gitter) */}
-      <path d="M12 4 L 12 20.6" stroke={C.pane} strokeWidth="1.9" opacity="0.7" />
-      <path d="M4.4 8.9 C 8 9.7, 16 9.7, 19.6 8.9" stroke={C.pane} strokeWidth="1.9" strokeLinecap="round" opacity="0.55" fill="none" />
+      {/* tag — højt pyramidetag med udhæng */}
+      <path d="M12 2.2 C 12.35 2.2, 12.68 2.36, 12.92 2.62 L 21.9 10.7 C 22.35 11.1, 22.08 11.7, 21.5 11.7 L 2.5 11.7 C 1.92 11.7, 1.65 11.1, 2.1 10.7 L 11.08 2.62 C 11.32 2.36, 11.65 2.2, 12 2.2 Z" fill={C.green} />
+      {/* krop */}
+      <path d="M5.3 11.7 L 18.7 11.7 L 18.7 20 L 5.3 20 Z" fill={C.green} />
+      {/* base-platform */}
+      <rect x="3.1" y="19.7" width="17.8" height="2" rx="1" fill={C.greenDeep} />
+      {/* glas-net — ét lag med fælles group-opacity, så kryds IKKE lyser op.
+          Tynde, ensartede sprosser. */}
+      <g stroke={bar} strokeWidth="1.1" strokeLinecap="round" fill="none" opacity="0.72">
+        {/* tag: center + vandret bjælke + 2 diagonaler til vægtoppe */}
+        <path d="M12 2.9 L 12 20" />
+        <path d="M6.7 7 L 17.3 7" />
+        <path d="M12 3.4 L 5.3 11.7" />
+        <path d="M12 3.4 L 18.7 11.7" />
+        {/* krop: tagrem + side-sprosser + vandrette ribber */}
+        <path d="M3 11.7 L 21 11.7" />
+        <path d="M8.3 11.7 L 8.3 20" />
+        <path d="M15.7 11.7 L 15.7 20" />
+        <path d="M5.3 16.2 L 8.3 16.2" />
+        <path d="M15.7 16.2 L 18.7 16.2" />
+      </g>
     </Glyph>
   )
 }
