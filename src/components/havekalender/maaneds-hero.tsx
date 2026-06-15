@@ -1,7 +1,7 @@
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { saeson } from '@/lib/datetime'
-import { Leaf, Sprout, Flower, Bug, Droplets, Scissors, Carrot } from 'lucide-react'
+import { Leaf, Sprout, Flower2, Bug, Droplets, Scissors, Carrot } from 'lucide-react'
 import type { ComponentType, SVGProps } from 'react'
 
 /** Drivhus-ikon (lucide har ingen) — i samme streg-stil som resten. */
@@ -170,7 +170,7 @@ function ikonFor(kategori: string): ComponentType<SVGProps<SVGSVGElement>> {
   if (/halloween|gr(æ|ae)skar/.test(c)) return IconGraeskar
   if (/jordforbedr|regnorm|kompost/.test(c)) return IconRegnorm
   if (/udplant|s(å|aa)ning|forkultiv|spir/.test(c)) return Sprout
-  if (/blomst|staud/.test(c)) return Flower
+  if (/blomst|staud/.test(c)) return Flower2
   if (/biodivers|bi(er)?|insekt|sommerfugl/.test(c)) return Bug
   if (/vand/.test(c)) return Droplets
   if (/besk(æ|ae)r/.test(c)) return Scissors

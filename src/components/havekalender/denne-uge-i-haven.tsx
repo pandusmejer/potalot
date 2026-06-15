@@ -407,7 +407,7 @@ function EmptyState() {
  *   tend/water  → Droplets (vand)
  *   prune       → Scissors (beskæresaks)
  *   observe     → Eye (se efter)
- *   bloom       → Flower (blomstrende observation)
+ *   bloom       → Flower2 (blomstrende observation)
  *   rest/sense  → Leaf (rolig sensorisk markør)
  *   weather     → CloudRain / Snowflake / Sun (vejr-specifikt)
  */
