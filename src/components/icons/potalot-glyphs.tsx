@@ -339,3 +339,167 @@ export const POTALOT_GLYPHS: {
   { key: 'vand', label: 'Vand', form: 'dråbeform', Comp: GlyphVand },
   { key: 'sol', label: 'Sol', form: 'vejr/energi + organiske stråler', Comp: GlyphSol },
 ]
+
+/* ════════════ BATCH 3 — dyrkningshandlinger, havemiljøer, vejr ════════════
+   Samme vægt/farver/afrundinger som batch 1+2. Ingen nye regler. */
+
+/* ── Jord — blød muldbunke + korn ── */
+export function GlyphJord(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M2.6 18.4 C 4.5 12.8, 9 10, 12 10 C 15 10, 19.5 12.8, 21.4 18.4 C 21.7 19.3, 21.1 20.2, 20.2 20.2 L 3.8 20.2 C 2.9 20.2, 2.3 19.3, 2.6 18.4 Z" fill={C.soil} />
+      <circle cx="9" cy="16.2" r="1.1" fill={C.greenDeep} opacity="0.5" />
+      <circle cx="13.4" cy="14.6" r="1" fill={C.greenDeep} opacity="0.45" />
+      <circle cx="15.4" cy="17.4" r="1.1" fill={C.greenDeep} opacity="0.5" />
+    </Glyph>
+  )
+}
+
+/* ── Kompost — mørk organisk bunke: blad + skræl + orm ── */
+export function GlyphKompost(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M2.6 18.4 C 4.5 13, 9 10.4, 12 10.4 C 15 10.4, 19.5 13, 21.4 18.4 C 21.7 19.3, 21.1 20.2, 20.2 20.2 L 3.8 20.2 C 2.9 20.2, 2.3 19.3, 2.6 18.4 Z" fill={C.greenDeep} />
+      <path d="M11.8 10.8 C 9.6 9.6, 7.8 9.8, 6.8 11.2 C 8.6 12.2, 10.6 12, 11.8 10.8 Z" fill={C.green} />
+      <path d="M13 12.2 C 14.6 11.4, 16.2 11.8, 16.8 13.2 C 15.2 13.8, 13.6 13.6, 13 12.2 Z" fill={C.carrot} />
+      <path d="M8.2 16.8 C 9.4 16, 10.8 16.8, 10.4 18 C 10 19, 11.2 19.4, 12.2 18.8" stroke={C.tomato} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.85" />
+    </Glyph>
+  )
+}
+
+/* ── Krukke — terracotta urtepotte + lille spire ── */
+export function GlyphKrukke(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M12 11 C 12 8.6, 12 7.2, 12 5.8" stroke={C.green} strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 8.6 C 13.8 8.2, 15 6.8, 15.2 5 C 13.2 5.4, 12.2 6.8, 12 8.6 Z" fill={C.green} />
+      <path d="M12 9.6 C 10.4 9.2, 9.3 8.1, 9.1 6.6 C 10.8 6.9, 11.9 8, 12 9.6 Z" fill={C.greenDeep} />
+      <path d="M5.6 10.4 L 18.4 10.4 L 17.7 12.6 L 6.3 12.6 Z" fill={C.soil} />
+      <path d="M6.5 12.6 L 17.5 12.6 L 15.8 20.4 C 15.7 20.9, 15.2 21.2, 14.7 21.2 L 9.3 21.2 C 8.8 21.2, 8.3 20.9, 8.2 20.4 Z" fill={C.carrot} />
+    </Glyph>
+  )
+}
+
+/* ── Højbed — lav, bred trækasse + jord + småspirer ── */
+export function GlyphHojbed(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M8 12.4 C 8 10.7, 8 9.7, 8 8.7" stroke={C.green} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M8 10.3 C 9.3 10, 10 9, 10.1 7.8 C 8.8 8, 8.1 9, 8 10.3 Z" fill={C.green} />
+      <path d="M15.5 12.4 C 15.5 10.5, 15.5 9.4, 15.5 8.3" stroke={C.green} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M15.5 10.1 C 14.2 9.8, 13.5 8.8, 13.4 7.6 C 14.7 7.8, 15.4 8.8, 15.5 10.1 Z" fill={C.greenDeep} />
+      <path d="M3.4 12.6 L 20.6 12.6 L 20.6 14.4 L 3.4 14.4 Z" fill={C.soil} />
+      <path d="M3.4 14.4 L 20.6 14.4 L 20.6 19.8 C 20.6 20.2, 20.3 20.5, 19.9 20.5 L 4.1 20.5 C 3.7 20.5, 3.4 20.2, 3.4 19.8 Z" fill={C.sand} />
+      <path d="M3.4 17.4 L 20.6 17.4" stroke={C.soil} strokeWidth="1.2" opacity="0.5" />
+    </Glyph>
+  )
+}
+
+/* ── Saks — beskæresaks (blød, varme greb) ── */
+export function GlyphSaks(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M5.7 4.4 C 8.2 7.9, 11 11, 12.6 12.9" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M18.3 4.4 C 15.8 7.9, 13 11, 11.4 12.9" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M12.6 12.9 C 12 14.1, 10.7 15, 9.5 15.5" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M11.4 12.9 C 12 14.1, 13.3 15, 14.5 15.5" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <circle cx="9.2" cy="17.9" r="2.6" fill="none" stroke={C.carrot} strokeWidth="2" />
+      <circle cx="14.8" cy="17.9" r="2.6" fill="none" stroke={C.carrot} strokeWidth="2" />
+      <circle cx="12" cy="12.9" r="1.2" fill={C.soil} />
+    </Glyph>
+  )
+}
+
+/* ── Rive — haverive: varmt skaft + bløde tænder ── */
+export function GlyphRive(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M12 3.6 L 12 14.2" stroke={C.soil} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M5.6 14.7 L 18.4 14.7" stroke={C.greenDeep} strokeWidth="2.4" strokeLinecap="round" />
+      <g stroke={C.greenDeep} strokeWidth="1.8" strokeLinecap="round">
+        <path d="M6.4 15.4 L 6.4 18.9" />
+        <path d="M9.2 15.4 L 9.2 18.9" />
+        <path d="M12 15.4 L 12 18.9" />
+        <path d="M14.8 15.4 L 14.8 18.9" />
+        <path d="M17.6 15.4 L 17.6 18.9" />
+      </g>
+    </Glyph>
+  )
+}
+
+/* ── Skovl — spade: varmt skaft + D-greb + blødt blad ── */
+export function GlyphSkovl(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M9.6 4.4 C 9.6 2.7, 14.4 2.7, 14.4 4.4" stroke={C.soil} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M12 3.6 L 12 13" stroke={C.soil} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M8.3 13 L 15.7 13 C 15.7 17.6, 14 20.8, 12 21.6 C 10 20.8, 8.3 17.6, 8.3 13 Z" fill={C.greenDeep} />
+    </Glyph>
+  )
+}
+
+/* ── Regn — blød organisk sky + dråber (ikke Lucide) ── */
+export function GlyphRegn(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M6.6 13.6 C 4.3 13.6, 2.9 11.9, 3.3 10 C 3.6 8.5, 5.1 7.5, 6.7 7.8 C 7.1 5.7, 9.1 4.3, 11.4 4.7 C 13.3 5, 14.8 6.5, 15.1 8.3 C 17.3 8, 19.3 9.5, 19.3 11.5 C 19.3 12.8, 18.2 13.6, 16.7 13.6 Z" fill={C.blueLight} />
+      <path d="M7.7 16.1 C 7.7 16.1, 9.1 17.9, 9.1 18.9 a1.4 1.4 0 0 1 -2.8 0 C 6.3 17.9, 7.7 16.1, 7.7 16.1 Z" fill={C.blue} />
+      <path d="M12 16.9 C 12 16.9, 13.4 18.7, 13.4 19.7 a1.4 1.4 0 0 1 -2.8 0 C 10.6 18.7, 12 16.9, 12 16.9 Z" fill={C.blue} />
+      <path d="M16.3 16.1 C 16.3 16.1, 17.7 17.9, 17.7 18.9 a1.4 1.4 0 0 1 -2.8 0 C 14.9 17.9, 16.3 16.1, 16.3 16.1 Z" fill={C.blue} />
+    </Glyph>
+  )
+}
+
+/* ── Frost — enkel iskrystal (enklere end snefnug) ── */
+export function GlyphFrost(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <g stroke={C.blueLight} strokeWidth="2" strokeLinecap="round">
+        <path d="M12 3.6 L 12 20.4" />
+        <path d="M4.7 7.8 L 19.3 16.2" />
+        <path d="M19.3 7.8 L 4.7 16.2" />
+      </g>
+      <g fill={C.blue}>
+        <circle cx="12" cy="3.6" r="1.3" />
+        <circle cx="12" cy="20.4" r="1.3" />
+        <circle cx="4.7" cy="7.8" r="1.2" />
+        <circle cx="19.3" cy="16.2" r="1.2" />
+        <circle cx="19.3" cy="7.8" r="1.2" />
+        <circle cx="4.7" cy="16.2" r="1.2" />
+      </g>
+      <circle cx="12" cy="12" r="1.7" fill={C.blueLight} />
+    </Glyph>
+  )
+}
+
+/* ── Vind — bløde organiske vindstød (ikke tynd streg) ── */
+export function GlyphVind(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <g stroke={C.blueLight} strokeWidth="2.6" strokeLinecap="round" fill="none">
+        <path d="M3.6 8.4 L 13 8.4 C 15.1 8.4, 15.7 5.4, 13.8 4.8 C 12.7 4.4, 12 5.2, 12.2 6" />
+        <path d="M3.6 12.5 L 16.6 12.5 C 18.9 12.5, 19.5 15.7, 17.5 16.3 C 16.3 16.7, 15.5 15.8, 15.8 14.9" />
+        <path d="M3.6 16.6 L 10.6 16.6 C 12.1 16.6, 12.6 18.7, 11.1 19.2" />
+      </g>
+    </Glyph>
+  )
+}
+
+/** Batch 3-registret — dyrkningshandlinger, havemiljøer, vejr. */
+export const POTALOT_GLYPHS_3: {
+  key: string
+  label: string
+  form: string
+  Comp: (p: GlyphProps) => ReactNode
+}[] = [
+  { key: 'jord', label: 'Jord', form: 'muld + korn', Comp: GlyphJord },
+  { key: 'kompost', label: 'Kompost', form: 'organisk bunke', Comp: GlyphKompost },
+  { key: 'krukke', label: 'Krukke', form: 'potte + spire', Comp: GlyphKrukke },
+  { key: 'hojbed', label: 'Højbed', form: 'kasse + jord', Comp: GlyphHojbed },
+  { key: 'saks', label: 'Saks', form: 'redskab', Comp: GlyphSaks },
+  { key: 'rive', label: 'Rive', form: 'redskab + tænder', Comp: GlyphRive },
+  { key: 'skovl', label: 'Skovl', form: 'redskab + blad', Comp: GlyphSkovl },
+  { key: 'regn', label: 'Regn', form: 'sky + dråber', Comp: GlyphRegn },
+  { key: 'frost', label: 'Frost', form: 'iskrystal', Comp: GlyphFrost },
+  { key: 'vind', label: 'Vind', form: 'vindstød', Comp: GlyphVind },
+]
