@@ -39,6 +39,11 @@ brugeren skal ikke nyfortolke en skraldespand.
 > Mål: ét centralt sted at sætte default farve/stroke/størrelse, så alle Lucide-
 > ikoner arver Potalot-udtrykket (wrapper-komponent eller delte ikon-tokens).
 
+**Systembeslutning (Anna, v2-review):** **Bundnavigationen forbliver Lucide/
+systemikoner.** Custom Soft Glyphs bruges KUN i botaniske/pædagogiske/indholds-
+kontekster (opgaver, chips, tomt-states, guides, frøbank, plantekort,
+dyrkningsmarkører). Ellers ender vi med et halvt custom navigations-system.
+
 ---
 
 ## Register B — Potalot Soft Glyphs (custom)

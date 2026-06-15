@@ -50,93 +50,100 @@ function Glyph({ size = 24, title, children, ...rest }: GlyphProps & { children:
 }
 
 /* ── Delte grundformer — samme blad/frø/dråbe på tværs af systemet ── */
-// Bladform (genbruges i Spire som mindre blade) + nerve.
-const LEAF_BODY = 'M5 19.2 C 3.4 11.6, 8.6 4.2, 19.4 3.7 C 18.7 14.8, 12 18.6, 5 19.2 Z'
-const LEAF_VEIN = 'M6.9 17.4 C 10.4 12.7, 14.4 8, 18.2 5.1'
+// Bladform (v2: bredere, asymmetrisk, tydeligere Potalot-silhuet) + rolig nerve.
+const LEAF_BODY = 'M5.6 20 C 2.8 12.3, 7.2 3.6, 20 3.3 C 20.2 7.2, 18.7 12.2, 14.8 15.9 C 11.6 19, 8.4 20, 5.6 20 Z'
+const LEAF_VEIN = 'M7.4 18.2 C 11 13.4, 14.8 8.8, 18.6 5'
 
-/* ── 1. FRØ — kerne/frøprik ───────────────────────────────── */
+/* ── 1. FRØ — kerne/frøprik (v2: tungere) ─────────────────── */
 export function GlyphFroe(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <g transform="rotate(22 12 12)">
-        <ellipse cx="12" cy="12" rx="5.3" ry="7.6" fill={C.sand} />
+      <g transform="rotate(20 12 12)">
+        <ellipse cx="12" cy="12" rx="5.9" ry="8.3" fill={C.sand} />
         {/* frøprik (hilum) — den lille kerne-markør der genbruges */}
-        <circle cx="12" cy="8.2" r="1.5" fill={C.soil} />
+        <circle cx="11.8" cy="8.3" r="1.8" fill={C.soil} />
       </g>
     </Glyph>
   )
 }
 
-/* ── 2. SPIRE — stængel + bladlogik ───────────────────────── */
+/* ── 2. SPIRE — stængel + bladlogik (v2: robust) ──────────── */
 export function GlyphSpire(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* jordstribe */}
-      <path d="M4.8 20.2 C 7.3 19.1, 16.7 19.1, 19.2 20.2 C 16.7 21.3, 7.3 21.3, 4.8 20.2 Z" fill={C.soil} />
-      {/* stængel (2 px optisk stroke, runde ender) */}
-      <path d="M12 20 C 12 16.5, 12 13.5, 12 9.4" stroke={C.green} strokeWidth="2" strokeLinecap="round" />
-      {/* venstre blad (samme bladfamilie, lille) */}
-      <path d="M12 13.8 C 9 14.2, 6.6 12.3, 6 9.2 C 9.3 9, 11.7 10.7, 12 13.8 Z" fill={C.green} />
+      {/* jord-mound — fyldigere, stænglen vokser ud af den */}
+      <path d="M3.6 20 C 6.1 17.7, 17.9 17.7, 20.4 20 C 17.9 21.7, 6.1 21.7, 3.6 20 Z" fill={C.soil} />
+      {/* stængel — tykkere, runde ender */}
+      <path d="M12 20.4 C 12 16.6, 12 13.4, 12 8.8" stroke={C.green} strokeWidth="2.9" strokeLinecap="round" />
+      {/* venstre blad — større */}
+      <path d="M12 14.6 C 8.1 15, 5.1 12.7, 4.5 8.6 C 8.7 8.4, 11.7 10.5, 12 14.6 Z" fill={C.green} />
       {/* højre blad — dybere tone for læsbarhed */}
-      <path d="M12 11.6 C 14.7 11.1, 16.9 8.8, 17.3 5.9 C 14.2 6.1, 12.2 8, 12 11.6 Z" fill={C.greenDeep} />
+      <path d="M12 12 C 15.4 11.4, 18 8.6, 18.5 4.9 C 14.6 5.2, 12.2 7.5, 12 12 Z" fill={C.greenDeep} />
     </Glyph>
   )
 }
 
-/* ── 3. BLAD — bladform + indre nerve ─────────────────────── */
+/* ── 3. BLAD — bladform + rolig nerve (v2: mere karakter) ─── */
 export function GlyphBlad(props: GlyphProps) {
   return (
     <Glyph {...props}>
       <path d={LEAF_BODY} fill={C.green} />
-      <path d={LEAF_VEIN} stroke={C.greenDark} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      <path d={LEAF_VEIN} stroke={C.greenDark} strokeWidth="1.7" strokeLinecap="round" opacity="0.45" />
     </Glyph>
   )
 }
 
-/* ── 4. TOMAT — frugtform + botanisk top ──────────────────── */
+/* ── 4. TOMAT — frugt + botanisk top (v2: mindre emoji) ───── */
 export function GlyphTomat(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* frugt — bredere end høj, blød */}
-      <path d="M12 8.4 C 17.3 8.4, 20.2 11.6, 20.2 15 C 20.2 18.9, 16.5 21.2, 12 21.2 C 7.5 21.2, 3.8 18.9, 3.8 15 C 3.8 11.6, 6.7 8.4, 12 8.4 Z" fill={C.tomato} />
-      {/* calyx — blød 5-flig top */}
-      <path d="M12 5 C 12.7 7, 13.8 8, 15.6 7.7 C 15 9.2, 14 10, 12 10.2 C 10 10, 9 9.2, 8.4 7.7 C 10.2 8, 11.3 7, 12 5 Z" fill={C.green} />
+      {/* frugt — let uregelmæssig, ikke perfekt cirkel */}
+      <path d="M12 8.3 C 17.7 8.1, 20.5 11.8, 20.2 15.3 C 19.9 19.1, 16.2 21.4, 11.8 21.4 C 7.3 21.4, 3.8 18.7, 4 14.9 C 4.2 11.3, 6.8 8.6, 12 8.3 Z" fill={C.tomato} />
+      {/* calyx — rolig 3-flig, ikke stjerne */}
+      <path d="M12 5.2 C 12.7 7.5, 13.9 8.6, 15.7 8.4 C 15.1 10, 13.7 10.8, 12 10.9 C 10.3 10.8, 8.9 10, 8.3 8.4 C 10.1 8.6, 11.3 7.5, 12 5.2 Z" fill={C.green} />
       {/* stilk */}
-      <path d="M12 5.6 C 12 4.2, 12.5 3.2, 13.6 2.8" stroke={C.greenDeep} strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M12 5.7 C 12 4.2, 12.6 3.2, 13.7 2.8" stroke={C.greenDeep} strokeWidth="1.8" strokeLinecap="round" />
     </Glyph>
   )
 }
 
-/* ── 5. VAND — dråbeform ──────────────────────────────────── */
+/* ── 5. VAND — dråbeform (v2: fyldigere) ──────────────────── */
 export function GlyphVand(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <path d="M12 3.2 C 12 3.2, 18.4 11, 18.4 15.3 C 18.4 18.9, 15.5 21.5, 12 21.5 C 8.5 21.5, 5.6 18.9, 5.6 15.3 C 5.6 11, 12 3.2, 12 3.2 Z" fill={C.blue} />
+      <path d="M12 2.7 C 12 2.7, 19.1 11, 19.1 15.5 C 19.1 19.3, 15.9 21.9, 12 21.9 C 8.1 21.9, 4.9 19.3, 4.9 15.5 C 4.9 11, 12 2.7, 12 2.7 Z" fill={C.blue} />
       {/* highlight */}
-      <path d="M9.3 18 C 8.1 17, 7.9 15.4, 8.6 13.9" stroke={C.blueLight} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M9 18.6 C 7.6 17.4, 7.4 15.5, 8.3 13.8" stroke={C.blueLight} strokeWidth="2" strokeLinecap="round" />
     </Glyph>
   )
 }
 
-/* ── 6. SOL — vejr/energi, organiske stråler ──────────────── */
+/* ── 6. SOL — vejr/energi (v2: organiske stråler) ─────────── */
 export function GlyphSol(props: GlyphProps) {
-  const rays = [0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
-    const a = (deg * Math.PI) / 180
-    const r1 = 6.9
-    const r2 = i % 2 === 0 ? 9.5 : 8.9 // let asymmetri = organisk
-    return {
-      x1: 12 + r1 * Math.cos(a),
-      y1: 12 + r1 * Math.sin(a),
-      x2: 12 + r2 * Math.cos(a),
-      y2: 12 + r2 * Math.sin(a),
-    }
-  })
+  // Jitret vinkel + varieret længde = håndtegnet rytme, ikke perfekt cirkel.
+  const RAYS = [
+    { deg: -88, len: 9.9 }, { deg: -43, len: 8.9 }, { deg: 3, len: 10.0 }, { deg: 47, len: 8.8 },
+    { deg: 91, len: 9.7 }, { deg: 135, len: 9.2 }, { deg: 179, len: 10.0 }, { deg: 224, len: 8.8 },
+  ]
   return (
     <Glyph {...props}>
-      {rays.map((r, i) => (
-        <line key={i} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} stroke={C.yellow} strokeWidth="2" strokeLinecap="round" />
-      ))}
-      <circle cx="12" cy="12" r="5" fill={C.yellow} />
+      {RAYS.map((r, i) => {
+        const a = (r.deg * Math.PI) / 180
+        const r1 = 7.1
+        return (
+          <line
+            key={i}
+            x1={12 + r1 * Math.cos(a)}
+            y1={12 + r1 * Math.sin(a)}
+            x2={12 + r.len * Math.cos(a)}
+            y2={12 + r.len * Math.sin(a)}
+            stroke={C.yellow}
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
+        )
+      })}
+      <circle cx="12" cy="12" r="5.4" fill={C.yellow} />
     </Glyph>
   )
 }

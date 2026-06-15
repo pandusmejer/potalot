@@ -48,7 +48,7 @@ export default function GlyphQAPage() {
           Potalot Soft Glyphs
         </h1>
         <p style={{ fontFamily: sans, fontSize: 15, color: 'rgba(36,48,31,0.6)', margin: '10px 0 0', maxWidth: '52ch' }}>
-          Pilot — seks kerneformer. Holder formsproget i appen, før vi tegner resten?
+          Pilot v2 — seks kerneformer, 10–15 % tungere optisk. Robust spire, mere karakterfuldt blad, organiske sol-stråler, roligere tomat-top.
         </p>
       </header>
 
