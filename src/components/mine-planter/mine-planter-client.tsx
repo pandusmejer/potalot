@@ -11,7 +11,7 @@ import { SaesonensVaekst } from '@/components/mine-planter/saesonens-vaekst'
 import { MineSteder } from '@/components/mine-planter/mine-steder'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
-import { detailFor } from '@/data/plant-detail'
+import { overrideFor } from '@/data/plant-detail'
 import { afledtStatuslinje } from '@/lib/afledninger'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant, PlantStatus } from '@/lib/types'
@@ -46,8 +46,8 @@ function fokusRank(p: Plant): number {
 
 /** Kort, fremadskuende linje til hovedperson + blobs. */
 function forventningFor(p: Plant): string {
-  const n = detailFor(p.guideId)?.naeste
-  if (n) return `${n.overskrift} ${n.timing}.`
+  const n = overrideFor(p.guideId)?.naeste
+  if (n?.overskrift && n?.timing) return `${n.overskrift} ${n.timing}.`
   // MockPlant har en konkret nextAction; brug den i demo.
   const na = (p as Partial<MockPlant>).nextAction?.action
   if (na) return na
@@ -100,7 +100,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   const hovedperson = useMemo(() => {
     if (aktive.length === 0) return null
     return (
-      aktive.find(p => detailFor(p.guideId)) ??
+      aktive.find(p => overrideFor(p.guideId)) ??
       [...aktive].sort((a, b) => fokusRank(a) - fokusRank(b))[0]
     )
   }, [aktive])

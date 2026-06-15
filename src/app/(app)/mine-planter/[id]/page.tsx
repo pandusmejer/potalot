@@ -2,10 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { PlantCard } from '@/components/mine-planter/plant-card'
-import { PlantTimeline } from '@/components/mine-planter/plant-timeline'
-import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
-import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
@@ -13,27 +10,23 @@ import { PlantSammenligning } from '@/components/mine-planter/plant-sammenlignin
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
-import { detailFor, type PlantDetail } from '@/data/plant-detail'
+import { overrideFor, type PlantDetail } from '@/data/plant-detail'
+import { buildPlantDetail } from '@/lib/plant-detail/build-plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import {
-  formatPlantDate,
   getMockPlantById,
   mockPlantTasks,
   type MockPlant,
   type MockPlantLog,
-  type MockPlantNextAction,
 } from '@/data/mock-plants'
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import {
   Archive,
   ArrowLeft,
-  BookOpen,
-  Camera,
   ChevronDown,
   ChevronRight,
   History,
-  Images,
   Lightbulb,
   NotebookText,
   Plus,
@@ -137,105 +130,15 @@ function renderDetail(
   log: LogContext,
 ) {
   const karakter = karakterFor(plant.guideId)
-  const detail = detailFor(plant.guideId)
-  // For real plants har vi ingen calendar-task; behold nextTask null.
   const resolvedNextTask =
     nextTask ?? mockPlantTasks.find(task => task.linkedPlantId === plant.id) ?? null
 
-  // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
-  if (detail) {
-    return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
-  }
-
-  const statusMeta = PLANT_STATUS_META[plant.status]
-
-  const expectedHarvest = plant.expectedHarvestStart
-    ? formatPlantDate(plant.expectedHarvestStart)
-    : '—'
-  const nextActions: MockPlantNextAction[] = plant.nextAction ? [plant.nextAction] : []
-
-  return (
-    <article className="mx-auto max-w-3xl space-y-6 pb-8">
-      <div className="space-y-3">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link href="/mine-planter">
-            <ArrowLeft className="h-4 w-4" />
-            Tilbage
-          </Link>
-        </Button>
-        <PlantCard plant={plant} nextTask={resolvedNextTask} />
-        {plant.imageSource !== 'user_upload' && (
-          <Button variant="outline" size="sm" className="bg-card/70" disabled>
-            <Camera className="h-4 w-4" />
-            Tilføj dit første foto
-          </Button>
-        )}
-      </div>
-
-      {/* KARAKTER — sortens sjæl, det første du møder (fase 1: oplevelse). */}
-      {karakter && <PlantKarakter karakter={karakter} />}
-
-      <section className="grid gap-3 sm:grid-cols-3">
-        <Fact label="Status" value={statusMeta.label} />
-        <Fact label="Type" value={plant.type || '—'} />
-        <Fact label="Forventet høst" value={expectedHarvest} />
-      </section>
-
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="font-serif text-2xl leading-tight text-foreground">Tidslinje</h2>
-        <div className="mt-4">
-          <PlantTimeline plant={plant} />
-        </div>
-      </section>
-
-      {nextActions.length > 0 && <NextPlantActions actions={nextActions} />}
-
-      {plant.pictures.length > 0 && (
-        <details className="group rounded-2xl border border-border bg-card shadow-soft">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-            <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Images className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-tight text-foreground">Billeder</span>
-                <span className="text-xs text-muted-foreground">{plant.pictures.length} billeder</span>
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="px-5 pb-5 pt-0">
-            <PlantPhotoGrid images={plant.pictures} />
-          </div>
-        </details>
-      )}
-
-      <DagbogSektion plant={plant} log={log} />
-
-      {plant.guide.title && (
-        <details className="group rounded-2xl border border-border bg-card shadow-soft">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-            <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <BookOpen className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-tight text-foreground">Dyrkningsguide</span>
-                <span className="text-xs text-muted-foreground">{plant.guide.title}</span>
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="px-5 pb-5 pt-0">
-            <p className="text-sm font-semibold text-foreground">{plant.guide.title}</p>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">{plant.guide.body}</p>
-          </div>
-        </details>
-      )}
-
-      <AdministrerPlante />
-    </article>
-  )
+  // Data-drevet editorial som STANDARD for ALLE planter (Annas beslutning,
+  // 2026-06-15). Override (hvis sorten har en, fx San Marzano) beriger
+  // siden — ellers bygges den helt af plantens egne data. plant-detail.ts
+  // er ikke længere adgangsbillet til layoutet.
+  const detail = buildPlantDetail({ plant, override: overrideFor(plant.guideId) })
+  return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
 }
 
 /**
@@ -273,8 +176,8 @@ function renderEditorial(
       {karakter && <PlantKarakter karakter={karakter} />}
       <PlantNaeste naeste={detail.naeste} />
       <PlantTidslinje milestones={detail.tidslinje} />
-        <PlantGalleri billeder={detail.billeder} />
-        {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
+      {detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />}
+      {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
         <DagbogSektion plant={plant} log={log} />
 
@@ -547,15 +450,5 @@ function AdministrerPlante() {
         Arkivér plante
       </Button>
     </details>
-  )
-}
-
-
-function Fact({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-      <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
-    </div>
   )
 }

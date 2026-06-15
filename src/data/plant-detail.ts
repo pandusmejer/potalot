@@ -86,36 +86,48 @@ export interface PlantDetail {
 
 const MAKRO_SM = '/images/makro/tomat-san-marzano'
 
-export const PLANT_DETAIL: Record<string, PlantDetail> = {
+/**
+ * Redaktionelt OVERRIDE/berigelses-lag.
+ *
+ * Annas arkitektur (2026-06-15): dette styrer IKKE længere om en plante
+ * får editorial-layout — det gør alle planter nu (buildPlantDetail).
+ * Override beriger kun siden med håndskrevet tekst/billeder for vigtige
+ * sorter. Felterne er valgfrie; det angivne vinder over det data-afledte.
+ *
+ * VIGTIGT: læg ikke hårde tal (alder/højde/status) her — de skal forblive
+ * data-drevne, så vi aldrig viser falske statiske tal.
+ */
+export interface PlantDetailOverride {
+  /** Poetisk "Lige nu" — kun de angivne felter overskriver det afledte. */
+  naeste?: Partial<DetailNaeste>
+  /** Narrativ pr. tidslinje-fase: fase-label → historie. Beriger milepælene. */
+  tidslinjeNoter?: Record<string, string>
+  /** Kurateret galleri (makrofotos). Uden override skjules galleriet. */
+  billeder?: DetailBillede[]
+  /** Håndskrevet sammenligning. Uden override skjules sektionen (V1). */
+  sammenligning?: DetailSammenligning
+}
+
+/**
+ * Overrides pr. guideId. San Marzano er REFERENCE-implementeringen —
+ * ikke undtagelsen. Alle andre sorter får den rene data-drevne side.
+ */
+export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
   'tomat-san-marzano': {
-    heroFoto: '/images/plantekort/tomat-san-marzano.jpg',
-    heroFotoAlt: 'Modne San Marzano-tomater på planten',
-    maal: {
-      statusValue: 'Aktiv',
-      statusNote: 'i vækst',
-      alderValue: '62 dage',
-      alderNote: 'siden såning',
-      hoejdeValue: '38 cm',
-      hoejdeNote: 'sidst målt',
-      sundhedValue: 'God',
-      sundhedNote: 'stabil vækst',
-    },
     naeste: {
       overskrift: 'Første blomster',
       timing: 'forventes om 8–14 dage',
       beskrivelse: 'San Marzano går nu fra vegetativ vækst til blomstring.',
-      guideHref: '/guides',
       denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7–10 dag'],
       fotoSrc: `${MAKRO_SM}/frugtknop.jpg`,
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },
-    tidslinje: [
-      { label: 'Sået', dato: '18. marts', ikon: 'fro', historie: 'Seks frø lagt i bakke på varmemåtte.' },
-      { label: 'Spiret', dato: '24. marts', ikon: 'spire', historie: 'Alle seks spirer kom op — stærke og lige.' },
-      { label: 'Pottet om', dato: '14. april', ikon: 'blad', historie: 'Flyttet til 11 cm potter; rødderne havde fyldt den gamle.' },
-      { label: 'Udplantet', dato: '4. juni', ikon: 'plante', historie: 'Sat ud i drivhusets lune sydhjørne.' },
-      { label: 'Første høst', dato: null, ikon: 'frugt', historie: 'Forventes omkring 22. juli.' },
-    ],
+    tidslinjeNoter: {
+      Sået: 'Seks frø lagt i bakke på varmemåtte.',
+      Spiret: 'Alle seks spirer kom op — stærke og lige.',
+      Udplantet: 'Sat ud i drivhusets lune sydhjørne.',
+      Høst: 'De første klaser sætter allerede — høst nærmer sig.',
+    },
     billeder: [
       { src: `${MAKRO_SM}/y-led.jpg`, alt: 'Kraftigt Y-led på stænglen' },
       { src: `${MAKRO_SM}/blad-dug.jpg`, alt: 'Morgendug på bladene' },
@@ -131,8 +143,8 @@ export const PLANT_DETAIL: Record<string, PlantDetail> = {
   },
 }
 
-/** Slå detalje-indhold op via guideId. Null hvis sorten ikke er bygget endnu. */
-export function detailFor(guideId?: string | null): PlantDetail | null {
+/** Slå override op via guideId. Null = ren data-drevet side (ingen berigelse). */
+export function overrideFor(guideId?: string | null): PlantDetailOverride | null {
   if (!guideId) return null
-  return PLANT_DETAIL[guideId] ?? null
+  return PLANT_DETAIL_OVERRIDES[guideId] ?? null
 }
