@@ -28,6 +28,7 @@ const C = {
   purple: '#8E789D',
   carrot: '#D8804A', // dæmpet rod-orange (batch 2 — afventer Annas blåstempling)
   pane: '#FAFBF3', // kortfarve som "glas"-ruder i drivhus
+  peaLight: '#A7C489', // frisk lysgrøn — ærter mod mørk bælg
 } as const
 
 export type GlyphProps = {
@@ -170,18 +171,18 @@ export function GlyphBlomst(props: GlyphProps) {
   )
 }
 
-/* ── Ært — bælg + ærter (frøprik-familien genbrugt) ── */
+/* ── Ært — åben bælg (mørk cradle) + lyse ærter der popper op ── */
 export function GlyphAert(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* stilk */}
-      <path d="M3.4 11 C 2.6 10.2, 2.6 9, 3.2 8.2" stroke={C.greenDeep} strokeWidth="1.8" strokeLinecap="round" />
-      {/* bælg (linse) */}
-      <path d="M3.6 12.2 C 7.2 8.3, 16.8 8.3, 20.4 12.2 C 16.8 16.1, 7.2 16.1, 3.6 12.2 Z" fill={C.green} />
-      {/* 3 ærter */}
-      <circle cx="8.6" cy="12.2" r="2.4" fill={C.greenDeep} />
-      <circle cx="12" cy="12.2" r="2.6" fill={C.greenDeep} />
-      <circle cx="15.4" cy="12.2" r="2.4" fill={C.greenDeep} />
+      {/* slyngtråd */}
+      <path d="M19.3 9.5 C 21 9.1, 21.2 7.2, 19.8 6.8 C 18.8 6.5, 18.4 7.7, 19.2 8.4" stroke={C.greenDeep} strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      {/* bælg — mørk cradle, åben foroven (maks kontrast til ærterne) */}
+      <path d="M3.6 12.4 C 7 13.5, 17 13.5, 20.4 12.4 C 19.7 16.8, 16.2 19.2, 12 19.2 C 7.8 19.2, 4.3 16.8, 3.6 12.4 Z" fill={C.greenDark} />
+      {/* 3 ærter — lyse, adskilte beads der popper op af bælgen */}
+      <circle cx="7.3" cy="11.4" r="2.5" fill={C.peaLight} />
+      <circle cx="12" cy="11" r="2.6" fill={C.peaLight} />
+      <circle cx="16.7" cy="11.4" r="2.5" fill={C.peaLight} />
     </Glyph>
   )
 }
@@ -272,19 +273,21 @@ export function GlyphBille(props: GlyphProps) {
   )
 }
 
-/* ── Høstkurv — flettet kurv + hank + afgrøde-hint ── */
+/* ── Høstkurv — flettet, tilspidset kurv + kant + afgrøde over kanten ── */
 export function GlyphHoestkurv(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* hank */}
-      <path d="M7 12 C 7.4 7.6, 16.6 7.6, 17 12" stroke={C.greenDeep} strokeWidth="2.4" strokeLinecap="round" fill="none" />
-      {/* afgrøde-hint (peeking over kanten) */}
-      <circle cx="10" cy="11" r="2.1" fill={C.tomato} />
-      <path d="M14.2 11.2 C 15.6 10.8, 16.6 9.6, 16.8 8 C 15.1 8.2, 14 9.4, 14.2 11.2 Z" fill={C.green} />
-      {/* kurv-krop */}
-      <path d="M4.6 11.6 L 19.4 11.6 C 18.7 16.4, 17.7 19.8, 16.7 20.7 C 16.2 21.1, 7.8 21.1, 7.3 20.7 C 6.3 19.8, 5.3 16.4, 4.6 11.6 Z" fill={C.soil} />
+      {/* kurv-krop — tilspidset */}
+      <path d="M4.4 13 L 19.6 13 L 17.3 20 C 17.1 20.6, 16.5 21, 15.8 21 L 8.2 21 C 7.5 21, 6.9 20.6, 6.7 20 Z" fill={C.soil} />
       {/* fletning */}
-      <path d="M5.4 14.6 C 9 15.6, 15 15.6, 18.6 14.6" stroke={C.sand} strokeWidth="1.6" strokeLinecap="round" opacity="0.75" />
+      <path d="M6.1 16 C 9.6 16.7, 14.4 16.7, 17.9 16" stroke={C.sand} strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+      <path d="M6.9 18.5 C 9.9 19, 14.1 19, 17.1 18.5" stroke={C.sand} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+      {/* kant/rim */}
+      <rect x="3.6" y="11.4" width="16.8" height="2.9" rx="1.45" fill={C.sand} />
+      {/* afgrøde der pibler op over kanten */}
+      <path d="M12 9.5 C 12.7 7.4, 12.3 5.9, 11 5.1 C 10.5 6.8, 10.8 8.3, 12 9.5 Z" fill={C.green} />
+      <circle cx="9.6" cy="10.5" r="2.6" fill={C.tomato} />
+      <circle cx="14.3" cy="10.8" r="2.3" fill={C.carrot} />
     </Glyph>
   )
 }
