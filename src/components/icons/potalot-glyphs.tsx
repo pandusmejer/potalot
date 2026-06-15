@@ -355,14 +355,19 @@ export function GlyphJord(props: GlyphProps) {
   )
 }
 
-/* ── Kompost — mørk organisk bunke: blad + skræl + orm ── */
+/* ── Kompost — lumpet bunke (muld) + organiske tegn: blad, flis, orm ── */
 export function GlyphKompost(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <path d="M2.6 18.4 C 4.5 13, 9 10.4, 12 10.4 C 15 10.4, 19.5 13, 21.4 18.4 C 21.7 19.3, 21.1 20.2, 20.2 20.2 L 3.8 20.2 C 2.9 20.2, 2.3 19.3, 2.6 18.4 Z" fill={C.greenDeep} />
-      <path d="M11.8 10.8 C 9.6 9.6, 7.8 9.8, 6.8 11.2 C 8.6 12.2, 10.6 12, 11.8 10.8 Z" fill={C.green} />
-      <path d="M13 12.2 C 14.6 11.4, 16.2 11.8, 16.8 13.2 C 15.2 13.8, 13.6 13.6, 13 12.2 Z" fill={C.carrot} />
-      <path d="M8.2 16.8 C 9.4 16, 10.8 16.8, 10.4 18 C 10 19, 11.2 19.4, 12.2 18.8" stroke={C.tomato} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.85" />
+      {/* lumpet bunke — flere humpe = piled, decomposed matter */}
+      <path d="M2.8 19 C 3.4 16, 5 14.2, 6.6 14.8 C 7.4 13, 9.4 12.8, 10.6 14.2 C 11.6 12.6, 13.8 12.7, 14.8 14.4 C 16.2 13.6, 18.4 15, 21.2 19 C 21.6 19.7, 21.1 20.3, 20.3 20.3 L 3.7 20.3 C 2.9 20.3, 2.4 19.7, 2.8 19 Z" fill={C.greenDeep} />
+      {/* muld-flis (halvt nedgravet) */}
+      <ellipse cx="8.2" cy="16.8" rx="1.7" ry="1.1" fill={C.sand} transform="rotate(-16 8.2 16.8)" />
+      <ellipse cx="15.4" cy="17.1" rx="1.5" ry="1" fill={C.soil} transform="rotate(20 15.4 17.1)" />
+      {/* blad */}
+      <path d="M12.3 13.7 C 10.5 12.5, 8.7 12.8, 7.9 14.2 C 9.6 15.1, 11.4 14.8, 12.3 13.7 Z" fill={C.green} />
+      {/* orm */}
+      <path d="M13.9 14.3 C 15.3 13.6, 16.7 14.5, 16.2 15.7 C 15.8 16.6, 16.9 17, 17.8 16.5" stroke={C.tomato} strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
     </Glyph>
   )
 }
@@ -395,45 +400,54 @@ export function GlyphHojbed(props: GlyphProps) {
   )
 }
 
-/* ── Saks — beskæresaks (blød, varme greb) ── */
+/* ── Saks — tydeligt X: fyldte blade op, krydsede håndtag ned ── */
 export function GlyphSaks(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <path d="M5.7 4.4 C 8.2 7.9, 11 11, 12.6 12.9" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M18.3 4.4 C 15.8 7.9, 13 11, 11.4 12.9" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M12.6 12.9 C 12 14.1, 10.7 15, 9.5 15.5" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M11.4 12.9 C 12 14.1, 13.3 15, 14.5 15.5" stroke={C.greenDeep} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <circle cx="9.2" cy="17.9" r="2.6" fill="none" stroke={C.carrot} strokeWidth="2" />
-      <circle cx="14.8" cy="17.9" r="2.6" fill="none" stroke={C.carrot} strokeWidth="2" />
-      <circle cx="12" cy="12.9" r="1.2" fill={C.soil} />
+      {/* blade (fyldte, tapered) — øverste halvdel af X'et */}
+      <path d="M4.4 2.9 L 13.1 11 L 11 12.9 Z" fill={C.greenDeep} />
+      <path d="M19.6 2.9 L 10.9 11 L 13 12.9 Z" fill={C.greenDeep} />
+      {/* håndtag — nederste halvdel af X'et, ned til greb */}
+      <path d="M12 12 L 16.4 17.6" stroke={C.greenDeep} strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M12 12 L 7.6 17.6" stroke={C.greenDeep} strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="16.9" cy="18.4" r="2.4" fill="none" stroke={C.greenDeep} strokeWidth="2.2" />
+      <circle cx="7.1" cy="18.4" r="2.4" fill="none" stroke={C.greenDeep} strokeWidth="2.2" />
+      {/* pivot */}
+      <circle cx="12" cy="12.2" r="1.4" fill={C.soil} />
     </Glyph>
   )
 }
 
-/* ── Rive — haverive: varmt skaft + bløde tænder ── */
+/* ── Rive — bredt fyldt hoved + 4 tykke tænder + kort skaft ── */
 export function GlyphRive(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <path d="M12 3.6 L 12 14.2" stroke={C.soil} strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M5.6 14.7 L 18.4 14.7" stroke={C.greenDeep} strokeWidth="2.4" strokeLinecap="round" />
-      <g stroke={C.greenDeep} strokeWidth="1.8" strokeLinecap="round">
-        <path d="M6.4 15.4 L 6.4 18.9" />
-        <path d="M9.2 15.4 L 9.2 18.9" />
-        <path d="M12 15.4 L 12 18.9" />
-        <path d="M14.8 15.4 L 14.8 18.9" />
-        <path d="M17.6 15.4 L 17.6 18.9" />
+      {/* kort skaft */}
+      <path d="M12 4.4 L 12 12.8" stroke={C.soil} strokeWidth="2.6" strokeLinecap="round" />
+      {/* bredt fyldt hovedbjælke */}
+      <rect x="4.2" y="12.6" width="15.6" height="2.8" rx="1.4" fill={C.greenDeep} />
+      {/* 4 tykke tænder */}
+      <g stroke={C.greenDeep} strokeWidth="2.4" strokeLinecap="round">
+        <path d="M6.6 15.6 L 6.6 19.4" />
+        <path d="M10.2 15.6 L 10.2 19.4" />
+        <path d="M13.8 15.6 L 13.8 19.4" />
+        <path d="M17.4 15.6 L 17.4 19.4" />
       </g>
     </Glyph>
   )
 }
 
-/* ── Skovl — spade: varmt skaft + D-greb + blødt blad ── */
+/* ── Skovl — spade: D-greb + varmt skaft + bredt skovlblad ── */
 export function GlyphSkovl(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <path d="M9.6 4.4 C 9.6 2.7, 14.4 2.7, 14.4 4.4" stroke={C.soil} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M12 3.6 L 12 13" stroke={C.soil} strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M8.3 13 L 15.7 13 C 15.7 17.6, 14 20.8, 12 21.6 C 10 20.8, 8.3 17.6, 8.3 13 Z" fill={C.greenDeep} />
+      {/* D-greb */}
+      <path d="M9.4 4.2 C 9.4 2.6, 14.6 2.6, 14.6 4.2" stroke={C.soil} strokeWidth="2" strokeLinecap="round" fill="none" />
+      {/* skaft */}
+      <path d="M12 3.4 L 12 11.6" stroke={C.soil} strokeWidth="2.4" strokeLinecap="round" />
+      {/* hals + bredt skovlblad (bred top, blødt rundet bund — ikke en pil) */}
+      <path d="M10.6 11.6 L 13.4 11.6 L 13.4 13 L 10.6 13 Z" fill={C.greenDeep} />
+      <path d="M6.4 12.8 L 17.6 12.8 L 17.6 16.8 C 17.6 19.4, 15.1 21.4, 12 21.4 C 8.9 21.4, 6.4 19.4, 6.4 16.8 Z" fill={C.greenDeep} />
     </Glyph>
   )
 }
@@ -450,24 +464,18 @@ export function GlyphRegn(props: GlyphProps) {
   )
 }
 
-/* ── Frost — enkel iskrystal (enklere end snefnug) ── */
+/* ── Frost — tyk, ikonisk iskrystal (3 fyldte arme, ingen tynde streger) ── */
 export function GlyphFrost(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      <g stroke={C.blueLight} strokeWidth="2" strokeLinecap="round">
-        <path d="M12 3.6 L 12 20.4" />
-        <path d="M4.7 7.8 L 19.3 16.2" />
-        <path d="M19.3 7.8 L 4.7 16.2" />
+      {/* 3 tykke tapered arme krydser → chunky 6-takket krystal */}
+      <g fill={C.blueLight}>
+        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" />
+        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" transform="rotate(60 12 12)" />
+        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" transform="rotate(120 12 12)" />
       </g>
-      <g fill={C.blue}>
-        <circle cx="12" cy="3.6" r="1.3" />
-        <circle cx="12" cy="20.4" r="1.3" />
-        <circle cx="4.7" cy="7.8" r="1.2" />
-        <circle cx="19.3" cy="16.2" r="1.2" />
-        <circle cx="19.3" cy="7.8" r="1.2" />
-        <circle cx="4.7" cy="16.2" r="1.2" />
-      </g>
-      <circle cx="12" cy="12" r="1.7" fill={C.blueLight} />
+      {/* kerne */}
+      <circle cx="12" cy="12" r="2.4" fill={C.blue} />
     </Glyph>
   )
 }
