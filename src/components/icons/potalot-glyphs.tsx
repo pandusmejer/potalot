@@ -359,15 +359,12 @@ export function GlyphJord(props: GlyphProps) {
 export function GlyphKompost(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* lumpet bunke — flere humpe = piled, decomposed matter */}
-      <path d="M2.8 19 C 3.4 16, 5 14.2, 6.6 14.8 C 7.4 13, 9.4 12.8, 10.6 14.2 C 11.6 12.6, 13.8 12.7, 14.8 14.4 C 16.2 13.6, 18.4 15, 21.2 19 C 21.6 19.7, 21.1 20.3, 20.3 20.3 L 3.7 20.3 C 2.9 20.3, 2.4 19.7, 2.8 19 Z" fill={C.greenDeep} />
-      {/* muld-flis (halvt nedgravet) */}
-      <ellipse cx="8.2" cy="16.8" rx="1.7" ry="1.1" fill={C.sand} transform="rotate(-16 8.2 16.8)" />
-      <ellipse cx="15.4" cy="17.1" rx="1.5" ry="1" fill={C.soil} transform="rotate(20 15.4 17.1)" />
-      {/* blad */}
-      <path d="M12.3 13.7 C 10.5 12.5, 8.7 12.8, 7.9 14.2 C 9.6 15.1, 11.4 14.8, 12.3 13.7 Z" fill={C.green} />
-      {/* orm */}
-      <path d="M13.9 14.3 C 15.3 13.6, 16.7 14.5, 16.2 15.7 C 15.8 16.6, 16.9 17, 17.8 16.5" stroke={C.tomato} strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
+      {/* lumpet bunke — stærk mørk bund */}
+      <path d="M2.8 19 C 3.4 16.2, 5 14.6, 6.6 15.2 C 7.4 13.6, 9.4 13.4, 10.6 14.8 C 11.6 13.2, 13.8 13.3, 14.8 15 C 16.2 14.2, 18.4 15.6, 21.2 19 C 21.6 19.7, 21.1 20.3, 20.3 20.3 L 3.7 20.3 C 2.9 20.3, 2.4 19.7, 2.8 19 Z" fill={C.greenDark} />
+      {/* få organiske tegn, tucket ned i bunken */}
+      <path d="M9.4 15.8 C 7.8 14.8, 6.4 15.1, 5.7 16.3 C 7.2 17.1, 8.6 16.8, 9.4 15.8 Z" fill={C.green} />
+      <ellipse cx="15" cy="17.4" rx="1.6" ry="1" fill={C.soil} transform="rotate(16 15 17.4)" />
+      <path d="M10.4 18.1 C 11.6 17.4, 12.9 18.2, 12.5 19.3" stroke={C.tomato} strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.8" />
     </Glyph>
   )
 }
@@ -510,4 +507,42 @@ export const POTALOT_GLYPHS_3: {
   { key: 'regn', label: 'Regn', form: 'sky + dråber', Comp: GlyphRegn },
   { key: 'frost', label: 'Frost', form: 'iskrystal', Comp: GlyphFrost },
   { key: 'vind', label: 'Vind', form: 'vindstød', Comp: GlyphVind },
+]
+
+/* ── Frost-alternativer (sidste udforskning før lock) ── */
+
+/* A: afrundet krystal — tykke, runde arme + stor kerne (mindre stjerne) */
+export function GlyphFrostA(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <g stroke={C.blueLight} strokeWidth="2.8" strokeLinecap="round">
+        <path d="M12 6 L 12 18" />
+        <path d="M6.8 9 L 17.2 15" />
+        <path d="M17.2 9 L 6.8 15" />
+      </g>
+      <circle cx="12" cy="12" r="3" fill={C.blue} />
+    </Glyph>
+  )
+}
+
+/* B: frostet blad — kold bladform + lille frost-krystal indeni (unik) */
+export function GlyphFrostB(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d={LEAF_BODY} fill={C.blueLight} />
+      <path d={LEAF_VEIN} stroke={C.blue} strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+      <g stroke={C.pane} strokeWidth="1.4" strokeLinecap="round">
+        <path d="M13.4 8.8 L 13.4 12.8" />
+        <path d="M11.5 9.8 L 15.3 11.8" />
+        <path d="M15.3 9.8 L 11.5 11.8" />
+      </g>
+    </Glyph>
+  )
+}
+
+/** Frost — nuværende + 2 alternativer til valg. */
+export const FROST_VARIANTER: { key: string; label: string; Comp: (p: GlyphProps) => ReactNode }[] = [
+  { key: 'fNu', label: 'Nuværende · krystal', Comp: GlyphFrost },
+  { key: 'fA', label: 'A · rundet krystal', Comp: GlyphFrostA },
+  { key: 'fB', label: 'B · frostet blad', Comp: GlyphFrostB },
 ]
