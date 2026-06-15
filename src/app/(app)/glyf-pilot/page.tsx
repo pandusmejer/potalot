@@ -1,6 +1,6 @@
 import { Wheat, Sprout, Leaf, Apple, Droplets, Sun, ChevronRight, Flower2, Carrot, Bug, ShoppingBasket, Scissors, Shovel, CloudRain, Snowflake, Wind } from 'lucide-react'
 import type { ComponentType, SVGProps, ReactNode } from 'react'
-import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3, FROST_VARIANTER } from '@/components/icons/potalot-glyphs'
+import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3 } from '@/components/icons/potalot-glyphs'
 
 /**
  * QA-rute: Potalot Soft Glyphs — pilot (6 kerneformer).
@@ -414,29 +414,6 @@ export default function GlyphQAPage() {
         </p>
       </Card>
 
-      {/* C6. Frost — sidste udforskning før lock */}
-      <Card title="Frost · vælg retning (mindre stjerne, mere frost)">
-        <div className="space-y-5">
-          {FROST_VARIANTER.map(({ key, label, Comp }) => (
-            <div key={key} className="flex items-center gap-5" style={{ borderTop: '1px solid rgba(36,48,31,0.06)', paddingTop: 16 }}>
-              <div style={{ width: 150, flexShrink: 0 }}>
-                <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: INK, margin: 0 }}>{label}</p>
-              </div>
-              <div className="flex flex-1 items-end" style={{ gap: 22 }}>
-                {SIZES.map((s) => (
-                  <div key={s} className="flex flex-col items-center" style={{ gap: 6 }}>
-                    <Comp size={s} title={label} />
-                    <span style={{ fontFamily: sans, fontSize: 10, color: 'rgba(36,48,31,0.4)' }}>{s}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '16px 0 0', lineHeight: 1.5 }}>
-          A = afrundet, tykkere krystal med stor kerne (mindre stjerne). B = frostet blad m. lille krystal indeni (unik Potalot-markør). Vurdér især ved 16/20 px.
-        </p>
-      </Card>
     </div>
   )
 }

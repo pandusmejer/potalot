@@ -461,18 +461,16 @@ export function GlyphRegn(props: GlyphProps) {
   )
 }
 
-/* ── Frost — tyk, ikonisk iskrystal (3 fyldte arme, ingen tynde streger) ── */
+/* ── Frost — rundet iskrystal: tykke runde arme + stor kerne (Annas valg: A) ── */
 export function GlyphFrost(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* 3 tykke tapered arme krydser → chunky 6-takket krystal */}
-      <g fill={C.blueLight}>
-        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" />
-        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" transform="rotate(60 12 12)" />
-        <path d="M12 3 L 13.7 12 L 12 21 L 10.3 12 Z" transform="rotate(120 12 12)" />
+      <g stroke={C.blueLight} strokeWidth="2.8" strokeLinecap="round">
+        <path d="M12 6 L 12 18" />
+        <path d="M6.8 9 L 17.2 15" />
+        <path d="M17.2 9 L 6.8 15" />
       </g>
-      {/* kerne */}
-      <circle cx="12" cy="12" r="2.4" fill={C.blue} />
+      <circle cx="12" cy="12" r="3" fill={C.blue} />
     </Glyph>
   )
 }
@@ -507,42 +505,4 @@ export const POTALOT_GLYPHS_3: {
   { key: 'regn', label: 'Regn', form: 'sky + dråber', Comp: GlyphRegn },
   { key: 'frost', label: 'Frost', form: 'iskrystal', Comp: GlyphFrost },
   { key: 'vind', label: 'Vind', form: 'vindstød', Comp: GlyphVind },
-]
-
-/* ── Frost-alternativer (sidste udforskning før lock) ── */
-
-/* A: afrundet krystal — tykke, runde arme + stor kerne (mindre stjerne) */
-export function GlyphFrostA(props: GlyphProps) {
-  return (
-    <Glyph {...props}>
-      <g stroke={C.blueLight} strokeWidth="2.8" strokeLinecap="round">
-        <path d="M12 6 L 12 18" />
-        <path d="M6.8 9 L 17.2 15" />
-        <path d="M17.2 9 L 6.8 15" />
-      </g>
-      <circle cx="12" cy="12" r="3" fill={C.blue} />
-    </Glyph>
-  )
-}
-
-/* B: frostet blad — kold bladform + lille frost-krystal indeni (unik) */
-export function GlyphFrostB(props: GlyphProps) {
-  return (
-    <Glyph {...props}>
-      <path d={LEAF_BODY} fill={C.blueLight} />
-      <path d={LEAF_VEIN} stroke={C.blue} strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
-      <g stroke={C.pane} strokeWidth="1.4" strokeLinecap="round">
-        <path d="M13.4 8.8 L 13.4 12.8" />
-        <path d="M11.5 9.8 L 15.3 11.8" />
-        <path d="M15.3 9.8 L 11.5 11.8" />
-      </g>
-    </Glyph>
-  )
-}
-
-/** Frost — nuværende + 2 alternativer til valg. */
-export const FROST_VARIANTER: { key: string; label: string; Comp: (p: GlyphProps) => ReactNode }[] = [
-  { key: 'fNu', label: 'Nuværende · krystal', Comp: GlyphFrost },
-  { key: 'fA', label: 'A · rundet krystal', Comp: GlyphFrostA },
-  { key: 'fB', label: 'B · frostet blad', Comp: GlyphFrostB },
 ]
