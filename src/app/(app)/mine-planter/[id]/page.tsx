@@ -452,23 +452,25 @@ function DagbogHero({ entry }: { entry: MockPlantLog }) {
 
           {entry.konsekvens && (
             <div
-              className="mt-5 flex items-start gap-3.5"
+              className="mt-5"
               style={{ background: '#E8EDE0', borderRadius: 16, padding: '16px 18px' }}
             >
-              <span
-                className="flex shrink-0 items-center justify-center"
-                style={{ width: 40, height: 40, borderRadius: 999, background: 'rgba(255,255,255,0.6)', color: GROEN }}
-              >
-                <Lightbulb className="h-[18px] w-[18px]" strokeWidth={1.9} aria-hidden />
-              </span>
-              <div className="min-w-0">
+              {/* Pære + overskrift på samme horisontale linje, midterjusteret. */}
+              <div className="flex items-center gap-3">
+                <span
+                  className="flex shrink-0 items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 999, background: 'rgba(255,255,255,0.6)', color: GROEN }}
+                >
+                  <Lightbulb className="h-[18px] w-[18px]" strokeWidth={1.9} aria-hidden />
+                </span>
                 <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: GROEN, margin: 0 }}>
                   Det betød
                 </p>
-                <p style={{ fontFamily: sansFont, fontSize: 14.5, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '5px 0 0' }}>
-                  {entry.konsekvens}
-                </p>
               </div>
+              {/* Brødtekst under — venstrekant på linje med ikonet. */}
+              <p style={{ fontFamily: sansFont, fontSize: 14.5, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '12px 0 0' }}>
+                {entry.konsekvens}
+              </p>
             </div>
           )}
         </div>
