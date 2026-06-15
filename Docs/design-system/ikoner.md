@@ -1,10 +1,12 @@
-# PotAlot — Ikon-oversigt
+# PotAlot — Ikon-oversigt (rå inventar)
 
-> Auto-genereret fra kildekoden (`src/`). Alle ikoner kommer fra **ét bibliotek: `lucide-react`**. Der findes ingen andre ikon-sæt — øvrige SVG'er i appen er dekorative former (organiske bølger, clip-paths, odometer-tæller), ikke navngivne ikoner.
+> Auto-genereret fra kildekoden (`src/`). Alle ikoner kommer fra **ét bibliotek: `lucide-react`**. Øvrige SVG'er er dekorative former, ikke navngivne ikoner.
+>
+> **Retning + oprydningsbeslutninger:** se [ikon-system.md](ikon-system.md) (Potalot Soft Glyphs).
 
 ## Nøgletal
 
-- **Forskellige ikoner i alt:** 129
+- **Forskellige ikoner i alt:** 125
 - **Filer der bruger ikoner:** 158
 - **Kategorier:** 15
 - **Mest brugte:** `Sprout` (43) · `Loader2` (35) · `Check` (26) · `Plus` (26) · `ArrowRight` (22) · `Leaf` (22) · `BookOpen` (20)
@@ -13,8 +15,8 @@
 
 Tallet i parentes er antal filer, ikonet optræder i.
 
-**🌱 Planter, natur & skadedyr** (11)
-`Sprout` (43) · `Leaf` (22) · `Droplets` (7) · `Wheat` (6) · `Bug` (4) · `Flower2` (4) · `TreePine` (4) · `Apple` (1) · `Carrot` (1) · `Flower` (1) · `Skull` (1)
+**🌱 Planter, natur & skadedyr** (10)
+`Sprout` (43) · `Leaf` (22) · `Droplets` (7) · `Wheat` (6) · `Flower2` (5) · `Bug` (4) · `TreePine` (4) · `Apple` (1) · `Carrot` (1) · `Skull` (1)
 
 **☀️ Vejr, himmel & årstid** (15)
 `Sun` (10) · `Snowflake` (8) · `CloudRain` (6) · `Wind` (3) · `Flame` (2) · `Cloud` (1) · `CloudDrizzle` (1) · `CloudFog` (1) · `CloudHail` (1) · `CloudLightning` (1) · `CloudSnow` (1) · `CloudSun` (1) · `Moon` (1) · `Thermometer` (1) · `ThermometerSun` (1)
@@ -31,8 +33,8 @@ Tallet i parentes er antal filer, ikonet optræder i.
 **🔍 Søg, filtrér & sortér** (5)
 `Search` (12) · `ArrowDownAZ` (1) · `ArrowDownZA` (1) · `Filter` (1) · `SlidersHorizontal` (1)
 
-**📚 Bøger, noter & dokumenter** (8)
-`BookOpen` (20) · `FileText` (3) · `FileSpreadsheet` (2) · `Notebook` (2) · `BookMarked` (1) · `Library` (1) · `NotebookPen` (1) · `NotebookText` (1)
+**📚 Bøger, noter & dokumenter** (7)
+`BookOpen` (20) · `FileText` (3) · `FileSpreadsheet` (2) · `Notebook` (2) · `NotebookText` (2) · `BookMarked` (1) · `Library` (1)
 
 **🖼️ Medier & synlighed** (6)
 `Image` (11) · `Camera` (5) · `Eye` (5) · `EyeOff` (3) · `ImageIcon` (1) · `Images` (1)
@@ -40,8 +42,8 @@ Tallet i parentes er antal filer, ikonet optræder i.
 **👤 Brugere & login** (10)
 `Lock` (13) · `Users` (12) · `ShieldCheck` (7) · `User` (7) · `UserPlus` (6) · `LogOut` (2) · `Crown` (1) · `LockOpen` (1) · `LogIn` (1) · `Shield` (1)
 
-**💬 Kommunikation** (5)
-`MessageSquare` (9) · `Bell` (4) · `Mail` (2) · `MessageCircle` (1) · `MessagesSquare` (1)
+**💬 Kommunikation** (3)
+`MessageSquare` (10) · `Bell` (4) · `Mail` (2)
 
 **⚠️ Status, feedback & info** (9)
 `Loader2` (35) · `Sparkles` (12) · `Lightbulb` (9) · `AlertTriangle` (8) · `Circle` (6) · `Flag` (5) · `HelpCircle` (2) · `Info` (2) · `Heart` (1)
@@ -57,29 +59,6 @@ Tallet i parentes er antal filer, ikonet optræder i.
 
 **📦 Objekter & diverse** (6)
 `Package` (10) · `Pin` (4) · `GitFork` (3) · `PinOff` (1) · `ShoppingBasket` (1) · `Truck` (1)
-
----
-
-## Mulig oprydning — dublet-klynger
-
-Flere ikoner dækker samme begreb i forskellige varianter. At samle hver klynge om ét kanonisk ikon giver et roligere, mere konsistent visuelt sprog (jf. "to registre, én familie"). Forslag pr. klynge:
-
-| Begreb | Varianter i brug | Forslag |
-| --- | --- | --- |
-| Flueben | `Check` (26) · `CheckCircle2` (5) · `CheckSquare` (1) · `CheckCheck` (1) | Behold `Check` (handling) + `CheckCircle2` (status/færdig); udfas `CheckSquare` + `CheckCheck` |
-| Blyant / redigér | `Pencil` (8) · `PencilLine` (1) · `PenLine` (1) | Saml om `Pencil` |
-| Notesbog | `Notebook` (2) · `NotebookText` (1) · `NotebookPen` (1) | Saml om én — fx `NotebookText` |
-| Billede | `Image` (11) · `ImageIcon` (1) · `Images` (1) | `Image` til enkelt, `Images` til galleri; udfas alias `ImageIcon` |
-| Besked | `MessageSquare` (9) · `MessageCircle` (1) · `MessagesSquare` (1) | Saml om `MessageSquare` |
-| Blomst | `Flower2` (4) · `Flower` (1) | Vælg én |
-| Skjold | `ShieldCheck` (7) · `Shield` (1) | `ShieldCheck` som standard |
-| Bog | `BookOpen` (20) · `BookMarked` (1) · `Library` (1) | `BookOpen` som standard; behold de øvrige kun ved særskilt betydning |
-
-**Skal IKKE samles** — disse er modsatte tilstande eller bevidst granulære, ikke dubletter:
-
-- Tilstands-par: `Pin`/`PinOff`, `Lock`/`LockOpen`, `Eye`/`EyeOff`, `LogIn`/`LogOut`
-- Vejr-familien (`Cloud`, `CloudRain`, `CloudSnow`, `Sun`, `CloudSun`, `Snowflake`, `Wind`, `Thermometer` …) — granulær med vilje til vejrudsigt/årstid
-- Kalender-varianter (`Calendar`, `CalendarDays`, `CalendarCheck`, `CalendarClock`) — bærer hver sin nuance (dato vs. dag vs. bekræftet vs. tidspunkt)
 
 ---
 
@@ -417,13 +396,11 @@ Alfabetisk. For hvert ikon: antal filer + de filer (sti relativt til `src/`) hvo
 - `components/grupper/badge-chips.tsx`
 - `components/grupper/currently-active-card.tsx`
 
-### Flower — 1 fil
-- `components/havekalender/maaneds-hero.tsx`
-
-### Flower2 — 4 filer
+### Flower2 — 5 filer
 - `components/froebank/sow-dialog.tsx`
 - `components/grupper/badge-chips.tsx`
 - `components/guides/guide-potalot-note.tsx`
+- `components/havekalender/maaneds-hero.tsx`
 - `components/mine-planter/new-plant-dialog.tsx`
 
 ### Gift — 9 filer
@@ -616,10 +593,8 @@ Alfabetisk. For hvert ikon: antal filer + de filer (sti relativt til `src/`) hvo
 - `components/overblik/plant-mini-card.tsx`
 - `components/profil/location-setting.tsx`
 
-### MessageCircle — 1 fil
+### MessageSquare — 10 filer
 - `app/(app)/grupper/[id]/page.tsx`
-
-### MessageSquare — 9 filer
 - `app/(app)/grupper/[id]/sorter/[varietyId]/page.tsx`
 - `components/grupper/currently-active-card.tsx`
 - `components/grupper/forum-list.tsx`
@@ -629,9 +604,6 @@ Alfabetisk. For hvert ikon: antal filer + de filer (sti relativt til `src/`) hvo
 - `components/grupper/invite-dialog.tsx`
 - `components/grupper/varieties-tab.tsx`
 - `components/grupper/weekly-digest-card.tsx`
-
-### MessagesSquare — 1 fil
-- `app/(app)/grupper/[id]/page.tsx`
 
 ### Moon — 1 fil
 - `components/profil/profil-form.tsx`
@@ -643,11 +615,9 @@ Alfabetisk. For hvert ikon: antal filer + de filer (sti relativt til `src/`) hvo
 - `components/layout/bottom-nav.tsx`
 - `components/layout/sidebar.tsx`
 
-### NotebookPen — 1 fil
-- `components/guides/guide-notes-card.tsx`
-
-### NotebookText — 1 fil
+### NotebookText — 2 filer
 - `app/(app)/mine-planter/[id]/page.tsx`
+- `components/guides/guide-notes-card.tsx`
 
 ### Package — 10 filer
 - `app/(app)/froebank/[id]/page.tsx`
