@@ -176,13 +176,13 @@ export function GlyphAert(props: GlyphProps) {
   return (
     <Glyph {...props}>
       {/* slyngtråd */}
-      <path d="M19.3 9.5 C 21 9.1, 21.2 7.2, 19.8 6.8 C 18.8 6.5, 18.4 7.7, 19.2 8.4" stroke={C.greenDeep} strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      {/* bælg — mørk cradle, åben foroven (maks kontrast til ærterne) */}
-      <path d="M3.6 12.4 C 7 13.5, 17 13.5, 20.4 12.4 C 19.7 16.8, 16.2 19.2, 12 19.2 C 7.8 19.2, 4.3 16.8, 3.6 12.4 Z" fill={C.greenDark} />
-      {/* 3 ærter — lyse, adskilte beads der popper op af bælgen */}
-      <circle cx="7.3" cy="11.4" r="2.5" fill={C.peaLight} />
-      <circle cx="12" cy="11" r="2.6" fill={C.peaLight} />
-      <circle cx="16.7" cy="11.4" r="2.5" fill={C.peaLight} />
+      <path d="M19.4 8.4 C 21.1 8, 21.3 6.1, 19.9 5.7 C 18.9 5.4, 18.5 6.6, 19.3 7.3" stroke={C.greenDeep} strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      {/* bælg — markant, dyb cradle (bærer silhuetten i små størrelser) */}
+      <path d="M2.8 10.6 C 7 12.7, 17 12.7, 21.2 10.6 C 20.6 16.7, 16.7 20.4, 12 20.4 C 7.3 20.4, 3.4 16.7, 2.8 10.6 Z" fill={C.greenDark} />
+      {/* 3 store ærter der popper op af bælgen */}
+      <circle cx="6.7" cy="10.2" r="2.8" fill={C.peaLight} />
+      <circle cx="12" cy="9.7" r="3" fill={C.peaLight} />
+      <circle cx="17.3" cy="10.2" r="2.8" fill={C.peaLight} />
     </Glyph>
   )
 }
@@ -221,16 +221,15 @@ export function GlyphLoeg(props: GlyphProps) {
   )
 }
 
-/* ── Drivhus — strukturel figur med glas-ruder ── */
+/* ── Drivhus — strukturel, men tung og blød (ikke arkitektur) ── */
 export function GlyphDrivhus(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* hus-silhuet (afrundede hjørner, blødt tag) */}
-      <path d="M12 3.4 L 19.4 8.6 C 19.8 8.9, 20 9.3, 20 9.8 L 20 19 C 20 19.9, 19.3 20.6, 18.4 20.6 L 5.6 20.6 C 4.7 20.6, 4 19.9, 4 19 L 4 9.8 C 4 9.3, 4.2 8.9, 4.6 8.6 Z" fill={C.green} />
-      {/* glas-ruder */}
-      <path d="M12 4 L 12 20.6" stroke={C.pane} strokeWidth="1.5" opacity="0.75" />
-      <path d="M4 13.2 L 20 13.2" stroke={C.pane} strokeWidth="1.5" opacity="0.55" />
-      <path d="M5 9 L 19 9" stroke={C.pane} strokeWidth="1.5" opacity="0.5" />
+      {/* hus-silhuet — fuldere, blødt afrundet tag + bløde hjørner */}
+      <path d="M12 3.2 C 12.6 3.2, 13.2 3.4, 13.7 3.8 L 19.8 8.5 C 20.3 8.9, 20.6 9.5, 20.6 10.1 L 20.6 18.4 C 20.6 19.7, 19.5 20.8, 18.2 20.8 L 5.8 20.8 C 4.5 20.8, 3.4 19.7, 3.4 18.4 L 3.4 10.1 C 3.4 9.5, 3.7 8.9, 4.2 8.5 L 10.3 3.8 C 10.8 3.4, 11.4 3.2, 12 3.2 Z" fill={C.green} />
+      {/* glas — forenklet: lodret midte + tag-skel (ikke et gitter) */}
+      <path d="M12 4 L 12 20.6" stroke={C.pane} strokeWidth="1.9" opacity="0.7" />
+      <path d="M4.4 8.9 C 8 9.7, 16 9.7, 19.6 8.9" stroke={C.pane} strokeWidth="1.9" strokeLinecap="round" opacity="0.55" fill="none" />
     </Glyph>
   )
 }
@@ -277,17 +276,17 @@ export function GlyphBille(props: GlyphProps) {
 export function GlyphHoestkurv(props: GlyphProps) {
   return (
     <Glyph {...props}>
-      {/* kurv-krop — tilspidset */}
-      <path d="M4.4 13 L 19.6 13 L 17.3 20 C 17.1 20.6, 16.5 21, 15.8 21 L 8.2 21 C 7.5 21, 6.9 20.6, 6.7 20 Z" fill={C.soil} />
+      {/* kurv-krop — hovedformen, fuldere og dybere */}
+      <path d="M3.6 12.6 L 20.4 12.6 L 17.9 20.6 C 17.6 21.3, 16.9 21.7, 16.1 21.7 L 7.9 21.7 C 7.1 21.7, 6.4 21.3, 6.1 20.6 Z" fill={C.soil} />
       {/* fletning */}
-      <path d="M6.1 16 C 9.6 16.7, 14.4 16.7, 17.9 16" stroke={C.sand} strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
-      <path d="M6.9 18.5 C 9.9 19, 14.1 19, 17.1 18.5" stroke={C.sand} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
-      {/* kant/rim */}
-      <rect x="3.6" y="11.4" width="16.8" height="2.9" rx="1.45" fill={C.sand} />
-      {/* afgrøde der pibler op over kanten */}
-      <path d="M12 9.5 C 12.7 7.4, 12.3 5.9, 11 5.1 C 10.5 6.8, 10.8 8.3, 12 9.5 Z" fill={C.green} />
-      <circle cx="9.6" cy="10.5" r="2.6" fill={C.tomato} />
-      <circle cx="14.3" cy="10.8" r="2.3" fill={C.carrot} />
+      <path d="M5.6 15.6 C 9.7 16.5, 14.3 16.5, 18.4 15.6" stroke={C.sand} strokeWidth="1.7" strokeLinecap="round" opacity="0.7" />
+      <path d="M6.4 18.7 C 9.9 19.3, 14.1 19.3, 17.6 18.7" stroke={C.sand} strokeWidth="1.7" strokeLinecap="round" opacity="0.6" />
+      {/* kant/rim — kraftig lip */}
+      <rect x="2.8" y="11" width="18.4" height="3.1" rx="1.55" fill={C.sand} />
+      {/* afgrøde — 2-3 simple prikker der lige pibler op (støtter, dominerer ikke) */}
+      <circle cx="9.4" cy="9.9" r="2" fill={C.tomato} />
+      <circle cx="13" cy="9.6" r="2.1" fill={C.carrot} />
+      <circle cx="16.3" cy="10.1" r="1.8" fill={C.green} />
     </Glyph>
   )
 }
