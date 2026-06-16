@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Plant } from '@/lib/types'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { GlyphSpire } from '@/components/icons/potalot-glyphs'
 import { ArrowRight, CalendarDays } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
@@ -19,11 +20,18 @@ function slugify(text: string): string {
 }
 
 /**
- * 🌿 LIGE NU (forside) — sidens hovedperson.
+ * 🌿 LIGE NU (forside) — det fokuserede nærbillede under heroen.
  *
  * Anna (spec): "Det vigtigste på hele siden. Én plante. Ikke fire. Ikke
- * et dashboard. Én historie. Apple News, ikke Trello." Stort foto + stor
- * serif + én forventning + én CTA. Den giver forsiden et centrum.
+ * et dashboard. Én historie."
+ *
+ * Revideret 16/6 (aften): heroen er stemningen (stort, fotografisk,
+ * følelsesdrevet); LIGE NU må IKKE blive en mini-hero, der konkurrerer.
+ * Den skal være et roligt SPLIT-CARD — ren creme tekstflade til venstre,
+ * tydeligt beskåret makrofoto til højre, INGEN mælkehvid midter-fade
+ * (kun en diskret seam-skygge). Lavere + mere horisontalt end heroen,
+ * dæmpet outline-CTA. "Fokuseret plantekort med editorial kvalitet",
+ * ikke et teatralsk stemningskort. Søskende, ikke rivaler.
  */
 export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventning: string }) {
   const varietySlug = plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null
@@ -36,36 +44,27 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
 
   return (
     <section
-      className="relative overflow-hidden rounded-[24px]"
+      className="relative flex overflow-hidden rounded-[24px]"
       style={{
-        background: 'linear-gradient(158deg, #F4F0E2 0%, #ECE7D6 100%)',
         border: '1px solid rgba(36,48,31,0.10)',
-        minHeight: 220,
+        minHeight: 168,
+        boxShadow: '0 1px 2px rgba(36,48,31,0.04), 0 10px 26px -16px rgba(36,48,31,0.22)',
       }}
     >
-      {/* FOTO — højre halvdel, bløder ud til top/bund/højre kant. */}
-      <div className="absolute right-0 top-0 bottom-0" style={{ width: '50%' }}>
-        {photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
-        ) : (
-          <div className="absolute inset-0" style={{ background: '#617345' }} />
-        )}
-        {/* Blød overgang fra fotoets venstre kant ind i papiret. */}
-        <div
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-16"
-          style={{ background: 'linear-gradient(90deg, #F1ECDD 0%, rgba(241,236,221,0) 100%)' }}
-        />
-      </div>
-
-      {/* TEKST — venstre halvdel, magasin-opslag. */}
-      <div className="relative z-10 flex flex-col" style={{ width: '57%', padding: '20px 0 20px 20px' }}>
+      {/* TEKST — venstre, ren creme tekstflade. Ingen fade: rent split. */}
+      <div
+        className="relative z-10 flex flex-col justify-center"
+        style={{
+          width: '58%',
+          background: 'linear-gradient(158deg, #F4F0E2 0%, #ECE7D6 100%)',
+          padding: '18px 14px 18px 20px',
+        }}
+      >
         <span
           className="flex items-center gap-1.5 uppercase"
           style={{
             fontFamily: sans,
-            fontSize: 11,
+            fontSize: 10.5,
             fontWeight: 700,
             letterSpacing: '0.2em',
             color: 'rgba(36,48,31,0.5)',
@@ -76,29 +75,28 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
         </span>
 
         <h2
-          className="mt-3"
           style={{
             fontFamily: serif,
             fontWeight: 600,
-            fontSize: 'clamp(26px, 7.5vw, 32px)',
-            lineHeight: 1.02,
+            fontSize: 'clamp(23px, 6.6vw, 28px)',
+            lineHeight: 1.04,
             letterSpacing: '-0.005em',
             color: '#24301F',
-            margin: '10px 0 0',
+            margin: '8px 0 0',
           }}
         >
           {plant.variety ?? plant.name}
         </h2>
 
         <p
-          className="mt-3"
+          className="line-clamp-2"
           style={{
             fontFamily: sans,
-            fontSize: 14.5,
+            fontSize: 13.5,
             fontWeight: 500,
-            lineHeight: 1.42,
-            color: 'rgba(36,48,31,0.74)',
-            margin: '12px 0 0',
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.72)',
+            margin: '7px 0 0',
           }}
         >
           {forventning}
@@ -106,17 +104,40 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
 
         <Link
           href={`/mine-planter/${plant.id}`}
-          className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-2 text-white transition-transform active:scale-95"
+          className="mt-3.5 inline-flex w-fit items-center gap-1.5 rounded-full transition-transform active:scale-95"
           style={{
-            background: '#24301F',
+            border: '1px solid rgba(36,48,31,0.18)',
+            color: '#24301F',
             fontFamily: sans,
             fontSize: 12.5,
             fontWeight: 600,
+            padding: '7px 13px',
           }}
         >
           Se planten
-          <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+          <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
         </Link>
+      </div>
+
+      {/* FOTO — højre, tydeligt beskåret makro. Ingen mælkehvid overgang;
+          kun en diskret seam-skygge der giver dybde mellem de to zoner. */}
+      <div className="relative" style={{ width: '42%' }}>
+        {photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}
+          >
+            <GlyphSpire size={32} />
+          </div>
+        )}
+        <div
+          aria-hidden
+          className="absolute inset-y-0 left-0 w-3"
+          style={{ background: 'linear-gradient(90deg, rgba(20,26,16,0.16) 0%, rgba(20,26,16,0) 100%)' }}
+        />
       </div>
     </section>
   )
