@@ -76,11 +76,11 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
   )
 
   return (
-    <section className="space-y-3">
-      {/* Art-header: navnet er sektionens anker. Stor, fed, Manrope —
-          system-typografi, ikke editorial. Summary-linjen til højre
-          giver bestandsoverblik uden at brugeren skal tælle kort. */}
-      <header className="flex items-baseline justify-between gap-3 px-0.5">
+    <section className="space-y-3.5">
+      {/* Art-header som ÉN enhed (Anna 16/6 aften): artsnavnet er ankeret,
+          og meta-linjen sidder direkte under det — ikke svævende i højre
+          side. Stor, fed, Manrope — system-typografi, ikke editorial. */}
+      <header className="px-0.5">
         <h2
           className="uppercase"
           style={{
@@ -95,13 +95,13 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
           {artName}
         </h2>
         <p
-          className="flex shrink-0 items-center gap-1.5"
+          className="flex items-center gap-1.5"
           style={{
             fontFamily: sans,
             fontSize: 12,
             fontWeight: 600,
-            color: 'rgba(36,48,31,0.55)',
-            margin: 0,
+            color: 'rgba(36,48,31,0.5)',
+            margin: '4px 0 0',
           }}
         >
           {needsAttention && (

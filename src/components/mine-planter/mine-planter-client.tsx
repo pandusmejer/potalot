@@ -213,44 +213,49 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       {/* AT SE TIL I DAG — organiske former. */}
       <AtSeTilIDag items={atSeItems} />
 
-      {/* MINE ARTER — vertikalt arts-scroll, horisontalt sorts-scroll. */}
-      <section className="space-y-7">
+      {/* MINE ARTER — tre lag: sektionslabel → art-header → sorts-kort.
+          Lagene skal være tydeligt adskilt (Anna 16/6 aften): label dæmpet
+          + luftig som intro, art-headeren samlet, mere rytme imellem. */}
+      <section>
         {artGroups.length > 0 ? (
           <>
+            {/* Niveau 1: rolig sektionslabel — en intro, ikke en overskrift. */}
             <h2
               className="uppercase px-0.5"
               style={{
                 fontFamily: sans,
-                fontSize: 12.5,
+                fontSize: 11.5,
                 fontWeight: 700,
-                letterSpacing: '0.16em',
-                color: 'rgba(36,48,31,0.52)',
-                margin: 0,
+                letterSpacing: '0.22em',
+                color: 'rgba(36,48,31,0.40)',
+                margin: '0 0 26px',
               }}
             >
               Mine arter
             </h2>
-            {/* Arter med 2+ sorter: fuld sektion + horisontal sorts-scroll.
-                Mellem de to første scroll-sektioner lægges én fritsvævende
+            {/* Niveau 2+3: arterne med rigelig luft imellem (ny art = ny start).
+                Mellem de to første scroll-sektioner ligger én fritsvævende
                 sansenote — en mikropause i systemet (Anna 16/6). */}
-            {artGroups
-              .filter(([, g]) => g.length >= 2)
-              .map(([artName, group], i, arr) => (
-                <Fragment key={artName}>
-                  <PlantArtRow artName={artName} plants={group} />
-                  {i === 0 && arr.length > 1 && sanseNote && (
-                    <HaveStemning text={sanseNote} />
-                  )}
-                </Fragment>
-              ))}
-            {/* Arter med 1 sort: én tæt blok af kompakte kort (ingen ceremoni). */}
-            {artGroups.some(([, g]) => g.length === 1) && (
-              <div className="space-y-2.5">
-                {artGroups.filter(([, g]) => g.length === 1).map(([artName, group]) => (
-                  <SingleSortRow key={artName} artName={artName} plant={group[0]} />
+            <div className="space-y-9">
+              {artGroups
+                .filter(([, g]) => g.length >= 2)
+                .map(([artName, group], i, arr) => (
+                  <Fragment key={artName}>
+                    <PlantArtRow artName={artName} plants={group} />
+                    {i === 0 && arr.length > 1 && sanseNote && (
+                      <HaveStemning text={sanseNote} />
+                    )}
+                  </Fragment>
                 ))}
-              </div>
-            )}
+              {/* Arter med 1 sort: én tæt blok af kompakte kort (ingen ceremoni). */}
+              {artGroups.some(([, g]) => g.length === 1) && (
+                <div className="space-y-2.5">
+                  {artGroups.filter(([, g]) => g.length === 1).map(([artName, group]) => (
+                    <SingleSortRow key={artName} artName={artName} plant={group[0]} />
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <PlantEmptyState />
