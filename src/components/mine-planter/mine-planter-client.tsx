@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { PlantArtRow } from '@/components/mine-planter/plant-art-row'
@@ -54,6 +54,21 @@ function forventningFor(p: Plant): string {
   return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
 }
 
+/** Kort, opgave-orienteret handling til "At se til i dag"-blobs. */
+function taskFor(p: Plant): string {
+  const na = (p as Partial<MockPlant>).nextAction?.action
+  if (na) return na
+  return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
+}
+
+/** Tidsbaseret hilsen til forside-heroen. */
+function timeGreeting(): string {
+  const h = new Date().getHours()
+  if (h < 11) return 'Godmorgen'
+  if (h < 18) return 'God eftermiddag'
+  return 'God aften'
+}
+
 // Sæsonens fortælling (statisk i fase 1 — én rolig linje pr. måned).
 // nuMaaned fremhæves. Udledes af sæsonens hændelser senere.
 const SAESON_HISTORIK = [
@@ -95,6 +110,28 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
     [aktive],
   )
 
+  // Hilsen sættes efter mount (klient-tid) for at undgå hydration-mismatch.
+  const [greeting, setGreeting] = useState('')
+  useEffect(() => setGreeting(timeGreeting()), [])
+
+  // Hero-historie udledt af havens tilstand — historie, ikke regneark.
+  const { heroStory, heroNote } = useMemo(() => {
+    const hoest = aktive.find(p => p.status === 'hoestklar')
+    if (hoest) {
+      return { heroStory: `Din ${hoest.name.toLowerCase()} er klar til høst.`, heroNote: null as string | null }
+    }
+    if (attentionCount > 0) {
+      return {
+        heroStory: `Din have har ${totalIndivid} aktive planter.`,
+        heroNote: `${attentionCount} ${attentionCount === 1 ? 'plante kræver' : 'ting kræver'} opmærksomhed i dag.`,
+      }
+    }
+    return {
+      heroStory: `${totalIndivid} ${totalIndivid === 1 ? 'plante vokser' : 'planter vokser'} lige nu.`,
+      heroNote: null as string | null,
+    }
+  }, [aktive, attentionCount, totalIndivid])
+
   // Hovedperson: foretræk en sort med redaktionelt indhold (rig
   // forventning), ellers den mest opmærksomheds-krævende.
   const hovedperson = useMemo(() => {
@@ -106,7 +143,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   }, [aktive])
 
   // At se til i dag: de mest opmærksomheds-krævende planter (op til 3),
-  // én pr. art så formerne føles forskellige.
+  // én pr. art så blob-formerne føles forskellige.
   const atSeItems = useMemo<AtSeItem[]>(() => {
     const sorted = [...aktive].sort((a, b) => fokusRank(a) - fokusRank(b))
     const items: AtSeItem[] = []
@@ -115,7 +152,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       if (fokusRank(p) === 2) break // kun opmærksomheds-værdige
       if (seenArter.has(p.name)) continue
       seenArter.add(p.name)
-      items.push({ art: p.name, action: forventningFor(p), href: `/mine-planter/${p.id}` })
+      items.push({ art: p.name, action: taskFor(p), href: `/mine-planter/${p.id}` })
       if (items.length === 3) break
     }
     return items
@@ -142,7 +179,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-8">
-      <ForsideHero total={totalIndivid} attention={attentionCount} />
+      <ForsideHero greeting={greeting} story={heroStory} storyNote={heroNote} />
 
       {/* LIGE NU — hovedpersonen (sidens centrum). */}
       {hovedperson && (

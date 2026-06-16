@@ -2,72 +2,89 @@ const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 /**
- * 🌿 FORSIDE-HERO — "Mine planter".
+ * 🌿 FORSIDE-HERO — personlig, ikke regneark.
  *
- * Spec (Anna): "Ingen kort. Ingen knapper. Stor typografi. Mere magasin
- * end app. Tekst er design." Fuldbredde artsfoto bærer stemningen; den
- * store serif-titel + én rolig undertekst er hovedpersonen. Antal står
- * som tekst, ikke som KPI-bokse.
+ * Anna (16. juni 2026): "Mennesker tænker i historier. Regneark tænker i
+ * tal." Heroen åbner med en tidsbaseret hilsen + én historie-linje udledt
+ * af havens tilstand ("Din salat er klar til høst." / "Din have har 27
+ * aktive planter. 3 ting kræver opmærksomhed i dag."). Foto bærer
+ * stemningen; teksten er hovedpersonen.
  */
-export function ForsideHero({ total, attention }: { total: number; attention: number }) {
+export function ForsideHero({
+  greeting,
+  story,
+  storyNote,
+}: {
+  greeting: string
+  story: string
+  storyNote?: string | null
+}) {
   return (
     <header
-      className="relative h-[264px] overflow-hidden rounded-[32px]"
+      className="relative h-[216px] overflow-hidden rounded-[32px]"
       style={{ boxShadow: '0 10px 30px -12px rgba(28,38,22,0.42)' }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/heroes-sider/hero-planter-spirer.png"
+        src="/images/heroes-sider/hero-planter-forside.png"
         alt=""
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"
       />
-      {/* Scrim: mørk i bunden så titlen læses; lyser op i toppen så fotoet ånder. */}
+      {/* Scrim: mørk i bunden så teksten læses; lyser op i toppen. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(18,22,14,0.06) 0%, rgba(18,22,14,0.18) 42%, rgba(18,22,14,0.64) 100%)',
+            'linear-gradient(180deg, rgba(18,22,14,0.05) 0%, rgba(18,22,14,0.20) 40%, rgba(18,22,14,0.68) 100%)',
         }}
       />
       <div className="absolute inset-x-0 bottom-0 p-5">
+        {greeting && (
+          <p
+            style={{
+              fontFamily: sans,
+              fontSize: 15.5,
+              fontWeight: 600,
+              letterSpacing: '0.01em',
+              color: 'rgba(255,255,255,0.9)',
+              textShadow: '0 1px 8px rgba(18,14,8,0.5)',
+              margin: '0 0 7px',
+            }}
+          >
+            {greeting}
+          </p>
+        )}
         <h1
           style={{
             fontFamily: serif,
             fontWeight: 600,
-            fontSize: 'clamp(40px, 12vw, 52px)',
-            lineHeight: 0.95,
+            fontSize: 'clamp(30px, 8.4vw, 40px)',
+            lineHeight: 1.04,
             letterSpacing: '-0.005em',
             color: '#FFFFFF',
             textShadow: '0 2px 18px rgba(18,14,8,0.5)',
             margin: 0,
           }}
         >
-          Mine planter
+          {story}
         </h1>
-        <p
-          className="mt-2.5"
-          style={{
-            fontFamily: sans,
-            fontSize: 15,
-            fontWeight: 500,
-            lineHeight: 1.45,
-            color: 'rgba(255,255,255,0.92)',
-            textShadow: '0 1px 8px rgba(18,14,8,0.5)',
-            margin: 0,
-          }}
-        >
-          {total} {total === 1 ? 'plante vokser' : 'planter vokser'} lige nu.
-          {attention > 0 && (
-            <>
-              {' '}
-              <span style={{ color: '#F0CE7E', fontWeight: 600 }}>
-                {attention} {attention === 1 ? 'har' : 'har'} brug for opmærksomhed.
-              </span>
-            </>
-          )}
-        </p>
+        {storyNote && (
+          <p
+            style={{
+              fontFamily: sans,
+              fontSize: 14.5,
+              fontWeight: 600,
+              lineHeight: 1.4,
+              color: '#F0CE7E',
+              textShadow: '0 1px 8px rgba(18,14,8,0.5)',
+              margin: '8px 0 0',
+            }}
+          >
+            {storyNote}
+          </p>
+        )}
       </div>
     </header>
   )

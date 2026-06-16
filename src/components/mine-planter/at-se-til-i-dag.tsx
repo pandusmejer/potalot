@@ -13,9 +13,9 @@ export interface AtSeItem {
  * 🪨 AT SE TIL I DAG — organiske former, ikke notifikationer.
  *
  * Anna (spec): "Ikke røde badges. Store organiske former. Som små
- * vandpytter eller sten. Ingen hårde kanter. Ingen app-pills. De skal
- * føles som ting man kan røre ved." Tre bløde blob-flader med art +
- * handling — det der kalder på dig i dag, sagt roligt.
+ * vandpytter eller sten." Tre bløde blob-flader. Revision 16. juni: mere
+ * luft mellem titel og handling, status-dot + titel øverst, handling +
+ * pil i bunden — så de føles klikbare (handling), ikke kun pynt.
  */
 
 // Bløde, varierede blob-radier + jordfarvede toner — ingen to ens.
@@ -51,47 +51,43 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
             <Link
               key={`${item.art}-${i}`}
               href={item.href}
-              className="group relative flex flex-1 flex-col justify-between transition-transform duration-200 ease-out active:scale-[0.98]"
+              className="group relative flex flex-1 flex-col transition-transform duration-200 ease-out active:scale-[0.98]"
               style={{
-                minHeight: 116,
+                minHeight: 132,
                 background: blob.bg,
                 borderRadius: blob.radius,
-                padding: '16px 16px 14px',
+                padding: '15px 15px 14px',
               }}
             >
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: 14.5,
-                  fontWeight: 700,
-                  letterSpacing: '-0.01em',
-                  lineHeight: 1.15,
-                  color: '#24301F',
-                  margin: 0,
-                }}
-              >
-                {item.art}
-              </p>
-              <div>
-                <p
-                  style={{
-                    fontFamily: sans,
-                    fontSize: 12.5,
-                    fontWeight: 500,
-                    lineHeight: 1.25,
-                    color: 'rgba(36,48,31,0.62)',
-                    margin: 0,
-                  }}
+              {/* Status-dot + titel — øverst. */}
+              <span className="flex items-center gap-1.5">
+                <span
+                  aria-hidden
+                  className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: '#5E7D4F' }}
+                />
+                <span
+                  className="truncate"
+                  style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.15, color: '#24301F' }}
+                >
+                  {item.art}
+                </span>
+              </span>
+
+              {/* Handling + pil — skubbet til bunden, så der er luft til titlen. */}
+              <span className="mt-auto flex items-end justify-between gap-1.5" style={{ paddingTop: 14 }}>
+                <span
+                  style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.25, color: 'rgba(36,48,31,0.62)' }}
                 >
                   {item.action}
-                </p>
+                </span>
                 <ArrowRight
-                  className="mt-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5"
                   strokeWidth={2}
-                  style={{ color: 'rgba(36,48,31,0.4)' }}
+                  style={{ color: 'rgba(36,48,31,0.42)' }}
                   aria-hidden
                 />
-              </div>
+              </span>
             </Link>
           )
         })}
