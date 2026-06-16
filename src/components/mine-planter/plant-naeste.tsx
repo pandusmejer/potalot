@@ -49,7 +49,7 @@ export function PlantNaeste({
               src={naeste.fotoSrc}
               alt={naeste.fotoAlt}
               className="absolute inset-0 h-full w-full object-cover"
-              style={{ clipPath: 'url(#ligenu-organisk-ramme)' }}
+              style={{ clipPath: 'url(#ligenu-organisk-ramme)', objectPosition: naeste.fotoObjectPosition }}
             />
           ) : (
             <div

@@ -52,9 +52,13 @@ export interface DetailNaeste {
   guideHref: string
   /** Ugens pleje-tjekliste (kort 2, DENNE UGE). Korte handlinger. */
   denneUge: string[]
-  /** Foto af det der er på vej (knop/blomst) til kort 1. */
+  /** Foto af det der er på vej (knop/blomst) til kort 1. Foretrækker et
+   *  makro-close-up; tom streng = ingen foto → kortet viser botanisk fyld. */
   fotoSrc: string
   fotoAlt: string
+  /** object-position fra makroens focalPoint, så off-center close-ups
+   *  rammer rigtigt i den klippede ramme. Udeladt = browser-default. */
+  fotoObjectPosition?: string
 }
 
 /** Sammenligningslaget — historie, ikke score (Annas dom: ingen Strava). */

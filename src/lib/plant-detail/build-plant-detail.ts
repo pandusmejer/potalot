@@ -35,6 +35,7 @@ import type {
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolveNowImage, nowTypeForStatus } from '@/lib/images/resolve-now-image'
 
 /** Rangering af faser, så vi kan afgøre hvad der er sket vs. forventet. */
 const STATUS_RANK: Record<PlantStatus, number> = {
@@ -171,6 +172,15 @@ function deriveTiming(plant: MockPlant): string {
 
 export function deriveNaeste(plant: MockPlant): DetailNaeste {
   const rule = STATUS_NAESTE[plant.status]
+  // "Lige nu" er sidens magasin-moment. resolveNowImage vælger det bedst
+  // egnede makro (sort → art → sikker crossover) ud fra fase + motivrolle;
+  // ellers falder vi til plantekort-fotoet; ellers tom streng → botanisk fyld.
+  const now = resolveNowImage({
+    speciesSlug: slugify(plant.name),
+    varietySlug: plant.variety ? slugify(plant.variety) : null,
+    stage: plant.status,
+    nowType: nowTypeForStatus(plant.status),
+  })
   const foto = plantCardImage(plant)
   return {
     overskrift: rule.overskrift,
@@ -178,10 +188,9 @@ export function deriveNaeste(plant: MockPlant): DetailNaeste {
     beskrivelse: rule.beskrivelse,
     guideHref: '/guides',
     denneUge: rule.denneUge,
-    // Tom streng = intet ægte foto → "Lige nu"-kortet viser en rolig
-    // botanisk fyld i stedet for placeholder-fladen.
-    fotoSrc: foto.hasPhoto ? foto.src : '',
-    fotoAlt: `${plant.name}${plant.variety ? ` ${plant.variety}` : ''}`,
+    fotoSrc: now?.src ?? (foto.hasPhoto ? foto.src : ''),
+    fotoAlt: now?.alt ?? `${plant.name}${plant.variety ? ` ${plant.variety}` : ''}`,
+    fotoObjectPosition: now?.objectPosition,
   }
 }
 
