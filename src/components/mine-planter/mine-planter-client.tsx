@@ -1,8 +1,9 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { Fragment, useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PlantArtRow, SingleSortRow } from '@/components/mine-planter/plant-art-row'
+import { HaveStemning, pickGardenNote } from '@/components/havekalender/have-stemning'
 import { ForsideHero } from '@/components/mine-planter/forside-hero'
 import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
 import { AtSeTilIDag, type AtSeItem } from '@/components/mine-planter/at-se-til-i-dag'
@@ -113,23 +114,28 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   const [greeting, setGreeting] = useState('')
   useEffect(() => setGreeting(timeGreeting()), [])
 
-  // Hero-historie udledt af havens tilstand — historie, ikke regneark.
+  // Sansenote mellem de to første arts-scroll (Anna 16/6): en fritsvævende
+  // mikropause fra det eksisterende garden-notes-system. Vælges efter mount
+  // (pickGardenNote bruger new Date()) for at undgå hydration-mismatch.
+  const [sanseNote, setSanseNote] = useState('')
+  useEffect(() => {
+    setSanseNote(pickGardenNote(new Date().getMonth() + 1, { offset: 5 }))
+  }, [])
+
+  // Hero-historie: plantestandens TILSTAND som helhed — ikke én enkelt
+  // opgave (Anna 16/6 aften: heroen må ikke blive et høstkort for ét
+  // salathoved; den åbner HELE Planter). Rolig kollektiv linje + én
+  // stille meta-linje med tal ("46 planter · 3 kræver opmærksomhed").
   const { heroStory, heroNote } = useMemo(() => {
-    const hoest = aktive.find(p => p.status === 'hoestklar')
-    if (hoest) {
-      return { heroStory: `Din ${hoest.name.toLowerCase()} er klar til høst.`, heroNote: null as string | null }
-    }
-    if (attentionCount > 0) {
-      return {
-        heroStory: `Din have har ${totalIndivid} aktive planter.`,
-        heroNote: `${attentionCount} ${attentionCount === 1 ? 'plante kræver' : 'ting kræver'} opmærksomhed i dag.`,
-      }
-    }
-    return {
-      heroStory: `${totalIndivid} ${totalIndivid === 1 ? 'plante vokser' : 'planter vokser'} lige nu.`,
-      heroNote: null as string | null,
-    }
-  }, [aktive, attentionCount, totalIndivid])
+    const heroStory =
+      totalIndivid === 1 ? 'Din plante vokser videre.' : 'Dine planter vokser videre.'
+    const planteOrd = `${totalIndivid} ${totalIndivid === 1 ? 'plante' : 'planter'}`
+    const heroNote =
+      attentionCount > 0
+        ? `${planteOrd} · ${attentionCount} kræver opmærksomhed`
+        : `${planteOrd} vokser lige nu`
+    return { heroStory, heroNote }
+  }, [attentionCount, totalIndivid])
 
   // Hovedperson: foretræk en sort med redaktionelt indhold (rig
   // forventning), ellers den mest opmærksomheds-krævende.
@@ -205,10 +211,19 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
             >
               Mine arter
             </h2>
-            {/* Arter med 2+ sorter: fuld sektion + horisontal sorts-scroll. */}
-            {artGroups.filter(([, g]) => g.length >= 2).map(([artName, group]) => (
-              <PlantArtRow key={artName} artName={artName} plants={group} />
-            ))}
+            {/* Arter med 2+ sorter: fuld sektion + horisontal sorts-scroll.
+                Mellem de to første scroll-sektioner lægges én fritsvævende
+                sansenote — en mikropause i systemet (Anna 16/6). */}
+            {artGroups
+              .filter(([, g]) => g.length >= 2)
+              .map(([artName, group], i, arr) => (
+                <Fragment key={artName}>
+                  <PlantArtRow artName={artName} plants={group} />
+                  {i === 0 && arr.length > 1 && sanseNote && (
+                    <HaveStemning text={sanseNote} />
+                  )}
+                </Fragment>
+              ))}
             {/* Arter med 1 sort: én tæt blok af kompakte kort (ingen ceremoni). */}
             {artGroups.some(([, g]) => g.length === 1) && (
               <div className="space-y-2.5">

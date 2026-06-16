@@ -5,10 +5,15 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  * 🌿 FORSIDE-HERO — personlig, ikke regneark.
  *
  * Anna (16. juni 2026): "Mennesker tænker i historier. Regneark tænker i
- * tal." Heroen åbner med en tidsbaseret hilsen + én historie-linje udledt
- * af havens tilstand ("Din salat er klar til høst." / "Din have har 27
- * aktive planter. 3 ting kræver opmærksomhed i dag."). Foto bærer
- * stemningen; teksten er hovedpersonen.
+ * tal." Heroen åbner med en tidsbaseret hilsen + én historie-linje. Foto
+ * bærer stemningen; teksten er hovedpersonen.
+ *
+ * Revideret 16/6 (aften): heroen må IKKE blive et høstkort for ét
+ * salathoved. Den åbner HELE Planter, så historie-linjen taler om
+ * plantestandens TILSTAND som helhed ("Dine planter vokser videre.") +
+ * én rolig meta-linje med tal ("46 planter · 3 kræver opmærksomhed").
+ * Lettere behandling: lysere scrim (mere grønt slipper igennem),
+ * overskrift ~13% mindre, radius 28 (ikke "Netflix-thumbnail-rund").
  */
 export function ForsideHero({
   greeting,
@@ -21,7 +26,7 @@ export function ForsideHero({
 }) {
   return (
     <header
-      className="relative h-[216px] overflow-hidden rounded-[32px]"
+      className="relative h-[216px] overflow-hidden rounded-[28px]"
       style={{ boxShadow: '0 10px 30px -12px rgba(28,38,22,0.42)' }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -30,6 +35,7 @@ export function ForsideHero({
         alt=""
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: 'brightness(1.06) saturate(1.05)' }}
       />
       {/* Scrim: mørk i bunden så teksten læses; lyser op i toppen. */}
       <div
@@ -37,10 +43,10 @@ export function ForsideHero({
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(18,22,14,0.05) 0%, rgba(18,22,14,0.20) 40%, rgba(18,22,14,0.68) 100%)',
+            'linear-gradient(180deg, rgba(18,22,14,0) 0%, rgba(18,22,14,0) 34%, rgba(18,22,14,0.14) 56%, rgba(18,22,14,0.54) 100%)',
         }}
       />
-      <div className="absolute inset-x-0 bottom-0 p-5">
+      <div className="absolute inset-x-0 bottom-0 px-5 pb-6 pt-5">
         {greeting && (
           <p
             style={{
@@ -60,8 +66,8 @@ export function ForsideHero({
           style={{
             fontFamily: serif,
             fontWeight: 600,
-            fontSize: 'clamp(30px, 8.4vw, 40px)',
-            lineHeight: 1.04,
+            fontSize: 'clamp(26px, 7.2vw, 34px)',
+            lineHeight: 1.05,
             letterSpacing: '-0.005em',
             color: '#FFFFFF',
             textShadow: '0 2px 18px rgba(18,14,8,0.5)',
@@ -74,12 +80,13 @@ export function ForsideHero({
           <p
             style={{
               fontFamily: sans,
-              fontSize: 14.5,
+              fontSize: 13.5,
               fontWeight: 600,
               lineHeight: 1.4,
-              color: '#F0CE7E',
-              textShadow: '0 1px 8px rgba(18,14,8,0.5)',
-              margin: '8px 0 0',
+              letterSpacing: '0.01em',
+              color: 'rgba(255,255,255,0.82)',
+              textShadow: '0 1px 8px rgba(18,14,8,0.55)',
+              margin: '7px 0 0',
             }}
           >
             {storyNote}
