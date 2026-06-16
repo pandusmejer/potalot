@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import type { Plant, PlantStatus } from '@/lib/types'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { statusColor } from '@/components/mine-planter/plant-card'
+import { GlyphSpire } from '@/components/icons/potalot-glyphs'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { afledtStatuslinje } from '@/lib/afledninger'
 
@@ -290,6 +292,65 @@ function VarietyCard({ plant }: { plant: Plant }) {
           <span className="truncate">{statusLabel}</span>
         </p>
       </div>
+    </Link>
+  )
+}
+
+/**
+ * SINGLE-SORT-KORT — kompakt række for en art med KUN én sort.
+ *
+ * Anna (16. juni 2026): single-sort arter må ikke få samme ceremoni + luft
+ * som en fuld sektion ("museum for én salat"). I stedet ét tæt vandret kort:
+ * foto/placeholder til venstre, sort (helt) + art·antal + status til højre.
+ * Grupperes i én tæt blok i Mine arter, så siden ikke fragmenterer.
+ */
+export function SingleSortRow({ artName, plant }: { artName: string; plant: Plant }) {
+  const varietySlug = plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null
+  const { src: photo, source } = resolvePotalotImage({
+    guideId: plant.guideId,
+    varietySlug,
+    role: 'plant-card',
+    preferredSrc: plant.primaryImageId,
+  })
+  const hasPhoto = source !== 'fallback'
+  const color = statusColor(plant.status)
+  const afledt = afledtStatuslinje(plant)
+  const statusLabel = afledt?.text ?? PLANT_STATUS_META[plant.status].label
+  const dotColor = afledt?.kind === 'attention' ? '#C89A35' : color
+  const displayName = plant.variety ?? plant.name
+  const count = plant.quantity
+
+  return (
+    <Link
+      href={`/mine-planter/${plant.id}`}
+      className="group flex items-center gap-3.5 transition-transform duration-200 ease-out active:scale-[0.99]"
+      style={{ background: '#F5F2EA', border: '1px solid rgba(36,48,31,0.06)', borderRadius: 18, padding: 10, boxShadow: '0 1px 2px rgba(36,48,31,0.05), 0 6px 16px rgba(36,48,31,0.05)' }}
+    >
+      <span className="relative shrink-0 overflow-hidden" style={{ width: 76, height: 76, borderRadius: 14 }}>
+        {hasPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}>
+            <GlyphSpire size={30} />
+          </span>
+        )}
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="block truncate" style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
+          {displayName}
+        </span>
+        <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>
+          {artName} · {count} {count === 1 ? 'plante' : 'planter'}
+        </span>
+        <span className="flex items-center gap-1.5" style={{ marginTop: 6 }}>
+          <span aria-hidden className="inline-block shrink-0 rounded-full" style={{ width: 7, height: 7, background: dotColor }} />
+          <span className="truncate" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.6)' }}>{statusLabel}</span>
+        </span>
+      </span>
+
+      <ChevronRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.3)' }} aria-hidden />
     </Link>
   )
 }

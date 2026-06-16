@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { PlantArtRow } from '@/components/mine-planter/plant-art-row'
+import { PlantArtRow, SingleSortRow } from '@/components/mine-planter/plant-art-row'
 import { ForsideHero } from '@/components/mine-planter/forside-hero'
 import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
 import { AtSeTilIDag, type AtSeItem } from '@/components/mine-planter/at-se-til-i-dag'
@@ -206,9 +206,18 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
             >
               Mine arter
             </h2>
-            {artGroups.map(([artName, group]) => (
+            {/* Arter med 2+ sorter: fuld sektion + horisontal sorts-scroll. */}
+            {artGroups.filter(([, g]) => g.length >= 2).map(([artName, group]) => (
               <PlantArtRow key={artName} artName={artName} plants={group} />
             ))}
+            {/* Arter med 1 sort: én tæt blok af kompakte kort (ingen ceremoni). */}
+            {artGroups.some(([, g]) => g.length === 1) && (
+              <div className="space-y-2.5">
+                {artGroups.filter(([, g]) => g.length === 1).map(([artName, group]) => (
+                  <SingleSortRow key={artName} artName={artName} plant={group[0]} />
+                ))}
+              </div>
+            )}
           </>
         ) : (
           <PlantEmptyState />
