@@ -1,38 +1,72 @@
 'use client'
 
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
+import {
+  GlyphHojbed, GlyphDrivhus, GlyphKrukke, GlyphJord, GlyphBlad, GlyphSpire, type GlyphProps,
+} from '@/components/icons/potalot-glyphs'
 import type { Plant } from '@/lib/types'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
-// Atmosfæriske have-/sæsonfotos (ikke et falsk "dit drivhus"-foto —
-// stemning, ikke dokumentation). Roteres pr. sted for variation.
-const STEMNINGSFOTOS = [
-  '/images/heroes-maaneder/hero-juni-foto.png',
-  '/images/heroes-maaneder/hero-maj-foto.png',
-  '/images/heroes-maaneder/hero-foraar.png',
-  '/images/heroes-maaneder/hero-april-foto.png',
-]
-
 const STED_TYPER = ['Højbed', 'Drivhus', 'Krukke', 'Vindueskarm', 'Altan', 'Friland', 'Andet']
+
+// Dæmpede botaniske gradienter til no-foto-kort (grøn/creme/terracotta) —
+// roteres for variation, så kort uden foto stadig føles forskellige.
+const PLACEHOLDER_GRADS = [
+  'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)',
+  'linear-gradient(158deg, #F3EEDF 0%, #E4D6B8 100%)',
+  'linear-gradient(158deg, #F0E7DD 0%, #D9C0A6 100%)',
+]
 
 interface LokaltSted {
   name: string
   type: string
 }
 
+interface StedKort {
+  name: string
+  antal: number
+  type: string
+  image?: string | null
+}
+
+/** Udled stedtype af navnet (afledte steder har ingen type-felt). */
+function inferType(name: string): string {
+  const n = name.toLowerCase()
+  if (/højbed|hojbed|\bbed\b/.test(n)) return 'Højbed'
+  if (/drivhus|væksthus/.test(n)) return 'Drivhus'
+  if (/vindue|karm/.test(n)) return 'Vindueskarm'
+  if (/krukke|potte|\bkar\b/.test(n)) return 'Krukke'
+  if (/altan|terrasse|balkon/.test(n)) return 'Altan'
+  if (/friland|køkkenhave|mark|jord|frilands/.test(n)) return 'Friland'
+  return 'Andet'
+}
+
+/** Stedtype → Potalot Soft Glyph (ingen dedikeret = rolig botanisk fallback). */
+function glyphForType(type: string): (p: GlyphProps) => ReactNode {
+  switch (type) {
+    case 'Højbed':  return GlyphHojbed
+    case 'Drivhus': return GlyphDrivhus
+    case 'Krukke':  return GlyphKrukke
+    case 'Friland': return GlyphJord
+    case 'Vindueskarm':
+    case 'Altan':   return GlyphBlad
+    default:        return GlyphSpire
+  }
+}
+
 /**
  * 📍 MINE STEDER — hvor de levende ting bor.
  *
- * Anna (spec): "Store destinationskort. Brugeren går ind i et sted."
- * Grupperer aktive planter efter lokation. Revision 16. juni: tydelig
- * oprettelsesvej — "Tilføj sted +" i headeren + "+ Nyt sted"-kort + en
- * inline opret-form (navn + type) + tom-tilstand. V1 gemmer kun i
- * sessionen; persistens (entity), Profil/Min have-admin og inline-ved-
- * plante-oprettelse er udskudte trin.
+ * Anna (16. juni 2026): steder må ALDRIG falde tilbage til tomme grå kort
+ * eller generiske stockfotos ("smukt bedrag"). Et sted kan eksistere uden
+ * foto, men skal stadig føles som et bevidst Potalot-kort: dæmpet botanisk
+ * gradient + type-glyph + navn + antal (Løsning A). Fotokort vises kun når
+ * stedet faktisk HAR et foto. Tom-tilstand = ingen falske demo-steder.
  */
 export function MineSteder({ plants }: { plants: Plant[] }) {
   const [created, setCreated] = useState<LokaltSted[]>([])
@@ -47,8 +81,12 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
     if (!loc) continue
     byLocation.set(loc, (byLocation.get(loc) ?? 0) + (p.quantity ?? 0))
   }
-  const derived = [...byLocation.entries()].sort((a, b) => b[1] - a[1]).map(([name, antal]) => ({ name, antal }))
-  const nyoprettede = created.filter((c) => !byLocation.has(c.name)).map((c) => ({ name: c.name, antal: 0 }))
+  const derived: StedKort[] = [...byLocation.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, antal]) => ({ name, antal, type: inferType(name), image: null }))
+  const nyoprettede: StedKort[] = created
+    .filter((c) => !byLocation.has(c.name))
+    .map((c) => ({ name: c.name, antal: 0, type: c.type, image: null }))
   const steder = [...derived, ...nyoprettede]
 
   function gem() {
@@ -80,7 +118,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
         </button>
       </header>
 
-      {/* Inline opret-form. */}
+      {/* Inline opret-form — foto er valgfrit (tilføjes senere). */}
       {showForm && (
         <div
           className="mb-3"
@@ -111,6 +149,9 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
               ))}
             </select>
           </div>
+          <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: 'rgba(36,48,31,0.45)', margin: '8px 0 0' }}>
+            Foto kan tilføjes senere.
+          </p>
           <div className="mt-3 flex items-center gap-2">
             <button
               type="button"
@@ -132,7 +173,6 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
       )}
 
       {steder.length === 0 ? (
-        // Tom-tilstand — ikke falske demo-steder.
         !showForm && (
           <div
             className="flex flex-col items-start"
@@ -154,38 +194,49 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
       ) : (
         <div className="-mx-4 overflow-x-auto px-4 scrollbar-hide">
           <div className="flex gap-3" style={{ width: 'max-content' }}>
-            {steder.map((sted, i) => (
-              <Link
-                key={sted.name}
-                href="/mine-planter"
-                className="group relative block shrink-0 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5"
-                style={{ width: 208, height: 168, borderRadius: 22 }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={STEMNINGSFOTOS[i % STEMNINGSFOTOS.length]}
-                  alt=""
-                  aria-hidden
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{ background: 'linear-gradient(180deg, rgba(18,22,14,0.10) 0%, rgba(18,22,14,0.28) 50%, rgba(18,22,14,0.74) 100%)' }}
-                />
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 24, lineHeight: 1.05, color: '#FFFFFF', textShadow: '0 1px 10px rgba(18,14,8,0.5)', margin: 0 }}>
-                    {sted.name}
-                  </p>
-                  <p
-                    className="mt-1"
-                    style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.86)', textShadow: '0 1px 6px rgba(18,14,8,0.5)', margin: '3px 0 0' }}
-                  >
-                    {sted.antal === 0 ? 'Ingen planter endnu' : `${sted.antal} ${sted.antal === 1 ? 'plante' : 'planter'}`}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            {steder.map((sted, i) => {
+              const G = glyphForType(sted.type)
+              const antalTekst = sted.antal === 0 ? 'Ingen planter endnu' : `${sted.antal} ${sted.antal === 1 ? 'plante' : 'planter'}`
+              return (
+                <Link
+                  key={sted.name}
+                  href="/mine-planter"
+                  className="group relative block shrink-0 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5"
+                  style={{ width: 208, height: 168, borderRadius: 22 }}
+                >
+                  {sted.image ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={sted.image}
+                        alt=""
+                        aria-hidden
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+                      />
+                      <div
+                        aria-hidden
+                        className="absolute inset-0"
+                        style={{ background: 'linear-gradient(180deg, rgba(18,22,14,0.10) 0%, rgba(18,22,14,0.28) 50%, rgba(18,22,14,0.74) 100%)' }}
+                      />
+                      <div className="absolute inset-x-0 bottom-0 p-4">
+                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 24, lineHeight: 1.05, color: '#FFFFFF', textShadow: '0 1px 10px rgba(18,14,8,0.5)', margin: 0 }}>{sted.name}</p>
+                        <p className="mt-1" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.86)', textShadow: '0 1px 6px rgba(18,14,8,0.5)', margin: '3px 0 0' }}>{antalTekst}</p>
+                      </div>
+                    </>
+                  ) : (
+                    // No-foto: designet Potalot-kort (gradient + type-glyph + mørk tekst).
+                    <div className="absolute inset-0 flex flex-col justify-between" style={{ background: PLACEHOLDER_GRADS[i % PLACEHOLDER_GRADS.length], padding: 16 }}>
+                      <G size={46} />
+                      <div>
+                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 24, lineHeight: 1.05, color: '#24301F', margin: 0 }}>{sted.name}</p>
+                        <p className="mt-1" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(36,48,31,0.6)', margin: '3px 0 0' }}>{antalTekst}</p>
+                        <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: 'rgba(36,48,31,0.42)', display: 'block', marginTop: 6 }}>Tilføj foto →</span>
+                      </div>
+                    </div>
+                  )}
+                </Link>
+              )
+            })}
 
             {/* + Nyt sted — sidste kort i rækken. */}
             <button
