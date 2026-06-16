@@ -193,7 +193,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 overflow-hidden"
-        style={{ height: 126 }}
+        style={{ height: 120 }}
       >
         {!isPlaceholder ? (
           /* eslint-disable-next-line @next/next/no-img-element */
@@ -203,22 +203,13 @@ function VarietyCard({ plant }: { plant: Plant }) {
             className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           />
         ) : (
-          // Foto-løs tilstand: flad status-farvet blok med sortens
-          // forbogstav. Ærlig om manglende foto — aldrig et forkert.
+          // Foto-løs tilstand: rolig botanisk flade + spire-glyph (ikke et
+          // stort bogstav — det ligner debug). Samme sprog som no-foto-heroen.
           <div
             className="flex h-full w-full items-center justify-center"
-            style={{ background: color }}
+            style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}
           >
-            <span
-              style={{
-                fontFamily: sans,
-                fontSize: 44,
-                fontWeight: 800,
-                color: 'rgba(255,255,255,0.85)',
-              }}
-            >
-              {displayName.charAt(0).toUpperCase()}
-            </span>
+            <GlyphSpire size={34} />
           </div>
         )}
       </div>
@@ -228,14 +219,14 @@ function VarietyCard({ plant }: { plant: Plant }) {
         className="absolute right-2 top-2 z-10"
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: 700,
           color: '#FFFFFF',
-          background: 'rgba(24,30,20,0.55)',
+          background: 'rgba(24,30,20,0.46)',
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
-          paddingInline: 7,
-          paddingBlock: 2,
+          paddingInline: 6,
+          paddingBlock: 1.5,
           borderRadius: 999,
         }}
       >
@@ -247,14 +238,14 @@ function VarietyCard({ plant }: { plant: Plant }) {
       <div
         className="absolute inset-x-0 bottom-0 flex flex-col justify-center"
         style={{
-          height: 72,
+          height: 78,
           background: 'rgba(245,242,234,0.97)',
           borderTop: '1px solid rgba(36,48,31,0.05)',
           paddingInline: 12,
         }}
       >
         <p
-          className="truncate"
+          className="line-clamp-2"
           style={{
             fontFamily: sans,
             fontSize: 14,
@@ -262,7 +253,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
             letterSpacing: '-0.01em',
             color: '#24301F',
             margin: 0,
-            lineHeight: 1.2,
+            lineHeight: 1.18,
           }}
         >
           {displayName}
@@ -273,7 +264,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
             fontFamily: sans,
             fontSize: 11,
             fontWeight: 600,
-            color: 'rgba(36,48,31,0.55)',
+            color: 'rgba(36,48,31,0.72)',
             margin: 0,
             marginTop: 4,
           }}
