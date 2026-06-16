@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
@@ -73,6 +73,8 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
   const [showForm, setShowForm] = useState(false)
   const [navn, setNavn] = useState('')
   const [type, setType] = useState(STED_TYPER[0])
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const [fadeRight, setFadeRight] = useState(false)
 
   // Steder udledt af planternes lokation + brugerens egne nyoprettede.
   const byLocation = new Map<string, number>()
@@ -88,6 +90,21 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
     .filter((c) => !byLocation.has(c.name))
     .map((c) => ({ name: c.name, antal: 0, type: c.type, image: null }))
   const steder = [...derived, ...nyoprettede]
+
+  // Fade-hint i højre kant: vis kun når rækken faktisk overflow'er, og
+  // skjul den når man er scrollet til enden.
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    const update = () => setFadeRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4)
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      el.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [steder.length])
 
   function gem() {
     const n = navn.trim()
@@ -192,8 +209,9 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
           </div>
         )
       ) : (
-        <div className="-mx-4 overflow-x-auto px-4 scrollbar-hide">
-          <div className="flex gap-3" style={{ width: 'max-content' }}>
+        <div className="relative -mx-4">
+          <div ref={scrollerRef} className="overflow-x-auto px-4 scrollbar-hide">
+            <div className="flex gap-3" style={{ width: 'max-content' }}>
             {steder.map((sted, i) => {
               const G = glyphForType(sted.type)
               const antalTekst = sted.antal === 0 ? 'Ingen planter endnu' : `${sted.antal} ${sted.antal === 1 ? 'plante' : 'planter'}`
@@ -250,7 +268,15 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
               </span>
               <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(36,48,31,0.66)' }}>Nyt sted</span>
             </button>
+            </div>
           </div>
+          {fadeRight && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0"
+              style={{ width: 56, background: 'linear-gradient(to left, var(--background), transparent)' }}
+            />
+          )}
         </div>
       )}
     </section>
