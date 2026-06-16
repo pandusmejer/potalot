@@ -506,3 +506,73 @@ export const POTALOT_GLYPHS_3: {
   { key: 'frost', label: 'Frost', form: 'iskrystal', Comp: GlyphFrost },
   { key: 'vind', label: 'Vind', form: 'vindstød', Comp: GlyphVind },
 ]
+
+/* ════════════ STATUSBAR — fire funktionelle data-markører ════════════
+   Til Mål-strimlen på plante-detail-heroen (Status · Alder · Højde ·
+   Sundhed). Anna: ekstremt enkle og funktionelle, IKKE nuttede. Ét roligt
+   greenDeep-tonefald, så de læser som en instrument-række i det editorial
+   univers — ikke som farverige klistermærker. Bruges ~16–20 px. */
+
+/* ── Status / fase — minimal to-blads spire (uden jord) ── */
+export function GlyphStatusFase(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <path d="M12 20.5 C 12 17, 12 14.5, 12 11" stroke={C.greenDeep} strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M12 15.2 C 8.6 15.4, 6.3 13.2, 5.9 9.6 C 9.3 9.6, 11.7 11.6, 12 15.2 Z" fill={C.green} />
+      <path d="M12 13 C 15.2 13.2, 17.5 11.1, 17.9 7.7 C 14.7 7.7, 12.3 9.6, 12 13 Z" fill={C.greenDeep} />
+    </Glyph>
+  )
+}
+
+/* ── Alder / tid — rolig urskive ── */
+export function GlyphAlder(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <circle cx="12" cy="12" r="8" fill="none" stroke={C.greenDeep} strokeWidth="2.3" />
+      <path d="M12 12 L 12 7.8" stroke={C.greenDeep} strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M12 12 L 15 13.3" stroke={C.greenDeep} strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="1.15" fill={C.greenDeep} />
+    </Glyph>
+  )
+}
+
+/* ── Højde / måling — lodret lineal med mål-streger ── */
+export function GlyphHojde(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      <rect x="9.2" y="3.6" width="5.6" height="16.8" rx="2.4" fill={C.greenDeep} />
+      <path d="M9.2 8 H 12.4 M9.2 12 H 11.4 M9.2 16 H 12.4" stroke={C.pane} strokeWidth="1.5" strokeLinecap="round" />
+    </Glyph>
+  )
+}
+
+/* ── Sundhed / tilstand — hjerte formet af to overlappende blade.
+   Plantens tilstand som et botanisk hjerte: to bladlober (lysere bagved,
+   dybere foran) mødes i en spids bund og en blød top-kløft. Samme to-tone-
+   logik som Status-spiren, så sættet hænger sammen. */
+export function GlyphSundhed(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      {/* venstre blad — lysere, bagved */}
+      <path d="M12 20.4 C 9.7 16.6, 5 14, 4.6 9.2 C 4.3 5.7, 7.4 3.7, 10.3 5.1 C 11.9 5.9, 12.4 7.1, 12 8.7 C 11.5 12, 11.7 17, 12 20.4 Z" fill={C.green} />
+      {/* højre blad — dybere, foran, overlapper midten */}
+      <path d="M12 20.4 C 14.3 16.6, 19 14, 19.4 9.2 C 19.7 5.7, 16.6 3.7, 13.7 5.1 C 12.1 5.9, 11.6 7.1, 12 8.7 C 12.5 12, 12.3 17, 12 20.4 Z" fill={C.greenDeep} />
+      {/* bladnerver mod fælles basis */}
+      <path d="M7.3 7.9 C 9.1 11, 11 15.4, 12 19.4" stroke={C.greenDeep} strokeWidth="1.1" strokeLinecap="round" opacity="0.4" />
+      <path d="M16.7 7.9 C 14.9 11, 13 15.4, 12 19.4" stroke={C.green} strokeWidth="1.1" strokeLinecap="round" opacity="0.5" />
+    </Glyph>
+  )
+}
+
+/** Statusbar-registret — fire funktionelle markører til Mål-strimlen. */
+export const POTALOT_GLYPHS_STATUS: {
+  key: string
+  label: string
+  form: string
+  Comp: (p: GlyphProps) => ReactNode
+}[] = [
+  { key: 'status-fase', label: 'Status', form: 'plante / fase', Comp: GlyphStatusFase },
+  { key: 'alder', label: 'Alder', form: 'tid / dage', Comp: GlyphAlder },
+  { key: 'hojde', label: 'Højde', form: 'måling', Comp: GlyphHojde },
+  { key: 'sundhed', label: 'Sundhed', form: 'tilstand', Comp: GlyphSundhed },
+]

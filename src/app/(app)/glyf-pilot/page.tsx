@@ -1,6 +1,6 @@
 import { Wheat, Sprout, Leaf, Apple, Droplets, Sun, ChevronRight, Flower2, Carrot, Bug, ShoppingBasket, Scissors, Shovel, CloudRain, Snowflake, Wind } from 'lucide-react'
 import type { ComponentType, SVGProps, ReactNode } from 'react'
-import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3 } from '@/components/icons/potalot-glyphs'
+import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3, POTALOT_GLYPHS_STATUS } from '@/components/icons/potalot-glyphs'
 
 /**
  * QA-rute: Potalot Soft Glyphs — pilot (6 kerneformer).
@@ -411,6 +411,68 @@ export default function GlyphQAPage() {
         </div>
         <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '16px 0 0', lineHeight: 1.5 }}>
           {UDEN_LUCIDE3.join(' · ')} har ingen meningsfuld Lucide-ækvivalent — netop derfor er de custom Soft Glyphs.
+        </p>
+      </Card>
+
+      {/* ════════════ STATUSBAR ════════════ */}
+      <div style={{ paddingTop: 18 }}>
+        <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.45)', margin: 0 }}>
+          Statusbar · fire funktionelle markører
+        </p>
+        <h2 style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(26px,6.5vw,36px)', lineHeight: 1.02, color: INK, margin: '6px 0 0' }}>
+          Status · Alder · Højde · Sundhed
+        </h2>
+        <p style={{ fontFamily: sans, fontSize: 14.5, color: 'rgba(36,48,31,0.6)', margin: '8px 0 0', maxWidth: '54ch' }}>
+          Til Mål-strimlen på plante-detail-heroen. Ekstremt enkle, ét roligt greenDeep-tonefald — en instrument-række, ikke farverige klistermærker.
+        </p>
+      </div>
+
+      {/* S1. Størrelser */}
+      <Card title="Statusbar · størrelser · 16 / 20 / 24 / 32 / 48 px">
+        <div className="space-y-5">
+          {POTALOT_GLYPHS_STATUS.map(({ key, label, form, Comp }) => (
+            <div key={key} className="flex items-center gap-5" style={{ borderTop: '1px solid rgba(36,48,31,0.06)', paddingTop: 16 }}>
+              <div style={{ width: 130, flexShrink: 0 }}>
+                <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: INK, margin: 0 }}>{label}</p>
+                <p style={{ fontFamily: sans, fontSize: 11.5, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>{form}</p>
+              </div>
+              <div className="flex flex-1 items-end" style={{ gap: 22 }}>
+                {SIZES.map((s) => (
+                  <div key={s} className="flex flex-col items-center" style={{ gap: 6 }}>
+                    <Comp size={s} title={label} />
+                    <span style={{ fontFamily: sans, fontSize: 10, color: 'rgba(36,48,31,0.4)' }}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* S2. I kontekst — 2×2 Mål-strimmel-chips (forslag til redesign) */}
+      <Card title="I kontekst · Mål-strimmel som 2×2 chips">
+        <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {[
+            { key: 'status-fase', label: 'Status', value: 'Spirer', note: 'nye skud' },
+            { key: 'alder', label: 'Alder', value: '32 dage', note: 'siden såning' },
+            { key: 'hojde', label: 'Højde', value: 'Ikke målt', note: 'log en måling' },
+            { key: 'sundhed', label: 'Sundhed', value: 'God', note: 'ingen problemer' },
+          ].map((row) => {
+            const G = POTALOT_GLYPHS_STATUS.find((x) => x.key === row.key)!.Comp
+            return (
+              <div key={row.key} className="flex items-center gap-3" style={{ background: '#FBF8EC', border: '1px solid rgba(36,48,31,0.08)', borderRadius: 16, padding: '13px 14px' }}>
+                <G size={22} />
+                <span className="min-w-0">
+                  <span className="uppercase" style={{ display: 'block', fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)' }}>{row.label}</span>
+                  <span style={{ display: 'block', fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', margin: '2px 0 0' }}>{row.value}</span>
+                  <span style={{ display: 'block', fontFamily: sans, fontSize: 11, color: 'rgba(36,48,31,0.5)', margin: '1px 0 0' }}>{row.note}</span>
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '16px 0 0', lineHeight: 1.5 }}>
+          Kun et hurtigt kontekst-kig på glyfferne — ikke det færdige statusbar-design. Korte labels, ingen tekstklip.
         </p>
       </Card>
 
