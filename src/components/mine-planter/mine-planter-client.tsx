@@ -213,27 +213,42 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       {/* AT SE TIL I DAG — organiske former. */}
       <AtSeTilIDag items={atSeItems} />
 
-      {/* MINE ARTER — tre lag: sektionslabel → art-header → sorts-kort.
-          Lagene skal være tydeligt adskilt (Anna 16/6 aften): label dæmpet
-          + luftig som intro, art-headeren samlet, mere rytme imellem. */}
+      {/* MIN PLANTESAMLING — brugerens levende samling (Anna 16/6 aften:
+          "Mine arter" var en datamodel forklædt som overskrift). Tre lag:
+          samling → grupper/art → sorter. Artsnavne er KATEGORIER (ikke
+          all-caps hovedoverskrifter), så ingen enkelt art tager tronen. */}
       <section>
         {artGroups.length > 0 ? (
           <>
-            {/* Niveau 1: rolig sektionslabel — en intro, ikke en overskrift. */}
-            <h2
-              className="uppercase px-0.5"
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 700,
-                letterSpacing: '0.22em',
-                color: 'rgba(36,48,31,0.40)',
-                margin: '0 0 26px',
-              }}
-            >
-              Mine arter
-            </h2>
-            {/* Niveau 2+3: arterne med rigelig luft imellem (ny art = ny start).
+            {/* Niveau 1: samlingen som helhed — label + samlet count. */}
+            <header className="px-0.5" style={{ marginBottom: 26 }}>
+              <h2
+                className="uppercase"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  letterSpacing: '0.22em',
+                  color: 'rgba(36,48,31,0.42)',
+                  margin: 0,
+                }}
+              >
+                Min plantesamling
+              </h2>
+              <p
+                style={{
+                  fontFamily: sans,
+                  fontSize: 13.5,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.6)',
+                  margin: '6px 0 0',
+                }}
+              >
+                {totalIndivid} {totalIndivid === 1 ? 'plante' : 'planter'} · {aktive.length} slags
+              </p>
+            </header>
+
+            {/* Niveau 2+3: artsgrupper (2+ sorter) med rigelig luft imellem.
                 Mellem de to første scroll-sektioner ligger én fritsvævende
                 sansenote — en mikropause i systemet (Anna 16/6). */}
             <div className="space-y-9">
@@ -247,12 +262,28 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
                     )}
                   </Fragment>
                 ))}
-              {/* Arter med 1 sort: én tæt blok af kompakte kort (ingen ceremoni). */}
+              {/* "Flere planter": sorter uden egen artsgruppe — én tæt blok,
+                  så ingen enkelt sort sættes på piedestal. */}
               {artGroups.some(([, g]) => g.length === 1) && (
-                <div className="space-y-2.5">
-                  {artGroups.filter(([, g]) => g.length === 1).map(([artName, group]) => (
-                    <SingleSortRow key={artName} artName={artName} plant={group[0]} />
-                  ))}
+                <div>
+                  <h3
+                    className="px-0.5"
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 18,
+                      fontWeight: 700,
+                      letterSpacing: '-0.01em',
+                      color: '#24301F',
+                      margin: '0 0 12px',
+                    }}
+                  >
+                    Flere planter
+                  </h3>
+                  <div className="space-y-2.5">
+                    {artGroups.filter(([, g]) => g.length === 1).map(([artName, group]) => (
+                      <SingleSortRow key={artName} artName={artName} plant={group[0]} />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

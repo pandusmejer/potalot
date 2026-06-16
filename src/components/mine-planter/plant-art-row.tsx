@@ -82,12 +82,11 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
           side. Stor, fed, Manrope — system-typografi, ikke editorial. */}
       <header className="px-0.5">
         <h2
-          className="uppercase"
           style={{
             fontFamily: sans,
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: '0.04em',
+            fontSize: 18,
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
             color: '#24301F',
             margin: 0,
           }}
