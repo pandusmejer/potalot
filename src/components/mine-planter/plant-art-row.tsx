@@ -84,9 +84,9 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
         <h2
           style={{
             fontFamily: sans,
-            fontSize: 18,
+            fontSize: 24,
             fontWeight: 700,
-            letterSpacing: '-0.01em',
+            letterSpacing: '-0.015em',
             color: '#24301F',
             margin: 0,
           }}
@@ -97,10 +97,10 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
           className="flex items-center gap-1.5"
           style={{
             fontFamily: sans,
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: 600,
             color: 'rgba(36,48,31,0.5)',
-            margin: '4px 0 0',
+            margin: '5px 0 0',
           }}
         >
           {needsAttention && (

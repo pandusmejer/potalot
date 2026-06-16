@@ -220,16 +220,18 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       <section>
         {artGroups.length > 0 ? (
           <>
-            {/* Niveau 1: samlingen som helhed — label + samlet count. */}
-            <header className="px-0.5" style={{ marginBottom: 26 }}>
+            {/* Niveau 1: samlingen som helhed — RIGTIG sektionsoverskrift
+                (Anna 16/6 aften: ikke en lille kicker; den skal vinde scenen
+                over artsgrupperne), + samlet count under i mindre grågrøn. */}
+            <header className="px-0.5" style={{ marginBottom: 44 }}>
               <h2
-                className="uppercase"
                 style={{
                   fontFamily: sans,
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  letterSpacing: '0.22em',
-                  color: 'rgba(36,48,31,0.42)',
+                  fontSize: 30,
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.05,
+                  color: '#24301F',
                   margin: 0,
                 }}
               >
@@ -238,13 +240,13 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               <p
                 style={{
                   fontFamily: sans,
-                  fontSize: 13.5,
+                  fontSize: 16,
                   fontWeight: 600,
-                  color: 'rgba(36,48,31,0.6)',
-                  margin: '6px 0 0',
+                  color: 'rgba(36,48,31,0.55)',
+                  margin: '8px 0 0',
                 }}
               >
-                {totalIndivid} {totalIndivid === 1 ? 'plante' : 'planter'} · {aktive.length} slags
+                {totalIndivid} {totalIndivid === 1 ? 'plante' : 'planter'} · {aktive.length} {aktive.length === 1 ? 'sort' : 'sorter'}
               </p>
             </header>
 
@@ -270,11 +272,11 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
                     className="px-0.5"
                     style={{
                       fontFamily: sans,
-                      fontSize: 18,
+                      fontSize: 24,
                       fontWeight: 700,
-                      letterSpacing: '-0.01em',
+                      letterSpacing: '-0.015em',
                       color: '#24301F',
-                      margin: '0 0 12px',
+                      margin: '0 0 14px',
                     }}
                   >
                     Flere planter
