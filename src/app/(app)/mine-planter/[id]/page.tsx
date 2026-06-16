@@ -224,7 +224,8 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
 
   return (
     <section
-      style={{ background: '#FBF8EC', border: '1px solid rgba(36,48,31,0.08)', borderRadius: 24, padding: 24 }}
+      id="dagbog"
+      style={{ background: '#FBF8EC', border: '1px solid rgba(36,48,31,0.08)', borderRadius: 24, padding: 24, scrollMarginTop: 80 }}
     >
       {/* Header — ikon-badge + titel/underlinje + Tilføj. */}
       <div className="flex items-start justify-between gap-3">

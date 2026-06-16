@@ -5,10 +5,11 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import type { Plant, PlantStatus, CalendarTask } from '@/lib/types'
 import { estimateNextTask } from '@/lib/next-plant-task'
-import { Sprout, Calendar, Scissors, BookOpen, Heart, Ruler } from 'lucide-react'
+import { Sprout, Calendar, Scissors, BookOpen, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Fragment, type ComponentType, type SVGProps } from 'react'
+import { Fragment, type ComponentType, type SVGProps, type ReactNode } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { GlyphStatusFase, GlyphAlder, GlyphHojde, GlyphSundhed, type GlyphProps } from '@/components/icons/potalot-glyphs'
 import type { DetailMaal } from '@/data/plant-detail'
 
 /**
@@ -181,8 +182,8 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   )
   const style = { boxShadow: '0 20px 44px rgba(26,34,22,0.18)' } as const
 
-  return (
-    <Link href={`/mine-planter/${plant.id}`} className={className} style={style}>
+  const inner = (
+    <>
       {/* FOTO — fylder kortet, bærer al atmosfære. translateY(-11%)
           ligesom frøkort så motivet sidder højere; bund-gabet skjules
           af det varme papirpanel. Uden ægte foto vises en rolig
@@ -338,6 +339,21 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
           </>
         )}
       </div>
+    </>
+  )
+
+  // Detail-heroen (maal sat) er IKKE et selvlink — så CTA-ankeret i
+  // bundpanelet ikke bliver et ugyldigt <a> inde i et <a>.
+  if (maal) {
+    return (
+      <div className={className} style={style}>
+        {inner}
+      </div>
+    )
+  }
+  return (
+    <Link href={`/mine-planter/${plant.id}`} className={className} style={style}>
+      {inner}
     </Link>
   )
 }
@@ -394,71 +410,68 @@ function NoPhotoBotanical({ name }: { name: string }) {
 /**
  * MÅL-RÆKKE — Plantekortets bundpanel på plante-detaljen.
  *
- * Anna (14. juni 2026): Mål-strimlen (Status·Alder·Højde·Sundhed) skal
- * ligge ovenpå heroen, i stedet for vækstbjælke + fakta. Fire rolige
- * kolonner på det varme papirpanel; grøn prik på Status, hjerte på
- * Sundhed, sarte grå ikoner på Alder/Højde.
+ * Anna (16. juni 2026): ikonet ligger nu ØVERST og CENTRERET i hvert af
+ * de fire afsnit (Status·Alder·Højde·Sundhed), med Potalot Soft Glyphs i
+ * stedet for Lucide. Resten af afsnittet (label · værdi · note) er
+ * centreret under ikonet. Første skridt i statusbar-redesignet.
  */
 function MaalRow({ maal }: { maal: DetailMaal }) {
   const felter: {
     label: string
     value: string
     note: string
-    dot?: string
-    heart?: boolean
-    Icon: ComponentType<SVGProps<SVGSVGElement>> | null
+    Comp: (p: GlyphProps) => ReactNode
   }[] = [
-    { label: 'Status', value: maal.statusValue, note: maal.statusNote, dot: '#617345', Icon: null },
-    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Icon: Sprout },
-    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Icon: Ruler },
-    { label: 'Sundhed', value: maal.sundhedValue, note: maal.sundhedNote, heart: true, Icon: Heart },
+    { label: 'Status', value: maal.statusValue, note: maal.statusNote, Comp: GlyphStatusFase },
+    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Comp: GlyphAlder },
+    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Comp: GlyphHojde },
+    { label: 'Trivsel', value: maal.sundhedValue, note: maal.sundhedNote, Comp: GlyphSundhed },
   ]
   return (
-    <div className="flex items-stretch">
-      {felter.map((f, i) => {
-        const Icon = f.Icon
-        return (
-          <Fragment key={f.label}>
-            {i > 0 && (
-              <div
-                aria-hidden
-                className="shrink-0"
-                style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
-              />
-            )}
-            <div className="flex min-w-0 flex-1 flex-col px-0.5">
-              <span
-                className="flex items-center gap-1 uppercase"
-                style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1 }}
-              >
-                {Icon && <Icon width={12} height={12} strokeWidth={1.75} aria-hidden />}
-                {f.label}
-              </span>
-              <span className="mt-1.5 flex items-center" style={{ gap: 5 }}>
-                {f.dot && (
-                  <span aria-hidden className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: f.dot }} />
-                )}
-                {f.heart && (
-                  <Heart width={14} height={14} strokeWidth={2} style={{ color: '#617345' }} aria-hidden className="shrink-0" />
-                )}
+    <>
+      <div className="flex items-stretch">
+        {felter.map((f, i) => {
+          const G = f.Comp
+          return (
+            <Fragment key={f.label}>
+              {i > 0 && (
+                <div
+                  aria-hidden
+                  className="shrink-0"
+                  style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
+                />
+              )}
+              <div className="flex min-w-0 flex-1 flex-col items-center px-0.5 text-center">
+                <G size={20} aria-hidden />
+                <span
+                  className="uppercase"
+                  style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1, marginTop: 7 }}
+                >
+                  {f.label}
+                </span>
                 <span
                   className="whitespace-nowrap"
-                  style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1 }}
+                  style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1, marginTop: 4, textTransform: 'lowercase' }}
                 >
                   {f.value}
                 </span>
-              </span>
-              <span
-                className="mt-1 whitespace-nowrap"
-                style={{ fontFamily: sans, fontSize: 11, fontWeight: 400, color: 'rgba(36,48,31,0.5)', lineHeight: 1 }}
-              >
-                {f.note}
-              </span>
-            </div>
-          </Fragment>
-        )
-      })}
-    </div>
+              </div>
+            </Fragment>
+          )
+        })}
+      </div>
+
+      {/* CTA — gør strimlen aktiv: invitér til at logge. In-page-anker til
+          dagbogen (#dagbog) frem for en død forklarings-linje pr. felt. */}
+      <a
+        href="#dagbog"
+        className="mt-3.5 flex items-center justify-center gap-1.5"
+        style={{ borderTop: '1px solid rgba(36,48,31,0.08)', paddingTop: 12, fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#5E7D4F', letterSpacing: '0.01em' }}
+      >
+        Log nyt på planten
+        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />
+      </a>
+    </>
   )
 }
 
