@@ -56,14 +56,16 @@ function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
-function plantCardSrc(plant: MockPlant): string {
+function plantCardImage(plant: MockPlant): { src: string; hasPhoto: boolean } {
   const varietySlug = plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null
-  return resolvePotalotImage({
+  const { src, source } = resolvePotalotImage({
     guideId: plant.guideId,
     varietySlug,
     role: 'plant-card',
     preferredSrc: plant.primaryImageId,
-  }).src
+  })
+  // source 'fallback' = kun placeholder; ikke et ægte foto.
+  return { src, hasPhoto: source !== 'fallback' }
 }
 
 // ─── 1. Mål-strimmel ───────────────────────────────────────────
@@ -169,13 +171,16 @@ function deriveTiming(plant: MockPlant): string {
 
 export function deriveNaeste(plant: MockPlant): DetailNaeste {
   const rule = STATUS_NAESTE[plant.status]
+  const foto = plantCardImage(plant)
   return {
     overskrift: rule.overskrift,
     timing: deriveTiming(plant),
     beskrivelse: rule.beskrivelse,
     guideHref: '/guides',
     denneUge: rule.denneUge,
-    fotoSrc: plantCardSrc(plant),
+    // Tom streng = intet ægte foto → "Lige nu"-kortet viser en rolig
+    // botanisk fyld i stedet for placeholder-fladen.
+    fotoSrc: foto.hasPhoto ? foto.src : '',
     fotoAlt: `${plant.name}${plant.variety ? ` ${plant.variety}` : ''}`,
   }
 }
@@ -267,7 +272,7 @@ export function buildPlantDetail(args: {
   const naeste = deriveNaeste(plant)
 
   return {
-    heroFoto: plantCardSrc(plant),
+    heroFoto: plantCardImage(plant).src,
     heroFotoAlt: `${plant.name}${plant.variety ? ` ${plant.variety}` : ''}`,
     maal: deriveMaal(plant),
     naeste: { ...naeste, ...(override?.naeste ?? {}) },

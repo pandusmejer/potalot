@@ -115,15 +115,17 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   const varietySlug = plant.variety
     ? slugify(`${plant.name}-${plant.variety}`)
     : null
-  const { src: heroImage } = resolvePotalotImage({
+  const { src: heroImage, source } = resolvePotalotImage({
     guideId: plant.guideId,
     varietySlug,
     role: 'plant-card',
     preferredSrc: plant.primaryImageId,
   })
+  // Intet ægte foto (kun placeholder) → rolig botanisk Potalot-state
+  // i stedet for foto + scrim. Påvirker baggrund, teksfarve og højde.
+  const hasPhoto = source !== 'fallback'
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
-  const color = statusColor(plant.status)
 
   // Titel-størrelse skalerer med navnelængden. Korte arts-navne (Tomat,
   // Agurk) fylder stort; lange étords-navne (Stangbønne, Peberfrugt) kan
@@ -170,7 +172,11 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   ]
 
   const className = cn(
-    'group relative block aspect-[4/5] w-full overflow-hidden rounded-[32px] transition-all duration-200 ease-out',
+    'group relative block w-full overflow-hidden rounded-[32px] transition-all duration-200 ease-out',
+    // No-photo-kort er strammere (lavere højde) så minimal-data ikke
+    // efterlader en stor tom flade — men højt nok til at det botaniske
+    // emblem kan stå frit under titlen.
+    hasPhoto ? 'aspect-[4/5]' : 'aspect-[1/1]',
     'hover:-translate-y-0.5'
   )
   const style = { boxShadow: '0 20px 44px rgba(26,34,22,0.18)' } as const
@@ -179,27 +185,30 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
     <Link href={`/mine-planter/${plant.id}`} className={className} style={style}>
       {/* FOTO — fylder kortet, bærer al atmosfære. translateY(-11%)
           ligesom frøkort så motivet sidder højere; bund-gabet skjules
-          af det varme papirpanel. */}
-      {heroImage ? (
-        <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={heroImage}
-            alt=""
-            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+          af det varme papirpanel. Uden ægte foto vises en rolig
+          botanisk Potalot-state i stedet (ikke et nød-/debug-banner). */}
+      {hasPhoto ? (
+        <>
+          <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroImage}
+              alt=""
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+            />
+          </div>
+          {/* Læsbarheds-scrim — en tand stærkere end frøkort fordi
+              plantefotos ofte har tæt tekstur og lav kontrast i toppen.
+              Kun på foto; den botaniske flade er allerede lys. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-[52%]"
+            style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.46) 0%, rgba(18,14,10,0.14) 60%, transparent 100%)' }}
           />
-        </div>
+        </>
       ) : (
-        <div aria-hidden className="absolute inset-0" style={{ background: color }} />
+        <NoPhotoBotanical name={plant.name} />
       )}
-
-      {/* Læsbarheds-scrim — en tand stærkere end frøkort fordi
-          plantefotos ofte har tæt tekstur og lav kontrast i toppen. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[52%]"
-        style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.46) 0%, rgba(18,14,10,0.14) 60%, transparent 100%)' }}
-      />
 
       {/* TOP-VENSTRE — fast eyebrow + stor titel + sort.
           Eyebrow er ALTID "MIN HAVE · PLANTE" (ikke status-baseret) —
@@ -207,20 +216,20 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
       <div className="absolute left-0 top-0 z-10 max-w-[74%] p-[22px]">
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.92)', textShadow: '0 1px 5px rgba(20,14,8,0.5)' }}
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', color: hasPhoto ? 'rgba(255,255,255,0.92)' : 'rgba(36,48,31,0.5)', textShadow: hasPhoto ? '0 1px 5px rgba(20,14,8,0.5)' : 'none' }}
         >
           MIN HAVE · PLANTE
         </p>
         <h3
           className="mt-3.5"
-          style={{ fontFamily: sans, fontSize: titleSize, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: '#FFFFFF', textShadow: '0 3px 22px rgba(20,14,8,0.6)' }}
+          style={{ fontFamily: sans, fontSize: titleSize, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: hasPhoto ? '#FFFFFF' : '#24301F', textShadow: hasPhoto ? '0 3px 22px rgba(20,14,8,0.6)' : 'none' }}
         >
           {plant.name}
         </h3>
         {plant.variety && (
           <p
             className="mt-2.5"
-            style={{ fontFamily: sans, fontSize: 27, fontWeight: 600, lineHeight: 1.06, letterSpacing: '-0.015em', color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 12px rgba(20,14,8,0.5)' }}
+            style={{ fontFamily: sans, fontSize: 27, fontWeight: 600, lineHeight: 1.06, letterSpacing: '-0.015em', color: hasPhoto ? 'rgba(255,255,255,0.9)' : 'rgba(36,48,31,0.62)', textShadow: hasPhoto ? '0 2px 12px rgba(20,14,8,0.5)' : 'none' }}
           >
             {plant.variety}
           </p>
@@ -330,6 +339,55 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
         )}
       </div>
     </Link>
+  )
+}
+
+/**
+ * No-photo plante-state — en bevidst, rolig botanisk Potalot-flade i
+ * stedet for et nød-/debug-banner. Dæmpet sage-gradient, artens initial
+ * som sart monogram-watermark (bleeder mod hjørnet) + en enkel spire-
+ * silhuet og arts-navnet som sekundær label. Honest om at fotoet
+ * mangler — uden at råbe om det.
+ */
+function NoPhotoBotanical({ name }: { name: string }) {
+  return (
+    <div aria-hidden className="absolute inset-0">
+      {/* Dæmpet botanisk gradient */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #DCE2CF 52%, #C9D3B5 100%)' }}
+      />
+      {/* Rolig emblem — artens initial som sart monogram med en enkel
+          spire-silhuet foran. Centreret i den frie flade under titlen
+          (paddingBottom løfter det op over Mål-panelet). */}
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ paddingTop: 40, paddingBottom: 92 }}
+      >
+        <div className="relative flex items-center justify-center">
+          <span
+            className="select-none"
+            style={{
+              fontFamily: sans,
+              fontSize: 132,
+              fontWeight: 800,
+              lineHeight: 1,
+              letterSpacing: '-0.04em',
+              color: 'rgba(36,48,31,0.07)',
+            }}
+          >
+            {name.charAt(0)}
+          </span>
+          <Sprout
+            className="absolute"
+            width={46}
+            height={46}
+            strokeWidth={1.5}
+            style={{ color: 'rgba(36,48,31,0.30)' }}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 

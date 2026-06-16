@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { DetailNaeste } from '@/data/plant-detail'
-import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight } from 'lucide-react'
+import { ArrowRight, BookOpen, CalendarDays, Check, ChevronRight, Sprout } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -39,15 +39,30 @@ export function PlantNaeste({
         className="relative overflow-hidden rounded-[22px]"
         style={{ background: CREME, border: RAMME, minHeight: 250, marginBottom: 10 }}
       >
-        {/* FOTO — ~58% højre minus 8 mm (Anna: giv cremefeltet 8 mm i alt). */}
+        {/* FOTO — ~58% højre minus 8 mm (Anna: giv cremefeltet 8 mm i alt).
+            Uden ægte foto vises en rolig botanisk fyld (samme sprog som
+            plantekortets no-foto-state), ikke en placeholder-flade. */}
         <div className="absolute right-0 top-0 bottom-0" style={{ width: 'calc(58% - 8mm)' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={naeste.fotoSrc}
-            alt={naeste.fotoAlt}
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ clipPath: 'url(#ligenu-organisk-ramme)' }}
-          />
+          {naeste.fotoSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={naeste.fotoSrc}
+              alt={naeste.fotoAlt}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ clipPath: 'url(#ligenu-organisk-ramme)' }}
+            />
+          ) : (
+            <div
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                clipPath: 'url(#ligenu-organisk-ramme)',
+                background: 'linear-gradient(158deg, #EBEDE2 0%, #DCE2CF 52%, #C9D3B5 100%)',
+              }}
+            >
+              <Sprout width={38} height={38} strokeWidth={1.5} style={{ color: 'rgba(36,48,31,0.28)' }} />
+            </div>
+          )}
         </div>
 
         {/* TEKST — venstre, magasin-opslag (+8 mm fra fotoet). */}
