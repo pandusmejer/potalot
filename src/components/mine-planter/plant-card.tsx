@@ -125,6 +125,13 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
   const color = statusColor(plant.status)
 
+  // Titel-størrelse skalerer med navnelængden. Korte arts-navne (Tomat,
+  // Agurk) fylder stort; lange étords-navne (Stangbønne, Peberfrugt) kan
+  // ikke ombrydes, så de skrumper i stedet for at løbe ud over kortet.
+  const nameLen = plant.name.length
+  const titleSize =
+    nameLen <= 6 ? 56 : nameLen <= 8 ? 46 : nameLen <= 9 ? 40 : nameLen <= 10 ? 36 : 32
+
   // Origin-heuristik: hvis sowDate findes blev planten sået fra frø,
   // ellers er den plantet (købt potteplante, knold, stikling osv.).
   // Bruges både til fakta-row labelen og til bjælkens venstre anker.
@@ -206,7 +213,7 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
         </p>
         <h3
           className="mt-3.5"
-          style={{ fontFamily: sans, fontSize: 56, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: '#FFFFFF', textShadow: '0 3px 22px rgba(20,14,8,0.6)' }}
+          style={{ fontFamily: sans, fontSize: titleSize, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: '#FFFFFF', textShadow: '0 3px 22px rgba(20,14,8,0.6)' }}
         >
           {plant.name}
         </h3>

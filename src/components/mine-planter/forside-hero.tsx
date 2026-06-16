@@ -11,7 +11,10 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  */
 export function ForsideHero({ total, attention }: { total: number; attention: number }) {
   return (
-    <header className="relative -mx-4 -mt-6 h-[260px] overflow-hidden">
+    <header
+      className="relative h-[264px] overflow-hidden rounded-[32px]"
+      style={{ boxShadow: '0 10px 30px -12px rgba(28,38,22,0.42)' }}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/heroes-sider/hero-planter-spirer.png"
@@ -19,13 +22,13 @@ export function ForsideHero({ total, attention }: { total: number; attention: nu
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"
       />
-      {/* Scrim: mørk i bunden så titlen læses; fader til sidens baggrund. */}
+      {/* Scrim: mørk i bunden så titlen læses; lyser op i toppen så fotoet ånder. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(18,22,14,0.10) 0%, rgba(18,22,14,0.20) 42%, rgba(18,22,14,0.62) 100%)',
+            'linear-gradient(180deg, rgba(18,22,14,0.06) 0%, rgba(18,22,14,0.18) 42%, rgba(18,22,14,0.64) 100%)',
         }}
       />
       <div className="absolute inset-x-0 bottom-0 p-5">
