@@ -54,11 +54,27 @@ function forventningFor(p: Plant): string {
   return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
 }
 
-/** Kort, opgave-orienteret handling til "At se til i dag"-blobs. */
+/** Kort, opgave-orienteret handling til "At se til i dag"-kortene. */
 function taskFor(p: Plant): string {
   const na = (p as Partial<MockPlant>).nextAction?.action
   if (na) return na
   return afledtStatuslinje(p)?.text ?? PLANT_STATUS_META[p.status].label
+}
+
+/**
+ * Kort timing-label + prioritet til "At se til i dag". Sektionen skal
+ * vise PRIORITEREDE handlinger — ikke tre dekorative noter med samme vægt.
+ *   idag    → skal gøres i dag (høstklar)
+ *   snart   → kan gøres nu/denne uge (klar, intet afventer)
+ *   afventer→ blot relevant i denne fase (venter på vejr e.l.)
+ */
+const PRIO_RANK: Record<AtSeItem['priority'], number> = { idag: 0, snart: 1, afventer: 2 }
+function naarFor(p: Plant): { timing: string; priority: AtSeItem['priority'] } {
+  if (p.status === 'hoestklar') return { timing: 'Gør i dag', priority: 'idag' }
+  const t = ((p as Partial<MockPlant>).nextAction?.timing ?? '').toLowerCase()
+  if (/frost|milde|nætter|vejr|lun|kold/.test(t)) return { timing: 'Afventer vejr', priority: 'afventer' }
+  if (/i dag|i morgen/.test(t)) return { timing: 'Gør i dag', priority: 'idag' }
+  return { timing: 'Klar nu', priority: 'snart' }
 }
 
 /** Tidsbaseret hilsen til forside-heroen. */
@@ -148,7 +164,9 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
   }, [aktive])
 
   // At se til i dag: de mest opmærksomheds-krævende planter (op til 3),
-  // én pr. art så blob-formerne føles forskellige.
+  // én pr. art. Hvert kort bærer timing + prioritet, og listen sorteres
+  // efter prioritet (gør-i-dag → klar-nu → afventer), så sektionen
+  // faktisk viser PRIORITEREDE handlinger.
   const atSeItems = useMemo<AtSeItem[]>(() => {
     const sorted = [...aktive].sort((a, b) => fokusRank(a) - fokusRank(b))
     const items: AtSeItem[] = []
@@ -157,10 +175,11 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       if (fokusRank(p) === 2) break // kun opmærksomheds-værdige
       if (seenArter.has(p.name)) continue
       seenArter.add(p.name)
-      items.push({ art: p.name, action: taskFor(p), href: `/mine-planter/${p.id}` })
+      const { timing, priority } = naarFor(p)
+      items.push({ art: p.name, action: taskFor(p), href: `/mine-planter/${p.id}`, timing, priority })
       if (items.length === 3) break
     }
-    return items
+    return items.sort((a, b) => PRIO_RANK[a.priority] - PRIO_RANK[b.priority])
   }, [aktive])
 
   // Arts-rækker: gruppér aktive efter art. Opmærksomheds-arter først,
