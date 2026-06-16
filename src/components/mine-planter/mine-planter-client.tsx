@@ -9,6 +9,7 @@ import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
 import { AtSeTilIDag, type AtSeItem } from '@/components/mine-planter/at-se-til-i-dag'
 import { SaesonensVaekst } from '@/components/mine-planter/saesonens-vaekst'
 import { MineSteder } from '@/components/mine-planter/mine-steder'
+import { SamlingPodium } from '@/components/mine-planter/samling-podium'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { overrideFor } from '@/data/plant-detail'
@@ -220,35 +221,10 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       <section>
         {artGroups.length > 0 ? (
           <>
-            {/* Niveau 1: samlingen som helhed — RIGTIG sektionsoverskrift
-                (Anna 16/6 aften: ikke en lille kicker; den skal vinde scenen
-                over artsgrupperne), + samlet count under i mindre grågrøn. */}
-            <header className="px-0.5" style={{ marginBottom: 44 }}>
-              <h2
-                style={{
-                  fontFamily: sans,
-                  fontSize: 30,
-                  fontWeight: 800,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.05,
-                  color: '#24301F',
-                  margin: 0,
-                }}
-              >
-                Min plantesamling
-              </h2>
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: 'rgba(36,48,31,0.55)',
-                  margin: '8px 0 0',
-                }}
-              >
-                {totalIndivid} {totalIndivid === 1 ? 'plante' : 'planter'} · {aktive.length} {aktive.length === 1 ? 'sort' : 'sorter'}
-              </p>
-            </header>
+            {/* Niveau 1: SAMLING-PODIUM — editorial herbarium-intro (Anna
+                16/6 aften, retningsskift): en samlende ramme, ikke en
+                tekstlabel og ikke endnu et kort. */}
+            <SamlingPodium planter={totalIndivid} sorter={aktive.length} />
 
             {/* Niveau 2+3: artsgrupper (2+ sorter) med rigelig luft imellem.
                 Mellem de to første scroll-sektioner ligger én fritsvævende
