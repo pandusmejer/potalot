@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { PlantArtRow, SingleSortRow } from '@/components/mine-planter/plant-art-row'
 import { ForsideHero } from '@/components/mine-planter/forside-hero'
 import { ForsideLigeNu } from '@/components/mine-planter/forside-lige-nu'
@@ -224,11 +223,12 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         )}
       </section>
 
+      {/* MINE STEDER — hvor planterne bor. (Før Sæsonens vækst: steder er
+          et vigtigere planter-filter end den editorial sæson-fortælling.) */}
+      <MineSteder plants={aktive} />
+
       {/* SÆSONENS VÆKST — sæsonen som fortælling. */}
       <SaesonensVaekst historik={SAESON_HISTORIK} nuMaaned={NU_MAANED} />
-
-      {/* MINE STEDER — hvor planterne bor. */}
-      <MineSteder plants={aktive} />
 
       {/* PLANLAGT — kompakt chip-række. */}
       {planlagte.length > 0 && (
@@ -282,23 +282,21 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       {/* KLAR TIL ARKIV — foreslå Havebogen. */}
       {klarTilArkiv.length > 0 && (
         <section className="space-y-3">
+          {/* Diskret: kun eyebrow — sekundær sektion, råber ikke om oprydning. */}
           <header className="px-0.5">
             <h2
               className="uppercase"
               style={{
                 fontFamily: sans,
-                fontSize: 12.5,
+                fontSize: 11.5,
                 fontWeight: 700,
                 letterSpacing: '0.16em',
-                color: 'rgba(36,48,31,0.52)',
+                color: 'rgba(36,48,31,0.42)',
                 margin: 0,
               }}
             >
               Klar til arkiv
             </h2>
-            <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.50)', margin: '4px 0 0' }}>
-              Sæsonen er slut for de her — gem dem i Havebogen.
-            </p>
           </header>
           <div className="space-y-2">
             {klarTilArkiv.map(plant => (
@@ -346,12 +344,14 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               Se arkiverede planter, noter og høsterfaringer.
             </p>
           </div>
-          <Button asChild variant="ghost" size="sm" className="shrink-0">
-            <Link href="/">
-              Åbn havebog
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Link
+            href="/"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full transition-transform active:scale-95"
+            style={{ border: '1px solid rgba(36,48,31,0.18)', color: '#24301F', fontFamily: sans, fontSize: 13, fontWeight: 600, padding: '8px 14px' }}
+          >
+            Åbn havebog
+            <ArrowRight className="h-4 w-4" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
+          </Link>
         </div>
       </section>
     </div>

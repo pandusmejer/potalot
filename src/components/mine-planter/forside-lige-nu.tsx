@@ -80,11 +80,11 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
           style={{
             fontFamily: serif,
             fontWeight: 600,
-            fontSize: 'clamp(28px, 8vw, 36px)',
-            lineHeight: 1.0,
+            fontSize: 'clamp(26px, 7.5vw, 32px)',
+            lineHeight: 1.02,
             letterSpacing: '-0.005em',
             color: '#24301F',
-            margin: '12px 0 0',
+            margin: '10px 0 0',
           }}
         >
           {plant.variety ?? plant.name}
@@ -106,11 +106,11 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
 
         <Link
           href={`/mine-planter/${plant.id}`}
-          className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full px-4 py-2.5 text-white transition-transform active:scale-95"
+          className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-2 text-white transition-transform active:scale-95"
           style={{
             background: '#24301F',
             fontFamily: sans,
-            fontSize: 13.5,
+            fontSize: 12.5,
             fontWeight: 600,
           }}
         >
