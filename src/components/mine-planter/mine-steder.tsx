@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react'
 import {
   GlyphHojbed, GlyphDrivhus, GlyphKrukke, GlyphJord, GlyphBlad, GlyphSpire, type GlyphProps,
 } from '@/components/icons/potalot-glyphs'
+import { slugifySted, inferStedType } from '@/lib/steder'
 import type { Plant } from '@/lib/types'
 
 const sans = 'var(--font-manrope)'
@@ -32,18 +33,6 @@ interface StedKort {
   antal: number
   type: string
   image?: string | null
-}
-
-/** Udled stedtype af navnet (afledte steder har ingen type-felt). */
-function inferType(name: string): string {
-  const n = name.toLowerCase()
-  if (/højbed|hojbed|\bbed\b/.test(n)) return 'Højbed'
-  if (/drivhus|væksthus/.test(n)) return 'Drivhus'
-  if (/vindue|karm/.test(n)) return 'Vindueskarm'
-  if (/krukke|potte|\bkar\b/.test(n)) return 'Krukke'
-  if (/altan|terrasse|balkon/.test(n)) return 'Altan'
-  if (/friland|køkkenhave|mark|jord|frilands/.test(n)) return 'Friland'
-  return 'Andet'
 }
 
 /** Stedtype → Potalot Soft Glyph (ingen dedikeret = rolig botanisk fallback). */
@@ -87,7 +76,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
   }
   const derived: StedKort[] = [...byLocation.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([name, antal]) => ({ name, antal, type: inferType(name), image: null }))
+    .map(([name, antal]) => ({ name, antal, type: inferStedType(name), image: null }))
   const nyoprettede: StedKort[] = created
     .filter((c) => !byLocation.has(c.name))
     .map((c) => ({ name: c.name, antal: 0, type: c.type, image: null }))
@@ -220,7 +209,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
               return (
                 <Link
                   key={sted.name}
-                  href="/mine-planter"
+                  href={`/mine-planter/sted/${slugifySted(sted.name)}`}
                   className="group relative block shrink-0 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5"
                   style={{ width: 208, height: 146, borderRadius: 22 }}
                 >
