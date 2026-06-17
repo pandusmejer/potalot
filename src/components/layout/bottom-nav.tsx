@@ -59,10 +59,13 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
               >
                 <span
                   className={cn(
-                    'absolute flex items-center justify-center rounded-full shadow-lift transition-all',
+                    'absolute flex items-center justify-center rounded-full transition-all',
+                    // Aktiv = solid grøn FAB (tydeligt "du er her").
+                    // Ikke-aktiv = rolig ghost-grøn, så hero-ikonet aldrig
+                    // dominerer hierarkiet på en side det ikke hører til.
                     active
-                      ? 'bg-primary text-primary-foreground scale-105'
-                      : 'bg-accent-strong text-primary-foreground hover:scale-105'
+                      ? 'bg-primary text-primary-foreground shadow-lift scale-105'
+                      : 'bg-[color-mix(in_oklab,var(--primary)_15%,var(--card))] text-primary shadow-soft ring-1 ring-[color-mix(in_oklab,var(--primary)_22%,transparent)] hover:scale-105'
                   )}
                   // ~11 % mindre end før (56 → 50 px) så hero-knappen ikke
                   // stjæler fokus fra indholdet.

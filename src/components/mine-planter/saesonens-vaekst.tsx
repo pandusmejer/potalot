@@ -7,7 +7,8 @@ interface MaanedHistorie {
 }
 
 /**
- * 🌱 SÆSONENS VÆKST — sæsonen som fortælling, ikke statistik.
+ * 🌱 FRA FRØ TIL NU (overskrift tidl. "Sæsonens vækst", 17/6) — sæsonen
+ * som fortælling, ikke statistik.
  *
  * Anna (spec): "En enorm lodret tidslinje. Ikke diagram. Ikke statistik.
  * Historie. Stor serif. Meget luft. Meget få elementer." En lodret
@@ -36,10 +37,10 @@ export function SaesonensVaekst({
           fontWeight: 700,
           letterSpacing: '0.16em',
           color: 'rgba(36,48,31,0.52)',
-          margin: '0 0 20px',
+          margin: '0 0 16px',
         }}
       >
-        Sæsonens vækst
+        Fra frø til nu
       </h2>
 
       <ol className="relative" style={{ paddingLeft: 26 }}>
@@ -52,14 +53,14 @@ export function SaesonensVaekst({
         {historik.map((m) => {
           const erNu = m.maaned === nuMaaned
           return (
-            <li key={m.maaned} className="relative" style={{ paddingBottom: 26 }}>
+            <li key={m.maaned} className="relative" style={{ paddingBottom: 20 }}>
               {/* Måneds-prik på rail'en. */}
               <span
                 aria-hidden
                 className="absolute rounded-full"
                 style={{
                   left: -26 + 5 - 4,
-                  top: 12,
+                  top: 10,
                   width: erNu ? 12 : 9,
                   height: erNu ? 12 : 9,
                   background: erNu ? '#617345' : 'var(--background)',
@@ -71,7 +72,7 @@ export function SaesonensVaekst({
                 style={{
                   fontFamily: serif,
                   fontWeight: 600,
-                  fontSize: 'clamp(26px, 7vw, 32px)',
+                  fontSize: 'clamp(24px, 6.4vw, 30px)',
                   lineHeight: 1.0,
                   letterSpacing: '0.004em',
                   color: erNu ? '#24301F' : 'rgba(36,48,31,0.58)',

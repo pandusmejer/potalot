@@ -6,15 +6,17 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 /**
  * 🌿 KARAKTER — sortens personlighed, ikke dens data.
  *
- * Anna foretrækker fuld-bredde-formen (14. juni 2026): beskrivelsen bærer
- * sjælen som stor serif på fuld bredde, og de fire træk står i en rolig
- * række under en tynd skillelinje. Ingen ikoner, ingen badges — ren
- * typografi (spec). Personligheden læses før nogen data.
- *
- * Statisk indhold (src/data/plant-karakter.ts) i fase 1 — kobles til
- * guide/vidensmodel senere uden at røre komponenten.
+ * Anna (14. juni 2026): teksten skal arbejde hårdere. Første sætning
+ * gøres MEGET stor (sortens essens — "Den klassiske italienske
+ * saucetomat."), forklaringen står mindre nedenunder. De fire træk i en
+ * rolig række under en tynd streg. Ingen ikoner — ren typografi.
  */
 export function PlantKarakter({ karakter }: { karakter: Karakter }) {
+  // Del beskrivelsen: første sætning bærer pondus, resten forklarer.
+  const idx = karakter.beskrivelse.indexOf('. ')
+  const foersteSaetning = idx === -1 ? karakter.beskrivelse : karakter.beskrivelse.slice(0, idx + 1)
+  const resten = idx === -1 ? '' : karakter.beskrivelse.slice(idx + 2)
+
   return (
     <section
       className="relative overflow-hidden rounded-[22px]"
@@ -38,20 +40,37 @@ export function PlantKarakter({ karakter }: { karakter: Karakter }) {
         Karakter
       </p>
 
-      {/* Sjælen — beskrivelsen i varm serif, fuld bredde. */}
+      {/* Sjælen — første sætning stor, med pondus. */}
       <p
         style={{
           fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(21px, 5.6vw, 27px)',
-          lineHeight: 1.3,
-          letterSpacing: '0.004em',
-          color: '#2D2A24',
+          fontWeight: 600,
+          fontSize: 'clamp(30px, 9vw, 42px)',
+          lineHeight: 1.04,
+          letterSpacing: '-0.005em',
+          color: '#24301F',
           margin: '12px 0 0',
         }}
       >
-        {karakter.beskrivelse}
+        {foersteSaetning}
       </p>
+
+      {/* Forklaringen — mindre, rolig. */}
+      {resten && (
+        <p
+          className="max-w-[44ch]"
+          style={{
+            fontFamily: sans,
+            fontSize: 15,
+            fontWeight: 400,
+            lineHeight: 1.5,
+            color: 'rgba(45,42,36,0.72)',
+            margin: '14px 0 0',
+          }}
+        >
+          {resten}
+        </p>
+      )}
 
       {/* Personlighedskortet — fire træk under en tynd skillelinje. */}
       <div

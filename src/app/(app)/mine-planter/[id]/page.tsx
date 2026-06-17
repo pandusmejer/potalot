@@ -2,11 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { PlantCard } from '@/components/mine-planter/plant-card'
-import { PlantTimeline } from '@/components/mine-planter/plant-timeline'
-import { PlantLogEntry } from '@/components/mine-planter/plant-log-entry'
-import { PlantPhotoGrid } from '@/components/mine-planter/plant-photo-grid'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
-import { NextPlantActions } from '@/components/mine-planter/next-plant-actions'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
@@ -14,24 +10,24 @@ import { PlantSammenligning } from '@/components/mine-planter/plant-sammenlignin
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
-import { detailFor, type PlantDetail } from '@/data/plant-detail'
+import { overrideFor, type PlantDetail } from '@/data/plant-detail'
+import { buildPlantDetail } from '@/lib/plant-detail/build-plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import {
-  formatPlantDate,
   getMockPlantById,
   mockPlantTasks,
   type MockPlant,
-  type MockPlantNextAction,
+  type MockPlantLog,
 } from '@/data/mock-plants'
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import {
   Archive,
   ArrowLeft,
-  BookOpen,
-  Camera,
   ChevronDown,
-  Images,
+  ChevronRight,
+  History,
+  Lightbulb,
   NotebookText,
   Plus,
 } from 'lucide-react'
@@ -134,105 +130,15 @@ function renderDetail(
   log: LogContext,
 ) {
   const karakter = karakterFor(plant.guideId)
-  const detail = detailFor(plant.guideId)
-  // For real plants har vi ingen calendar-task; behold nextTask null.
   const resolvedNextTask =
     nextTask ?? mockPlantTasks.find(task => task.linkedPlantId === plant.id) ?? null
 
-  // Det nye editorial-spor: kun for sorter med redaktionelt indhold.
-  if (detail) {
-    return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
-  }
-
-  const statusMeta = PLANT_STATUS_META[plant.status]
-
-  const expectedHarvest = plant.expectedHarvestStart
-    ? formatPlantDate(plant.expectedHarvestStart)
-    : '—'
-  const nextActions: MockPlantNextAction[] = plant.nextAction ? [plant.nextAction] : []
-
-  return (
-    <article className="mx-auto max-w-3xl space-y-6 pb-8">
-      <div className="space-y-3">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link href="/mine-planter">
-            <ArrowLeft className="h-4 w-4" />
-            Tilbage
-          </Link>
-        </Button>
-        <PlantCard plant={plant} nextTask={resolvedNextTask} />
-        {plant.imageSource !== 'user_upload' && (
-          <Button variant="outline" size="sm" className="bg-card/70" disabled>
-            <Camera className="h-4 w-4" />
-            Tilføj dit første foto
-          </Button>
-        )}
-      </div>
-
-      {/* KARAKTER — sortens sjæl, det første du møder (fase 1: oplevelse). */}
-      {karakter && <PlantKarakter karakter={karakter} />}
-
-      <section className="grid gap-3 sm:grid-cols-3">
-        <Fact label="Status" value={statusMeta.label} />
-        <Fact label="Type" value={plant.type || '—'} />
-        <Fact label="Forventet høst" value={expectedHarvest} />
-      </section>
-
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="font-serif text-2xl leading-tight text-foreground">Tidslinje</h2>
-        <div className="mt-4">
-          <PlantTimeline plant={plant} />
-        </div>
-      </section>
-
-      {nextActions.length > 0 && <NextPlantActions actions={nextActions} />}
-
-      {plant.pictures.length > 0 && (
-        <details className="group rounded-2xl border border-border bg-card shadow-soft">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-            <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Images className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-tight text-foreground">Billeder</span>
-                <span className="text-xs text-muted-foreground">{plant.pictures.length} billeder</span>
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="px-5 pb-5 pt-0">
-            <PlantPhotoGrid images={plant.pictures} />
-          </div>
-        </details>
-      )}
-
-      <DagbogSektion plant={plant} log={log} />
-
-      {plant.guide.title && (
-        <details className="group rounded-2xl border border-border bg-card shadow-soft">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-            <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <BookOpen className="h-4 w-4" />
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-tight text-foreground">Dyrkningsguide</span>
-                <span className="text-xs text-muted-foreground">{plant.guide.title}</span>
-              </span>
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="px-5 pb-5 pt-0">
-            <p className="text-sm font-semibold text-foreground">{plant.guide.title}</p>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">{plant.guide.body}</p>
-          </div>
-        </details>
-      )}
-
-      <ArkiverSektion />
-    </article>
-  )
+  // Data-drevet editorial som STANDARD for ALLE planter (Annas beslutning,
+  // 2026-06-15). Override (hvis sorten har en, fx San Marzano) beriger
+  // siden — ellers bygges den helt af plantens egne data. plant-detail.ts
+  // er ikke længere adgangsbillet til layoutet.
+  const detail = buildPlantDetail({ plant, override: overrideFor(plant.guideId) })
+  return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
 }
 
 /**
@@ -270,127 +176,280 @@ function renderEditorial(
       {karakter && <PlantKarakter karakter={karakter} />}
       <PlantNaeste naeste={detail.naeste} />
       <PlantTidslinje milestones={detail.tidslinje} />
-        <PlantGalleri billeder={detail.billeder} />
-        {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
+      {detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />}
+      {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
         <DagbogSektion plant={plant} log={log} />
 
-        <ArkiverSektion />
+        <AdministrerPlante />
     </article>
   )
 }
 
 /**
- * DAGBOG — logging på plantesiden (genskabt "som tidligere").
+ * PLANTENS HISTORIE — én aktuel hændelse stor, resten foldet væk.
  *
- * Ægte (logget-ind) bruger: "Tilføj"-knap (LogForm-dialog med foto) +
- * Timeline med brugerens logs (redigér/slet). showMilestones=false fordi
- * den nye Tidslinje-sektion allerede viser milepælene.
+ * Anna (14. juni 2026, mockup): dagbogen er ikke en liste — den er ÉT
+ * opslag. Seneste hændelse fylder det hele: chip + dominerende dato +
+ * handlingen som serif-overskrift + noten som brødtekst + "DET BETØD"-
+ * callout (Potalots stemme, med pære). Resten ligger bag "Se hele
+ * historien". Handlingen ("Bundet op") er nu overskriften — ikke skjult
+ * metadata; noten er fortællingen under den.
  *
- * Demo (anonym): kan ikke skrive (createPlantLog kræver requireUser), så
- * knappen er deaktiveret med en venlig opfordring; demo-noter vises read-
- * only, så showcasen stadig har indhold.
+ * Ægte (logget-ind) bruger beholder Timeline (redigér/slet via LogForm).
+ * Demo viser det redaktionelle opslag fra mock-loggen.
  */
+const sansFont = 'var(--font-manrope)'
+const serifFont = 'var(--font-cormorant), Georgia, serif'
+const GROEN = '#5A7038'
+const BLAEK = '#24301F'
+
+function dagbogDag(date: string): string {
+  return String(new Date(date).getDate()).padStart(2, '0')
+}
+function dagbogMaaned(date: string): string {
+  return new Intl.DateTimeFormat('da-DK', { month: 'short' })
+    .format(new Date(date))
+    .replace('.', '')
+    .toUpperCase()
+}
+
 function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
   const { logs, canLog } = log
-  const antal = canLog ? logs.length : plant.logs.length
+  // Nyeste først: [0] er helten, resten ligger bag "Se hele historien".
+  const kapitler = [...plant.logs].sort((a, b) => b.date.localeCompare(a.date))
+  const seneste = kapitler[0]
+  const aeldre = kapitler.slice(1)
+  const aar = plant.sowDate ? new Date(plant.sowDate).getFullYear() : ''
 
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-      <div className="flex items-center justify-between gap-3">
-        <span className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <NotebookText className="h-4 w-4" />
+    <section
+      id="dagbog"
+      style={{ background: '#FBF8EC', border: '1px solid rgba(36,48,31,0.08)', borderRadius: 24, padding: 24, scrollMarginTop: 80 }}
+    >
+      {/* Header — ikon-badge + titel/underlinje + Tilføj. */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3.5">
+          <span
+            className="flex shrink-0 items-center justify-center"
+            style={{ width: 46, height: 46, borderRadius: 14, background: '#E7ECDD', color: '#3D4A2C' }}
+          >
+            <NotebookText className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </span>
-          <span>
-            <span className="block font-serif text-2xl leading-tight text-foreground">Dagbog</span>
-            <span className="text-xs text-muted-foreground">
-              {antal === 0
-                ? 'Ingen log endnu'
-                : `${antal} ${antal === 1 ? 'logpunkt' : 'logpunkter'}`}
-            </span>
-          </span>
-        </span>
+          <div className="min-w-0">
+            <p
+              className="uppercase whitespace-nowrap"
+              style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.15em', color: '#3D4A2C', margin: 0 }}
+            >
+              Plantens historie
+            </p>
+            <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 400, color: 'rgba(36,48,31,0.55)', margin: '3px 0 0' }}>
+              Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
+            </p>
+          </div>
+        </div>
         {canLog ? (
           <LogForm
             plantId={plant.id}
             trigger={
-              <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
+              <Button variant="outline" size="sm" className="shrink-0 rounded-full bg-card/70">
                 <Plus className="h-4 w-4" />
                 Tilføj
               </Button>
             }
           />
         ) : (
-          <Button variant="outline" size="sm" className="shrink-0 bg-card/70" disabled>
+          <Button variant="outline" size="sm" className="shrink-0 rounded-full bg-card/70" disabled>
             <Plus className="h-4 w-4" />
             Tilføj
           </Button>
         )}
       </div>
 
-      {!canLog && (
-        <p className="mt-2 text-xs text-muted-foreground">
-          Opret en bruger for at logge dine egne observationer og fotos.
-        </p>
-      )}
-
-      <div className="mt-4">
-        {canLog ? (
-          logs.length > 0 ? (
+      {/* Ægte bruger → funktionel Timeline. Demo → redaktionelt opslag. */}
+      {canLog ? (
+        <div className="mt-5">
+          {logs.length > 0 ? (
             <Timeline plant={plant} logs={logs} showMilestones={false} />
           ) : (
             <p className="py-2 text-sm italic text-muted-foreground">
-              Ingen log endnu. Tilføj din første observation.
+              Ingen historie endnu. Tilføj dit første kapitel.
             </p>
-          )
-        ) : plant.logs.length > 0 || plant.notes ? (
-          <div className="space-y-3">
-            {plant.notes && (
-              <div className="rounded-2xl border border-border bg-[linear-gradient(135deg,var(--card),var(--surface-2))] p-5">
-                <p className="text-sm leading-6 text-muted-foreground">{plant.notes}</p>
-              </div>
-            )}
-            <div className="grid gap-3">
-              {plant.logs.map(entry => (
-                <PlantLogEntry key={entry.id} entry={entry} />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="py-2 text-sm italic text-muted-foreground">Ingen log endnu.</p>
-        )}
-      </div>
+          )}
+        </div>
+      ) : !seneste ? (
+        <p className="mt-5 py-2 text-sm italic text-muted-foreground">Ingen historie endnu.</p>
+      ) : (
+        <>
+          <DagbogHero entry={seneste} />
+
+          {/* Se hele historien — folder de ældre kapitler ud. */}
+          {aeldre.length > 0 && (
+            <details className="group">
+              <summary
+                className="mt-6 flex cursor-pointer list-none items-center justify-between border-t pt-4 [&::-webkit-details-marker]:hidden"
+                style={{ borderColor: 'rgba(36,48,31,0.1)' }}
+              >
+                <span className="flex items-center gap-2.5" style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 600, color: BLAEK }}>
+                  <History className="h-[18px] w-[18px]" strokeWidth={2} style={{ color: GROEN }} aria-hidden />
+                  Se hele historien
+                </span>
+                <ChevronRight
+                  className="h-[18px] w-[18px] transition-transform group-open:rotate-90"
+                  strokeWidth={2}
+                  style={{ color: 'rgba(36,48,31,0.4)' }}
+                  aria-hidden
+                />
+              </summary>
+              <ol className="mt-2">
+                {aeldre.map((entry) => (
+                  <DagbogListe key={entry.id} entry={entry} />
+                ))}
+              </ol>
+            </details>
+          )}
+        </>
+      )}
     </section>
   )
 }
 
-function ArkiverSektion() {
+/**
+ * Seneste hændelse — opslaget. Chip + dominerende dato | streg | indhold.
+ * Handlingen er serif-overskriften; noten er brødteksten; konsekvensen
+ * bliver "DET BETØD"-callout (Potalots stemme).
+ */
+function DagbogHero({ entry }: { entry: MockPlantLog }) {
   return (
-    <section className="rounded-2xl border border-border bg-surface-2 p-5 shadow-soft">
-      <div className="flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground">
-          <Archive className="h-5 w-5" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-serif text-xl leading-tight text-foreground">Arkivér plante</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Gem sæsonens noter, billeder og høsterfaringer i havebogen, når planten er færdig.
+    <div className="mt-6">
+      <span
+        className="inline-block uppercase"
+        style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', color: '#4A5A33', background: '#E3E9D4', borderRadius: 999, padding: '6px 13px' }}
+      >
+        Seneste hændelse
+      </span>
+
+      <div className="mt-5 flex gap-5">
+        {/* Dato-søjle. */}
+        <div className="shrink-0" style={{ width: 60 }}>
+          <p style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 50, lineHeight: 0.9, letterSpacing: '-0.01em', color: BLAEK, margin: 0 }}>
+            {dagbogDag(entry.date)}
+          </p>
+          <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(36,48,31,0.5)', margin: '6px 0 0' }}>
+            {dagbogMaaned(entry.date)}
           </p>
         </div>
-        <Button variant="outline" size="sm" className="shrink-0 bg-card/70">
-          Arkivér
-        </Button>
+
+        {/* Lodret streg. */}
+        <div style={{ width: 1, alignSelf: 'stretch', background: 'rgba(36,48,31,0.12)' }} aria-hidden />
+
+        {/* Indhold. */}
+        <div className="min-w-0 flex-1">
+          <h3 style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 30, lineHeight: 1.02, letterSpacing: '-0.005em', color: BLAEK, margin: 0 }}>
+            {entry.action}
+          </h3>
+          {entry.note && (
+            <p style={{ fontFamily: sansFont, fontSize: 15.5, fontWeight: 400, lineHeight: 1.5, color: 'rgba(36,48,31,0.72)', margin: '12px 0 0' }}>
+              {entry.note}
+            </p>
+          )}
+
+          {entry.konsekvens && (
+            <div
+              className="mt-5"
+              style={{ background: '#E8EDE0', borderRadius: 16, padding: '16px 18px', width: 'calc(100% - 7mm)' }}
+            >
+              {/* Pære + overskrift på samme horisontale linje, midterjusteret. */}
+              <div className="flex items-center gap-3">
+                <span
+                  className="flex shrink-0 items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 999, background: 'rgba(255,255,255,0.6)', color: GROEN }}
+                >
+                  <Lightbulb className="h-[18px] w-[18px]" strokeWidth={1.9} aria-hidden />
+                </span>
+                <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: GROEN, margin: 0 }}>
+                  Det betød
+                </p>
+              </div>
+              {/* Brødtekst under — venstrekant på linje med ikonet. */}
+              <p style={{ fontFamily: sansFont, fontSize: 14.5, fontWeight: 500, lineHeight: 1.45, color: 'rgba(45,58,36,0.85)', margin: '12px 0 0' }}>
+                {entry.konsekvens}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </section>
+    </div>
   )
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+/**
+ * Ældre kapitel — samme anatomi (dato | streg | indhold), men dæmpet.
+ * Konsekvensen koger ind til én rolig "→"-linje.
+ */
+function DagbogListe({ entry }: { entry: MockPlantLog }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-      <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
-    </div>
+    <li
+      className="flex gap-5"
+      style={{ paddingTop: 18, marginTop: 18, borderTop: '1px solid rgba(36,48,31,0.07)' }}
+    >
+      <div className="shrink-0" style={{ width: 60 }}>
+        <p style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 28, lineHeight: 0.95, color: 'rgba(36,48,31,0.6)', margin: 0 }}>
+          {dagbogDag(entry.date)}
+        </p>
+        <p className="uppercase" style={{ fontFamily: sansFont, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(36,48,31,0.4)', margin: '5px 0 0' }}>
+          {dagbogMaaned(entry.date)}
+        </p>
+      </div>
+      <div style={{ width: 1, alignSelf: 'stretch', background: 'rgba(36,48,31,0.08)' }} aria-hidden />
+      <div className="min-w-0 flex-1">
+        <h4 style={{ fontFamily: serifFont, fontWeight: 600, fontSize: 21, lineHeight: 1.1, color: '#2D2A24', margin: 0 }}>
+          {entry.action}
+        </h4>
+        {entry.note && (
+          <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 400, lineHeight: 1.45, color: 'rgba(45,42,36,0.6)', margin: '7px 0 0' }}>
+            {entry.note}
+          </p>
+        )}
+        {entry.konsekvens && (
+          <p
+            className="flex items-start gap-1.5"
+            style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)', margin: '9px 0 0' }}
+          >
+            <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(90,112,56,0.7)' }} aria-hidden />
+            {entry.konsekvens}
+          </p>
+        )}
+      </div>
+    </li>
+  )
+}
+
+/**
+ * ADMINISTRER PLANTE — stille bund-utility (Annas dom: "Arkivér" er en
+ * systemhandling, ikke en del af plantens historie). Diskret, under en
+ * tynd streg — ikke et selvstændigt rum.
+ */
+function AdministrerPlante() {
+  return (
+    <details className="group mt-3 border-t pt-4" style={{ borderColor: 'rgba(36,48,31,0.10)' }}>
+      <summary
+        className="flex cursor-pointer list-none items-center gap-1.5 uppercase [&::-webkit-details-marker]:hidden"
+        style={{
+          fontFamily: 'var(--font-manrope)',
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.16em',
+          color: 'rgba(36,48,31,0.42)',
+        }}
+      >
+        <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+        Planteindstillinger
+      </summary>
+      <Button variant="ghost" size="sm" className="-ml-2 mt-2 text-muted-foreground">
+        <Archive className="h-4 w-4" />
+        Arkivér plante
+      </Button>
+    </details>
   )
 }

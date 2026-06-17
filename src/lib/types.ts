@@ -159,7 +159,10 @@ export interface Plant {
   name: string
   variety?: string | null
   status: PlantStatus
+  /** Legacy/fallback fritekst-placering. Bevares selv når gardenLocationId er sat. */
   location?: string | null
+  /** Kobling til oprettet dyrkningssted (GardenLocation). Null → stedet udledes af location-teksten. */
+  gardenLocationId?: string | null
   sowDate?: string | null
 
   // Metadata arvet fra inventory (kan overrides)
@@ -180,6 +183,27 @@ export interface Plant {
   archivedAt?: string | null
   archivedYear?: number | null
 
+  createdAt: string
+  updatedAt: string
+}
+
+// ============================================
+// GARDEN LOCATION — dyrkningssted som rigtig entity
+// ============================================
+// Indtil persistens-sprinten blev steder udledt af plant.location-strengen.
+// GardenLocation gør stedet til noget brugeren kan oprette FØR der er planter
+// i det. Plante.gardenLocationId peger hertil; location-teksten er fallback.
+
+export type GardenLocationType =
+  | 'Højbed' | 'Drivhus' | 'Krukke' | 'Vindueskarm' | 'Altan' | 'Friland' | 'Andet'
+
+export interface GardenLocation {
+  id: string
+  userId: string
+  name: string
+  type: string                       // GardenLocationType, men fri tekst i DB
+  imageUrl?: string | null
+  notes?: string | null
   createdAt: string
   updatedAt: string
 }

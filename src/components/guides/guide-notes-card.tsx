@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Loader2, NotebookPen } from 'lucide-react'
+import { Loader2, NotebookText } from 'lucide-react'
 import { saveMyGuideNote } from '@/actions/guide-notes'
 
 interface Props {
@@ -43,7 +43,7 @@ export function GuideNotesCard({ guideId, initialNote }: Props) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <NotebookPen className="h-4 w-4" />
+          <NotebookText className="h-4 w-4" />
           Mine noter
         </CardTitle>
       </CardHeader>
