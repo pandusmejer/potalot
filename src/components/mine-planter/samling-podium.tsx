@@ -1,5 +1,3 @@
-import { GlyphSpire } from '@/components/icons/potalot-glyphs'
-
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
@@ -22,45 +20,77 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  * kantstreger tyndere (1,4px); medaljonen overlapper båndets bundkant.
  */
 
-/** Diskret samlingsindeks — et svagt grid af små arkivkort, et par med en
- *  spire. Konnoterer "her er flere ting samlet i et system". */
+/**
+ * Diskret samlingsindeks (Anna 17/6: mere abstrakt end første forsøg —
+ * større, lettere, mere beskåret, færre detaljer, "mønster" ikke "mini-UI").
+ * Større herbarium-/specimen-kort, skubbet højre + beskåret, meget lav
+ * opacitet. Blandede celler: nogle tomme, nogle med kun en label-linje,
+ * et par med et delikat botanisk motiv (fern/sprig/blad).
+ */
 function SamlingsIndeks() {
-  const W = 48
-  const H = 58
-  const GX = 60
-  const GY = 70
-  const sprouts = new Set([1, 4, 8])
-  const cells = []
-  for (let r = 0; r < 3; r++) {
-    for (let c = 0; c < 3; c++) cells.push({ x: c * GX, y: r * GY, i: r * 3 + c })
+  const W = 76
+  const H = 100
+  const GX = 92
+  const GY = 116
+  // Per-celle: blandet, så det læses som et samlingsindeks, ikke et grid
+  // af identiske kort.
+  const CELLS: Array<{ motif: 'fern' | 'sprig' | 'leaf' | null; label: boolean }> = [
+    { motif: 'fern', label: true },
+    { motif: null, label: true },
+    { motif: 'sprig', label: true },
+    { motif: 'leaf', label: true },
+    { motif: 'sprig', label: true },
+    { motif: null, label: false },
+    { motif: null, label: true },
+    { motif: 'leaf', label: true },
+    { motif: null, label: false },
+  ]
+
+  function motifPaths(cx: number, cy: number, kind: 'fern' | 'sprig' | 'leaf'): string[] {
+    if (kind === 'fern') {
+      const hairs: string[] = []
+      for (let i = 0; i < 5; i++) {
+        const yy = cy + 16 - i * 9
+        hairs.push(`M${cx} ${yy} L${cx - 8} ${yy - 5}`, `M${cx} ${yy} L${cx + 8} ${yy - 5}`)
+      }
+      return [`M${cx} ${cy + 20} C ${cx} ${cy + 4}, ${cx} ${cy - 10}, ${cx} ${cy - 22}`, ...hairs]
+    }
+    if (kind === 'sprig') {
+      return [
+        `M${cx} ${cy + 20} L${cx} ${cy - 20}`,
+        `M${cx} ${cy - 12} C ${cx - 12} ${cy - 14}, ${cx - 11} ${cy - 26}, ${cx} ${cy - 20}`,
+        `M${cx} ${cy} C ${cx + 12} ${cy - 2}, ${cx + 11} ${cy - 14}, ${cx} ${cy - 8}`,
+        `M${cx} ${cy + 12} C ${cx - 12} ${cy + 10}, ${cx - 11} ${cy - 2}, ${cx} ${cy + 4}`,
+      ]
+    }
+    return [
+      `M${cx} ${cy + 20} C ${cx - 14} ${cy + 6}, ${cx - 14} ${cy - 14}, ${cx} ${cy - 22} C ${cx + 14} ${cy - 14}, ${cx + 14} ${cy + 6}, ${cx} ${cy + 20} Z`,
+      `M${cx} ${cy + 16} L${cx} ${cy - 18}`,
+    ]
   }
+
   return (
     <svg
       aria-hidden
-      viewBox="0 0 168 198"
+      viewBox="0 0 260 348"
       className="pointer-events-none absolute"
-      style={{ right: -16, top: '50%', transform: 'translateY(-50%)', height: '78%', width: 'auto', opacity: 0.16 }}
+      style={{ right: -54, top: '50%', transform: 'translateY(-50%)', height: '136%', width: 'auto', opacity: 0.13 }}
       fill="none"
       stroke="#4B6138"
-      strokeWidth={1.3}
+      strokeWidth={1.1}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {cells.map(({ x, y, i }) => {
+      {CELLS.map((cell, i) => {
+        const x = (i % 3) * GX
+        const y = Math.floor(i / 3) * GY
         const cx = x + W / 2
-        const sy = y + 22
+        const cy = y + H / 2 - 6
         return (
           <g key={i}>
-            <rect x={x} y={y} width={W} height={H} rx={6} />
-            {/* lille label-linje — specimen-kort-følelse */}
-            <path d={`M${x + 11} ${y + 45} L${x + W - 13} ${y + 45}`} />
-            {sprouts.has(i) && (
-              <>
-                <path d={`M${cx} ${sy + 9} L${cx} ${sy - 5}`} />
-                <path d={`M${cx} ${sy - 3} C ${cx - 10} ${sy - 5}, ${cx - 9} ${sy - 14}, ${cx} ${sy - 8}`} />
-                <path d={`M${cx} ${sy - 3} C ${cx + 10} ${sy - 5}, ${cx + 9} ${sy - 14}, ${cx} ${sy - 8}`} />
-              </>
-            )}
+            <rect x={x} y={y} width={W} height={H} rx={9} />
+            {cell.motif && motifPaths(cx, cy, cell.motif).map((d, j) => <path key={j} d={d} />)}
+            {cell.label && <path d={`M${x + 14} ${y + H - 16} L${x + W - 18} ${y + H - 16}`} />}
           </g>
         )
       })}
@@ -77,7 +107,10 @@ export function SamlingPodium({ planter, sorter }: { planter: number; sorter: nu
       <div
         className="relative"
         style={{
-          background: 'linear-gradient(165deg, #F1EBDA 0%, #EAE1CC 100%)',
+          // Varmere, mere sand/pergament + en anelse dybere end siden, så
+          // podiet føles som sin egen redaktionelle flade (Anna 17/6) —
+          // stadig ikke et card.
+          background: 'linear-gradient(165deg, #EEE5CC 0%, #E5D8BA 100%)',
           borderTop: `1.4px solid ${sand}`,
         }}
       >
@@ -159,7 +192,14 @@ export function SamlingPodium({ planter, sorter }: { planter: number; sorter: nu
             border: '1.5px solid rgba(184,154,74,0.65)',
           }}
         >
-          <GlyphSpire size={20} />
+          {/* 2×2 samlings-grid (Anna 17/6) — konnoterer samling/overblik,
+              ikke "ny vækst" som spiren. */}
+          <svg width={19} height={19} viewBox="0 0 20 20" aria-hidden fill="#46562C">
+            <rect x={1} y={1} width={8} height={8} rx={2.2} />
+            <rect x={11} y={1} width={8} height={8} rx={2.2} />
+            <rect x={1} y={11} width={8} height={8} rx={2.2} />
+            <rect x={11} y={11} width={8} height={8} rx={2.2} />
+          </svg>
         </div>
       </div>
 
