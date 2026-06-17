@@ -13,7 +13,9 @@ export interface AtSeItem {
 }
 
 /**
- * ✅ AT SE TIL I DAG — dagens planteopgaver, ikke dekorative former.
+ * ✅ I HAVEN I DAG — dagens planteopgaver, ikke dekorative former.
+ * (Overskrift skiftet fra "At se til i dag" 17/6: for vag/gammeldags nu hvor
+ *  sektionen har todo-karakter. "I haven i dag" = blød men handlingsklar.)
  *
  * Anna (16/6 aften): de gamle organiske blobs havde "for meget visuel
  * personlighed til så lidt information" — formen signalerede leg/stemning,
@@ -52,7 +54,7 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
             margin: 0,
           }}
         >
-          At se til i dag
+          I haven i dag
         </h2>
         <p style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: 'rgba(36,48,31,0.45)', margin: 0 }}>
           {items.length} {items.length === 1 ? 'planteopgave' : 'planteopgaver'}
