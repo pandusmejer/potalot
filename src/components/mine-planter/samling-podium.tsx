@@ -74,7 +74,7 @@ function SamlingsIndeks() {
       aria-hidden
       viewBox="0 0 260 348"
       className="pointer-events-none absolute"
-      style={{ right: -54, top: '50%', transform: 'translateY(-50%) rotate(5deg)', transformOrigin: 'center', height: '152%', width: 'auto', opacity: 0.13 }}
+      style={{ right: -54, top: '50%', transform: 'translateY(-50%) rotate(8deg)', transformOrigin: 'center', height: '158%', width: 'auto', opacity: 0.13 }}
       fill="none"
       stroke="#4B6138"
       strokeWidth={1.1}
