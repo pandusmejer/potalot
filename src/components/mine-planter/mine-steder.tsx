@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useTransition } from 'react'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
@@ -8,7 +8,8 @@ import {
   GlyphHojbed, GlyphDrivhus, GlyphKrukke, GlyphJord, GlyphBlad, GlyphSpire, type GlyphProps,
 } from '@/components/icons/potalot-glyphs'
 import { slugifySted, inferStedType } from '@/lib/steder'
-import type { Plant } from '@/lib/types'
+import { createGardenLocation } from '@/actions/garden-locations'
+import type { Plant, GardenLocation } from '@/lib/types'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -59,28 +60,58 @@ function glyphForType(type: string): (p: GlyphProps) => ReactNode {
  * gradient + type-glyph + navn + antal (Løsning A). Fotokort vises kun når
  * stedet faktisk HAR et foto. Tom-tilstand = ingen falske demo-steder.
  */
-export function MineSteder({ plants }: { plants: Plant[] }) {
+export function MineSteder({
+  plants,
+  gardenLocations = [],
+  canPersist = false,
+}: {
+  plants: Plant[]
+  gardenLocations?: GardenLocation[]
+  canPersist?: boolean
+}) {
   const [created, setCreated] = useState<LokaltSted[]>([])
   const [showForm, setShowForm] = useState(false)
   const [navn, setNavn] = useState('')
   const [type, setType] = useState(STED_TYPER[0])
+  const [error, setError] = useState<string | null>(null)
+  const [, startTransition] = useTransition()
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [fadeRight, setFadeRight] = useState(false)
 
-  // Steder udledt af planternes lokation + brugerens egne nyoprettede.
-  const byLocation = new Map<string, number>()
+  // Antal pr. stednavn (case-insensitivt) udledt af planternes location-tekst.
+  // Plant.location bevares selv når planten er koblet via garden_location_id,
+  // så optællingen rammer både legacy- og nye planter.
+  const countByName = new Map<string, number>()
+  const labelByKey = new Map<string, string>()
   for (const p of plants) {
     const loc = p.location?.trim()
     if (!loc) continue
-    byLocation.set(loc, (byLocation.get(loc) ?? 0) + (p.quantity ?? 0))
+    const key = loc.toLowerCase()
+    countByName.set(key, (countByName.get(key) ?? 0) + (p.quantity ?? 0))
+    if (!labelByKey.has(key)) labelByKey.set(key, loc)
   }
-  const derived: StedKort[] = [...byLocation.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, antal]) => ({ name, antal, type: inferStedType(name), image: null }))
-  const nyoprettede: StedKort[] = created
-    .filter((c) => !byLocation.has(c.name))
-    .map((c) => ({ name: c.name, antal: 0, type: c.type, image: null }))
-  const steder = [...derived, ...nyoprettede]
+
+  // Saml steder i prioritet: oprettede entities > udledt af plante-tekst >
+  // lokalt tilføjede (demo/optimistisk). Dedup på lille-navn, så et persisteret
+  // sted ikke dubleres af sin egen udledte/lokale tvilling.
+  const byKey = new Map<string, StedKort>()
+  const add = (k: StedKort) => {
+    const key = k.name.trim().toLowerCase()
+    if (!key || byKey.has(key)) return
+    byKey.set(key, k)
+  }
+  for (const gl of gardenLocations) {
+    add({ name: gl.name, type: gl.type, image: gl.imageUrl ?? null, antal: countByName.get(gl.name.trim().toLowerCase()) ?? 0 })
+  }
+  for (const [key, label] of labelByKey) {
+    add({ name: label, type: inferStedType(label), image: null, antal: countByName.get(key) ?? 0 })
+  }
+  for (const c of created) {
+    add({ name: c.name, type: c.type, image: null, antal: 0 })
+  }
+  const steder = [...byKey.values()].sort(
+    (a, b) => b.antal - a.antal || a.name.localeCompare(b.name, 'da'),
+  )
 
   // Fade-hint i højre kant: vis kun når rækken faktisk overflow'er, og
   // skjul den når man er scrollet til enden.
@@ -100,10 +131,31 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
   function gem() {
     const n = navn.trim()
     if (!n) return
-    setCreated((prev) => [...prev, { name: n, type }])
+    const valgtType = type
+    setError(null)
+    // Optimistisk: vis kortet med det samme.
+    setCreated((prev) =>
+      prev.some((c) => c.name.toLowerCase() === n.toLowerCase()) ? prev : [...prev, { name: n, type: valgtType }],
+    )
     setNavn('')
     setType(STED_TYPER[0])
     setShowForm(false)
+
+    if (!canPersist) return // demo: lokalt/ikke-gemt (markeret ærligt i formen)
+
+    startTransition(async () => {
+      const res = await createGardenLocation({ name: n, type: valgtType })
+      if ('error' in res) {
+        // Rul den optimistiske tilføjelse tilbage og bring formen frem igen.
+        setCreated((prev) => prev.filter((c) => c.name.toLowerCase() !== n.toLowerCase()))
+        setNavn(n)
+        setType(valgtType)
+        setShowForm(true)
+        setError(res.error)
+      }
+      // Succes: revalidatePath opdaterer gardenLocations-prop'en; dedup på
+      // navn fjerner den lokale dublet, så stedet nu vises som persisteret.
+    })
   }
 
   return (
@@ -158,8 +210,13 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
             </select>
           </div>
           <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: 'rgba(36,48,31,0.45)', margin: '8px 0 0' }}>
-            Foto kan tilføjes senere.
+            {canPersist ? 'Foto kan tilføjes senere.' : 'Demo — stedet gemmes ikke.'}
           </p>
+          {error && (
+            <p style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#A1483A', margin: '6px 0 0' }}>
+              {error}
+            </p>
+          )}
           <div className="mt-3 flex items-center gap-2">
             <button
               type="button"

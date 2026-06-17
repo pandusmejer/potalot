@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
+import { useState, useTransition, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -15,9 +15,10 @@ import {
   Plus, Sprout, Leaf, Flower2, Search, ArrowLeft, Package, ArrowRight,
 } from 'lucide-react'
 import { saaFroeFraInventory } from '@/actions/mine-planter'
+import { getGardenLocations } from '@/actions/garden-locations'
 import { idag } from '@/lib/datetime'
 import { GROWING_LOCATION_META, PRIMARY_CATEGORIES } from '@/lib/constants'
-import type { InventoryItem, GrowingLocation } from '@/lib/types'
+import type { InventoryItem, GrowingLocation, GardenLocation } from '@/lib/types'
 
 interface Props {
   inventory: InventoryItem[]
@@ -57,6 +58,14 @@ export function NewPlantDialog({ inventory, children }: Props) {
 
   // Søgning i frø-listen
   const [search, setSearch] = useState('')
+
+  // Brugerens eksisterende dyrkningssteder — så placering kan VÆLGES, ikke
+  // kun skrives (persistens-sprint, sti b). Tom i demo (anonym → []).
+  const [savedLocations, setSavedLocations] = useState<GardenLocation[]>([])
+  useEffect(() => {
+    if (!open) return
+    getGardenLocations().then(setSavedLocations).catch(() => {})
+  }, [open])
 
   // Resultat-state
   const [success, setSuccess] = useState<{ plantId: string; tasksCreated: number; merged: boolean } | null>(null)
@@ -292,7 +301,34 @@ export function NewPlantDialog({ inventory, children }: Props) {
                   onChange={e => setLocation(e.target.value)}
                   placeholder="Fx. Drivhus, Vindueskarm, Højbed 2"
                   className="mt-1.5"
+                  list="garden-locations-dl"
                 />
+                {/* Eksisterende dyrkningssteder — tap for at vælge (vælg
+                    eksisterende eller skriv et nyt, som så oprettes ved såning). */}
+                {savedLocations.length > 0 && (
+                  <datalist id="garden-locations-dl">
+                    {savedLocations.map(loc => (
+                      <option key={loc.id} value={loc.name} />
+                    ))}
+                  </datalist>
+                )}
+                {savedLocations.length > 0 && (
+                  <div className="flex gap-1 flex-wrap mt-2">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                      Dine steder:
+                    </span>
+                    {savedLocations.map(loc => (
+                      <button
+                        key={loc.id}
+                        type="button"
+                        onClick={() => setLocation(loc.name)}
+                        className="text-[11px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground hover:bg-accent transition-colors"
+                      >
+                        {loc.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {selected.growingLocations.length > 0 && (
                   <div className="flex gap-1 flex-wrap mt-2">
                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider">

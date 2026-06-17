@@ -15,7 +15,7 @@ import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { overrideFor } from '@/data/plant-detail'
 import { afledtStatuslinje } from '@/lib/afledninger'
 import { PLANT_STATUS_META } from '@/lib/constants'
-import type { Plant, PlantStatus } from '@/lib/types'
+import type { Plant, PlantStatus, GardenLocation } from '@/lib/types'
 import { ArrowRight, BookOpen, Archive } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
@@ -104,9 +104,11 @@ interface Props {
   today: string
   /** task_keys brugeren har markeret udført i dag (persisteret). */
   doneTaskKeys: string[]
+  /** Brugerens oprettede dyrkningssteder (tomt i demo). */
+  gardenLocations: GardenLocation[]
 }
 
-export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys }: Props) {
+export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations }: Props) {
   const isDemo = realPlants.length === 0
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
@@ -294,7 +296,7 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys }: P
 
       {/* MINE STEDER — hvor planterne bor. (Før Sæsonens vækst: steder er
           et vigtigere planter-filter end den editorial sæson-fortælling.) */}
-      <MineSteder plants={aktive} />
+      <MineSteder plants={aktive} gardenLocations={gardenLocations} canPersist={!isDemo} />
 
       {/* SÆSONENS VÆKST — sæsonen som fortælling. */}
       <SaesonensVaekst historik={SAESON_HISTORIK} nuMaaned={NU_MAANED} />
