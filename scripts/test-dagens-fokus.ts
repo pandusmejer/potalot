@@ -102,8 +102,10 @@ const tom = byggDagensFokus({ plants: [], inventory: [], today: TODAY })
 rapport('Scenarie 3 — ingen data (ny bruger)', tom)
 console.log('  assertions:')
 ok(tom.trin === 0, 'trin = 0 (ingen data)')
-ok(tom.stilhed, 'stilhed = true (intet at gøre — almanak-tekst kommer i inkrement 3)')
+ok(tom.stilhed, 'stilhed = true (intet at gøre)')
 ok(tom.fokus.length === 0, 'ingen fokus-handlinger')
+ok(!!tom.almanak, 'trin 0 har en almanak-pladsholder (siden er aldrig tom)')
+ok(tom.almanak?.includes('juni') ?? false, 'almanak nævner den aktuelle måned (juni)')
 
 // ── Scenarie 4: kun frøbank (trin 1) ─────────────────────────────
 const kunFroe = byggDagensFokus({ plants: [], inventory, today: TODAY })
@@ -111,6 +113,20 @@ rapport('Scenarie 4 — kun frøbank, ingen planter', kunFroe)
 console.log('  assertions:')
 ok(kunFroe.trin === 1, 'trin = 1 (frøbank har indhold, ingen planter)')
 ok([...kunFroe.fokus, ...kunFroe.flere].every(h => h.lag === 4), 'kun lag-4-invitationer')
+ok(!kunFroe.almanak, 'ingen almanak når trin 1 HAR aktuelle handlinger (lag 4 fylder)')
+
+// ── Scenarie 4b: frøbank uden aktuelle handlinger (trin 1 → almanak) ──
+// En frøpose hvis vinduer ikke er åbne i juni → trin 1, men intet at gøre.
+const vinterFroe = byggDagensFokus({
+  plants: [],
+  inventory: [inv({ id: 'seed-vinterloeg', name: 'Vinterløg', sowingMonths: [9, 10] })],
+  today: TODAY,
+})
+rapport('Scenarie 4b — frøbank, men intet vindue åbent i juni', vinterFroe)
+console.log('  assertions:')
+ok(vinterFroe.trin === 1, 'trin = 1 (frøbank har indhold)')
+ok(vinterFroe.fokus.length === 0, 'ingen handlinger denne måned')
+ok(!!vinterFroe.almanak, 'almanak-pladsholder fylder den ellers tomme side')
 
 // ── Scenarie 5: frostvarsel → lag 1 (tidskritisk) øverst ─────────
 const frostAlert: GardenAlert = {

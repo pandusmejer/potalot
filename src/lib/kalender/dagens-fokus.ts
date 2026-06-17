@@ -18,8 +18,9 @@
  * ── Inkrement-status ──────────────────────────────────────────────
  *   ✅ inkrement 1: lag 2 (status-afledt) + lag 3 (verifikation)
  *      + lag 4 (frøbank × måned) + max-3 + stilhed + completions.
- *   ✅ inkrement 2 (her): lag 1 (tidskritisk — frost × frostfølsomme udplantede).
- *   ⏳ inkrement 3: degradations-stigen trin 0/1 (almanak + frøbank-only tekst).
+ *   ✅ inkrement 2: lag 1 (tidskritisk — frost × frostfølsomme udplantede).
+ *   ✅ inkrement 3 (her): degradations-stigen trin 0/1 + almanak-PLADSHOLDER
+ *      (neutral tekst pr. måned; rigtig Potalot-stemme skrives separat senere).
  *   ⏳ inkrement 4: fuld tie-breaking (deadline → flest planter → guide-
  *      prioritet) + lag 5 (vedligehold).
  *   ⏳ senere: trin 3 (historik — kræver arkivdata).
@@ -94,6 +95,16 @@ export interface DagensFokus {
    * stedet for at opfinde opgaver. (Tekstvalget hører til UI-laget.)
    */
   stilhed: boolean
+  /**
+   * Generisk-men-korrekt sæsonviden (degradations trin 0, og trin 1 uden
+   * aktuelle handlinger) — så en ny bruger uden personlige data aldrig møder
+   * en tom side, men heller ikke fake-personalisering.
+   *
+   * ⚠️ PLADSHOLDER pr. juni 2026: indeholder en neutral markør-tekst, IKKE
+   * den endelige almanak. Rigtig copy skrives separat i Potalot-stemme
+   * (Anna). Undefined ved trin ≥ 2 (personligt indhold + stilhed styrer der).
+   */
+  almanak?: string
 }
 
 export interface DagensFokusInput {
@@ -113,6 +124,22 @@ const MAANED_NAVN = [
   'januar', 'februar', 'marts', 'april', 'maj', 'juni',
   'juli', 'august', 'september', 'oktober', 'november', 'december',
 ]
+
+/**
+ * Tydelig markør så pladsholder-almanakken er triviel at gribe (grep) når den
+ * endelige Potalot-stemme-copy skal skrives. Skift IKKE markøren uden at
+ * opdatere den, der skriver teksterne.
+ */
+export const ALMANAK_PLACEHOLDER_MARK = '⟦almanak⟧'
+
+/**
+ * Neutral almanak-PLADSHOLDER pr. måned. Bevidst tom for stemme/poesi — den
+ * rigtige sæsontekst skrives separat. Funktionen findes kun så degradations-
+ * logikken (trin 0/1) kan testes og UI'et har et felt at rendere.
+ */
+function almanakPlaceholder(month: number): string {
+  return `${ALMANAK_PLACEHOLDER_MARK} ${MAANED_NAVN[month - 1]} — sæsontekst skrives senere.`
+}
 
 /** YYYY-MM-DD i lokal tid (samme format som actions/plant-tasks.ts' todayISO). */
 function isoDate(d: Date): string {
@@ -350,10 +377,17 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   // ── Stilhed: intet pressende i lag 1-4 ───────────────────────────
   const stilhed = pressende.length === 0
 
-  return {
-    trin: bestemTrin(aktivePlanter, inventory),
-    fokus,
-    flere,
-    stilhed,
-  }
+  const trin = bestemTrin(aktivePlanter, inventory)
+
+  // ── Degradations-stigen: almanak-fallback for nye brugere ────────
+  // Trin 0 (ingen data) får ALTID almanakken — den er hele indholdet.
+  // Trin 1 (frøbank, ingen planter) får den KUN når der ikke er aktuelle
+  // handlinger denne måned, så siden ikke står tom. Trin ≥ 2 bruger
+  // personligt indhold + stilhed i stedet (ingen almanak).
+  const almanak =
+    trin === 0 || (trin === 1 && handlinger.length === 0)
+      ? almanakPlaceholder(month)
+      : undefined
+
+  return { trin, fokus, flere, stilhed, almanak }
 }
