@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope } from 'next/font/google'
+import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -28,6 +28,14 @@ const cormorant = Cormorant_Garamond({
 // Manrope — hero-sans (kicker, undertitel, brødtekst, tags).
 const manrope = Manrope({
   variable: '--font-manrope',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+})
+
+// Gabarito — display-sans til Planter (plantekort-overskrifter): venlig, rund
+// grotesk der signalerer pleje/handling (design-DNA: Planter = Gabarito + Manrope).
+const gabarito = Gabarito({
+  variable: '--font-gabarito',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
 })
@@ -64,7 +72,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} antialiased`}>
         {children}
       </body>
     </html>

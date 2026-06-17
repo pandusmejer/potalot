@@ -11,6 +11,9 @@ import { afledtStatuslinje } from '@/lib/afledninger'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Gabarito = display-font til plantekort-overskrifter (Anna 17/6, design-DNA
+// "Planter = Gabarito"). Art-headerne forbliver serif; LIGE NU-kortet rører vi ikke.
+const gabarito = 'var(--font-gabarito), var(--font-manrope), sans-serif'
 
 // Danske korte måneder til "Sået D. mon". Parses direkte fra ISO-strengen
 // (ingen new Date → ingen timezone-skævhed/hydration-mismatch).
@@ -233,11 +236,11 @@ function VarietyCard({ plant }: { plant: Plant }) {
         <p
           className="line-clamp-2"
           style={{
-            fontFamily: serif,
+            fontFamily: gabarito,
             fontSize: 20,
-            fontWeight: 600,
-            letterSpacing: '-0.005em',
-            lineHeight: 1.08,
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+            lineHeight: 1.12,
             color: '#24301F',
             margin: 0,
           }}
@@ -322,7 +325,7 @@ export function SingleSortRow({ artName, plant }: { artName: string; plant: Plan
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="block truncate" style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
+        <span className="block truncate" style={{ fontFamily: gabarito, fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
           {displayName}
         </span>
         <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>
