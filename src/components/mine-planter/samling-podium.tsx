@@ -49,21 +49,25 @@ function BotaniskSilhuet() {
 }
 
 export function SamlingPodium({ planter, sorter }: { planter: number; sorter: number }) {
+  const sand = 'rgba(184,154,74,0.5)'
   return (
     <div className="-mx-4">
-      {/* Tone-i-tone podium-bånd. Ikke et kort — en redaktionel ramme. */}
-      <div
-        className="relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(165deg, #F1EBDA 0%, #EAE1CC 100%)',
-          borderTop: '1px solid rgba(36,48,31,0.08)',
-          borderBottom: '1px solid rgba(36,48,31,0.06)',
-        }}
-      >
-        <BotaniskSilhuet />
-        <div className="relative px-5 pb-8 pt-8">
+      {/* Tone-i-tone podium-bånd. Ikke et kort — en redaktionel ramme.
+          Bundstregen i sand ER sektionens bundkant, og medaljonen overlapper
+          det mørkere felt (Anna 16/6 aften). */}
+      <div className="relative" style={{ borderTop: '1px solid rgba(36,48,31,0.08)' }}>
+        {/* Bg-lag + botanisk silhuet — klippet, så medaljonen ikke beskæres. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 overflow-hidden"
+          style={{ background: 'linear-gradient(165deg, #F1EBDA 0%, #EAE1CC 100%)' }}
+        >
+          <BotaniskSilhuet />
+        </div>
+
+        <div className="relative px-5 pb-10 pt-8">
           {/* Lodret accent-streg til venstre for hele tekstblokken. */}
-          <div style={{ borderLeft: '2px solid rgba(184,154,74,0.5)', paddingLeft: 18 }}>
+          <div style={{ borderLeft: `2px solid ${sand}`, paddingLeft: 18 }}>
             <p
               className="uppercase"
               style={{
@@ -115,27 +119,30 @@ export function SamlingPodium({ planter, sorter }: { planter: number; sorter: nu
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Divider med medaljon — rolig overgang fra samling ned til grupperne. */}
-      <div className="relative flex items-center justify-center" style={{ height: 58 }}>
+        {/* Bundstreg i sand = sektionens bundkant. To segmenter med luft
+            omkring medaljonen, så stregen ikke gennemskærer ikonet. */}
+        <div aria-hidden className="absolute" style={{ left: 0, bottom: 0, height: 2, width: 'calc(50% - 35px)', background: sand }} />
+        <div aria-hidden className="absolute" style={{ right: 0, bottom: 0, height: 2, width: 'calc(50% - 35px)', background: sand }} />
+
+        {/* Medaljon — straddler bundkanten og overlapper det mørkere felt. */}
         <div
-          aria-hidden
-          className="absolute"
-          style={{ left: 16, right: 16, top: '50%', borderTop: '1px solid rgba(36,48,31,0.12)' }}
-        />
-        <div
-          className="relative flex items-center justify-center rounded-full"
+          className="absolute left-1/2 flex items-center justify-center rounded-full"
           style={{
+            bottom: 0,
+            transform: 'translate(-50%, 50%)',
             width: 46,
             height: 46,
             background: 'var(--background)',
-            border: '1.5px solid rgba(184,154,74,0.6)',
+            border: '1.5px solid rgba(184,154,74,0.65)',
           }}
         >
           <GlyphSpire size={20} />
         </div>
       </div>
+
+      {/* Plads til medaljonens nederste halvdel + lidt luft før grupperne. */}
+      <div style={{ height: 38 }} />
     </div>
   )
 }
