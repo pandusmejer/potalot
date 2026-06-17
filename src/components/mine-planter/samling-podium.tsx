@@ -12,59 +12,25 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  * (ingen stor afrundet container, skygge, foto, CTA — så er vi tilbage i
  * "beige kasser for hele formuen"). Tænk herbarium-intro / arkivblad:
  * tone-i-tone-bånd, kicker + kapitelnummer, lodret accent-streg, stor
- * serif-titel, samlet meta, en svag botanisk silhuet, og en rolig
- * divider-medaljon som overgang ned til grupperne.
+ * serif-titel, samlet meta, og en rolig divider-medaljon som overgang
+ * ned til grupperne.
+ *
+ * 17/6: bladillustration fjernet; top- og bundkant er nu samme sand-tone,
+ * begge kantstreger tyndere (1,4px); medaljonen overlapper båndets bundkant.
  */
-
-/** Svag botanisk silhuet — tone-i-tone herbarium-gestus i båndets højre side. */
-function BotaniskSilhuet() {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 180 260"
-      className="pointer-events-none absolute"
-      style={{ right: -8, top: -20, height: 'calc(100% + 60px)', width: 'auto', opacity: 0.15 }}
-      fill="none"
-      stroke="#5E7D4F"
-      strokeWidth={1.6}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* stilk */}
-      <path d="M104 252 C 92 198, 120 158, 104 106 C 94 72, 110 42, 116 14" />
-      {/* blade — par langs stilken, skiftevis side, med midterribbe */}
-      <path d="M104 212 C 80 202, 64 178, 62 152 C 88 158, 103 182, 104 212 Z" />
-      <path d="M83 178 L 104 212" />
-      <path d="M108 180 C 132 172, 148 150, 148 126 C 124 130, 109 152, 108 180 Z" />
-      <path d="M128 150 L 108 180" />
-      <path d="M101 150 C 78 142, 64 120, 64 96 C 88 100, 100 122, 101 150 Z" />
-      <path d="M82 120 L 101 150" />
-      <path d="M110 120 C 132 114, 146 94, 146 72 C 124 76, 111 96, 110 120 Z" />
-      <path d="M128 94 L 110 120" />
-      <path d="M106 92 C 86 86, 74 68, 74 48 C 92 52, 104 70, 106 92 Z" />
-      {/* lille knop i toppen */}
-      <path d="M116 14 C 110 7, 117 0, 125 3 C 129 9, 124 17, 116 14 Z" />
-    </svg>
-  )
-}
-
 export function SamlingPodium({ planter, sorter }: { planter: number; sorter: number }) {
   const sand = 'rgba(184,154,74,0.5)'
   return (
     <div className="-mx-4">
       {/* Tone-i-tone podium-bånd. Ikke et kort — en redaktionel ramme.
-          Bundstregen i sand ER sektionens bundkant, og medaljonen overlapper
-          det mørkere felt (Anna 16/6 aften). */}
-      <div className="relative" style={{ borderTop: '1px solid rgba(36,48,31,0.08)' }}>
-        {/* Bg-lag + botanisk silhuet — klippet, så medaljonen ikke beskæres. */}
-        <div
-          aria-hidden
-          className="absolute inset-0 overflow-hidden"
-          style={{ background: 'linear-gradient(165deg, #F1EBDA 0%, #EAE1CC 100%)' }}
-        >
-          <BotaniskSilhuet />
-        </div>
-
+          Sand top- og bundkant (1,4px); bundkanten ER sektionens bundlinje. */}
+      <div
+        className="relative"
+        style={{
+          background: 'linear-gradient(165deg, #F1EBDA 0%, #EAE1CC 100%)',
+          borderTop: `1.4px solid ${sand}`,
+        }}
+      >
         <div className="relative px-5 pb-10 pt-8">
           {/* Lodret accent-streg til venstre for hele tekstblokken. */}
           <div style={{ borderLeft: `2px solid ${sand}`, paddingLeft: 18 }}>
@@ -122,8 +88,8 @@ export function SamlingPodium({ planter, sorter }: { planter: number; sorter: nu
 
         {/* Bundstreg i sand = sektionens bundkant. To segmenter med luft
             omkring medaljonen, så stregen ikke gennemskærer ikonet. */}
-        <div aria-hidden className="absolute" style={{ left: 0, bottom: 0, height: 2, width: 'calc(50% - 35px)', background: sand }} />
-        <div aria-hidden className="absolute" style={{ right: 0, bottom: 0, height: 2, width: 'calc(50% - 35px)', background: sand }} />
+        <div aria-hidden className="absolute" style={{ left: 0, bottom: 0, height: 1.4, width: 'calc(50% - 35px)', background: sand }} />
+        <div aria-hidden className="absolute" style={{ right: 0, bottom: 0, height: 1.4, width: 'calc(50% - 35px)', background: sand }} />
 
         {/* Medaljon — straddler bundkanten og overlapper det mørkere felt. */}
         <div
