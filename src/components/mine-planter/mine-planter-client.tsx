@@ -14,6 +14,7 @@ import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { overrideFor } from '@/data/plant-detail'
 import { afledtStatuslinje } from '@/lib/afledninger'
+import { buildSaesonHistorik, maanedNavn } from '@/lib/saeson-historik'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import type { Plant, PlantStatus, GardenLocation } from '@/lib/types'
 import { ArrowRight, BookOpen, Archive } from 'lucide-react'
@@ -86,16 +87,6 @@ function timeGreeting(): string {
   if (h < 18) return 'God eftermiddag'
   return 'God aften'
 }
-
-// Sæsonens fortælling (statisk i fase 1 — én rolig linje pr. måned).
-// nuMaaned fremhæves. Udledes af sæsonens hændelser senere.
-const SAESON_HISTORIK = [
-  { maaned: 'Marts', historie: 'De første frø kom i jorden.' },
-  { maaned: 'April', historie: 'Spirerne strakte sig mod lyset.' },
-  { maaned: 'Maj', historie: 'Drivhuset fyldtes op.' },
-  { maaned: 'Juni', historie: 'De første blomster åbnede sig.' },
-]
-const NU_MAANED = 'Juni'
 
 interface Props {
   /** Brugerens ægte planter. Tomt → demo-mode (mock-data driver siden). */
@@ -224,6 +215,11 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
     })
   }, [aktive])
 
+  // "Fra frø til nu" — sæsonens månedspunkter udledt af FAKTISKE plante-datoer
+  // (ikke statisk poesi). Tom → SaesonensVaekst skjuler sig selv.
+  const saesonHistorik = useMemo(() => buildSaesonHistorik(plants, today), [plants, today])
+  const nuMaaned = maanedNavn(today)
+
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-8">
       <ForsideHero greeting={greeting} story={heroStory} storyNote={heroNote} />
@@ -298,8 +294,8 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
           et vigtigere planter-filter end den editorial sæson-fortælling.) */}
       <MineSteder plants={aktive} gardenLocations={gardenLocations} canPersist={!isDemo} />
 
-      {/* SÆSONENS VÆKST — sæsonen som fortælling. */}
-      <SaesonensVaekst historik={SAESON_HISTORIK} nuMaaned={NU_MAANED} />
+      {/* FRA FRØ TIL NU — sæsonens vækst udledt af faktiske plante-hændelser. */}
+      <SaesonensVaekst historik={saesonHistorik} nuMaaned={nuMaaned} />
 
       {/* PLANLAGT — kompakt chip-række. */}
       {planlagte.length > 0 && (
