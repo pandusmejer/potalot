@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Check, ChevronRight } from 'lucide-react'
+import { markDerivedTaskDone, unmarkDerivedTaskDone } from '@/actions/plant-tasks'
 
 const sans = 'var(--font-manrope)'
 
@@ -13,6 +14,12 @@ export interface AtSeItem {
   /** Kort timing-label: "Gør i dag" | "Klar nu" | "Afventer vejr". */
   timing: string
   priority: 'idag' | 'snart' | 'afventer'
+  plantId: string
+  taskType: string
+  /** Deterministisk nøgle (plant_id + task_type + dato) — afkrydsningens identitet. */
+  taskKey: string
+  /** Menneskelæsbar titel til log-noten i plantens historie. */
+  taskTitle: string
 }
 
 /**
@@ -23,12 +30,14 @@ export interface AtSeItem {
  *
  * Tap-to-check ("tjek til check"): checkbox-cirklen er en ægte knap.
  * Afkrydsede opgaver FORLADER den aktive liste og samles i en sammenklappet
- * "✓ N gjort i dag"-linje (Anna 17/6: ellers fylder fx 27 opgaver hele
+ * "✓ N udført"-linje (Anna 17/6: ellers fylder fx 27 opgaver hele
  * siden). Genfindelig — fold ud + tap for at af-krydse igen.
  *
- * NB: afkrydsning er v1 LOKAL (session) — persistens + logning til plantens
- * historie + nulstilling er næste lag (opgaver er UDLEDT af status; ingen
- * gemt "gjort"-tilstand endnu, ingen falsk persistens).
+ * Persistens (planter-persistens-sprint, step 1+2): for rigtige brugere
+ * gemmes afkrydsningen som en completion på en deterministisk task_key +
+ * en note i plantens historie — reload bevarer tilstanden, ny dag nulstiller.
+ * I demo (canPersist=false) er afkrydsningen lokal/ikke-gemt: ingen falsk
+ * persistens, men designet er stadig synligt.
  */
 
 const PRIO_META: Record<AtSeItem['priority'], { label: string; chipBg: string }> = {
@@ -116,22 +125,54 @@ function TaskRow({
   )
 }
 
-export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
-  const [done, setDone] = useState<ReadonlySet<string>>(new Set())
+export function AtSeTilIDag({
+  items,
+  initialDone = [],
+  canPersist = false,
+}: {
+  items: AtSeItem[]
+  /** task_keys allerede markeret udført i dag (persisteret). */
+  initialDone?: string[]
+  /** Rigtig bruger → gem til server. Demo → lokal/ikke-gemt. */
+  canPersist?: boolean
+}) {
+  const [done, setDone] = useState<ReadonlySet<string>>(() => new Set(initialDone))
 
   if (items.length === 0) return null
 
   const list = items.slice(0, 3)
-  const aktive = list.filter(it => !done.has(it.href))
-  const gjort = list.filter(it => done.has(it.href))
+  const aktive = list.filter(it => !done.has(it.taskKey))
+  const gjort = list.filter(it => done.has(it.taskKey))
 
-  function toggle(href: string) {
+  function setMembership(taskKey: string, isDone: boolean) {
     setDone(prev => {
       const next = new Set(prev)
-      if (next.has(href)) next.delete(href)
-      else next.add(href)
+      if (isDone) next.add(taskKey)
+      else next.delete(taskKey)
       return next
     })
+  }
+
+  function toggle(item: AtSeItem) {
+    const willBeDone = !done.has(item.taskKey)
+    // Optimistisk: opdatér UI med det samme.
+    setMembership(item.taskKey, willBeDone)
+    if (!canPersist) return // demo: lokal afkrydsning, ingen server-kald
+
+    const action = willBeDone
+      ? markDerivedTaskDone({
+          plantId: item.plantId,
+          taskKey: item.taskKey,
+          taskType: item.taskType,
+          taskTitle: item.taskTitle,
+        })
+      : unmarkDerivedTaskDone(item.taskKey)
+
+    action
+      .then(res => {
+        if (res && 'error' in res) setMembership(item.taskKey, !willBeDone) // rul tilbage
+      })
+      .catch(() => setMembership(item.taskKey, !willBeDone))
   }
 
   return (
@@ -154,7 +195,7 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
       {aktive.length > 0 ? (
         <div>
           {aktive.map((item, i) => (
-            <TaskRow key={item.href} item={item} done={false} first={i === 0} onToggle={() => toggle(item.href)} />
+            <TaskRow key={item.taskKey} item={item} done={false} first={i === 0} onToggle={() => toggle(item)} />
           ))}
         </div>
       ) : (
@@ -189,7 +230,7 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
           </summary>
           <div>
             {gjort.map((item, i) => (
-              <TaskRow key={item.href} item={item} done={true} first={i === 0} onToggle={() => toggle(item.href)} />
+              <TaskRow key={item.taskKey} item={item} done={true} first={i === 0} onToggle={() => toggle(item)} />
             ))}
           </div>
         </details>

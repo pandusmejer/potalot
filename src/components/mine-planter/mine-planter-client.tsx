@@ -100,9 +100,13 @@ const NU_MAANED = 'Juni'
 interface Props {
   /** Brugerens ægte planter. Tomt → demo-mode (mock-data driver siden). */
   plants: Plant[]
+  /** Dagens dato (server-tid, YYYY-MM-DD) — så task_keys matcher serveren. */
+  today: string
+  /** task_keys brugeren har markeret udført i dag (persisteret). */
+  doneTaskKeys: string[]
 }
 
-export function MinePlanterClient({ plants: realPlants }: Props) {
+export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys }: Props) {
   const isDemo = realPlants.length === 0
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
@@ -178,11 +182,26 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
       if (seenArter.has(p.name)) continue
       seenArter.add(p.name)
       const { timing, priority } = naarFor(p)
-      items.push({ art: p.name, action: taskFor(p), href: `/mine-planter/${p.id}`, timing, priority })
+      // task_type følger statussen, som er det eneste der gør en plante
+      // opmærksomheds-værdig her: høstklar → 'hoest', ellers → 'udplant'.
+      const taskType = p.status === 'hoestklar' ? 'hoest' : 'udplant'
+      const action = taskFor(p)
+      items.push({
+        art: p.name,
+        action,
+        href: `/mine-planter/${p.id}`,
+        timing,
+        priority,
+        plantId: p.id,
+        taskType,
+        // Deterministisk + datostemplet, så afkrydsningen nulstilles til ny dag.
+        taskKey: `${p.id}:${taskType}:${today}`,
+        taskTitle: action,
+      })
       if (items.length === 3) break
     }
     return items.sort((a, b) => PRIO_RANK[a.priority] - PRIO_RANK[b.priority])
-  }, [aktive])
+  }, [aktive, today])
 
   // Arts-rækker: gruppér aktive efter art. Opmærksomheds-arter først,
   // derefter flest planter, derefter alfabetisk.
@@ -212,8 +231,9 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         <ForsideLigeNu plant={hovedperson} forventning={forventningFor(hovedperson)} />
       )}
 
-      {/* AT SE TIL I DAG — organiske former. */}
-      <AtSeTilIDag items={atSeItems} />
+      {/* AT SE TIL I DAG — organiske former. Persisteres for rigtige brugere;
+          i demo er afkrydsning lokal/ikke-gemt (ingen falsk persistens). */}
+      <AtSeTilIDag items={atSeItems} initialDone={doneTaskKeys} canPersist={!isDemo} />
 
       {/* MIN PLANTESAMLING — brugerens levende samling (Anna 16/6 aften:
           "Mine arter" var en datamodel forklædt som overskrift). Tre lag:

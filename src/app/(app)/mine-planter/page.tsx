@@ -1,5 +1,6 @@
 import { MinePlanterClient } from '@/components/mine-planter/mine-planter-client'
 import { getAllPlants } from '@/actions/mine-planter'
+import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,6 +19,10 @@ export const dynamic = 'force-dynamic'
  *   Guides   = viden
  */
 export default async function MinePlanterPage() {
-  const plants = await getAllPlants()
-  return <MinePlanterClient plants={plants} />
+  const today = new Date().toISOString().slice(0, 10)
+  const [plants, doneTaskKeys] = await Promise.all([
+    getAllPlants(),
+    getTaskCompletionsForDate(today),
+  ])
+  return <MinePlanterClient plants={plants} today={today} doneTaskKeys={doneTaskKeys} />
 }
