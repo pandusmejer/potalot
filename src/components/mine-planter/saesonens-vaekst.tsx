@@ -7,7 +7,8 @@ interface MaanedHistorie {
 }
 
 /**
- * 🌱 SÆSONENS VÆKST — sæsonen som fortælling, ikke statistik.
+ * 🌱 FRA FRØ TIL NU (overskrift tidl. "Sæsonens vækst", 17/6) — sæsonen
+ * som fortælling, ikke statistik.
  *
  * Anna (spec): "En enorm lodret tidslinje. Ikke diagram. Ikke statistik.
  * Historie. Stor serif. Meget luft. Meget få elementer." En lodret
@@ -39,7 +40,7 @@ export function SaesonensVaekst({
           margin: '0 0 16px',
         }}
       >
-        Sæsonens vækst
+        Fra frø til nu
       </h2>
 
       <ol className="relative" style={{ paddingLeft: 26 }}>

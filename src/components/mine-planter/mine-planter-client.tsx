@@ -336,6 +336,9 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </section>
       )}
 
+      {/* AFSLUT SÆSON + TIDLIGERE — samlet i én blok med HALV luft imellem
+          (space-y-4 = 16px i stedet for sidens 32px). Anna 17/6. */}
+      <div className="space-y-4">
       {/* AFSLUT SÆSON — rolig havebogs-handling (Anna 17/6: "Klar til arkiv"
           lød for systemisk/kommunalt). Diskret eyebrow, råber ikke. */}
       {klarTilArkiv.length > 0 && (
@@ -413,6 +416,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </span>
         <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
       </Link>
+      </div>
     </div>
   )
 }
