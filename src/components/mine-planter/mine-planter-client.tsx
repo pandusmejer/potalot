@@ -336,87 +336,62 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </section>
       )}
 
-      {/* AFSLUT SÆSON + TIDLIGERE — samlet i én blok med HALV luft imellem
-          (space-y-4 = 16px i stedet for sidens 32px). Anna 17/6. */}
-      <div className="space-y-4">
-      {/* AFSLUT SÆSON — rolig havebogs-handling (Anna 17/6: "Klar til arkiv"
-          lød for systemisk/kommunalt). Diskret eyebrow, råber ikke. */}
-      {klarTilArkiv.length > 0 && (
-        <section className="space-y-3">
-          <header className="px-0.5">
-            <h2
-              className="uppercase"
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 700,
-                letterSpacing: '0.16em',
-                color: 'rgba(36,48,31,0.42)',
-                margin: 0,
-              }}
-            >
-              Afslut sæson
-            </h2>
-          </header>
-          <div className="space-y-2">
-            {klarTilArkiv.map(plant => (
-              <Link
-                key={plant.id}
-                href={`/mine-planter/${plant.id}`}
-                className="flex items-start gap-2.5 transition-colors hover:bg-[rgba(36,48,31,0.04)]"
-                style={{
-                  background: 'rgba(36,48,31,0.03)',
-                  border: '1px solid rgba(36,48,31,0.08)',
-                  borderRadius: 14,
-                  paddingInline: 16,
-                  paddingBlock: 12,
-                }}
-              >
-                <Archive className="mt-0.5 h-4 w-4 shrink-0" style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
-                <span className="min-w-0 flex-1">
-                  <span
-                    className="block truncate"
-                    style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.72)' }}
-                  >
-                    {plant.name}
-                    {plant.variety ? ` ${plant.variety}` : ''}
-                    {plant.growingYear ? ` · ${plant.growingYear}` : ''}
-                  </span>
-                  <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#7B816F', margin: '3px 0 0' }}>
-                    Gem i Havebogen →
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* TIDLIGERE SÆSONER — rolig arkivindgang til Havebogen (Anna 17/6:
-          ikke et stort afslutningsbanner; kompakt liste-entry, navigation
-          er funktionen — ikke et hero-card). */}
-      <Link
-        href="/"
-        className="group flex items-center gap-3.5 transition-colors active:bg-[rgba(36,48,31,0.04)]"
-        style={{ background: '#F5F2EA', border: '1px solid rgba(36,48,31,0.07)', borderRadius: 18, padding: '14px 16px' }}
-      >
-        <span
-          className="flex shrink-0 items-center justify-center rounded-full"
-          style={{ width: 38, height: 38, background: 'rgba(94,112,56,0.12)' }}
+      {/* SÆSONARKIV — én rolig arkivsektion (Anna 17/6): afslut-handlingen
+          og indgangen til Havebogen som ENSARTEDE søskende-rækker i én blød
+          container m. divider — ikke ét adminfelt + ét feature-banner.
+          "Afslut sæson"-navnet droppet (lød som regnskabsår). */}
+      <section>
+        <h2
+          className="uppercase px-0.5"
+          style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.5)', margin: '0 0 12px' }}
         >
-          <BookOpen className="h-[18px] w-[18px]" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block" style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, lineHeight: 1.1, color: '#24301F' }}>
-            Tidligere sæsoner
-          </span>
-          <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.35, color: 'rgba(36,48,31,0.55)', margin: '2px 0 0' }}>
-            Arkiverede planter, noter og høsterfaringer
-          </span>
-        </span>
-        <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
-      </Link>
-      </div>
+          Sæsonarkiv
+        </h2>
+        <div
+          style={{ background: '#F5F2EA', border: '1px solid rgba(36,48,31,0.07)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 1px 2px rgba(36,48,31,0.04)' }}
+        >
+          {/* Afsluttede sæsoner — klar til at gemme i Havebogen. */}
+          {klarTilArkiv.map((plant, i) => (
+            <Link
+              key={plant.id}
+              href={`/mine-planter/${plant.id}`}
+              className="group flex items-center gap-3 transition-colors active:bg-[rgba(36,48,31,0.04)]"
+              style={{ padding: '14px 16px', borderTop: i > 0 ? '1px solid rgba(36,48,31,0.07)' : 'none' }}
+            >
+              <Archive className="h-[18px] w-[18px] shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate" style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: '#24301F' }}>
+                  {plant.name}
+                  {plant.variety ? ` ${plant.variety}` : ''}
+                  {plant.growingYear ? ` · ${plant.growingYear}` : ''}
+                </span>
+                <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.55)', margin: '2px 0 0' }}>
+                  Gem i Havebogen
+                </span>
+              </span>
+              <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
+            </Link>
+          ))}
+
+          {/* Indgang til tidligere sæsoner i Havebogen. */}
+          <Link
+            href="/"
+            className="group flex items-center gap-3 transition-colors active:bg-[rgba(36,48,31,0.04)]"
+            style={{ padding: '14px 16px', borderTop: klarTilArkiv.length > 0 ? '1px solid rgba(36,48,31,0.07)' : 'none' }}
+          >
+            <BookOpen className="h-[18px] w-[18px] shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
+            <span className="min-w-0 flex-1">
+              <span className="block" style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: '#24301F' }}>
+                Tidligere sæsoner
+              </span>
+              <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.35, color: 'rgba(36,48,31,0.55)', margin: '2px 0 0' }}>
+                Arkiverede planter, noter og høsterfaringer
+              </span>
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
+          </Link>
+        </div>
+      </section>
     </div>
   )
 }
