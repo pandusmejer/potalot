@@ -16,9 +16,9 @@
  * prioriteringen, stilheden, completions-bevidstheden.
  *
  * ── Inkrement-status ──────────────────────────────────────────────
- *   ✅ inkrement 1 (her): lag 2 (status-afledt) + lag 3 (verifikation)
+ *   ✅ inkrement 1: lag 2 (status-afledt) + lag 3 (verifikation)
  *      + lag 4 (frøbank × måned) + max-3 + stilhed + completions.
- *   ⏳ inkrement 2: lag 1 (tidskritisk — frost × frostfølsomme udplantede).
+ *   ✅ inkrement 2 (her): lag 1 (tidskritisk — frost × frostfølsomme udplantede).
  *   ⏳ inkrement 3: degradations-stigen trin 0/1 (almanak + frøbank-only tekst).
  *   ⏳ inkrement 4: fuld tie-breaking (deadline → flest planter → guide-
  *      prioritet) + lag 5 (vedligehold).
@@ -29,7 +29,8 @@
  */
 
 import type { InventoryItem, Plant } from '@/lib/types'
-import { forventetSpiring } from '@/lib/afledninger'
+import type { GardenAlert } from '@/actions/weather'
+import { forventetSpiring, quickFactsForNavn } from '@/lib/afledninger'
 import { dageSiden } from '@/lib/datetime'
 
 /** Prioriteringslag fra kalender-v2.md §Prioriteringsmodellen. */
@@ -37,6 +38,7 @@ export type FokusLag = 1 | 2 | 3 | 4 | 5
 
 /** Stabil opgavetype — indgår i task_key, så afkrydsning persisterer på tværs af reloads. */
 export type FokusTaskType =
+  | 'daek'
   | 'udplant'
   | 'hoest'
   | 'prikl'
@@ -97,6 +99,8 @@ export interface DagensFokus {
 export interface DagensFokusInput {
   plants: Plant[]
   inventory: InventoryItem[]
+  /** Aktive have-varsler (frost/tørke/...). Driver lag 1 (tidskritisk). */
+  alerts?: GardenAlert[]
   /** task_keys brugeren allerede har markeret udført i dag (fra getTaskCompletionsForDate). */
   completions?: Iterable<string>
   /** Dagens dato — eksplicit, så funktionen er deterministisk/testbar. */
@@ -126,6 +130,33 @@ function visningsNavn(name: string, variety?: string | null): string {
 /** Dedup-nøgle på art|sort (lower/trimmed) — bruges til at undgå "så X" når X allerede gror. */
 function sortKey(name: string, variety?: string | null): string {
   return `${name.toLowerCase().trim()}|${(variety ?? '').toLowerCase().trim()}`
+}
+
+/**
+ * Lag 1 — tidskritisk ("kan ikke vente"). Biologien venter ikke.
+ * Frostvarsel × frostfølsomme UDPLANTEDE planter: planten står ude og er
+ * sårbar, og frosten kommer uanset hvad brugeren ellers havde planlagt.
+ *
+ * Ærlighed: kun planter hvis guide POSITIVT siger frostSensitive flagges.
+ * Mangler guiden data, tier vi (huller giver stilhed — vi opfinder ikke hast).
+ * Returnerer null hvis planten ikke er udplantet eller ikke kendt frostfølsom.
+ *
+ * ⚠️ SOVENDE PR. JUNI 2026: `frostSensitive` er endnu IKKE udfyldt i nogen
+ * guide (0 forekomster i guides-imported). Lag 1 er derfor korrekt bygget,
+ * men fyrer aldrig før guide-data bærer flaget — så aktiveres det automatisk
+ * uden ændringer her. Jf. afledningsmotoren.md (data i guide, ikke hardcodet
+ * art-liste i motoren).
+ */
+function lag1Frost(p: Plant, frostTitel: string, dato: string): FokusHandling | null {
+  if (p.status !== 'udplantet') return null
+  const qf = quickFactsForNavn(p.name, p.variety)
+  if (qf?.frostSensitive !== true) return null
+  const navn = visningsNavn(p.name, p.variety)
+  return mkPlante(
+    p, 1, 'daek', `Dæk ${navn} mod nattefrost`,
+    `${frostTitel} — ${navn} er frostfølsom og står udplantet.`,
+    dato, `/mine-planter/${p.id}`,
+  )
 }
 
 /**
@@ -272,6 +303,16 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   // ── Saml handlinger lag for lag ──────────────────────────────────
   const handlinger: FokusHandling[] = []
 
+  // Lag 1 — tidskritisk: kun hvis der er et aktivt frostvarsel.
+  // (Vejr-handlingen i weather.ts udsender ét frost-varsel ad gangen.)
+  const frost = (input.alerts ?? []).find(a => a.kind === 'frost')
+  if (frost) {
+    for (const p of aktivePlanter) {
+      const h1 = lag1Frost(p, frost.title, dato)
+      if (h1) handlinger.push(h1)
+    }
+  }
+
   // Lag 2 + lag 3 (pr. aktiv plante)
   for (const p of aktivePlanter) {
     const h2 = lag2StatusHandling(p, dato)
@@ -298,6 +339,11 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   const udfoerte = handlinger.filter(h => h.udfoert)
   const ordnet = [...pressende, ...udfoerte]
 
+  // NOTE (inkrement 4): kalender-v2 siger lag 1 "kan ikke foldes væk", men
+  // max-3 kan i teorien skubbe et 4.+ frost-varsel ned i `flere`. I praksis
+  // rammer frost sjældent >3 sarte planter; den rene løsning er aggregering
+  // ("Dæk dine sarte planter mod nattefrost") — en præsentations-/tie-break-
+  // forfining der hører til inkrement 4, ikke en regel i kerne-motoren.
   const fokus = ordnet.slice(0, 3)
   const flere = ordnet.slice(3)
 

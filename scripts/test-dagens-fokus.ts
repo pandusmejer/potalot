@@ -10,6 +10,8 @@
 
 import { byggDagensFokus, type DagensFokus, type FokusHandling } from '@/lib/kalender/dagens-fokus'
 import { mockPlants } from '@/data/mock-plants'
+import { quickFactsForNavn } from '@/lib/afledninger'
+import type { GardenAlert } from '@/actions/weather'
 import type { InventoryItem, Plant } from '@/lib/types'
 
 const TODAY = new Date('2026-06-17T09:00:00') // juni — samme dag som currentDate
@@ -34,6 +36,10 @@ const inventory: InventoryItem[] = [
   inv({ id: 'seed-agurk', name: 'Agurk', variety: 'Marketmore', sowingMonths: [5, 6] }), // gror allerede → skip
   inv({ id: 'seed-kaalrabi', name: 'Kålrabi', variety: 'Blaril', preCultivation: true, sowingMonths: [6] }),
 ]
+
+function visningsKort(p: Plant): string {
+  return p.variety ? `${p.name} ${p.variety}` : p.name
+}
 
 // ── Hjælpere til pæn udskrift ────────────────────────────────────
 const LAG_NAVN: Record<number, string> = {
@@ -105,6 +111,33 @@ rapport('Scenarie 4 — kun frøbank, ingen planter', kunFroe)
 console.log('  assertions:')
 ok(kunFroe.trin === 1, 'trin = 1 (frøbank har indhold, ingen planter)')
 ok([...kunFroe.fokus, ...kunFroe.flere].every(h => h.lag === 4), 'kun lag-4-invitationer')
+
+// ── Scenarie 5: frostvarsel → lag 1 (tidskritisk) øverst ─────────
+const frostAlert: GardenAlert = {
+  kind: 'frost', severity: 'warning', icon: 'Snowflake',
+  title: 'Nattefrost i nat', detail: 'Ned til -1°. Dæk sarte planter.',
+}
+// Find en udplantet plante hvis guide POSITIVT siger frostfølsom — så
+// scenariet er ærligt forankret i demo-data og ikke et opdigtet tilfælde.
+const udplantedeFrostfoelsomme = plants.filter(
+  p => !p.isArchived && p.status === 'udplantet' &&
+    quickFactsForNavn(p.name, p.variety)?.frostSensitive === true,
+)
+const medFrost = byggDagensFokus({ plants, inventory, today: TODAY, alerts: [frostAlert] })
+rapport('Scenarie 5 — frostvarsel aktivt', medFrost)
+console.log(`  (udplantede frostfølsomme i demo: ${udplantedeFrostfoelsomme.map(p => visningsKort(p)).join(', ') || 'ingen'})`)
+console.log('  assertions:')
+if (udplantedeFrostfoelsomme.length > 0) {
+  ok(medFrost.fokus[0]?.lag === 1, 'lag 1 (frost) ligger ØVERST i fokus')
+  ok(medFrost.fokus[0]?.taskType === 'daek', 'øverste handling er en Dæk-handling')
+  ok(medFrost.fokus.some(h => h.titel.startsWith('Dæk')), 'fokus indeholder en Dæk-handling i bydeform')
+} else {
+  console.log('   (ingen udplantede frostfølsomme i demo — lag 1 forbliver korrekt tom)')
+  ok(!medFrost.fokus.some(h => h.lag === 1), 'ingen lag-1-handling uden frostfølsomme udplantede (ærlig stilhed)')
+}
+// Uden frostvarsel må lag 1 ALDRIG optræde (selv med frostfølsomme planter).
+const udenFrost = byggDagensFokus({ plants, inventory, today: TODAY })
+ok(!udenFrost.fokus.concat(udenFrost.flere).some(h => h.lag === 1), 'intet lag 1 uden aktivt frostvarsel')
 
 console.log(`\n${fejl === 0 ? '✅ ALLE ASSERTIONS BESTÅET' : `❌ ${fejl} ASSERTION(ER) FEJLEDE`}`)
 process.exit(fejl === 0 ? 0 : 1)
