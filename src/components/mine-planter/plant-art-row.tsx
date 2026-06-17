@@ -237,7 +237,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
           className="line-clamp-2"
           style={{
             fontFamily: gabarito,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 500,
             letterSpacing: '-0.01em',
             lineHeight: 1.12,
@@ -325,7 +325,7 @@ export function SingleSortRow({ artName, plant }: { artName: string; plant: Plan
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="block truncate" style={{ fontFamily: gabarito, fontSize: 16, fontWeight: 500, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
+        <span className="block truncate" style={{ fontFamily: gabarito, fontSize: 15, fontWeight: 500, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
           {displayName}
         </span>
         <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>
