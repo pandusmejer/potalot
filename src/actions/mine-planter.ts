@@ -11,6 +11,7 @@ import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import {
   maybeAwardFirstSowing, maybeAwardFirstHarvest, maybeAwardSeasonFinisher,
 } from '@/actions/badges'
+import { resolveOrCreateGardenLocation } from '@/actions/garden-locations'
 import type { Plant, PlantImageSource, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
 
 // ============================================
@@ -25,6 +26,7 @@ interface PlantRow {
   variety: string | null
   status: string
   location: string | null
+  garden_location_id: string | null
   sow_date: string | null
   planting_out_date: string | null
   first_harvest_date: string | null
@@ -63,6 +65,7 @@ function rowToPlant(row: PlantRow): Plant {
     variety: row.variety,
     status: row.status as PlantStatus,
     location: row.location,
+    gardenLocationId: row.garden_location_id ?? null,
     sowDate: row.sow_date,
     plantingOutDate: row.planting_out_date,
     firstHarvestDate: row.first_harvest_date,
@@ -319,6 +322,12 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   return { id: plantId, tasksCreated, mergedIntoExisting }
 
   async function createNewPlantEntry(): Promise<{ data: { id: string } | null; error: string | null }> {
+    // Gør placeringen til et rigtigt dyrkningssted, så planten kobles via
+    // garden_location_id (location-teksten bevares som fallback). Sti b i
+    // persistens-sprinten: et sted skrevet ved såning bliver en GardenLocation.
+    const gardenLocationId = input.location
+      ? await resolveOrCreateGardenLocation(input.location)
+      : null
     const { data, error } = await supabase
       .from('plants_v2')
       .insert({
@@ -328,6 +337,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
         variety: inv.variety,
         status: 'saaet',
         location: input.location || null,
+        garden_location_id: gardenLocationId,
         sow_date: input.date,
         quantity: 0, // bliver opdateret efter sowing_event er sat
         growing_year: growingYear,
