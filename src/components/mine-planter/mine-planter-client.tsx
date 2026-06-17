@@ -19,6 +19,7 @@ import type { Plant, PlantStatus } from '@/lib/types'
 import { ArrowRight, BookOpen, Archive } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
+const serif = 'var(--font-cormorant), Georgia, serif'
 
 /**
  * Lifecycle-definition (låst af Anna, juni 2026):
@@ -247,10 +248,10 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
                   <h3
                     className="px-0.5"
                     style={{
-                      fontFamily: sans,
-                      fontSize: 24,
-                      fontWeight: 700,
-                      letterSpacing: '-0.015em',
+                      fontFamily: serif,
+                      fontSize: 27,
+                      fontWeight: 600,
+                      letterSpacing: '-0.005em',
                       color: '#24301F',
                       margin: '0 0 14px',
                     }}
