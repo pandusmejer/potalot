@@ -59,7 +59,7 @@ function TaskRow({
         type="button"
         onClick={onToggle}
         aria-pressed={done}
-        aria-label={done ? `Fortryd ${item.art}` : `Markér ${item.art} som gjort`}
+        aria-label={done ? `Fortryd ${item.art}` : `Markér ${item.art} som udført`}
         className="flex shrink-0 items-center justify-center rounded-full transition-colors active:scale-90"
         style={{
           width: 21,
@@ -178,7 +178,7 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
               <Check className="h-2.5 w-2.5" strokeWidth={3} style={{ color: '#FFFFFF' }} aria-hidden />
             </span>
             <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.5)' }}>
-              {gjort.length} gjort i dag
+              {gjort.length} udført
             </span>
             <ChevronRight
               className="h-3.5 w-3.5 transition-transform group-open:rotate-90"
