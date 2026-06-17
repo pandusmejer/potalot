@@ -60,7 +60,9 @@ function glyphForType(type: string): (p: GlyphProps) => ReactNode {
 }
 
 /**
- * 📍 MINE STEDER — hvor de levende ting bor.
+ * 📍 DYRKNINGSSTEDER — hvor de levende ting bor.
+ * (Sektionsoverskrift "Mine steder" → "Dyrkningssteder" 17/6: "steder" alene
+ *  var for bredt. "Sted" beholdes i handlinger/flow; komponent stadig MineSteder.)
  *
  * Anna (16. juni 2026): steder må ALDRIG falde tilbage til tomme grå kort
  * eller generiske stockfotos ("smukt bedrag"). Et sted kan eksistere uden
@@ -122,7 +124,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
           className="uppercase"
           style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.52)', margin: 0 }}
         >
-          Mine steder
+          Dyrkningssteder
         </h2>
         <button
           type="button"
