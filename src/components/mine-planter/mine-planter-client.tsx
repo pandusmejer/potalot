@@ -301,37 +301,45 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
             </p>
           </header>
           <div className="flex flex-wrap gap-2">
-            {planlagte.map(plant => (
-              <Link
-                key={plant.id}
-                href={`/mine-planter/${plant.id}`}
-                className="inline-flex items-center gap-1.5 transition-colors hover:bg-[rgba(36,48,31,0.06)]"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: 'rgba(36,48,31,0.72)',
-                  background: 'rgba(36,48,31,0.04)',
-                  border: '1px solid rgba(36,48,31,0.10)',
-                  borderRadius: 999,
-                  paddingInline: 14,
-                  paddingBlock: 7,
-                }}
-              >
-                {plant.name}
-                {plant.variety && (
-                  <span style={{ fontWeight: 400, color: 'rgba(36,48,31,0.50)' }}>{plant.variety}</span>
-                )}
-              </Link>
-            ))}
+            {planlagte.map(plant => {
+              // Timing pr. item, så sektionen forklarer HVORNÅR (ægte
+              // nextAction.timing — ingen opfundet dato).
+              const timing = (plant as Partial<MockPlant>).nextAction?.timing
+              return (
+                <Link
+                  key={plant.id}
+                  href={`/mine-planter/${plant.id}`}
+                  className="inline-flex items-center gap-1.5 transition-colors hover:bg-[rgba(36,48,31,0.06)]"
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: 'rgba(36,48,31,0.72)',
+                    background: 'rgba(36,48,31,0.04)',
+                    border: '1px solid rgba(36,48,31,0.10)',
+                    borderRadius: 999,
+                    paddingInline: 14,
+                    paddingBlock: 7,
+                  }}
+                >
+                  {plant.name}
+                  {plant.variety && (
+                    <span style={{ fontWeight: 400, color: 'rgba(36,48,31,0.50)' }}>{plant.variety}</span>
+                  )}
+                  {timing && (
+                    <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.4)' }}>· {timing}</span>
+                  )}
+                </Link>
+              )
+            })}
           </div>
         </section>
       )}
 
-      {/* KLAR TIL ARKIV — foreslå Havebogen. */}
+      {/* AFSLUT SÆSON — rolig havebogs-handling (Anna 17/6: "Klar til arkiv"
+          lød for systemisk/kommunalt). Diskret eyebrow, råber ikke. */}
       {klarTilArkiv.length > 0 && (
         <section className="space-y-3">
-          {/* Diskret: kun eyebrow — sekundær sektion, råber ikke om oprydning. */}
           <header className="px-0.5">
             <h2
               className="uppercase"
@@ -344,7 +352,7 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
                 margin: 0,
               }}
             >
-              Klar til arkiv
+              Afslut sæson
             </h2>
           </header>
           <div className="space-y-2">
@@ -352,28 +360,28 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
               <Link
                 key={plant.id}
                 href={`/mine-planter/${plant.id}`}
-                className="flex items-center justify-between gap-3 transition-colors hover:bg-[rgba(36,48,31,0.04)]"
+                className="flex items-start gap-2.5 transition-colors hover:bg-[rgba(36,48,31,0.04)]"
                 style={{
                   background: 'rgba(36,48,31,0.03)',
-                  border: '1px dashed rgba(36,48,31,0.14)',
+                  border: '1px solid rgba(36,48,31,0.08)',
                   borderRadius: 14,
                   paddingInline: 16,
                   paddingBlock: 12,
                 }}
               >
-                <span className="flex min-w-0 items-center gap-2.5">
-                  <Archive className="h-4 w-4 shrink-0" style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
+                <Archive className="mt-0.5 h-4 w-4 shrink-0" style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
+                <span className="min-w-0 flex-1">
                   <span
-                    className="truncate"
+                    className="block truncate"
                     style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.72)' }}
                   >
                     {plant.name}
                     {plant.variety ? ` ${plant.variety}` : ''}
                     {plant.growingYear ? ` · ${plant.growingYear}` : ''}
                   </span>
-                </span>
-                <span className="shrink-0" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#7B816F' }}>
-                  Gem i Havebogen →
+                  <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#7B816F', margin: '3px 0 0' }}>
+                    Gem i Havebogen →
+                  </span>
                 </span>
               </Link>
             ))}
@@ -381,28 +389,30 @@ export function MinePlanterClient({ plants: realPlants }: Props) {
         </section>
       )}
 
-      {/* TIDLIGERE SÆSONER — bro til Havebogen. */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,var(--surface-2),var(--card))] p-5 shadow-soft">
-        <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <BookOpen className="h-5 w-5" />
+      {/* TIDLIGERE SÆSONER — rolig arkivindgang til Havebogen (Anna 17/6:
+          ikke et stort afslutningsbanner; kompakt liste-entry, navigation
+          er funktionen — ikke et hero-card). */}
+      <Link
+        href="/"
+        className="group flex items-center gap-3.5 transition-colors active:bg-[rgba(36,48,31,0.04)]"
+        style={{ background: '#F5F2EA', border: '1px solid rgba(36,48,31,0.07)', borderRadius: 18, padding: '14px 16px' }}
+      >
+        <span
+          className="flex shrink-0 items-center justify-center rounded-full"
+          style={{ width: 38, height: 38, background: 'rgba(94,112,56,0.12)' }}
+        >
+          <BookOpen className="h-[18px] w-[18px]" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block" style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, lineHeight: 1.1, color: '#24301F' }}>
+            Tidligere sæsoner
           </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="font-serif text-xl leading-tight text-foreground">Tidligere sæsoner</h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              Se arkiverede planter, noter og høsterfaringer.
-            </p>
-          </div>
-          <Link
-            href="/"
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full transition-transform active:scale-95"
-            style={{ border: '1px solid rgba(36,48,31,0.18)', color: '#24301F', fontFamily: sans, fontSize: 13, fontWeight: 600, padding: '8px 14px' }}
-          >
-            Åbn havebog
-            <ArrowRight className="h-4 w-4" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
-          </Link>
-        </div>
-      </section>
+          <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.35, color: 'rgba(36,48,31,0.55)', margin: '2px 0 0' }}>
+            Arkiverede planter, noter og høsterfaringer
+          </span>
+        </span>
+        <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
+      </Link>
     </div>
   )
 }
