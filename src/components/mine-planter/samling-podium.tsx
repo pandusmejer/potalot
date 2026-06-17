@@ -15,9 +15,59 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  * serif-titel, samlet meta, og en rolig divider-medaljon som overgang
  * ned til grupperne.
  *
- * 17/6: bladillustration fjernet; top- og bundkant er nu samme sand-tone,
- * begge kantstreger tyndere (1,4px); medaljonen overlapper båndets bundkant.
+ * 17/6: den romantiske bladillustration er erstattet af et diskret
+ * tone-i-tone "samlingsindeks" (grid af små arkiv-/specimen-kort med
+ * enkelte spirer) — det konnoterer kurateret samling, ikke vintage
+ * botanisk brevpapir. Top- og bundkant er samme sand-tone, begge
+ * kantstreger tyndere (1,4px); medaljonen overlapper båndets bundkant.
  */
+
+/** Diskret samlingsindeks — et svagt grid af små arkivkort, et par med en
+ *  spire. Konnoterer "her er flere ting samlet i et system". */
+function SamlingsIndeks() {
+  const W = 48
+  const H = 58
+  const GX = 60
+  const GY = 70
+  const sprouts = new Set([1, 4, 8])
+  const cells = []
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) cells.push({ x: c * GX, y: r * GY, i: r * 3 + c })
+  }
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 168 198"
+      className="pointer-events-none absolute"
+      style={{ right: -16, top: '50%', transform: 'translateY(-50%)', height: '78%', width: 'auto', opacity: 0.16 }}
+      fill="none"
+      stroke="#4B6138"
+      strokeWidth={1.3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {cells.map(({ x, y, i }) => {
+        const cx = x + W / 2
+        const sy = y + 22
+        return (
+          <g key={i}>
+            <rect x={x} y={y} width={W} height={H} rx={6} />
+            {/* lille label-linje — specimen-kort-følelse */}
+            <path d={`M${x + 11} ${y + 45} L${x + W - 13} ${y + 45}`} />
+            {sprouts.has(i) && (
+              <>
+                <path d={`M${cx} ${sy + 9} L${cx} ${sy - 5}`} />
+                <path d={`M${cx} ${sy - 3} C ${cx - 10} ${sy - 5}, ${cx - 9} ${sy - 14}, ${cx} ${sy - 8}`} />
+                <path d={`M${cx} ${sy - 3} C ${cx + 10} ${sy - 5}, ${cx + 9} ${sy - 14}, ${cx} ${sy - 8}`} />
+              </>
+            )}
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 export function SamlingPodium({ planter, sorter }: { planter: number; sorter: number }) {
   const sand = 'rgba(184,154,74,0.5)'
   return (
@@ -31,6 +81,12 @@ export function SamlingPodium({ planter, sorter }: { planter: number; sorter: nu
           borderTop: `1.4px solid ${sand}`,
         }}
       >
+        {/* Diskret samlingsindeks-vandmærke — klippet til båndet, så
+            medaljonen (sibling) ikke beskæres. */}
+        <div aria-hidden className="absolute inset-0 overflow-hidden">
+          <SamlingsIndeks />
+        </div>
+
         <div className="relative px-5 pb-10 pt-8">
           {/* Lodret accent-streg til venstre for hele tekstblokken. */}
           <div style={{ borderLeft: `2px solid ${sand}`, paddingLeft: 18 }}>
