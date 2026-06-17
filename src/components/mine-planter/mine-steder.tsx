@@ -220,7 +220,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
                   key={sted.name}
                   href="/mine-planter"
                   className="group relative block shrink-0 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5"
-                  style={{ width: 208, height: 168, borderRadius: 22 }}
+                  style={{ width: 208, height: 146, borderRadius: 22 }}
                 >
                   {sted.image ? (
                     <>
@@ -237,18 +237,23 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
                         style={{ background: 'linear-gradient(180deg, rgba(18,22,14,0.10) 0%, rgba(18,22,14,0.28) 50%, rgba(18,22,14,0.74) 100%)' }}
                       />
                       <div className="absolute inset-x-0 bottom-0 p-4">
-                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 24, lineHeight: 1.05, color: '#FFFFFF', textShadow: '0 1px 10px rgba(18,14,8,0.5)', margin: 0 }}>{sted.name}</p>
-                        <p className="mt-1" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.86)', textShadow: '0 1px 6px rgba(18,14,8,0.5)', margin: '3px 0 0' }}>{antalTekst}</p>
+                        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.78)', textShadow: '0 1px 6px rgba(18,14,8,0.5)', margin: 0 }}>{sted.type}</p>
+                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 22, lineHeight: 1.05, color: '#FFFFFF', textShadow: '0 1px 10px rgba(18,14,8,0.5)', margin: '3px 0 0' }}>{sted.name}</p>
+                        <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.86)', textShadow: '0 1px 6px rgba(18,14,8,0.5)', margin: '2px 0 0' }}>{antalTekst}</p>
                       </div>
                     </>
                   ) : (
-                    // No-foto: designet Potalot-kort (gradient + type-glyph + mørk tekst).
-                    <div className="absolute inset-0 flex flex-col justify-between" style={{ background: PLACEHOLDER_GRADS[i % PLACEHOLDER_GRADS.length], padding: 16 }}>
-                      <G size={46} />
-                      <div>
-                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 24, lineHeight: 1.05, color: '#24301F', margin: 0 }}>{sted.name}</p>
-                        <p className="mt-1" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(36,48,31,0.6)', margin: '3px 0 0' }}>{antalTekst}</p>
-                        <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: 'rgba(36,48,31,0.42)', display: 'block', marginTop: 6 }}>Tilføj foto →</span>
+                    // No-foto: stedkort — gradient + STOR dæmpet type-glyph som
+                    // baggrundsform + type-label (overlinje) + navn + antal. Ingen
+                    // "Tilføj foto" på forsiden (hører til sted-detail).
+                    <div className="absolute inset-0" style={{ background: PLACEHOLDER_GRADS[i % PLACEHOLDER_GRADS.length] }}>
+                      <span aria-hidden className="pointer-events-none absolute" style={{ right: -2, top: 4, opacity: 0.18 }}>
+                        <G size={92} />
+                      </span>
+                      <div className="absolute inset-x-0 bottom-0" style={{ padding: 16 }}>
+                        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(36,48,31,0.45)', margin: 0 }}>{sted.type}</p>
+                        <p style={{ fontFamily: serif, fontWeight: 600, fontSize: 22, lineHeight: 1.05, color: '#24301F', margin: '3px 0 0' }}>{sted.name}</p>
+                        <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.02em', color: 'rgba(36,48,31,0.6)', margin: '2px 0 0' }}>{antalTekst}</p>
                       </div>
                     </div>
                   )}
@@ -261,7 +266,7 @@ export function MineSteder({ plants }: { plants: Plant[] }) {
               type="button"
               onClick={() => setShowForm(true)}
               className="flex shrink-0 flex-col items-center justify-center gap-2 transition-colors"
-              style={{ width: 132, height: 168, borderRadius: 22, background: '#F1EEE2', border: '1px dashed rgba(36,48,31,0.22)', cursor: 'pointer' }}
+              style={{ width: 132, height: 146, borderRadius: 22, background: '#F1EEE2', border: '1px dashed rgba(36,48,31,0.22)', cursor: 'pointer' }}
             >
               <span className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 999, background: 'rgba(90,112,56,0.12)' }}>
                 <Plus className="h-5 w-5" strokeWidth={2.2} style={{ color: '#5A7038' }} aria-hidden />
