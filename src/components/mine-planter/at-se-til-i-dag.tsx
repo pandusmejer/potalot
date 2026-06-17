@@ -39,7 +39,7 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
 
   return (
     <section>
-      <header className="mb-1 flex items-baseline justify-between gap-3 px-0.5">
+      <header className="mb-2 flex items-baseline justify-between gap-3 px-0.5">
         <h2
           className="uppercase"
           style={{
@@ -67,18 +67,18 @@ export function AtSeTilIDag({ items }: { items: AtSeItem[] }) {
             <Link
               key={`${item.art}-${i}`}
               href={item.href}
-              className="group flex gap-3 rounded-xl px-2 transition-colors active:bg-[rgba(36,48,31,0.04)]"
+              className="group flex gap-3 px-0.5 transition-colors active:bg-[rgba(36,48,31,0.035)]"
               style={{
                 paddingTop: 14,
                 paddingBottom: 14,
-                borderTop: i > 0 ? '1px solid rgba(36,48,31,0.09)' : 'none',
+                borderTop: '1px solid rgba(36,48,31,0.09)',
               }}
             >
               {/* Checkbox-cirkel — sektionens hovedsignal ("jeg kan handle her"). */}
               <span
                 aria-hidden
                 className="shrink-0 rounded-full"
-                style={{ width: 20, height: 20, marginTop: 1, border: '2px solid rgba(36,48,31,0.22)' }}
+                style={{ width: 17, height: 17, marginTop: 2, border: '1.5px solid rgba(36,48,31,0.22)' }}
               />
 
               <span className="min-w-0 flex-1">
