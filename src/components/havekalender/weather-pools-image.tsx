@@ -87,8 +87,17 @@ const SLOT_LAYOUT: Record<Slot, IconArrange> = {
   temperature: 'top',
   sun: 'right-centered',
 }
-/** Ikon-skala pr. pyt (1 = basis 4,6cqw). Sol-ikonet 10% større. */
+/** Ikon-skala pr. pyt (1 = basis). Sol-ikonet 10% større. */
 const SLOT_ICON_SCALE: Record<Slot, number> = { rain: 1, soil: 1, temperature: 1, sun: 1.1 }
+
+/** Ikon-farve pr. pyt: en MØRKERE nuance af pyttens egen tone (tone-i-tone),
+ *  så ikonet harmonerer med pytten men stadig læses. Teksten forbliver INK. */
+const SLOT_ICON_COLOR: Record<Slot, string> = {
+  rain: '#4E5A55',        // kølig slate (regn-pyttens blågrå, mørkere)
+  soil: '#6E5630',        // dyb oliven-tan (jord-pyttens sand, mørkere)
+  temperature: '#8A5230', // terracotta (temp-pyttens fersken/ler, mørkere)
+  sun: '#7A5E22',         // okker (sol-pyttens honning, mørkere)
+}
 
 export interface WeatherPoolsData {
   rain: { value: string; label: string }
@@ -191,8 +200,8 @@ const secondaryStyle = { fontFamily: serif, fontWeight: 500, fontSize: '5cqw', o
 function PoolContent({ slot, value, label }: { slot: Slot; value: string; label?: string }) {
   const Icon = SLOT_ICON[slot]
   const arrange = SLOT_LAYOUT[slot]
-  const px = (4.6 * SLOT_ICON_SCALE[slot]).toFixed(2)
-  const iconStyle = { width: `${px}cqw`, height: `${px}cqw`, opacity: 0.8, flexShrink: 0 }
+  const px = (6 * SLOT_ICON_SCALE[slot]).toFixed(2) // et par mm større (Anna)
+  const iconStyle = { width: `${px}cqw`, height: `${px}cqw`, opacity: 0.9, flexShrink: 0, color: SLOT_ICON_COLOR[slot] }
   const icon = <Icon style={iconStyle} strokeWidth={1.7} aria-hidden />
   const primary = <span style={primaryStyle}>{value}</span>
   const secondary = label ? <span style={secondaryStyle}>{label}</span> : null
