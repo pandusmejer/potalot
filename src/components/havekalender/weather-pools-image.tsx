@@ -45,6 +45,16 @@ const SEASON_ALT: Record<Season, string> = {
   autumn: 'Efterårets vejr-pools', winter: 'Vinterens vejr-pools',
 }
 
+/** Creme-flade pr. sæson — sampled fra hvert assets baggrundshjørne, så
+ *  sektionsfladen matcher den aktuelle sæsons asset og billedets egen creme
+ *  smelter usynligt ind i den. JUSTÉR HER hvis et asset udskiftes. */
+const SEASON_CREME: Record<Season, string> = {
+  spring: '#E6DBCC',
+  summer: '#EFDCBD',
+  autumn: '#DFB882',
+  winter: '#E4DFDA',
+}
+
 type Slot = 'rain' | 'soil' | 'temperature' | 'sun'
 
 const SLOT_ICON: Record<Slot, ComponentType<SVGProps<SVGSVGElement>>> = {
@@ -56,10 +66,10 @@ const SLOT_ICON: Record<Slot, ComponentType<SVGProps<SVGSVGElement>>> = {
  * asset flytter pytterne. Rækkefølge matcher det faste 2x2-layout.
  */
 const SLOT_POS: Record<Slot, { left: string; top: string }> = {
-  rain:        { left: '31%', top: '27%' }, // øverst venstre
+  rain:        { left: '31%', top: '31%' }, // øverst venstre — gruppen lidt ned
   soil:        { left: '67%', top: '28%' }, // øverst højre
-  temperature: { left: '34%', top: '63%' }, // nederst venstre
-  sun:         { left: '69%', top: '64%' }, // nederst højre
+  temperature: { left: '34%', top: '62%' }, // nederst venstre
+  sun:         { left: '69%', top: '61%' }, // nederst højre — gruppen lidt op
 }
 
 export interface WeatherPoolsData {
@@ -81,6 +91,7 @@ interface Props {
 export function WeatherPoolsImage({ data, month, date, className, priority }: Props) {
   const m = month ?? (date ?? new Date()).getMonth() + 1
   const season = monthToSeason(m)
+  const creme = SEASON_CREME[season]
 
   const slots: { slot: Slot; value: string; label?: string }[] = [
     { slot: 'rain', value: data.rain.value, label: data.rain.label },
@@ -90,13 +101,34 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
   ]
 
   return (
-    <div className={className} style={{ paddingInline: 16, marginTop: 14, marginBottom: 18, animation: 'vejr-pools-img-in 600ms ease-out both' }}>
+    <div
+      className={className}
+      style={{
+        // Fuld-bredde creme-FLADE (ikke en indsat plade): sektionen ER selv den
+        // varme creme, så assetets egen creme smelter usynligt ind i den. Hele
+        // fladen fader top/bund ind i siden (ingen hård billedkant), så pytterne
+        // føles som en fortsættelse af heroens organiske flade. Træk op under
+        // bølgen frem for at starte efter en tom cremeflade.
+        // Full-bleed til content-kolonnens kant — samme greb som heroen
+        // (-mx-4 i en max-w-[480px] px-4 container), så fladen flugter med
+        // heroen og IKKE giver vandret scroll (undgår 100vw-scrollbar-fælden).
+        width: 'calc(100% + 32px)',
+        marginLeft: -16,
+        marginRight: -16,
+        marginTop: -28,
+        marginBottom: -8,
+        background: creme,
+        maskImage: 'linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
+        animation: 'vejr-pools-img-in 600ms ease-out both',
+      }}
+    >
       <style>{`@keyframes vejr-pools-img-in { 0% { opacity: 0; transform: translateY(5px); } 100% { opacity: 1; transform: translateY(0); } }`}</style>
       <div
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: 440,
+          maxWidth: 520,
           marginInline: 'auto',
           aspectRatio: '1448 / 1086',
           containerType: 'inline-size', // → 1cqw = 1% af denne breddes, overlay skalerer med billedet
@@ -107,7 +139,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
           alt={SEASON_ALT[season]}
           fill
           priority={priority}
-          sizes="(max-width: 480px) 92vw, 440px"
+          sizes="(max-width: 540px) 100vw, 520px"
           style={{ objectFit: 'contain' }}
         />
 
@@ -125,10 +157,10 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
                 textAlign: 'center', color: INK, lineHeight: 1.04, pointerEvents: 'none',
               }}
             >
-              <Icon style={{ width: '5cqw', height: '5cqw', opacity: 0.7, marginBottom: '1.4cqw' }} strokeWidth={1.7} aria-hidden />
-              <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '6.4cqw', letterSpacing: '0.01em' }}>{value}</span>
+              <Icon style={{ width: '4.6cqw', height: '4.6cqw', opacity: 0.8, marginBottom: '1cqw' }} strokeWidth={1.7} aria-hidden />
+              <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '6cqw', letterSpacing: '0.01em' }}>{value}</span>
               {label ? (
-                <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '4.4cqw', opacity: 0.72, marginTop: '0.4cqw' }}>{label}</span>
+                <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '5cqw', opacity: 0.78, marginTop: '0.2cqw' }}>{label}</span>
               ) : null}
             </div>
           )
