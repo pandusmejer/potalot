@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { markDerivedTaskDone, unmarkDerivedTaskDone } from '@/actions/plant-tasks'
-import type { DagensFokus, FokusHandling, FokusLag } from '@/lib/kalender/dagens-fokus'
+import type { DagensFokus, FokusHandling } from '@/lib/kalender/dagens-fokus'
 
 /**
  * DAGENS FOKUS — Kalenderens redaktionelle kerne og svar på sidens ene
@@ -28,23 +28,48 @@ import type { DagensFokus, FokusHandling, FokusLag } from '@/lib/kalender/dagens
 const sans = 'var(--font-manrope)'
 const display = 'var(--font-gabarito), var(--font-manrope), sans-serif'
 
-/** Kort, rolig timing-etiket pr. lag — ikke et alarm-signal. */
-const LAG_CHIP: Record<FokusLag, { label: string; color: string; bg: string }> = {
-  1: { label: 'Haster', color: '#B5602F', bg: 'rgba(181,96,47,0.12)' },
-  2: { label: 'Klar nu', color: '#4C6038', bg: 'rgba(80,104,52,0.13)' },
-  3: { label: 'Tjek', color: '#A87C3B', bg: 'rgba(168,124,59,0.14)' },
-  4: { label: 'Mulighed', color: 'rgba(42,51,32,0.55)', bg: 'rgba(42,51,32,0.06)' },
-  5: { label: 'Rytme', color: 'rgba(42,51,32,0.5)', bg: 'rgba(42,51,32,0.05)' },
+/**
+ * Chip = lille LÆSE-signal for grad af timing/konsekvens — ikke et statusfelt.
+ * Labelen afledes af handlingstypen (ikke laget), så hierarkiet bliver
+ * aflæseligt: "Høst nu" siger at timing betyder noget; "Mulighed" føles lavere
+ * end "Plant ud". Tonen forstærker rækkefølgen (rust=hast → warm=høst-nu →
+ * grøn=handling → dæmpet=mulighed). Kun chip-sprog/tone — intet andet.
+ */
+const CHIP_TONE: Record<string, { color: string; bg: string }> = {
+  'Haster':      { color: '#B5602F', bg: 'rgba(181,96,47,0.13)' }, // frost — mest presserende
+  'Høst nu':     { color: '#9A6A1E', bg: 'rgba(168,124,59,0.16)' }, // timing-nu, varm
+  'Godt vindue': { color: '#4C6038', bg: 'rgba(80,104,52,0.17)' }, // snævert vindue → handl
+  'Plant ud':    { color: '#4C6038', bg: 'rgba(80,104,52,0.12)' }, // almindelig handling
+  'Mere plads':  { color: 'rgba(76,96,56,0.85)', bg: 'rgba(80,104,52,0.08)' }, // roligt
+  'Tjek':        { color: '#A87C3B', bg: 'rgba(168,124,59,0.14)' },
+  'Mulighed':    { color: 'rgba(42,51,32,0.5)', bg: 'rgba(42,51,32,0.06)' }, // lavest
 }
 
-function Chip({ lag }: { lag: FokusLag }) {
-  const c = LAG_CHIP[lag]
+/** Chip-label efter handlingstype. udplant skifter til "Godt vindue" når
+ *  vinduet er snævert (lukker denne eller næste måned) — ellers "Plant ud". */
+function chipLabel(h: FokusHandling, month: number): string {
+  switch (h.taskType) {
+    case 'daek': return 'Haster'
+    case 'hoest': return 'Høst nu'
+    case 'udplant': {
+      const snaevert = h.deadlineMaaned != null && h.deadlineMaaned - month <= 1
+      return snaevert ? 'Godt vindue' : 'Plant ud'
+    }
+    case 'prikl': return 'Mere plads'
+    case 'tjek-spiring': return 'Tjek'
+    default: return 'Mulighed' // saa/forspir/plant-ud (frøbank) + evt. lag 5
+  }
+}
+
+function Chip({ h, month }: { h: FokusHandling; month: number }) {
+  const label = chipLabel(h, month)
+  const tone = CHIP_TONE[label] ?? CHIP_TONE['Mulighed']
   return (
     <span
       className="shrink-0 rounded-full"
-      style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: c.color, background: c.bg, padding: '3px 9px' }}
+      style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: tone.color, background: tone.bg, padding: '3px 9px' }}
     >
-      {c.label}
+      {label}
     </span>
   )
 }
@@ -72,7 +97,7 @@ function CheckCircle({ done, onToggle, label, size = 21 }: {
 }
 
 /** Det fremhævede primære fokus — sektionens redaktionelle hovedperson. */
-function PrimaryFocus({ h, done, onToggle }: { h: FokusHandling; done: boolean; onToggle: () => void }) {
+function PrimaryFocus({ h, done, month, onToggle }: { h: FokusHandling; done: boolean; month: number; onToggle: () => void }) {
   const checkbar = h.plantId !== null
   return (
     <div
@@ -92,7 +117,7 @@ function PrimaryFocus({ h, done, onToggle }: { h: FokusHandling; done: boolean; 
             >
               {h.titel}
             </h3>
-            <Chip lag={h.lag} />
+            <Chip h={h} month={month} />
           </div>
           <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '7px 0 0', lineHeight: 1.4 }}>
             {h.hvorfor}
@@ -110,7 +135,7 @@ function PrimaryFocus({ h, done, onToggle }: { h: FokusHandling; done: boolean; 
 }
 
 /** Støttende fokus-række (kompakt, divider-adskilt). */
-function SecondaryRow({ h, done, first, onToggle }: { h: FokusHandling; done: boolean; first: boolean; onToggle: () => void }) {
+function SecondaryRow({ h, done, first, month, onToggle }: { h: FokusHandling; done: boolean; first: boolean; month: number; onToggle: () => void }) {
   const checkbar = h.plantId !== null
   return (
     <div
@@ -125,7 +150,7 @@ function SecondaryRow({ h, done, first, onToggle }: { h: FokusHandling; done: bo
           <span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--foreground)', textDecoration: done ? 'line-through' : 'none' }}>
             {h.titel}
           </span>
-          {!done && <Chip lag={h.lag} />}
+          {!done && <Chip h={h} month={month} />}
         </span>
         <span className="block" style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(42,51,32,0.6)', marginTop: 3, textDecoration: done ? 'line-through' : 'none' }}>
           {h.hvorfor}
@@ -147,6 +172,9 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
   const initial = [...data.fokus, ...data.flere].filter(h => h.udfoert).map(h => h.taskKey)
   const [done, setDone] = useState<ReadonlySet<string>>(() => new Set(initial))
   const [visAlle, setVisAlle] = useState(false)
+  // Aktuel måned til chip-logikken ("Godt vindue" vs "Plant ud"). Stabil pr.
+  // dag → samme på server (SSR) og klient, ingen hydration-mismatch.
+  const month = new Date().getMonth() + 1
 
   function setMembership(taskKey: string, isDone: boolean) {
     setDone(prev => {
@@ -200,12 +228,12 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
     <section>
       <Eyebrow>Dagens fokus</Eyebrow>
 
-      <PrimaryFocus h={primary} done={isDone(primary)} onToggle={() => toggle(primary)} />
+      <PrimaryFocus h={primary} done={isDone(primary)} month={month} onToggle={() => toggle(primary)} />
 
       {aktiveSekundaere.length > 0 && (
         <div style={{ marginTop: 6 }}>
           {aktiveSekundaere.map((h, i) => (
-            <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0} onToggle={() => toggle(h)} />
+            <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0} month={month} onToggle={() => toggle(h)} />
           ))}
         </div>
       )}
@@ -216,7 +244,7 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
           {visAlle && (
             <div style={{ marginTop: 2 }}>
               {data.flere.map((h, i) => (
-                <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0 && aktiveSekundaere.length === 0} onToggle={() => toggle(h)} />
+                <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0 && aktiveSekundaere.length === 0} month={month} onToggle={() => toggle(h)} />
               ))}
             </div>
           )}
