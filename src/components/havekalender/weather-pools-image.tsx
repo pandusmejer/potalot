@@ -99,6 +99,21 @@ const SLOT_ICON_COLOR: Record<Slot, string> = {
   sun: '#7A5E22',         // okker (sol-pyttens honning, mørkere)
 }
 
+/** Finjustering pr. pyt (Anna, i mm). Blok = hele indholdets position på
+ *  pytten; ikon = ikonets placering relativt i blokken. */
+const SLOT_BLOCK_OFFSET: Record<Slot, { x: number; y: number }> = {
+  rain: { x: -3, y: 0 },        // hele indholdet 3 mm mod venstre
+  soil: { x: 0, y: 0 },
+  temperature: { x: -3, y: 0 }, // ikon + tekst 3 mm mod venstre
+  sun: { x: 0, y: 0 },
+}
+const SLOT_ICON_OFFSET: Record<Slot, { x: number; y: number }> = {
+  rain: { x: 0, y: 2 },         // ikon 2 mm ned
+  soil: { x: 1, y: 2 },         // ikon 2 mm ned, 1 mm mod højre
+  temperature: { x: 0, y: 2 },  // ikon 2 mm ned
+  sun: { x: 0, y: 0 },
+}
+
 export interface WeatherPoolsData {
   rain: { value: string; label: string }
   soil: { value: string; label: string }
@@ -143,10 +158,10 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         marginLeft: -16,
         marginRight: -16,
         marginTop: 'calc(-28px - 2.5cm + 4mm)', // 2,5 cm op, 4 mm tilbage ned (Anna)
-        marginBottom: -8,
+        marginBottom: 'calc(-8px + 4mm)', // skub Dagens fokus 4 mm ned (Anna)
         background: creme,
-        // Længere top-fade (0→20%) blender creme-fladen blødt ind under heroen,
-        // så overgangen mellem hero og sektion ikke har en synlig sømlinje.
+        // Top-fade (0→20%) blender ind under heroen; bund-fade (86→100%) giver
+        // en blød overgang ned mod Dagens fokus (pyt-sikker: rører ikke pytterne).
         maskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
         WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
         animation: 'vejr-pools-img-in 600ms ease-out both',
@@ -174,13 +189,14 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
 
         {slots.map(({ slot, value, label }) => {
           const pos = SLOT_POS[slot]
+          const bo = SLOT_BLOCK_OFFSET[slot]
           return (
             <div
               key={slot}
               style={{
                 position: 'absolute',
                 left: pos.left, top: pos.top,
-                transform: 'translate(-50%, -50%)',
+                transform: `translate(calc(-50% + ${bo.x}mm), calc(-50% + ${bo.y}mm))`,
                 color: INK, lineHeight: 1.04, pointerEvents: 'none',
               }}
             >
@@ -201,7 +217,12 @@ function PoolContent({ slot, value, label }: { slot: Slot; value: string; label?
   const Icon = SLOT_ICON[slot]
   const arrange = SLOT_LAYOUT[slot]
   const px = (6 * SLOT_ICON_SCALE[slot]).toFixed(2) // et par mm større (Anna)
-  const iconStyle = { width: `${px}cqw`, height: `${px}cqw`, opacity: 0.9, flexShrink: 0, color: SLOT_ICON_COLOR[slot] }
+  const io = SLOT_ICON_OFFSET[slot]
+  const iconStyle = {
+    width: `${px}cqw`, height: `${px}cqw`, opacity: 0.9, flexShrink: 0,
+    color: SLOT_ICON_COLOR[slot],
+    transform: `translate(${io.x}mm, ${io.y}mm)`, // ikon-nudge relativt i blokken
+  }
   const icon = <Icon style={iconStyle} strokeWidth={1.7} aria-hidden />
   const primary = <span style={primaryStyle}>{value}</span>
   const secondary = label ? <span style={secondaryStyle}>{label}</span> : null
