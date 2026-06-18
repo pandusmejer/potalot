@@ -19,6 +19,7 @@ import { DenneUgeIHaven } from '@/components/havekalender/denne-uge-i-haven'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
 import { DetKanDuGoere } from '@/components/havekalender/det-kan-du-goere'
+import { DagensFokusSection } from '@/components/havekalender/dagens-fokus-section'
 import { NaesteMaaned } from '@/components/havekalender/naeste-maaned'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -33,6 +34,7 @@ import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { computeWeekSuggestions } from '@/lib/denne-uge'
 import { cn } from '@/lib/utils'
 import type { GardenAlert } from '@/actions/weather'
+import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -48,6 +50,8 @@ interface Props {
   /** Daglig sensorisk note — beregnet server-side, roterer pr. dag. */
   gardenNote: string
   isLoggedIn: boolean
+  /** Kalenderens hjerne — dagens 1-3 vigtigste (lib/kalender/dagens-fokus). */
+  dagensFokus: DagensFokus
 }
 
 /** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
@@ -105,7 +109,7 @@ function IconKop({ className }: { className?: string }) {
   )
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -131,6 +135,12 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
       {/* 2 · KONTEKST-PILLER — små have-relevante vejrsignaler lige under
           heroen. Ikke et dashboard, kun det der ændrer have-beslutninger. */}
       <WeatherPills alerts={alerts} />
+
+      {/* 2.5 · DAGENS FOKUS — Kalenderens hjerne (mentor-motoren). Broen mellem
+          stemning (hero) og handling: "derfor bør du især gøre dette i dag".
+          Isoleret sektion (Anna 18/6) — placeret efter vejrpiller, før Denne
+          uge. Rører intet andet i kalenderen. */}
+      <DagensFokusSection data={dagensFokus} canPersist={isLoggedIn} />
 
       {/* 3 · UGENS RYTME — varmt papir-card med horisontale day cards.
           AKTUELT-laget. Linker via "Ugens opgaver →" til Mine opgaver
