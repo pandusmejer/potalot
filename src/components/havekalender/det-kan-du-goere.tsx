@@ -24,7 +24,7 @@ import type { ComponentType, SVGProps } from 'react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
 import { hideGeneralTask } from '@/actions/aarshjul'
-import { createTask } from '@/actions/havekalender'
+import { createTask, completeTask, deleteTask } from '@/actions/havekalender'
 
 const sans = 'var(--font-manrope)'
 
@@ -204,6 +204,7 @@ interface FocusTask {
   id: string
   title: string
   description: string
+  category: string
   Icon: ComponentType<SVGProps<SVGSVGElement>>
 }
 
@@ -282,7 +283,7 @@ function FokusBlock({
 
   return (
     <div>
-      <div style={{ padding: '24px 24px 12px' }}>
+      <div style={{ padding: '22px 24px 10px' }}>
         {/* 🔒 LÅST PERMANENT TITEL — "Månedens gøremål" må IKKE omdøbes
             (fx til "Gøremål i sæsonen"). Brugervalgt, fast. */}
         <p
@@ -297,6 +298,20 @@ function FokusBlock({
           }}
         >
           Månedens gøremål
+        </p>
+        {/* Editorial rolle: universelle havejobs for måneden — IKKE brugerens
+            plantebundne opgaver (dem ejer Ugens fokus). */}
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 13,
+            fontWeight: 500,
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.55)',
+            margin: '4px 0 0',
+          }}
+        >
+          Forslag til hele haven i {maaned.toLowerCase()} — ikke kun dine planter.
         </p>
       </div>
 
@@ -381,22 +396,16 @@ function FokusBlock({
 }
 
 /**
- * En task-række med tre handlinger:
- *   • "Klaret" (primær sage-pille): markér som gjort — opretter task
- *     med status='completed' der havner i Afsluttet-tab.
- *   • "Tilføj til mine opgaver" (primær sage-pille): tilføj til
- *     I dag-tab som åben opgave.
- *   • "Skjul" (ghost): skjul som ikke relevant for min have.
+ * Et månedsgøremål som redaktionelt forslag (Gardeners' World "jobs this
+ * month"), IKKE en plantebunden task. Knap-hierarki (Anna 18/6):
+ *   default:  [Tilføj til mine opgaver] (primær) · [Skjul] (sekundær, diskret)
+ *   tilføjet: ✓ Tilføjet · [Marker som klaret] (tertiær) · [Fjern]
+ *   klaret:   dæmpet ✓ Klaret
+ * "Klaret" er bevidst IKKE en primær handling — brugeren vælger først, om
+ * gøremålet er relevant for deres have.
  *
- * Alle handlinger fjerner gøremålet fra synlige listen via
- * `onActioned` callback, så næste gøremål fra køen rykker op.
- *
- * Visuelt: 8px hero-foto-strimmel langs venstre kant der viser et
- * udsnit af månedens hero-billede. Strimmelen får forskellig
- * background-position pr. række (via stripIndex) så hver pille har
- * sit eget udsnit af det samme billede — som om de er klippet ud
- * af samme atmosfære. Det binder card'et visuelt sammen med resten
- * af kalenderen.
+ * Hero-strimmel langs venstre kant (watermark af månedens billede) bindes
+ * visuelt til resten af kalenderen.
  */
 function FocusTaskRow({
   task,
@@ -413,6 +422,8 @@ function FocusTaskRow({
 }) {
   const [pending, startTransition] = useTransition()
   const [demoNotice, setDemoNotice] = useState(false)
+  const [rowState, setRowState] = useState<'default' | 'added' | 'done'>('default')
+  const [createdId, setCreatedId] = useState<string | null>(null)
 
   const showDemoIfNeeded = (): boolean => {
     if (isLoggedIn) return false
@@ -425,7 +436,7 @@ function FocusTaskRow({
     if (showDemoIfNeeded()) return
     startTransition(async () => {
       const today = new Date().toISOString().slice(0, 10)
-      await createTask({
+      const res = await createTask({
         title: task.title,
         description: task.description || undefined,
         date: today,
@@ -434,26 +445,10 @@ function FocusTaskRow({
         source: 'general',
         sourceId: task.id,
       })
-      onActioned(task.id)
-    })
-  }
-
-  const handleDone = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (showDemoIfNeeded()) return
-    startTransition(async () => {
-      const today = new Date().toISOString().slice(0, 10)
-      await createTask({
-        title: task.title,
-        description: task.description || undefined,
-        date: today,
-        taskType: 'custom',
-        priority: 'medium',
-        source: 'general',
-        sourceId: task.id,
-        status: 'completed',
-      })
-      onActioned(task.id)
+      if (res && 'id' in res) {
+        setCreatedId(res.id)
+        setRowState('added')
+      }
     })
   }
 
@@ -466,143 +461,142 @@ function FocusTaskRow({
     })
   }
 
+  // Tertiær — kun efter gøremålet er gjort til en personlig opgave.
+  const handleDone = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!createdId) return
+    startTransition(async () => {
+      await completeTask(createdId)
+      setRowState('done')
+    })
+  }
+
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!createdId) return
+    startTransition(async () => {
+      await deleteTask(createdId)
+      setCreatedId(null)
+      setRowState('default')
+    })
+  }
+
   if (demoNotice) {
     return <ConfirmationRow status="demo" title={task.title} />
   }
 
-  // 8px hero-strimmel pr. række — forskellige horisontale udsnit
-  // af samme hero-billede så hver pille har sit eget mini-billede
-  // men de hænger sammen som strips af samme foto.
   const heroSrc = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1] ?? 'maj'}-foto.png`
   const stripOffsets = ['12%', '38%', '64%', '88%', '24%', '52%', '76%', '4%']
   const stripPos = stripOffsets[stripIndex % stripOffsets.length]
+  const cat = categoryLabel(task.category)
 
   return (
     <div
       style={{
         position: 'relative',
-        // 32px venstre-padding så teksten starter tydeligt — men
-        // hero-strimlen nedenfor strækker sig længere ind (op til
-        // ~120px), bag teksten, så billedet bliver et watermark
-        // snarere end en kant-stribe.
-        padding: '14px 14px 14px 32px',
+        padding: '11px 14px 12px 30px',
         borderRadius: 16,
         background: 'rgba(255,255,255,0.62)',
         border: '1px solid rgba(36,48,31,0.05)',
         boxShadow: '0 2px 6px rgba(36,48,31,0.05), 0 1px 2px rgba(36,48,31,0.03)',
-        opacity: pending ? 0.55 : 1,
-        transition: 'opacity 180ms ease-out, box-shadow 200ms ease-out',
+        opacity: pending ? 0.55 : rowState === 'done' ? 0.5 : 1,
+        transition: 'opacity 180ms ease-out',
         overflow: 'hidden',
-        minHeight: 132,
       }}
     >
-      {/* Hero-strimmel der strækker sig 120px ind i pillen, bag
-          tekstindholdet, med MEGET subtil overall opacity. Det
-          fungerer som et atmosfærisk watermark der binder pillen
-          til kalenderens visuelle DNA uden at konkurrere med
-          læsningen. */}
+      {/* Hero-watermark langs venstre kant — atmosfærisk, fader ud mod højre. */}
       <div
         aria-hidden
         style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          width: 120,
+          position: 'absolute', top: 0, bottom: 0, left: 0, width: 120,
           backgroundImage: `url("${heroSrc}")`,
           backgroundSize: 'auto 100%',
           backgroundPosition: `${stripPos} center`,
           backgroundRepeat: 'no-repeat',
-          // Meget subtil fade — starter ved bare 0.55 opacity og
-          // glider gennem lange mellem-tonaliteter til 0 i den
-          // højre kant. Strimlen ÅNDER bag teksten uden at trænge
-          // sig på.
           maskImage:
-            'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.42) 20%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0.14) 70%, rgba(0,0,0,0) 100%)',
+            'linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0) 100%)',
           WebkitMaskImage:
-            'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.42) 20%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0.14) 70%, rgba(0,0,0,0) 100%)',
+            'linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0) 100%)',
           pointerEvents: 'none',
         }}
       />
 
-      {/* Titel + beskrivelse — z-index 1 så de ligger over hero-
-          watermarken nedenunder. */}
-      <p
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: sans,
-          fontSize: 15,
-          fontWeight: 800,
-          lineHeight: 1.2,
-          color: '#24301F',
-          margin: 0,
-        }}
-      >
+      {/* Kategori-chip øverst — markerer at det er et redaktionelt forslag. */}
+      {cat && (
+        <span
+          style={{
+            position: 'relative', zIndex: 1, display: 'inline-block',
+            fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.08em',
+            textTransform: 'uppercase', color: 'rgba(36,48,31,0.5)',
+            background: 'rgba(36,48,31,0.06)', padding: '2px 9px', borderRadius: 999,
+            marginBottom: 6,
+          }}
+        >
+          {cat}
+        </span>
+      )}
+
+      <p style={{ position: 'relative', zIndex: 1, fontFamily: sans, fontSize: 15, fontWeight: 800, lineHeight: 1.2, color: '#24301F', margin: 0 }}>
         {task.title}
       </p>
       {task.description && (
-        <p
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 500,
-            lineHeight: 1.35,
-            color: 'rgba(36,48,31,0.62)',
-            margin: 0,
-            marginTop: 3,
-          }}
-        >
+        <p style={{ position: 'relative', zIndex: 1, fontFamily: sans, fontSize: 12, fontWeight: 500, lineHeight: 1.35, color: 'rgba(36,48,31,0.62)', margin: '3px 0 0' }}>
           {task.description}
         </p>
       )}
 
-      {/* Action-række — tre knapper: Klaret · Tilføj til mine opgaver · Skjul */}
-      <div
-        className="flex items-center flex-wrap"
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          gap: 6,
-          marginTop: 12,
-        }}
-      >
-        <ActionPill
-          aria-label="Markér som klaret"
-          onClick={handleDone}
-          disabled={pending}
-          variant="done"
-        >
-          <Check
-            width={13}
-            height={13}
-            strokeWidth={2.4}
-            style={{ marginRight: 4, marginTop: -1 }}
-            aria-hidden
-          />
+      {/* Handlinger — afhænger af state. */}
+      {rowState === 'default' && (
+        <div className="flex items-center" style={{ position: 'relative', zIndex: 1, gap: 8, marginTop: 11 }}>
+          <ActionPill aria-label="Tilføj til mine opgaver" onClick={handleAdd} disabled={pending} variant="primaryFilled" style={{ flex: 1 }}>
+            Tilføj til mine opgaver
+          </ActionPill>
+          <ActionPill aria-label="Skjul — ikke relevant for min have" onClick={handleHide} disabled={pending} variant="ghost">
+            Skjul
+          </ActionPill>
+        </div>
+      )}
+
+      {rowState === 'added' && (
+        <div style={{ position: 'relative', zIndex: 1, marginTop: 10 }}>
+          <p className="inline-flex items-center" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: '#3D5A26', margin: 0, gap: 5 }}>
+            <Check width={14} height={14} strokeWidth={2.4} aria-hidden />
+            Tilføjet til dine opgaver
+          </p>
+          <div className="flex items-center" style={{ gap: 8, marginTop: 8 }}>
+            <ActionPill aria-label="Marker som klaret" onClick={handleDone} disabled={pending} variant="outline">
+              Marker som klaret
+            </ActionPill>
+            <ActionPill aria-label="Fjern fra mine opgaver igen" onClick={handleRemove} disabled={pending} variant="ghost">
+              Fjern
+            </ActionPill>
+          </div>
+        </div>
+      )}
+
+      {rowState === 'done' && (
+        <p className="inline-flex items-center" style={{ position: 'relative', zIndex: 1, fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: 'rgba(36,48,31,0.5)', margin: '11px 0 0', gap: 5 }}>
+          <Check width={14} height={14} strokeWidth={2.4} aria-hidden />
           Klaret
-        </ActionPill>
-        <ActionPill
-          aria-label="Tilføj denne opgave til mine opgaver"
-          onClick={handleAdd}
-          disabled={pending}
-          variant="primary"
-        >
-          Tilføj til mine opgaver
-        </ActionPill>
-        <ActionPill
-          aria-label="Skjul — ikke relevant for min have"
-          onClick={handleHide}
-          disabled={pending}
-          variant="ghost"
-        >
-          Skjul
-        </ActionPill>
-      </div>
+        </p>
+      )}
     </div>
   )
+}
+
+/** Pæn label for en gøremåls-kategori (admin-slug → dansk). Fallback: kapitalisér. */
+function categoryLabel(cat: string): string {
+  if (!cat) return ''
+  const map: Record<string, string> = {
+    vanding: 'Vanding', drivhus: 'Drivhus', ukrudt: 'Ukrudt', jord: 'Jord',
+    skadedyr: 'Skadedyr', ferie: 'Ferie', hoest: 'Høst', høst: 'Høst',
+    pleje: 'Pleje', saaning: 'Såning', saning: 'Såning', såning: 'Såning',
+    blomster: 'Blomster', biodiversitet: 'Biodiversitet', koekkenhave: 'Køkkenhave',
+    udplantning: 'Udplantning', kompost: 'Kompost', graes: 'Plæne', plaene: 'Plæne',
+    haek: 'Hæk', stauder: 'Stauder', krukker: 'Krukker',
+  }
+  const key = cat.toLowerCase().trim()
+  return map[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
 }
 
 /**
@@ -706,37 +700,38 @@ function genitiveMonth(maaned: string): string {
 function ActionPill({
   children,
   variant,
+  style,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
-  variant: 'done' | 'primary' | 'ghost'
+  variant: 'primaryFilled' | 'outline' | 'ghost'
 }) {
   const styles =
-    variant === 'done'
+    variant === 'primaryFilled'
       ? {
-          background: 'transparent',
-          color: '#3D5A26',
-          border: '1.5px solid rgba(90,111,68,0.55)',
-          padding: '5.5px 12px',
+          background: '#5A6F44',
+          color: '#F7F8EF',
+          border: 'none',
+          padding: '8px 14px',
         }
-      : variant === 'primary'
+      : variant === 'outline'
         ? {
-            background: 'rgba(123,148,96,0.16)',
+            background: 'transparent',
             color: '#3D5A26',
-            border: 'none',
-            padding: '7px 13px',
+            border: '1.5px solid rgba(90,111,68,0.5)',
+            padding: '6px 12px',
           }
         : {
             background: 'transparent',
-            color: 'rgba(36,48,31,0.55)',
+            color: 'rgba(36,48,31,0.5)',
             border: 'none',
-            padding: '7px 13px',
+            padding: '7px 10px',
           }
   return (
     <button
       type="button"
       {...props}
-      className="inline-flex items-center"
+      className="inline-flex items-center justify-center"
       style={{
         borderRadius: 999,
         ...styles,
@@ -744,9 +739,11 @@ function ActionPill({
         fontSize: 12.5,
         fontWeight: 700,
         letterSpacing: '0.005em',
+        whiteSpace: 'nowrap',
         cursor: props.disabled ? 'default' : 'pointer',
         opacity: props.disabled ? 0.5 : 1,
         transition: 'background 140ms ease-out, color 140ms ease-out, border-color 140ms ease-out',
+        ...style,
       }}
     >
       {children}
@@ -928,6 +925,7 @@ function buildMonthTasks(
       id: t.id,
       title: t.title,
       description: t.description || t.timeWindow || t.tip || '',
+      category: t.category || '',
       Icon: iconForTask(t),
     }))
 }
