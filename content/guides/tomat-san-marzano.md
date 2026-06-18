@@ -10,6 +10,8 @@ summary: "Klassisk italiensk pastatomat med fast frugtkød og lavt vandindhold. 
 difficulty: medium
 tags: [italiensk, pasta, kødfuld, lagringsdygtig, pastatomat, arvesort]
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "6-10 dage"
   growthType: ranketomat
   height: "180-220 cm"

@@ -22,6 +22,8 @@ tags:
   - knoldplante
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "2 °C"
   growthType: opret
   height: "100-140 cm"
   maturityDays: "90-120 dage"

@@ -17,6 +17,8 @@ tags:
   - spisekammer
   - selvforsyning
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "5-8 dage"
   preCultivation: true
   sowingMonths: [4, 5]

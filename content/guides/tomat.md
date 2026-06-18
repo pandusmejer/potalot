@@ -10,6 +10,8 @@ summary: "Tomater elsker varme, lys og en lang sæson. Starter du dem tidligt og
 difficulty: medium
 tags: [drivhus, varmekraevende, klassiker, sommer, spisekammer]
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "6-10 dage"
   preCultivation: true
   sowingMonths: [3, 4]

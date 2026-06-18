@@ -21,6 +21,8 @@ tags:
   - selvforsyning
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "5-8 dage"
   growthType: slyngplante
   height: "150-250 cm"

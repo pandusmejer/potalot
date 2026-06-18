@@ -24,6 +24,8 @@ tags:
   - spisekammer
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "10-21 dage"
   growthType: busket
   height: "60-90 cm"

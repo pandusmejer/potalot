@@ -47,6 +47,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænet og fugtighedsbevarende jord med højt indhold af organisk materiale.",
@@ -249,6 +251,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
@@ -491,6 +495,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "2 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænet jord med jævn fugt og højt indhold af organisk materiale."
@@ -760,6 +766,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
@@ -973,6 +981,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende muldjord med jævn fugt.",
@@ -1216,6 +1226,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         8,
         9
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "5-8 dage",
       "growthType": "slyngplante",
       "height": "150-250 cm",
@@ -1296,6 +1308,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "14-28 dage",
       "growthType": "busket",
       "height": "60-100 cm",
@@ -1414,6 +1428,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "2 °C",
       "growthType": "opret",
       "height": "100-140 cm",
       "maturityDays": "90-120 dage",
@@ -1544,6 +1560,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "60-90 cm",
@@ -1670,6 +1688,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "70-120 cm",
@@ -1792,6 +1812,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "6-10 dage",
       "growthType": "ranketomat",
       "height": "180-220 cm",

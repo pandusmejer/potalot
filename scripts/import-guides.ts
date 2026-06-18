@@ -679,6 +679,8 @@ function buildGuide(
     harvestMonths: asNumberArray(qfRaw.harvestMonths),
   }
   if (qfRaw.preCultivation !== undefined) quickFacts.preCultivation = !!qfRaw.preCultivation
+  if (qfRaw.frostSensitive !== undefined) quickFacts.frostSensitive = !!qfRaw.frostSensitive
+  if (qfRaw.minimumTemperature) quickFacts.minimumTemperature = asString(qfRaw.minimumTemperature)
   if (qfRaw.light) quickFacts.light = asString(qfRaw.light)
   if (qfRaw.water) quickFacts.water = asString(qfRaw.water)
   if (qfRaw.soil) quickFacts.soil = asString(qfRaw.soil)
