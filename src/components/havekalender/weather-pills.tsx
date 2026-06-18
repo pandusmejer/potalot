@@ -41,6 +41,18 @@ export function WeatherPills({ alerts }: Props) {
 
   return (
     <div style={{ paddingInline: 20, marginTop: 16, marginBottom: 20, animation: 'vejr-pools-in 600ms ease-out both' }}>
+      {/* Ujævne pyt-silhuetter via SVG clip-paths (normaliseret 0..1 → skalerer
+          til enhver poolstørrelse). Hver har indhak/bule, så de IKKE er ovaler. */}
+      <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
+        <defs>
+          {POOL_BLOBS.map((d, i) => (
+            <clipPath key={i} id={`vejr-blob-${i}`} clipPathUnits="objectBoundingBox">
+              <path d={d} />
+            </clipPath>
+          ))}
+        </defs>
+      </svg>
+
       <style>{`
         @keyframes vejr-pools-in { 0% { opacity: 0; transform: translateY(5px); } 100% { opacity: 1; transform: translateY(0); } }
         .vejr-pool {
@@ -48,52 +60,54 @@ export function WeatherPills({ alerts }: Props) {
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           text-align: center;
           width: var(--pool-w); height: var(--pool-h);
-          border-radius: var(--pool-radius);
           transform: rotate(var(--pool-rotate));
           color: var(--pool-ink);
-          /* Flad pyt, ikke blank sten: dæmpet diffust lys fra øverste højre. */
+          /* Tynd væske på flade: svag vandkant-rim (lys ring nær kanten),
+             diffust lys fra øverste højre, svag mørk bund-venstre. */
           background:
-            radial-gradient(150% 120% at 72% 12%, rgba(255,255,255,0.30), rgba(255,255,255,0) 54%),
+            radial-gradient(closest-side at 50% 48%, rgba(255,255,255,0) 56%, rgba(255,255,255,0.22) 90%, rgba(255,255,255,0) 100%),
+            radial-gradient(115% 130% at 77% 12%, rgba(255,255,255,0.24), rgba(255,255,255,0) 46%),
+            linear-gradient(210deg, rgba(255,255,255,0) 56%, rgba(36,48,31,0.10) 100%),
             var(--pool-bg);
-          /* Lav, tæt kontaktskygge (pytten ligger på fladen) + svag vand-dybde
-             langs nederste kant. Kun en anelse indre top-glans. */
-          box-shadow:
-            0 7px 13px -9px rgba(36,48,31,0.20),
-            0 2px 4px -3px rgba(36,48,31,0.10),
-            inset 0 -5px 11px -8px rgba(36,48,31,0.15),
-            inset 2px 3px 8px -7px rgba(255,255,255,0.34);
-          backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
-          overflow: hidden;
+          /* drop-shadow FØLGER clip-path-silhuetten (box-shadow gør ikke).
+             Lav, tæt kontaktskygge — pytten ligger på fladen. */
+          filter:
+            drop-shadow(0 5px 6px rgba(36,48,31,0.16))
+            drop-shadow(0 1px 2px rgba(36,48,31,0.12));
+          backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
         }
-        .vejr-pool::before { /* bredt, fladt diffust lys — som lys hen over vand */
-          content: ''; position: absolute; top: 7%; right: 9%;
-          width: 60%; height: 32%; border-radius: 50%;
-          background: radial-gradient(circle at 58% 44%, rgba(255,255,255,0.40), rgba(255,255,255,0) 72%);
-          filter: blur(3.5px); pointer-events: none;
+        .vejr-pool::before { /* ujævnt, blødt kant-highlight øverst/højre */
+          content: ''; position: absolute; top: 5%; right: 7%;
+          width: 44%; height: 28%; border-radius: 50%;
+          background: radial-gradient(circle at 56% 48%, rgba(255,255,255,0.5), rgba(255,255,255,0) 72%);
+          filter: blur(3px); pointer-events: none;
+          clip-path: var(--pool-clip); -webkit-clip-path: var(--pool-clip);
         }
-        .vejr-pool::after { /* knap synlig sekundær glimt — holder det levende, ikke blankt */
-          content: ''; position: absolute; top: 20%; left: 18%;
-          width: 13%; height: 9%; border-radius: 50%;
-          background: rgba(255,255,255,0.26); filter: blur(2.5px); pointer-events: none;
+        .vejr-pool::after { /* subtil våd tekstur — ikke en glat gradient */
+          content: ''; position: absolute; inset: 0;
+          background-image: radial-gradient(rgba(255,255,255,0.045) 0.5px, transparent 0.7px);
+          background-size: 4px 4px; opacity: 0.7; mix-blend-mode: screen;
+          clip-path: var(--pool-clip); -webkit-clip-path: var(--pool-clip);
+          pointer-events: none;
         }
       `}</style>
 
       {/* Løst 2-kolonne mønster: højre kolonne ligger lidt lavere, hver pool
-          har sin egen form/rotation — organisk, ikke en firkantet 2x2. */}
+          har sin egen silhuet/rotation — organisk, ikke en firkantet 2x2. */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          columnGap: 8,
-          rowGap: 2,
+          columnGap: 6,
+          rowGap: 0,
           justifyItems: 'center',
-          maxWidth: 360,
+          maxWidth: 352,
           marginInline: 'auto',
         }}
       >
         {pills.map((p, i) => (
           <div key={p.type + i} style={{ marginTop: POOL_VARIANT[i % POOL_VARIANT.length].offsetY }}>
-            <PoolItem pill={p} variant={POOL_VARIANT[i % POOL_VARIANT.length]} />
+            <PoolItem pill={p} variant={POOL_VARIANT[i % POOL_VARIANT.length]} index={i % POOL_BLOBS.length} />
           </div>
         ))}
       </div>
@@ -102,29 +116,31 @@ export function WeatherPills({ alerts }: Props) {
 }
 
 interface PoolVariant {
-  radius: string
   rotate: string
   w: number
   h: number
   offsetY: number
 }
 
-function PoolItem({ pill, variant }: { pill: Pill; variant: PoolVariant }) {
+function PoolItem({ pill, variant, index }: { pill: Pill; variant: PoolVariant; index: number }) {
   const Icon = pill.icon
   const tone = POOL_TONE[pill.type]
   const lines = poolLines(pill.text)
+  const clip = `url(#vejr-blob-${index})`
 
   return (
     <div
       className="vejr-pool"
       style={{
-        // CSS-variabler pr. pool → let at justere farve/form/størrelse.
         ['--pool-bg' as string]: tone.bg,
         ['--pool-ink' as string]: tone.ink,
-        ['--pool-radius' as string]: variant.radius,
         ['--pool-rotate' as string]: variant.rotate,
         ['--pool-w' as string]: `${variant.w}px`,
         ['--pool-h' as string]: `${variant.h}px`,
+        ['--pool-clip' as string]: clip,
+        // Selve elementet klippes til blob-silhuetten (drop-shadow følger med).
+        clipPath: clip,
+        WebkitClipPath: clip,
       }}
     >
       {/* Indhold roteres tilbage, så teksten står lige selvom poolen hælder. */}
@@ -132,21 +148,21 @@ function PoolItem({ pill, variant }: { pill: Pill; variant: PoolVariant }) {
         style={{
           transform: `rotate(calc(-1 * ${variant.rotate}))`,
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          gap: 1, paddingInline: 10,
+          gap: 0, paddingInline: 10,
         }}
       >
-        <Icon width={19} height={19} strokeWidth={1.7} style={{ color: tone.ink, opacity: 0.78, marginBottom: 2, flexShrink: 0 }} />
+        <Icon width={16} height={16} strokeWidth={1.7} style={{ color: tone.ink, opacity: 0.76, marginBottom: 1, flexShrink: 0 }} />
         {lines.map((l, i) => (
           <span
             key={i}
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: l.big ? 24 : 15,
+              fontSize: l.big ? 22 : 13,
               lineHeight: l.big ? 1.0 : 1.05,
               letterSpacing: l.big ? '0.005em' : '0.01em',
-              opacity: l.big ? 1 : 0.78,
-              maxWidth: variant.w - 26,
+              opacity: l.big ? 1 : 0.76,
+              maxWidth: variant.w - 28,
             }}
           >
             {l.line}
@@ -188,13 +204,23 @@ const POOL_TONE: Record<PillType, { bg: string; ink: string }> = {
   wind:     { bg: 'rgba(178,186,168,0.38)', ink: '#54604B' }, // dæmpet urtegrå
 }
 
-/** Visuel variation pr. pool — organiske former, så ingen to er ens.
+/** Ujævne pyt-silhuetter (normaliseret 0..1, objectBoundingBox). Hver er
+ *  lopsided med egen vægt — flad bund, bule i én side, asymmetrisk top — så
+ *  ingen to læser som samme oval. */
+const POOL_BLOBS: string[] = [
+  'M0.48,0.08 C0.69,0.04 0.86,0.13 0.94,0.32 C1.00,0.47 0.97,0.63 0.86,0.76 C0.77,0.88 0.63,0.94 0.48,0.93 C0.33,0.92 0.15,0.88 0.07,0.71 C0.01,0.58 0.04,0.40 0.12,0.27 C0.20,0.13 0.31,0.11 0.48,0.08 Z',
+  'M0.44,0.09 C0.62,0.05 0.81,0.06 0.92,0.21 C1.01,0.34 1.00,0.55 0.91,0.68 C0.82,0.82 0.65,0.92 0.49,0.91 C0.35,0.90 0.19,0.86 0.11,0.72 C0.04,0.60 0.06,0.43 0.14,0.30 C0.22,0.15 0.30,0.13 0.44,0.09 Z',
+  'M0.53,0.07 C0.73,0.07 0.88,0.16 0.92,0.34 C0.97,0.51 0.93,0.66 0.82,0.78 C0.73,0.88 0.59,0.93 0.44,0.92 C0.30,0.91 0.14,0.85 0.08,0.69 C0.03,0.55 0.06,0.39 0.15,0.26 C0.24,0.12 0.37,0.08 0.53,0.07 Z',
+  'M0.50,0.08 C0.67,0.06 0.84,0.11 0.92,0.27 C0.99,0.42 0.98,0.58 0.89,0.72 C0.80,0.87 0.62,0.95 0.46,0.94 C0.31,0.93 0.17,0.87 0.10,0.71 C0.03,0.57 0.05,0.41 0.13,0.27 C0.21,0.13 0.34,0.10 0.50,0.08 Z',
+]
+
+/** Visuel variation pr. pool — flade, brede pytter (lav højde), egen rotation.
  *  Lige indeks (venstre kolonne) ligger højere; ulige (højre) lidt lavere. */
 const POOL_VARIANT: PoolVariant[] = [
-  { radius: '54% 46% 40% 60% / 64% 54% 46% 36%', rotate: '-2.5deg', w: 156, h: 88, offsetY: 0 },
-  { radius: '44% 56% 54% 46% / 52% 40% 60% 48%', rotate: '2deg', w: 162, h: 84, offsetY: 16 },
-  { radius: '52% 48% 43% 57% / 66% 48% 52% 34%', rotate: '-1.5deg', w: 150, h: 86, offsetY: 6 },
-  { radius: '57% 43% 51% 49% / 42% 62% 38% 58%', rotate: '2.5deg', w: 158, h: 82, offsetY: 14 },
+  { rotate: '-2.5deg', w: 166, h: 76, offsetY: 0 },
+  { rotate: '2deg',    w: 168, h: 72, offsetY: 14 },
+  { rotate: '-1.5deg', w: 160, h: 76, offsetY: 6 },
+  { rotate: '2.5deg',  w: 164, h: 70, offsetY: 12 },
 ]
 
 /* ──────────────────────────────────────────────────────────────────────────
