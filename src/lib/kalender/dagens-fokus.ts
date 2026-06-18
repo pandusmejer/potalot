@@ -248,17 +248,22 @@ function lag2StatusHandling(p: Plant, dato: string, guide: Guide | null): FokusH
   const navn = visningsNavn(p.name, p.variety)
   const href = `/mine-planter/${p.id}`
   const qf = quickFactsForNavn(p.name, p.variety)
+  // Titel-sprog (Annas QA 18/6): ikke-kritiske handlinger lyder rådgivende/
+  // haveagtige frem for kommando-/databaseagtige. Kritiske (lag 1) forbliver
+  // direkte. taskType (og dermed task_key) er uændret — kun den viste titel.
   switch (p.status) {
     case 'klar_til_udplantning':
-      return mkPlante(p, 2, 'udplant', `Udplant ${navn} i løbet af ugen`,
+      // NB: tilstands-formuleret ("er klar") efter Annas valg — blødere for en
+      // ikke-akut anbefaling. Bydeform-alternativ: `Plant ${navn} ud`.
+      return mkPlante(p, 2, 'udplant', `${navn} er klar til jorden`,
         HVORFOR_VARIANTER.udplant![0], dato, href,
         { deadlineMaaned: vinduesLukning(qf?.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
     case 'hoestklar':
-      return mkPlante(p, 2, 'hoest', `Høst ${navn}`,
+      return mkPlante(p, 2, 'hoest', `Pluk ${navn} nu`,
         HVORFOR_VARIANTER.hoest![0], dato, href,
         { deadlineMaaned: vinduesLukning(qf?.harvestMonths), guidePrioritet: rulePrioritet(guide, ['harvest']) })
     case 'spirer':
-      return mkPlante(p, 2, 'prikl', `Prikl ${navn}`,
+      return mkPlante(p, 2, 'prikl', `Giv ${navn} mere plads`,
         HVORFOR_VARIANTER.prikl![0], dato, href,
         { guidePrioritet: rulePrioritet(guide, ['repot']) })
     default:
