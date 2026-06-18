@@ -51,28 +51,30 @@ export function WeatherPills({ alerts }: Props) {
           border-radius: var(--pool-radius);
           transform: rotate(var(--pool-rotate));
           color: var(--pool-ink);
+          /* Flad pyt, ikke blank sten: dæmpet diffust lys fra øverste højre. */
           background:
-            radial-gradient(125% 95% at 74% 16%, rgba(255,255,255,0.58), rgba(255,255,255,0) 44%),
+            radial-gradient(150% 120% at 72% 12%, rgba(255,255,255,0.30), rgba(255,255,255,0) 54%),
             var(--pool-bg);
-          /* lys fra øverste højre: tæt kontaktskygge under + indre glans/skygge */
+          /* Lav, tæt kontaktskygge (pytten ligger på fladen) + svag vand-dybde
+             langs nederste kant. Kun en anelse indre top-glans. */
           box-shadow:
-            0 15px 22px -11px rgba(36,48,31,0.24),
-            0 3px 6px -3px rgba(36,48,31,0.12),
-            inset 0 -7px 13px -7px rgba(36,48,31,0.20),
-            inset 3px 5px 11px -5px rgba(255,255,255,0.55);
-          backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+            0 7px 13px -9px rgba(36,48,31,0.20),
+            0 2px 4px -3px rgba(36,48,31,0.10),
+            inset 0 -5px 11px -8px rgba(36,48,31,0.15),
+            inset 2px 3px 8px -7px rgba(255,255,255,0.34);
+          backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
           overflow: hidden;
         }
-        .vejr-pool::before { /* stor blød highlight øverst/højre — lys på vand */
-          content: ''; position: absolute; top: 6%; right: 8%;
-          width: 50%; height: 44%; border-radius: 50%;
-          background: radial-gradient(circle at 62% 38%, rgba(255,255,255,0.72), rgba(255,255,255,0) 68%);
-          filter: blur(2px); pointer-events: none;
+        .vejr-pool::before { /* bredt, fladt diffust lys — som lys hen over vand */
+          content: ''; position: absolute; top: 7%; right: 9%;
+          width: 60%; height: 32%; border-radius: 50%;
+          background: radial-gradient(circle at 58% 44%, rgba(255,255,255,0.40), rgba(255,255,255,0) 72%);
+          filter: blur(3.5px); pointer-events: none;
         }
-        .vejr-pool::after { /* lille sekundær glans øverst/venstre */
-          content: ''; position: absolute; top: 18%; left: 17%;
-          width: 15%; height: 12%; border-radius: 50%;
-          background: rgba(255,255,255,0.5); filter: blur(1.5px); pointer-events: none;
+        .vejr-pool::after { /* knap synlig sekundær glimt — holder det levende, ikke blankt */
+          content: ''; position: absolute; top: 20%; left: 18%;
+          width: 13%; height: 9%; border-radius: 50%;
+          background: rgba(255,255,255,0.26); filter: blur(2.5px); pointer-events: none;
         }
       `}</style>
 
@@ -139,8 +141,8 @@ function PoolItem({ pill, variant }: { pill: Pill; variant: PoolVariant }) {
             key={i}
             style={{
               fontFamily: serif,
-              fontWeight: l.big ? 500 : 500,
-              fontSize: l.big ? 27 : 16,
+              fontWeight: 500,
+              fontSize: l.big ? 24 : 15,
               lineHeight: l.big ? 1.0 : 1.05,
               letterSpacing: l.big ? '0.005em' : '0.01em',
               opacity: l.big ? 1 : 0.78,
@@ -189,10 +191,10 @@ const POOL_TONE: Record<PillType, { bg: string; ink: string }> = {
 /** Visuel variation pr. pool — organiske former, så ingen to er ens.
  *  Lige indeks (venstre kolonne) ligger højere; ulige (højre) lidt lavere. */
 const POOL_VARIANT: PoolVariant[] = [
-  { radius: '52% 48% 46% 54% / 57% 49% 51% 43%', rotate: '-3deg', w: 144, h: 106, offsetY: 0 },
-  { radius: '47% 53% 51% 49% / 49% 45% 55% 51%', rotate: '2.5deg', w: 150, h: 100, offsetY: 16 },
-  { radius: '50% 50% 45% 55% / 60% 46% 54% 40%', rotate: '-2deg', w: 138, h: 98, offsetY: 6 },
-  { radius: '54% 46% 51% 49% / 46% 56% 44% 54%', rotate: '3deg', w: 146, h: 96, offsetY: 14 },
+  { radius: '54% 46% 40% 60% / 64% 54% 46% 36%', rotate: '-2.5deg', w: 156, h: 88, offsetY: 0 },
+  { radius: '44% 56% 54% 46% / 52% 40% 60% 48%', rotate: '2deg', w: 162, h: 84, offsetY: 16 },
+  { radius: '52% 48% 43% 57% / 66% 48% 52% 34%', rotate: '-1.5deg', w: 150, h: 86, offsetY: 6 },
+  { radius: '57% 43% 51% 49% / 42% 62% 38% 58%', rotate: '2.5deg', w: 158, h: 82, offsetY: 14 },
 ]
 
 /* ──────────────────────────────────────────────────────────────────────────
