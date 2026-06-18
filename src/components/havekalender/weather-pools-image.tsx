@@ -72,6 +72,24 @@ const SLOT_POS: Record<Slot, { left: string; top: string }> = {
   sun:         { left: '69%', top: '61%' }, // nederst højre — gruppen lidt op
 }
 
+/**
+ * Ikon-placering pr. pyt (Annas finjustering 18/6) — pytterne har forskellig
+ * form, så ikonet sidder forskelligt:
+ *   temperature  'top'              ikon over 14° (uændret)
+ *   rain         'left-of-primary'  regnsky til venstre for "8 mm", "i nat" under
+ *   soil         'right-of-second'  "Jord" øverst, spire til højre for "12°"
+ *   sun          'right-centered'   sol-ikon til højre, centreret mellem Sol/05.15
+ */
+type IconArrange = 'top' | 'left-of-primary' | 'right-of-second' | 'right-centered'
+const SLOT_LAYOUT: Record<Slot, IconArrange> = {
+  rain: 'left-of-primary',
+  soil: 'right-of-second',
+  temperature: 'top',
+  sun: 'right-centered',
+}
+/** Ikon-skala pr. pyt (1 = basis 4,6cqw). Sol-ikonet 10% større. */
+const SLOT_ICON_SCALE: Record<Slot, number> = { rain: 1, soil: 1, temperature: 1, sun: 1.1 }
+
 export interface WeatherPoolsData {
   rain: { value: string; label: string }
   soil: { value: string; label: string }
@@ -115,7 +133,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         width: 'calc(100% + 32px)',
         marginLeft: -16,
         marginRight: -16,
-        marginTop: -28,
+        marginTop: 'calc(-28px - 2.5cm)', // 2,5 cm højere op under hero-bølgen (Anna)
         marginBottom: -8,
         background: creme,
         maskImage: 'linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
@@ -144,7 +162,6 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         />
 
         {slots.map(({ slot, value, label }) => {
-          const Icon = SLOT_ICON[slot]
           const pos = SLOT_POS[slot]
           return (
             <div
@@ -153,19 +170,65 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
                 position: 'absolute',
                 left: pos.left, top: pos.top,
                 transform: 'translate(-50%, -50%)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                textAlign: 'center', color: INK, lineHeight: 1.04, pointerEvents: 'none',
+                color: INK, lineHeight: 1.04, pointerEvents: 'none',
               }}
             >
-              <Icon style={{ width: '4.6cqw', height: '4.6cqw', opacity: 0.8, marginBottom: '1cqw' }} strokeWidth={1.7} aria-hidden />
-              <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '6cqw', letterSpacing: '0.01em' }}>{value}</span>
-              {label ? (
-                <span style={{ fontFamily: serif, fontWeight: 500, fontSize: '5cqw', opacity: 0.78, marginTop: '0.2cqw' }}>{label}</span>
-              ) : null}
+              <PoolContent slot={slot} value={value} label={label} />
             </div>
           )
         })}
       </div>
+    </div>
+  )
+}
+
+const primaryStyle = { fontFamily: serif, fontWeight: 500, fontSize: '6cqw', letterSpacing: '0.01em' }
+const secondaryStyle = { fontFamily: serif, fontWeight: 500, fontSize: '5cqw', opacity: 0.78 }
+
+/** Renderer ikon + tekst i pyttens arrangement (SLOT_LAYOUT). */
+function PoolContent({ slot, value, label }: { slot: Slot; value: string; label?: string }) {
+  const Icon = SLOT_ICON[slot]
+  const arrange = SLOT_LAYOUT[slot]
+  const px = (4.6 * SLOT_ICON_SCALE[slot]).toFixed(2)
+  const iconStyle = { width: `${px}cqw`, height: `${px}cqw`, opacity: 0.8, flexShrink: 0 }
+  const icon = <Icon style={iconStyle} strokeWidth={1.7} aria-hidden />
+  const primary = <span style={primaryStyle}>{value}</span>
+  const secondary = label ? <span style={secondaryStyle}>{label}</span> : null
+  const colStyle = { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', textAlign: 'center' as const }
+
+  if (arrange === 'left-of-primary') {
+    // regn: [sky][8 mm] på én linje, "i nat" under "8 mm"
+    return (
+      <div style={colStyle}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '1.8cqw' }}>{icon}{primary}</span>
+        {secondary && <span style={{ ...secondaryStyle, marginTop: '0.2cqw' }}>{label}</span>}
+      </div>
+    )
+  }
+  if (arrange === 'right-of-second') {
+    // jord: "Jord" øverst, [12°][spire] på samme linje, ikon til højre
+    return (
+      <div style={colStyle}>
+        {primary}
+        <span style={{ display: 'flex', alignItems: 'center', gap: '1.4cqw', marginTop: '0.2cqw' }}>{secondary}{icon}</span>
+      </div>
+    )
+  }
+  if (arrange === 'right-centered') {
+    // sol: tekst-kolonne (Sol / 05.15) + ikon til højre, centreret mellem linjerne
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2cqw' }}>
+        <span style={colStyle}>{primary}{secondary}</span>
+        {icon}
+      </div>
+    )
+  }
+  // 'top' (temperatur, uændret): ikon over værdien
+  return (
+    <div style={colStyle}>
+      <Icon style={{ ...iconStyle, marginBottom: '1cqw' }} strokeWidth={1.7} aria-hidden />
+      {primary}
+      {secondary}
     </div>
   )
 }
