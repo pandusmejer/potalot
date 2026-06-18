@@ -181,6 +181,35 @@ function sortKey(name: string, variety?: string | null): string {
 }
 
 /**
+ * Variant-puljer for de hvorfor-linjer der IKKE varierer pr. plante (de
+ * generiske lag-2-status-linjer uden plantenavn). Når to handlinger af samme
+ * type står i samme sektion, ville de ellers læse ordret ens — og så ser
+ * brugeren mekanikken bag motoren. index 0 = standardlinjen, så en
+ * ENKELT forekomst er uændret; først ved gentagelse vælges en variant.
+ *
+ * Puljen bruges KUN til typer hvor linjen er plante-uafhængig. Frost (lag 1),
+ * frøbank (lag 4) og rytme (lag 5) bærer allerede plantenavn/måned og læser
+ * derfor aldrig ordret ens — de står bevidst ikke her.
+ */
+const HVORFOR_VARIANTER: Partial<Record<FokusTaskType, string[]>> = {
+  prikl: [
+    'Spirerne er klar til mere plads — får de den ikke snart, strækker de sig efter lyset.',
+    'Giv spirerne hver sin potte nu, så rødderne får ro til at udvikle sig.',
+    'De små planter står tæt — prikl dem om, før de konkurrerer om lys og næring.',
+  ],
+  hoest: [
+    'Det modne mister smag og sprødhed, hvis det står for længe — tag lidt ad gangen nu.',
+    'Høst mens det er på sit bedste — det overmodne taber både smag og holdbarhed.',
+    'Pluk løbende nu, så planten bliver ved med at sætte nyt.',
+  ],
+  udplant: [
+    'Rødderne fylder potten nu — kommer den ikke snart i jorden, går væksten i stå.',
+    'Planten er hærdet og klar — ud i jorden nu giver den den længste vækstsæson.',
+    'Venter den for længe i potten, bliver den rodfast — og det koster vækst efter udplantning.',
+  ],
+}
+
+/**
  * Lag 1 — tidskritisk ("kan ikke vente"). Biologien venter ikke.
  * Frostvarsel × frostfølsomme UDPLANTEDE planter: planten står ude og er
  * sårbar, og frosten kommer uanset hvad brugeren ellers havde planlagt.
@@ -222,15 +251,15 @@ function lag2StatusHandling(p: Plant, dato: string, guide: Guide | null): FokusH
   switch (p.status) {
     case 'klar_til_udplantning':
       return mkPlante(p, 2, 'udplant', `Udplant ${navn} i løbet af ugen`,
-        'Rødderne fylder potten nu — kommer den ikke snart i jorden, går væksten i stå.', dato, href,
+        HVORFOR_VARIANTER.udplant![0], dato, href,
         { deadlineMaaned: vinduesLukning(qf?.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
     case 'hoestklar':
       return mkPlante(p, 2, 'hoest', `Høst ${navn}`,
-        'Det modne mister smag og sprødhed, hvis det står for længe — tag lidt ad gangen nu.', dato, href,
+        HVORFOR_VARIANTER.hoest![0], dato, href,
         { deadlineMaaned: vinduesLukning(qf?.harvestMonths), guidePrioritet: rulePrioritet(guide, ['harvest']) })
     case 'spirer':
       return mkPlante(p, 2, 'prikl', `Prikl ${navn}`,
-        'Spirerne er klar til mere plads — får de den ikke snart, strækker de sig efter lyset.', dato, href,
+        HVORFOR_VARIANTER.prikl![0], dato, href,
         { guidePrioritet: rulePrioritet(guide, ['repot']) })
     default:
       return null
@@ -488,6 +517,26 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   // Markér udførte (completions)
   for (const h of akut) h.udfoert = done.has(h.taskKey)
   for (const h of rytme) h.udfoert = done.has(h.taskKey)
+
+  // Variér hvorfor-linjen KUN ved faktisk gentagelse (≥2 af samme pulje-type i
+  // samme sektion), så to ens handlinger ikke læser ordret identisk. Stabilt
+  // pr. plante-id (ikke displayposition), så teksten ikke skifter når en anden
+  // opgave krydses af. Enkeltforekomst beholder puljens linje 0.
+  const sammeType = new Map<string, FokusHandling[]>()
+  for (const h of akut) {
+    if (!HVORFOR_VARIANTER[h.taskType]) continue
+    const liste = sammeType.get(h.taskType) ?? []
+    liste.push(h)
+    sammeType.set(h.taskType, liste)
+  }
+  for (const [type, liste] of sammeType) {
+    if (liste.length < 2) continue
+    const pool = HVORFOR_VARIANTER[type as FokusTaskType]!
+    liste
+      .slice()
+      .sort((a, b) => (a.plantId ?? '').localeCompare(b.plantId ?? ''))
+      .forEach((h, i) => { h.hvorfor = pool[i % pool.length] })
+  }
 
   // ── Sortér akut: lag-orden, så tie-break inden for laget ─────────
   akut.sort((a, b) => (a.lag - b.lag) || tieBreak(a, b))
