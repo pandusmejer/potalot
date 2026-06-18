@@ -113,6 +113,13 @@ const SLOT_ICON_OFFSET: Record<Slot, { x: number; y: number }> = {
   temperature: { x: 0, y: 2 },  // ikon 2 mm ned
   sun: { x: 0, y: 0 },
 }
+/** Nudge KUN den primære tekst (mm). */
+const SLOT_PRIMARY_OFFSET: Record<Slot, { x: number; y: number }> = {
+  rain: { x: 0, y: 0 },
+  soil: { x: 3, y: 0 },         // "Jord" 3 mm mod højre
+  temperature: { x: 0, y: 0 },
+  sun: { x: 0, y: 0 },
+}
 
 export interface WeatherPoolsData {
   rain: { value: string; label: string }
@@ -160,10 +167,10 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         marginTop: 'calc(-28px - 2.5cm + 4mm)', // 2,5 cm op, 4 mm tilbage ned (Anna)
         marginBottom: 'calc(-8px + 4mm)', // skub Dagens fokus 4 mm ned (Anna)
         background: creme,
-        // Top-fade (0→20%) blender ind under heroen; bund-fade (86→100%) giver
-        // en blød overgang ned mod Dagens fokus (pyt-sikker: rører ikke pytterne).
-        maskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
+        // Top-fade (0→20%) blender ind under heroen; bund-fade starter 3 mm
+        // højere oppe (83%) for en tidligere, blødere overgang ned mod Dagens fokus.
+        maskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 83%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 83%, transparent 100%)',
         animation: 'vejr-pools-img-in 600ms ease-out both',
       }}
     >
@@ -224,7 +231,8 @@ function PoolContent({ slot, value, label }: { slot: Slot; value: string; label?
     transform: `translate(${io.x}mm, ${io.y}mm)`, // ikon-nudge relativt i blokken
   }
   const icon = <Icon style={iconStyle} strokeWidth={1.7} aria-hidden />
-  const primary = <span style={primaryStyle}>{value}</span>
+  const po = SLOT_PRIMARY_OFFSET[slot]
+  const primary = <span style={{ ...primaryStyle, transform: `translate(${po.x}mm, ${po.y}mm)` }}>{value}</span>
   const secondary = label ? <span style={secondaryStyle}>{label}</span> : null
   const colStyle = { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', textAlign: 'center' as const }
 
