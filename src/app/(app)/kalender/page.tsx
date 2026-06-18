@@ -31,11 +31,18 @@ export default async function KalenderPage() {
   // dagens-fokus.ts). Beregnes server-side (ren funktion) og sendes som prop,
   // så guide-data ikke skal i client-bundlen.
   //
-  // Demo-præcedens (samme som /mine-planter: "tomt array → mock-plants
-  // overtager"): anonyme brugere har ingen ægte planter, så vi fodrer
-  // hjernen med demo-planterne, så Dagens fokus' rige tilstand er synlig.
-  // canPersist=false sikrer at demo ALDRIG foregiver at gemme afkrydsninger.
-  const brainPlants = me === null && plants.length === 0 ? mockPlants : plants
+  // ┌─ DEMO-AFGRÆNSNING (læs før du ændrer denne linje) ──────────────────┐
+  // │ Dette er IKKE normal logik. KUN en anonym/ikke-logget bruger UDEN    │
+  // │ egne planter fodres med mockPlants — udelukkende så design-visionen  │
+  // │ er synlig for nye/demo-brugere (samme præcedens som /mine-planter:   │
+  // │ "tomt array → mock-plants overtager UI'et"). En rigtig, logget-ind   │
+  // │ bruger bruger ALTID sine egne data — også når de er tomme (så ser    │
+  // │ vedkommende korrekt den ægte stilhed/almanak-tilstand).              │
+  // │ Demo må ALDRIG persistere: isLoggedIn=false → canPersist=false i     │
+  // │ sektionen, så afkrydsninger aldrig foregiver at være gemt.           │
+  // └──────────────────────────────────────────────────────────────────────┘
+  const erDemoUdenData = me === null && plants.length === 0
+  const brainPlants = erDemoUdenData ? mockPlants : plants
   const dagensFokus = byggDagensFokus({ plants: brainPlants, inventory, guides, alerts, completions, today: new Date() })
 
   // Daglig sensorisk note — beregnes på serveren (deterministisk pr.
