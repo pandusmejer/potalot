@@ -192,20 +192,21 @@ function sortKey(name: string, variety?: string | null): string {
  * derfor aldrig ordret ens — de står bevidst ikke her.
  */
 const HVORFOR_VARIANTER: Partial<Record<FokusTaskType, string[]>> = {
+  // Korte, én-linjede forklaringer (Anna 18/6 — komprimering).
   prikl: [
-    'Spirerne er klar til mere plads — får de den ikke snart, strækker de sig efter lyset.',
-    'Giv spirerne hver sin potte nu, så rødderne får ro til at udvikle sig.',
-    'De små planter står tæt — prikl dem om, før de konkurrerer om lys og næring.',
+    'Spirerne står tæt — giv dem plads, før de strækker sig.',
+    'Hver sin potte nu, så rødderne får ro.',
+    'Prikl om, før de små konkurrerer om lys.',
   ],
   hoest: [
-    'Det modne mister smag og sprødhed, hvis det står for længe — tag lidt ad gangen nu.',
-    'Høst mens det er på sit bedste — det overmodne taber både smag og holdbarhed.',
-    'Pluk løbende nu, så planten bliver ved med at sætte nyt.',
+    'Det modne taber smag og sprødhed — tag lidt ad gangen nu.',
+    'Høst mens det er på sit bedste — overmodent taber kvalitet.',
+    'Pluk løbende, så planten sætter nyt.',
   ],
   udplant: [
-    'Rødderne fylder potten nu — kommer den ikke snart i jorden, går væksten i stå.',
-    'Planten er hærdet og klar — ud i jorden nu giver den den længste vækstsæson.',
-    'Venter den for længe i potten, bliver den rodfast — og det koster vækst efter udplantning.',
+    'Rødderne fylder potten — plant ud, før væksten går i stå.',
+    'Hærdet og klar — ud nu giver den længst vækstsæson.',
+    'Vent for længe, og den bliver rodfast i potten.',
   ],
 }
 

@@ -75,7 +75,7 @@ function Chip({ h, month }: { h: FokusHandling; month: number }) {
 }
 
 /** Rund afkrydsnings-knap (samme signal som Planter-forsiden). */
-function CheckCircle({ done, onToggle, label, size = 21 }: {
+function CheckCircle({ done, onToggle, label, size = 18 }: {
   done: boolean; onToggle: () => void; label: string; size?: number
 }) {
   return (
@@ -102,10 +102,10 @@ function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling;
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'var(--secondary)', padding: '18px 18px 16px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{ background: 'var(--secondary)', padding: '13px 16px 12px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
     >
       <div className="flex items-start gap-3">
-        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={24} />}
+        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={21} />}
         <div className="min-w-0 flex-1">
           {markoer && (
             <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 6px' }}>
@@ -124,12 +124,12 @@ function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling;
             </h3>
             <Chip h={h} month={month} />
           </div>
-          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '7px 0 0', lineHeight: 1.4 }}>
+          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '4px 0 0', lineHeight: 1.34 }}>
             {h.hvorfor}
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 11 }}
+            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 8 }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
@@ -145,7 +145,7 @@ function SecondaryRow({ h, done, first, month, onToggle }: { h: FokusHandling; d
   return (
     <div
       className="flex items-start gap-3 px-0.5"
-      style={{ paddingTop: 12, paddingBottom: 12, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.09)' }}
+      style={{ paddingTop: 9, paddingBottom: 9, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.09)' }}
     >
       {checkbar
         ? <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} />
@@ -157,7 +157,14 @@ function SecondaryRow({ h, done, first, month, onToggle }: { h: FokusHandling; d
           </span>
           {!done && <Chip h={h} month={month} />}
         </span>
-        <span className="block" style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(42,51,32,0.6)', marginTop: 3, textDecoration: done ? 'line-through' : 'none' }}>
+        <span
+          className="block"
+          style={{
+            fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(42,51,32,0.6)',
+            marginTop: 2, lineHeight: 1.32, textDecoration: done ? 'line-through' : 'none',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+          }}
+        >
           {h.hvorfor}
         </span>
       </Link>
@@ -228,7 +235,7 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
   // (op til 4 rows), og hele opgavebrættet bag footer-linket. Ét sted at kigge.
   const alle = [...data.fokus, ...data.flere]
   const [primary, ...resten] = alle
-  const naeste = resten.slice(0, 4)
+  const naeste = resten.slice(0, 3)
 
   return (
     <section>
@@ -238,7 +245,7 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
 
       {naeste.length > 0 && (
         <>
-          <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(42,51,32,0.5)', margin: '16px 0 2px' }}>
+          <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(42,51,32,0.5)', margin: '11px 0 1px' }}>
             Næste opgaver
           </p>
           <div>
