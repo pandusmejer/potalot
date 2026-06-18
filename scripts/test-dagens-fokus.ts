@@ -11,11 +11,13 @@
 import { byggDagensFokus, type DagensFokus, type FokusHandling } from '@/lib/kalender/dagens-fokus'
 import { mockPlants } from '@/data/mock-plants'
 import { quickFactsForNavn } from '@/lib/afledninger'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { GardenAlert } from '@/actions/weather'
 import type { InventoryItem, Plant } from '@/lib/types'
 
 const TODAY = new Date('2026-06-17T09:00:00') // juni — samme dag som currentDate
 const plants = mockPlants as unknown as Plant[]
+const guides = IMPORTED_GUIDES
 
 // Demo-frøbank: et par poser så lag 4 (frøbank × måned) kan vises.
 // Marketmore-agurk gror ALLEREDE (i demo) → skal IKKE foreslås sået.
@@ -58,6 +60,11 @@ function rapport(navn: string, r: DagensFokus) {
     console.log(`FLERE (${r.flere.length} bag "Se alle"):`)
     r.flere.forEach(h => console.log(vis(h)))
   }
+  if (r.rytme.length) {
+    console.log(`RYTME / lag 5 (${r.rytme.length} — vedligehold, ikke dagens fokus):`)
+    r.rytme.forEach(h => console.log(vis(h)))
+  }
+  if (r.almanak) console.log(`ALMANAK: ${r.almanak}`)
   if (r.stilhed) console.log('   (stilhed → UI ville sige "alt ser godt ud i dag")')
 }
 
@@ -69,7 +76,7 @@ function ok(betingelse: boolean, besked: string) {
 }
 
 // ── Scenarie 1: fuld demo-have (trin 2) ──────────────────────────
-const fuld = byggDagensFokus({ plants, inventory, today: TODAY })
+const fuld = byggDagensFokus({ plants, inventory, guides, today: TODAY })
 rapport('Scenarie 1 — fuld demo-have, ingen completions', fuld)
 console.log('  assertions:')
 ok(fuld.trin === 2, 'trin = 2 (aktive planter findes)')
@@ -79,6 +86,22 @@ ok(fuld.fokus.every(h => /^[A-ZÆØÅ]/.test(h.titel)), 'alle titler i bydeform 
 ok(fuld.fokus[0].lag <= fuld.fokus[fuld.fokus.length - 1].lag, 'fokus er lag-sorteret (lavest lag først)')
 const harHoest = [...fuld.fokus, ...fuld.flere].some(h => h.taskType === 'hoest')
 ok(harHoest, 'Salat (hoestklar) gav en Høst-handling (lag 2)')
+// Lag 5 (rytme) er adskilt fra fokus/flere og bryder ikke stilhed.
+ok(fuld.fokus.concat(fuld.flere).every(h => h.lag <= 4), 'fokus/flere er KUN lag 1-4 (lag 5 ligger i rytme)')
+ok(fuld.rytme.every(h => h.lag === 5), 'rytme indeholder kun lag-5-handlinger')
+console.log(`     (rytme/vedligehold i juni: ${fuld.rytme.length} handling(er))`)
+// Tie-break #1 (deadline): inden for samme lag må en kendt deadline aldrig
+// stå EFTER en ukendt, og tidligere deadline ikke efter en senere.
+function deadlineMonotont(hs: FokusHandling[]): boolean {
+  for (let i = 1; i < hs.length; i++) {
+    if (hs[i - 1].lag !== hs[i].lag) continue
+    const a = hs[i - 1].deadlineMaaned ?? 99
+    const b = hs[i].deadlineMaaned ?? 99
+    if (a > b) return false
+  }
+  return true
+}
+ok(deadlineMonotont(fuld.fokus.concat(fuld.flere)), 'tie-break: deadline-rækkefølge er monoton inden for hvert lag')
 // Dedup-test: ingen LAG-4-invitation (så/plant-ud) for en sort der gror.
 // (Lag-2 "Prikl Agurk" er den aktive plante og SKAL være der — derfor lag===4.)
 const saaAgurk = [...fuld.fokus, ...fuld.flere].some(h => h.lag === 4 && h.titel.includes('Agurk'))
@@ -89,9 +112,9 @@ ok(harFroebank, 'frøbank-invitationer (lag 4) er med')
 // ── Scenarie 2: completions → udførte falder ud af pres ──────────
 // Markér ALLE pressende plante-handlinger udført → tjek at de skubbes bagud
 // og at stilhed indtræffer hvis intet pressende er tilbage.
-const alle = byggDagensFokus({ plants, inventory, today: TODAY })
-const alleKeys = [...alle.fokus, ...alle.flere].map(h => h.taskKey)
-const medCompletions = byggDagensFokus({ plants, inventory, today: TODAY, completions: alleKeys })
+const alle = byggDagensFokus({ plants, inventory, guides, today: TODAY })
+const alleKeys = [...alle.fokus, ...alle.flere, ...alle.rytme].map(h => h.taskKey)
+const medCompletions = byggDagensFokus({ plants, inventory, guides, today: TODAY, completions: alleKeys })
 rapport('Scenarie 2 — ALT markeret udført', medCompletions)
 console.log('  assertions:')
 ok(medCompletions.stilhed, 'stilhed = true når alt pressende er udført')
@@ -139,7 +162,7 @@ const udplantedeFrostfoelsomme = plants.filter(
   p => !p.isArchived && p.status === 'udplantet' &&
     quickFactsForNavn(p.name, p.variety)?.frostSensitive === true,
 )
-const medFrost = byggDagensFokus({ plants, inventory, today: TODAY, alerts: [frostAlert] })
+const medFrost = byggDagensFokus({ plants, inventory, guides, today: TODAY, alerts: [frostAlert] })
 rapport('Scenarie 5 — frostvarsel aktivt', medFrost)
 console.log(`  (udplantede frostfølsomme i demo: ${udplantedeFrostfoelsomme.map(p => visningsKort(p)).join(', ') || 'ingen'})`)
 console.log('  assertions:')
