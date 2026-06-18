@@ -32,7 +32,6 @@
 import type { Guide, GuideCalendarRule, InventoryItem, Plant, TaskPriority } from '@/lib/types'
 import type { GardenAlert } from '@/actions/weather'
 import { forventetSpiring, quickFactsForNavn } from '@/lib/afledninger'
-import { dageSiden } from '@/lib/datetime'
 
 /** Prioriteringslag fra kalender-v2.md §Prioriteringsmodellen. */
 export type FokusLag = 1 | 2 | 3 | 4 | 5
@@ -203,7 +202,7 @@ function lag1Frost(p: Plant, frostTitel: string, dato: string): FokusHandling | 
   const navn = visningsNavn(p.name, p.variety)
   return mkPlante(
     p, 1, 'daek', `Dæk ${navn} mod nattefrost`,
-    `${frostTitel} — ${navn} er frostfølsom og står udplantet.`,
+    `${navn} er frostfølsom og står udplantet — ${frostTitel.toLowerCase()} kan ødelægge bladene uden dække.`,
     dato, `/mine-planter/${p.id}`,
   )
 }
@@ -223,15 +222,15 @@ function lag2StatusHandling(p: Plant, dato: string, guide: Guide | null): FokusH
   switch (p.status) {
     case 'klar_til_udplantning':
       return mkPlante(p, 2, 'udplant', `Udplant ${navn} i løbet af ugen`,
-        'Planten er klar til at komme i jorden.', dato, href,
+        'Rødderne fylder potten nu — kommer den ikke snart i jorden, går væksten i stå.', dato, href,
         { deadlineMaaned: vinduesLukning(qf?.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
     case 'hoestklar':
       return mkPlante(p, 2, 'hoest', `Høst ${navn}`,
-        'Planten er markeret høstklar.', dato, href,
+        'Det modne mister smag og sprødhed, hvis det står for længe — tag lidt ad gangen nu.', dato, href,
         { deadlineMaaned: vinduesLukning(qf?.harvestMonths), guidePrioritet: rulePrioritet(guide, ['harvest']) })
     case 'spirer':
       return mkPlante(p, 2, 'prikl', `Prikl ${navn}`,
-        'Spirerne er oppe — prikl om i egne potter når andet bladpar viser sig.', dato, href,
+        'Spirerne er klar til mere plads — får de den ikke snart, strækker de sig efter lyset.', dato, href,
         { guidePrioritet: rulePrioritet(guide, ['repot']) })
     default:
       return null
@@ -256,8 +255,8 @@ function lag3Verifikation(p: Plant, dato: string): FokusHandling | null {
     p, 3, 'tjek-spiring',
     indeIVinduet ? `Tjek spiringen på ${navn}` : `Tjek ${navn} i såbakken`,
     indeIVinduet
-      ? 'Spiringsvinduet er nået — kig i bakken og noter hvor mange der kom op.'
-      : `Sået for ${dageSiden(p.sowDate)} dage siden — over forventet spiretid.`,
+      ? 'De første spirer bør titte frem nu — et hurtigt kig fortæller, om såningen lykkedes.'
+      : 'Spiretiden er passeret — kommer der intet op, er der stadig tid til at så om.',
     dato, href,
   )
 }
@@ -280,14 +279,16 @@ function lag4FroebankVindue(
     const forspir = item.preCultivation === true
     return mkFroebank(item, forspir ? 'forspir' : 'saa',
       `${forspir ? 'Forspir' : 'Så'} ${navn}`,
-      `Du har ${navn} i frøbanken — ${maaned} er ${forspir ? 'forspirings' : 'så'}måned.`,
+      forspir
+        ? `Du har ${navn} i frøbanken, og ${maaned} er forspiringsvinduet — forkultivér nu, så planterne når at blive klar.`
+        : `Du har ${navn} i frøbanken, og ${maaned} er såvinduet — sår du nu, når den at give i år.`,
       dato, href,
       { deadlineMaaned: vinduesLukning(item.sowingMonths), guidePrioritet: rulePrioritet(guide, ['sowing', 'pre_sow']) })
   }
   if (item.plantingOutMonths?.includes(month)) {
     return mkFroebank(item, 'plant-ud',
       `Plant ${navn} ud`,
-      `Du har ${navn} i frøbanken — ${maaned} er udplantningsmåned.`,
+      `Du har ${navn} i frøbanken, og udplantningsvinduet er åbent i ${maaned} — jo før ud, jo længere vækstsæson.`,
       dato, href,
       { deadlineMaaned: vinduesLukning(item.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
   }
@@ -383,7 +384,7 @@ function lag5Vedligehold(p: Plant, guide: Guide | null, month: number, dato: str
     if (!r.recommendedMonths?.includes(month)) continue
     ud.push(mkPlante(
       p, 5, r.taskType as FokusTaskType, r.title,
-      `Guidens rytme for ${navn} i ${maaned}.`, dato, `/mine-planter/${p.id}`,
+      `Plejen, der holder ${navn} sund og produktiv i ${maaned}.`, dato, `/mine-planter/${p.id}`,
       { deadlineMaaned: vinduesLukning(r.recommendedMonths), guidePrioritet: PRIORITET_RANG[r.priority] ?? 0 },
     ))
   }
