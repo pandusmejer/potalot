@@ -69,7 +69,7 @@ const SLOT_POS: Record<Slot, { left: string; top: string }> = {
   rain:        { left: '31%', top: '31%' }, // øverst venstre — gruppen lidt ned
   soil:        { left: '67%', top: '28%' }, // øverst højre
   temperature: { left: '34%', top: '62%' }, // nederst venstre
-  sun:         { left: '69%', top: '61%' }, // nederst højre — gruppen lidt op
+  sun:         { left: '72.5%', top: '67%' }, // nederst højre — centreret på pyttens centroid
 }
 
 /**
@@ -133,11 +133,13 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         width: 'calc(100% + 32px)',
         marginLeft: -16,
         marginRight: -16,
-        marginTop: 'calc(-28px - 2.5cm)', // 2,5 cm højere op under hero-bølgen (Anna)
+        marginTop: 'calc(-28px - 2.5cm + 4mm)', // 2,5 cm op, 4 mm tilbage ned (Anna)
         marginBottom: -8,
         background: creme,
-        maskImage: 'linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
+        // Længere top-fade (0→20%) blender creme-fladen blødt ind under heroen,
+        // så overgangen mellem hero og sektion ikke har en synlig sømlinje.
+        maskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, #000 20%, #000 86%, transparent 100%)',
         animation: 'vejr-pools-img-in 600ms ease-out both',
       }}
     >
