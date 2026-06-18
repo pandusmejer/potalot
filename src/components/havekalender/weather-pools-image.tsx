@@ -120,6 +120,13 @@ const SLOT_PRIMARY_OFFSET: Record<Slot, { x: number; y: number }> = {
   temperature: { x: 0, y: 0 },
   sun: { x: 0, y: 0 },
 }
+/** Nudge KUN den sekundære tekst (mm). */
+const SLOT_SECONDARY_OFFSET: Record<Slot, { x: number; y: number }> = {
+  rain: { x: 0, y: 0 },
+  soil: { x: -1, y: 0 },        // "12°" 1 mm mod venstre
+  temperature: { x: 0, y: 0 },
+  sun: { x: 0, y: 0 },
+}
 
 export interface WeatherPoolsData {
   rain: { value: string; label: string }
@@ -233,7 +240,8 @@ function PoolContent({ slot, value, label }: { slot: Slot; value: string; label?
   const icon = <Icon style={iconStyle} strokeWidth={1.7} aria-hidden />
   const po = SLOT_PRIMARY_OFFSET[slot]
   const primary = <span style={{ ...primaryStyle, transform: `translate(${po.x}mm, ${po.y}mm)` }}>{value}</span>
-  const secondary = label ? <span style={secondaryStyle}>{label}</span> : null
+  const so = SLOT_SECONDARY_OFFSET[slot]
+  const secondary = label ? <span style={{ ...secondaryStyle, transform: `translate(${so.x}mm, ${so.y}mm)` }}>{label}</span> : null
   const colStyle = { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', textAlign: 'center' as const }
 
   if (arrange === 'left-of-primary') {
