@@ -5,6 +5,7 @@ import type { GardenAlert } from '@/actions/weather'
 import type { ComponentType, SVGProps } from 'react'
 
 const sans = 'var(--font-manrope)'
+const serif = 'var(--font-cormorant), serif'
 
 type PillType = 'temp' | 'jordtemp' | 'rain' | 'sun' | 'frost' | 'wind'
 type PillSize = 'small' | 'medium' | 'large'
@@ -22,181 +23,191 @@ interface Props {
 }
 
 /**
- * Vejrpiller — atmosfærisk lag mellem heroen og det operationelle
- * uge-laget. Bevidst IKKE et vejr-widget: små "luftpocher" der
- * fortæller hvad der betyder noget for haven LIGE NU.
+ * Vejr-pools — atmosfærisk "sanselag" mellem heroen og det operationelle
+ * indhold. IKKE et vejr-widget og IKKE status-badges: små overfladiske,
+ * geléagtige pools der føles som dug/regnvand/jordvarme på en lys flade —
+ * rolige observationer fra haven, ikke UI-felter.
  *
- * Spec-detaljer der definerer feeling:
- *   • Organisk floating — left lower, middle higher, right lower
- *     (subtile y-offsets, aldrig kaotiske)
- *   • Varierende pille-størrelser (small/medium/large) afhængigt
- *     af signalets vægt — frost+regn får mest plads
- *   • Soft paper-glass-hybrid materiale, max 3 piller synlige
- *   • Diskret fade-in: opacity 0→1 + translateY 4px→0
+ * Visuel retning (Annas reference, 18/6): organiske blob-former (aldrig
+ * perfekte), transparent materiale med blødt lys fra øverste HØJRE, tæt
+ * kontaktskygge under, dæmpede naturtoner pr. vejrtype. Må ALDRIG konkurrere
+ * med Dagens fokus eller blive tunge kort.
+ *
+ * Kun visuelt: data/logik (derivePills) er uændret — samme information,
+ * samme kilde. Tekst-opdeling i to linjer er ren præsentation.
  */
 export function WeatherPills({ alerts }: Props) {
   const pills = derivePills(alerts)
 
   return (
-    <div
-      style={{
-        paddingInline: 24,
-        marginTop: 18,
-        marginBottom: 18,
-        // Animation: subtil fade-in når komponenten første gang
-        // tegnes. Ingen bounce, ingen loops.
-        animation: 'vejr-piller-in 500ms ease-out both',
-      }}
-    >
+    <div style={{ paddingInline: 20, marginTop: 16, marginBottom: 20, animation: 'vejr-pools-in 600ms ease-out both' }}>
       <style>{`
-        @keyframes vejr-piller-in {
-          0% { opacity: 0; transform: translateY(4px); }
-          100% { opacity: 1; transform: translateY(0); }
+        @keyframes vejr-pools-in { 0% { opacity: 0; transform: translateY(5px); } 100% { opacity: 1; transform: translateY(0); } }
+        .vejr-pool {
+          position: relative;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          text-align: center;
+          width: var(--pool-w); height: var(--pool-h);
+          border-radius: var(--pool-radius);
+          transform: rotate(var(--pool-rotate));
+          color: var(--pool-ink);
+          background:
+            radial-gradient(125% 95% at 74% 16%, rgba(255,255,255,0.58), rgba(255,255,255,0) 44%),
+            var(--pool-bg);
+          /* lys fra øverste højre: tæt kontaktskygge under + indre glans/skygge */
+          box-shadow:
+            0 15px 22px -11px rgba(36,48,31,0.24),
+            0 3px 6px -3px rgba(36,48,31,0.12),
+            inset 0 -7px 13px -7px rgba(36,48,31,0.20),
+            inset 3px 5px 11px -5px rgba(255,255,255,0.55);
+          backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+          overflow: hidden;
+        }
+        .vejr-pool::before { /* stor blød highlight øverst/højre — lys på vand */
+          content: ''; position: absolute; top: 6%; right: 8%;
+          width: 50%; height: 44%; border-radius: 50%;
+          background: radial-gradient(circle at 62% 38%, rgba(255,255,255,0.72), rgba(255,255,255,0) 68%);
+          filter: blur(2px); pointer-events: none;
+        }
+        .vejr-pool::after { /* lille sekundær glans øverst/venstre */
+          content: ''; position: absolute; top: 18%; left: 17%;
+          width: 15%; height: 12%; border-radius: 50%;
+          background: rgba(255,255,255,0.5); filter: blur(1.5px); pointer-events: none;
         }
       `}</style>
-      {/* 12-col grid over 2 rækker — hver pille har sin egen y-offset
-          så de IKKE står på samme baseline indenfor en række.
-          Resultatet er et "tilfældigt skye"-mønster, ikke en
-          ordnet kasse. Pillerne spænder hele bredden via
-          venstre-/højre-justering. */}
+
+      {/* Løst 2-kolonne mønster: højre kolonne ligger lidt lavere, hver pool
+          har sin egen form/rotation — organisk, ikke en firkantet 2x2. */}
       <div
-        className="grid"
         style={{
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          rowGap: 4,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          columnGap: 8,
+          rowGap: 2,
+          justifyItems: 'center',
+          maxWidth: 360,
+          marginInline: 'auto',
         }}
       >
-        {pills.map((p, i) => {
-          const placement = SCATTER_PLACEMENT[i] ?? SCATTER_PLACEMENT[0]
-          return (
-            <div
-              key={p.type + i}
-              style={{
-                gridColumn: placement.col,
-                gridRow: placement.row,
-                justifySelf: placement.justify,
-                marginTop: placement.offsetY,
-                marginLeft: placement.marginLeft,
-                marginRight: placement.marginRight,
-              }}
-            >
-              <PillItem pill={p} />
-            </div>
-          )
-        })}
+        {pills.map((p, i) => (
+          <div key={p.type + i} style={{ marginTop: POOL_VARIANT[i % POOL_VARIANT.length].offsetY }}>
+            <PoolItem pill={p} variant={POOL_VARIANT[i % POOL_VARIANT.length]} />
+          </div>
+        ))}
       </div>
     </div>
   )
 }
 
-function PillItem({ pill }: { pill: Pill; index?: number; total?: number }) {
-  const Icon = pill.icon
-  const sz = SIZE_TOKENS[pill.size]
+interface PoolVariant {
+  radius: string
+  rotate: string
+  w: number
+  h: number
+  offsetY: number
+}
 
-  // Y-offset håndteres nu af det ydre scatter-grid (SCATTER_PLACEMENT)
-  // så pillerne kan placeres individuelt i et asymmetrisk mønster.
+function PoolItem({ pill, variant }: { pill: Pill; variant: PoolVariant }) {
+  const Icon = pill.icon
+  const tone = POOL_TONE[pill.type]
+  const lines = poolLines(pill.text)
 
   return (
     <div
-      className="inline-flex items-center"
+      className="vejr-pool"
       style={{
-        height: sz.height,
-        paddingInline: sz.paddingX,
-        gap: sz.gap,
-        borderRadius: sz.radius,
-        // Soft paper-glass-hybrid — papir-tone med let blur,
-        // hvid kant og næsten usynlig skygge.
-        background: 'rgba(248,246,238,0.72)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.22)',
-        boxShadow: '0 6px 18px rgba(36,48,31,0.05)',
-        whiteSpace: 'nowrap',
+        // CSS-variabler pr. pool → let at justere farve/form/størrelse.
+        ['--pool-bg' as string]: tone.bg,
+        ['--pool-ink' as string]: tone.ink,
+        ['--pool-radius' as string]: variant.radius,
+        ['--pool-rotate' as string]: variant.rotate,
+        ['--pool-w' as string]: `${variant.w}px`,
+        ['--pool-h' as string]: `${variant.h}px`,
       }}
     >
-      <Icon
-        width={sz.iconSize}
-        height={sz.iconSize}
-        strokeWidth={1.8}
-        style={{ color: pill.iconColor, flexShrink: 0 }}
-      />
-      <span
+      {/* Indhold roteres tilbage, så teksten står lige selvom poolen hælder. */}
+      <div
         style={{
-          fontFamily: sans,
-          fontSize: sz.textSize,
-          fontWeight: 700,
-          letterSpacing: '-0.01em',
-          lineHeight: 1,
-          color: '#3F4638',
+          transform: `rotate(calc(-1 * ${variant.rotate}))`,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          gap: 1, paddingInline: 10,
         }}
       >
-        {pill.text}
-      </span>
+        <Icon width={19} height={19} strokeWidth={1.7} style={{ color: tone.ink, opacity: 0.78, marginBottom: 2, flexShrink: 0 }} />
+        {lines.map((l, i) => (
+          <span
+            key={i}
+            style={{
+              fontFamily: serif,
+              fontWeight: l.big ? 500 : 500,
+              fontSize: l.big ? 27 : 16,
+              lineHeight: l.big ? 1.0 : 1.05,
+              letterSpacing: l.big ? '0.005em' : '0.01em',
+              opacity: l.big ? 1 : 0.78,
+              maxWidth: variant.w - 26,
+            }}
+          >
+            {l.line}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
 
 /**
- * Scatter-placering pr. pille-index. 12-col grid over 2 rækker
- * med varierende y-offsets så pillerne ikke står på samme baseline
- * indenfor en række — det giver et "tilfældigt skye"-feeling frem
- * for en ordnet 2x2.
- *
- *   index 0  rain      cols 1-5,   row 1, start, offsetY 0
- *   index 1  jordtemp  cols 8-13,  row 1, end,   offsetY 10 (lavere)
- *   index 2  temp      cols 3-8,   row 2, start, offsetY 0
- *   index 3  sun       cols 8-13,  row 2, end,   offsetY 8  (lavere)
- *
- * Visuelt (asymmetrisk, ikke firkant):
- *   [rain]                  [jordtemp↓]
- *      [temp]                [sun↓]
+ * Præsentation: del pille-teksten i (maks) to linjer som i referencen.
+ * Linjen med tal er den fremhævede (big) — "8 mm" / "12°" / "05.15" / "14°".
+ * Falder tilbage til én linje for fx vejrvarsel-sætninger.
+ *   "8 mm i nat" → 8 mm (big) / i nat        "Jord 12°"  → Jord / 12° (big)
+ *   "Sol 05.15"  → Sol / 05.15 (big)         "14°"       → 14° (big)
  */
-const SCATTER_PLACEMENT: Array<{
-  col: string
-  row: number
-  justify: 'start' | 'end'
-  offsetY: number
-  marginLeft?: number
-  marginRight?: number
-}> = [
-  { col: '1 / 6',  row: 1, justify: 'start', offsetY: 0 },
-  // Jord-pillen sidder 103px fra højre kant.
-  { col: '8 / 13', row: 1, justify: 'end',   offsetY: 10, marginRight: 103 },
-  // Temp-pillen er rykket 15px mod højre via marginLeft og 7px ned
-  // (offsetY) så row 2 får en lille forskudt rytme.
-  { col: '3 / 8',  row: 2, justify: 'start', offsetY: 7, marginLeft: 15 },
-  { col: '8 / 13', row: 2, justify: 'end',   offsetY: 8 },
-]
-
-/**
- * Størrelses-tokens for de tre pille-varianter. Temperatur er
- * lille (kort tal), jordtemp mellem, regn/frost/vejr-events
- * største plads så de visuelt får vægt.
- */
-const SIZE_TOKENS: Record<PillSize, {
-  height: number
-  paddingX: number
-  gap: number
-  radius: number
-  iconSize: number
-  textSize: number
-}> = {
-  small:  { height: 32, paddingX: 13, gap: 6, radius: 16, iconSize: 16, textSize: 15 },
-  medium: { height: 36, paddingX: 15, gap: 7, radius: 18, iconSize: 17, textSize: 15 },
-  large:  { height: 40, paddingX: 17, gap: 8, radius: 20, iconSize: 18, textSize: 16 },
+function poolLines(text: string): { line: string; big: boolean }[] {
+  const t = text.trim()
+  let parts = [t]
+  const numFirst = t.match(/^(\d[\d.,]*\s*(?:mm|cm|°|%)?)\s+(\D.+)$/i) // tal-først: "8 mm i nat"
+  const labelFirst = t.match(/^(\D+?)\s+(\d.*)$/)                       // label-først: "Jord 12°"
+  if (numFirst) parts = [numFirst[1], numFirst[2]]
+  else if (labelFirst) parts = [labelFirst[1], labelFirst[2]]
+  return parts.map(p => ({ line: p.trim(), big: /\d/.test(p) }))
 }
 
 /**
- * Farve-system pr. pille-type. Spec definerer dæmpede natur-toner —
- * aldrig "weather channel"-farver eller stærk blå/rød.
+ * Pool-toner pr. vejrtype — dæmpede, naturlige materialer (ikke
+ * "weather channel"-farver). bg = transparent gelé, ink = dyb udgave
+ * af samme tone til ikon + tekst.
  */
+const POOL_TONE: Record<PillType, { bg: string; ink: string }> = {
+  rain:     { bg: 'rgba(170,190,192,0.42)', ink: '#46544E' }, // støvet blågrå → dyb grågrøn
+  jordtemp: { bg: 'rgba(196,170,128,0.36)', ink: '#6A5A33' }, // varm sand → olivenbrun
+  temp:     { bg: 'rgba(220,162,128,0.36)', ink: '#9B5636' }, // støvet fersken → terracotta
+  sun:      { bg: 'rgba(226,188,104,0.40)', ink: '#8A6420' }, // blød honning → okkerbrun
+  frost:    { bg: 'rgba(160,178,192,0.44)', ink: '#46545F' }, // kold tåge → blågrå
+  wind:     { bg: 'rgba(178,186,168,0.38)', ink: '#54604B' }, // dæmpet urtegrå
+}
+
+/** Visuel variation pr. pool — organiske former, så ingen to er ens.
+ *  Lige indeks (venstre kolonne) ligger højere; ulige (højre) lidt lavere. */
+const POOL_VARIANT: PoolVariant[] = [
+  { radius: '52% 48% 46% 54% / 57% 49% 51% 43%', rotate: '-3deg', w: 144, h: 106, offsetY: 0 },
+  { radius: '47% 53% 51% 49% / 49% 45% 55% 51%', rotate: '2.5deg', w: 150, h: 100, offsetY: 16 },
+  { radius: '50% 50% 45% 55% / 60% 46% 54% 40%', rotate: '-2deg', w: 138, h: 98, offsetY: 6 },
+  { radius: '54% 46% 51% 49% / 46% 56% 44% 54%', rotate: '3deg', w: 146, h: 96, offsetY: 14 },
+]
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * DATA/LOGIK — uændret. derivePills afleder pillerne fra alerts (vejr-API i
+ * produktion; opfundne kontekst-tal i demo). Rør ikke denne del i den visuelle
+ * runde: WeatherPills viser samme information som før, kun materialet er nyt.
+ * ────────────────────────────────────────────────────────────────────────── */
+
 const ICON_COLORS: Record<PillType, string> = {
-  temp:     '#C97A5B', // soft terracotta
-  jordtemp: '#6E8163', // dusty sage
-  rain:     '#73837A', // rain sage/slate
-  sun:      '#C9A14A', // ochre sunlight
-  frost:    '#8D99A5', // cold fog blue-grey
-  wind:     '#8A9385', // muted herb grey
+  temp:     '#C97A5B',
+  jordtemp: '#6E8163',
+  rain:     '#73837A',
+  sun:      '#C9A14A',
+  frost:    '#8D99A5',
+  wind:     '#8A9385',
 }
 
 const ICONS: Record<PillType, ComponentType<SVGProps<SVGSVGElement>>> = {
@@ -210,17 +221,11 @@ const ICONS: Record<PillType, ComponentType<SVGProps<SVGSVGElement>>> = {
 
 /**
  * Prioriteringslogik per spec:
- *   1. Frost-fare
- *   2. Kraftig regn
- *   3. Jordtemperatur
- *   4. Stærk varme/sol
- *   5. Vind
- *   6. Lufttemperatur
- *   7. Solopgang
+ *   1. Frost-fare  2. Kraftig regn  3. Jordtemperatur  4. Stærk varme/sol
+ *   5. Vind  6. Lufttemperatur  7. Solopgang
  *
- * Vi viser 4 piller. Vejrvarsler får første prioritet, resten
- * fyldes med rolige kontekst-tal. Default-settet er:
- * regn + jordtemp + temp + sol — alle fire have-relevante.
+ * Vi viser 4 piller. Vejrvarsler får første prioritet, resten fyldes med
+ * rolige kontekst-tal. Default-settet er regn + jordtemp + temp + sol.
  */
 function derivePills(alerts: GardenAlert[]): Pill[] {
   const out: Pill[] = []
@@ -240,9 +245,6 @@ function derivePills(alerts: GardenAlert[]): Pill[] {
   }
 
   // 2) Standard kontekst-piller — fyld op til 4.
-  // Ved 4 piller bruger vi kun small/medium så de fitter på én række
-  // (med justify-content: space-between).
-  // I demo: opfundne værdier; produktion bruger vejr-API.
   if (out.length < MAX && !used.has('rain')) {
     out.push(makePill('rain', '8 mm i nat', 'small'))
     used.add('rain')
@@ -256,16 +258,11 @@ function derivePills(alerts: GardenAlert[]): Pill[] {
     used.add('temp')
   }
   if (out.length < MAX && !used.has('sun')) {
-    // Kort form "Sol 05.15" så pillen fitter på én række sammen
-    // med de tre andre (vi sparer ~25px på "op " mod den
-    // operationelle læseflow forbliver tydelig).
     out.push(makePill('sun', 'Sol 05.15', 'small'))
     used.add('sun')
   }
 
-  // Reorder: prioritetslogik bestemmer rækkefølgen så det mest
-  // presserende kommer først (visuelt læses venstre → højre).
-  // Frost/regn → jordtemp/temp → sol/vind.
+  // Reorder: prioritetslogik bestemmer rækkefølgen (venstre → højre).
   const order: PillType[] = ['frost', 'rain', 'jordtemp', 'temp', 'sun', 'wind']
   out.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type))
 
