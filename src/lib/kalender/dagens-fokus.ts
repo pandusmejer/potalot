@@ -253,9 +253,9 @@ function lag2StatusHandling(p: Plant, dato: string, guide: Guide | null): FokusH
   // direkte. taskType (og dermed task_key) er uændret — kun den viste titel.
   switch (p.status) {
     case 'klar_til_udplantning':
-      // NB: tilstands-formuleret ("er klar") efter Annas valg — blødere for en
-      // ikke-akut anbefaling. Bydeform-alternativ: `Plant ${navn} ud`.
-      return mkPlante(p, 2, 'udplant', `${navn} er klar til jorden`,
+      // Bydeform — grænsereglen (Kalender = handling) vejer tungere end blødhed.
+      // Mening/blødhed ligger i hvorfor-linjen; titlen handler.
+      return mkPlante(p, 2, 'udplant', `Plant ${navn} ud`,
         HVORFOR_VARIANTER.udplant![0], dato, href,
         { deadlineMaaned: vinduesLukning(qf?.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
     case 'hoestklar':
