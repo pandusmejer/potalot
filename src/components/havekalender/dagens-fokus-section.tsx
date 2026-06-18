@@ -97,7 +97,7 @@ function CheckCircle({ done, onToggle, label, size = 21 }: {
 }
 
 /** Det fremhævede primære fokus — sektionens redaktionelle hovedperson. */
-function PrimaryFocus({ h, done, month, onToggle }: { h: FokusHandling; done: boolean; month: number; onToggle: () => void }) {
+function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling; done: boolean; month: number; markoer?: string; onToggle: () => void }) {
   const checkbar = h.plantId !== null
   return (
     <div
@@ -107,6 +107,11 @@ function PrimaryFocus({ h, done, month, onToggle }: { h: FokusHandling; done: bo
       <div className="flex items-start gap-3">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={24} />}
         <div className="min-w-0 flex-1">
+          {markoer && (
+            <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 6px' }}>
+              {markoer}
+            </p>
+          )}
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
@@ -171,7 +176,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 export function DagensFokusSection({ data, canPersist = false }: { data: DagensFokus; canPersist?: boolean }) {
   const initial = [...data.fokus, ...data.flere].filter(h => h.udfoert).map(h => h.taskKey)
   const [done, setDone] = useState<ReadonlySet<string>>(() => new Set(initial))
-  const [visAlle, setVisAlle] = useState(false)
   // Aktuel måned til chip-logikken ("Godt vindue" vs "Plant ud"). Stabil pr.
   // dag → samme på server (SSR) og klient, ingen hydration-mismatch.
   const month = new Date().getMonth() + 1
@@ -202,7 +206,7 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
   if (data.fokus.length === 0) {
     return (
       <section>
-        <Eyebrow>Dagens fokus</Eyebrow>
+        <Eyebrow>Ugens fokus</Eyebrow>
         <div
           className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
           style={{ background: 'var(--secondary)', padding: '18px' }}
@@ -220,41 +224,34 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
     )
   }
 
-  const [primary, ...resten] = data.fokus
-  const aktiveSekundaere = resten
-  const flereAntal = data.flere.length
+  // Sammenlagt: dagens vigtigste = featured; resten af lag 1-4 = "Næste opgaver"
+  // (op til 4 rows), og hele opgavebrættet bag footer-linket. Ét sted at kigge.
+  const alle = [...data.fokus, ...data.flere]
+  const [primary, ...resten] = alle
+  const naeste = resten.slice(0, 4)
 
   return (
     <section>
-      <Eyebrow>Dagens fokus</Eyebrow>
+      <Eyebrow>Ugens fokus</Eyebrow>
 
-      <PrimaryFocus h={primary} done={isDone(primary)} month={month} onToggle={() => toggle(primary)} />
+      <PrimaryFocus h={primary} done={isDone(primary)} month={month} markoer="I dag" onToggle={() => toggle(primary)} />
 
-      {aktiveSekundaere.length > 0 && (
-        <div style={{ marginTop: 6 }}>
-          {aktiveSekundaere.map((h, i) => (
-            <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0} month={month} onToggle={() => toggle(h)} />
-          ))}
-        </div>
-      )}
-
-      {/* "Se alle" — resten af lag 1-4 bag en rolig fold. */}
-      {flereAntal > 0 && (
+      {naeste.length > 0 && (
         <>
-          {visAlle && (
-            <div style={{ marginTop: 2 }}>
-              {data.flere.map((h, i) => (
-                <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0 && aktiveSekundaere.length === 0} month={month} onToggle={() => toggle(h)} />
-              ))}
-            </div>
-          )}
-          <button
-            type="button"
-            onClick={() => setVisAlle(v => !v)}
-            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 2px 0' }}
+          <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: 'rgba(42,51,32,0.5)', margin: '16px 0 2px' }}>
+            Næste opgaver
+          </p>
+          <div>
+            {naeste.map((h, i) => (
+              <SecondaryRow key={h.taskKey} h={h} done={isDone(h)} first={i === 0} month={month} onToggle={() => toggle(h)} />
+            ))}
+          </div>
+          <Link
+            href="#mine-opgaver"
+            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', padding: '12px 2px 0', textDecoration: 'none' }}
           >
-            {visAlle ? 'Vis færre' : `Se alle (${flereAntal} mere)`}
-          </button>
+            Se alle ugens opgaver →
+          </Link>
         </>
       )}
     </section>

@@ -15,7 +15,6 @@ import { DenneUge } from '@/components/havekalender/denne-uge'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { DinDyrkning } from '@/components/havekalender/din-dyrkning'
 import { WeatherPoolsImage, type WeatherPoolsData } from '@/components/havekalender/weather-pools-image'
-import { DenneUgeIHaven } from '@/components/havekalender/denne-uge-i-haven'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
 import { DetKanDuGoere } from '@/components/havekalender/det-kan-du-goere'
@@ -31,7 +30,6 @@ import {
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
-import { computeWeekSuggestions } from '@/lib/denne-uge'
 import { cn } from '@/lib/utils'
 import type { GardenAlert } from '@/actions/weather'
 import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
@@ -118,7 +116,7 @@ const VEJR_POOLS_DEMO: WeatherPoolsData = {
   sun: { value: 'Sol', label: '05.15' },
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, gardenNote, isLoggedIn, dagensFokus }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -127,10 +125,6 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   const aktivePlanter = plants
     .filter(p => !p.isArchived)
     .map(p => ({ id: p.id, name: p.name, variety: p.variety }))
-
-  // LAG 1 — "Denne uge i haven": altid baseret på AKTUEL måned (nu),
-  // uafhængigt af hvilken måned brugeren bladrer til i årshjulet
-  const ugeSuggestions = computeWeekSuggestions(inventory, plants, nuMaaned)
 
   // Månedens fokus-tags = top-3 gøremåls-kategorier for valgt måned
   const focusTags = topCategories(generalTasks, valgtMaaned, 3)
@@ -146,16 +140,11 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           skifter med måneden. Demo-værdier indtil vejr-API kobles på. */}
       <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} />
 
-      {/* 2.5 · DAGENS FOKUS — Kalenderens hjerne (mentor-motoren). Broen mellem
-          stemning (hero) og handling: "derfor bør du især gøre dette i dag".
-          Isoleret sektion (Anna 18/6) — placeret efter vejrpiller, før Denne
-          uge. Rører intet andet i kalenderen. */}
+      {/* 3 · UGENS FOKUS — Kalenderens hjerne (mentor-motoren). Sammenlægning
+          af "Dagens fokus" + "Denne uge i haven" (Anna 18/6): dagens vigtigste
+          handling fremhævet øverst + de næste opgaver som rolige rows + link
+          til hele ugens opgaver. ÉT sted at kigge — ingen dobbelt opgavebog. */}
       <DagensFokusSection data={dagensFokus} canPersist={isLoggedIn} />
-
-      {/* 3 · UGENS RYTME — varmt papir-card med horisontale day cards.
-          AKTUELT-laget. Linker via "Ugens opgaver →" til Mine opgaver
-          nedenfor — IKKE til årshjulet (forskellig tidslogik).  */}
-      <DenneUgeIHaven suggestions={ugeSuggestions} alerts={alerts} />
 
       {/* 4 · MÅNEDENS RYTME — det botaniske årshjul-snapshot.
           Erstatter den gamle "Månedens guide". Indeholder
@@ -193,9 +182,8 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         <DinDyrkning plants={plants} />
       </section>
 
-      {/* 4 · HANDLING — Mine opgaver. Sidder direkte efter uge-stripen
-          fordi uge + opgaver er samme operationelle tidslag. Linket
-          "Ugens opgaver →" fra DenneUgeIHaven scrollanchorer hertil. */}
+      {/* HANDLING — Mine opgaver (det fulde opgavebræt). Linket
+          "Se alle ugens opgaver →" fra Ugens fokus scrollanchorer hertil. */}
       <section id="mine-opgaver" className="space-y-3 scroll-mt-20">
         <Card>
           <CardHeader>
