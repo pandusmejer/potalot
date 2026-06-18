@@ -11,6 +11,7 @@ import { pickGardenNote } from '@/lib/garden-notes'
 import { aktuelMaaned } from '@/lib/datetime'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
 import { mockPlants } from '@/data/mock-plants'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,7 +44,12 @@ export default async function KalenderPage() {
   // └──────────────────────────────────────────────────────────────────────┘
   const erDemoUdenData = me === null && plants.length === 0
   const brainPlants = erDemoUdenData ? mockPlants : plants
-  const dagensFokus = byggDagensFokus({ plants: brainPlants, inventory, guides, alerts, completions, today: new Date() })
+  // Samme demo-afgrænsning for guides: anonyme får getAllGuides()=[], så
+  // guide-prioritet og lag 5 ville være inerte. I demo fodres hjernen derfor
+  // med IMPORTED_GUIDES (markdown-guides), så prioriteringen er synlig/vurderbar
+  // i browseren. KUN demo, ingen persistens — præcis som mockPlants ovenfor.
+  const brainGuides = me === null && guides.length === 0 ? IMPORTED_GUIDES : guides
+  const dagensFokus = byggDagensFokus({ plants: brainPlants, inventory, guides: brainGuides, alerts, completions, today: new Date() })
 
   // Daglig sensorisk note — beregnes på serveren (deterministisk pr.
   // dag via pickGardenNote) og sendes som prop, så samme dag = samme
