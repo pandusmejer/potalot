@@ -90,18 +90,15 @@ ok(harHoest, 'Salat (hoestklar) gav en Høst-handling (lag 2)')
 ok(fuld.fokus.concat(fuld.flere).every(h => h.lag <= 4), 'fokus/flere er KUN lag 1-4 (lag 5 ligger i rytme)')
 ok(fuld.rytme.every(h => h.lag === 5), 'rytme indeholder kun lag-5-handlinger')
 console.log(`     (rytme/vedligehold i juni: ${fuld.rytme.length} handling(er))`)
-// Tie-break #1 (deadline): inden for samme lag må en kendt deadline aldrig
-// stå EFTER en ukendt, og tidligere deadline ikke efter en senere.
-function deadlineMonotont(hs: FokusHandling[]): boolean {
-  for (let i = 1; i < hs.length; i++) {
-    if (hs[i - 1].lag !== hs[i].lag) continue
-    const a = hs[i - 1].deadlineMaaned ?? 99
-    const b = hs[i].deadlineMaaned ?? 99
-    if (a > b) return false
-  }
-  return true
+// Vigtighed (konsekvens + timing) styrer rækkefølgen, ikke guide-YAML.
+// Annas princip: en høstklar afgrøde (taber kvalitet) bør slå almindelig
+// udplantning — selv når guiden har markeret udplant 'high'.
+const alle1 = [...fuld.fokus, ...fuld.flere]
+const hoestIdx = alle1.findIndex(h => h.taskType === 'hoest')
+const udplantIdx = alle1.findIndex(h => h.taskType === 'udplant')
+if (hoestIdx >= 0 && udplantIdx >= 0) {
+  ok(hoestIdx < udplantIdx, 'høst rangerer før almindelig udplantning (konsekvens > guide-priority)')
 }
-ok(deadlineMonotont(fuld.fokus.concat(fuld.flere)), 'tie-break: deadline-rækkefølge er monoton inden for hvert lag')
 // Dedup-test: ingen LAG-4-invitation (så/plant-ud) for en sort der gror.
 // (Lag-2 "Prikl Agurk" er den aktive plante og SKAL være der — derfor lag===4.)
 const saaAgurk = [...fuld.fokus, ...fuld.flere].some(h => h.lag === 4 && h.titel.includes('Agurk'))

@@ -436,25 +436,58 @@ function bestemTrin(aktivePlanter: Plant[], inventory: InventoryItem[]): Degrada
 }
 
 /**
- * Tie-breaking inden for ét lag (kalender-v2 §Tie-breaking), i rækkefølge:
- *   1. Hårdest deadline først — vindue der lukker snarest (undefined sidst).
- *   2. Flest planter berørt.
- *   3. Højeste guide-prioritet.
- *   4. Titel (determinisme — stabilt testoutput).
+ * VIGTIGHED — hvor presserende handlingen reelt er I HAVEN I DAG (konsekvens +
+ * timing-vindue). Det er DETTE, ikke guide-YAML'ens statiske `priority`, der
+ * bestemmer rækkefølgen. Produktprincip (Anna 18/6):
+ *
+ *   Dagens fokus skal vælge det, brugeren reelt bør gøre FØRST — ikke det,
+ *   admin-guiden tilfældigvis har markeret som `high`. Guide-prioritet er et
+ *   INPUT, ikke en diktator. Haven har mere ret end en YAML-fil.
+ *
+ * Basis pr. type = konsekvensen af IKKE at gøre det i dag:
+ *   daek (frost)  100  tidskritisk — biologien venter ikke (lag 1, top-tier)
+ *   hoest          90  kvalitetskritisk — modent taber smag/holdbarhed hurtigt
+ *   udplant        75  vigtigt, men kan ofte vente en dag eller to
+ *   prikl          65  spirer strækker sig, hvis de venter for længe
+ *   tjek-spiring   50  blid verifikation
+ *   lag 4 (frøbank)40  muligheder, ikke pligt
+ *   lag 5          20  rytme/vedligehold (separat bucket)
+ *
+ * Modifikatorer (timing-vindue + guide-nudge):
+ *   vindue lukker i denne måned   +20   (snævert vindue → hast, fx udplantning)
+ *   vindue lukker næste måned      +10
+ *   guide-prioritet                +0..+6  (lille nudge: high=+6, ikke diktat)
  */
-function tieBreak(a: FokusHandling, b: FokusHandling): number {
-  // 1. deadline: en kendt lukkemåned slår ingen; tidligere lukning slår senere.
-  const ad = a.deadlineMaaned, bd = b.deadlineMaaned
-  if (ad !== bd) {
-    if (ad === undefined) return 1
-    if (bd === undefined) return -1
-    return ad - bd
+const VIGTIGHED_BASIS: Record<FokusTaskType, number> = {
+  daek: 100, hoest: 90, udplant: 75, prikl: 65, 'tjek-spiring': 50,
+  saa: 40, forspir: 40, 'plant-ud': 40,
+  watering: 20, fertilizing: 20, pruning: 20, pest_check: 20, weeding: 20, maintenance: 20,
+}
+
+function vigtighed(h: FokusHandling, month: number): number {
+  let v = VIGTIGHED_BASIS[h.taskType] ?? 30
+  if (h.deadlineMaaned !== undefined) {
+    const tilLukning = h.deadlineMaaned - month
+    if (tilLukning <= 0) v += 20        // vinduet lukker nu/forbi → hast
+    else if (tilLukning === 1) v += 10  // lukker næste måned
   }
-  // 2. flest planter berørt
+  v += Math.min(Math.max(h.guidePrioritet, 0), 3) * 2 // guide som lille nudge
+  return v
+}
+
+/**
+ * Rækkefølge i dagens fokus. Frost/tidskritisk (lag 1) er ALTID øverst og kan
+ * ikke overhales (kalender-v2: "kan ikke vente"). Derefter ren vigtighed →
+ * flest planter → titel (determinisme).
+ */
+function sammenlignVigtighed(a: FokusHandling, b: FokusHandling, month: number): number {
+  const ta = a.lag === 1 ? 0 : 1
+  const tb = b.lag === 1 ? 0 : 1
+  if (ta !== tb) return ta - tb
+  const va = vigtighed(a, month)
+  const vb = vigtighed(b, month)
+  if (va !== vb) return vb - va
   if (a.beroerer !== b.beroerer) return b.beroerer - a.beroerer
-  // 3. højeste guide-prioritet
-  if (a.guidePrioritet !== b.guidePrioritet) return b.guidePrioritet - a.guidePrioritet
-  // 4. determinisme
   return a.titel.localeCompare(b.titel, 'da')
 }
 
@@ -543,8 +576,8 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
       .forEach((h, i) => { h.hvorfor = pool[i % pool.length] })
   }
 
-  // ── Sortér akut: lag-orden, så tie-break inden for laget ─────────
-  akut.sort((a, b) => (a.lag - b.lag) || tieBreak(a, b))
+  // ── Sortér akut efter vigtighed (konsekvens + timing), ikke guide-YAML ──
+  akut.sort((a, b) => sammenlignVigtighed(a, b, month))
 
   // ── Fokus vs. flere: pressende (ikke-udførte) får slottene først ──
   // Inden for hver gruppe bevares lag/tie-break-rækkefølgen (stabil sort).
@@ -559,9 +592,9 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   const fokus = ordnet.slice(0, 3)
   const flere = ordnet.slice(3)
 
-  // Rytme (lag 5): pressende først, så udførte; tie-break (pri/deadline/titel).
+  // Rytme (lag 5): pressende først, så udførte; derefter vigtighed/titel.
   rytme.sort((a, b) =>
-    (Number(a.udfoert) - Number(b.udfoert)) || tieBreak(a, b))
+    (Number(a.udfoert) - Number(b.udfoert)) || sammenlignVigtighed(a, b, month))
 
   // ── Stilhed: KUN lag 1-4 tæller. Vedligehold (lag 5) bryder aldrig stilhed.
   const stilhed = pressende.length === 0
