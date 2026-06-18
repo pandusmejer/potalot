@@ -116,7 +116,7 @@ const SLOT_ICON_OFFSET: Record<Slot, { x: number; y: number }> = {
 /** Nudge KUN den primære tekst (mm). */
 const SLOT_PRIMARY_OFFSET: Record<Slot, { x: number; y: number }> = {
   rain: { x: 0, y: 0 },
-  soil: { x: 3, y: 0 },         // "Jord" 3 mm mod højre
+  soil: { x: 6, y: 2 },         // "Jord" 6 mm mod højre, 2 mm ned
   temperature: { x: 0, y: 0 },
   sun: { x: 0, y: 0 },
 }
