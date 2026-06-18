@@ -14,7 +14,7 @@ import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
 import { DenneUge } from '@/components/havekalender/denne-uge'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { DinDyrkning } from '@/components/havekalender/din-dyrkning'
-import { WeatherPills } from '@/components/havekalender/weather-pills'
+import { WeatherPoolsImage, type WeatherPoolsData } from '@/components/havekalender/weather-pools-image'
 import { DenneUgeIHaven } from '@/components/havekalender/denne-uge-i-haven'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
@@ -109,6 +109,15 @@ function IconKop({ className }: { className?: string }) {
   )
 }
 
+/** Demo-værdier til vejr-pools. Faste 4 slots (regn/jord/temp/sol) matcher
+ *  billed-assetets 2x2-layout. Erstattes af vejr-API senere. */
+const VEJR_POOLS_DEMO: WeatherPoolsData = {
+  rain: { value: '8 mm', label: 'i nat' },
+  soil: { value: 'Jord', label: '12°' },
+  temperature: { value: '14°' },
+  sun: { value: 'Sol', label: '05.15' },
+}
+
 export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
@@ -132,9 +141,10 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           Heroen er fredet per KALENDER_MASTER_SPEC.md (critical rule). */}
       <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
 
-      {/* 2 · KONTEKST-PILLER — små have-relevante vejrsignaler lige under
-          heroen. Ikke et dashboard, kun det der ændrer have-beslutninger. */}
-      <WeatherPills alerts={alerts} />
+      {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
+          Ikke et dashboard; rolige observationer fra haven. Sæsonbilledet
+          skifter med måneden. Demo-værdier indtil vejr-API kobles på. */}
+      <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} />
 
       {/* 2.5 · DAGENS FOKUS — Kalenderens hjerne (mentor-motoren). Broen mellem
           stemning (hero) og handling: "derfor bør du især gøre dette i dag".
