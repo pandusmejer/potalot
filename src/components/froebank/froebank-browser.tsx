@@ -15,10 +15,9 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { CategoryTabs } from './category-tabs'
 import { InventoryArchiveStack } from './inventory-archive-stack'
+import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import {
-  Search,
   SlidersHorizontal,
   BookOpen,
   Clock,
@@ -27,7 +26,6 @@ import {
   ArrowDownAZ,
   ArrowDownZA,
 } from 'lucide-react'
-import { SYSTEM_SUBCATEGORIES } from '@/lib/constants'
 import type {
   InventoryItem,
   PrimaryCategoryId,
@@ -53,7 +51,7 @@ const VALID_SMART_FILTERS: SmartFilter[] = [
   'naesten-tom',
 ]
 
-export function FroebankBrowser({ inventory, customSubcategories = [] }: Props) {
+export function FroebankBrowser({ inventory }: Props) {
   const searchParams = useSearchParams()
   const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')
   const [search, setSearch] = useState('')
@@ -61,7 +59,7 @@ export function FroebankBrowser({ inventory, customSubcategories = [] }: Props) 
   const [filtersOpen, setFiltersOpen] = useState(false)
   // Sorteringsorden: 'standard' (pinned→favorit→alfabetisk),
   // 'az' (A→Å) eller 'za' (Å→A).
-  const [sortOrder, setSortOrder] = useState<'standard' | 'az' | 'za'>('standard')
+  const [sortOrder, setSortOrder] = useState<'standard' | 'az' | 'za' | 'recent'>('standard')
   const [smartFilters, setSmartFilters] = useState<Set<SmartFilter>>(() => {
     const f = searchParams.get('filter')
     if (f && (VALID_SMART_FILTERS as string[]).includes(f))
@@ -89,11 +87,6 @@ export function FroebankBrowser({ inventory, customSubcategories = [] }: Props) 
       active = false
     }
   }, [searchParams])
-
-  const tilgaengeligeSubs = useMemo(() => {
-    const all: Subcategory[] = [...SYSTEM_SUBCATEGORIES, ...customSubcategories]
-    return all.filter((s) => s.parentCategoryIds.includes(activeCategory))
-  }, [activeCategory, customSubcategories])
 
   function toggleSmart(f: SmartFilter) {
     setSmartFilters((prev) => {
@@ -153,7 +146,10 @@ export function FroebankBrowser({ inventory, customSubcategories = [] }: Props) 
 
     const byName = (a: InventoryItem, b: InventoryItem) =>
       a.name.localeCompare(b.name, 'da')
+    const byCreatedAt = (a: InventoryItem, b: InventoryItem) =>
+      (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
 
+    if (sortOrder === 'recent') return [...list].sort(byCreatedAt)
     if (sortOrder === 'az') return [...list].sort(byName)
     if (sortOrder === 'za') return [...list].sort((a, b) => byName(b, a))
 
@@ -165,181 +161,96 @@ export function FroebankBrowser({ inventory, customSubcategories = [] }: Props) 
     })
   }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder])
 
-  // Mikro-activity — struktureret som label + objekt + handling, så
-  // frøbanken føles levende og timeline-agtig frem for et passivt
-  // katalog. Prioritet: 1) noget tilføjet for nylig, 2) sæson-kontekst.
-  const activity = useMemo<{
-    label: string
-    title: string
-    subtitle: string
-  } | null>(() => {
-    if (inventory.length === 0) return null
-
-    // 1) Senest tilføjet inden for 14 dage.
+  const latestInventoryItem = useMemo(() => {
     const withDates = inventory.filter((i) => i.createdAt)
     if (withDates.length > 0) {
-      const recent = [...withDates].sort((a, b) =>
+      return [...withDates].sort((a, b) =>
         (b.createdAt ?? '').localeCompare(a.createdAt ?? ''),
       )[0]
-      const days = Math.floor(
-        (Date.now() - new Date(recent.createdAt!).getTime()) / 86_400_000,
-      )
-      if (days >= 0 && days <= 14) {
-        const navn = recent.variety
-          ? `${recent.name} ${recent.variety}`
-          : recent.name
-        const tid =
-          days === 0 ? 'i dag' : days === 1 ? 'i går' : `for ${days} dage siden`
-        return {
-          label: 'Sidst aktiv',
-          title: navn,
-          subtitle: `Tilføjet ${tid}`,
-        }
-      }
     }
-
-    // 2) Sæson: sorter hvis såvindue rammer denne måned.
-    const maaned = new Date().getMonth() + 1
-    const klarNu = inventory.filter((i) => i.sowingMonths?.includes(maaned))
-    if (klarNu.length > 0) {
-      return {
-        label: 'Lige nu',
-        title: `${klarNu.length} ${klarNu.length === 1 ? 'sort' : 'sorter'}`,
-        subtitle: 'Klar til såning',
-      }
-    }
-    return null
+    return inventory[0] ?? null
   }, [inventory])
+
+  const latestItemName = latestInventoryItem
+    ? latestInventoryItem.variety
+      ? `${latestInventoryItem.name} ${latestInventoryItem.variety}`
+      : latestInventoryItem.name
+    : 'Salat Crispy Mint'
+
+  const latestItemTimeLabel = latestInventoryItem?.createdAt
+    ? (() => {
+        const days = Math.max(
+          0,
+          Math.floor((Date.now() - new Date(latestInventoryItem.createdAt).getTime()) / 86_400_000),
+        )
+        if (days === 0) return 'i dag'
+        if (days === 1) return 'i går'
+        return `for ${days} dage siden`
+      })()
+    : 'for 2 dage siden'
+
+  const categoryCounts = useMemo(() => {
+    function count(id: PrimaryCategoryId) {
+      return inventory.filter((item) => item.primaryCategoryId === id).length
+    }
+    return [
+      { id: 'fro', label: 'Frø', count: count('fro') },
+      { id: 'loeg', label: 'Løg', count: count('loeg') },
+      { id: 'knolde', label: 'Knolde', count: count('knolde') },
+      { id: 'buske', label: 'Buske', count: count('buske') },
+    ]
+  }, [inventory])
+
+  const totalSeeds = inventory.reduce((sum, item) => {
+    const remaining = item.seedsRemaining ?? item.seedCount ?? 0
+    return sum + remaining
+  }, 0)
+  const expiringSoonCount = inventory.filter((item) => {
+    if (!item.purchaseYear) return false
+    return new Date().getFullYear() - item.purchaseYear >= 2
+  }).length
+
+  const activeFolderFilter = smartFilters.has('udloeber-snart')
+    ? 'udloeber-snart'
+    : sortOrder === 'recent'
+      ? 'senest-tilfoejet'
+      : 'alle'
+
+  function handleFolderFilterChange(filterId: string) {
+    if (filterId === 'udloeber-snart') {
+      setSortOrder('standard')
+      setSmartFilters(new Set(['udloeber-snart']))
+      return
+    }
+    if (filterId === 'senest-tilfoejet') {
+      setSmartFilters(new Set())
+      setSortOrder('recent')
+      return
+    }
+    setSmartFilters(new Set())
+    setSortOrder('standard')
+  }
 
   return (
     <div className="space-y-4">
-      {/* Mikro-activity pill — smal, objektbaseret, timeline-agtig.
-          Grøn dot + ultra-light uppercase label + objektnavn + handling. */}
-      {activity && (
-        <div
-          className="inline-flex max-w-[280px] flex-col rounded-2xl border px-3.5 py-2.5"
-          style={{
-            fontFamily: 'var(--font-manrope)',
-            borderColor: 'rgba(36,48,31,0.08)',
-            background: 'rgba(255,255,255,0.45)',
-          }}
-        >
-          <div className="flex items-center gap-1.5">
-            <span
-              aria-hidden
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                background: '#6B8B4A',
-                flexShrink: 0,
-              }}
-            />
-            <span
-              className="uppercase"
-              style={{
-                fontSize: 9.5,
-                fontWeight: 600,
-                letterSpacing: '0.16em',
-                color: 'rgba(36,48,31,0.42)',
-              }}
-            >
-              {activity.label}
-            </span>
-          </div>
-          <span
-            className="mt-1.5 truncate"
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: '-0.01em',
-              color: '#24301F',
-            }}
-          >
-            {activity.title}
-          </span>
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 500,
-              color: 'rgba(36,48,31,0.50)',
-              marginTop: 1,
-            }}
-          >
-            {activity.subtitle}
-          </span>
-        </div>
-      )}
-
-      <CategoryTabs
-        active={activeCategory}
-        onChange={setActiveCategory}
-        inventory={inventory}
+      <SeedBankFolderPanel
+        totalSeeds={totalSeeds}
+        totalVarieties={inventory.length}
+        expiringSoonCount={expiringSoonCount}
+        recentItemName={latestItemName}
+        recentItemTimeLabel={latestItemTimeLabel}
+        activeCategory={activeCategory}
+        categories={categoryCounts}
+        activeFilter={activeFolderFilter}
+        searchValue={search}
+        onSearchChange={setSearch}
+        onFilterClick={() => setFiltersOpen((v) => !v)}
+        onCategoryChange={(categoryId) => {
+          setActiveCategory(categoryId as PrimaryCategoryId)
+          setSubcat('alle')
+        }}
+        onFilterChange={handleFolderFilterChange}
       />
-
-      {/* ÉN samlet toolbar: search ─ subkategori ─ filter-knap.
-          Alt i én rounded container med dividere for at undgå
-          visuel støj fra spredte blokke. */}
-      <div
-        className="flex items-center overflow-hidden rounded-2xl border border-input bg-card"
-        style={{ height: 48 }}
-      >
-        {/* Søgefelt — borderløst, flex-1 */}
-        <div className="relative flex flex-1 items-center min-w-0">
-          <Search className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Søg navn, latinsk, sort…"
-            className="h-full w-full bg-transparent pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground"
-          />
-        </div>
-
-        {/* Subkategori — kun hvis der findes nogen */}
-        {tilgaengeligeSubs.length > 0 && (
-          <>
-            <div className="h-6 w-px bg-border" />
-            <select
-              value={subcat}
-              onChange={(e) => setSubcat(e.target.value)}
-              className="h-full bg-transparent px-3 text-sm outline-none"
-            >
-              <option value="alle">Alle</option>
-              {tilgaengeligeSubs.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                  {!s.isSystem ? ' (egen)' : ''}
-                </option>
-              ))}
-            </select>
-          </>
-        )}
-
-        {/* Filter-knap — åbner/lukker smart-filter rækken */}
-        <div className="h-6 w-px bg-border" />
-        <button
-          type="button"
-          onClick={() => setFiltersOpen((v) => !v)}
-          aria-pressed={filtersOpen}
-          aria-label="Filtre"
-          className={cn(
-            'flex h-full items-center gap-1.5 px-4 text-sm font-medium transition-colors',
-            filtersOpen || smartFilters.size > 0
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground',
-          )}
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          {smartFilters.size > 0 && (
-            <span
-              className="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-semibold"
-              style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}
-            >
-              {smartFilters.size}
-            </span>
-          )}
-        </button>
-      </div>
 
       {/* Filter-panel — 6 chips i et 3-kolonne grid (3 pr. linje).
           De 4 første er smart-filtre; de 2 sidste er sorterings-
