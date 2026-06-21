@@ -18,7 +18,10 @@ import { WeatherPills } from '@/components/havekalender/weather-pills'
 import { DenneUgeIHaven } from '@/components/havekalender/denne-uge-i-haven'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
-import { DetKanDuGoere } from '@/components/havekalender/det-kan-du-goere'
+import {
+  DetKanDuGoereEditorialPlanner,
+  mapTaskToPlannerItem,
+} from '@/components/havekalender/det-kan-du-goere-editorial-planner'
 import { NaesteMaaned } from '@/components/havekalender/naeste-maaned'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -32,6 +35,8 @@ import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { computeWeekSuggestions } from '@/lib/denne-uge'
 import { cn } from '@/lib/utils'
+import { hideGeneralTask } from '@/actions/aarshjul'
+import { createTask } from '@/actions/havekalender'
 import type { GardenAlert } from '@/actions/weather'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
@@ -121,6 +126,9 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
   // Månedens fokus-tags = top-3 gøremåls-kategorier for valgt måned
   const focusTags = topCategories(generalTasks, valgtMaaned, 3)
+  const monthlyPlannerItems = generalTasks
+    .filter(g => !g.isHiddenByMe)
+    .map(mapTaskToPlannerItem)
 
   return (
     <div className="space-y-7">
@@ -144,11 +152,31 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           giver brugeren "hvad betyder maj for min have"-overblikket
           på under 5 sekunder. Per spec: placeret efter Denne uge,
           FØR Mine opgaver. */}
-      <DetKanDuGoere
+      <DetKanDuGoereEditorialPlanner
         month={nuMaaned}
-        year={year}
-        generalTasks={generalTasks.filter(g => !g.isHiddenByMe)}
-        isLoggedIn={isLoggedIn}
+        items={monthlyPlannerItems}
+        onAddToTasks={isLoggedIn
+          ? async (item) => {
+              const today = new Date().toISOString().slice(0, 10)
+              await createTask({
+                title: item.title,
+                description: item.description || undefined,
+                date: today,
+                taskType: 'custom',
+                priority: item.priority ?? 'medium',
+                source: 'general',
+                sourceId: item.id,
+              })
+            }
+          : undefined}
+        onHide={isLoggedIn
+          ? async (item) => {
+              await hideGeneralTask(item.id)
+            }
+          : undefined}
+        onOpenGuide={(item) => {
+          if (item.guideHref) window.location.href = item.guideHref
+        }}
       />
 
       {/* Lille sensorisk note — "små ting fra haven". Svæver mellem

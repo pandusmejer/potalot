@@ -1,6 +1,14 @@
 'use client'
 
 /**
+ * DEPRECATED / IKKE LÆNGERE LIVE:
+ * Den live "Det kan du gøre i [måned]"-sektion er nu
+ * `det-kan-du-goere-editorial-planner.tsx`.
+ *
+ * Låst produktretning: editorial monthly planner / havejournal.
+ * Genindfør ikke kortliste, item-billeder, pills eller brede grønne
+ * CTA'er herfra uden eksplicit ny produktbeslutning.
+ *
  * "Det kan du gøre i [måned]" — sektionen der erstatter den gamle
  * "Månedens guide". Et roligt papir-card med månedens admin-kuraterede
  * gøremål (sæsonbestemt haveviden), navigerbart måned for måned.
