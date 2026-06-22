@@ -12,7 +12,7 @@ export default function MonthlyPlannerPublicPreviewPage() {
       className="overflow-x-clip pb-20"
       style={{ background: '#EAE6D8', minHeight: '100dvh' }}
     >
-      <div className="mx-auto max-w-[820px] px-6 pb-8 pt-8">
+      <div className="mx-auto w-full max-w-[390px] px-4 pb-8 pt-8">
         <p
           style={{
             color: 'rgba(36,48,31,0.55)',

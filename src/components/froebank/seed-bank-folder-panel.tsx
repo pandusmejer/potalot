@@ -2,15 +2,45 @@
 
 import * as React from 'react'
 import {
-  Circle,
-  Flower2,
   Leaf,
   Search,
   SlidersHorizontal,
   Sprout,
-  TreePine,
 } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+
+/** Ikon-komponent (lucide ELLER custom inline-SVG) — begge tager className + strokeWidth. */
+type IconType = React.ComponentType<{ className?: string; strokeWidth?: number }>
+
+// Custom botaniske kategori-glyphs (lucide har ikke løg/knold/busk i den rette
+// stil) — tegnet i samme rolige stregstil som referencebilledet.
+function GlyphLoeg({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 21c-3.6 0-6-2.6-6-6 0-3.5 2.6-7 6-7s6 3.5 6 7c0 3.4-2.4 6-6 6Z" />
+      <path d="M12 8c-.7-1.6-1.9-2.8-3.1-3.5M12 8c.7-1.6 1.9-2.8 3.1-3.5" />
+      <path d="M9.7 9.7c-1 2.4-1 5.5.3 8.1M14.3 9.7c1 2.4 1 5.5-.3 8.1" />
+    </svg>
+  )
+}
+
+function GlyphKnolde({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <ellipse cx="8.8" cy="9.6" rx="4.3" ry="3.4" transform="rotate(-20 8.8 9.6)" />
+      <ellipse cx="15.4" cy="10.9" rx="3.9" ry="3" transform="rotate(16 15.4 10.9)" />
+      <ellipse cx="12" cy="16" rx="4.1" ry="3.2" transform="rotate(-6 12 16)" />
+    </svg>
+  )
+}
+
+function GlyphBusk({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 21v-5" />
+      <path d="M8.6 16c-2 0-3.6-1.5-3.6-3.4 0-1.3.8-2.5 2-3 .1-2.2 1.9-3.9 4-3.9 1.5 0 2.8.8 3.4 2 .4-.2.9-.3 1.4-.3 1.7 0 3.1 1.4 3.1 3.1 0 .3 0 .6-.1.9 1 .5 1.6 1.5 1.6 2.6 0 1.7-1.4 3-3.3 3Z" />
+    </svg>
+  )
+}
 
 type CategoryId = 'fro' | 'loeg' | 'knolde' | 'buske' | string
 type FilterId = 'alle' | 'udloeber-snart' | 'senest-tilfoejet' | string
@@ -19,7 +49,7 @@ export interface SeedBankFolderCategory {
   id: CategoryId
   label: string
   count: number
-  icon?: LucideIcon
+  icon?: IconType
 }
 
 export interface SeedBankFolderFilter {
@@ -48,16 +78,16 @@ export interface SeedBankFolderPanelProps {
 
 const DEFAULT_CATEGORIES: SeedBankFolderCategory[] = [
   { id: 'fro', label: 'Frø', count: 8, icon: Sprout },
-  { id: 'loeg', label: 'Løg', count: 0, icon: Circle },
-  { id: 'knolde', label: 'Knolde', count: 0, icon: Flower2 },
-  { id: 'buske', label: 'Buske', count: 0, icon: TreePine },
+  { id: 'loeg', label: 'Løg', count: 0, icon: GlyphLoeg },
+  { id: 'knolde', label: 'Knolde', count: 0, icon: GlyphKnolde },
+  { id: 'buske', label: 'Buske', count: 0, icon: GlyphBusk },
 ]
 
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
+const CATEGORY_ICONS: Record<string, IconType> = {
   fro: Sprout,
-  loeg: Circle,
-  knolde: Flower2,
-  buske: TreePine,
+  loeg: GlyphLoeg,
+  knolde: GlyphKnolde,
+  buske: GlyphBusk,
 }
 
 const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
@@ -68,7 +98,7 @@ const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
 
 const paperTexture = {
   backgroundImage:
-    'linear-gradient(180deg, #C4C1AA 0%, #BCBAA2 48%, #B4B298 100%)',
+    'linear-gradient(180deg, #D0D5C6 0%, #C8CEBD 48%, #BBC4B0 100%)',
 }
 
 // Papir-fiber: synlig, men organisk fraktal-noise (ikke et regulært raster).
@@ -110,7 +140,7 @@ export function SeedBankFolderPanel({
 
   return (
     <section
-      className="relative mb-10 px-3 pt-5"
+      className="relative mx-auto w-full max-w-[430px] mb-10 px-3 pt-5"
       data-total-seeds={totalSeeds}
       data-total-varieties={totalVarieties}
       data-expiring-soon-count={expiringSoonCount}
@@ -135,17 +165,17 @@ export function SeedBankFolderPanel({
       <div className="relative z-10 pt-8">
         <div
           aria-hidden
-          className="absolute left-0 top-0 z-20 h-10 w-[58%] bg-[#BCBAA2] shadow-[0_-2px_8px_rgba(255,255,255,0.16)_inset]"
+          className="absolute left-0 top-0 z-20 h-10 w-[58%] bg-[#C8CEBD] shadow-[0_-2px_8px_rgba(255,255,255,0.16)_inset]"
           style={{
             clipPath:
               'polygon(0 100%, 0 42%, 4% 12%, 9% 0, 63% 0, 67% 10%, 70% 34%, 73% 56%, 100% 56%, 100% 100%)',
             backgroundImage:
-              'linear-gradient(180deg, #C4C1AA 0%, #BCBAA2 58%, #B4B298 100%)',
+              'linear-gradient(180deg, #D0D5C6 0%, #C8CEBD 58%, #BBC4B0 100%)',
           }}
         />
 
         <div
-          className="relative overflow-hidden rounded-b-[24px] rounded-tr-[24px] bg-[#BCBAA2] px-5 pb-8 pt-7 shadow-[0_16px_30px_rgba(36,48,31,0.16),0_1px_0_rgba(255,255,255,0.20)_inset]"
+          className="relative overflow-hidden rounded-b-[24px] rounded-tr-[24px] bg-[#C8CEBD] px-5 pb-8 pt-7 shadow-[0_16px_30px_rgba(36,48,31,0.16),0_1px_0_rgba(255,255,255,0.20)_inset]"
           style={paperTexture}
         >
           {/* Fiber-grain — synlig papir-tekstur (multiply). Organisk fraktal-
@@ -154,7 +184,7 @@ export function SeedBankFolderPanel({
             aria-hidden
             className="pointer-events-none absolute inset-0 mix-blend-multiply"
             style={{
-              opacity: 0.22,
+              opacity: 0.06,
               backgroundImage: `url("${GRAIN_SVG}")`,
               backgroundSize: '170px 170px',
             }}
@@ -231,7 +261,7 @@ export function SeedBankFolderPanel({
               </div>
               <div
                 aria-hidden
-                className="pointer-events-none absolute bottom-0 right-0 top-0 w-10 bg-gradient-to-l from-[#BCBAA2] to-transparent"
+                className="pointer-events-none absolute bottom-0 right-0 top-0 w-10 bg-gradient-to-l from-[#C8CEBD] to-transparent"
               />
             </div>
 

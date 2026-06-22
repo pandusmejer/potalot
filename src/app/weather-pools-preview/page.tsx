@@ -3,10 +3,11 @@ import { WeatherPools, WeatherPoolsDemo } from '@/components/weather/weather-poo
 export default function WeatherPoolsPreviewPage() {
   return (
     <main className="min-h-screen bg-[#f6f0df]">
+      <div className="mx-auto w-full max-w-[390px]">
       <WeatherPoolsDemo />
 
-      <section className="px-5 pb-16 sm:px-8">
-        <div className="mx-auto max-w-4xl">
+      <section className="px-5 pb-16">
+        <div className="mx-auto w-full">
           <div className="mb-6">
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-[#6f7355]">
               Hero compact
@@ -22,6 +23,7 @@ export default function WeatherPoolsPreviewPage() {
           </div>
         </div>
       </section>
+      </div>
     </main>
   )
 }

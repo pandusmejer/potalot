@@ -14,7 +14,7 @@ export default function SeedBankFolderPreviewPage() {
         padding: '28px 14px 96px',
       }}
     >
-      <div style={{ margin: '0 auto', maxWidth: 760 }}>
+      <div style={{ margin: '0 auto', width: '100%', maxWidth: 390 }}>
         <header style={{ margin: '0 8px 24px' }}>
           <p
             style={{
@@ -65,7 +65,7 @@ export default function SeedBankFolderPreviewPage() {
           aria-hidden
           style={{
             height: 170,
-            margin: '-18px 24px 0',
+            margin: '-18px 14px 0',
             borderRadius: 26,
             background: '#eee7d8',
             boxShadow: '0 12px 26px rgba(36,48,31,0.13)',

@@ -14,7 +14,7 @@ export default function CalendarInspirationPreviewPage() {
         padding: '32px 20px 88px',
       }}
     >
-      <div style={{ margin: '0 auto', maxWidth: 760 }}>
+      <div style={{ margin: '0 auto', width: '100%', maxWidth: 390 }}>
         <header style={{ marginBottom: 28 }}>
           <p
             style={{
