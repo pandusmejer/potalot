@@ -41,8 +41,6 @@ const FOLDER_WIDTH = 390
 const FOLDER_HEIGHT = 135
 const CONTAINER_WIDTH = 390
 const CONTAINER_HEIGHT = 1000
-const CONTAINER_BG = 'rgba(243,242,237,0.72)'
-const CONTAINER_RADIUS = 36
 
 // Bygger folder-silhuet path for vilkårlig højde H.
 // Venstre side + notch-coords (y=0-26) er BEVARET — kun bunden
@@ -318,9 +316,6 @@ export function InventoryArchiveStack({ inventory }: { inventory: InventoryItem[
     <div
       style={{
         width: '100%',
-        background: CONTAINER_BG,
-        borderRadius: CONTAINER_RADIUS,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35)',
         paddingTop: 24,
         paddingBottom: 0,
         overflow: 'hidden',
@@ -343,25 +338,9 @@ export function InventoryArchiveStack({ inventory }: { inventory: InventoryItem[
       {/* CTA-tekst mellem hero og stak — signalerer at man kan
           bladre i resten af frøbanken. Kun synlig hvis der ER
           stak-kort under hero. */}
-      {stackItems.length > 0 && (
-        <p
-          aria-hidden
-          style={{
-            margin: 0,
-            paddingTop: 18,
-            paddingBottom: 14,
-            textAlign: 'center',
-            fontFamily: 'var(--font-manrope)',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.52)',
-          }}
-        >
-          Bladr i din frøbank
-        </p>
-      )}
+      {/* Gammel "Bladr i din frøbank"-CTA fjernet — divideren i mappens bund
+          (SeedBankFolderPanel) er nu den eneste. Spacer bevarer hero↔stak-spacing. */}
+      {stackItems.length > 0 && <div aria-hidden style={{ height: 45 }} />}
 
       {/* Folder-cascade — knyttes sammen med hero-kortet via en lille
           margin-top så stakken starter lige under hero, men inde i

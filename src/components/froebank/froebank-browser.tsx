@@ -185,9 +185,9 @@ export function FroebankBrowser({ inventory }: Props) {
         )
         if (days === 0) return 'i dag'
         if (days === 1) return 'i går'
-        return `for ${days} dage siden`
+        return `${days} dage siden`
       })()
-    : 'for 2 dage siden'
+    : '2 dage siden'
 
   const categoryCounts = useMemo(() => {
     function count(id: PrimaryCategoryId) {
@@ -198,6 +198,8 @@ export function FroebankBrowser({ inventory }: Props) {
       { id: 'loeg', label: 'Løg', count: count('loeg') },
       { id: 'knolde', label: 'Knolde', count: count('knolde') },
       { id: 'buske', label: 'Buske', count: count('buske') },
+      { id: 'traeer', label: 'Træer', count: count('traeer') },
+      { id: 'stauder', label: 'Stauder', count: count('stauder') },
     ]
   }, [inventory])
 
@@ -232,7 +234,11 @@ export function FroebankBrowser({ inventory }: Props) {
   }
 
   return (
-    <div className="space-y-4">
+    // Bryd let ud af app'ens 16px-gutter, så mappe-stakken bliver bredere
+    // (folder + kort følges ad). Beholder ~8px luft i hver side til
+    // folder-skyggen — ingen forælder klipper vandret, og skygger er paint-only,
+    // så intet skæres og der opstår ikke vandret scroll.
+    <div className="space-y-4 -mx-1.5">
       <SeedBankFolderPanel
         totalSeeds={totalSeeds}
         totalVarieties={inventory.length}

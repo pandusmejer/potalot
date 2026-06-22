@@ -2,10 +2,13 @@
 
 import * as React from 'react'
 import {
+  BookOpen,
+  Flower2,
   Leaf,
   Search,
   SlidersHorizontal,
   Sprout,
+  TreeDeciduous,
 } from 'lucide-react'
 
 /** Ikon-komponent (lucide ELLER custom inline-SVG) — begge tager className + strokeWidth. */
@@ -84,6 +87,8 @@ const DEFAULT_CATEGORIES: SeedBankFolderCategory[] = [
   { id: 'loeg', label: 'Løg', count: 0, icon: GlyphLoeg },
   { id: 'knolde', label: 'Knolde', count: 0, icon: GlyphKnolde },
   { id: 'buske', label: 'Buske', count: 0, icon: GlyphBusk },
+  { id: 'traeer', label: 'Træer', count: 0, icon: TreeDeciduous },
+  { id: 'stauder', label: 'Stauder', count: 0, icon: Flower2 },
 ]
 
 const CATEGORY_ICONS: Record<string, IconType> = {
@@ -91,6 +96,8 @@ const CATEGORY_ICONS: Record<string, IconType> = {
   loeg: GlyphLoeg,
   knolde: GlyphKnolde,
   buske: GlyphBusk,
+  traeer: TreeDeciduous,
+  stauder: Flower2,
 }
 
 const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
@@ -153,7 +160,11 @@ export function SeedBankFolderPanel({
       <svg aria-hidden width="0" height="0" className="absolute">
         <defs>
           <clipPath id="seedFolderClip" clipPathUnits="objectBoundingBox">
-            <path d="M0 0.9558L0 0.1388C0 0.1136 0.008 0.1025 0.0213 0.0962C0.0319 0.0915 0.0399 0.0804 0.0452 0.0615C0.0519 0.0394 0.0638 0.0315 0.0838 0.0315L0.4029 0.0315C0.4229 0.0315 0.4362 0.0331 0.4441 0.0379C0.4521 0.0426 0.4574 0.0489 0.4628 0.0568C0.4681 0.0647 0.4734 0.0909 0.4814 0.0909L0.9495 0.0909C0.9654 0.0909 0.9774 0.0956 0.9867 0.1067C0.996 0.1177 1 0.1319 1 0.1508L1 0.9558C1 0.9811 0.984 1 0.9628 1L0.0372 1C0.016 1 0 0.9811 0 0.9558Z" />
+            {/* Top-y + bund-hjørner skaleret så skulder OG bundhjørner bevarer NØJAGTIG
+                samme pixels ved mappens højde ~530px (forlænget fra 440px, k=440/530=0.8302:
+                top-y × k, bund-y = 1−(1−y)×k). Kun den lige krop forlænges — ingen
+                proportionsændring. Re-tunes hvis højden (paddingBottom) ændres. */}
+            <path d="M0 0.9714L0 0.1096C0 0.0739 0.012 0.0643 0.0213 0.0624C0.0319 0.0594 0.0399 0.0522 0.0452 0.0399C0.0519 0.0256 0.0638 0.0204 0.0838 0.0204L0.4029 0.0204C0.4229 0.0204 0.4362 0.0215 0.4441 0.0246C0.4521 0.0276 0.4574 0.0317 0.4628 0.0369C0.4681 0.0420 0.4734 0.0590 0.4814 0.0590L0.9495 0.0590C0.9654 0.0590 0.9774 0.0620 0.9867 0.0692C0.996 0.0764 1 0.0856 1 0.0979L1 0.9714C1 0.9877 0.984 1 0.9691 1L0.0372 1C0.016 1 0 0.9877 0 0.9714Z" />
           </clipPath>
           <filter id="paperGrain">
             <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="2" stitchTiles="stitch" result="n" />
@@ -271,7 +282,7 @@ export function SeedBankFolderPanel({
           style={{
             ...paperTexture,
             paddingTop: 44,
-            paddingBottom: 22,
+            paddingBottom: 116,
             paddingLeft: 24,
             paddingRight: 24,
             clipPath: 'url(#seedFolderClip)',
@@ -303,12 +314,12 @@ export function SeedBankFolderPanel({
             }}
           />
 
-          {/* <BotanicalLine /> — botanisk illustration fjernet igen */}
+          {/* Botanisk vandmærke fjernet igen (billede: public/images/ui/botanik-vandmaerke.png) */}
 
           <div className="relative z-10">
             <header className="max-w-[26rem]">
               <p
-                className="text-[clamp(2.25rem,9.7vw,2.5rem)] leading-[1.02] tracking-[-0.01em] text-[#263321]"
+                className="relative top-px text-[clamp(2.25rem,9.7vw,2.5rem)] leading-[1.02] tracking-[-0.01em] text-[#263321]"
                 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontWeight: 600 }}
               >
                 Din Frøbank
@@ -397,6 +408,19 @@ export function SeedBankFolderPanel({
               ))}
             </div>
 
+            {/* "Bladr i din frøbank" — divider i mappens bundflade; lead-in til
+                frøkort-stakken nedenfor: eyebrow-tekst + tynde streger + blad-glyph. */}
+            <div className="mt-9 flex flex-col items-center gap-[7px]">
+              <p className="text-center font-sans text-[0.68rem] font-medium uppercase tracking-[0.26em] text-[#646B5A]">
+                Bladr i din frøbank
+              </p>
+              <div className="flex w-full items-center gap-4 px-[19px]">
+                <span aria-hidden className="h-px flex-1 bg-[#5F6758]/30" />
+                <BookOpen className="h-[18px] w-[18px] shrink-0 text-[#6E7660]" strokeWidth={1.6} />
+                <span aria-hidden className="h-px flex-1 bg-[#5F6758]/30" />
+              </div>
+            </div>
+
             {(children || extraContent) && (
               <div className="mt-8 pb-4">
                 {children}
@@ -405,6 +429,44 @@ export function SeedBankFolderPanel({
             )}
           </div>
         </div>
+        </div>
+
+        {/* Creme-mappe LIGE UNDER hovedmappen — nøjagtig samme form/behandling som
+            creme-mellemlaget (#ECE4D7, samme path, outline #BEB5A0, papir-overlay via
+            #creamClip, samme drop-shadow), men i FULD hovedmappe-bredde (w-full =
+            samme bredde som den grønne front). Tucket ~10px op bag hovedmappens bund
+            (z-auto < den grønne fronts z-3) så den læses som næste mappe i stakken. */}
+        <div className="relative -mt-[100px] z-[4]" style={{ width: 'calc(100% + 36px)', marginLeft: -18 }}>
+          <svg
+            aria-hidden
+            viewBox="0 0 1846 382"
+            className="block w-full"
+            style={{ height: 'auto', filter: 'drop-shadow(0 10px 18px rgba(72,62,45,0.14)) drop-shadow(0 4px 8px rgba(72,62,45,0.07)) drop-shadow(0 -1.5px 2px rgba(55,50,38,0.33))' }}
+          >
+            {/* Skulder (flad top y84) gjort 5mm bredere mod højre: højre kant + nedkurve
+                rykket +86 units (x898→984 osv.); resten af pathen uændret. */}
+            <path
+              d="M78 382L78 150C78 112 108 84 148 84L984 84C1006 84 1022 94 1032 112L1044 134C1052 148 1068 154 1088 154L1698 154C1732 154 1758 180 1758 214L1758 382Z"
+              fill="#ECE4D7"
+              stroke="#BEB5A0"
+              strokeWidth={1.5}
+              filter="url(#paperGrain)"
+            />
+          </svg>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              clipPath: 'url(#creamClip)',
+              WebkitClipPath: 'url(#creamClip)',
+              mixBlendMode: 'multiply',
+              opacity: 0.085,
+              backgroundImage:
+                'radial-gradient(rgba(88,80,60,0.14) 0.38px, transparent 0.56px), radial-gradient(rgba(255,255,255,0.10) 0.30px, transparent 0.48px), radial-gradient(circle at 30% 18%, rgba(255,255,255,0.065), transparent 30%), radial-gradient(circle at 72% 78%, rgba(98,92,72,0.052), transparent 34%)',
+              backgroundSize: '8px 8px, 12px 12px, 100% 100%, 100% 100%',
+              backgroundPosition: '0 0, 4px 5px, center, center',
+            }}
+          />
         </div>
       </div>
     </section>
@@ -427,7 +489,7 @@ function CategoryPill({
       type="button"
       onClick={onClick}
       className={[
-        'inline-flex h-[44px] shrink-0 items-center rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition',
+        'inline-flex h-[41px] shrink-0 items-center rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition',
         category.id === 'knolde' ? 'gap-[4px] min-w-[95px]' : 'gap-[11px] min-w-[85px]',
         active ? 'text-[#F7F3E8] pf-green' : 'text-[#4E564B] pf-light',
       ].join(' ')}
