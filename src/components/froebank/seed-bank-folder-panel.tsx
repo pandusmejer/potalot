@@ -140,28 +140,57 @@ export function SeedBankFolderPanel({
 
   return (
     <section
-      className="relative mx-auto w-full max-w-[430px] mb-10 px-3 pt-5"
+      className="relative mx-auto w-full max-w-[390px] mb-10"
       data-total-seeds={totalSeeds}
       data-total-varieties={totalVarieties}
       data-expiring-soon-count={expiringSoonCount}
     >
-      {/* Bagmappe-lag fjernet 22/6 (var skæve ift. designet) — genopbygges senere. */}
-
-      <div className="relative z-10 pt-8">
-        <div
+      {/* Front-mappens eksakte silhuet (Annas path, normaliseret til objectBoundingBox
+          så wave-valley/højre-skulder-relationen + y-niveauer bevares ved skalering). */}
+      <svg aria-hidden width="0" height="0" className="absolute">
+        <defs>
+          <clipPath id="seedFolderClip" clipPathUnits="objectBoundingBox">
+            <path d="M0 0.9558L0 0.1388C0 0.1136 0.008 0.1025 0.0213 0.0962C0.0319 0.0915 0.0399 0.0804 0.0452 0.0615C0.0519 0.0394 0.0638 0.0315 0.0838 0.0315L0.4029 0.0315C0.4229 0.0315 0.4362 0.0331 0.4441 0.0379C0.4521 0.0426 0.4574 0.0489 0.4628 0.0568C0.4681 0.0647 0.4734 0.0909 0.4814 0.0909L0.9495 0.0909C0.9654 0.0909 0.9774 0.0956 0.9867 0.1067C0.996 0.1177 1 0.1319 1 0.1508L1 0.9558C1 0.9811 0.984 1 0.9628 1L0.0372 1C0.016 1 0 0.9811 0 0.9558Z" />
+          </clipPath>
+        </defs>
+      </svg>
+      <div className="relative" style={{ marginTop: 26 }}>
+        {/* 🔒 LÅST 22/6 (Anna): mappe-stakkens FORRESTE (grøn, z-3, clip #seedFolderClip)
+            + MELLEMSTE (creme, z-2) lag er færdigtunede. Når det BAGERSTE lag (z-1)
+            tilføjes senere, må disse to lag IKKE flyttes, skaleres eller omformes —
+            hverken path-d, top/left/width/height eller clip. Byg KUN det nye z-1-lag
+            bagved (lavere z-index, separat absolut element). */}
+        {/* Cremefarvet mellemlag (z-2) — bagvedliggende papirlag der SVÆVER over
+            den grønne front (forskudt mappe-stak, jf. Annas reference 22/6): hele
+            creme-toppen er synlig over fronten. Annas SVG-path brugt direkte (ikke
+            frontlagets shape, ingen venstre bølge): enkel blød venstre-top-radius,
+            høj midter-skulder, lavere højre topkant, roligt afrundet højre hjørne. */}
+        <svg
           aria-hidden
-          className="absolute left-0 top-0 z-20 h-10 w-[58%] bg-[#C8CEBD] shadow-[0_-2px_8px_rgba(255,255,255,0.16)_inset]"
-          style={{
-            clipPath:
-              'polygon(0 100%, 0 42%, 4% 12%, 9% 0, 63% 0, 67% 10%, 70% 34%, 73% 56%, 100% 56%, 100% 100%)',
-            backgroundImage:
-              'linear-gradient(180deg, #D0D5C6 0%, #C8CEBD 58%, #BBC4B0 100%)',
-          }}
-        />
+          viewBox="0 0 1846 382"
+          className="pointer-events-none absolute block"
+          style={{ top: -14, left: -8, width: 'calc(100% + 17px)', height: 'auto', zIndex: 2 }}
+        >
+          <path
+            d="M78 382L78 150C78 112 108 84 148 84L898 84C920 84 936 94 946 112L958 134C966 148 982 154 1002 154L1698 154C1732 154 1758 180 1758 214L1758 382Z"
+            fill="#EFE7D7"
+          />
+        </svg>
 
+        {/* Folder-tab fjernet 22/6 (hang over mappen) — nøjagtig folder-udformning kommer via path senere. */}
+
+        <div className="relative z-[3]" style={{ filter: 'drop-shadow(0 16px 26px rgba(36,48,31,0.15))' }}>
         <div
-          className="relative overflow-hidden rounded-b-[24px] rounded-tr-[24px] bg-[#C8CEBD] px-5 pb-8 pt-7 shadow-[0_16px_30px_rgba(36,48,31,0.16),0_1px_0_rgba(255,255,255,0.20)_inset]"
-          style={paperTexture}
+          className="relative overflow-hidden bg-[#C8CEBD]"
+          style={{
+            ...paperTexture,
+            paddingTop: 44,
+            paddingBottom: 22,
+            paddingLeft: 24,
+            paddingRight: 24,
+            clipPath: 'url(#seedFolderClip)',
+            WebkitClipPath: 'url(#seedFolderClip)',
+          }}
         >
           {/* Fiber-grain — synlig papir-tekstur (multiply). Organisk fraktal-
               noise, intet regulært liniemønster. */}
@@ -192,34 +221,34 @@ export function SeedBankFolderPanel({
           <div className="relative z-10">
             <header className="max-w-[26rem]">
               <p
-                className="text-[clamp(2rem,7.5vw,2.375rem)] leading-[0.96] tracking-[-0.005em] text-[#263321]"
+                className="text-[clamp(1.9rem,6.8vw,2.25rem)] leading-[0.98] tracking-[-0.005em] text-[#263321]"
                 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontWeight: 600 }}
               >
                 Din Frøbank
               </p>
-              <p className="mt-1.5 font-sans text-[0.86rem] font-medium leading-snug text-[#687060]">
+              <p className="mt-[6px] font-sans text-[0.82rem] font-normal leading-snug text-[#687060]">
                 Dine sorter, samlet og klar til sæsonen.
               </p>
             </header>
 
-            <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full bg-[#e8e5d6]/56 px-3.5 py-1 text-[0.75rem] font-normal leading-none text-[#687061] shadow-[0_1px_0_rgba(255,255,255,0.30)_inset]">
+            <div className="mt-[14px] inline-flex max-w-full items-center gap-2 rounded-full bg-[#e8e5d6]/56 px-3.5 py-[12px] text-[0.72rem] font-normal leading-none text-[#4f584c] shadow-[0_1px_0_rgba(255,255,255,0.30)_inset]">
               <Leaf className="h-3 w-3 shrink-0 text-[#587044]" strokeWidth={1.65} />
               <span className="truncate">
-                Senest tilføjet:{' '}
-                <span className="font-medium text-[#44563a]">{recentItemName}</span>
+                <span className="font-medium">Senest tilføjet:</span>{' '}
+                <span className="font-semibold text-[#46662f]">{recentItemName}</span>
                 <span className="px-1.5 text-[#737b68]">·</span>
                 {recentItemTimeLabel}
               </span>
             </div>
 
-            <div className="mt-5 grid grid-cols-[minmax(0,1fr)_3.9rem] gap-3">
-              <label className="flex h-[3.9rem] items-center gap-3 rounded-[20px] bg-[#f8f5ed] px-4 text-[#77796f] shadow-[0_4px_12px_rgba(36,48,31,0.09),0_1px_0_rgba(255,255,255,0.68)_inset]">
-                <Search className="h-[18px] w-[18px] shrink-0" strokeWidth={1.65} />
+            <div className="mt-[15px] flex gap-[12px]">
+              <label className="flex h-[48px] min-w-0 flex-1 items-center gap-3 rounded-[16px] bg-[#f8f5ed] px-4 text-[#77796f] shadow-[0_4px_12px_rgba(36,48,31,0.09),0_1px_0_rgba(255,255,255,0.68)_inset]">
+                <Search className="h-4 w-4 shrink-0" strokeWidth={1.6} />
                 <input
                   value={value}
                   onChange={handleSearchChange}
                   placeholder="Søg i frøbanken"
-                  className="min-w-0 flex-1 bg-transparent font-sans text-[0.9rem] font-normal text-[#374232] outline-none placeholder:text-[#7b7d73]"
+                  className="min-w-0 flex-1 bg-transparent font-sans text-[0.86rem] font-normal text-[#374232] outline-none placeholder:text-[#7b7d73]"
                 />
               </label>
 
@@ -227,14 +256,14 @@ export function SeedBankFolderPanel({
                 type="button"
                 onClick={onFilterClick}
                 aria-label="Åbn filter og sortering"
-                className="flex h-[3.9rem] items-center justify-center rounded-[20px] bg-[#f8f5ed] text-[#4e5548] shadow-[0_4px_12px_rgba(36,48,31,0.09),0_1px_0_rgba(255,255,255,0.68)_inset] transition hover:bg-[#fbf8f0]"
+                className="flex h-[48px] w-[45px] shrink-0 items-center justify-center rounded-[14px] bg-[#f8f5ed] text-[#4e5548] shadow-[0_4px_12px_rgba(36,48,31,0.09),0_1px_0_rgba(255,255,255,0.68)_inset] transition hover:bg-[#fbf8f0]"
               >
                 <SlidersHorizontal className="h-[22px] w-[22px]" strokeWidth={1.8} />
               </button>
             </div>
 
-            <div className="relative -mr-5 mt-5">
-              <div className="flex gap-3 overflow-x-auto pr-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="relative -mr-[24px] mt-[18px]">
+              <div className="flex gap-[10px] overflow-x-auto pr-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map(category => (
                   <CategoryPill
                     key={category.id}
@@ -250,7 +279,7 @@ export function SeedBankFolderPanel({
               />
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div className="mt-[16px] flex flex-wrap gap-[10px]">
               {filters.map(filter => (
                 <FilterChip
                   key={filter.id}
@@ -268,6 +297,7 @@ export function SeedBankFolderPanel({
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </section>
@@ -290,18 +320,19 @@ function CategoryPill({
       type="button"
       onClick={onClick}
       className={[
-        'inline-flex h-[52px] min-w-[7.55rem] shrink-0 items-center justify-between gap-3 rounded-[18px] px-3.5 font-sans text-[0.86rem] font-medium shadow-[0_4px_12px_rgba(36,48,31,0.08),0_1px_0_rgba(255,255,255,0.55)_inset] transition',
+        'inline-flex h-[44px] shrink-0 items-center rounded-[13px] px-2 font-sans text-[0.75rem] font-medium shadow-[0_4px_12px_rgba(36,48,31,0.08),0_1px_0_rgba(255,255,255,0.55)_inset] transition',
+        category.id === 'knolde' ? 'gap-[4px]' : 'gap-[11px]',
         active
-          ? 'bg-[#46662f] text-[#fbf7ec]'
-          : 'bg-[#f2eee3] text-[#4f584c]',
+          ? 'min-w-[85px] bg-[#46662f] text-[#fbf7ec]'
+          : 'min-w-[85px] bg-[#f2eee3] text-[#4f584c]',
       ].join(' ')}
     >
-      <span className="inline-flex items-center gap-3">
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.65} />
+      <Icon className={['h-[18px] w-[18px] shrink-0', category.id === 'loeg' ? '-mr-1' : ''].join(' ')} strokeWidth={1.65} />
+      <span className={['inline-flex items-baseline', category.id === 'knolde' ? 'gap-[2px]' : 'gap-1.5'].join(' ')}>
         {category.label}
-      </span>
-      <span className={active ? 'font-normal text-[#e1e5cf]' : 'font-normal text-[#777d70]'}>
-        {category.count}
+        <span className={active ? 'font-normal text-[#e1e5cf]' : 'font-normal text-[#777d70]'}>
+          {category.count}
+        </span>
       </span>
     </button>
   )
@@ -321,9 +352,9 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={[
-        'h-9 rounded-full px-4 font-sans text-[0.76rem] font-medium shadow-[0_2px_8px_rgba(36,48,31,0.06),0_1px_0_rgba(255,255,255,0.52)_inset] transition',
+        'h-[36px] rounded-full px-[18px] font-sans text-[0.74rem] font-normal shadow-[0_2px_8px_rgba(36,48,31,0.06),0_1px_0_rgba(255,255,255,0.52)_inset] transition',
         active
-          ? 'bg-[#496b31] text-[#fbf7ec]'
+          ? 'min-w-[68px] bg-[#496b31] text-[#fbf7ec]'
           : 'bg-[#ece8db] text-[#687061]',
       ].join(' ')}
     >
