@@ -155,11 +155,26 @@ export function SeedBankFolderPanel({
         </defs>
       </svg>
       <div className="relative" style={{ marginTop: 26 }}>
-        {/* 🔒 LÅST 22/6 (Anna): mappe-stakkens FORRESTE (grøn, z-3, clip #seedFolderClip)
-            + MELLEMSTE (creme, z-2) lag er færdigtunede. Når det BAGERSTE lag (z-1)
-            tilføjes senere, må disse to lag IKKE flyttes, skaleres eller omformes —
-            hverken path-d, top/left/width/height eller clip. Byg KUN det nye z-1-lag
-            bagved (lavere z-index, separat absolut element). */}
+        {/* 🔒 LÅST 22/6 (Anna): ALLE TRE lag i mappe-stakken er geometrisk
+            færdigtunede — BAGERSTE (mørk #AEB6A1, z-1), MELLEMSTE (creme #EFE7D7, z-2),
+            FORRESTE (grøn, z-3, clip #seedFolderClip). Næste arbejde = KUN farver, præg,
+            skygge og dybde. Geometrien må IKKE ændres: hverken path-d, top/left/width/
+            height eller clip på nogen af de tre lag. */}
+        {/* Mørkt bagerste lag (z-1) — FLAD top (ingen skulder), bløde hjørner.
+            Venstre kant 2mm uden for cremens venstre kant; højre kant ~2mm uden for
+            cremens højre. Hævet så ~2mm af flad-toppen ses over cremens LAVE del og
+            forsvinder bag cremens høje skulder. Eget element bagved — front+creme urørt. */}
+        <svg
+          aria-hidden
+          viewBox="0 0 1846 382"
+          className="pointer-events-none absolute block"
+          style={{ top: -6, left: -8, width: 'calc(100% + 14px)', height: 'auto', zIndex: 1 }}
+        >
+          <path
+            d="M62 382L62 162C62 122 94 94 136 94L1720 94C1762 94 1794 122 1794 162L1794 382Z"
+            fill="#AEB6A1"
+          />
+        </svg>
         {/* Cremefarvet mellemlag (z-2) — bagvedliggende papirlag der SVÆVER over
             den grønne front (forskudt mappe-stak, jf. Annas reference 22/6): hele
             creme-toppen er synlig over fronten. Annas SVG-path brugt direkte (ikke
