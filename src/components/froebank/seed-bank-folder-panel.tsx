@@ -145,22 +145,7 @@ export function SeedBankFolderPanel({
       data-total-varieties={totalVarieties}
       data-expiring-soon-count={expiringSoonCount}
     >
-      <div
-        aria-hidden
-        className="absolute left-8 right-5 top-0 h-16 rounded-t-[22px] bg-[#f7efe4] shadow-[0_2px_10px_rgba(36,48,31,0.08)]"
-      >
-        <div className="absolute right-[29%] top-0 h-6 w-[18%] rounded-b-[16px] bg-[#eadfce]" />
-      </div>
-      <div
-        aria-hidden
-        className="absolute left-4 right-9 top-3 h-16 rounded-t-[22px] bg-[#ece4d5] shadow-[0_2px_9px_rgba(36,48,31,0.08)]"
-      >
-        <div className="absolute right-[37%] top-0 h-6 w-[17%] rounded-b-[16px] bg-[#ded3c1]" />
-      </div>
-      <div
-        aria-hidden
-        className="absolute left-2 right-2 top-7 h-16 rounded-t-[22px] bg-[#dddcc5] shadow-[0_3px_12px_rgba(36,48,31,0.09)]"
-      />
+      {/* Bagmappe-lag fjernet 22/6 (var skæve ift. designet) — genopbygges senere. */}
 
       <div className="relative z-10 pt-8">
         <div
