@@ -252,7 +252,40 @@ ResizeObserver) fordi clip-path skal bruge px. Folder-toppe akkumuleres
 
 ## 11. Git-tilstand (pr. handoff)
 
-Branch `claude/romantic-chatelet-9908e2` (worktree). Stakken er ændret men
-**ikke committet**. Sidste committede commit rører ikke disse uncommittede
-stak-ændringer. Codex bør arbejde videre i samme worktree og kun committe efter
-Annas go.
+Branch `claude/romantic-chatelet-9908e2` (worktree). Stakken er **committet lokalt**
+som checkpoint `59d44ba` (se §12). Ikke pushet. Codex bør arbejde videre i samme
+worktree og kun committe efter Annas go.
+
+---
+
+## Current checkpoint status
+
+Commit:
+59d44ba checkpoint: froebank archive stack handoff
+
+Trin 1:
+- open-bottom collapsed folders: implemented
+- expanded folders rounded bottom: implemented
+- collapsed overlap -18px: implemented
+- status: verify only
+
+Trin 2:
+- 4 ghost folders: implemented
+- status: needs value alignment only
+
+Remaining deltas:
+1. Tail overlap must be uniform -18px. Current code uses mixed marginTop values.
+2. STACK_BOTTOM_PADDING must be 120px. Current code uses 96px.
+3. Tail folder width must match real folder width system: width calc(100% - 22px). Current code varies width per tail.
+4. All tail folders must use open-bottom style. Current code has tail-4 rounded.
+
+Trin 3:
+- collapsed shadow + inset hairline edge: implemented
+- expressed as drop-shadow wrapper + inset because clip-path clips box-shadow
+- status: verify only
+
+Important instruction for Codex:
+Do not rebuild the stack.
+Do not add another set of ghost folders.
+Do not refactor the architecture.
+Only align the four TailFolder values above.
