@@ -18,31 +18,20 @@ import { useSearchParams } from 'next/navigation'
 import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import {
-  SlidersHorizontal,
-  BookOpen,
-  Clock,
-  Image as ImageIcon,
-  AlertTriangle,
-  ArrowDownAZ,
-  ArrowDownZA,
-} from 'lucide-react'
+  FilterBottomSheet,
+  type SmartFilter,
+  type SortOrder,
+} from './filter-bottom-sheet'
 import type {
   InventoryItem,
   PrimaryCategoryId,
   Subcategory,
 } from '@/lib/types'
-import { cn } from '@/lib/utils'
 
 interface Props {
   inventory: InventoryItem[]
   customSubcategories?: Subcategory[]
 }
-
-type SmartFilter =
-  | 'mangler-guide'
-  | 'udloeber-snart'
-  | 'mangler-billede'
-  | 'naesten-tom'
 
 const VALID_SMART_FILTERS: SmartFilter[] = [
   'mangler-guide',
@@ -59,7 +48,7 @@ export function FroebankBrowser({ inventory }: Props) {
   const [filtersOpen, setFiltersOpen] = useState(false)
   // Sorteringsorden: 'standard' (pinned→favorit→alfabetisk),
   // 'az' (A→Å) eller 'za' (Å→A).
-  const [sortOrder, setSortOrder] = useState<'standard' | 'az' | 'za' | 'recent'>('standard')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('standard')
   const [smartFilters, setSmartFilters] = useState<Set<SmartFilter>>(() => {
     const f = searchParams.get('filter')
     if (f && (VALID_SMART_FILTERS as string[]).includes(f))
@@ -148,8 +137,11 @@ export function FroebankBrowser({ inventory }: Props) {
       a.name.localeCompare(b.name, 'da')
     const byCreatedAt = (a: InventoryItem, b: InventoryItem) =>
       (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
+    const byExpiry = (a: InventoryItem, b: InventoryItem) =>
+      (a.purchaseYear ?? Infinity) - (b.purchaseYear ?? Infinity)
 
     if (sortOrder === 'recent') return [...list].sort(byCreatedAt)
+    if (sortOrder === 'expiry') return [...list].sort(byExpiry)
     if (sortOrder === 'az') return [...list].sort(byName)
     if (sortOrder === 'za') return [...list].sort((a, b) => byName(b, a))
 
@@ -233,6 +225,42 @@ export function FroebankBrowser({ inventory }: Props) {
     setSortOrder('standard')
   }
 
+  // Aktive AVANCEREDE filtre (dem der ikke allerede vises af den simple
+  // chip-række Alle/Udløber snart/Senest tilføjet) → små chips i mappen.
+  const activeFilterChips = useMemo(() => {
+    const chips: { id: string; label: string }[] = []
+    if (smartFilters.has('mangler-billede'))
+      chips.push({ id: 'mangler-billede', label: 'Mangler billede' })
+    if (smartFilters.has('mangler-guide'))
+      chips.push({ id: 'mangler-guide', label: 'Mangler guide' })
+    if (smartFilters.has('naesten-tom'))
+      chips.push({ id: 'naesten-tom', label: 'Næsten tom' })
+    if (sortOrder === 'az') chips.push({ id: 'sort-az', label: 'A–Å' })
+    if (sortOrder === 'za') chips.push({ id: 'sort-za', label: 'Å–A' })
+    if (sortOrder === 'expiry')
+      chips.push({ id: 'sort-expiry', label: 'Udløber snart' })
+    return chips
+  }, [smartFilters, sortOrder])
+
+  function removeFilterChip(id: string) {
+    if (id.startsWith('sort-')) {
+      setSortOrder('standard')
+      return
+    }
+    setSmartFilters((prev) => {
+      const next = new Set(prev)
+      next.delete(id as SmartFilter)
+      return next
+    })
+  }
+
+  function resetFilters() {
+    setActiveCategory('fro')
+    setSubcat('alle')
+    setSmartFilters(new Set())
+    setSortOrder('standard')
+  }
+
   return (
     // Bryd let ud af app'ens 16px-gutter, så mappe-stakken bliver bredere
     // (folder + kort følges ad). Beholder ~8px luft i hver side til
@@ -256,97 +284,34 @@ export function FroebankBrowser({ inventory }: Props) {
           setSubcat('alle')
         }}
         onFilterChange={handleFolderFilterChange}
+        activeFilterChips={activeFilterChips}
+        onRemoveFilterChip={removeFilterChip}
       />
 
-      {/* Filter-panel — 6 chips i et 3-kolonne grid (3 pr. linje).
-          De 4 første er smart-filtre; de 2 sidste er sorterings-
-          toggles (alfabetisk A–Å / Å–A, gensidigt udelukkende). */}
-      {filtersOpen && (
-        <div className="rounded-2xl border border-border bg-card/60 p-3">
-          <div className="grid grid-cols-3 gap-2">
-            <FilterChip
-              icon={<BookOpen className="h-3 w-3" />}
-              label="Mangler guide"
-              active={smartFilters.has('mangler-guide')}
-              onClick={() => toggleSmart('mangler-guide')}
-              fullWidth
-            />
-            <FilterChip
-              icon={<Clock className="h-3 w-3" />}
-              label="Udløber snart"
-              active={smartFilters.has('udloeber-snart')}
-              onClick={() => toggleSmart('udloeber-snart')}
-              fullWidth
-            />
-            <FilterChip
-              icon={<ImageIcon className="h-3 w-3" />}
-              label="Mangler billede"
-              active={smartFilters.has('mangler-billede')}
-              onClick={() => toggleSmart('mangler-billede')}
-              fullWidth
-            />
-            <FilterChip
-              icon={<AlertTriangle className="h-3 w-3" />}
-              label="Næsten tom"
-              active={smartFilters.has('naesten-tom')}
-              onClick={() => toggleSmart('naesten-tom')}
-              fullWidth
-            />
-            <FilterChip
-              icon={<ArrowDownAZ className="h-3 w-3" />}
-              label="Alfabetisk A–Å"
-              active={sortOrder === 'az'}
-              onClick={() =>
-                setSortOrder((o) => (o === 'az' ? 'standard' : 'az'))
-              }
-              fullWidth
-            />
-            <FilterChip
-              icon={<ArrowDownZA className="h-3 w-3" />}
-              label="Alfabetisk Å–A"
-              active={sortOrder === 'za'}
-              onClick={() =>
-                setSortOrder((o) => (o === 'za' ? 'standard' : 'za'))
-              }
-              fullWidth
-            />
-          </div>
-        </div>
-      )}
+      {/* Den filtrerede inventory sendes ned til archive-stak. Trukket op så
+          hero-kortet lægger sig oven på panelets creme-mappe (Anna): hero ~6mm
+          under skulderens top, creme fortsætter ned bag kortet. */}
+      <div style={{ marginTop: -145, position: 'relative', zIndex: 10 }}>
+        <InventoryArchiveStack inventory={filtered} />
+      </div>
 
-      {/* Den filtrerede inventory sendes ned til archive-stak. */}
-      <InventoryArchiveStack inventory={filtered} />
+      {/* Filterknappen i mappen åbner dette bottom sheet (ikke længere et
+          inline-panel under mappen, som brød arkiv-illusionen). */}
+      <FilterBottomSheet
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        category={activeCategory}
+        smartFilters={smartFilters}
+        sortOrder={sortOrder}
+        onSelectCategory={(id) => {
+          setActiveCategory(id)
+          setSubcat('alle')
+        }}
+        onToggleSmart={toggleSmart}
+        onClearSmart={() => setSmartFilters(new Set())}
+        onSelectSort={setSortOrder}
+        onReset={resetFilters}
+      />
     </div>
-  )
-}
-
-function FilterChip({
-  icon,
-  label,
-  active,
-  onClick,
-  fullWidth = false,
-}: {
-  icon: React.ReactNode
-  label: string
-  active: boolean
-  onClick: () => void
-  fullWidth?: boolean
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-colors',
-        fullWidth && 'w-full',
-        active
-          ? 'bg-primary text-primary-foreground border-primary'
-          : 'bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'
-      )}
-    >
-      {icon}
-      <span className="truncate">{label}</span>
-    </button>
   )
 }

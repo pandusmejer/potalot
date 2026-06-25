@@ -1,14 +1,18 @@
 'use client'
 
 import * as React from 'react'
+import Link from 'next/link'
 import {
   BookOpen,
+  ChevronRight,
   Flower2,
   Leaf,
+  Plus,
   Search,
   SlidersHorizontal,
   Sprout,
   TreeDeciduous,
+  X,
 } from 'lucide-react'
 
 /** Ikon-komponent (lucide ELLER custom inline-SVG) — begge tager className + strokeWidth. */
@@ -78,6 +82,8 @@ export interface SeedBankFolderPanelProps {
   onFilterClick?: () => void
   onCategoryChange?: (categoryId: CategoryId) => void
   onFilterChange?: (filterId: FilterId) => void
+  activeFilterChips?: { id: string; label: string }[]
+  onRemoveFilterChip?: (id: string) => void
   children?: React.ReactNode
   extraContent?: React.ReactNode
 }
@@ -136,11 +142,17 @@ export function SeedBankFolderPanel({
   onFilterClick,
   onCategoryChange,
   onFilterChange,
+  activeFilterChips,
+  onRemoveFilterChip,
   children,
   extraContent,
 }: SeedBankFolderPanelProps) {
   const [internalSearch, setInternalSearch] = React.useState('')
   const value = searchValue ?? internalSearch
+  // Når aktive avancerede chips vises, optager de plads i mappen. For at folderen
+  // bevarer ~samme samlede højde (og dermed clip-k + skulder-form), klemmes CTA-
+  // margin + bund-padding tilsvarende ind. Mål: uændret skulder/topform med/uden chips.
+  const hasActiveChips = (activeFilterChips?.length ?? 0) > 0
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
     const next = event.target.value
@@ -161,10 +173,11 @@ export function SeedBankFolderPanel({
         <defs>
           <clipPath id="seedFolderClip" clipPathUnits="objectBoundingBox">
             {/* Top-y + bund-hjørner skaleret så skulder OG bundhjørner bevarer NØJAGTIG
-                samme pixels ved mappens højde ~530px (forlænget fra 440px, k=440/530=0.8302:
-                top-y × k, bund-y = 1−(1−y)×k). Kun den lige krop forlænges — ingen
-                proportionsændring. Re-tunes hvis højden (paddingBottom) ændres. */}
-            <path d="M0 0.9714L0 0.1096C0 0.0739 0.012 0.0643 0.0213 0.0624C0.0319 0.0594 0.0399 0.0522 0.0452 0.0399C0.0519 0.0256 0.0638 0.0204 0.0838 0.0204L0.4029 0.0204C0.4229 0.0204 0.4362 0.0215 0.4441 0.0246C0.4521 0.0276 0.4574 0.0317 0.4628 0.0369C0.4681 0.0420 0.4734 0.0590 0.4814 0.0590L0.9495 0.0590C0.9654 0.0590 0.9774 0.0620 0.9867 0.0692C0.996 0.0764 1 0.0856 1 0.0979L1 0.9714C1 0.9877 0.984 1 0.9691 1L0.0372 1C0.016 1 0 0.9877 0 0.9714Z" />
+                samme pixels ved mappens højde ~626px (vokset fra 530px da Tilføj-CTA'en
+                kom ind; k=530/626=0.8466: top-y × k, bund-y = 1−(1−y)×k). Kun den lige
+                krop forlænges — ingen proportionsændring. Re-tunes hvis højden ændres
+                igen (k = 530/nyHøjde anvendt på DENNE path's nuværende værdier). */}
+            <path d="M0 0.9758L0 0.0928C0 0.0626 0.012 0.0544 0.0213 0.0528C0.0319 0.0503 0.0399 0.0442 0.0452 0.0338C0.0519 0.0217 0.0638 0.0173 0.0838 0.0173L0.4029 0.0173C0.4229 0.0173 0.4362 0.0182 0.4441 0.0208C0.4521 0.0234 0.4574 0.0268 0.4628 0.0312C0.4681 0.0356 0.4734 0.0500 0.4814 0.0500L0.9495 0.0500C0.9654 0.0500 0.9774 0.0525 0.9867 0.0586C0.996 0.0647 1 0.0725 1 0.0829L1 0.9758C1 0.9896 0.984 1 0.9738 1L0.0372 1C0.016 1 0 0.9896 0 0.9758Z" />
           </clipPath>
           <filter id="paperGrain">
             <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="2" stitchTiles="stitch" result="n" />
@@ -282,7 +295,7 @@ export function SeedBankFolderPanel({
           style={{
             ...paperTexture,
             paddingTop: 44,
-            paddingBottom: 116,
+            paddingBottom: hasActiveChips ? 98 : 113,
             paddingLeft: 24,
             paddingRight: 24,
             clipPath: 'url(#seedFolderClip)',
@@ -330,7 +343,7 @@ export function SeedBankFolderPanel({
             </header>
 
             <div
-              className="mt-[14px] inline-flex max-w-full items-center gap-2 rounded-full px-3.5 py-[12px] text-[11px] font-normal leading-[1.3] text-[#5F6758]"
+              className="mt-[14px] inline-flex max-w-full items-center gap-2 rounded-full px-3.5 py-[8px] text-[11px] font-normal leading-[1.3] text-[#5F6758]"
               style={{
                 background: 'linear-gradient(180deg, #D6D1C2 0%, #C7C2B0 100%)',
                 boxShadow:
@@ -408,9 +421,72 @@ export function SeedBankFolderPanel({
               ))}
             </div>
 
+            {/* Aktive avancerede filtre (valgt i bottom sheet) — små grønne
+                chips med × til at fjerne det enkelte filter. Vises kun når der
+                ER aktive avancerede valg. */}
+            {activeFilterChips && activeFilterChips.length > 0 && (
+              <div className="mt-[10px] flex flex-wrap gap-[8px]">
+                {activeFilterChips.map(chip => (
+                  <button
+                    key={chip.id}
+                    type="button"
+                    onClick={() => onRemoveFilterChip?.(chip.id)}
+                    aria-label={`Fjern filter: ${chip.label}`}
+                    className="inline-flex items-center gap-[6px] rounded-full px-[12px] py-[6px] font-sans text-[0.7rem] font-medium text-[#F7F3E8] transition active:translate-y-px"
+                    style={{
+                      background:
+                        'linear-gradient(180deg, #646F43 0%, #566337 60%, #46512B 100%)',
+                      boxShadow:
+                        'inset 0 1px 0 rgba(255,255,255,0.14), 0 1px 3px rgba(54,69,32,0.18)',
+                    }}
+                  >
+                    <span>{chip.label}</span>
+                    <X className="h-3 w-3" strokeWidth={2.4} />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Primær indgang: "Tilføj til frøbanken" — bred, taktil, indlagt
+                handlingsbjælke i mappefladen (IKKE en standard SaaS-knap). Åbner det
+                eksisterende tilføj-flow (/froebank/tilfoej → alle 6 metoder). Tydeligere
+                end "Senest tilføjet"-pillen; primærfunktionen vinder pladsen. */}
+            <Link
+              href="/froebank/tilfoej"
+              aria-label="Tilføj til frøbanken"
+              className={`${hasActiveChips ? 'mt-3' : 'mt-9'} flex items-center gap-[14px] rounded-[16px] px-[18px] py-[14px] no-underline transition active:translate-y-px`}
+              style={{
+                background: 'linear-gradient(180deg, rgba(246,241,231,0.88) 0%, rgba(237,229,214,0.92) 100%)',
+                border: '1px solid rgba(255,255,255,0.38)',
+                boxShadow:
+                  'inset 0 1px 1px rgba(255,255,255,0.58), inset 0 -2px 3px rgba(122,112,88,0.14), 0 2px 5px rgba(64,58,42,0.06)',
+              }}
+            >
+              <span
+                aria-hidden
+                className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[12px] text-[#F7F3E8]"
+                style={{
+                  background: 'linear-gradient(180deg, #646F43 0%, #566337 55%, #46512B 100%)',
+                  boxShadow:
+                    'inset 0 1px 0 rgba(255,255,255,0.16), 0 5px 10px rgba(54,69,32,0.22)',
+                }}
+              >
+                <Plus className="h-[22px] w-[22px]" strokeWidth={2.4} />
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="font-sans text-[15px] font-semibold leading-[1.2] text-[#2E3A23]">
+                  Tilføj til frøbanken
+                </span>
+                <span className="mt-[1px] font-sans text-[11.5px] font-normal leading-[1.3] text-[#6B7160]">
+                  Scan pose, upload billede, indsæt link eller importér
+                </span>
+              </span>
+              <ChevronRight aria-hidden className="ml-auto h-5 w-5 shrink-0 text-[#7A806F] opacity-[0.85]" strokeWidth={2} />
+            </Link>
+
             {/* "Bladr i din frøbank" — divider i mappens bundflade; lead-in til
                 frøkort-stakken nedenfor: eyebrow-tekst + tynde streger + blad-glyph. */}
-            <div className="mt-9 flex flex-col items-center gap-[7px]">
+            <div className="mt-7 flex flex-col items-center gap-[7px]">
               <p className="text-center font-sans text-[0.68rem] font-medium uppercase tracking-[0.26em] text-[#646B5A]">
                 Bladr i din frøbank
               </p>
@@ -431,43 +507,6 @@ export function SeedBankFolderPanel({
         </div>
         </div>
 
-        {/* Creme-mappe LIGE UNDER hovedmappen — nøjagtig samme form/behandling som
-            creme-mellemlaget (#ECE4D7, samme path, outline #BEB5A0, papir-overlay via
-            #creamClip, samme drop-shadow), men i FULD hovedmappe-bredde (w-full =
-            samme bredde som den grønne front). Tucket ~10px op bag hovedmappens bund
-            (z-auto < den grønne fronts z-3) så den læses som næste mappe i stakken. */}
-        <div className="relative -mt-[100px] z-[4]" style={{ width: 'calc(100% + 36px)', marginLeft: -18 }}>
-          <svg
-            aria-hidden
-            viewBox="0 0 1846 382"
-            className="block w-full"
-            style={{ height: 'auto', filter: 'drop-shadow(0 10px 18px rgba(72,62,45,0.14)) drop-shadow(0 4px 8px rgba(72,62,45,0.07)) drop-shadow(0 -1.5px 2px rgba(55,50,38,0.33))' }}
-          >
-            {/* Skulder (flad top y84) gjort 5mm bredere mod højre: højre kant + nedkurve
-                rykket +86 units (x898→984 osv.); resten af pathen uændret. */}
-            <path
-              d="M78 382L78 150C78 112 108 84 148 84L984 84C1006 84 1022 94 1032 112L1044 134C1052 148 1068 154 1088 154L1698 154C1732 154 1758 180 1758 214L1758 382Z"
-              fill="#ECE4D7"
-              stroke="#BEB5A0"
-              strokeWidth={1.5}
-              filter="url(#paperGrain)"
-            />
-          </svg>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              clipPath: 'url(#creamClip)',
-              WebkitClipPath: 'url(#creamClip)',
-              mixBlendMode: 'multiply',
-              opacity: 0.085,
-              backgroundImage:
-                'radial-gradient(rgba(88,80,60,0.14) 0.38px, transparent 0.56px), radial-gradient(rgba(255,255,255,0.10) 0.30px, transparent 0.48px), radial-gradient(circle at 30% 18%, rgba(255,255,255,0.065), transparent 30%), radial-gradient(circle at 72% 78%, rgba(98,92,72,0.052), transparent 34%)',
-              backgroundSize: '8px 8px, 12px 12px, 100% 100%, 100% 100%',
-              backgroundPosition: '0 0, 4px 5px, center, center',
-            }}
-          />
-        </div>
       </div>
     </section>
   )

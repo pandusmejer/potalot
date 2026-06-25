@@ -44,6 +44,14 @@ interface Props {
    *  count-ring) så kun fotoet er synligt. Bruges af stack-kortene
    *  under hover-tilstand. */
   hideOverlay?: boolean
+  /** Hjørne-radius + skygger kan overstyres af frøbankens HeroFolder
+   *  (Salat-kortet) så det læses som indhold i creme-mappen. Defaults
+   *  = nuværende værdier → uændret for ALLE andre frøkort. */
+  cardRadius?: number
+  cardShadow?: string
+  infoPanelRadiusTop?: number
+  infoPanelRadiusBottom?: number
+  infoPanelShadow?: string
 }
 
 const sans = 'var(--font-manrope)'
@@ -73,7 +81,20 @@ const LIGHT_LABEL: Record<string, string> = {
  * creme-dyrkningspanel. Mangler et billede, vises en rolig
  * ensfarvet fallback indtil det komponerede foto findes.
  */
-export function InventoryCard({ item, selectMode = false, selected = false, onToggleSelect, hideEyebrow = false, nameScale = 1, hideOverlay = false }: Props) {
+export function InventoryCard({
+  item,
+  selectMode = false,
+  selected = false,
+  onToggleSelect,
+  hideEyebrow = false,
+  nameScale = 1,
+  hideOverlay = false,
+  cardRadius = 32,
+  cardShadow = '0 20px 44px rgba(26,34,22,0.18)',
+  infoPanelRadiusTop = 32,
+  infoPanelRadiusBottom = 32,
+  infoPanelShadow = '0 -4px 14px rgba(36,48,31,0.04)',
+}: Props) {
   // V4.1: canonical resolver håndterer ALT — eget upload (valideret
   // mod manifest), guide-images entry, asset-convention pr. slug,
   // placeholder. Brudte/stale DB-paths (fx /images/froebank/froekort-…
@@ -217,9 +238,11 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
           borderTop: '1px solid rgba(36,48,31,0.06)',
-          boxShadow: '0 -4px 14px rgba(36,48,31,0.04)',
-          borderTopLeftRadius: 32,
-          borderTopRightRadius: 32,
+          boxShadow: infoPanelShadow,
+          borderTopLeftRadius: infoPanelRadiusTop,
+          borderTopRightRadius: infoPanelRadiusTop,
+          borderBottomLeftRadius: infoPanelRadiusBottom,
+          borderBottomRightRadius: infoPanelRadiusBottom,
           padding: '14px 16px 14px',
         }}
       >
@@ -298,11 +321,11 @@ export function InventoryCard({ item, selectMode = false, selected = false, onTo
   )
 
   const className = cn(
-    'group relative block aspect-[4/5] w-full overflow-hidden rounded-[32px] transition-all duration-200 ease-out',
+    'group relative block aspect-[4/5] w-full overflow-hidden transition-all duration-200 ease-out',
     'hover:-translate-y-0.5',
     selected && 'ring-2 ring-[#4F6F35] ring-offset-2 ring-offset-[var(--background)]'
   )
-  const style = { boxShadow: '0 20px 44px rgba(26,34,22,0.18)' } as const
+  const style = { borderRadius: cardRadius, boxShadow: cardShadow }
 
   if (selectMode) {
     return (
