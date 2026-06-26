@@ -462,6 +462,7 @@ const STACK_DROP_SHADOW_STRONG = [
   'drop-shadow(0 12px 22px rgba(64,58,42,0.12))',
   'drop-shadow(0 3px 8px rgba(64,58,42,0.06))',
 ].join(' ')
+const STACK_PAGE_BG = 'var(--background)'
 // Hvid top-highlight + ultratynd kant-stroke hele vejen rundt (inset) → taktil
 // papir-kant, IKKE en hård digital outline. Giver siderne definition.
 const STACK_SHELL_INSET =
@@ -696,27 +697,18 @@ const TAIL_FIRST_OVERLAP = 44
 const TAIL_OVERLAP = 12
 const TAIL_SECOND_LIFT = 76 // ca. 2 CSS-cm op
 const TAIL_THIRD_LIFT = 57 // ca. 1,5 CSS-cm op
-const TAIL_FOURTH_LIFT = 113 // ca. 3 CSS-cm op
+const TAIL_FOURTH_DROP_FROM_THIRD = 113 // ca. 3 CSS-cm ned fra tail-3's topkant
 // Tomme mapper har INTET kort at reagere på → ren neutral creme (ingen tint).
 const TAIL_FOLDERS = [
   { tone: '#EEE8DA', shoulderWidth: 108, shoulderCenter: 0.5, marginTop: 0, rounded: false }, // tail-1
   { tone: '#ECE6D8', shoulderWidth: 84, shoulderCenter: 0.38, marginTop: -(TAIL_OVERLAP + TAIL_SECOND_LIFT), rounded: false }, // tail-2
   { tone: '#F1EBDE', shoulderWidth: 86, shoulderCenter: 0.58, marginTop: -(TAIL_OVERLAP + TAIL_THIRD_LIFT), rounded: false }, // tail-3
-  { tone: '#EEE8DA', shoulderWidth: 112, shoulderCenter: 0.5, marginTop: -(TAIL_OVERLAP + TAIL_FOURTH_LIFT), rounded: false, bottomFade: true }, // tail-4
+  { tone: '#ECE6D8', shoulderWidth: 84, shoulderCenter: 0.38, marginTop: -(TAIL_VISIBLE_H - TAIL_FOURTH_DROP_FROM_THIRD), rounded: false, topContactShadow: true, bottomBlend: true }, // tail-4
 ] as const
-// Hale-stakkens flow-højde (overlap medregnet) + 8px ekstra under tail-4.
+// Hale-stakkens flow-højde (overlap medregnet) + 8px ekstra under sidste tail.
 const TAIL_STACK_HEIGHT =
-  TAIL_VISIBLE_H + 3 * (TAIL_VISIBLE_H - TAIL_OVERLAP) - TAIL_SECOND_LIFT - TAIL_THIRD_LIFT - TAIL_FOURTH_LIFT + 8 // = 498
+  TAIL_VISIBLE_H + 2 * (TAIL_VISIBLE_H - TAIL_OVERLAP) - TAIL_SECOND_LIFT - TAIL_THIRD_LIFT + TAIL_FOURTH_DROP_FROM_THIRD + 8 // = 543
 const STACK_BOTTOM_PADDING = 120 // luft før bottom nav
-// tail-4 er SPLITTET i to uafhængige lag, så top og bund kan styres hver for sig:
-//  • TAIL_TOP_MASK — top-laget (med SAMME folder-skygge som de andre mapper) vises
-//    kun på top + skulder og fader ud nedenunder → skyggen ligger KUN på toppen.
-//  • TAIL_END_FADE — bund-laget (folder-fyld UDEN skygge) er fuldt indtil ~2/3 og
-//    fader så ud → KUN bunden lysner og smelter med baggrunden, uden skygge.
-const TAIL_TOP_MASK =
-  'linear-gradient(to bottom, rgba(0,0,0,1) 0, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 58%)'
-const TAIL_END_FADE =
-  'linear-gradient(to bottom, rgba(0,0,0,1) 0, rgba(0,0,0,1) 66%, rgba(0,0,0,0) 100%)'
 
 function TailFolder({
   tail,
@@ -730,7 +722,7 @@ function TailFolder({
   last: boolean
 }) {
   const clip = `path('${buildStackFolderPath(width, TAIL_VISIBLE_H, tail.shoulderWidth, tail.shoulderCenter, tail.rounded)}')`
-  const isFadeTail = 'bottomFade' in tail && tail.bottomFade
+  const isBlendTail = 'bottomBlend' in tail && tail.bottomBlend
   return (
     <div
       aria-hidden
@@ -743,60 +735,42 @@ function TailFolder({
         marginBottom: last ? 8 : 0,
         height: TAIL_VISIBLE_H,
         zIndex: z,
-        // tail-1..3: folder-skygge på hele formen. tail-4: skyggen ligger KUN på
-        // top-laget (nedenfor) → top/skulder har skygge, bunden er fri.
-        filter: isFadeTail ? undefined : STACK_DROP_SHADOW,
+        // Blend-tail (tail-4) bærer skyggen på SELVE folder-shellen (kun opad,
+        // så bunden er skyggefri og kan blendes rent væk). De øvrige tails har
+        // den almindelige dropskygge på wrapperen.
+        filter: isBlendTail ? undefined : STACK_DROP_SHADOW,
         pointerEvents: 'none',
       }}
     >
-      {isFadeTail ? (
-        <>
-          {/* BUND-lag — folder-fyld UDEN skygge. Styres uafhængigt: fuldt indtil
-              ~2/3, derefter lysner/fader det ud mod baggrunden. */}
-          <div style={{ position: 'absolute', inset: 0 }}>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                background: tail.tone,
-                clipPath: clip,
-                WebkitClipPath: clip,
-                maskImage: TAIL_END_FADE,
-                WebkitMaskImage: TAIL_END_FADE,
-                maskRepeat: 'no-repeat',
-                WebkitMaskRepeat: 'no-repeat',
-              }}
-            />
-          </div>
-          {/* TOP-lag — SAMME folder-skygge + inset som de andre mapper, men kun
-              synligt på top + skulder (mask'en fader det ud nedenunder), så
-              skyggen aldrig når ned i bund-faden. */}
-          <div style={{ position: 'absolute', inset: 0, filter: STACK_DROP_SHADOW }}>
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                background: tail.tone,
-                clipPath: clip,
-                WebkitClipPath: clip,
-                boxShadow: STACK_SHELL_INSET,
-                maskImage: TAIL_TOP_MASK,
-                WebkitMaskImage: TAIL_TOP_MASK,
-                maskRepeat: 'no-repeat',
-                WebkitMaskRepeat: 'no-repeat',
-              }}
-            />
-          </div>
-        </>
-      ) : (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: tail.tone,
+          clipPath: clip,
+          WebkitClipPath: clip,
+          boxShadow: STACK_SHELL_INSET,
+          // tail-4 bærer SAMME dropskygge som de øvrige mapper (følger clip-
+          // formen langs hele overkanten, ikke kun skulderen); blend-overlayet
+          // ovenpå dækker den nedre del, så bunden forbliver ren.
+          filter: isBlendTail ? STACK_DROP_SHADOW : undefined,
+        }}
+      />
+      {isBlendTail && (
+        // OVERLAY — IKKE clippet, INGEN transparens på selve mappen. En
+        // baggrunds-farvet gradient lagt OVEN PÅ tail-4's nederste ~60%:
+        // transparent foroven (mappen ses uændret) → solid var(--background)
+        // forneden. Det strækker sig forbi sider og bund, så mappens underkant
+        // dækkes helt og smelter sammen med sidens baggrund — uden clip-kant.
         <div
           style={{
-            width: '100%',
-            height: '100%',
-            background: tail.tone,
-            clipPath: clip,
-            WebkitClipPath: clip,
-            boxShadow: STACK_SHELL_INSET,
+            position: 'absolute',
+            left: -10,
+            right: -10,
+            top: 66,
+            bottom: -16,
+            background: `linear-gradient(to bottom, rgba(246,240,223,0) 0%, rgba(246,240,223,0) 24%, ${STACK_PAGE_BG} 70%, ${STACK_PAGE_BG} 100%)`,
+            pointerEvents: 'none',
           }}
         />
       )}
