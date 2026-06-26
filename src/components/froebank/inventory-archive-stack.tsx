@@ -441,7 +441,8 @@ const STACK_CARD_TOP_EXPANDED = 28 // kort-top under skulderens højeste punkt (
 const STACK_BOTTOM_PAPER = 34 // synlig folder-bund under kortet (expanded)
 const STACK_COLLAPSED_OVERLAP = 18 // collapsed: næste folder dækker forriges åbne bund
 const STACK_EXPANDED_OVERLAP = 10 // expanded: næste folder kun 10px ind → åbent kort får luft
-const STACK_COLLAPSED_H = 150 // collapsed mappe-højde — kortere synlig strimmel
+const STACK_FOLDER_EXTRA_H = 113 // ca. 3 CSS-cm ekstra mappe, skjult bag næste lag
+const STACK_COLLAPSED_H = 150 + STACK_FOLDER_EXTRA_H // collapsed mappe-højde — ekstra bund gemmes bag næste mappe
 const STACK_WIDTH_INSET = 22 // ALLE mapper: bredde = container − 22px (næsten ens)
 const STACK_ANIM = '260ms cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -484,17 +485,21 @@ const STACK_SHOULDER_DROP = 14 // konstant skulderfald (lav top under tab-top)
 const STACK_SHOULDER_RISE = 16 // konstant vandret stigning på tab-siderne
 
 // Annas faste sekvens for de første 7 mapper under HeroFolder. ALLE har
-// samme bredde (container − STACK_WIDTH_INSET); variation kommer KUN fra
-// skulderbredde + skulderplacering og en lille xOffset (0–2px).
-// shoulderCenter = skulderens vandrette midte som andel af mappebredden.
+// samme bredde (container − STACK_WIDTH_INSET); variation i skulderbredde +
+// skulderplacering + en lille xOffset (0–2px).
+// FARVE: hver mappe er en creme/beige arkivmappe FØRST, med kun en meget
+// diskret tint i kortets temperatur-retning (varm rosé for røde/orange kort,
+// grønlig for grønne, gul-salvie for oliven). Aldrig en fast grøn/rød-
+// rækkefølge; kortet er altid det mest mættede element, mappen kun en tonet
+// neutral. shoulderCenter = skulderens vandrette midte som andel af bredden.
 const FOLDER_SHELLS = [
-  { tone: '#EEE8DA', shoulderWidth: 108, shoulderCenter: 0.5, xOffset: 0 }, // Tomat
-  { tone: '#E4E7D9', shoulderWidth: 84, shoulderCenter: 0.38, xOffset: -1 }, // Agurk
-  { tone: '#F0E9DD', shoulderWidth: 116, shoulderCenter: 0.5, xOffset: 1 }, // Chili
-  { tone: '#E8EBDD', shoulderWidth: 92, shoulderCenter: 0.61, xOffset: 0 }, // Peberfrugt California Wonder
-  { tone: '#F1EBDE', shoulderWidth: 104, shoulderCenter: 0.41, xOffset: -2 }, // Corno di Toro Rosso
-  { tone: '#E3E5D5', shoulderWidth: 86, shoulderCenter: 0.58, xOffset: 1 }, // Squash
-  { tone: '#ECE6D8', shoulderWidth: 112, shoulderCenter: 0.5, xOffset: 0 }, // Stangbønne
+  { tone: '#F0E7DD', shoulderWidth: 108, shoulderCenter: 0.5, xOffset: 0 }, // Tomat — varm (rød) → svag rosé-creme
+  { tone: '#E7E8DB', shoulderWidth: 84, shoulderCenter: 0.38, xOffset: -1 }, // Agurk — grøn → svag grønlig creme
+  { tone: '#EFE4D8', shoulderWidth: 116, shoulderCenter: 0.5, xOffset: 1 }, // Chili — varm (orange) → svag rosé-creme
+  { tone: '#EEE1D6', shoulderWidth: 92, shoulderCenter: 0.61, xOffset: 0 }, // Peberfrugt California Wonder — varm (rød) → svag rosé-creme
+  { tone: '#F0E7DD', shoulderWidth: 104, shoulderCenter: 0.41, xOffset: -2 }, // Corno di Toro Rosso — varm (rød) → svag rosé-creme
+  { tone: '#E8E4D4', shoulderWidth: 86, shoulderCenter: 0.58, xOffset: 1 }, // Squash — oliven/grøn → svag gul-salvie creme
+  { tone: '#E6E8DC', shoulderWidth: 112, shoulderCenter: 0.5, xOffset: 0 }, // Stangbønne — grøn → svag grønlig creme
 ] as const
 
 // Fælles skulder-path: lav top (y=DROP) med en hævet, afrundet tab
@@ -617,6 +622,7 @@ function StackFolder({
         transform: `translateX(calc(-50% + ${shell.xOffset}px)) translateY(${isExpanded ? -4 : 0}px)`,
         transition: `top ${STACK_ANIM}, height ${STACK_ANIM}, transform ${STACK_ANIM}`,
         cursor: 'pointer',
+        overflow: 'visible',
       }}
     >
       {/* Folder-shell (clip-path) — wrapper bærer dropskyggen. Expanded =
@@ -626,6 +632,7 @@ function StackFolder({
         style={{
           position: 'absolute',
           inset: 0,
+          overflow: 'visible',
           filter: isExpanded
             ? STACK_DROP_SHADOW_EXPANDED
             : strongShadow
@@ -654,6 +661,7 @@ function StackFolder({
         style={{
           position: 'absolute',
           inset: 0,
+          overflow: 'hidden',
           clipPath: clip,
           WebkitClipPath: clip,
           transition: `clip-path ${STACK_ANIM}`,
@@ -681,37 +689,48 @@ function StackFolder({
 }
 
 // Trailing tomme mapper — stakken fortsætter nedad og opløses gradvist.
-// Ingen kort, tekst, badge eller interaktion; kun visuel hale. Fade kun via
-// opacity + svagere skygge (INGEN blur/filter-blur). Åben bund (fortsætter)
-// undtagen tail-4, der må runde bunden fordi den er så faded den opløses.
-const TAIL_VISIBLE_H = 72 // fladere end de rigtige mapper
+// Ingen kort, tekst, badge eller interaktion; kun visuel hale. Alle har
+// åben bund (fortsætter), så halen aldrig læses som en lukket afslutning.
+const TAIL_VISIBLE_H = 193 // 80px + ca. 3 CSS-cm, så tail-mapperne går længere ned bag hinanden
+const TAIL_FIRST_OVERLAP = 44
+const TAIL_OVERLAP = 12
+const TAIL_SECOND_LIFT = 76 // ca. 2 CSS-cm op
+const TAIL_THIRD_LIFT = 57 // ca. 1,5 CSS-cm op
+const TAIL_FOURTH_LIFT = 113 // ca. 3 CSS-cm op
+// Tomme mapper har INTET kort at reagere på → ren neutral creme (ingen tint).
 const TAIL_FOLDERS = [
-  { widthInset: 22, tone: '#EEE8DA', shoulderWidth: 108, shoulderCenter: 0.5, opacity: 0.72, shadowFactor: 1.0, marginTop: 0, rounded: false }, // tail-1
-  { widthInset: 28, tone: '#E4E7D9', shoulderWidth: 84, shoulderCenter: 0.38, opacity: 0.52, shadowFactor: 0.82, marginTop: -24, rounded: false }, // tail-2
-  { widthInset: 20, tone: '#F0E9DD', shoulderWidth: 86, shoulderCenter: 0.58, opacity: 0.34, shadowFactor: 0.64, marginTop: -22, rounded: false }, // tail-3
-  { widthInset: 26, tone: '#E8EBDD', shoulderWidth: 112, shoulderCenter: 0.5, opacity: 0.18, shadowFactor: 0.46, marginTop: -26, rounded: true }, // tail-4
+  { tone: '#EEE8DA', shoulderWidth: 108, shoulderCenter: 0.5, marginTop: 0, rounded: false }, // tail-1
+  { tone: '#ECE6D8', shoulderWidth: 84, shoulderCenter: 0.38, marginTop: -(TAIL_OVERLAP + TAIL_SECOND_LIFT), rounded: false }, // tail-2
+  { tone: '#F1EBDE', shoulderWidth: 86, shoulderCenter: 0.58, marginTop: -(TAIL_OVERLAP + TAIL_THIRD_LIFT), rounded: false }, // tail-3
+  { tone: '#EEE8DA', shoulderWidth: 112, shoulderCenter: 0.5, marginTop: -(TAIL_OVERLAP + TAIL_FOURTH_LIFT), rounded: false, bottomFade: true }, // tail-4
 ] as const
 // Hale-stakkens flow-højde (overlap medregnet) + 8px ekstra under tail-4.
-const TAIL_STACK_HEIGHT = 72 + (72 - 24) + (72 - 22) + (72 - 26) + 8 // = 224
-const STACK_BOTTOM_PADDING = 96 // luft før bottom nav
-
-// Skygge med reduceret styrke (kun opacity-skalering på de to lag).
-function tailShadow(factor: number): string {
-  const a1 = (0.11 * factor).toFixed(3)
-  const a2 = (0.05 * factor).toFixed(3)
-  return `drop-shadow(0 10px 20px rgba(64,58,42,${a1})) drop-shadow(0 3px 8px rgba(64,58,42,${a2}))`
-}
+const TAIL_STACK_HEIGHT =
+  TAIL_VISIBLE_H + 3 * (TAIL_VISIBLE_H - TAIL_OVERLAP) - TAIL_SECOND_LIFT - TAIL_THIRD_LIFT - TAIL_FOURTH_LIFT + 8 // = 498
+const STACK_BOTTOM_PADDING = 120 // luft før bottom nav
+// tail-4 er SPLITTET i to uafhængige lag, så top og bund kan styres hver for sig:
+//  • TAIL_TOP_MASK — top-laget (med SAMME folder-skygge som de andre mapper) vises
+//    kun på top + skulder og fader ud nedenunder → skyggen ligger KUN på toppen.
+//  • TAIL_END_FADE — bund-laget (folder-fyld UDEN skygge) er fuldt indtil ~2/3 og
+//    fader så ud → KUN bunden lysner og smelter med baggrunden, uden skygge.
+const TAIL_TOP_MASK =
+  'linear-gradient(to bottom, rgba(0,0,0,1) 0, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 58%)'
+const TAIL_END_FADE =
+  'linear-gradient(to bottom, rgba(0,0,0,1) 0, rgba(0,0,0,1) 66%, rgba(0,0,0,0) 100%)'
 
 function TailFolder({
   tail,
   width,
+  z,
   last,
 }: {
   tail: (typeof TAIL_FOLDERS)[number]
   width: number
+  z: number
   last: boolean
 }) {
   const clip = `path('${buildStackFolderPath(width, TAIL_VISIBLE_H, tail.shoulderWidth, tail.shoulderCenter, tail.rounded)}')`
+  const isFadeTail = 'bottomFade' in tail && tail.bottomFade
   return (
     <div
       aria-hidden
@@ -723,21 +742,64 @@ function TailFolder({
         marginTop: tail.marginTop,
         marginBottom: last ? 8 : 0,
         height: TAIL_VISIBLE_H,
-        opacity: tail.opacity,
-        filter: tailShadow(tail.shadowFactor),
+        zIndex: z,
+        // tail-1..3: folder-skygge på hele formen. tail-4: skyggen ligger KUN på
+        // top-laget (nedenfor) → top/skulder har skygge, bunden er fri.
+        filter: isFadeTail ? undefined : STACK_DROP_SHADOW,
         pointerEvents: 'none',
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          background: tail.tone,
-          clipPath: clip,
-          WebkitClipPath: clip,
-          boxShadow: STACK_SHELL_INSET,
-        }}
-      />
+      {isFadeTail ? (
+        <>
+          {/* BUND-lag — folder-fyld UDEN skygge. Styres uafhængigt: fuldt indtil
+              ~2/3, derefter lysner/fader det ud mod baggrunden. */}
+          <div style={{ position: 'absolute', inset: 0 }}>
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                background: tail.tone,
+                clipPath: clip,
+                WebkitClipPath: clip,
+                maskImage: TAIL_END_FADE,
+                WebkitMaskImage: TAIL_END_FADE,
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+              }}
+            />
+          </div>
+          {/* TOP-lag — SAMME folder-skygge + inset som de andre mapper, men kun
+              synligt på top + skulder (mask'en fader det ud nedenunder), så
+              skyggen aldrig når ned i bund-faden. */}
+          <div style={{ position: 'absolute', inset: 0, filter: STACK_DROP_SHADOW }}>
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                background: tail.tone,
+                clipPath: clip,
+                WebkitClipPath: clip,
+                boxShadow: STACK_SHELL_INSET,
+                maskImage: TAIL_TOP_MASK,
+                WebkitMaskImage: TAIL_TOP_MASK,
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            background: tail.tone,
+            clipPath: clip,
+            WebkitClipPath: clip,
+            boxShadow: STACK_SHELL_INSET,
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -761,18 +823,19 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
     const height = isExpanded ? fullH : STACK_COLLAPSED_H
     const top = cumTop
     // Et EXPANDED kort får mere luft før næste folder (kun 10px overlap).
-    const overlap = isExpanded ? STACK_EXPANDED_OVERLAP : STACK_COLLAPSED_OVERLAP
+    const overlap = isExpanded ? STACK_EXPANDED_OVERLAP : STACK_COLLAPSED_OVERLAP + STACK_FOLDER_EXTRA_H
     cumTop = top + height - overlap
     // Hver tredje mappe (Chili = i2, Squash = i5, …) får stærkere skygge.
     const strongShadow = i % 3 === 2
-    return { item, shell, width, height, top, isExpanded, strongShadow, z: isExpanded ? 30 : i + 1 }
+    return { item, shell, width, height, top, isExpanded, strongShadow, z: isExpanded ? 30 : i + 10 }
   })
   const last = folders[folders.length - 1]
   const hasFolders = folders.length > 0
   const realBottom = last ? last.top + last.height : 0
+  const tailBaseZ = last ? last.z + 1 : 10
   // Hale-stakken overlapper sidste rigtige mappes bund som en normal næste
   // mappe → sidste rigtige mappe læses ikke som afslutning.
-  const tailTop = realBottom - STACK_COLLAPSED_OVERLAP
+  const tailTop = realBottom - TAIL_FIRST_OVERLAP - STACK_FOLDER_EXTRA_H
   const totalH = !cw
     ? 0
     : hasFolders
@@ -786,6 +849,7 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
         position: 'relative',
         width: '100%',
         height: totalH,
+        overflow: 'visible',
         transition: `height ${STACK_ANIM}`,
       }}
     >
@@ -817,7 +881,7 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
             left: 0,
             right: 0,
             height: TAIL_STACK_HEIGHT,
-            zIndex: 0,
+            overflow: 'visible',
             pointerEvents: 'none',
             transition: `top ${STACK_ANIM}`,
           }}
@@ -826,7 +890,8 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
             <TailFolder
               key={i}
               tail={t}
-              width={Math.max(0, cw - t.widthInset)}
+              width={Math.max(0, cw - STACK_WIDTH_INSET)}
+              z={tailBaseZ + i}
               last={i === TAIL_FOLDERS.length - 1}
             />
           ))}
