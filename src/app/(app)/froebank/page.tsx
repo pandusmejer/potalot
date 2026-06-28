@@ -16,9 +16,16 @@ export default async function FroebankPage() {
   // Hvis brugeren ikke er logget ind eller endnu ikke har tilføjet
   // egne frø, vis hele demo-puljen så designet kan ses i drift —
   // første frø bliver hero-kortet, resten sidder inde i mappestakken.
-  // Skifter automatisk til brugerens rigtige inventory ved første
-  // tilføjelse. Når brugeren har < 12 frø, fader resten af mappestakken
-  // ud som tomme mapper.
+  // Skifter automatisk til brugerens rigtige inventory ved første tilføjelse.
+  //
+  // Stak-model (LÅST — se Docs/product/froebank-stack-handoff.md):
+  //   /froebank henter inventory → FroebankBrowser filtrerer/sorterer →
+  //   InventoryArchiveStack renderer FØRST én mappe pr. rigtigt frøkort og
+  //   DEREFTER et fast sæt dekorative tail folders (tomme afslutningsmapper).
+  //   Tail folders er KULISSE, ikke slots: de er ikke data, fyldes aldrig op
+  //   med kommende frøkort, og antallet af frøkort ændrer dem ikke — de ligger
+  //   altid sidst, og stakken kan vokse uendeligt. (IKKE den gamle "fyld op til
+  //   12 slots"-model.)
   const inventory = realInventory.length === 0 ? DEMO_INVENTORY : realInventory
 
   // Lille sensorisk note — kontekst-aware (måned, tid på dagen).

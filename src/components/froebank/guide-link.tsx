@@ -118,53 +118,95 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
     allGuides.filter(g => g.visibility === 'public').map(dedupKey)
   )
 
-  // Hvis guide allerede tilknyttet — vis info + skift/fjern
+  // Hvis guide allerede tilknyttet — vis info + skift/fjern.
+  // Sekundær callout: flex-layout med fast min-height, wrapper, intet klip.
   if (currentGuide) {
+    // Titel = guidens identitet (plantName + sort); beskrivelse = summary.
+    // INGEN opfundne trin/læsetid — kun ægte data, ellers neutral fallback.
+    const guideTitle = `${currentGuide.plantName}${currentGuide.variety ? ` — ${currentGuide.variety}` : ''}`
+    const guideDesc = currentGuide.summary || 'Åbn guiden og følg dyrkningen trin for trin.'
     return (
-      <Card>
-        <CardContent className="flex items-start gap-3 py-4">
-          <BookOpen className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="font-medium text-foreground">
-              {currentGuide.plantName}{currentGuide.variety ? ` — ${currentGuide.variety}` : ''}
-            </p>
-            <p className="text-sm text-muted-foreground line-clamp-2">{currentGuide.summary}</p>
-          </div>
-          <div className="flex flex-col gap-1 shrink-0">
-            <Button asChild variant="ghost" size="sm">
-              <Link href={`/guides/${currentGuide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
-                Åbn <ArrowRight className="h-3 w-3" />
-              </Link>
-            </Button>
-            <Dialog open={open} onOpenChange={handleOpenChange}>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="sm">Skift</Button>
-              </DialogTrigger>
-              <DialogContent>{renderDialogBody()}</DialogContent>
-            </Dialog>
+      <Card
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.08) 100%), #EEF0DF',
+          border: '1px solid rgba(83,111,54,0.14)',
+          borderRadius: 24,
+          boxShadow: '0 7px 16px rgba(64,58,42,0.055), inset 0 1px 0 rgba(255,255,255,0.34)',
+          overflow: 'visible',
+        }}
+      >
+        <CardContent className="flex items-start" style={{ gap: 16, padding: '18px 20px', minHeight: 88 }}>
+          <span style={{ flex: '0 0 auto', width: 30, height: 30, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginTop: 2, color: '#68745A' }}>
+            <BookOpen className="h-[26px] w-[26px]" strokeWidth={1.9} />
+          </span>
+          {/* Content-kolonne: tekst + CTA wrapper sammen, så CTA'en aligner
+              med tekstens venstrekant når den wrapper ned (mobil). */}
+          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 16 }}>
+            <div style={{ flex: 1, minWidth: 160 }}>
+              <p style={{ fontSize: 11, lineHeight: 1, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(38,51,33,0.58)', margin: 0 }}>
+                Guide tilknyttet
+              </p>
+              <p style={{ marginTop: 6, fontSize: 20, lineHeight: 1.1, fontWeight: 750, color: '#263321' }}>{guideTitle}</p>
+              <p className="line-clamp-2" style={{ marginTop: 5, fontSize: 15, lineHeight: 1.3, fontWeight: 400, color: 'rgba(38,51,33,0.68)' }}>
+                {guideDesc}
+              </p>
+            </div>
+            <div className="flex flex-col items-start" style={{ flex: '0 0 auto', gap: 6 }}>
+              <Button asChild className="h-auto" style={{ height: 42, paddingInline: 18, borderRadius: 999, fontSize: 15, fontWeight: 650, background: '#536F36', color: '#FFFDF4' }}>
+                <Link href={`/guides/${currentGuide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
+                  Åbn guide <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              {/* Sekundær: skift/fjern guide — diskret, så "Åbn guide" er den klare handling. */}
+              <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-auto px-2 py-1" style={{ fontSize: 13, color: 'rgba(38,51,33,0.55)' }}>Skift</Button>
+                </DialogTrigger>
+                <DialogContent>{renderDialogBody()}</DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardContent>
       </Card>
     )
   }
 
-  // Ingen guide — vis CTA
+  // Ingen guide — vis CTA. Sekundær callout (blød grøn flade, rolig, uklemt).
   return (
-    <Card className="bg-secondary/20 border-secondary">
-      <CardContent className="flex items-start gap-3 py-4">
-        <BookOpen className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-        <div className="flex-1">
-          <p className="font-medium text-foreground">Ingen guide tilknyttet</p>
-          <p className="text-sm text-muted-foreground">
-            Tilknyt en eksisterende guide eller generér en ny med AI.
-          </p>
+    <Card
+      style={{
+        background: '#EEF0DF',
+        border: '1px solid rgba(83,111,54,0.12)',
+        borderRadius: 24,
+        boxShadow: '0 7px 16px rgba(64,58,42,0.055), inset 0 1px 0 rgba(255,255,255,0.34)',
+        overflow: 'visible',
+      }}
+    >
+      <CardContent className="flex items-start" style={{ gap: 16, padding: '18px 20px', minHeight: 88 }}>
+        <span style={{ flex: '0 0 auto', width: 28, height: 28, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', marginTop: 2, color: '#68745A' }}>
+          <BookOpen className="h-6 w-6" strokeWidth={1.9} />
+        </span>
+        {/* Content-kolonne: tekst + CTA wrapper sammen, så CTA'en aligner
+            med tekstens venstrekant når den wrapper ned (mobil). */}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 160 }}>
+            <p style={{ fontSize: 20, lineHeight: 1.1, fontWeight: 700, color: '#263321', margin: 0 }}>Ingen guide tilknyttet</p>
+            <p style={{ marginTop: 5, fontSize: 16, lineHeight: 1.3, fontWeight: 400, color: 'rgba(38,51,33,0.68)' }}>
+              Tilknyt en eksisterende guide eller generér en ny med AI.
+            </p>
+          </div>
+          <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>
+              <Button
+                className="h-auto"
+                style={{ flex: '0 0 auto', height: 42, paddingInline: 18, borderRadius: 999, fontSize: 15, fontWeight: 650, background: '#536F36', color: '#FFFDF4' }}
+              >
+                Tilknyt guide
+              </Button>
+            </DialogTrigger>
+            <DialogContent>{renderDialogBody()}</DialogContent>
+          </Dialog>
         </div>
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogTrigger asChild>
-            <Button size="sm">Tilknyt guide</Button>
-          </DialogTrigger>
-          <DialogContent>{renderDialogBody()}</DialogContent>
-        </Dialog>
       </CardContent>
     </Card>
   )

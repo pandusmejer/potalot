@@ -29,6 +29,8 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { InventoryCard } from './inventory-card'
 import type { InventoryItem } from '@/lib/types'
 
@@ -598,6 +600,11 @@ function StackFolder({
       // ville Next-routeren navigere til detalje-siden. preventDefault +
       // stopPropagation dræber navigationen; kun toggle sker.
       onClickCapture={(e) => {
+        // LÅST NAVIGATIONSREGEL: "Fold ud først. Åbn frøkort bagefter. Kun via knap."
+        // - Kun "åbn frøkort"-CTA'en (data-open-detail) må navigere til detalje-siden.
+        // - Klik på resten af kortet (collapsed ELLER expanded) toggler KUN — og
+        //   dræber kortets eget <Link>, så hele kortet ALDRIG navigerer.
+        if ((e.target as HTMLElement).closest('[data-open-detail]')) return
         e.preventDefault()
         e.stopPropagation()
         onToggle()
@@ -685,6 +692,49 @@ function StackFolder({
           />
         </div>
       </div>
+      {/* "åbn frøkort" — den ENESTE vej til detalje-siden fra stakken.
+          Vises KUN når mappen er åben (isExpanded); aldrig på tail-mapper
+          (de er en separat komponent). Sekundær creme-pille over kortets rene
+          bund. data-open-detail → folder-onClickCapture lader den navigere frit,
+          mens resten af kortet kun folder ud/sammen. */}
+      {isExpanded && (
+        <Link
+          href={`/froebank/${item.id}`}
+          data-open-detail
+          // Synlig label er bevidst kort ("åbn frøkort"); aria/title bærer konteksten.
+          aria-label={`Åbn frøkort for ${item.name}${item.variety ? ` ${item.variety}` : ''}`}
+          title={`Åbn frøkort for ${item.name}`}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            // Hviler ~15px over kortets info-panel (≈144px højt, top ≈178px over
+            // mappebund) → på billedets nederste kant, dækker ingen data og er
+            // ikke klemt. Alle stak-kort har samme højde, så værdien holder.
+            position: 'absolute',
+            bottom: 193,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 6,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 7,
+            height: 32,
+            paddingInline: 15,
+            borderRadius: 999,
+            background: 'rgba(247,242,230,0.93)',
+            border: '1px solid rgba(117,101,62,0.22)',
+            boxShadow: '0 4px 11px rgba(40,52,26,0.13)',
+            color: '#3F5A2A',
+            fontSize: 12,
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+          }}
+        >
+          åbn frøkort
+          <ArrowRight style={{ width: 14, height: 14, strokeWidth: 2 }} />
+        </Link>
+      )}
     </div>
   )
 }
@@ -785,6 +835,22 @@ function TailFolder({
 function StackCascade({ items }: { items: InventoryItem[] }) {
   const [ref, cw] = useContainerWidth()
   const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  // Tap udenfor stakken folder det åbne kort sammen igen (native-mønster).
+  // Klik PÅ en mappe (role=button[aria-expanded]) håndteres af mappens egen
+  // onClickCapture (toggle/navigér); kun klik HELT udenfor lukker her.
+  // Effekten tilføjes async (efter render), så det klik der åbnede kortet
+  // ikke selv lukker det igen.
+  useEffect(() => {
+    if (!expandedId) return
+    const onDocClick = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('[role="button"][aria-expanded]')) {
+        setExpandedId(null)
+      }
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [expandedId])
 
   let cumTop = 0
   const folders = items.map((item, i) => {

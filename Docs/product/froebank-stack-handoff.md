@@ -18,6 +18,64 @@ af kort. Det er den mentale model alt skal tjene.
 
 ---
 
+## 0b. Tail folders — FUNKTIONEL KONTRAKT (LÅST, må ikke genopfindes)
+
+Stakken består af **to typer mapper**:
+
+1. **Rigtige mapper** — én pr. frøkort, indeholder data (titel, sort, seed
+   count, billede, dyrkningsdata) og er klikbare.
+2. **Tail folders / tomme afslutningsmapper** — rent dekorative.
+
+Tail folders er **KULISSE, ikke pladser.** De er ikke slots, ikke placeholders
+til kommende kort, ikke loading-skeletons, ikke empty-state, ikke inventory
+items. Deres eneste formål er visuelt: at få arkivet til at føles som en fysisk
+stak, der kan fortsætte i det uendelige, men som toner roligt ud i bunden.
+
+**Hårde regler (alle skal holdes):**
+
+- Tail folders ligger **altid efter alle rigtige frøkort** — uanset om der er 7
+  eller 40.
+- Tail folders må **aldrig** indeholde kort, tekst, badge, billede, seed count,
+  titel, sortnavn eller dyrkningsdata.
+- Nye frøkort indsættes **altid før** tail folders. Tail folders må aldrig
+  "fyldes op" med næste frøkort.
+- Tail folders er **aldrig** en del af datalisten.
+- Tail folders er **aldrig** klikbare og navigerer **aldrig** nogen steder.
+- Tail folders må **aldrig** bruges som skeleton / loading / empty-state.
+- Når datalisten vokser, flytter tail folders bare længere ned. De er altid
+  sidst. Stakken kan blive uendeligt lang uden at ændre tail-logikken.
+
+**Render-regel:**
+
+```
+const realFolders = inventoryItems.map(...)   // data
+const tailFolders = FIXED_TAIL_FOLDERS        // kulisse — fast sæt
+
+render: [ ...realFolders, ...tailFolders ]    // ALTID i den rækkefølge
+```
+
+Aldrig: realFolders blandet med tailFolders · tailFolders brugt som data-slots ·
+tailFolders udfyldt med inventory-data.
+
+**Sidste tail folder — fade:** Den nederste tail folder fader ud i sidens
+baggrund. "Fade" betyder **ikke** gør hele mappen gennemsigtig. Den korrekte
+model er:
+
+```
+normal folder shell  (farve + skulder + svag skygge — stadig aflæselig som mappe)
+        +
+separat fade-overlay KUN i bunden  (toner ned mod var(--background))
+```
+
+IKKE: opacity/mask på hele mappen · gennemsigtig mappe · fjernet skygge ·
+fjernet top/skulder.
+
+> Kort sagt: tail folders er ikke pladser. De er kulisse. De ligger altid
+> **efter** data — aldrig **i** data. Dette er den model `TAIL_FOLDERS` +
+> `StackCascade` allerede implementerer; genopfind ikke "fyld op til N slots".
+
+---
+
 ## 1. Filer
 
 | Fil | Rolle |
