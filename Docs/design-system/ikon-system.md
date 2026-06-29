@@ -185,3 +185,38 @@ Mood:
 - calm mobile UI
 - botanical, practical, warm
 ```
+
+---
+
+## 🔒 IKON-REGEL V2 — LÅST 2026-06-29 (Anna)
+
+**Soft Glyphs bruges SPARSOMT.** Ellers bliver Potalot "en børnebog med database".
+**Lucide = funktion. Soft Glyphs = identitet / sektion / særlige øjeblikke.**
+
+Lucide forbliver basis-ikonsystemet (med Potalot-styling). Det er IKKE nødvendigt
+at lave alle brainstormede ikoner som Soft Glyphs — de fleste bør være Lucide eller
+simpel monoline.
+
+**Soft Glyphs MÅ kun bruges som:**
+1. **Kategori-ikoner** (frøbank)
+2. **Sektionssignaturer**
+3. **Hero-/empty-state-illustrationer** ("Ingen guide tilknyttet", "Din frøbank er tom", "Godt plantevindue", "AI-genereret guide")
+4. **Særlige stemningsmomenter** (kaffekop, stop og nyd, observation, evt. soundscape)
+
+**Soft Glyphs MÅ IKKE bruges til** almindelige UI-handlinger.
+
+**Lucide til alt funktionelt:** tilbage · luk · rediger · slet · plus · søg · filter ·
+upload · kamera · link · check · settings · info · advarsel · klokke · kalenderdato ·
+**og almindelige opgavehandlinger i lister** (vand/beskær/bind op/plant ud/høst/dæk
+mod frost behøver IKKE være små malerier — Lucide/monoline, især i opgavelister).
+
+**Tvivl → brug Lucide.** Soft Glyph kun hvor ikonet bærer kategori, stemning eller brand-identitet.
+
+### Soft Glyph-KERNE (låst — produktion af nye Soft Glyphs sat på pause)
+- **Kategori (11):** Frø · Løg · Knolde · Buske · Træer · Stauder · Blomster · Krydderurter · Bær · Frugt · Pryd
+- **Sektion (5):** Havebog · Guides · Frøbank · Planter · Kalender
+- **Stemning (~4):** Kaffekop · AI/spireglimt · Godt vindue · (evt. Pause)
+
+Alt andet (havedyr, fuldt vejr-sæt, handlings-værktøjer m.m. der allerede er
+genereret som PNG) er IKKE kerne → bruges som Lucide/monoline i UI, eller parkeres
+som assets til evt. senere stemnings-/hero-brug. Se [[ikon_system]] + [[ikon_roadmap]].
