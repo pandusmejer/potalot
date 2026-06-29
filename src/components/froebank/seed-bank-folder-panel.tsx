@@ -5,52 +5,28 @@ import Link from 'next/link'
 import {
   BookOpen,
   ChevronRight,
-  Flower2,
   Leaf,
   Plus,
   Search,
   SlidersHorizontal,
-  Sprout,
-  TreeDeciduous,
   X,
 } from 'lucide-react'
+import {
+  FroebankFro,
+  FroebankLoeg,
+  FroebankKnolde,
+  FroebankBuske,
+  FroebankTraeer,
+  FroebankStauder,
+} from './froebank-category-glyphs'
 
 /** Ikon-komponent (lucide ELLER custom inline-SVG) — begge tager className + strokeWidth. */
 type IconType = React.ComponentType<{ className?: string; strokeWidth?: number }>
 
-// Custom botaniske kategori-glyphs (lucide har ikke løg/knold/busk i den rette
-// stil) — tegnet i samme rolige stregstil som referencebilledet.
-// TODO (Anna): MIDLERTIDIGE ikoner. Udskift kategori-ikonerne (Frø/Løg/Knolde/
-// Busk) — og evt. Search/SlidersHorizontal/Leaf — med de endelige ikon-designs,
-// når de er færdige. Se ikon-system-memoet (Potalot Soft Glyphs).
-function GlyphLoeg({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 21c-3.6 0-6-2.6-6-6 0-3.5 2.6-7 6-7s6 3.5 6 7c0 3.4-2.4 6-6 6Z" />
-      <path d="M12 8c-.7-1.6-1.9-2.8-3.1-3.5M12 8c.7-1.6 1.9-2.8 3.1-3.5" />
-      <path d="M9.7 9.7c-1 2.4-1 5.5.3 8.1M14.3 9.7c1 2.4 1 5.5-.3 8.1" />
-    </svg>
-  )
-}
-
-function GlyphKnolde({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <ellipse cx="8.8" cy="9.6" rx="4.3" ry="3.4" transform="rotate(-20 8.8 9.6)" />
-      <ellipse cx="15.4" cy="10.9" rx="3.9" ry="3" transform="rotate(16 15.4 10.9)" />
-      <ellipse cx="12" cy="16" rx="4.1" ry="3.2" transform="rotate(-6 12 16)" />
-    </svg>
-  )
-}
-
-function GlyphBusk({ className, strokeWidth = 1.65 }: { className?: string; strokeWidth?: number }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 21v-5" />
-      <path d="M8.6 16c-2 0-3.6-1.5-3.6-3.4 0-1.3.8-2.5 2-3 .1-2.2 1.9-3.9 4-3.9 1.5 0 2.8.8 3.4 2 .4-.2.9-.3 1.4-.3 1.7 0 3.1 1.4 3.1 3.1 0 .3 0 .6-.1.9 1 .5 1.6 1.5 1.6 2.6 0 1.7-1.4 3-3.3 3Z" />
-    </svg>
-  )
-}
+// Kategori-glyffer = Potalot Soft Glyphs i illustrativt register (LÅST 28/6, matcher
+// Annas reference): bløde, botaniske, 2-3 dæmpede farvelag — IKKE monoline/flade.
+// Selve glyfferne lever i ./froebank-category-glyphs. Funktionelle ikoner (Søg/
+// Filter/Plus/Bladr) forbliver Lucide-streg.
 
 type CategoryId = 'fro' | 'loeg' | 'knolde' | 'buske' | string
 type FilterId = 'alle' | 'udloeber-snart' | 'senest-tilfoejet' | string
@@ -89,21 +65,46 @@ export interface SeedBankFolderPanelProps {
 }
 
 const DEFAULT_CATEGORIES: SeedBankFolderCategory[] = [
-  { id: 'fro', label: 'Frø', count: 8, icon: Sprout },
-  { id: 'loeg', label: 'Løg', count: 0, icon: GlyphLoeg },
-  { id: 'knolde', label: 'Knolde', count: 0, icon: GlyphKnolde },
-  { id: 'buske', label: 'Buske', count: 0, icon: GlyphBusk },
-  { id: 'traeer', label: 'Træer', count: 0, icon: TreeDeciduous },
-  { id: 'stauder', label: 'Stauder', count: 0, icon: Flower2 },
+  { id: 'fro', label: 'Frø', count: 8, icon: FroebankFro },
+  { id: 'loeg', label: 'Løg', count: 0, icon: FroebankLoeg },
+  { id: 'knolde', label: 'Knolde', count: 0, icon: FroebankKnolde },
+  { id: 'buske', label: 'Buske', count: 0, icon: FroebankBuske },
+  { id: 'traeer', label: 'Træer', count: 0, icon: FroebankTraeer },
+  { id: 'stauder', label: 'Stauder', count: 0, icon: FroebankStauder },
 ]
 
 const CATEGORY_ICONS: Record<string, IconType> = {
-  fro: Sprout,
-  loeg: GlyphLoeg,
-  knolde: GlyphKnolde,
-  buske: GlyphBusk,
-  traeer: TreeDeciduous,
-  stauder: Flower2,
+  fro: FroebankFro,
+  loeg: FroebankLoeg,
+  knolde: FroebankKnolde,
+  buske: FroebankBuske,
+  traeer: FroebankTraeer,
+  stauder: FroebankStauder,
+}
+
+// Aktiv-flise bag glyffen er IKKE ens for alle: creme-flisen redder de mørke
+// grøn-løv-glyffer (busk/træ) på den grønne aktiv-pill, men får den LYSE
+// Løg-glyf til at forsvinde (lys glyf + creme flise + creme/grøn pill). Derfor
+// pr-kategori-regel: lyse glyffer får en støvet salvie-flise i stedet. Default = cream.
+type ActiveTile = 'cream' | 'sage' | 'none'
+const CATEGORY_ACTIVE_TILE: Record<string, ActiveTile> = {
+  fro: 'cream',
+  loeg: 'sage',
+  knolde: 'cream',
+  buske: 'cream',
+  traeer: 'cream',
+  stauder: 'cream',
+}
+const ACTIVE_TILE_STYLE: Record<'cream' | 'sage', React.CSSProperties> = {
+  cream: {
+    background: 'rgba(245,241,228,0.95)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 2px rgba(40,52,26,0.10)',
+  },
+  sage: {
+    background: '#DDE4CF',
+    border: '1px solid rgba(83,111,54,0.14)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.45), 0 1px 2px rgba(40,52,26,0.10)',
+  },
 }
 
 const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
@@ -521,15 +522,15 @@ function CategoryPill({
   active: boolean
   onClick: () => void
 }) {
-  const Icon = category.icon ?? CATEGORY_ICONS[category.id] ?? Sprout
+  const Icon = category.icon ?? CATEGORY_ICONS[category.id] ?? FroebankFro
+  const activeTile: ActiveTile = active ? (CATEGORY_ACTIVE_TILE[category.id] ?? 'cream') : 'none'
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        'inline-flex h-[41px] shrink-0 items-center rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition',
-        category.id === 'knolde' ? 'gap-[4px] min-w-[95px]' : 'gap-[11px] min-w-[85px]',
+        'inline-flex h-[41px] shrink-0 items-center gap-[10px] min-w-[85px] rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition',
         active ? 'text-[#F7F3E8] pf-green' : 'text-[#4E564B] pf-light',
       ].join(' ')}
       style={
@@ -544,10 +545,15 @@ function CategoryPill({
             }
       }
     >
-      <Icon
-        className={['h-[18px] w-[18px] shrink-0', category.id === 'loeg' ? '-mr-1' : '', active ? 'text-[#F7F3E8]' : 'text-[#4E5B43]'].join(' ')}
-        strokeWidth={1.65}
-      />
+      {/* Flise bag glyffen — fast 26px-felt i begge tilstande (stabil layout).
+          Aktiv pill får en flise hvis farve afhænger af glyffen: mørke grøn-løv-
+          glyffer → creme; lyse glyffer (Løg) → støvet salvie. Se CATEGORY_ACTIVE_TILE. */}
+      <span
+        className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[9px]"
+        style={activeTile === 'none' ? undefined : ACTIVE_TILE_STYLE[activeTile]}
+      >
+        <Icon className="h-[20px] w-[20px] shrink-0" />
+      </span>
       <span className="inline-flex items-baseline gap-[10px]">
         {category.label}
         <span className={active ? 'font-normal text-[#EDE7D8]' : 'font-normal text-[#777D70]'}>

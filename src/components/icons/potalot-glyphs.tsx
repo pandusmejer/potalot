@@ -576,3 +576,185 @@ export const POTALOT_GLYPHS_STATUS: {
   { key: 'hojde', label: 'Højde', form: 'måling', Comp: GlyphHojde },
   { key: 'sundhed', label: 'Sundhed', form: 'tilstand', Comp: GlyphSundhed },
 ]
+
+/* ════════════ BATCH 4 — nav/sektion + manglende kerneformer ════════════
+   Lukker hullet mod 33-listen. Samme vægt/palette/afrundinger; bog-formerne
+   er sektionssignaturer (Havebog/Dyrkningsguide) — fyldte, ikke outline. */
+
+/* ── Havebog — lukket havejournal: fyldt cover + ryg + blad-emblem + bånd ── */
+export function GlyphHavebog(props: GlyphProps) {
+  return (
+    <Glyph {...props}>
+      {/* cover */}
+      <path d="M5.4 4.2 C 5.4 3.5, 5.9 3, 6.6 3 L 17.6 3 C 18.3 3, 18.8 3.5, 18.8 4.2 L 18.8 20 C 18.8 20.7, 18.3 21.2, 17.6 21.2 L 6.6 21.2 C 5.9 21.2, 5.4 20.7, 5.4 20 Z" fill={C.greenDeep} />
+      {/* ryg — mørkere bånd */}
+      <path d="M5.4 4.2 C 5.4 3.5, 5.9 3, 6.6 3 L 8.1 3 L 8.1 21.2 L 6.6 21.2 C 5.9 21.2, 5.4 20.7, 5.4 20 Z" fill={C.greenDark} />
+      {/* blad-emblem på coveret — botanisk journal */}
+      <path d="M13.4 8.4 C 10.9 8.8, 9.1 11, 9.2 14 C 12 13.7, 13.9 11.5, 13.4 8.4 Z" fill={C.green} />
+      <path d="M9.9 13.3 C 11 11.6, 12.3 10.2, 13.6 9.2" stroke={C.greenDark} strokeWidth="1.1" strokeLinecap="round" opacity="0.4" />
+      {/* bogmærke-bånd ud i bunden */}
+      <path d="M14.6 21.2 L 14.6 23.4 L 16 22.3 L 17.4 23.4 L 17.4 21.2 Z" fill={C.sand} />
+    </Glyph>
+  )
+}
+
+/* ── Dyrkningsguide — åben guide med spire: to sider (V) + ryg + spire.
+   Kontrast-sikret: lys side = varm papircreme (ikke hvid) + svag kant +
+   sidefold, så bogen overlever på creme/beige/hvid/nav-baggrunde. ── */
+export function GlyphDyrkningsguide(props: GlyphProps) {
+  const paperCream = '#F2E6C8'                 // varm papircreme, ikke #FFF
+  const edge = 'rgba(101,94,71,0.28)'          // subtil kant — gør lys side læsbar
+  const fold = 'rgba(101,94,71,0.22)'          // svag ryg/sidefold
+  return (
+    <Glyph {...props}>
+      {/* venstre side — varm tan */}
+      <path d="M12 9.4 C 9.4 7.8, 5.4 7.4, 3 8 L 3 19.4 C 5.4 18.8, 9.4 19.2, 12 20.8 Z" fill={C.sand} />
+      {/* højre side — varm papircreme (læsbar uden at blive hvid) */}
+      <path d="M12 9.4 C 14.6 7.8, 18.6 7.4, 21 8 L 21 19.4 C 18.6 18.8, 14.6 19.2, 12 20.8 Z" fill={paperCream} />
+      {/* kant om hele bogen — definerer den lyse side på lys baggrund */}
+      <path d="M3 8 C 5.4 7.4, 9.4 7.8, 12 9.4 C 14.6 7.8, 18.6 7.4, 21 8 L 21 19.4 C 18.6 18.8, 14.6 19.2, 12 20.8 C 9.4 19.2, 5.4 18.8, 3 19.4 Z" fill="none" stroke={edge} strokeWidth="1.25" strokeLinejoin="round" />
+      {/* ryg/fold + svag sidefold på lys side */}
+      <path d="M12 9.4 L 12 20.8" stroke={fold} strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M16.6 9.7 C 16.4 13, 16.4 16.6, 16.6 19.4" stroke={fold} strokeWidth="1.2" strokeLinecap="round" />
+      {/* spire — uændret grøn accent, samme størrelse */}
+      <path d="M12 10 C 12 7.6, 12 5.8, 12 3.8" stroke={C.green} strokeWidth="2.1" strokeLinecap="round" />
+      <path d="M12 7.4 C 9.9 7.6, 8.4 6.1, 8 3.9 C 10.6 3.9, 11.8 5.2, 12 7.4 Z" fill={C.green} />
+      <path d="M12 6 C 13.7 5.7, 14.9 4.2, 15.1 2.4 C 13.1 2.7, 12.1 4, 12 6 Z" fill={C.greenDeep} />
+    </Glyph>
+  )
+}
+
+/** Batch 4-registret — nav/sektion-signaturer + manglende kerneformer. */
+export const POTALOT_GLYPHS_4: {
+  key: string
+  label: string
+  form: string
+  Comp: (p: GlyphProps) => ReactNode
+}[] = [
+  { key: 'havebog', label: 'Havebog', form: 'lukket journal + blad', Comp: GlyphHavebog },
+  { key: 'dyrkningsguide', label: 'Dyrkningsguide', form: 'åben guide + spire', Comp: GlyphDyrkningsguide },
+]
+
+/* ════════════ BATCH 4b — manglende kerneformer (afgrøder + havedyr) ════════════
+   Lukker resten af 33-listen (undt. fremtidsfeatures Spisekammer/Frøbørs).
+   Samme vægt/palette/afrundinger; ingen mikrodetaljer der dør ved 16px. */
+
+/* Bønne DROPPET 2026-06-28 (Anna): unødvendig — Ært dækker allerede bælgfrugt. */
+
+/* ── Hvidløg — REDESIGN (Anna 28/6): rigtig hvidløg-form (rund bund, blødt spids
+   papir-top), lys varm creme (IKKE brun, IKKE pære) + tydelige fed-skel. ── */
+export function GlyphHvidloeg(props: GlyphProps) {
+  const skin = '#F1EAD6'  // lys, varm creme
+  const shade = '#E5DBC1' // blød skygge-side (volumen)
+  const rib = 'rgba(150,131,96,0.30)' // dæmpet varm grå fed-skel
+  const tip = '#D9CCA6'   // papir-spids
+  return (
+    <Glyph {...props}>
+      {/* papir-spids */}
+      <path d="M12 3.6 C 11.4 2.6, 11.5 1.7, 12 1.1 C 12.5 1.7, 12.6 2.6, 12 3.6 Z" fill={tip} />
+      {/* bulb-silhuet — rund bund + blødt spids top */}
+      <path d="M12 3.4 C 13.5 5.2, 14.3 7.4, 14.9 9.8 C 16.2 11.6, 17.5 13.6, 17.5 16 C 17.5 19, 15 20.9, 12 20.9 C 9 20.9, 6.5 19, 6.5 16 C 6.5 13.6, 7.8 11.6, 9.1 9.8 C 9.7 7.4, 10.5 5.2, 12 3.4 Z" fill={skin} stroke="rgba(120,108,82,0.22)" strokeWidth="1" strokeLinejoin="round" />
+      {/* skygge-side (højre fed, crescent) */}
+      <path d="M14.6 11 C 16.2 12.7, 17.5 14.5, 17.5 16.1 C 17.5 18.3, 15.9 19.9, 13.8 20.5 C 14.6 18, 14.9 14.4, 14.6 11 Z" fill={shade} />
+      {/* fed-skel */}
+      <g stroke={rib} strokeWidth="1" fill="none" strokeLinecap="round">
+        <path d="M12 4.6 C 12 10, 12 16, 12 20.4" />
+        <path d="M9.5 9.8 C 8.6 13, 8.6 17, 9.5 20" />
+        <path d="M14.5 9.8 C 15.4 13, 15.4 17, 14.5 20" />
+      </g>
+    </Glyph>
+  )
+}
+
+/* ── Pindsvin — REDESIGN (Anna 28/6): varm tan ansigt+krop (snude venstre) +
+   oliven sawtooth-pigge der dækker top/bag + øje/næse + små fødder. ── */
+export function GlyphPindsvin(props: GlyphProps) {
+  const face = '#D8BA82'  // varm tan ansigt/krop
+  const belly = '#C6A263' // dybere tan — fødder
+  const spine = '#5E6A48' // dæmpet oliven-grå pigge
+  const dark = '#33402C'  // næse + øje
+  return (
+    <Glyph {...props}>
+      {/* tan krop + snude (mod venstre) */}
+      <path d="M3 15.2 C 3 13.5, 4.9 12.5, 7.1 12.5 C 11 12.3, 16 13.1, 17.6 15.5 C 18.3 16.7, 17.8 18.3, 16 18.7 C 11.5 19.7, 6.5 19.5, 4.3 18 C 3.4 17.3, 3 16.3, 3 15.2 Z" fill={face} />
+      {/* fødder */}
+      <ellipse cx="8.6" cy="19.3" rx="1" ry="0.85" fill={belly} />
+      <ellipse cx="12.8" cy="19.4" rx="1" ry="0.85" fill={belly} />
+      {/* pigge-ryg — sawtooth-dome, dækker top+bag, lader ansigtet fri */}
+      <path d="M6.6 12 L 7.6 9.6 L 8.7 12 L 9.8 9 L 11 11.8 L 12.2 8.8 L 13.4 11.8 L 14.6 9 L 15.8 12 L 16.8 10.4 L 17.6 13.2 C 18.4 14.6, 18.4 16.4, 17.6 17.8 C 16.6 19, 12 19.3, 9 18.8 C 7.8 18.6, 7 17.6, 6.8 16.2 C 6.6 15, 6.4 13, 6.6 12 Z" fill={spine} />
+      {/* øje + næse */}
+      <circle cx="5.9" cy="14.6" r="0.85" fill={dark} />
+      <circle cx="3.2" cy="15.2" r="0.85" fill={dark} />
+    </Glyph>
+  )
+}
+
+/* ── Fugl — REDESIGN v3 (Anna 28/6): elegant rødkælk vendt mod VENSTRE. Lys sage
+   som hovedmasse, STORT integreret orange bryst på fronten, mørk vinge som mindre
+   accent på ryggen + hale mod højre, lille næb venstre, øje, tynde ben. ── */
+export function GlyphFugl(props: GlyphProps) {
+  const body = '#8CA66E'  // lys sage — hovedmasse (hoved/ryg/top)
+  const wing = '#5E7A47'  // mørkere grøn — vinge + hale (accent)
+  const breast = '#C9763C' // varmt orange bryst — fokus
+  const beak = '#4B4A3C'  // mørkt næb
+  const dark = '#2C3326'  // øje
+  const leg = '#3A3A2E'   // ben
+  return (
+    <Glyph {...props}>
+      {/* ben (bag kroppen) */}
+      <g stroke={leg} strokeWidth="1" strokeLinecap="round" fill="none">
+        <path d="M9.6 19 L 9.1 21.2" />
+        <path d="M8.2 21.4 L 9.1 21.2 L 10 21.4" />
+        <path d="M12.6 19.2 L 13 21.2" />
+        <path d="M12.1 21.4 L 13 21.2 L 13.9 21.4" />
+      </g>
+      {/* hale (bag kroppen, mod højre) */}
+      <path d="M16.5 9.5 C 18.6 8.6, 20.8 8.4, 22.3 9 C 21.6 10.8, 19.8 12, 17.5 12.2 C 17 11.2, 16.6 10.4, 16.5 9.5 Z" fill={wing} />
+      {/* krop + hoved — én blød form, hoved øverst-venstre */}
+      <path d="M8.5 5.6 C 5.8 5.6, 4 7.6, 4.2 10.1 C 4.3 11.2, 4.9 12.1, 5.9 12.7 C 5.4 14.5, 5.7 16.5, 7.2 18 C 9 19.7, 12.2 20, 14.8 19 C 17.5 18, 19 15.6, 19 12.4 C 19 8.9, 17 6.4, 13.6 6 C 11.9 5.75, 10.2 5.6, 8.5 5.6 Z" fill={body} />
+      {/* orange bryst — stort, integreret på front/bug (fokus) */}
+      <path d="M5.7 12.4 C 5.3 14.4, 5.6 16.6, 7.1 18.1 C 8.9 19.8, 11.4 20, 13.2 19.4 C 13.6 17, 13 14.2, 11.4 12.4 C 9.8 11.4, 7.4 11.4, 5.7 12.4 Z" fill={breast} />
+      {/* foldet vinge — mørk accent på ryggen (dækker ikke fronten) */}
+      <path d="M12.2 8.2 C 14.6 7.7, 16.8 8.7, 17.9 11 C 17.4 13.8, 15.6 15.4, 13.2 15.4 C 13.3 12.8, 13 10.2, 12.2 8.2 Z" fill={wing} />
+      {/* næb — lille, mod venstre */}
+      <path d="M4.4 9.4 L 2.2 10.2 L 4.5 11 Z" fill={beak} />
+      {/* øje — på sage-hovedet */}
+      <circle cx="7.6" cy="8.9" r="1.05" fill={dark} />
+    </Glyph>
+  )
+}
+
+/* ── Plante — REDESIGN (Anna 28/6): stængel + tre symmetriske bladpar, to-tone
+   (venstre lysere, højre dybere). Stærkere, mere aflæselig silhuet. ── */
+export function GlyphPlante(props: GlyphProps) {
+  const a = C.green     // venstre-blade (lysere)
+  const b = C.greenDeep // højre-blade + stængel (dybere)
+  return (
+    <Glyph {...props}>
+      {/* stængel */}
+      <path d="M12 21 C 12 16, 12 11, 12 5.2" stroke={b} strokeWidth="1.9" strokeLinecap="round" />
+      {/* nederste par */}
+      <path d="M12 15.4 C 9 16, 6.2 14.6, 4.8 11.4 C 8 10.8, 11.2 12.4, 12 15.4 Z" fill={a} />
+      <path d="M12 15.4 C 15 16, 17.8 14.6, 19.2 11.4 C 16 10.8, 12.8 12.4, 12 15.4 Z" fill={b} />
+      {/* mellem par */}
+      <path d="M12 10.6 C 9.6 11, 7.4 9.8, 6.4 7.2 C 9 6.8, 11.2 8.2, 12 10.6 Z" fill={a} />
+      <path d="M12 10.6 C 14.4 11, 16.6 9.8, 17.6 7.2 C 15 6.8, 12.8 8.2, 12 10.6 Z" fill={b} />
+      {/* top-par */}
+      <path d="M12 6.4 C 10.7 6.2, 9.7 5, 9.6 3.2 C 11.2 3.5, 12 4.6, 12 6.4 Z" fill={a} />
+      <path d="M12 6.4 C 13.3 6.2, 14.3 5, 14.4 3.2 C 12.8 3.5, 12 4.6, 12 6.4 Z" fill={b} />
+    </Glyph>
+  )
+}
+
+/** Batch 4b-registret — afgrøder + havedyr (resten af kernesættet). */
+export const POTALOT_GLYPHS_4B: {
+  key: string
+  label: string
+  form: string
+  Comp: (p: GlyphProps) => ReactNode
+}[] = [
+  { key: 'hvidloeg', label: 'Hvidløg', form: 'bleg bulb + fed', Comp: GlyphHvidloeg },
+  { key: 'pindsvin', label: 'Pindsvin', form: 'nyttedyr + pigge', Comp: GlyphPindsvin },
+  { key: 'fugl', label: 'Fugl', form: 'havefugl', Comp: GlyphFugl },
+  { key: 'plante', label: 'Plante', form: 'moden plante', Comp: GlyphPlante },
+]

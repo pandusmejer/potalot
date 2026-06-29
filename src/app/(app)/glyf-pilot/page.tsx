@@ -1,6 +1,7 @@
 import { Wheat, Sprout, Leaf, Apple, Droplets, Sun, ChevronRight, Flower2, Carrot, Bug, ShoppingBasket, Scissors, Shovel, CloudRain, Snowflake, Wind } from 'lucide-react'
 import type { ComponentType, SVGProps, ReactNode } from 'react'
-import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3, POTALOT_GLYPHS_STATUS } from '@/components/icons/potalot-glyphs'
+import { POTALOT_GLYPHS, POTALOT_GLYPHS_2, POTALOT_GLYPHS_3, POTALOT_GLYPHS_STATUS, POTALOT_GLYPHS_4, POTALOT_GLYPHS_4B } from '@/components/icons/potalot-glyphs'
+import { FROEBANK_CATEGORY_GLYPHS } from '@/components/froebank/froebank-category-glyphs'
 
 /**
  * QA-rute: Potalot Soft Glyphs — pilot (6 kerneformer).
@@ -14,6 +15,14 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 const INK = '#2F4F3A'
 
 const SIZES = [16, 20, 24, 32, 48]
+
+/** Uploadede PNG-glyffer (Anna 29/6) — vinder over SVG-versionen hvor de findes. */
+const GLYPH_PNG: Record<string, string> = {
+  hvidloeg: '/images/glyphs/hvidloeg.png',
+  pindsvin: '/images/glyphs/pindsvin.png',
+  fugl: '/images/glyphs/fugl.png',
+  plante: '/images/glyphs/plante.png',
+}
 
 /** Nærmeste Lucide-ækvivalent pr. glyph (til sammenligning). */
 const LUCIDE: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
@@ -71,6 +80,67 @@ export default function GlyphQAPage() {
           Pilot v2 — seks kerneformer, 10–15 % tungere optisk. Robust spire, mere karakterfuldt blad, organiske sol-stråler, roligere tomat-top.
         </p>
       </header>
+
+      {/* ── FORSLAG · Frøbank-ikoner (illustrativt register, 2-3 farvelag) ── */}
+      <section style={{ background: '#FBF7EC', border: '1px solid rgba(36,48,31,0.10)', borderRadius: 26, padding: '30px 28px' }}>
+        <h2 style={{ fontFamily: serif, fontWeight: 600, fontSize: 30, lineHeight: 1, letterSpacing: '-0.01em', color: INK, margin: 0 }}>
+          Forslag · Frøbank-ikoner
+        </h2>
+        <p style={{ fontFamily: sans, fontSize: 14, color: 'rgba(36,48,31,0.55)', margin: '8px 0 0' }}>
+          Ny retning til Frø, Løg, Knolde, Buske, Træer og Stauder
+        </p>
+
+        <div style={{ marginTop: 18 }}>
+          {FROEBANK_CATEGORY_GLYPHS.map(({ key, label, form, Comp }) => (
+            <div key={key} className="flex items-center gap-5" style={{ borderTop: '1px solid rgba(36,48,31,0.08)', padding: '18px 0' }}>
+              <div style={{ width: 118, flexShrink: 0 }}>
+                <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 700, color: INK, margin: 0 }}>{label}</p>
+                <p style={{ fontFamily: sans, fontSize: 12, color: 'rgba(36,48,31,0.5)', margin: '3px 0 0' }}>{form}</p>
+              </div>
+              <div className="flex flex-1 items-end justify-between" style={{ gap: 10 }}>
+                {SIZES.map((s) => (
+                  <div key={s} className="flex flex-col items-center" style={{ gap: 7 }}>
+                    <span style={{ width: s, height: s, display: 'inline-flex' }}>
+                      <Comp className="h-full w-full" />
+                    </span>
+                    <span style={{ fontFamily: sans, fontSize: 11, color: 'rgba(36,48,31,0.4)' }}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(36,48,31,0.45)', margin: '20px 0 12px', borderTop: '1px solid rgba(36,48,31,0.08)', paddingTop: 18 }}>
+          I PILL-KONTEKST
+        </p>
+        <div className="flex flex-wrap" style={{ gap: 10 }}>
+          {FROEBANK_CATEGORY_GLYPHS.map(({ key, label, Comp }, i) => {
+            const active = i === 0
+            return (
+              <span
+                key={key}
+                className="inline-flex items-center gap-[10px] rounded-[14px]"
+                style={{
+                  height: 44,
+                  padding: '0 16px',
+                  fontFamily: sans,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  ...(active
+                    ? { background: 'linear-gradient(180deg,#5C6B3C 0%,#4C5A30 100%)', color: '#F4F0E2' }
+                    : { background: '#EFEADC', color: '#4E5742', border: '1px solid rgba(36,48,31,0.08)' }),
+                }}
+              >
+                <span style={{ width: 22, height: 22, display: 'inline-flex' }}>
+                  <Comp className="h-full w-full" />
+                </span>
+                {label}
+              </span>
+            )
+          })}
+        </div>
+      </section>
 
       {/* 1. Størrelser */}
       <Card title="Størrelser · 16 / 20 / 24 / 32 / 48 px">
@@ -473,6 +543,83 @@ export default function GlyphQAPage() {
         </div>
         <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '16px 0 0', lineHeight: 1.5 }}>
           Kun et hurtigt kontekst-kig på glyfferne — ikke det færdige statusbar-design. Korte labels, ingen tekstklip.
+        </p>
+      </Card>
+
+      {/* ── BATCH 4 — nav/sektion-signaturer (lukker hullet mod 33-listen) ── */}
+      <Card title="Batch 4 · nav/sektion · Havebog + Dyrkningsguide">
+        <div className="space-y-5">
+          {POTALOT_GLYPHS_4.map(({ key, label, form, Comp }) => (
+            <div key={key} className="flex items-center gap-5" style={{ borderTop: '1px solid rgba(36,48,31,0.06)', paddingTop: 16 }}>
+              <div style={{ width: 130, flexShrink: 0 }}>
+                <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: INK, margin: 0 }}>{label}</p>
+                <p style={{ fontFamily: sans, fontSize: 11.5, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>{form}</p>
+              </div>
+              <div className="flex flex-1 items-end" style={{ gap: 22 }}>
+                {SIZES.map((s) => (
+                  <div key={s} className="flex flex-col items-center" style={{ gap: 6 }}>
+                    <Comp size={s} title={label} />
+                    <span style={{ fontFamily: sans, fontSize: 10, color: 'rgba(36,48,31,0.4)' }}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '16px 0 0', lineHeight: 1.5 }}>
+          Sektionssignaturer til guides + Havebog-fanen (erstatter Lucide BookOpen/Notebook).
+        </p>
+      </Card>
+
+      {/* ── BATCH 4b — afgrøder + havedyr (resten af kernesættet) ── */}
+      <Card title="Batch 4b · PNG-upload (Anna 29/6) · Hvidløg · Pindsvin · Fugl · Plante">
+        <div className="space-y-5">
+          {POTALOT_GLYPHS_4B.map(({ key, label, form, Comp }) => (
+            <div key={key} className="flex items-center gap-5" style={{ borderTop: '1px solid rgba(36,48,31,0.06)', paddingTop: 16 }}>
+              <div style={{ width: 130, flexShrink: 0 }}>
+                <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: INK, margin: 0 }}>{label}</p>
+                <p style={{ fontFamily: sans, fontSize: 11.5, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>{form}</p>
+              </div>
+              <div className="flex flex-1 items-end" style={{ gap: 22 }}>
+                {SIZES.map((s) => (
+                  <div key={s} className="flex flex-col items-center" style={{ gap: 6 }}>
+                    {GLYPH_PNG[key] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={GLYPH_PNG[key]} alt={label} width={s} height={s} style={{ width: s, height: s, objectFit: 'contain' }} />
+                    ) : (
+                      <Comp size={s} title={label} />
+                    )}
+                    <span style={{ fontFamily: sans, fontSize: 10, color: 'rgba(36,48,31,0.4)' }}>{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* ── Kontrast-test: bøgerne på forskellige baggrunde ── */}
+      <Card title="Kontrast-test · Dyrkningsguide + Havebog på baggrunde">
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+          {[
+            { label: 'Creme kort', bg: '#F7F1E4' },
+            { label: 'Beige mappe', bg: '#E4DAC0' },
+            { label: 'Grøn callout', bg: '#EEF0DF' },
+            { label: 'Hvid', bg: '#FFFFFF' },
+          ].map((b) => {
+            const Guide = POTALOT_GLYPHS_4.find((x) => x.key === 'dyrkningsguide')!.Comp
+            const Bog = POTALOT_GLYPHS_4.find((x) => x.key === 'havebog')!.Comp
+            return (
+              <div key={b.label} className="flex items-center gap-4" style={{ background: b.bg, border: '1px solid rgba(36,48,31,0.08)', borderRadius: 16, padding: '16px 18px' }}>
+                <Guide size={28} />
+                <Bog size={28} />
+                <span style={{ fontFamily: sans, fontSize: 12, color: 'rgba(36,48,31,0.6)' }}>{b.label}</span>
+              </div>
+            )
+          })}
+        </div>
+        <p style={{ fontFamily: sans, fontSize: 12.5, color: 'rgba(36,48,31,0.5)', margin: '14px 0 0', lineHeight: 1.5 }}>
+          Dyrkningsguide kontrast-sikret: varm papircreme-side + svag kant. Den lyse side skal kunne ses på alle fire.
         </p>
       </Card>
 
