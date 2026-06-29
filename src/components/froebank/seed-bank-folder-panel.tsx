@@ -51,6 +51,9 @@ export interface SeedBankFolderPanelProps {
   recentItemTimeLabel?: string
   activeCategory?: CategoryId
   categories?: SeedBankFolderCategory[]
+  subcategories?: { id: string; label: string; count: number; iconSrc?: string }[]
+  activeSubcategory?: string
+  onSubcategoryChange?: (id: string) => void
   activeFilter?: FilterId
   filters?: SeedBankFolderFilter[]
   searchValue?: string
@@ -82,30 +85,8 @@ const CATEGORY_ICONS: Record<string, IconType> = {
   stauder: FroebankStauder,
 }
 
-// Aktiv-flise bag glyffen er IKKE ens for alle: creme-flisen redder de mørke
-// grøn-løv-glyffer (busk/træ) på den grønne aktiv-pill, men får den LYSE
-// Løg-glyf til at forsvinde (lys glyf + creme flise + creme/grøn pill). Derfor
-// pr-kategori-regel: lyse glyffer får en støvet salvie-flise i stedet. Default = cream.
-type ActiveTile = 'cream' | 'sage' | 'none'
-const CATEGORY_ACTIVE_TILE: Record<string, ActiveTile> = {
-  fro: 'cream',
-  loeg: 'sage',
-  knolde: 'cream',
-  buske: 'cream',
-  traeer: 'cream',
-  stauder: 'cream',
-}
-const ACTIVE_TILE_STYLE: Record<'cream' | 'sage', React.CSSProperties> = {
-  cream: {
-    background: 'rgba(245,241,228,0.95)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 2px rgba(40,52,26,0.10)',
-  },
-  sage: {
-    background: '#DDE4CF',
-    border: '1px solid rgba(83,111,54,0.14)',
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.45), 0 1px 2px rgba(40,52,26,0.10)',
-  },
-}
+// (Aktiv-flise-reglen fjernet 29/6 — aktiv-tilstand bæres nu af hele pillen,
+//  ikke en separat flise bag ikonet. Se CategoryPill.)
 
 const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
   { id: 'alle', label: 'Alle' },
@@ -136,6 +117,9 @@ export function SeedBankFolderPanel({
   recentItemTimeLabel = '2 dage siden',
   activeCategory = 'fro',
   categories = DEFAULT_CATEGORIES,
+  subcategories,
+  activeSubcategory,
+  onSubcategoryChange,
   activeFilter = 'alle',
   filters = DEFAULT_FILTERS,
   searchValue,
@@ -205,6 +189,8 @@ export function SeedBankFolderPanel({
         .pf-front::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;mix-blend-mode:multiply;opacity:.115;background-image:radial-gradient(rgba(76,70,52,.18) .42px,transparent .58px),radial-gradient(rgba(255,255,255,.12) .34px,transparent .52px),radial-gradient(circle at 22% 18%,rgba(255,255,255,.075),transparent 30%),radial-gradient(circle at 76% 72%,rgba(80,76,58,.065),transparent 34%);background-size:7px 7px,11px 11px,100% 100%,100% 100%;background-position:0 0,3px 4px,center,center;border-radius:inherit;}
         .pf-light::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;mix-blend-mode:multiply;opacity:.055;background-image:radial-gradient(rgba(90,84,66,.10) .32px,transparent .50px),radial-gradient(rgba(255,255,255,.07) .24px,transparent .44px);background-size:9px 9px,13px 13px;background-position:0 0,5px 6px;border-radius:inherit;}
         .pf-green::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;mix-blend-mode:soft-light;opacity:.06;background-image:radial-gradient(rgba(255,255,255,.11) .30px,transparent .46px),radial-gradient(rgba(38,54,26,.12) .34px,transparent .52px);background-size:10px 10px,14px 14px;background-position:0 0,6px 7px;border-radius:inherit;}
+        .cat-pill-active:hover{background:#687847 !important;}
+        .cat-pill-active:active{box-shadow:0 3px 8px rgba(54,66,36,0.13), inset 0 1px 0 rgba(255,255,255,0.14) !important;}
       `}</style>
       <div className="relative" style={{ marginTop: 26 }}>
         {/* 🔒 LÅST 22/6 (Anna): ALLE TRE lag i mappe-stakken er geometrisk
@@ -411,6 +397,22 @@ export function SeedBankFolderPanel({
               />
             </div>
 
+            {/* Dynamisk underkategori-række — vises KUN når der findes chips med
+                count>0 i den aktive hovedkategori. Bevidst SEKUNDÆR (lavere, roligere,
+                ingen tung aktiv-state): et indholdsfilter, ikke hovednavigation. */}
+            {subcategories && subcategories.length > 0 && (
+              <div className="mt-[12px] flex flex-wrap gap-[8px]">
+                {subcategories.map(sub => (
+                  <SubcategoryChip
+                    key={sub.id}
+                    sub={sub}
+                    active={sub.id === activeSubcategory}
+                    onClick={() => onSubcategoryChange?.(sub.id)}
+                  />
+                ))}
+              </div>
+            )}
+
             <div className="mt-[16px] flex flex-wrap gap-[10px]">
               {filters.map(filter => (
                 <FilterChip
@@ -523,40 +525,45 @@ function CategoryPill({
   onClick: () => void
 }) {
   const Icon = category.icon ?? CATEGORY_ICONS[category.id] ?? FroebankFro
-  const activeTile: ActiveTile = active ? (CATEGORY_ACTIVE_TILE[category.id] ?? 'cream') : 'none'
 
+  // Aktiv-tilstand bæres af HELE pillen (mørkegrøn + outline), ikke af en separat
+  // flise bag ikonet. Glyf-billedet ligger direkte; en meget subtil drop-shadow
+  // på selve billedet holder grøn-tunge ikoner læselige på den grønne pill.
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        'inline-flex h-[41px] shrink-0 items-center gap-[10px] min-w-[85px] rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition',
-        active ? 'text-[#F7F3E8] pf-green' : 'text-[#4E564B] pf-light',
+        'inline-flex h-[41px] shrink-0 items-center gap-[10px] min-w-[85px] rounded-[13px] px-2 font-sans text-[0.75rem] font-medium transition active:translate-y-px',
+        active ? 'pf-green cat-pill-active' : 'pf-light hover:brightness-[0.97]',
       ].join(' ')}
       style={
         active
           ? {
-              background: 'linear-gradient(180deg, #646F43 0%, #566337 55%, #46512B 100%)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(55,70,35,0.20), 0 7px 14px rgba(54,69,32,0.22)',
+              // Aktiv: lys, støvet grøn + BLØD kant (Anna 29/6) — ikke mørk
+              // militærgrøn med hidsig næsten-sort outline. Hover/pressed i <style>.
+              background: '#7D8D60',
+              border: '1px solid rgba(64,78,42,0.42)',
+              boxShadow: '0 5px 12px rgba(54,66,36,0.14), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(50,61,34,0.10)',
+              color: '#FFF7E8',
             }
           : {
-              background: '#DDD8CB',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(210,200,185,0.24), 0 5px 11px rgba(75,66,50,0.10)',
+              background: '#E8E4D8',
+              border: '1px solid rgba(92,84,62,0.14)',
+              boxShadow: '0 3px 8px rgba(64,58,42,0.08), inset 0 1px 0 rgba(255,255,255,0.34)',
+              color: '#56604B',
             }
       }
     >
-      {/* Flise bag glyffen — fast 26px-felt i begge tilstande (stabil layout).
-          Aktiv pill får en flise hvis farve afhænger af glyffen: mørke grøn-løv-
-          glyffer → creme; lyse glyffer (Løg) → støvet salvie. Se CATEGORY_ACTIVE_TILE. */}
       <span
-        className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[9px]"
-        style={activeTile === 'none' ? undefined : ACTIVE_TILE_STYLE[activeTile]}
+        className="inline-flex shrink-0"
+        style={active ? { filter: 'drop-shadow(0 1px 1px rgba(31,39,23,0.16))' } : undefined}
       >
         <Icon className="h-[20px] w-[20px] shrink-0" />
       </span>
       <span className="inline-flex items-baseline gap-[10px]">
         {category.label}
-        <span className={active ? 'font-normal text-[#EDE7D8]' : 'font-normal text-[#777D70]'}>
+        <span style={{ fontWeight: 400, color: active ? 'rgba(255,247,232,0.78)' : 'rgba(86,96,75,0.72)' }}>
           {category.count}
         </span>
       </span>
@@ -594,6 +601,41 @@ function FilterChip({
       }
     >
       <span>{filter.label}</span>
+    </button>
+  )
+}
+
+// Underkategori-chip — SEKUNDÆR (rolig, lav, lille ikon): et indholdsfilter,
+// ikke hovednavigation. Billed-ikon hvis det findes, ellers neutralt blad.
+function SubcategoryChip({
+  sub,
+  active,
+  onClick,
+}: {
+  sub: { id: string; label: string; count: number; iconSrc?: string }
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className="inline-flex h-[36px] shrink-0 items-center gap-[8px] rounded-full px-3 font-sans text-[13px] font-semibold transition active:translate-y-px"
+      style={
+        active
+          ? { background: '#DDE4CF', border: '1px solid rgba(83,111,54,0.22)', color: '#425530' }
+          : { background: 'rgba(238,232,218,0.72)', border: '1px solid rgba(92,84,62,0.10)', color: '#626B58' }
+      }
+    >
+      {sub.iconSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={sub.iconSrc} alt="" aria-hidden className="h-[16px] w-[16px] shrink-0" style={{ objectFit: 'contain' }} />
+      ) : (
+        <Leaf className="h-[14px] w-[14px] shrink-0" strokeWidth={1.9} style={{ opacity: 0.7 }} />
+      )}
+      <span>{sub.label}</span>
+      <span style={{ opacity: 0.72, marginLeft: 4 }}>{sub.count}</span>
     </button>
   )
 }

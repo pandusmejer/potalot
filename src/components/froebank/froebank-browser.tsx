@@ -40,6 +40,23 @@ const VALID_SMART_FILTERS: SmartFilter[] = [
   'naesten-tom',
 ]
 
+/**
+ * Hero-underkategorier (KUN UI/mapper-logik — ingen datamodel-ændring).
+ * `match` = de faktiske subcategory_id'er en chip dækker. "Blomster" samler
+ * bevidst modellens to (1-årige + flerårige) til ÉN menneskelig chip, der både
+ * tæller og filtrerer begge. Opret/redigér beholder de to separate valg.
+ * iconSrc kun hvor et PNG findes; resten falder tilbage til neutralt blad i chippen.
+ */
+const HERO_SUBCATEGORIES: { id: string; label: string; match: string[]; iconSrc?: string }[] = [
+  { id: 'groentsager',  label: 'Grøntsager',   match: ['groentsager'], iconSrc: '/images/glyphs/groentsager.png' },
+  { id: 'blomster',     label: 'Blomster',     match: ['blomster_1aarige', 'blomster_fleraarige'], iconSrc: '/images/glyphs/blomster.png' },
+  { id: 'krydderurter', label: 'Krydderurter', match: ['krydderurter'], iconSrc: '/images/glyphs/krydderurter.png' },
+  { id: 'baer',         label: 'Bær',          match: ['baer'], iconSrc: '/images/glyphs/baer.png' },
+  { id: 'frugt',        label: 'Frugt',        match: ['frugt'], iconSrc: '/images/glyphs/frugt.png' },
+  { id: 'graesser',     label: 'Græsser',      match: ['graesser'], iconSrc: '/images/glyphs/prydgrasser.png' },
+  { id: 'pryd',         label: 'Pryd',         match: ['pryd'] }, // intet ikon endnu → blad-fallback
+]
+
 export function FroebankBrowser({ inventory }: Props) {
   const searchParams = useSearchParams()
   const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')
@@ -98,7 +115,10 @@ export function FroebankBrowser({ inventory }: Props) {
     }
 
     if (subcat !== 'alle') {
-      list = list.filter((i) => i.subcategoryId === subcat)
+      // Aggregeret: en hero-chip kan dække flere subcategory_id'er (fx Blomster).
+      const hs = HERO_SUBCATEGORIES.find((h) => h.id === subcat)
+      const ids = hs ? hs.match : [subcat]
+      list = list.filter((i) => i.subcategoryId != null && ids.includes(i.subcategoryId))
     }
 
     if (smartFilters.has('mangler-guide')) {
@@ -195,6 +215,21 @@ export function FroebankBrowser({ inventory }: Props) {
     ]
   }, [inventory])
 
+  // Underkategori-chips til hero: kun dem med count > 0 inden for den aktive
+  // hovedkategori. "Blomster" tæller begge model-underkategorier (aggregeret).
+  const subcategoryChips = useMemo(() => {
+    const base =
+      activeCategory === 'favoritter'
+        ? inventory.filter((i) => i.isFavorite)
+        : inventory.filter((i) => i.primaryCategoryId === activeCategory)
+    return HERO_SUBCATEGORIES.map((h) => ({
+      id: h.id,
+      label: h.label,
+      iconSrc: h.iconSrc,
+      count: base.filter((i) => i.subcategoryId != null && h.match.includes(i.subcategoryId)).length,
+    })).filter((c) => c.count > 0)
+  }, [inventory, activeCategory])
+
   const totalSeeds = inventory.reduce((sum, item) => {
     const remaining = item.seedsRemaining ?? item.seedCount ?? 0
     return sum + remaining
@@ -275,6 +310,9 @@ export function FroebankBrowser({ inventory }: Props) {
         recentItemTimeLabel={latestItemTimeLabel}
         activeCategory={activeCategory}
         categories={categoryCounts}
+        subcategories={subcategoryChips}
+        activeSubcategory={subcat}
+        onSubcategoryChange={(id) => setSubcat((prev) => (prev === id ? 'alle' : id))}
         activeFilter={activeFolderFilter}
         searchValue={search}
         onSearchChange={setSearch}
