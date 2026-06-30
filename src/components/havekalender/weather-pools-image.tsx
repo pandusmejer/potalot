@@ -22,6 +22,7 @@ import type { ComponentType, SVGProps } from 'react'
  */
 
 const serif = 'var(--font-cormorant), serif'
+const sans = 'var(--font-manrope)'
 const INK = '#3C4632' // dæmpet varm olivengrå — konsistent på tværs af sæsoner
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter'
@@ -142,9 +143,11 @@ interface Props {
   date?: Date
   className?: string
   priority?: boolean
+  /** Lille fortolkende linje under pytterne (vejrtilstand → havehandling). */
+  note?: string
 }
 
-export function WeatherPoolsImage({ data, month, date, className, priority }: Props) {
+export function WeatherPoolsImage({ data, month, date, className, priority, note }: Props) {
   const m = month ?? (date ?? new Date()).getMonth() + 1
   const season = monthToSeason(m)
   const creme = SEASON_CREME[season]
@@ -157,6 +160,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
   ]
 
   return (
+    <>
     <div
       className={className}
       style={{
@@ -220,6 +224,27 @@ export function WeatherPoolsImage({ data, month, date, className, priority }: Pr
         })}
       </div>
     </div>
+
+    {note && (
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 13.5,
+          fontWeight: 500,
+          lineHeight: 1.4,
+          color: 'rgba(60,70,50,0.80)',
+          textAlign: 'center',
+          maxWidth: 320,
+          marginInline: 'auto',
+          marginTop: 2,
+          marginBottom: 2,
+          paddingInline: 16,
+        }}
+      >
+        {note}
+      </p>
+    )}
+    </>
   )
 }
 

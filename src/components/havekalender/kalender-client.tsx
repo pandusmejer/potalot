@@ -125,7 +125,23 @@ const VEJR_POOLS_DEMO: WeatherPoolsData = {
   sun: { value: 'Sol', label: '05.15' },
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, gardenNote, isLoggedIn, dagensFokus }: Props) {
+/** Lille fortolkende vejr-linje under pytterne (vejrtilstand → havehandling).
+ *  Drives af rigtige GardenAlerts (frost > storm > skybrud > tørke); rolig
+ *  sæson-default uden påstand om specifikke forhold når intet varsel er aktivt.
+ *  Pytterne (målingerne) er urørte — dette er kun en supplerende linje. */
+function vejrNote(alerts: GardenAlert[], month: number): string {
+  const kinds = new Set(alerts.map(a => a.kind))
+  if (kinds.has('frost')) return 'Frostvarsel – dæk de sarte.'
+  if (kinds.has('storm')) return 'Risiko for storm – sikr dine stauder.'
+  if (kinds.has('skybrud')) return 'Skybrud på vej – lad regnen vande for dig.'
+  if (kinds.has('toerke')) return 'Varmt og tørt – vand ved solnedgang og spis en is.'
+  if (month >= 3 && month <= 5) return 'Godt forårsvejr – få de sidste frø i jorden.'
+  if (month >= 6 && month <= 8) return 'Roligt sommervejr – hold planterne vandet i varmen.'
+  if (month >= 9 && month <= 11) return 'Efterårsvejr – tid til at høste og rydde op.'
+  return 'Vinterro – haven hviler.'
+}
+
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -160,7 +176,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
       {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
           Ikke et dashboard; rolige observationer fra haven. Sæsonbilledet
           skifter med måneden. Demo-værdier indtil vejr-API kobles på. */}
-      <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} />
+      <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} note={vejrNote(alerts, nuMaaned)} />
 
       {/* 3 · I HAVEN NU — Kalenderens samlede handlingscenter (Anna 30/6,
           "én arbejdsseddel"). Pinned "Fokus lige nu" (BRAIN-toppen) over
