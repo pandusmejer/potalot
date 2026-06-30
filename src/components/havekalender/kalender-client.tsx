@@ -111,6 +111,11 @@ function IconKop({ className }: { className?: string }) {
   )
 }
 
+/** Feature-flag: "Din dyrkning"-striben er midlertidigt skjult 30/6, fordi
+ *  "I haven nu" nu dækker afledte plante-handlinger. Sæt til true for at
+ *  genaktivere (eller fjern flag + komponent helt efter vurdering). */
+const VIS_DIN_DYRKNING = false
+
 /** Demo-værdier til vejr-pools. Faste 4 slots (regn/jord/temp/sol) matcher
  *  billed-assetets 2x2-layout. Erstattes af vejr-API senere. */
 const VEJR_POOLS_DEMO: WeatherPoolsData = {
@@ -215,16 +220,19 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           prop, så den er stabil inden for samme dag. */}
       <HaveStemning text={gardenNote} />
 
-      {/* PERSONLIG RELEVANS — horisontal scroll med KUN de af brugerens
-          planter der kræver handling lige nu (skal udplantes/ompottes,
-          klar til høst, mangler logning). Hvert kort bærer sin
-          handlings-årsag. Princip: Planter-siden ejer overblikket,
-          kalenderen ejer handlingen — så dette er IKKE et galleri over
-          alle planter, men en kort handlings-liste. */}
-      <section className="space-y-2">
-        <Eyebrow>Din dyrkning</Eyebrow>
-        <DinDyrkning plants={plants} />
-      </section>
+      {/* PERSONLIG RELEVANS — "Din dyrkning" (horisontal plante-action-strip).
+          MIDLERTIDIGT SKJULT 30/6 (VIS_DIN_DYRKNING=false): "I haven nu"-modulet
+          ovenfor viser nu de samme afledte plante-handlinger (Plant ud / Giv
+          mere plads / Høst), så striben dublerer rollen. Beholdes som kode mens
+          vi vurderer kalenderen uden overlap; hører sandsynligvis bedre hjemme
+          på Planter-forsiden (status på konkrete planter) end i Kalender.
+          Sæt flaget til true for at genaktivere. */}
+      {VIS_DIN_DYRKNING && (
+        <section className="space-y-2">
+          <Eyebrow>Din dyrkning</Eyebrow>
+          <DinDyrkning plants={plants} />
+        </section>
+      )}
 
       {/* (Tidligere stod "Mine opgaver"-Card'et her som et separat opgavebræt.
           Det er nu samlet ind i "I haven nu"-modulet øverst (pos 3), så der
