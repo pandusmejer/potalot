@@ -35,7 +35,7 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md safe-area-pb"
+      className="fixed bottom-0 left-1/2 z-40 w-full max-w-[480px] -translate-x-1/2 border-t border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md safe-area-pb"
       style={{ background: 'color-mix(in oklab, var(--card) 86%, var(--primary))' }}
     >
       <div
