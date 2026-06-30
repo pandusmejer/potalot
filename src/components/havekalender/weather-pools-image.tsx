@@ -229,7 +229,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
         style={{
           width: 'calc(100% - 64px)',
           maxWidth: 320,
-          margin: '22px auto 34px',
+          margin: 'calc(22px - 1cm) auto 34px', // 1 cm tættere på pytterne (Anna)
           padding: '18px 22px 20px',
           borderRadius: 28,
           background: 'rgba(238, 232, 211, 0.58)',
