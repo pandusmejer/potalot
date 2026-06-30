@@ -130,16 +130,16 @@ const VEJR_POOLS_DEMO: WeatherPoolsData = {
  *  (frost > storm > skybrud > tørke); rolig sæson-default uden påstand om
  *  specifikke forhold når intet varsel er aktivt. Pytterne (målingerne) er
  *  urørte — dette er kun en supplerende note. */
-function vejrNote(alerts: GardenAlert[], month: number): { status: string; raad: string } {
+function vejrNote(alerts: GardenAlert[], month: number): { headline: string; subline: string } {
   const kinds = new Set(alerts.map(a => a.kind))
-  if (kinds.has('frost')) return { status: 'Frostvarsel', raad: 'Dæk de sarte i aften – tomater, georginer og squash.' }
-  if (kinds.has('storm')) return { status: 'Risiko for storm', raad: 'Sikr dine stauder, bind høje planter op og flyt krukker i læ.' }
-  if (kinds.has('skybrud')) return { status: 'Skybrud på vej', raad: 'Lad regnen vande for dig – vent med kandevanding.' }
-  if (kinds.has('toerke')) return { status: 'Lunt og tørt', raad: 'Giv krukker og drivhusplanter vand, før solen får fat.' }
-  if (month >= 3 && month <= 5) return { status: 'Mildt forårsvejr', raad: 'God tid til at så og plante de sidste ting ud.' }
-  if (month >= 6 && month <= 8) return { status: 'Varm og rolig dag', raad: 'Vand tidligt eller sent, så planterne får mest ud af det.' }
-  if (month >= 9 && month <= 11) return { status: 'Roligt efterårsvejr', raad: 'Tid til at høste, rydde op og sætte løg.' }
-  return { status: 'Vinterro', raad: 'Haven hviler – lad jorden være og planlæg næste sæson.' }
+  if (kinds.has('frost')) return { headline: 'Dæk de sarte i aften.', subline: 'Frost på vej — tomater, georginer og squash er udsatte.' }
+  if (kinds.has('storm')) return { headline: 'Bind op og sikr krukker.', subline: 'Hård vind på vej — giv stauder og høje planter støtte.' }
+  if (kinds.has('skybrud')) return { headline: 'Lad regnen vande.', subline: 'Skybrud på vej — vent med kandevanding.' }
+  if (kinds.has('toerke')) return { headline: 'Vand før solen får fat.', subline: 'Lunt og tørt — krukker og drivhus tørrer hurtigt ud.' }
+  if (month >= 3 && month <= 5) return { headline: 'Få de sidste ting i jorden.', subline: 'Mildt forårsvejr — godt at så og plante ud.' }
+  if (month >= 6 && month <= 8) return { headline: 'Vand tidligt eller sent.', subline: 'Så får planterne mere ud af varmen.' }
+  if (month >= 9 && month <= 11) return { headline: 'Høst og sæt løg.', subline: 'Roligt efterårsvejr — tid til at rydde op.' }
+  return { headline: 'Lad haven hvile.', subline: 'Vinterro — planlæg næste sæson.' }
 }
 
 export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {

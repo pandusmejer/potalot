@@ -22,7 +22,6 @@ import type { ComponentType, SVGProps } from 'react'
  */
 
 const serif = 'var(--font-cormorant), serif'
-const sans = 'var(--font-manrope)'
 const INK = '#3C4632' // dæmpet varm olivengrå — konsistent på tværs af sæsoner
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter'
@@ -143,8 +142,8 @@ interface Props {
   date?: Date
   className?: string
   priority?: boolean
-  /** Lille vejr-note under pytterne: kort status + kort have-råd (vejrtilstand → handling). */
-  note?: { status: string; raad: string }
+  /** Lille vejr-note under pytterne: kort handling (headline) + begrundelse (subline). */
+  note?: { headline: string; subline: string }
 }
 
 export function WeatherPoolsImage({ data, month, date, className, priority, note }: Props) {
@@ -228,44 +227,42 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
     {note && (
       <div
         style={{
-          maxWidth: 332,
-          marginInline: 'auto',
-          marginTop: 16,
-          marginBottom: 40,
+          width: 'calc(100% - 64px)',
+          maxWidth: 320,
+          margin: '22px auto 34px',
+          padding: '18px 22px 20px',
+          borderRadius: 28,
+          background: 'rgba(238, 232, 211, 0.58)',
+          border: '1px solid rgba(95, 103, 72, 0.10)',
+          boxShadow: 'none',
           textAlign: 'center',
-          // Meget svag sage-tone + stor radius: en blød note-flade, ikke et kort.
-          // Ingen skygge, ingen border — bare en rolig overgang.
-          background: 'rgba(76,96,56,0.06)',
-          borderRadius: 22,
-          padding: '13px 22px',
         }}
       >
-        {/* Kort status — vejrets stemning i tre ord. */}
         <p
           style={{
-            fontFamily: sans,
-            fontSize: 17,
+            fontFamily: 'var(--font-cormorant), var(--font-gabarito), serif',
+            fontSize: 24,
+            lineHeight: 1.08,
             fontWeight: 600,
-            lineHeight: 1.25,
-            letterSpacing: '-0.005em',
-            color: '#46543A',
-            margin: 0,
+            letterSpacing: '-0.02em',
+            color: '#26351f',
+            margin: '0 0 8px',
           }}
         >
-          {note.status}
+          {note.headline}
         </p>
-        {/* Kort have-råd — dæmpet, sekundært. */}
         <p
           style={{
-            fontFamily: sans,
-            fontSize: 14.5,
+            fontFamily: 'var(--font-manrope)',
+            fontSize: 16,
+            lineHeight: 1.35,
             fontWeight: 500,
-            lineHeight: 1.45,
-            color: 'rgba(70,84,58,0.72)',
-            margin: '3px 0 0',
+            color: 'rgba(38, 53, 31, 0.68)',
+            maxWidth: 260,
+            margin: '0 auto',
           }}
         >
-          {note.raad}
+          {note.subline}
         </p>
       </div>
     )}
