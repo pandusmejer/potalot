@@ -145,7 +145,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           </CardTitle>
         </CardHeader>
 
-        <div className="space-y-4 px-5 pb-5">
+        <div className="space-y-3 px-5 pb-4">
           {/* Pinned "Fokus lige nu" — over fanerne, altid synlig. */}
           {pinned ? (
             <div>

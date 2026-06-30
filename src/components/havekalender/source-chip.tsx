@@ -21,17 +21,18 @@ export function taskSourceLabel(source: TaskSource): string | null {
 }
 
 export function SourceChip({ label }: { label: string }) {
+  // Tertiær etikette — ikke en rigtig badge. Ingen pill/baggrund, så den
+  // ikke konkurrerer med de grønne handlingschips (handling vs. kilde).
   return (
     <span
-      className="shrink-0 rounded-full"
+      className="shrink-0"
       style={{
         fontFamily: sans,
-        fontSize: 10.5,
+        fontSize: 10,
         fontWeight: 600,
-        letterSpacing: '0.01em',
-        color: 'rgba(42,51,32,0.5)',
-        background: 'rgba(42,51,32,0.06)',
-        padding: '2px 8px',
+        letterSpacing: '0.04em',
+        textTransform: 'uppercase',
+        color: 'rgba(42,51,32,0.38)',
       }}
     >
       {label}

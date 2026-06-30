@@ -58,7 +58,7 @@ export function Chip({ h, month }: { h: FokusHandling; month: number }) {
   return (
     <span
       className="shrink-0 rounded-full"
-      style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: tone.color, background: tone.bg, padding: '3px 9px' }}
+      style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, color: tone.color, background: tone.bg, padding: '2.5px 8px' }}
     >
       {label}
     </span>
@@ -93,20 +93,20 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'var(--secondary)', padding: '13px 16px 12px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{ background: 'var(--secondary)', padding: '11px 15px 10px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
     >
-      <div className="flex items-start gap-3">
-        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={21} />}
+      <div className="flex items-start gap-2.5">
+        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
         <div className="min-w-0 flex-1">
           {markoer && (
-            <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 6px' }}>
+            <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 5px' }}>
               {markoer}
             </p>
           )}
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
-                fontFamily: display, fontSize: 21, fontWeight: 800, lineHeight: 1.08,
+                fontFamily: display, fontSize: 19.5, fontWeight: 800, lineHeight: 1.05,
                 letterSpacing: '-0.01em', color: 'var(--foreground)', margin: 0,
                 textDecoration: done ? 'line-through' : 'none',
               }}
@@ -115,12 +115,12 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
             </h3>
             <Chip h={h} month={month} />
           </div>
-          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '4px 0 0', lineHeight: 1.34 }}>
+          <p style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '3px 0 0', lineHeight: 1.3 }}>
             {h.hvorfor}
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 8 }}
+            style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 6 }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
@@ -135,8 +135,8 @@ export function SecondaryRow({ h, done, first, month, onToggle, sourceChip }: { 
   const checkbar = h.plantId !== null
   return (
     <div
-      className="flex items-start gap-3 px-0.5"
-      style={{ paddingTop: 9, paddingBottom: 9, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.09)' }}
+      className="flex items-start gap-2.5 px-0.5"
+      style={{ paddingTop: 7, paddingBottom: 7, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.06)' }}
     >
       {checkbar
         ? <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} />
@@ -152,13 +152,13 @@ export function SecondaryRow({ h, done, first, month, onToggle, sourceChip }: { 
           className="block"
           style={{
             fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(42,51,32,0.6)',
-            marginTop: 2, lineHeight: 1.32, textDecoration: done ? 'line-through' : 'none',
+            marginTop: 1.5, lineHeight: 1.3, textDecoration: done ? 'line-through' : 'none',
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}
         >
           {h.hvorfor}
         </span>
-        {sourceChip && <span className="mt-1 inline-flex">{sourceChip}</span>}
+        {sourceChip && <span className="mt-0.5 inline-flex">{sourceChip}</span>}
       </Link>
     </div>
   )
@@ -166,7 +166,7 @@ export function SecondaryRow({ h, done, first, month, onToggle, sourceChip }: { 
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(42,51,32,0.55)', margin: '0 0 10px' }}>
+    <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(42,51,32,0.55)', margin: '0 0 7px' }}>
       {children}
     </p>
   )
