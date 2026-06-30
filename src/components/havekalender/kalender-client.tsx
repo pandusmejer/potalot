@@ -125,20 +125,21 @@ const VEJR_POOLS_DEMO: WeatherPoolsData = {
   sun: { value: 'Sol', label: '05.15' },
 }
 
-/** Lille fortolkende vejr-linje under pytterne (vejrtilstand → havehandling).
- *  Drives af rigtige GardenAlerts (frost > storm > skybrud > tørke); rolig
- *  sæson-default uden påstand om specifikke forhold når intet varsel er aktivt.
- *  Pytterne (målingerne) er urørte — dette er kun en supplerende linje. */
-function vejrNote(alerts: GardenAlert[], month: number): string {
+/** Lille vejr-note under pytterne: kort status + kort have-råd (vejrets lille
+ *  have-råd, ikke en billedtekst). Drives af rigtige GardenAlerts
+ *  (frost > storm > skybrud > tørke); rolig sæson-default uden påstand om
+ *  specifikke forhold når intet varsel er aktivt. Pytterne (målingerne) er
+ *  urørte — dette er kun en supplerende note. */
+function vejrNote(alerts: GardenAlert[], month: number): { status: string; raad: string } {
   const kinds = new Set(alerts.map(a => a.kind))
-  if (kinds.has('frost')) return 'Frostvarsel – dæk de sarte.'
-  if (kinds.has('storm')) return 'Risiko for storm – sikr dine stauder.'
-  if (kinds.has('skybrud')) return 'Skybrud på vej – lad regnen vande for dig.'
-  if (kinds.has('toerke')) return 'Varmt og tørt – vand ved solnedgang og spis en is.'
-  if (month >= 3 && month <= 5) return 'Godt forårsvejr – få de sidste frø i jorden.'
-  if (month >= 6 && month <= 8) return 'Roligt sommervejr – hold planterne vandet i varmen.'
-  if (month >= 9 && month <= 11) return 'Efterårsvejr – tid til at høste og rydde op.'
-  return 'Vinterro – haven hviler.'
+  if (kinds.has('frost')) return { status: 'Frostvarsel', raad: 'Dæk de sarte i aften – tomater, georginer og squash.' }
+  if (kinds.has('storm')) return { status: 'Risiko for storm', raad: 'Sikr dine stauder, bind høje planter op og flyt krukker i læ.' }
+  if (kinds.has('skybrud')) return { status: 'Skybrud på vej', raad: 'Lad regnen vande for dig – vent med kandevanding.' }
+  if (kinds.has('toerke')) return { status: 'Lunt og tørt', raad: 'Giv krukker og drivhusplanter vand, før solen får fat.' }
+  if (month >= 3 && month <= 5) return { status: 'Mildt forårsvejr', raad: 'God tid til at så og plante de sidste ting ud.' }
+  if (month >= 6 && month <= 8) return { status: 'Varm og rolig dag', raad: 'Vand tidligt eller sent, så planterne får mest ud af det.' }
+  if (month >= 9 && month <= 11) return { status: 'Roligt efterårsvejr', raad: 'Tid til at høste, rydde op og sætte løg.' }
+  return { status: 'Vinterro', raad: 'Haven hviler – lad jorden være og planlæg næste sæson.' }
 }
 
 export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {

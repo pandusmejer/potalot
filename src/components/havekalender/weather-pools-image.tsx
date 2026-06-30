@@ -143,8 +143,8 @@ interface Props {
   date?: Date
   className?: string
   priority?: boolean
-  /** Lille fortolkende linje under pytterne (vejrtilstand → havehandling). */
-  note?: string
+  /** Lille vejr-note under pytterne: kort status + kort have-råd (vejrtilstand → handling). */
+  note?: { status: string; raad: string }
 }
 
 export function WeatherPoolsImage({ data, month, date, className, priority, note }: Props) {
@@ -226,23 +226,48 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
     </div>
 
     {note && (
-      <p
+      <div
         style={{
-          fontFamily: sans,
-          fontSize: 13.5,
-          fontWeight: 500,
-          lineHeight: 1.4,
-          color: 'rgba(60,70,50,0.80)',
-          textAlign: 'center',
-          maxWidth: 320,
+          maxWidth: 332,
           marginInline: 'auto',
-          marginTop: 2,
-          marginBottom: 2,
-          paddingInline: 16,
+          marginTop: 16,
+          marginBottom: 40,
+          textAlign: 'center',
+          // Meget svag sage-tone + stor radius: en blød note-flade, ikke et kort.
+          // Ingen skygge, ingen border — bare en rolig overgang.
+          background: 'rgba(76,96,56,0.06)',
+          borderRadius: 22,
+          padding: '13px 22px',
         }}
       >
-        {note}
-      </p>
+        {/* Kort status — vejrets stemning i tre ord. */}
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 17,
+            fontWeight: 600,
+            lineHeight: 1.25,
+            letterSpacing: '-0.005em',
+            color: '#46543A',
+            margin: 0,
+          }}
+        >
+          {note.status}
+        </p>
+        {/* Kort have-råd — dæmpet, sekundært. */}
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 14.5,
+            fontWeight: 500,
+            lineHeight: 1.45,
+            color: 'rgba(70,84,58,0.72)',
+            margin: '3px 0 0',
+          }}
+        >
+          {note.raad}
+        </p>
+      </div>
     )}
     </>
   )
