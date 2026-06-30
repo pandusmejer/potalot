@@ -227,8 +227,8 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
     {note && (
       <div
         style={{
-          width: 'calc(100% - 64px)',
-          maxWidth: 320,
+          width: 'calc(100% - 64px + 10mm)', // +5 mm i hver side (Anna)
+          maxWidth: 'calc(320px + 10mm)',
           margin: 'calc(22px - 1cm) auto 34px', // 1 cm tættere på pytterne (Anna)
           padding: '18px 22px 20px',
           borderRadius: 28,
@@ -243,7 +243,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
             fontFamily: 'var(--font-cormorant), var(--font-gabarito), serif',
             fontSize: 24,
             lineHeight: 1.08,
-            fontWeight: 600,
+            fontWeight: 700,
             letterSpacing: '-0.02em',
             color: '#26351f',
             margin: '0 0 8px',
@@ -258,7 +258,8 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
             lineHeight: 1.35,
             fontWeight: 500,
             color: 'rgba(38, 53, 31, 0.68)',
-            maxWidth: 260,
+            maxWidth: 'none',
+            whiteSpace: 'nowrap',
             margin: '0 auto',
           }}
         >
