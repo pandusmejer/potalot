@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
-import { TodoTabs } from '@/components/havekalender/todo-tabs'
 // DetKanDuNu er erstattet af det nye 4-lags Inspiration-card. Importen
 // bevares som kommentar i tilfælde af genaktivering.
 // import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
 import { InspirationFolder } from '@/components/havekalender/inspiration-folder'
 import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
-import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
 import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
 import { DenneUge } from '@/components/havekalender/denne-uge'
@@ -21,14 +19,14 @@ import {
   DetKanDuGoereEditorialPlanner,
   mapTaskToPlannerItem,
 } from '@/components/havekalender/det-kan-du-goere-editorial-planner'
-import { DagensFokusSection } from '@/components/havekalender/dagens-fokus-section'
+import { IHavenNu } from '@/components/havekalender/i-haven-nu'
 import { NextMonthTeaser } from '@/components/havekalender/next-month-teaser'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import {
-  ListChecks, Calendar, EyeOff, Eye, Info, Compass, ArrowRight, ChevronDown,
-  Sprout, BookOpen, Users, Lightbulb, Plus,
+  Calendar, EyeOff, Eye, Info, Compass, ArrowRight, ChevronDown,
+  Sprout, BookOpen, Users, Lightbulb,
 } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
@@ -159,11 +157,18 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           skifter med måneden. Demo-værdier indtil vejr-API kobles på. */}
       <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} />
 
-      {/* 3 · UGENS FOKUS — Kalenderens hjerne (mentor-motoren). Sammenlægning
-          af "Dagens fokus" + "Denne uge i haven" (Anna 18/6): dagens vigtigste
-          handling fremhævet øverst + de næste opgaver som rolige rows + link
-          til hele ugens opgaver. ÉT sted at kigge — ingen dobbelt opgavebog. */}
-      <DagensFokusSection data={dagensFokus} canPersist={isLoggedIn} />
+      {/* 3 · I HAVEN NU — Kalenderens samlede handlingscenter (Anna 30/6,
+          "én arbejdsseddel"). Pinned "Fokus lige nu" (BRAIN-toppen) over
+          fanerne + I dag/Denne uge/Denne måned/Forsinket/Afsluttet med
+          brugerens egne opgaver + afledte handlinger fra Planter/Frøbank.
+          Afløser standalone "Ugens fokus" + den gamle "Mine opgaver"-Card. */}
+      <IHavenNu
+        tasks={tasks}
+        dagensFokus={dagensFokus}
+        canPersist={isLoggedIn}
+        aktivePlanter={aktivePlanter}
+        month={nuMaaned}
+      />
 
       {/* 4 · MÅNEDENS RYTME — det botaniske årshjul-snapshot.
           Erstatter den gamle "Månedens guide". Indeholder
@@ -221,35 +226,9 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         <DinDyrkning plants={plants} />
       </section>
 
-      {/* HANDLING — Mine opgaver (det fulde opgavebræt). Linket
-          "Se alle ugens opgaver →" fra Ugens fokus scrollanchorer hertil. */}
-      <section id="mine-opgaver" className="space-y-3 scroll-mt-20">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ListChecks className="h-4 w-4 text-primary" />
-              Mine opgaver
-              <span
-                className="inline-flex items-center"
-                title="Konkrete to-dos med specifik dato. Auto-genereres fra dine dyrkningsguides eller oprettes manuelt. Modsat 'Gøremål' der er sæsonbestemte ting."
-              >
-                <Info className="h-3 w-3 text-muted-foreground" />
-              </span>
-            </CardTitle>
-          </CardHeader>
-          <div className="space-y-4 px-5 pb-5">
-            <TodoTabs tasks={tasks} />
-            {/* Ny opgave på samme board som Mine opgaver —
-                aflang afrundet fuld-bredde knap */}
-            <AddTaskDialog plants={aktivePlanter}>
-              <Button className="w-full">
-                <Plus className="h-4 w-4" />
-                Ny opgave
-              </Button>
-            </AddTaskDialog>
-          </div>
-        </Card>
-      </section>
+      {/* (Tidligere stod "Mine opgaver"-Card'et her som et separat opgavebræt.
+          Det er nu samlet ind i "I haven nu"-modulet øverst (pos 3), så der
+          ikke er flere overlappende handlingsflader.) */}
 
       {/* 5 · ORIENTERING — Årshjulet, "den botaniske tidsmotor".
           SKJULT INDTIL VIDERE: hele Aarshjul-sektionen er midlertidigt
