@@ -189,7 +189,7 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
       <div
         style={{
           position: 'relative',
-          width: '90%', // 10% mindre pytter (Anna 30/6), centreret — overlay (cqw) skalerer med
+          width: '100%',
           maxWidth: 520,
           marginInline: 'auto',
           aspectRatio: '1448 / 1086',
