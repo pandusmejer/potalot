@@ -301,13 +301,13 @@ export function MaanedsHero({
             >
               Månedens fokus
             </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
+            <div className="mt-4 flex flex-wrap gap-2">
               {focusTags.map(tag => {
                 const PIcon = ikonFor(tag)
                 return (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-xs capitalize"
+                    className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[11px] capitalize"
                     style={{
                       fontFamily: sans,
                       fontWeight: 600,
@@ -318,7 +318,7 @@ export function MaanedsHero({
                       border: '1px solid rgba(255,255,255,0.22)',
                     }}
                   >
-                    <PIcon className="h-3.5 w-3.5 opacity-80" strokeWidth={1.75} />
+                    <PIcon className="h-3 w-3 opacity-80" strokeWidth={1.75} />
                     {tag}
                   </span>
                 )
