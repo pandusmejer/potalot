@@ -1,213 +1,33 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
-import { Check } from 'lucide-react'
-import { markDerivedTaskDone, unmarkDerivedTaskDone } from '@/actions/plant-tasks'
-import type { DagensFokus, FokusHandling } from '@/lib/kalender/dagens-fokus'
+import { PrimaryFocus, SecondaryRow, Eyebrow, useDerivedCompletions } from '@/components/havekalender/fokus-handling-ui'
+import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 
 /**
- * DAGENS FOKUS — Kalenderens redaktionelle kerne og svar på sidens ene
+ * DAGENS/UGENS FOKUS — Kalenderens redaktionelle kerne og svar på sidens ene
  * spørgsmål: "Hvad er det vigtigste jeg gør i haven i dag?"
  *
  * Renderer mentor-motoren (lib/kalender/dagens-fokus.ts). Ét primært fokus
- * fremhævet, op til to støttende, resten bag "Se alle". Stilhed er en feature:
+ * fremhævet, op til tre støttende, resten bag "Se alle". Stilhed er en feature:
  * når intet haster, siger sektionen det roligt — den opfinder ikke opgaver.
  *
- * Design: værktøjs-registret (Gabarito-display + Manrope), flade bløde blokke,
- * roligt hierarki — IKKE et dashboard. Per visuelt-system.md.
+ * ⚠️ Pr. 2026-06-30 er denne standalone-sektion AFLØST på /kalender af det
+ * samlede "I haven nu"-modul (i-haven-nu.tsx), som genbruger de samme
+ * fokus-handling-helpers. Komponenten bevares for genaktivering/QA.
  *
- * Tap-to-check: kun PLANTE-bundne handlinger kan markeres udført (de
- * persisterer via actions/plant-tasks.ts på en deterministisk task_key, samme
- * mønster som Planter-forsidens "I haven i dag"). Frøbank-invitationer (uden
- * plante) får et link i stedet — demo/uden-plante foregiver aldrig at gemme.
- *
- * Isoleret sektion (Annas direktiv 18/6): rører intet andet i /kalender.
+ * Render-UI (PrimaryFocus/SecondaryRow/Chip/tap-to-check) bor nu i
+ * fokus-handling-ui.tsx og deles med I haven nu.
  */
 
 const sans = 'var(--font-manrope)'
 const display = 'var(--font-gabarito), var(--font-manrope), sans-serif'
 
-/**
- * Chip = lille LÆSE-signal for grad af timing/konsekvens — ikke et statusfelt.
- * Labelen afledes af handlingstypen (ikke laget), så hierarkiet bliver
- * aflæseligt: "Høst nu" siger at timing betyder noget; "Mulighed" føles lavere
- * end "Plant ud". Tonen forstærker rækkefølgen (rust=hast → warm=høst-nu →
- * grøn=handling → dæmpet=mulighed). Kun chip-sprog/tone — intet andet.
- */
-const CHIP_TONE: Record<string, { color: string; bg: string }> = {
-  'Haster':      { color: '#B5602F', bg: 'rgba(181,96,47,0.13)' }, // frost — mest presserende
-  'Høst nu':     { color: '#9A6A1E', bg: 'rgba(168,124,59,0.16)' }, // timing-nu, varm
-  'Godt vindue': { color: '#4C6038', bg: 'rgba(80,104,52,0.17)' }, // snævert vindue → handl
-  'Plant ud':    { color: '#4C6038', bg: 'rgba(80,104,52,0.12)' }, // almindelig handling
-  'Mere plads':  { color: 'rgba(76,96,56,0.85)', bg: 'rgba(80,104,52,0.08)' }, // roligt
-  'Tjek':        { color: '#A87C3B', bg: 'rgba(168,124,59,0.14)' },
-  'Mulighed':    { color: 'rgba(42,51,32,0.5)', bg: 'rgba(42,51,32,0.06)' }, // lavest
-}
-
-/** Chip-label efter handlingstype. udplant skifter til "Godt vindue" når
- *  vinduet er snævert (lukker denne eller næste måned) — ellers "Plant ud". */
-function chipLabel(h: FokusHandling, month: number): string {
-  switch (h.taskType) {
-    case 'daek': return 'Haster'
-    case 'hoest': return 'Høst nu'
-    case 'udplant': {
-      const snaevert = h.deadlineMaaned != null && h.deadlineMaaned - month <= 1
-      return snaevert ? 'Godt vindue' : 'Plant ud'
-    }
-    case 'prikl': return 'Mere plads'
-    case 'tjek-spiring': return 'Tjek'
-    default: return 'Mulighed' // saa/forspir/plant-ud (frøbank) + evt. lag 5
-  }
-}
-
-function Chip({ h, month }: { h: FokusHandling; month: number }) {
-  const label = chipLabel(h, month)
-  const tone = CHIP_TONE[label] ?? CHIP_TONE['Mulighed']
-  return (
-    <span
-      className="shrink-0 rounded-full"
-      style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: tone.color, background: tone.bg, padding: '3px 9px' }}
-    >
-      {label}
-    </span>
-  )
-}
-
-/** Rund afkrydsnings-knap (samme signal som Planter-forsiden). */
-function CheckCircle({ done, onToggle, label, size = 18 }: {
-  done: boolean; onToggle: () => void; label: string; size?: number
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-pressed={done}
-      aria-label={label}
-      className="flex shrink-0 items-center justify-center rounded-full transition-colors active:scale-90"
-      style={{
-        width: size, height: size, marginTop: 1,
-        border: done ? '1.5px solid #5A7038' : '1.5px solid rgba(42,51,32,0.28)',
-        background: done ? '#5A7038' : 'transparent', cursor: 'pointer',
-      }}
-    >
-      {done && <Check style={{ width: size * 0.6, height: size * 0.6, color: '#fff' }} strokeWidth={3} aria-hidden />}
-    </button>
-  )
-}
-
-/** Det fremhævede primære fokus — sektionens redaktionelle hovedperson. */
-function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling; done: boolean; month: number; markoer?: string; onToggle: () => void }) {
-  const checkbar = h.plantId !== null
-  return (
-    <div
-      className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'var(--secondary)', padding: '13px 16px 12px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
-    >
-      <div className="flex items-start gap-3">
-        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={21} />}
-        <div className="min-w-0 flex-1">
-          {markoer && (
-            <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 6px' }}>
-              {markoer}
-            </p>
-          )}
-          <div className="flex items-start justify-between gap-2">
-            <h3
-              style={{
-                fontFamily: display, fontSize: 21, fontWeight: 800, lineHeight: 1.08,
-                letterSpacing: '-0.01em', color: 'var(--foreground)', margin: 0,
-                textDecoration: done ? 'line-through' : 'none',
-              }}
-            >
-              {h.titel}
-            </h3>
-            <Chip h={h} month={month} />
-          </div>
-          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '4px 0 0', lineHeight: 1.34 }}>
-            {h.hvorfor}
-          </p>
-          <Link
-            href={h.href}
-            style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 8 }}
-          >
-            {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/** Støttende fokus-række (kompakt, divider-adskilt). */
-function SecondaryRow({ h, done, first, month, onToggle }: { h: FokusHandling; done: boolean; first: boolean; month: number; onToggle: () => void }) {
-  const checkbar = h.plantId !== null
-  return (
-    <div
-      className="flex items-start gap-3 px-0.5"
-      style={{ paddingTop: 9, paddingBottom: 9, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.09)' }}
-    >
-      {checkbar
-        ? <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} />
-        : <span className="shrink-0" style={{ width: 21 }} aria-hidden />}
-      <Link href={h.href} className="min-w-0 flex-1" style={{ opacity: done ? 0.5 : 1 }}>
-        <span className="flex items-center justify-between gap-2">
-          <span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--foreground)', textDecoration: done ? 'line-through' : 'none' }}>
-            {h.titel}
-          </span>
-          {!done && <Chip h={h} month={month} />}
-        </span>
-        <span
-          className="block"
-          style={{
-            fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(42,51,32,0.6)',
-            marginTop: 2, lineHeight: 1.32, textDecoration: done ? 'line-through' : 'none',
-            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-          }}
-        >
-          {h.hvorfor}
-        </span>
-      </Link>
-    </div>
-  )
-}
-
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(42,51,32,0.55)', margin: '0 0 10px' }}>
-      {children}
-    </p>
-  )
-}
-
 export function DagensFokusSection({ data, canPersist = false }: { data: DagensFokus; canPersist?: boolean }) {
-  const initial = [...data.fokus, ...data.flere].filter(h => h.udfoert).map(h => h.taskKey)
-  const [done, setDone] = useState<ReadonlySet<string>>(() => new Set(initial))
+  const { isDone, toggle } = useDerivedCompletions([...data.fokus, ...data.flere], canPersist)
   // Aktuel måned til chip-logikken ("Godt vindue" vs "Plant ud"). Stabil pr.
   // dag → samme på server (SSR) og klient, ingen hydration-mismatch.
   const month = new Date().getMonth() + 1
-
-  function setMembership(taskKey: string, isDone: boolean) {
-    setDone(prev => {
-      const next = new Set(prev)
-      if (isDone) next.add(taskKey); else next.delete(taskKey)
-      return next
-    })
-  }
-
-  function toggle(h: FokusHandling) {
-    if (h.plantId === null) return // frøbank-invitation: ingen completion
-    const willBeDone = !done.has(h.taskKey)
-    setMembership(h.taskKey, willBeDone) // optimistisk
-    if (!canPersist) return // demo: lokal, ingen falsk persistens
-    const action = willBeDone
-      ? markDerivedTaskDone({ plantId: h.plantId, taskKey: h.taskKey, taskType: h.taskType, taskTitle: h.titel })
-      : unmarkDerivedTaskDone(h.taskKey)
-    action.then(res => { if (res && 'error' in res) setMembership(h.taskKey, !willBeDone) })
-      .catch(() => setMembership(h.taskKey, !willBeDone))
-  }
-
-  const isDone = (h: FokusHandling) => done.has(h.taskKey)
 
   // ── Stilhed: ingen fokus-handlinger → rolig kvittering / almanak ──
   if (data.fokus.length === 0) {
@@ -232,7 +52,7 @@ export function DagensFokusSection({ data, canPersist = false }: { data: DagensF
   }
 
   // Sammenlagt: dagens vigtigste = featured; resten af lag 1-4 = "Næste opgaver"
-  // (op til 4 rows), og hele opgavebrættet bag footer-linket. Ét sted at kigge.
+  // (op til 3 rows), og hele opgavebrættet bag footer-linket. Ét sted at kigge.
   const alle = [...data.fokus, ...data.flere]
   const [primary, ...resten] = alle
   const naeste = resten.slice(0, 3)
