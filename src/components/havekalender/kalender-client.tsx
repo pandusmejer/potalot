@@ -6,7 +6,7 @@ import { TodoTabs } from '@/components/havekalender/todo-tabs'
 // DetKanDuNu er erstattet af det nye 4-lags Inspiration-card. Importen
 // bevares som kommentar i tilfælde af genaktivering.
 // import { DetKanDuNu } from '@/components/havekalender/det-kan-du-nu'
-import { Inspiration } from '@/components/havekalender/inspiration'
+import { InspirationFolder } from '@/components/havekalender/inspiration-folder'
 import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
@@ -22,7 +22,7 @@ import {
   mapTaskToPlannerItem,
 } from '@/components/havekalender/det-kan-du-goere-editorial-planner'
 import { DagensFokusSection } from '@/components/havekalender/dagens-fokus-section'
-import { NaesteMaaned } from '@/components/havekalender/naeste-maaned'
+import { NextMonthTeaser } from '@/components/havekalender/next-month-teaser'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -32,6 +32,7 @@ import {
 } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
+import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { cn } from '@/lib/utils'
 import { hideGeneralTask } from '@/actions/aarshjul'
@@ -139,6 +140,13 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   const monthlyPlannerItems = generalTasks
     .filter(g => !g.isHiddenByMe)
     .map(mapTaskToPlannerItem)
+
+  // Måneds-navne til de to editorial afslutnings-sektioner. Indeværende
+  // måned (små bogstaver) til Inspiration-folderen; næste måned til
+  // "Kig mod …"-teaseren. Holder afslutningen i sync med kalenderens måned.
+  const nuMaanedNavn = MONTHS_DA[nuMaaned - 1].full.toLowerCase()
+  const naesteMaaned = nuMaaned === 12 ? 1 : nuMaaned + 1
+  const naesteMaanedNavn = MONTHS_DA[naesteMaaned - 1].full
 
   return (
     <div className="space-y-7">
@@ -284,15 +292,11 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         </section>
       )}
 
-      {/* 6 · INSPIRATION — tre asymmetriske lag (Fra din frøbank →
-          Kurateret → Fordyb dig). Community-lagene ("Andre dyrker",
-          "Idétavle") er fjernet til launch — fokus er at hjælpe i
-          haven, ikke fællesskab. Mindre funktion, mere stemning. */}
-      <Inspiration
-        month={valgtMaaned}
-        inventory={inventory}
-        plants={plants}
-      />
+      {/* 6 · INSPIRATION-FOLDER — kalenderens frivillige fordybelse,
+          samlet i én editorial mappe med tre faner (Frøbank / Juni-greb
+          / Guides). Erstatter de tidligere løse inspirationslag. Ingen
+          opgavestatus, ingen persistens — ren "dyk ned hvis du har lyst". */}
+      <InspirationFolder monthName={nuMaanedNavn} />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
           SKJULT INDTIL VIDERE: communities + challenges-funktioner
@@ -328,8 +332,13 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           invitationskort. HentInspiration-komponenten bevares i koden
           hvis vi vil have den tilbage et andet sted senere.) */}
 
-      {/* 9 · PROGRESSION — kommende i næste måned (forventning) */}
-      <NaesteMaaned month={nuMaaned} generalTasks={generalTasks} />
+      {/* 9 · PROGRESSION — rolig teaser mod næste måned. Kalenderens
+          afslutning ("næste kapitel venter"), ikke endnu en opgaveliste. */}
+      <NextMonthTeaser
+        label={`Kig mod ${naesteMaanedNavn.toLowerCase()}`}
+        monthName={naesteMaanedNavn}
+        subtitle={MAANEDS_STEMNING[naesteMaaned]?.tagline ?? undefined}
+      />
     </div>
   )
 }
