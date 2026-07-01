@@ -222,9 +222,9 @@ export function InspirationFolder({
         <div
           style={{
             background:
-              'linear-gradient(145deg, rgba(38,55,31,0.98), rgba(28,45,27,0.99))',
+              'linear-gradient(162deg, #81968B 0%, #6F857A 52%, #5F7469 100%)',
             borderRadius: 26,
-            boxShadow: '0 10px 26px rgba(36,48,31,0.12)',
+            boxShadow: '0 10px 26px rgba(63,82,74,0.16)',
             color: '#F8F4E9',
             marginTop: 0,
             overflow: 'hidden',
@@ -257,10 +257,10 @@ function FolderTab({
       onClick={onClick}
       style={{
         alignItems: 'center',
-        background: active ? '#26371F' : 'rgba(216,214,191,0.72)',
+        background: active ? '#5F7469' : '#D9D8C8',
         border: 0,
         borderRadius: '18px 18px 0 0',
-        color: active ? '#FBF6E9' : '#3A4A2E',
+        color: active ? '#F6F1E6' : '#7D877B',
         cursor: 'pointer',
         display: 'inline-flex',
         fontFamily: sans,
@@ -270,7 +270,7 @@ function FolderTab({
         justifyContent: 'center',
         minHeight: 48,
         minWidth: 0,
-        opacity: active ? 1 : 0.64,
+        opacity: active ? 1 : 0.82,
         padding: '0 6px',
         position: 'relative',
         top: active ? 0 : 6,
@@ -309,7 +309,7 @@ function FolderPanel({
       <div style={{ padding: '2px 4px 22px' }}>
         <h3
           style={{
-            color: '#FBF6E9',
+            color: '#F6F1E6',
             fontFamily: serif,
             fontSize: tab === 'june' ? 30 : 36,
             fontWeight: tab === 'june' ? 700 : 600,
@@ -323,7 +323,7 @@ function FolderPanel({
         {content.subtitle && (
           <p
             style={{
-              color: 'rgba(248,244,233,0.76)',
+              color: 'rgba(246,241,230,0.84)',
               fontFamily: sans,
               fontSize: 15.5,
               fontWeight: 500,
@@ -352,7 +352,7 @@ function FolderPanel({
         href={content.href}
         style={{
           alignItems: 'center',
-          color: 'rgba(248,244,233,0.84)',
+          color: 'rgba(246,241,230,0.9)',
           display: 'inline-flex',
           fontFamily: sans,
           fontSize: 15,
@@ -384,9 +384,9 @@ function FolderItemCard({
       href={href}
       style={{
         alignItems: 'center',
-        background: '#F7F1E5',
+        background: '#F6F1E6',
         borderRadius: 20,
-        color: '#183421',
+        color: '#23382B',
         display: 'grid',
         gridTemplateColumns: '48px minmax(0, 1fr) 18px',
         gap: 12,
@@ -399,9 +399,9 @@ function FolderItemCard({
         aria-hidden
         style={{
           alignItems: 'center',
-          background: 'rgba(208,205,170,0.44)',
+          background: '#E7E1D2',
           borderRadius: 999,
-          color: '#294029',
+          color: '#3A5147',
           display: 'inline-flex',
           height: 48,
           justifyContent: 'center',
@@ -413,7 +413,7 @@ function FolderItemCard({
       <span style={{ minWidth: 0 }}>
         <span
           style={{
-            color: '#16351F',
+            color: '#23382B',
             display: 'block',
             fontFamily: sans,
             fontSize: 18,
@@ -426,7 +426,7 @@ function FolderItemCard({
         </span>
         <span
           style={{
-            color: 'rgba(36,48,31,0.68)',
+            color: '#5E675D',
             display: 'block',
             fontFamily: sans,
             fontSize: 14.5,
@@ -441,7 +441,7 @@ function FolderItemCard({
         width={16}
         height={16}
         strokeWidth={1.8}
-        style={{ color: 'rgba(36,48,31,0.34)' }}
+        style={{ color: 'rgba(94,103,93,0.55)' }}
         aria-hidden
       />
     </Link>
