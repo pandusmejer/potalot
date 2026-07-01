@@ -15,7 +15,6 @@ import {
   Droplets,
   ShoppingBasket,
   Sprout,
-  Wheat,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -34,6 +33,9 @@ interface NextMonthTeaserProps {
   body?: string
   href?: string
   chips?: NextMonthChip[]
+  /** Diskret hero-preview af næste måned i højre side. Falder tilbage til
+   *  månedens hero-foto ud fra monthName hvis ikke angivet. */
+  heroImage?: string
 }
 
 const DEFAULT_CHIPS: NextMonthChip[] = [
@@ -49,7 +51,10 @@ export function NextMonthTeaser({
   body = 'Haven går ind i sin mest intense måned. Høst lidt og ofte, vand klogt, og så nyt til sensommeren.',
   href = '/kalender',
   chips = DEFAULT_CHIPS,
+  heroImage,
 }: NextMonthTeaserProps) {
+  const heroSrc =
+    heroImage ?? `/images/heroes-maaneder/hero-${monthName.toLowerCase()}-foto.png`
   return (
     <section
       aria-labelledby="next-month-teaser-title"
@@ -63,9 +68,11 @@ export function NextMonthTeaser({
         position: 'relative',
       }}
     >
-      <BotanicalGrass />
+      {/* Diskret hero-preview af næste måned i højre side — fader blødt mod
+          venstre, så teksten dominerer og fotoet kun ANES som stemning. */}
+      <HeroPreview src={heroSrc} />
 
-      <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: '66%' }}>
         <p
           style={{
             color: 'rgba(36,48,31,0.62)',
@@ -184,77 +191,34 @@ function TeaserChip({ chip }: { chip: NextMonthChip }) {
   )
 }
 
-function BotanicalGrass() {
+/**
+ * Diskret hero-preview af næste måned i højre side af kortet. Fotoet fader
+ * blødt mod venstre (mask), så det kun ANES som stemning bag den lyse
+ * cremeflade, og teksten til venstre dominerer. Bleeder til kortkanten via
+ * negative offsets (modvirker section-padding) og klippes af kortets runding
+ * (overflow:hidden på section'en).
+ */
+function HeroPreview({ src }: { src: string }) {
   return (
-    <svg
+    <div
       aria-hidden
-      viewBox="0 0 210 220"
       style={{
-        bottom: -14,
-        color: 'rgba(91,88,52,0.22)',
-        height: 190,
-        pointerEvents: 'none',
         position: 'absolute',
-        right: -24,
-        width: 180,
+        top: -24,
+        right: -22,
+        bottom: -26,
+        width: '40%',
+        zIndex: 0,
+        pointerEvents: 'none',
+        backgroundImage: `url('${src}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        WebkitMaskImage:
+          'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 40%, #000 72%)',
+        maskImage:
+          'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 40%, #000 72%)',
       }}
-    >
-      <path
-        d="M104 212c-2-48 1-96 10-147M137 212c-13-42-18-82-14-120M75 212c10-52 11-92 2-145"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="2.4"
-      />
-      <path
-        d="M112 72c16-16 28-33 36-52M119 93c22-7 40-18 55-33M83 93C63 78 50 61 44 42M76 119c-19-4-36-13-51-28M131 126c18-4 34-12 48-25"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="2"
-      />
-      <path
-        d="M151 28c12 10 18 21 17 34-13-3-22-14-17-34ZM44 42c15 3 25 12 31 26-15 1-26-8-31-26ZM174 61c-1 15-8 26-21 32-3-14 5-25 21-32Z"
-        fill="none"
-        stroke="currentColor"
-        strokeLinejoin="round"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M120 60c5-10 13-16 24-19M122 82c10-5 21-8 34-7M82 82c-10-8-18-17-23-28M78 110c-13-2-24-7-34-15"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.4"
-      />
-      <WheatHead x={92} y={30} />
-      <WheatHead x={140} y={72} />
-      <WheatHead x={55} y={124} />
-    </svg>
-  )
-}
-
-function WheatHead({ x, y }: { x: number; y: number }) {
-  return (
-    <g transform={`translate(${x} ${y})`}>
-      <path
-        d="M0 46c5-17 6-32 2-46"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.7"
-      />
-      {[-2, 8, 18, 28].map((offset, i) => (
-        <path
-          key={offset}
-          d={i % 2 === 0 ? `M2 ${offset + 10}c-8-5-13-11-15-19` : `M2 ${offset + 10}c8-5 13-11 15-19`}
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="1.4"
-        />
-      ))}
-    </g>
+    />
   )
 }
 
