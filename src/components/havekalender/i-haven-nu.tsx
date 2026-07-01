@@ -18,14 +18,14 @@
  * Grænse: ingen ny BRAIN-logik, ingen admin-opgaver som datakilde her.
  */
 
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, SecondaryRow, Eyebrow, useDerivedCompletions,
+  PrimaryFocus, SecondaryRow, useDerivedCompletions,
 } from '@/components/havekalender/fokus-handling-ui'
 import { SourceChip } from '@/components/havekalender/source-chip'
 import { ListChecks, CalendarCheck, Info, Plus } from 'lucide-react'
@@ -137,31 +137,38 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   return (
     <section id="mine-opgaver" className="scroll-mt-20">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ListChecks className="h-4 w-4 text-primary" />
-            Mine opgaver
-            <span
-              className="inline-flex items-center"
-              title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
+        {/* Header: stort ikon spænder over to linjer; "Mine opgaver" + fokus-
+            label ligger venstrejusteret i samme kolonne til højre for ikonet. */}
+        <div className="flex items-center gap-3 px-5 pt-5 pb-3">
+          <ListChecks className="shrink-0 text-primary" style={{ width: 38, height: 38 }} strokeWidth={1.6} aria-hidden />
+          <div className="min-w-0">
+            <h3 className="flex items-center gap-2 font-serif text-lg leading-tight text-foreground">
+              Mine opgaver
+              <span
+                className="inline-flex items-center"
+                title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
+              >
+                <Info className="h-3 w-3 text-muted-foreground" />
+              </span>
+            </h3>
+            <p
+              className="uppercase"
+              style={{ fontFamily: 'var(--font-manrope)', fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(42,51,32,0.55)', margin: '3px 0 0' }}
             >
-              <Info className="h-3 w-3 text-muted-foreground" />
-            </span>
-          </CardTitle>
-        </CardHeader>
+              Haven lige nu
+            </p>
+          </div>
+        </div>
 
         <div className="space-y-3 px-5 pb-4">
-          {/* Pinned "Fokus lige nu" — over fanerne, altid synlig. */}
+          {/* Pinned fokus — over fanerne, altid synlig. */}
           {pinned ? (
-            <div>
-              <Eyebrow>Haven lige nu</Eyebrow>
-              <PrimaryFocus
-                h={pinned}
-                done={isDone(pinned)}
-                month={month}
-                onToggle={() => toggle(pinned)}
-              />
-            </div>
+            <PrimaryFocus
+              h={pinned}
+              done={isDone(pinned)}
+              month={month}
+              onToggle={() => toggle(pinned)}
+            />
           ) : dagensFokus.almanak ? (
             <div
               className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
