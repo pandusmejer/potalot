@@ -220,7 +220,7 @@ export function InspirationFolder({
       return {
         title: 'Fra din frøbank',
         subtitle: hasSeedSuggestions
-          ? 'Sorter, der stadig kan nå at give noget i år.'
+          ? 'Sorter, der stadig kan nå i år.'
           : 'Din frøbank hviler lidt endnu.',
         cta: hasSeedSuggestions ? 'Se frøbanken' : 'Tilføj frø',
         href: hasSeedSuggestions ? '/froebank' : '/froebank/tilfoej',
@@ -231,7 +231,7 @@ export function InspirationFolder({
     if (activeTab === 'june') {
       return {
         title: `Få mere ud af ${monthName}`,
-        subtitle: 'Små råd, der hjælper haven gennem varme, vækst og høst.',
+        subtitle: 'Styr haven gennem varme, vækst og høst.',
         cta: 'Se flere sæsonråd',
         href: '/kalender',
         items: juneItems,
@@ -364,7 +364,6 @@ export function InspirationFolder({
             boxShadow: '0 14px 30px rgba(60,80,72,0.20)',
             color: '#F8F4E9',
             marginTop: -25, // rykker mappens overskrifter ~6 mm op mod tabs
-            overflow: 'hidden',
             padding: '12px 24px 28px',
           }}
         >
@@ -398,7 +397,7 @@ function FolderPanel({
             fontSize: 36,
             fontWeight: 600,
             letterSpacing: '0',
-            lineHeight: 0.98,
+            lineHeight: 1.06,
             margin: 0,
           }}
         >
@@ -409,10 +408,13 @@ function FolderPanel({
             style={{
               color: 'rgba(246,241,230,0.84)',
               fontFamily: sans,
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: 500,
               lineHeight: 1.35,
-              margin: '8px 0 0',
+              margin: '7px 0 0',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
             {content.subtitle}
@@ -433,24 +435,25 @@ function FolderPanel({
         ))}
       </div>
 
-      <Link
-        href={content.href}
-        style={{
-          alignItems: 'center',
-          color: 'rgba(246,241,230,0.9)',
-          display: 'inline-flex',
-          fontFamily: sans,
-          fontSize: 15,
-          fontWeight: 750,
-          gap: 9,
-          marginTop: 11,
-          padding: '4px 2px',
-          textDecoration: 'none',
-        }}
-      >
-        {content.cta}
-        <ArrowRight width={17} height={17} strokeWidth={1.8} aria-hidden />
-      </Link>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 11 }}>
+        <Link
+          href={content.href}
+          style={{
+            alignItems: 'center',
+            color: 'rgba(246,241,230,0.9)',
+            display: 'inline-flex',
+            fontFamily: sans,
+            fontSize: 15,
+            fontWeight: 750,
+            gap: 9,
+            padding: '4px 2px',
+            textDecoration: 'none',
+          }}
+        >
+          {content.cta}
+          <ArrowRight width={17} height={17} strokeWidth={1.8} aria-hidden />
+        </Link>
+      </div>
     </div>
   )
 }
@@ -487,10 +490,10 @@ function FolderItemCard({
             color: '#23382B',
             display: 'block',
             fontFamily: sans,
-            fontSize: 19,
+            fontSize: 17,
             fontWeight: 700,
-            lineHeight: 1.12,
-            marginBottom: 6,
+            lineHeight: 1.14,
+            marginBottom: 5,
           }}
         >
           {item.title}
@@ -500,9 +503,9 @@ function FolderItemCard({
             color: '#5E675D',
             display: '-webkit-box',
             fontFamily: sans,
-            fontSize: 14,
+            fontSize: 12.5,
             fontWeight: 500,
-            lineHeight: 1.32,
+            lineHeight: 1.34,
             overflow: 'hidden',
             WebkitBoxOrient: 'vertical',
             WebkitLineClamp: 2,
