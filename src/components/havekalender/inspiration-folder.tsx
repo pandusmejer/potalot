@@ -122,13 +122,13 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 9 // top af aktiv tab (fladere → mindre app-bølge)
-const Y_TAB_TOP_IN = 18 // top af inaktive tabs (mere tilbagetrukne)
+const Y_TAB_TOP = 14 // top af aktiv tab (kortere fane → mindre dramatisk drop)
+const Y_TAB_TOP_IN = 20 // top af inaktive tabs (mere tilbagetrukne)
 const Y_SURFACE = 42 // mappens øverste flade (mellem tabs)
 const Y_BOTTOM = 82 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 20 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 16 // hjørne-radius, inaktive tab-tops (indre sider)
-const OUTER_R = 26 // ydre hjørner — deles af kant-tab og mappekant (flush)
+const TAB_R = 17 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops (indre sider)
+const OUTER_R = 18 // ydre hjørner — deles af kant-tab og mappekant (mindre runde)
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
 const IW = 62 // halv bredde, inaktive tabs — overlapper aktiv en smule (lag)
@@ -316,11 +316,11 @@ export function InspirationFolder({
               </linearGradient>
               {/* Blød skygge så det aktive ark løfter sig over baglagene (papir-på-papir) */}
               <filter id="folderLift" x="-10%" y="-30%" width="120%" height="170%">
-                <feDropShadow dx="0" dy="2.5" stdDeviation="3" floodColor="#2A3020" floodOpacity="0.24" />
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#2A3020" floodOpacity="0.18" />
               </filter>
               {/* Tynd papirskygge under hvert inaktivt ark → man ser at de ligger bagved */}
               <filter id="paperLayer" x="-15%" y="-25%" width="130%" height="150%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#26351F" floodOpacity="0.14" />
+                <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#26351F" floodOpacity="0.10" />
               </filter>
             </defs>
             {/* inaktive tabs som lysere papir-baglag, let forskudt bagved */}
@@ -366,7 +366,7 @@ export function InspirationFolder({
                     lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 16 : 21,
+                    top: active ? 18 : 22,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
@@ -383,7 +383,7 @@ export function InspirationFolder({
         <div
           style={{
             background: 'linear-gradient(180deg, #62766B 0%, #5A6E63 100%)',
-            borderRadius: '0 0 32px 32px',
+            borderRadius: '0 0 24px 24px',
             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.13), 0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
             marginTop: -18, // rykker mappens overskrifter op mod tabs (m. luft til serif-top)
