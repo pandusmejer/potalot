@@ -36,7 +36,8 @@ export function NextMonthTeaser({
   // titel, subtitle, body, hero, CTA) afledes derfor af nextMonth.
   const nextMonth = currentMonth >= 12 ? 1 : currentMonth + 1
   const monthName = MONTHS_DA[nextMonth - 1]?.full ?? 'Juli'
-  const label = `Kig mod ${monthName.toLowerCase()}`
+  // Eyebrow uden måneden — den store titel nedenunder bærer måneden (ingen dublet).
+  const label = 'Kig mod'
   const subtitle = MAANEDS_STEMNING[nextMonth]?.tagline ?? ''
   // Kun FØRSTE sætning som teaser — hele månedens tekst ligger bag "Se [måned]".
   // Holder kortet kompakt uanset hvor lang måneds-beskrivelsen er.
