@@ -106,6 +106,95 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
   { id: 'guides', label: 'Guides', Icon: BookOpen },
 ]
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * Die-cut manillamappe-silhuet
+ *
+ * Toppen tegnes IKKE som "tre tabs oven på en kasse", men som én
+ * sammenhængende papirform: den aktive tab + brede, bløde, let asymmetriske
+ * skuldre + mappens øverste kant er ét SVG-path i samme farve som kroppen —
+ * tabben "gror ud af" mappen. De inaktive tabs er et lysere baglag, der kun
+ * kigger op bagved. Klikbare labels ligger som et transparent overlay.
+ *
+ * Koordinater i et fast viewBox (342 × 84); SVG'en skalerer proportionalt med
+ * bredden, så kurverne aldrig forvrænges.
+ * ────────────────────────────────────────────────────────────────────────── */
+const VB_W = 342
+const Y_TAB_TOP = 4 // top af aktiv tab
+const Y_TAB_TOP_IN = 16 // top af inaktive tabs (mere tilbagetrukne)
+const Y_SURFACE = 46 // mappens øverste flade (mellem/ved siden af tabs)
+const Y_BOTTOM = 84 // bund af SVG = top af mappekroppen (flush)
+const TAB_R = 18 // hjørne-radius, aktiv tab-top
+const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops
+const OUTER_R = 26 // øvre ydre hjørner på mappekroppen
+const TAB_CENTERS = [86, 171, 256] // tab-midter (ydre tabs rykket ind)
+const AW = 54 // halv bredde, aktiv tab
+const IW = 48 // halv bredde, inaktive tabs
+const SR_L = 34 // venstre skulder-løb (bredere → asymmetri)
+const SR_R = 27 // højre skulder-løb (kortere)
+
+/** Aktiv tab + skuldre + mappe-top som ét die-cut path. */
+function frontPath(active: number): string {
+  const cx = TAB_CENTERS[active]
+  const lx = cx - AW
+  const rx = cx + AW
+  const sL = lx - SR_L
+  const sR = rx + SR_R
+  const hasLeft = sL > OUTER_R + 4
+  const hasRight = sR < VB_W - OUTER_R - 4
+  const knee = Y_TAB_TOP + TAB_R + (Y_SURFACE - Y_TAB_TOP) * 0.35
+
+  const p: string[] = [
+    `M 0 ${Y_BOTTOM}`,
+    `L 0 ${Y_SURFACE + OUTER_R}`,
+    `Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`,
+  ]
+
+  // venstre skulder op i tabben (bred rolig kurve) — eller kort løft ved kanten
+  if (hasLeft) {
+    p.push(`L ${sL} ${Y_SURFACE}`)
+    p.push(`C ${sL + (lx - sL) * 0.5} ${Y_SURFACE} ${lx} ${knee} ${lx} ${Y_TAB_TOP + TAB_R}`)
+  } else {
+    p.push(`L ${Math.max(OUTER_R, lx)} ${Y_SURFACE}`)
+    p.push(`C ${lx} ${Y_SURFACE} ${lx} ${knee} ${lx} ${Y_TAB_TOP + TAB_R}`)
+  }
+
+  // tab-top
+  p.push(`Q ${lx} ${Y_TAB_TOP} ${lx + TAB_R} ${Y_TAB_TOP}`)
+  p.push(`L ${rx - TAB_R} ${Y_TAB_TOP}`)
+  p.push(`Q ${rx} ${Y_TAB_TOP} ${rx} ${Y_TAB_TOP + TAB_R}`)
+
+  // højre skulder ned i mappe-fladen
+  if (hasRight) {
+    p.push(`C ${rx} ${knee} ${sR - (sR - rx) * 0.5} ${Y_SURFACE} ${sR} ${Y_SURFACE}`)
+  } else {
+    p.push(`C ${rx} ${knee} ${rx} ${Y_SURFACE} ${Math.min(VB_W - OUTER_R, rx)} ${Y_SURFACE}`)
+  }
+
+  p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
+  p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
+  p.push(`L ${VB_W} ${Y_BOTTOM}`)
+  p.push('Z')
+  return p.join(' ')
+}
+
+/** Én inaktiv tab som blødt afrundet baglag, der tuckes ind under fronten. */
+function backPath(index: number): string {
+  const cx = TAB_CENTERS[index]
+  const lx = cx - IW
+  const rx = cx + IW
+  const yt = Y_TAB_TOP_IN
+  const yb = Y_SURFACE + 8
+  return [
+    `M ${lx} ${yb}`,
+    `L ${lx} ${yt + TAB_R_IN}`,
+    `Q ${lx} ${yt} ${lx + TAB_R_IN} ${yt}`,
+    `L ${rx - TAB_R_IN} ${yt}`,
+    `Q ${rx} ${yt} ${rx} ${yt + TAB_R_IN}`,
+    `L ${rx} ${yb}`,
+    'Z',
+  ].join(' ')
+}
+
 export function InspirationFolder({
   monthName = 'juni',
   seedItems = DEFAULT_SEED_ITEMS,
@@ -115,6 +204,7 @@ export function InspirationFolder({
 }: InspirationFolderProps) {
   const defaultTab = hasSeedSuggestions ? 'seedbank' : 'june'
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab)
+  const activeIndex = TABS.findIndex(tab => tab.id === activeTab)
 
   const activeContent = useMemo(() => {
     if (activeTab === 'seedbank') {
@@ -194,100 +284,85 @@ export function InspirationFolder({
       </header>
 
       <div style={{ position: 'relative' }}>
-        <div
-          role="tablist"
-          aria-label="Inspiration"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-            alignItems: 'end',
-            gap: 4,
-            marginBottom: -1,
-            paddingInline: 6,
-            position: 'relative',
-            zIndex: 2,
-          }}
-        >
-          {TABS.map(tab => (
-            <FolderTab
-              key={tab.id}
-              active={activeTab === tab.id}
-              icon={tab.Icon}
-              label={tab.label}
-              onClick={() => setActiveTab(tab.id)}
-            />
-          ))}
+        {/* Die-cut top: én sammenhængende silhuet (tabs + skuldre + mappe-top) */}
+        <div style={{ position: 'relative' }}>
+          <svg
+            viewBox={`0 0 ${VB_W} ${Y_BOTTOM}`}
+            width="100%"
+            style={{ display: 'block' }}
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="folderFront" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#6C8175" />
+                <stop offset="1" stopColor="#62766B" />
+              </linearGradient>
+            </defs>
+            {/* inaktive tabs som lysere baglag */}
+            {TABS.map((tab, i) =>
+              i === activeIndex ? null : (
+                <path key={tab.id} d={backPath(i)} fill="#D9D8C8" />
+              ),
+            )}
+            {/* aktiv tab + skuldre + mappe-top som ét path */}
+            <path d={frontPath(activeIndex)} fill="url(#folderFront)" />
+          </svg>
+
+          {/* klikbare labels — transparent overlay oven på silhuetten */}
+          <div role="tablist" aria-label="Inspiration" style={{ position: 'absolute', inset: 0 }}>
+            {TABS.map((tab, i) => {
+              const active = i === activeIndex
+              const Icon = tab.Icon
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setActiveTab(tab.id)}
+                  style={{
+                    alignItems: 'center',
+                    background: 'transparent',
+                    border: 0,
+                    color: active ? '#F6F1E6' : '#7C8578',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    fontFamily: sans,
+                    fontSize: 13.5,
+                    fontWeight: active ? 800 : 650,
+                    gap: 6,
+                    left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
+                    position: 'absolute',
+                    top: active ? 12 : 18,
+                    transform: 'translateX(-50%)',
+                    transition: 'color 160ms ease, top 160ms ease',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Icon width={13} height={13} strokeWidth={1.8} aria-hidden />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
 
+        {/* Mappekrop — samme farve, fortsætter silhuetten */}
         <div
           style={{
-            background:
-              'linear-gradient(162deg, #81968B 0%, #6F857A 52%, #5F7469 100%)',
-            borderRadius: 26,
-            boxShadow: '0 10px 26px rgba(63,82,74,0.16)',
+            background: 'linear-gradient(180deg, #62766B 0%, #5A6E63 100%)',
+            borderRadius: '0 0 32px 32px',
+            boxShadow: '0 14px 30px rgba(60,80,72,0.20)',
             color: '#F8F4E9',
-            marginTop: 0,
+            marginTop: -1,
             overflow: 'hidden',
-            padding: '38px 24px 28px',
+            padding: '12px 24px 28px',
           }}
         >
           <FolderPanel tab={activeTab} content={activeContent} />
         </div>
       </div>
     </section>
-  )
-}
-
-function FolderTab({
-  active,
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  active: boolean
-  icon: LucideIcon
-  label: string
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={active}
-      onClick={onClick}
-      style={{
-        alignItems: 'center',
-        background: active ? '#5F7469' : '#D9D8C8',
-        border: 0,
-        borderRadius: '18px 18px 0 0',
-        color: active ? '#F6F1E6' : '#7D877B',
-        cursor: 'pointer',
-        display: 'inline-flex',
-        fontFamily: sans,
-        fontSize: 14,
-        fontWeight: active ? 800 : 650,
-        gap: 7,
-        justifyContent: 'center',
-        minHeight: 48,
-        minWidth: 0,
-        opacity: active ? 1 : 0.82,
-        padding: '0 6px',
-        position: 'relative',
-        top: active ? 0 : 6,
-        transition: 'background 160ms ease, color 160ms ease, top 160ms ease',
-      }}
-    >
-      <Icon width={14} height={14} strokeWidth={1.75} aria-hidden />
-      <span
-        style={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {label}
-      </span>
-    </button>
   )
 }
 
