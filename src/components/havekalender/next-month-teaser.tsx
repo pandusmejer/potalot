@@ -119,7 +119,8 @@ export function NextMonthTeaser({
             fontStyle: 'italic',
             fontWeight: 500,
             lineHeight: 1.15,
-            margin: 0,
+            margin: '2mm 0 0',
+            whiteSpace: 'nowrap',
           }}
         >
           {subtitle}
