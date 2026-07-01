@@ -17,6 +17,7 @@
  */
 
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -164,26 +165,37 @@ export function InspirationFolder({
         >
           Inspiration
         </p>
-        <h2
-          id="inspiration-folder-title"
-          style={{
-            color: '#9F7A24',
-            fontFamily: serif,
-            fontSize: 'clamp(38px, 9.5vw, 45px)',
-            fontWeight: 600,
-            letterSpacing: '-0.035em',
-            lineHeight: 0.96,
-            margin: '0 0 18px',
-            maxWidth: 320,
-          }}
-        >
-          Når du vil mere<br />med {monthName}
-        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 0 18px' }}>
+          <h2
+            id="inspiration-folder-title"
+            style={{
+              color: '#9F7A24',
+              fontFamily: serif,
+              fontSize: 'clamp(38px, 9.5vw, 45px)',
+              fontWeight: 600,
+              letterSpacing: '-0.035em',
+              lineHeight: 0.96,
+              margin: 0,
+              maxWidth: 320,
+            }}
+          >
+            Når du vil mere<br />med {monthName}
+          </h2>
+          {/* Bi-glyph som lille sommer-accent til højre for den hø-gule overskrift. */}
+          <Image
+            src="/images/glyphs/bi.png"
+            alt=""
+            aria-hidden
+            width={256}
+            height={206}
+            style={{ width: 54, height: 'auto', flexShrink: 0 }}
+          />
+        </div>
         <p
           style={{
             color: 'rgba(38,53,31,0.68)',
             fontFamily: sans,
-            fontSize: 16,
+            fontSize: 14.5,
             fontWeight: 500,
             lineHeight: 1.42,
             margin: 0,
