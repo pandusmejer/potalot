@@ -122,19 +122,21 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 14 // top af aktiv tab (kortere fane → mindre dramatisk drop)
-const Y_TAB_TOP_IN = 20 // top af inaktive tabs (mere tilbagetrukne)
+const Y_TAB_TOP = 20 // top af aktiv tab (lavt drop ned i mappen)
+const Y_TAB_TOP_IN = 24 // top af inaktive tabs (mere tilbagetrukne)
 const Y_SURFACE = 42 // mappens øverste flade (mellem tabs)
 const Y_BOTTOM = 82 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 17 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops (indre sider)
+const TAB_R = 14 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 13 // hjørne-radius, inaktive tab-tops (indre sider)
 const OUTER_R = 18 // ydre hjørner — deles af kant-tab og mappekant (mindre runde)
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
 const IW = 62 // halv bredde, inaktive tabs — overlapper aktiv en smule (lag)
-const SR_L = 44 // venstre skulder-løb (bredt + fladt)
-const SR_R = 38 // højre skulder-løb (lidt kortere → asymmetri)
-const KNEE = 0.52 // skulder-kurvens fladhed (højere = fladere, mindre U)
+const SR_L = 54 // venstre skulder-løb (bredt + fladt, lav skulder)
+const SR_R = 48 // højre skulder-løb (lidt kortere → asymmetri)
+// Skulder-kontrolpunktet holdes OVER mappefladen (< 1) så der ikke opstår et
+// konkavt "scoop"-overshoot; lav værdi = rolig, flad skulder uden dyb bue.
+const KNEE = 0.28
 const LAST = TAB_CENTERS.length - 1
 
 /**
@@ -366,7 +368,7 @@ export function InspirationFolder({
                     lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 22 : 26,
+                    top: active ? 23 : 25,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
