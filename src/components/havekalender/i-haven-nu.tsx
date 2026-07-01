@@ -140,7 +140,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ListChecks className="h-4 w-4 text-primary" />
-            I haven nu
+            Mine opgaver
             <span
               className="inline-flex items-center"
               title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
@@ -154,7 +154,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {/* Pinned "Fokus lige nu" — over fanerne, altid synlig. */}
           {pinned ? (
             <div>
-              <Eyebrow>Fokus lige nu</Eyebrow>
+              <Eyebrow>Haven lige nu</Eyebrow>
               <PrimaryFocus
                 h={pinned}
                 done={isDone(pinned)}

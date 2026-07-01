@@ -93,7 +93,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'var(--secondary)', padding: '11px 15px 10px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '12px 15px 11px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
     >
       <div className="flex items-start gap-2.5">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
@@ -106,8 +106,8 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
-                fontFamily: display, fontSize: 19.5, fontWeight: 800, lineHeight: 1.05,
-                letterSpacing: '-0.01em', color: 'var(--foreground)', margin: 0,
+                fontFamily: display, fontSize: 20.5, fontWeight: 800, lineHeight: 1.04,
+                letterSpacing: '-0.015em', color: 'var(--foreground)', margin: 0,
                 textDecoration: done ? 'line-through' : 'none',
               }}
             >
