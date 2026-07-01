@@ -149,7 +149,7 @@ export function InspirationFolder({
 
   return (
     <section aria-labelledby="inspiration-folder-title" style={{ paddingTop: 6 }}>
-      <header style={{ marginBottom: 18, paddingInline: 2 }}>
+      <header style={{ marginBottom: 28, paddingInline: 2 }}>
         <p
           style={{
             color: 'rgba(36,48,31,0.58)',
@@ -158,7 +158,7 @@ export function InspirationFolder({
             fontWeight: 850,
             letterSpacing: '0.22em',
             lineHeight: 1.2,
-            margin: 0,
+            margin: '0 0 18px',
             textTransform: 'uppercase',
           }}
         >
@@ -169,22 +169,23 @@ export function InspirationFolder({
           style={{
             color: '#183421',
             fontFamily: serif,
-            fontSize: 'clamp(40px, 12vw, 62px)',
+            fontSize: 'clamp(52px, 14vw, 58px)',
             fontWeight: 600,
             letterSpacing: '0',
-            lineHeight: 0.98,
-            margin: '10px 0 12px',
+            lineHeight: 0.95,
+            margin: '0 0 16px',
+            maxWidth: 330,
           }}
         >
           Når du vil mere med {monthName}
         </h2>
         <p
           style={{
-            color: 'rgba(36,48,31,0.68)',
+            color: 'rgba(38,53,31,0.68)',
             fontFamily: sans,
             fontSize: 16,
             fontWeight: 500,
-            lineHeight: 1.5,
+            lineHeight: 1.45,
             margin: 0,
             maxWidth: 560,
           }}
@@ -222,12 +223,12 @@ export function InspirationFolder({
           style={{
             background:
               'linear-gradient(145deg, rgba(38,55,31,0.98), rgba(28,45,27,0.99))',
-            borderRadius: 28,
-            boxShadow: '0 18px 40px rgba(36,48,31,0.18)',
+            borderRadius: 26,
+            boxShadow: '0 10px 26px rgba(36,48,31,0.12)',
             color: '#F8F4E9',
             marginTop: -1,
             overflow: 'hidden',
-            padding: '20px 18px 13px',
+            padding: '32px 23px 28px',
           }}
         >
           <FolderPanel tab={activeTab} content={activeContent} />
@@ -256,22 +257,23 @@ function FolderTab({
       onClick={onClick}
       style={{
         alignItems: 'center',
-        background: active ? '#26371F' : 'rgba(118,123,96,0.30)',
+        background: active ? '#26371F' : 'rgba(216,214,191,0.72)',
         border: 0,
-        borderRadius: '19px 19px 0 0',
-        color: active ? '#FBF6E9' : 'rgba(248,244,233,0.56)',
+        borderRadius: '18px 18px 0 0',
+        color: active ? '#FBF6E9' : '#3A4A2E',
         cursor: 'pointer',
         display: 'inline-flex',
         fontFamily: sans,
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: active ? 800 : 650,
-        gap: 6,
+        gap: 8,
         justifyContent: 'center',
-        minHeight: 40,
+        minHeight: 50,
         minWidth: 0,
-        padding: '0 8px',
+        opacity: active ? 1 : 0.64,
+        padding: '0 14px',
         position: 'relative',
-        top: active ? 0 : 7,
+        top: active ? 0 : 6,
         transition: 'background 160ms ease, color 160ms ease, top 160ms ease',
       }}
     >
@@ -304,15 +306,15 @@ function FolderPanel({
 }) {
   return (
     <div>
-      <div style={{ padding: '6px 4px 15px' }}>
+      <div style={{ padding: '2px 4px 22px' }}>
         <h3
           style={{
             color: '#FBF6E9',
             fontFamily: serif,
-            fontSize: tab === 'june' ? 28 : 34,
+            fontSize: tab === 'june' ? 30 : 36,
             fontWeight: tab === 'june' ? 700 : 600,
             letterSpacing: '0',
-            lineHeight: 1.05,
+            lineHeight: 1,
             margin: 0,
           }}
         >
@@ -323,10 +325,10 @@ function FolderPanel({
             style={{
               color: 'rgba(248,244,233,0.76)',
               fontFamily: sans,
-              fontSize: 15,
+              fontSize: 15.5,
               fontWeight: 500,
-              lineHeight: 1.45,
-              margin: '9px 0 0',
+              lineHeight: 1.4,
+              margin: '10px 0 0',
             }}
           >
             {content.subtitle}
@@ -336,13 +338,12 @@ function FolderPanel({
 
       {tab === 'guides' && <FeaturedGuideCard />}
 
-      <div style={{ display: 'grid', gap: 8 }}>
+      <div style={{ display: 'grid', gap: 11 }}>
         {content.items.map(item => (
           <FolderItemCard
             key={item.title}
             item={item}
             href={content.href}
-            compact={tab === 'guides'}
           />
         ))}
       </div>
@@ -372,11 +373,9 @@ function FolderPanel({
 function FolderItemCard({
   item,
   href,
-  compact,
 }: {
   item: FolderItem
   href: string
-  compact?: boolean
 }) {
   const Icon = item.Icon
 
@@ -389,10 +388,10 @@ function FolderItemCard({
         borderRadius: 20,
         color: '#183421',
         display: 'grid',
-        gridTemplateColumns: '56px minmax(0, 1fr) 20px',
-        gap: 13,
-        minHeight: compact ? 80 : 94,
-        padding: compact ? '13px 15px' : '15px 15px',
+        gridTemplateColumns: '48px minmax(0, 1fr) 18px',
+        gap: 12,
+        minHeight: 96,
+        padding: '17px 18px',
         textDecoration: 'none',
       }}
     >
@@ -404,12 +403,12 @@ function FolderItemCard({
           borderRadius: 999,
           color: '#294029',
           display: 'inline-flex',
-          height: 52,
+          height: 48,
           justifyContent: 'center',
-          width: 52,
+          width: 48,
         }}
       >
-        <Icon width={22} height={22} strokeWidth={1.75} />
+        <Icon width={20} height={20} strokeWidth={1.75} />
       </span>
       <span style={{ minWidth: 0 }}>
         <span
@@ -417,10 +416,10 @@ function FolderItemCard({
             color: '#16351F',
             display: 'block',
             fontFamily: sans,
-            fontSize: compact ? 17 : 18,
+            fontSize: 18,
             fontWeight: 850,
-            lineHeight: 1.2,
-            marginBottom: 5,
+            lineHeight: 1.15,
+            marginBottom: 4,
           }}
         >
           {item.title}
@@ -430,7 +429,7 @@ function FolderItemCard({
             color: 'rgba(36,48,31,0.68)',
             display: 'block',
             fontFamily: sans,
-            fontSize: compact ? 13.5 : 14.5,
+            fontSize: 14.5,
             fontWeight: 500,
             lineHeight: 1.35,
           }}
@@ -439,10 +438,10 @@ function FolderItemCard({
         </span>
       </span>
       <ChevronRight
-        width={18}
-        height={18}
+        width={16}
+        height={16}
         strokeWidth={1.8}
-        style={{ color: 'rgba(36,48,31,0.46)' }}
+        style={{ color: 'rgba(36,48,31,0.34)' }}
         aria-hidden
       />
     </Link>
