@@ -30,7 +30,6 @@ import {
 } from 'lucide-react'
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
-import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { cn } from '@/lib/utils'
 import { hideGeneralTask } from '@/actions/aarshjul'
@@ -161,16 +160,10 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
     .filter(g => !g.isHiddenByMe)
     .map(mapTaskToPlannerItem)
 
-  // Måneds-navne til de to editorial afslutnings-sektioner. Indeværende
-  // måned (små bogstaver) til Inspiration-folderen; næste måned til
-  // "Kig mod …"-teaseren. Holder afslutningen i sync med kalenderens måned.
+  // Indeværende måned (små bogstaver) til Inspiration-folderen. "Kig mod …"-
+  // teaseren afleder selv NÆSTE måned (label/titel/subtitle/body/hero) ud fra
+  // currentMonth — så vi sender bare kalenderens aktuelle måned ind.
   const nuMaanedNavn = MONTHS_DA[nuMaaned - 1].full.toLowerCase()
-  const naesteMaaned = nuMaaned === 12 ? 1 : nuMaaned + 1
-  const naesteMaanedNavn = MONTHS_DA[naesteMaaned - 1].full
-  // Teaser-body afledes af NÆSTE måned (samme kilde som monthName/subtitle) —
-  // aldrig en statisk juli-tekst. Kun første sætning som kompakt teaser.
-  const naesteMaanedBody =
-    (MAANEDS_STEMNING[naesteMaaned]?.description ?? '').match(/^[^.]*\./)?.[0] ?? undefined
 
   return (
     <div className="space-y-7">
@@ -342,12 +335,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* 9 · PROGRESSION — rolig teaser mod næste måned. Kalenderens
           afslutning ("næste kapitel venter"), ikke endnu en opgaveliste. */}
-      <NextMonthTeaser
-        label={`Kig mod ${naesteMaanedNavn.toLowerCase()}`}
-        monthName={naesteMaanedNavn}
-        subtitle={MAANEDS_STEMNING[naesteMaaned]?.tagline ?? undefined}
-        body={naesteMaanedBody}
-      />
+      <NextMonthTeaser currentMonth={nuMaaned} />
     </div>
   )
 }
