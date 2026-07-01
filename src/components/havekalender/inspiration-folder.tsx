@@ -75,14 +75,20 @@ const DEFAULT_JUNE_ITEMS: FolderItem[] = [
   {
     title: 'Vand dybt og roligt',
     text: 'Planter får mere ud af én grundig vanding end mange hurtige sjatter.',
+    image: '/images/kalender/saeson/vand.jpg',
+    imageAlt: '',
   },
   {
     title: 'Tyv tomaterne',
     text: 'Brug få minutter hver anden dag, så planterne ikke bliver et grønt trafikuheld i juli.',
+    image: '/images/kalender/saeson/sol.jpg',
+    imageAlt: '',
   },
   {
     title: 'Så til sensommeren',
     text: 'Grønkål, salat og kålroer kan nå at give en ny runde senere.',
+    image: '/images/kalender/saeson/vaekst.jpg',
+    imageAlt: '',
   },
 ]
 
@@ -542,8 +548,12 @@ function LeadingVisual({
 }) {
   const [errored, setErrored] = useState(false)
 
-  // Thumbnails bruges KUN på Frøbank-fanen; øvrige faner får neutral markør.
-  if (image && !errored && sourceTab === 'seedbank') {
+  // Tre faste visuelle systemer, ét pr. fane:
+  //   Frøbank  → konkrete plante-thumbnails (frøkort)
+  //   Sæsonråd → atmosfæriske natur-crops (materiale/stemning, ikke sort)
+  //   Guides   → botanisk illustration (mangler assets → neutral bog-badge)
+  // Guides bruger derfor altid fallback-markøren; de øvrige viser thumbnail.
+  if (image && !errored && sourceTab !== 'guides') {
     return (
       <span
         style={{
