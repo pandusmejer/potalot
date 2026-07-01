@@ -165,7 +165,7 @@ export function InspirationFolder({
         >
           Inspiration
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '0 0 18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: 0 }}>
           <h2
             id="inspiration-folder-title"
             style={{
@@ -188,22 +188,9 @@ export function InspirationFolder({
             aria-hidden
             width={256}
             height={206}
-            style={{ width: 54, height: 'auto', flexShrink: 0 }}
+            style={{ width: 54, height: 'auto', flexShrink: 0, transform: 'translateX(4mm) rotate(-37deg)' }}
           />
         </div>
-        <p
-          style={{
-            color: 'rgba(38,53,31,0.68)',
-            fontFamily: sans,
-            fontSize: 14.5,
-            fontWeight: 500,
-            lineHeight: 1.42,
-            margin: 0,
-            maxWidth: 560,
-          }}
-        >
-          Frøbank, sæsonråd og guides samlet ét sted.
-        </p>
       </header>
 
       <div style={{ position: 'relative' }}>
