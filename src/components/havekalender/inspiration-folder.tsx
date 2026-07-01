@@ -167,7 +167,7 @@ export function InspirationFolder({
         <h2
           id="inspiration-folder-title"
           style={{
-            color: '#183421',
+            color: '#9F7A24',
             fontFamily: serif,
             fontSize: 'clamp(40px, 10vw, 47px)',
             fontWeight: 600,
