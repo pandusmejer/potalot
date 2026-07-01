@@ -159,13 +159,13 @@ export function DetKanDuGoereEditorialPlanner({
         <BotanicalLineArt />
       </div>
       <div style={{ maxWidth: 760, marginInline: 'auto' }}>
-        <header style={{ marginBottom: 26 }}>
+        <header style={{ marginBottom: 18 }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: 12,
-              padding: '24px clamp(20px, 5vw, 38px) 18px',
+              padding: '21px clamp(20px, 5vw, 38px) 15px',
               borderBottom: '1px solid rgba(64,58,42,0.10)',
               background:
                 'linear-gradient(180deg, rgba(255,252,244,0.82), rgba(255,252,244,0.34))',
@@ -210,7 +210,7 @@ export function DetKanDuGoereEditorialPlanner({
 
           <div
             style={{
-              padding: '24px clamp(28px, 7vw, 76px) 18px',
+              padding: '18px clamp(28px, 7vw, 76px) 12px',
             }}
           >
             <span
@@ -219,17 +219,17 @@ export function DetKanDuGoereEditorialPlanner({
                 display: 'block',
                 width: 58,
                 height: 4,
-                margin: '0 auto 22px',
+                margin: '0 auto 17px',
                 background: gold,
               }}
             />
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(25px, 7vw, 33px)',
+                fontSize: 'clamp(23px, 6.4vw, 30px)',
                 fontStyle: 'italic',
                 fontWeight: 500,
-                lineHeight: 1.34,
+                lineHeight: 1.25,
                 margin: 0,
                 maxWidth: 680,
                 color: 'rgba(36,48,31,0.82)',
@@ -243,7 +243,7 @@ export function DetKanDuGoereEditorialPlanner({
           </div>
         </header>
 
-        <div style={{ display: 'grid', gap: 24, padding: '0 clamp(20px, 5vw, 38px)' }}>
+        <div style={{ display: 'grid', gap: 20, padding: '0 clamp(20px, 5vw, 38px)' }}>
           <EditorialSectionLabel />
           {GROUPS.map(group => {
             const groupItems = visibleItems.filter(item => item.group === group.id)
@@ -267,8 +267,8 @@ export function DetKanDuGoereEditorialPlanner({
           <div
             style={{
               position: 'relative',
-              marginTop: 30,
-              padding: '26px clamp(20px, 5vw, 38px) 30px',
+              marginTop: 24,
+              padding: '20px clamp(20px, 5vw, 38px) 22px',
               background:
                 'linear-gradient(90deg, rgba(127,143,106,0.36), rgba(199,163,65,0.18))',
               borderTop: '1px solid rgba(64,58,42,0.10)',
@@ -282,9 +282,9 @@ export function DetKanDuGoereEditorialPlanner({
                 position: 'relative',
                 zIndex: 1,
                 display: 'grid',
-                gridTemplateColumns: '64px minmax(0, 1fr)',
+                gridTemplateColumns: '54px minmax(0, 1fr)',
                 alignItems: 'center',
-                gap: 18,
+                gap: 16,
                 width: '100%',
                 padding: 0,
                 background: 'transparent',
@@ -300,14 +300,14 @@ export function DetKanDuGoereEditorialPlanner({
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 64,
-                  height: 64,
+                  width: 54,
+                  height: 54,
                   borderRadius: 999,
                   background: gold,
                   color: '#FEFCF6',
                   boxShadow: '0 10px 22px rgba(153,111,22,0.18)',
                   fontFamily: sans,
-                  fontSize: 30,
+                  fontSize: 26,
                   fontWeight: 500,
                   lineHeight: 1,
                 }}
@@ -317,9 +317,9 @@ export function DetKanDuGoereEditorialPlanner({
               <span
                 style={{
                   fontFamily: sans,
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: 850,
-                  letterSpacing: '0.25em',
+                  letterSpacing: '0.22em',
                   lineHeight: 1.35,
                   textTransform: 'uppercase',
                 }}
@@ -366,7 +366,7 @@ function MonthLoopHeader({
         gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
         columnGap: 0,
         margin: 0,
-        minHeight: 190,
+        minHeight: 156,
         width: '100%',
         background:
           'linear-gradient(90deg, rgba(250,246,237,0.92) 0%, rgba(250,246,237,0.92) 24%, transparent 24%, transparent 76%, rgba(250,246,237,0.92) 76%, rgba(250,246,237,0.92) 100%)',
@@ -380,15 +380,15 @@ function MonthLoopHeader({
         style={{
           gap: 5,
           minWidth: 0,
-          minHeight: 112,
-          padding: '0 8px 0 18px',
+          minHeight: 94,
+          padding: '0 10px 0 20px',
           background: 'rgba(255,252,244,0.52)',
           border: 0,
           borderRadius: '0 34px 34px 0',
-          color: 'rgba(36,48,31,0.74)',
+          color: 'rgba(36,48,31,0.70)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 'clamp(25px, 7.2vw, 34px)',
+          fontSize: 'clamp(22px, 6.2vw, 29px)',
           fontWeight: 650,
           letterSpacing: '0.02em',
           lineHeight: 1,
@@ -406,13 +406,13 @@ function MonthLoopHeader({
           alignSelf: 'stretch',
           display: 'grid',
           placeItems: 'center',
-          minWidth: 'min(46vw, 360px)',
-          padding: '20px 28px',
+          minWidth: 'min(46vw, 330px)',
+          padding: '16px 24px',
           background:
             'radial-gradient(circle at 78% 36%, rgba(135,69,45,0.34), transparent 32%), linear-gradient(145deg, #C66B43, #A94E35)',
           color: '#FFF8EA',
           fontFamily: serif,
-          fontSize: 'clamp(72px, 20vw, 118px)',
+          fontSize: 'clamp(61px, 17vw, 96px)',
           fontWeight: 800,
           letterSpacing: '0.02em',
           lineHeight: 1,
@@ -432,15 +432,15 @@ function MonthLoopHeader({
         style={{
           gap: 5,
           minWidth: 0,
-          minHeight: 112,
-          padding: '0 18px 0 8px',
+          minHeight: 94,
+          padding: '0 20px 0 10px',
           background: 'rgba(255,252,244,0.52)',
           border: 0,
           borderRadius: '34px 0 0 34px',
-          color: 'rgba(36,48,31,0.74)',
+          color: 'rgba(36,48,31,0.70)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 'clamp(25px, 7.2vw, 34px)',
+          fontSize: 'clamp(22px, 6.2vw, 29px)',
           fontWeight: 650,
           letterSpacing: '0.02em',
           lineHeight: 1,
@@ -455,13 +455,13 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           left: '50%',
-          bottom: 28,
+          bottom: 22,
           display: 'inline-flex',
-          gap: 19,
+          gap: 16,
           transform: 'translateX(-50%)',
           color: 'rgba(255,248,234,0.55)',
           fontFamily: sans,
-          fontSize: 26,
+          fontSize: 21,
           fontWeight: 900,
           letterSpacing: 0,
           lineHeight: 1,
@@ -489,35 +489,43 @@ function PlannerGroup({
   itemStates: Record<string, PlannerItemState>
   onSelect: (item: EditorialPlannerItem) => void
 }) {
+  const showGroupLabel = label.toLowerCase() !== 'gør nu'
+
   return (
     <section aria-labelledby={`planner-group-${slugify(label)}`}>
-      <div style={{ marginBottom: 8 }}>
-        <h3
-          id={`planner-group-${slugify(label)}`}
-          style={{
-            fontFamily: sans,
-            fontSize: 10.5,
-            fontWeight: 850,
-            letterSpacing: '0.19em',
-            lineHeight: 1.2,
-            margin: 0,
-            textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.58)',
-          }}
-        >
+      {showGroupLabel ? (
+        <div style={{ marginBottom: 8 }}>
+          <h3
+            id={`planner-group-${slugify(label)}`}
+            style={{
+              fontFamily: sans,
+              fontSize: 10.5,
+              fontWeight: 850,
+              letterSpacing: '0.19em',
+              lineHeight: 1.2,
+              margin: 0,
+              textTransform: 'uppercase',
+              color: 'rgba(36,48,31,0.58)',
+            }}
+          >
+            {label}
+          </h3>
+          <span
+            aria-hidden
+            style={{
+              display: 'block',
+              width: 22,
+              height: 1,
+              marginTop: 9,
+              background: 'rgba(36,48,31,0.30)',
+            }}
+          />
+        </div>
+      ) : (
+        <h3 id={`planner-group-${slugify(label)}`} className="sr-only">
           {label}
         </h3>
-        <span
-          aria-hidden
-          style={{
-            display: 'block',
-            width: 22,
-            height: 1,
-            marginTop: 9,
-            background: 'rgba(36,48,31,0.30)',
-          }}
-        />
-      </div>
+      )}
 
       <div>
         {items.map((item, index) => (
@@ -553,11 +561,11 @@ function PlannerRow({
       onClick={onClick}
       className="group grid w-full text-left"
       style={{
-        gridTemplateColumns: '76px minmax(0, 1fr) 48px',
-        columnGap: 16,
+        gridTemplateColumns: '68px minmax(0, 1fr) 44px',
+        columnGap: 14,
         alignItems: 'center',
-        minHeight: 94,
-        padding: '17px 0',
+        minHeight: 86,
+        padding: '14px 0',
         background: 'transparent',
         border: 0,
         borderBottom: '1px solid rgba(64,58,42,0.13)',
@@ -572,15 +580,15 @@ function PlannerRow({
           display: 'grid',
           gridTemplateColumns: '1fr 1px',
           alignItems: 'center',
-          gap: 15,
-          minHeight: 66,
+          gap: 13,
+          minHeight: 54,
         }}
       >
         <span
           style={{
             color: rust,
             fontFamily: serif,
-            fontSize: 'clamp(39px, 11vw, 54px)',
+            fontSize: 'clamp(37px, 10vw, 50px)',
             fontWeight: 800,
             letterSpacing: '0.01em',
             lineHeight: 0.94,
@@ -591,7 +599,7 @@ function PlannerRow({
         <span
           style={{
             width: 1,
-            height: 58,
+            height: 42,
             background: gold,
           }}
         />
@@ -601,7 +609,7 @@ function PlannerRow({
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 17,
+            fontSize: 16.5,
             fontWeight: 850,
             lineHeight: 1.24,
             color: '#24301F',
@@ -614,7 +622,7 @@ function PlannerRow({
             display: 'block',
             marginTop: 5,
             fontFamily: sans,
-            fontSize: 14,
+            fontSize: 13.5,
             fontWeight: 500,
             lineHeight: 1.42,
             color: 'rgba(36,48,31,0.64)',
@@ -631,8 +639,9 @@ function PlannerRow({
         aria-hidden
         className="inline-flex items-center justify-center"
         style={{
-          width: 42,
-          height: 42,
+          alignSelf: 'center',
+          width: 40,
+          height: 40,
           borderRadius: 999,
           border: '1px solid rgba(184,112,63,0.24)',
           marginTop: 0,
