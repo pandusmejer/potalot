@@ -365,15 +365,15 @@ function MonthLoopHeader({
       className="grid items-center"
       style={{
         position: 'relative',
-        gridTemplateColumns: 'calc((100% - 196px) / 2) 196px calc((100% - 196px) / 2)',
+        gridTemplateColumns: '1fr clamp(208px, 56vw, 232px) 1fr',
         columnGap: 0,
         margin: 0,
+        marginBottom: 18,
         height: 136,
         maxHeight: 136,
         minHeight: 136,
         width: '100%',
-        background:
-          'linear-gradient(90deg, rgba(250,246,237,0.92) 0%, rgba(250,246,237,0.92) 24%, transparent 24%, transparent 76%, rgba(250,246,237,0.92) 76%, rgba(250,246,237,0.92) 100%)',
+        overflow: 'hidden',
       }}
     >
       <button
@@ -382,13 +382,15 @@ function MonthLoopHeader({
         aria-label={`Forrige måned: ${prevLabel}`}
         className="inline-flex items-center justify-start"
         style={{
+          position: 'relative',
+          zIndex: 3,
           gap: 0,
           minWidth: 0,
           minHeight: 136,
-          padding: 0,
-          background: 'rgba(255,252,244,0.52)',
+          padding: '0 12px',
+          background: 'rgba(250,246,232,0.92)',
           border: 0,
-          borderRadius: '0 34px 34px 0',
+          borderRadius: 0,
           color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
@@ -399,14 +401,53 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
-        <ChevronLeft
-          width={16}
-          height={16}
-          strokeWidth={1.7}
+        <span
           aria-hidden
-          style={{ color: 'rgba(38,53,31,0.65)', margin: '0 6px' }}
+          style={{
+            position: 'absolute',
+            right: -34,
+            top: 0,
+            zIndex: 1,
+            width: 68,
+            height: 68,
+            borderRadius: '0 0 999px 0',
+            background: 'rgba(250,246,232,0.92)',
+            pointerEvents: 'none',
+          }}
         />
-        <span>{prevLabel.toLowerCase()}</span>
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            right: -34,
+            bottom: 0,
+            zIndex: 1,
+            width: 68,
+            height: 68,
+            borderRadius: '0 999px 0 0',
+            background: 'rgba(250,246,232,0.92)',
+            pointerEvents: 'none',
+          }}
+        />
+        <span
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            minWidth: 0,
+          }}
+        >
+          <ChevronLeft
+            width={16}
+            height={16}
+            strokeWidth={1.8}
+            aria-hidden
+            style={{ color: 'rgba(38,53,31,0.68)', flex: '0 0 auto' }}
+          />
+          <span>{prevLabel.toLowerCase()}</span>
+        </span>
       </button>
 
       <span
@@ -414,26 +455,66 @@ function MonthLoopHeader({
         data-active-month="true"
         style={{
           position: 'relative',
+          zIndex: 2,
           alignSelf: 'center',
-          display: 'grid',
-          placeItems: 'center',
-          width: 196,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
           height: 136,
           padding: 0,
-          background:
-            'radial-gradient(circle at 78% 36%, rgba(135,69,45,0.34), transparent 32%), linear-gradient(145deg, #C66B43, #A94E35)',
+          overflow: 'hidden',
+          background: '#B96545',
           color: '#FFF7E8',
           fontFamily: serif,
-          fontSize: 58,
+          fontSize: 64,
           fontWeight: 600,
           letterSpacing: '-0.035em',
-          lineHeight: 0.9,
+          lineHeight: 0.86,
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
       >
-        {activeLabel.toUpperCase()}
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            right: 10,
+            bottom: 8,
+            zIndex: 0,
+            width: 92,
+            height: 69,
+            opacity: 0.18,
+            pointerEvents: 'none',
+          }}
+        >
+          <BotanicalLineArt />
+        </span>
+        <span style={{ position: 'relative', zIndex: 1, marginTop: 2 }}>
+          {activeLabel.toUpperCase()}
+        </span>
+        <span
+          aria-hidden
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'inline-flex',
+            gap: 14,
+            marginTop: 16,
+            fontFamily: sans,
+            fontSize: 18,
+            fontWeight: 900,
+            letterSpacing: 0,
+            lineHeight: 1,
+            pointerEvents: 'none',
+          }}
+        >
+          <span style={{ color: 'rgba(255,247,232,0.34)' }}>•</span>
+          <span style={{ color: 'rgba(255,247,232,0.95)' }}>•</span>
+          <span style={{ color: 'rgba(255,247,232,0.34)' }}>•</span>
+        </span>
       </span>
 
       <button
@@ -442,13 +523,15 @@ function MonthLoopHeader({
         aria-label={`Næste måned: ${nextLabel}`}
         className="inline-flex items-center justify-end"
         style={{
+          position: 'relative',
+          zIndex: 3,
           gap: 0,
           minWidth: 0,
           minHeight: 136,
-          padding: 0,
-          background: 'rgba(255,252,244,0.52)',
+          padding: '0 12px',
+          background: 'rgba(250,246,232,0.92)',
           border: 0,
-          borderRadius: '34px 0 0 34px',
+          borderRadius: 0,
           color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
@@ -459,37 +542,54 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
-        <span>{nextLabel.toLowerCase()}</span>
-        <ChevronRight
-          width={16}
-          height={16}
-          strokeWidth={1.7}
+        <span
           aria-hidden
-          style={{ color: 'rgba(38,53,31,0.65)', margin: '0 6px' }}
+          style={{
+            position: 'absolute',
+            left: -34,
+            top: 0,
+            zIndex: 1,
+            width: 68,
+            height: 68,
+            borderRadius: '0 0 0 999px',
+            background: 'rgba(250,246,232,0.92)',
+            pointerEvents: 'none',
+          }}
         />
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: -34,
+            bottom: 0,
+            zIndex: 1,
+            width: 68,
+            height: 68,
+            borderRadius: '999px 0 0 0',
+            background: 'rgba(250,246,232,0.92)',
+            pointerEvents: 'none',
+          }}
+        />
+        <span
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            minWidth: 0,
+          }}
+        >
+          <span>{nextLabel.toLowerCase()}</span>
+          <ChevronRight
+            width={16}
+            height={16}
+            strokeWidth={1.8}
+            aria-hidden
+            style={{ color: 'rgba(38,53,31,0.68)', flex: '0 0 auto' }}
+          />
+        </span>
       </button>
-      <span
-        aria-hidden
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: 'calc(50% + 39px)',
-          display: 'inline-flex',
-          gap: 14,
-          transform: 'translateX(-50%)',
-          color: '#FFF7E8',
-          fontFamily: sans,
-          fontSize: 18,
-          fontWeight: 900,
-          letterSpacing: 0,
-          lineHeight: 1,
-          pointerEvents: 'none',
-        }}
-      >
-        <span style={{ opacity: 0.35 }}>•</span>
-        <span>•</span>
-        <span style={{ opacity: 0.35 }}>•</span>
-      </span>
     </div>
   )
 }
