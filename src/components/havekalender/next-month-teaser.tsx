@@ -17,6 +17,8 @@ import {
   Sprout,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { MONTHS_DA } from '@/lib/constants'
+import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -27,14 +29,12 @@ interface NextMonthChip {
 }
 
 interface NextMonthTeaserProps {
-  label?: string
-  monthName?: string
-  subtitle?: string
-  body?: string
+  /** Kalenderens AKTUELLE måned (1-12). Teaseren viser ALTID currentMonth+1
+   *  — aldrig samme måned som topheroen. */
+  currentMonth?: number
   href?: string
   chips?: NextMonthChip[]
-  /** Diskret hero-preview af næste måned i højre side. Falder tilbage til
-   *  månedens hero-foto ud fra monthName hvis ikke angivet. */
+  /** Valgfri override; ellers afledt af NÆSTE måneds hero-foto. */
   heroImage?: string
 }
 
@@ -45,14 +45,22 @@ const DEFAULT_CHIPS: NextMonthChip[] = [
 ]
 
 export function NextMonthTeaser({
-  label = 'Kig mod juli',
-  monthName = 'Juli',
-  subtitle = 'Høst, varme og vildskab',
-  body = 'Haven går ind i sin mest intense måned. Høst lidt og ofte, vand klogt, og så nyt til sensommeren.',
+  currentMonth = 7,
   href = '/kalender',
   chips = DEFAULT_CHIPS,
   heroImage,
 }: NextMonthTeaserProps) {
+  // Produktregel: "Kig mod [måned]" er ALTID næste måned relativt til
+  // kalenderens aktuelle måned — aldrig samme som topheroen. Alt (label,
+  // titel, subtitle, body, hero, CTA) afledes derfor af nextMonth.
+  const nextMonth = currentMonth >= 12 ? 1 : currentMonth + 1
+  const monthName = MONTHS_DA[nextMonth - 1]?.full ?? 'Juli'
+  const label = `Kig mod ${monthName.toLowerCase()}`
+  const subtitle = MAANEDS_STEMNING[nextMonth]?.tagline ?? ''
+  // Kun FØRSTE sætning som teaser — hele månedens tekst ligger bag "Se [måned]".
+  // Holder kortet kompakt uanset hvor lang måneds-beskrivelsen er.
+  const fullBody = MAANEDS_STEMNING[nextMonth]?.description ?? ''
+  const body = fullBody.match(/^[^.]*\./)?.[0] ?? fullBody
   const heroSrc =
     heroImage ?? `/images/heroes-maaneder/hero-${monthName.toLowerCase()}-foto.png`
   return (
