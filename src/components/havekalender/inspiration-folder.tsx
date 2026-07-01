@@ -122,18 +122,19 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 4 // top af aktiv tab
-const Y_TAB_TOP_IN = 16 // top af inaktive tabs (mere tilbagetrukne)
-const Y_SURFACE = 46 // mappens øverste flade (mellem tabs)
-const Y_BOTTOM = 84 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 18 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops (indre sider)
+const Y_TAB_TOP = 9 // top af aktiv tab (fladere → mindre app-bølge)
+const Y_TAB_TOP_IN = 18 // top af inaktive tabs (mere tilbagetrukne)
+const Y_SURFACE = 42 // mappens øverste flade (mellem tabs)
+const Y_BOTTOM = 82 // bund af SVG = top af mappekroppen (flush)
+const TAB_R = 20 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 16 // hjørne-radius, inaktive tab-tops (indre sider)
 const OUTER_R = 26 // ydre hjørner — deles af kant-tab og mappekant (flush)
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
-const AW = 54 // halv bredde, aktiv tab
-const IW = 48 // halv bredde, inaktive tabs (indre side)
-const SR_L = 32 // venstre skulder-løb (bredere → asymmetri)
-const SR_R = 27 // højre skulder-løb (kortere)
+const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
+const IW = 62 // halv bredde, inaktive tabs — overlapper aktiv en smule (lag)
+const SR_L = 44 // venstre skulder-løb (bredt + fladt)
+const SR_R = 38 // højre skulder-løb (lidt kortere → asymmetri)
+const KNEE = 0.52 // skulder-kurvens fladhed (højere = fladere, mindre U)
 const LAST = TAB_CENTERS.length - 1
 
 /**
@@ -147,7 +148,7 @@ function frontPath(active: number): string {
   const rx = cx + AW
   const flushLeft = active === 0
   const flushRight = active === LAST
-  const knee = Y_TAB_TOP + TAB_R + (Y_SURFACE - Y_TAB_TOP) * 0.35
+  const knee = Y_TAB_TOP + TAB_R + (Y_SURFACE - Y_TAB_TOP) * KNEE
   const p: string[] = [`M 0 ${Y_BOTTOM}`]
 
   // venstre side af den aktive tab
@@ -312,15 +313,27 @@ export function InspirationFolder({
                 <stop offset="0" stopColor="#6C8175" />
                 <stop offset="1" stopColor="#62766B" />
               </linearGradient>
+              {/* Blød skygge så det aktive ark løfter sig over baglagene (papir-på-papir) */}
+              <filter id="folderLift" x="-10%" y="-30%" width="120%" height="170%">
+                <feDropShadow dx="0" dy="2.5" stdDeviation="3" floodColor="#2A3020" floodOpacity="0.22" />
+              </filter>
             </defs>
-            {/* inaktive tabs som lysere baglag */}
+            {/* inaktive tabs som lysere papir-baglag, let forskudt bagved */}
             {TABS.map((tab, i) =>
               i === activeIndex ? null : (
-                <path key={tab.id} d={backPath(i)} fill="#D9D8C8" />
+                <path
+                  key={tab.id}
+                  d={backPath(i)}
+                  fill="#DEDDCF"
+                  stroke="rgba(38,53,31,0.10)"
+                  strokeWidth={1}
+                />
               ),
             )}
-            {/* aktiv tab + skuldre + mappe-top som ét path */}
-            <path d={frontPath(activeIndex)} fill="url(#folderFront)" />
+            {/* aktiv tab + skuldre + mappe-top som ét ark, løftet over baglagene */}
+            <path d={frontPath(activeIndex)} fill="url(#folderFront)" filter="url(#folderLift)" />
+            {/* diskret top-highlight langs det aktive arks kant (papir-lysning) */}
+            <path d={frontPath(activeIndex)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth={1} />
           </svg>
 
           {/* klikbare labels — transparent overlay oven på silhuetten */}
@@ -364,7 +377,7 @@ export function InspirationFolder({
           style={{
             background: 'linear-gradient(180deg, #62766B 0%, #5A6E63 100%)',
             borderRadius: '0 0 32px 32px',
-            boxShadow: '0 14px 30px rgba(60,80,72,0.20)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.13), 0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
             marginTop: -18, // rykker mappens overskrifter op mod tabs (m. luft til serif-top)
             padding: '12px 24px 28px',
