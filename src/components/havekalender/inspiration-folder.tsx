@@ -23,11 +23,7 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
-  Droplets,
-  Leaf,
-  Scissors,
   Sprout,
-  Sun,
   Wheat,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -40,7 +36,10 @@ type TabId = 'seedbank' | 'june' | 'guides'
 interface FolderItem {
   title: string
   text: string
-  Icon: LucideIcon
+  /** Rundt thumbnail hvis tippet handler om en konkret plante/sort.
+   *  Mangler den (generelt råd), vises en neutral kilde-markør i stedet. */
+  image?: string
+  imageAlt?: string
 }
 
 interface InspirationFolderProps {
@@ -53,19 +52,22 @@ interface InspirationFolderProps {
 
 const DEFAULT_SEED_ITEMS: FolderItem[] = [
   {
-    title: 'Så et nyt hold salat',
-    text: 'Little Gem kan give en ny omgang sprøde blade senere på sommeren.',
-    Icon: Leaf,
+    title: 'Så salat igen',
+    text: 'Little Gem kan give sprøde blade senere.',
+    image: '/images/frokort/salat-little-gem.png',
+    imageAlt: 'Little Gem-salat',
   },
   {
     title: 'Giv basilikum varme',
-    text: 'Basilikum trives bedst, når nætterne er lune og jorden ikke er kold.',
-    Icon: Sprout,
+    text: 'Vent på lune nætter og varm jord.',
+    image: '/images/frokort/basilikum-genovese.png',
+    imageAlt: 'Basilikum',
   },
   {
     title: 'Hold øje med bønnerne',
-    text: 'Bønner spirer hurtigt i lun jord, men hader kulde og våd jord.',
-    Icon: Wheat,
+    text: 'Spirer hurtigt i lun jord — hader kulde.',
+    image: '/images/frokort/stangboenne-cobra.png',
+    imageAlt: 'Stangbønne',
   },
 ]
 
@@ -73,17 +75,16 @@ const DEFAULT_JUNE_ITEMS: FolderItem[] = [
   {
     title: 'Vand dybt og roligt',
     text: 'Planter får mere ud af én grundig vanding end mange hurtige sjatter.',
-    Icon: Droplets,
   },
   {
     title: 'Tyv tomaterne',
     text: 'Brug få minutter hver anden dag, så planterne ikke bliver et grønt trafikuheld i juli.',
-    Icon: Scissors,
+    image: '/images/frokort/tomat-gardeners-delight.png',
+    imageAlt: 'Tomat',
   },
   {
     title: 'Så til sensommeren',
     text: 'Grønkål, salat og kålroer kan nå at give en ny runde senere.',
-    Icon: Sprout,
   },
 ]
 
@@ -91,12 +92,12 @@ const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
   {
     title: 'Tomater i juni',
     text: 'Opbinding, sideskud og vand - det vigtigste lige nu.',
-    Icon: Sprout,
+    image: '/images/frokort/tomat-san-marzano.png',
+    imageAlt: 'Tomat',
   },
   {
     title: 'Såning i varme perioder',
     text: 'Sådan får frøene en god start uden at tørre ud.',
-    Icon: Sun,
   },
 ]
 
@@ -389,7 +390,7 @@ function FolderPanel({
             fontSize: tab === 'june' ? 30 : 36,
             fontWeight: tab === 'june' ? 700 : 600,
             letterSpacing: '0',
-            lineHeight: 1,
+            lineHeight: 0.98,
             margin: 0,
           }}
         >
@@ -400,10 +401,10 @@ function FolderPanel({
             style={{
               color: 'rgba(246,241,230,0.84)',
               fontFamily: sans,
-              fontSize: 15.5,
+              fontSize: 16,
               fontWeight: 500,
-              lineHeight: 1.4,
-              margin: '10px 0 0',
+              lineHeight: 1.35,
+              margin: '8px 0 0',
             }}
           >
             {content.subtitle}
@@ -413,12 +414,13 @@ function FolderPanel({
 
       {tab === 'guides' && <FeaturedGuideCard />}
 
-      <div style={{ display: 'grid', gap: 11 }}>
+      <div style={{ display: 'grid', gap: 12 }}>
         {content.items.map(item => (
           <FolderItemCard
             key={item.title}
             item={item}
             href={content.href}
+            sourceTab={tab}
           />
         ))}
       </div>
@@ -448,53 +450,39 @@ function FolderPanel({
 function FolderItemCard({
   item,
   href,
+  sourceTab,
 }: {
   item: FolderItem
   href: string
+  sourceTab: TabId
 }) {
-  const Icon = item.Icon
-
   return (
     <Link
       href={href}
       style={{
         alignItems: 'center',
         background: '#F6F1E6',
-        borderRadius: 20,
+        borderRadius: 24,
         color: '#23382B',
         display: 'grid',
-        gridTemplateColumns: '48px minmax(0, 1fr) 18px',
-        gap: 12,
-        minHeight: 96,
-        padding: '17px 18px',
+        gridTemplateColumns: '44px minmax(0, 1fr) 16px',
+        gap: 14,
+        minHeight: 104,
+        padding: 18,
         textDecoration: 'none',
       }}
     >
-      <span
-        aria-hidden
-        style={{
-          alignItems: 'center',
-          background: '#E7E1D2',
-          borderRadius: 999,
-          color: '#3A5147',
-          display: 'inline-flex',
-          height: 48,
-          justifyContent: 'center',
-          width: 48,
-        }}
-      >
-        <Icon width={20} height={20} strokeWidth={1.75} />
-      </span>
+      <LeadingVisual image={item.image} alt={item.imageAlt} sourceTab={sourceTab} />
       <span style={{ minWidth: 0 }}>
         <span
           style={{
             color: '#23382B',
             display: 'block',
             fontFamily: sans,
-            fontSize: 18,
-            fontWeight: 850,
-            lineHeight: 1.15,
-            marginBottom: 4,
+            fontSize: 21,
+            fontWeight: 700,
+            lineHeight: 1.12,
+            marginBottom: 6,
           }}
         >
           {item.title}
@@ -502,24 +490,90 @@ function FolderItemCard({
         <span
           style={{
             color: '#5E675D',
-            display: 'block',
+            display: '-webkit-box',
             fontFamily: sans,
-            fontSize: 14.5,
+            fontSize: 15.5,
             fontWeight: 500,
-            lineHeight: 1.35,
+            lineHeight: 1.32,
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
           }}
         >
           {item.text}
         </span>
       </span>
       <ChevronRight
-        width={16}
-        height={16}
+        width={15}
+        height={15}
         strokeWidth={1.8}
-        style={{ color: 'rgba(94,103,93,0.55)' }}
+        style={{ color: 'rgba(94,103,93,0.4)' }}
         aria-hidden
       />
     </Link>
+  )
+}
+
+/**
+ * Leading visual — hybrid: rundt thumbnail hvis tippet handler om en konkret
+ * plante/sort (item.image), ellers en neutral kilde-markør, der læses som
+ * kategori (frøbank/sæson/guide), ikke som en handling. Samme 44px footprint
+ * i begge tilfælde, så rækkerne holder rytme. Broken image → fald til markør.
+ */
+function LeadingVisual({
+  image,
+  alt,
+  sourceTab,
+}: {
+  image?: string
+  alt?: string
+  sourceTab: TabId
+}) {
+  const [errored, setErrored] = useState(false)
+
+  if (image && !errored) {
+    return (
+      <span
+        style={{
+          borderRadius: 999,
+          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.55), 0 1px 2px rgba(35,56,43,0.12)',
+          flexShrink: 0,
+          height: 44,
+          overflow: 'hidden',
+          position: 'relative',
+          width: 44,
+        }}
+      >
+        <Image
+          src={image}
+          alt={alt ?? ''}
+          fill
+          sizes="44px"
+          style={{ objectFit: 'cover' }}
+          onError={() => setErrored(true)}
+        />
+      </span>
+    )
+  }
+
+  const MarkerIcon = sourceTab === 'guides' ? BookOpen : sourceTab === 'june' ? Wheat : Sprout
+  return (
+    <span
+      aria-hidden
+      style={{
+        alignItems: 'center',
+        background: '#E7E1D2',
+        borderRadius: 999,
+        color: '#7C8578',
+        display: 'inline-flex',
+        flexShrink: 0,
+        height: 44,
+        justifyContent: 'center',
+        width: 44,
+      }}
+    >
+      <MarkerIcon width={17} height={17} strokeWidth={1.6} />
+    </span>
   )
 }
 
