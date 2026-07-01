@@ -13,7 +13,6 @@ import { DenneUge } from '@/components/havekalender/denne-uge'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { DinDyrkning } from '@/components/havekalender/din-dyrkning'
 import { WeatherPoolsImage, type WeatherPoolsData } from '@/components/havekalender/weather-pools-image'
-import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
 import {
   DetKanDuGoereEditorialPlanner,
@@ -48,8 +47,6 @@ interface Props {
   userTasks: UserGardenTask[]
   guides: Guide[]
   alerts: GardenAlert[]
-  /** Daglig sensorisk note — beregnet server-side, roterer pr. dag. */
-  gardenNote: string
   isLoggedIn: boolean
   /** Kalenderens hjerne — dagens 1-3 vigtigste (lib/kalender/dagens-fokus). */
   dagensFokus: DagensFokus
@@ -141,7 +138,7 @@ function vejrNote(alerts: GardenAlert[], month: number): { headline: string; sub
   return { headline: 'Lad haven hvile.', subline: 'Vinterro — planlæg næste sæson.' }
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, gardenNote, isLoggedIn, dagensFokus }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, isLoggedIn, dagensFokus }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -223,16 +220,9 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         }}
       />
 
-      {/* Lille sensorisk note — "små ting fra haven". Svæver mellem
-          de strukturerede sektioner som en stille observation.
-          Ikke en opgave, ikke et card. Konkret-kropsligt indhold
-          der bruger måned, tid og vejr som kontekst. Per
-          HAVEN_SOM_SANCTUARY.md max 1-2 noter pr. side. */}
-      {/* Daglig sensorisk note — den stille invitation midt i scrollet.
-          Roterer pr. dag (kontekst-aware: måned, tid, vejr) via
-          pickGardenNote, beregnet server-side i page.tsx og sendt som
-          prop, så den er stabil inden for samme dag. */}
-      <HaveStemning text={gardenNote} />
+      {/* (Den daglige sensoriske stemnings-note er BEVIDST fjernet fra
+          kalenderen — kalendersiden har rigeligt med tekst. garden-notes-
+          puljen kører fortsat på /froebank og /mine-planter.) */}
 
       {/* PERSONLIG RELEVANS — "Din dyrkning" (horisontal plante-action-strip).
           MIDLERTIDIGT SKJULT 30/6 (VIS_DIN_DYRKNING=false): "I haven nu"-modulet

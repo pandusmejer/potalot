@@ -7,8 +7,6 @@ import { getGeneralGardenTasks, getUserGardenTasks } from '@/actions/aarshjul'
 import { getGardenAlerts } from '@/actions/weather'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getCurrentUser } from '@/lib/auth'
-import { pickGardenNote } from '@/lib/garden-notes'
-import { aktuelMaaned } from '@/lib/datetime'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
 import { mockPlants } from '@/data/mock-plants'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
@@ -51,10 +49,8 @@ export default async function KalenderPage() {
   const brainGuides = me === null && guides.length === 0 ? IMPORTED_GUIDES : guides
   const dagensFokus = byggDagensFokus({ plants: brainPlants, inventory, guides: brainGuides, alerts, completions, today: new Date() })
 
-  // Daglig sensorisk note — beregnes på serveren (deterministisk pr.
-  // dag via pickGardenNote) og sendes som prop, så samme dag = samme
-  // note uden hydration-mismatch. Roterer automatisk når datoen skifter.
-  const gardenNote = pickGardenNote(aktuelMaaned(), { alerts })
+  // (Den sensoriske stemnings-note vises ikke længere på kalenderen —
+  // garden-notes kører fortsat på /froebank og /mine-planter.)
 
   return (
     <KalenderClient
@@ -65,7 +61,6 @@ export default async function KalenderPage() {
       userTasks={userTasks}
       guides={guides}
       alerts={alerts}
-      gardenNote={gardenNote}
       isLoggedIn={me !== null}
       dagensFokus={dagensFokus}
     />
