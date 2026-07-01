@@ -169,7 +169,7 @@ export function InspirationFolder({
           style={{
             color: '#183421',
             fontFamily: serif,
-            fontSize: 'clamp(44px, 11vw, 52px)',
+            fontSize: 'clamp(40px, 10vw, 47px)',
             fontWeight: 600,
             letterSpacing: '-0.035em',
             lineHeight: 0.96,
