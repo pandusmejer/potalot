@@ -51,7 +51,6 @@ export const GARDEN_NOTES: Note[] = [
   { text: 'Se hvad der er kommet op siden sidste uge.', months: [3, 4, 5] },
   { text: 'Duft til tomatplanten når solen rammer bladene.', months: [6, 7, 8] },
   { text: 'Gnid et mynteblad mellem fingrene.', months: [5, 6, 7, 8] },
-  { text: 'Smag på noget direkte fra planten.', months: [6, 7, 8, 9] },
   { text: 'Høst kun det du skal bruge i dag.', months: [7, 8, 9, 10] },
   { text: 'Høst noget mens det stadig er lunt.', months: [8, 9] },
   { text: 'Kig efter nyt liv i skyggen.', months: [4, 5, 6] },
