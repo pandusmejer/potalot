@@ -405,7 +405,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: -34,
+            right: -40,
             top: 0,
             zIndex: 1,
             width: 68,
@@ -419,7 +419,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: -34,
+            right: -40,
             bottom: 0,
             zIndex: 1,
             width: 68,
@@ -465,14 +465,14 @@ function MonthLoopHeader({
           height: 136,
           padding: 0,
           overflow: 'hidden',
-          background: '#B96545',
+          background: 'linear-gradient(180deg, #C16D4C 0%, #B75E40 52%, #A9522F 100%)',
           color: '#FFF7E8',
           fontFamily: serif,
           fontSize: 64,
           fontWeight: 600,
           letterSpacing: '-0.035em',
           lineHeight: 0.86,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -16px 24px rgba(120,50,28,0.22)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
@@ -481,12 +481,12 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: 10,
-            bottom: 8,
+            right: 8,
+            bottom: 6,
             zIndex: 0,
-            width: 92,
-            height: 69,
-            opacity: 0.18,
+            width: 104,
+            height: 78,
+            opacity: 0.34,
             pointerEvents: 'none',
           }}
         >
@@ -546,7 +546,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            left: -34,
+            left: -40,
             top: 0,
             zIndex: 1,
             width: 68,
@@ -560,7 +560,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            left: -34,
+            left: -40,
             bottom: 0,
             zIndex: 1,
             width: 68,
@@ -859,12 +859,12 @@ function SproutMark() {
 function BotanicalLineArt() {
   return (
     <svg viewBox="0 0 184 138" width="100%" height="100%" fill="none" aria-hidden>
-      <path d="M48 132C75 92 87 58 82 22" stroke="#6E7B51" strokeWidth="2" />
-      <path d="M91 134C106 93 126 65 164 39" stroke="#6E7B51" strokeWidth="2" />
-      <path d="M74 52c-24-8-42-2-54 19 23 6 42-1 54-19Z" stroke="#6E7B51" strokeWidth="2" />
-      <path d="M82 35c15-20 30-27 47-24-5 21-21 31-47 24Z" stroke="#6E7B51" strokeWidth="2" />
-      <path d="M112 86c17-19 35-25 54-19-8 19-25 28-54 19Z" stroke="#6E7B51" strokeWidth="2" />
-      <path d="M101 105c-20-8-35-3-45 14 18 7 33 3 45-14Z" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M48 132C75 92 87 58 82 22" stroke="#F3E8D2" strokeWidth="2" />
+      <path d="M91 134C106 93 126 65 164 39" stroke="#F3E8D2" strokeWidth="2" />
+      <path d="M74 52c-24-8-42-2-54 19 23 6 42-1 54-19Z" stroke="#F3E8D2" strokeWidth="2" />
+      <path d="M82 35c15-20 30-27 47-24-5 21-21 31-47 24Z" stroke="#F3E8D2" strokeWidth="2" />
+      <path d="M112 86c17-19 35-25 54-19-8 19-25 28-54 19Z" stroke="#F3E8D2" strokeWidth="2" />
+      <path d="M101 105c-20-8-35-3-45 14 18 7 33 3 45-14Z" stroke="#F3E8D2" strokeWidth="2" />
     </svg>
   )
 }
