@@ -250,7 +250,8 @@ export function InspirationFolder({
       subtitle: 'Guides til sæsonen lige nu.',
       cta: 'Åbn guides',
       href: '/guides',
-      items: guideItems,
+      // Indhold følger den aktuelle måned (ikke hardcodet juni).
+      items: guideItems.map(it => ({ ...it, title: it.title.replace('juni', monthName) })),
     }
   }, [activeTab, guideItems, hasSeedSuggestions, juneItems, monthName, seedItems])
 
@@ -315,7 +316,11 @@ export function InspirationFolder({
               </linearGradient>
               {/* Blød skygge så det aktive ark løfter sig over baglagene (papir-på-papir) */}
               <filter id="folderLift" x="-10%" y="-30%" width="120%" height="170%">
-                <feDropShadow dx="0" dy="2.5" stdDeviation="3" floodColor="#2A3020" floodOpacity="0.22" />
+                <feDropShadow dx="0" dy="2.5" stdDeviation="3" floodColor="#2A3020" floodOpacity="0.24" />
+              </filter>
+              {/* Tynd papirskygge under hvert inaktivt ark → man ser at de ligger bagved */}
+              <filter id="paperLayer" x="-15%" y="-25%" width="130%" height="150%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#26351F" floodOpacity="0.14" />
               </filter>
             </defs>
             {/* inaktive tabs som lysere papir-baglag, let forskudt bagved */}
@@ -324,9 +329,10 @@ export function InspirationFolder({
                 <path
                   key={tab.id}
                   d={backPath(i)}
-                  fill="#DEDDCF"
-                  stroke="rgba(38,53,31,0.10)"
+                  fill="#E1E0D3"
+                  stroke="rgba(38,53,31,0.08)"
                   strokeWidth={1}
+                  filter="url(#paperLayer)"
                 />
               ),
             )}
@@ -350,16 +356,17 @@ export function InspirationFolder({
                   style={{
                     background: 'transparent',
                     border: 0,
-                    color: active ? '#F6F1E6' : '#7C8578',
+                    color: active ? '#F6F1E6' : 'rgba(38,53,31,0.52)',
                     cursor: 'pointer',
                     fontFamily: sans,
-                    fontSize: 16,
-                    fontWeight: active ? 700 : 650,
+                    fontSize: 18,
+                    fontWeight: active ? 650 : 600,
                     left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
+                    lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 11 : 17,
+                    top: active ? 16 : 21,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
@@ -383,7 +390,7 @@ export function InspirationFolder({
             padding: '12px 24px 28px',
           }}
         >
-          <FolderPanel tab={activeTab} content={activeContent} />
+          <FolderPanel tab={activeTab} content={activeContent} monthName={monthName} />
         </div>
       </div>
     </section>
@@ -393,6 +400,7 @@ export function InspirationFolder({
 function FolderPanel({
   tab,
   content,
+  monthName,
 }: {
   tab: TabId
   content: {
@@ -402,6 +410,7 @@ function FolderPanel({
     href: string
     items: FolderItem[]
   }
+  monthName: string
 }) {
   return (
     <div>
@@ -439,7 +448,7 @@ function FolderPanel({
         )}
       </div>
 
-      {tab === 'guides' && <FeaturedGuideCard />}
+      {tab === 'guides' && <FeaturedGuideCard monthName={monthName} />}
 
       <div style={{ display: 'grid', gap: 12 }}>
         {content.items.map(item => (
@@ -582,7 +591,9 @@ function LeadingVisual({
           alt={alt ?? ''}
           fill
           sizes="44px"
-          style={{ objectFit: 'cover' }}
+          // Motivet zoomes let ind + centreres, så det læser som et udsnit
+          // frem for "et lille billede sat ind i en cirkel".
+          style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.14)' }}
           onError={() => setErrored(true)}
         />
       </span>
@@ -610,7 +621,7 @@ function LeadingVisual({
   )
 }
 
-function FeaturedGuideCard() {
+function FeaturedGuideCard({ monthName }: { monthName: string }) {
   return (
     <Link
       href="/guides"
@@ -668,7 +679,7 @@ function FeaturedGuideCard() {
           position: 'relative',
         }}
       >
-        Forklaringer, råd og sæsonforståelse for planterne i juni.
+        Forklaringer, råd og sæsonforståelse for planterne i {monthName}.
       </p>
       <span
         aria-hidden

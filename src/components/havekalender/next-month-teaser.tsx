@@ -121,25 +121,35 @@ export function NextMonthTeaser({
         >
           {body}
         </p>
+      </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 30 }}>
-          <Link
-            href={href}
-            style={{
-              alignItems: 'center',
-              color: '#3C552F',
-              display: 'inline-flex',
-              fontFamily: sans,
-              fontSize: 15,
-              fontWeight: 800,
-              gap: 9,
-              textDecoration: 'none',
-            }}
-          >
-            Se {monthName.toLowerCase()}
-            <ArrowRight width={17} height={17} strokeWidth={1.9} aria-hidden />
-          </Link>
-        </div>
+      {/* CTA højrestillet ift. HELE boksen (ikke tekstkolonnen), så den
+          bevidst overlapper hero-billedet i højre side. */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: 20,
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        <Link
+          href={href}
+          style={{
+            alignItems: 'center',
+            color: '#3C552F',
+            display: 'inline-flex',
+            fontFamily: sans,
+            fontSize: 15,
+            fontWeight: 800,
+            gap: 9,
+            textDecoration: 'none',
+          }}
+        >
+          Se {monthName.toLowerCase()}
+          <ArrowRight width={17} height={17} strokeWidth={1.9} aria-hidden />
+        </Link>
       </div>
     </section>
   )
