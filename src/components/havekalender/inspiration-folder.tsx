@@ -226,7 +226,7 @@ export function InspirationFolder({
       return {
         title: 'Fra din frøbank',
         subtitle: hasSeedSuggestions
-          ? 'Sorter, der stadig kan nå i år.'
+          ? 'Sorter, du stadig kan nå.'
           : 'Din frøbank hviler lidt endnu.',
         cta: hasSeedSuggestions ? 'Se frøbanken' : 'Tilføj frø',
         href: hasSeedSuggestions ? '/froebank' : '/froebank/tilfoej',
@@ -237,7 +237,7 @@ export function InspirationFolder({
     if (activeTab === 'june') {
       return {
         title: `Få mere ud af ${monthName}`,
-        subtitle: 'Styr haven gennem varme, vækst og høst.',
+        subtitle: 'Råd til varme, vækst og høst.',
         cta: 'Se flere sæsonråd',
         href: '/kalender',
         items: juneItems,
@@ -246,7 +246,7 @@ export function InspirationFolder({
 
     return {
       title: 'Forstå det, der gror',
-      subtitle: 'Guides til planterne, vejret og sæsonen.',
+      subtitle: 'Guides til sæsonen lige nu.',
       cta: 'Åbn guides',
       href: '/guides',
       items: guideItems,
@@ -327,7 +327,6 @@ export function InspirationFolder({
           <div role="tablist" aria-label="Inspiration" style={{ position: 'absolute', inset: 0 }}>
             {TABS.map((tab, i) => {
               const active = i === activeIndex
-              const Icon = tab.Icon
               return (
                 <button
                   key={tab.id}
@@ -336,26 +335,24 @@ export function InspirationFolder({
                   aria-selected={active}
                   onClick={() => setActiveTab(tab.id)}
                   style={{
-                    alignItems: 'center',
                     background: 'transparent',
                     border: 0,
                     color: active ? '#F6F1E6' : '#7C8578',
                     cursor: 'pointer',
-                    display: 'inline-flex',
                     fontFamily: sans,
-                    fontSize: 13.5,
-                    fontWeight: active ? 800 : 650,
-                    gap: 6,
+                    fontSize: 16,
+                    fontWeight: active ? 700 : 650,
                     left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
+                    letterSpacing: '-0.01em',
                     position: 'absolute',
-                    top: active ? 12 : 18,
+                    textAlign: 'center',
+                    top: active ? 11 : 17,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  <Icon width={13} height={13} strokeWidth={1.8} aria-hidden />
-                  <span>{tab.label}</span>
+                  {tab.label}
                 </button>
               )
             })}
@@ -369,7 +366,7 @@ export function InspirationFolder({
             borderRadius: '0 0 32px 32px',
             boxShadow: '0 14px 30px rgba(60,80,72,0.20)',
             color: '#F8F4E9',
-            marginTop: -25, // rykker mappens overskrifter ~6 mm op mod tabs
+            marginTop: -18, // rykker mappens overskrifter op mod tabs (m. luft til serif-top)
             padding: '12px 24px 28px',
           }}
         >
@@ -395,7 +392,7 @@ function FolderPanel({
 }) {
   return (
     <div>
-      <div style={{ padding: '2px 4px 22px' }}>
+      <div style={{ overflow: 'visible', padding: '8px 4px 22px' }}>
         <h3
           style={{
             color: '#F6F1E6',
@@ -403,8 +400,9 @@ function FolderPanel({
             fontSize: 36,
             fontWeight: 600,
             letterSpacing: '0',
-            lineHeight: 1.06,
+            lineHeight: 1.12,
             margin: 0,
+            overflow: 'visible',
           }}
         >
           {content.title}
@@ -479,7 +477,7 @@ function FolderItemCard({
       style={{
         alignItems: 'center',
         background: '#F6F1E6',
-        borderRadius: 24,
+        borderRadius: 20,
         color: '#23382B',
         display: 'grid',
         gridTemplateColumns: '44px minmax(0, 1fr) 16px',

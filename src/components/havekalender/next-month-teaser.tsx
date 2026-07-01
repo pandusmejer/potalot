@@ -122,23 +122,24 @@ export function NextMonthTeaser({
           {body}
         </p>
 
-        <Link
-          href={href}
-          style={{
-            alignItems: 'center',
-            color: '#3C552F',
-            display: 'inline-flex',
-            fontFamily: sans,
-            fontSize: 15,
-            fontWeight: 800,
-            gap: 9,
-            marginTop: 30,
-            textDecoration: 'none',
-          }}
-        >
-          Se {monthName.toLowerCase()}
-          <ArrowRight width={17} height={17} strokeWidth={1.9} aria-hidden />
-        </Link>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 30 }}>
+          <Link
+            href={href}
+            style={{
+              alignItems: 'center',
+              color: '#3C552F',
+              display: 'inline-flex',
+              fontFamily: sans,
+              fontSize: 15,
+              fontWeight: 800,
+              gap: 9,
+              textDecoration: 'none',
+            }}
+          >
+            Se {monthName.toLowerCase()}
+            <ArrowRight width={17} height={17} strokeWidth={1.9} aria-hidden />
+          </Link>
+        </div>
       </div>
     </section>
   )
