@@ -216,16 +216,17 @@ function HeroPreview({ src }: { src: string }) {
         top: -24,
         right: -22,
         bottom: -26,
-        width: '40%',
+        left: -22,
         zIndex: 0,
         pointerEvents: 'none',
-        backgroundImage: `url('${src}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        WebkitMaskImage:
-          'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 40%, #000 72%)',
-        maskImage:
-          'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 40%, #000 72%)',
+        // Diagonal/organisk fade: to creme-overlays (radial + skrå linear)
+        // oven på fotoet — ikke en lodret gardin-kant. Fotoet anes kun i højre
+        // ~25-30%; venstre er ren creme bag teksten. Fade skråner blødt ned
+        // mod højre (begynder ~60% øverst, ~66-68% nederst).
+        background:
+          'radial-gradient(120% 105% at 10% 58%, rgba(246,241,230,0.98) 0%, rgba(246,241,230,0.9) 44%, rgba(246,241,230,0.5) 64%, rgba(246,241,230,0.14) 78%, rgba(246,241,230,0) 90%),' +
+          'linear-gradient(100deg, rgba(246,241,230,1) 0%, rgba(246,241,230,1) 50%, rgba(246,241,230,0.72) 65%, rgba(246,241,230,0.24) 79%, rgba(246,241,230,0) 90%),' +
+          `url('${src}') center / cover no-repeat`,
       }}
     />
   )
