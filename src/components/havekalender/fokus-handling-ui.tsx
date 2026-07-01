@@ -65,6 +65,7 @@ export function Chip({ h, month, size }: { h: FokusHandling; month: number; size
         fontWeight: 600,
         letterSpacing: lg ? '-0.01em' : undefined,
         lineHeight: lg ? 1 : undefined,
+        marginTop: lg ? 2 : undefined,
         color: tone.color,
         background: tone.bg,
         padding: lg ? '4px 11px' : '2.5px 8px',
@@ -103,7 +104,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '11px 14px 10px 13px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '11px 14px 4px 13px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
     >
       <div className="flex items-start gap-2">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
@@ -130,7 +131,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, color: '#567036', display: 'inline-block', marginTop: 10, lineHeight: 1.2, letterSpacing: '-0.015em' }}
+            style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: '#567036', display: 'inline-block', marginTop: 10, lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>

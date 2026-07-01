@@ -56,7 +56,7 @@ function derivedSourceChip(h: FokusHandling) {
 }
 
 /** Lette planlægningsfiltre (ikke store knapper): lav højde, dæmpet aktiv-skygge. */
-const tabCls = 'h-[42px] text-[13px] data-[state=active]:shadow-[0_1px_2px_rgba(42,51,32,0.07)] data-[state=active]:font-semibold'
+const tabCls = 'h-[38px] text-[13px] data-[state=active]:shadow-[0_1px_2px_rgba(42,51,32,0.07)] data-[state=active]:font-semibold'
 /** Tæller: 2px mindre end label + dæmpet. */
 const countCls = 'ml-1.5 text-[11px] opacity-60'
 
@@ -182,8 +182,8 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {/* Faner = opgaveoverblikket — lette planlægningsfiltre (2×2), ikke en kasse. */}
           <Tabs defaultValue="idag">
             <TabsList
-              className="grid w-full grid-cols-2 gap-1.5 h-auto rounded-xl p-1.5"
-              style={{ background: 'rgba(42,51,32,0.05)' }}
+              className="grid w-full grid-cols-2 gap-1 h-auto rounded-xl p-1"
+              style={{ background: 'rgba(42,51,32,0.04)' }}
             >
               <TabsTrigger value="idag" className={tabCls}>I dag <span className={countCls}>({antal(derivedIDag, userIDag)})</span></TabsTrigger>
               <TabsTrigger value="uge" className={tabCls}>Denne uge <span className={countCls}>({antal(derivedUge, userUge)})</span></TabsTrigger>
