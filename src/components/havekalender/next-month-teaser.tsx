@@ -46,7 +46,9 @@ export function NextMonthTeaser({
   label = 'Kig mod juli',
   monthName = 'Juli',
   subtitle = 'Høst, varme og vildskab',
-  body = 'Haven går ind i sin mest intense måned. Høst lidt og ofte, vand klogt, og så nyt til sensommeren.',
+  // Nød-fallback (måned-agnostisk). Den rigtige body sendes ind fra
+  // kalender-client, afledt af NÆSTE måned — aldrig en statisk juli-tekst.
+  body = 'Et nyt kapitel i haven venter forude.',
   href = '/kalender',
   chips = DEFAULT_CHIPS,
 }: NextMonthTeaserProps) {
