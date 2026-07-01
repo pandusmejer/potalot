@@ -405,7 +405,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: -40,
+            right: -44,
             top: 0,
             zIndex: 1,
             width: 68,
@@ -419,7 +419,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: -40,
+            right: -44,
             bottom: 0,
             zIndex: 1,
             width: 68,
@@ -481,8 +481,8 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            right: 8,
-            bottom: 6,
+            right: 2,
+            bottom: 0,
             zIndex: 0,
             width: 104,
             height: 78,
@@ -546,7 +546,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            left: -40,
+            left: -44,
             top: 0,
             zIndex: 1,
             width: 68,
@@ -560,7 +560,7 @@ function MonthLoopHeader({
           aria-hidden
           style={{
             position: 'absolute',
-            left: -40,
+            left: -44,
             bottom: 0,
             zIndex: 1,
             width: 68,
