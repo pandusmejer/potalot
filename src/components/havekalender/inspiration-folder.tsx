@@ -96,10 +96,14 @@ const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
   {
     title: 'Tomater i juni',
     text: 'Opbinding, sideskud og vand - det vigtigste lige nu.',
+    image: '/images/kalender/guides/tomat.jpg',
+    imageAlt: 'Tomater',
   },
   {
     title: 'Såning i varme perioder',
     text: 'Sådan får frøene en god start uden at tørre ud.',
+    image: '/images/kalender/guides/saaning.jpg',
+    imageAlt: 'Spirer i jord',
   },
 ]
 
@@ -571,9 +575,9 @@ function LeadingVisual({
   // Tre faste visuelle systemer, ét pr. fane:
   //   Frøbank  → konkrete plante-thumbnails (frøkort)
   //   Sæsonråd → atmosfæriske natur-crops (materiale/stemning, ikke sort)
-  //   Guides   → botanisk illustration (mangler assets → neutral bog-badge)
-  // Guides bruger derfor altid fallback-markøren; de øvrige viser thumbnail.
-  if (image && !errored && sourceTab !== 'guides') {
+  //   Guides   → emne-specifikke thumbnails (tomat, såning/jord)
+  // Alle faner viser thumbnail hvis item.image findes; ellers neutral markør.
+  if (image && !errored) {
     return (
       <span
         style={{
@@ -591,6 +595,10 @@ function LeadingVisual({
           alt={alt ?? ''}
           fill
           sizes="44px"
+          // Små, altid-synlige thumbnails: eager load, så de ikke afhænger af
+          // IntersectionObserver (som ikke trigger for billeder der monteres
+          // allerede-i-viewport ved fane-skift).
+          loading="eager"
           // Motivet zoomes let ind + centreres, så det læser som et udsnit
           // frem for "et lille billede sat ind i en cirkel".
           style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.14)' }}
@@ -627,41 +635,27 @@ function FeaturedGuideCard({ monthName }: { monthName: string }) {
       href="/guides"
       style={{
         background: 'linear-gradient(135deg, #EEE9CA, #F7F1E5)',
-        borderRadius: 22,
-        color: '#183421',
+        borderRadius: 28,
+        color: '#173826',
         display: 'block',
-        marginBottom: 10,
-        minHeight: 126,
+        marginBottom: 12,
+        minHeight: 210,
         overflow: 'hidden',
-        padding: 18,
+        padding: '28px 28px 26px',
         position: 'relative',
         textDecoration: 'none',
       }}
     >
-      {/* Diskret botanisk dekoration mod nederste højre hjørne. Ingen
-          lokal line-art-PNG findes, så et lille, lav-kontrast BookOpen
-          fungerer som rolig tekstur — ikke et placeholder-stort ikon. */}
-      <BookOpen
-        width={38}
-        height={38}
-        strokeWidth={1}
-        style={{
-          color: 'rgba(38,55,31,0.11)',
-          position: 'absolute',
-          right: 16,
-          bottom: 14,
-        }}
-        aria-hidden
-      />
+      <BotanicalSprig />
       <p
         style={{
-          color: '#183421',
+          color: '#173826',
           fontFamily: serif,
-          fontSize: 31,
+          fontSize: 40,
           fontWeight: 600,
-          lineHeight: 1,
-          margin: 0,
-          maxWidth: 260,
+          lineHeight: 0.95,
+          margin: '0 0 14px',
+          maxWidth: '12ch',
           position: 'relative',
         }}
       >
@@ -669,34 +663,75 @@ function FeaturedGuideCard({ monthName }: { monthName: string }) {
       </p>
       <p
         style={{
-          color: 'rgba(36,48,31,0.70)',
+          color: 'rgba(35,56,43,0.70)',
           fontFamily: sans,
-          fontSize: 14.5,
+          fontSize: 17,
           fontWeight: 500,
-          lineHeight: 1.4,
-          margin: '10px 0 0',
-          maxWidth: 250,
+          lineHeight: 1.35,
+          margin: 0,
+          maxWidth: '22ch',
           position: 'relative',
         }}
       >
-        Forklaringer, råd og sæsonforståelse for planterne i {monthName}.
+        Råd og sæsonforståelse for planterne i {monthName}.
       </p>
       <span
         aria-hidden
         style={{
           alignItems: 'center',
-          background: 'rgba(208,205,170,0.56)',
+          background: 'rgba(35,56,43,0.08)',
           borderRadius: 999,
+          color: '#173826',
           display: 'inline-flex',
-          height: 42,
+          height: 54,
           justifyContent: 'center',
-          marginTop: 10,
+          marginTop: 24,
           position: 'relative',
-          width: 42,
+          width: 54,
         }}
       >
-        <ArrowRight width={18} height={18} strokeWidth={1.7} />
+        <ArrowRight width={24} height={24} strokeWidth={1.8} />
       </span>
     </Link>
+  )
+}
+
+/**
+ * Botanisk line-art (dild-agtig skærm + blade) som rolig editorial-tekstur i
+ * intro-kortets højre side — erstatter det gentagne bog-ikon. Ingen ekstern
+ * asset; tegnet inline så den kan cropes blødt af kortets runding.
+ */
+function BotanicalSprig() {
+  return (
+    <svg
+      viewBox="0 0 120 160"
+      width={140}
+      aria-hidden
+      style={{
+        bottom: 16,
+        opacity: 0.2,
+        pointerEvents: 'none',
+        position: 'absolute',
+        right: 14,
+      }}
+    >
+      <g
+        fill="none"
+        stroke="rgba(35,56,43,0.9)"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M60 158 C57 128 63 104 60 78 C58 56 62 42 60 26" />
+        <path d="M60 100 C44 96 30 102 24 116 C40 118 54 112 60 100 Z" />
+        <path d="M60 74 C76 70 90 76 96 90 C80 92 66 86 60 74 Z" />
+        <path d="M60 26 L48 8 M60 26 L60 5 M60 26 L72 8 M60 26 L54 13 M60 26 L66 13" />
+        <circle cx="48" cy="7" r="2.6" fill="rgba(35,56,43,0.9)" />
+        <circle cx="60" cy="4" r="2.6" fill="rgba(35,56,43,0.9)" />
+        <circle cx="72" cy="7" r="2.6" fill="rgba(35,56,43,0.9)" />
+        <circle cx="54" cy="12" r="2.1" fill="rgba(35,56,43,0.9)" />
+        <circle cx="66" cy="12" r="2.1" fill="rgba(35,56,43,0.9)" />
+      </g>
+    </svg>
   )
 }
