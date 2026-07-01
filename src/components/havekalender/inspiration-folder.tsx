@@ -149,7 +149,7 @@ export function InspirationFolder({
 
   return (
     <section aria-labelledby="inspiration-folder-title" style={{ paddingTop: 6 }}>
-      <header style={{ marginBottom: 28, paddingInline: 2 }}>
+      <header style={{ marginBottom: 30, paddingInline: 2 }}>
         <p
           style={{
             color: 'rgba(36,48,31,0.58)',
@@ -169,12 +169,12 @@ export function InspirationFolder({
           style={{
             color: '#183421',
             fontFamily: serif,
-            fontSize: 'clamp(52px, 14vw, 58px)',
+            fontSize: 'clamp(44px, 11vw, 52px)',
             fontWeight: 600,
-            letterSpacing: '0',
-            lineHeight: 0.95,
-            margin: '0 0 16px',
-            maxWidth: 330,
+            letterSpacing: '-0.035em',
+            lineHeight: 0.96,
+            margin: '0 0 18px',
+            maxWidth: 320,
           }}
         >
           Når du vil mere med {monthName}
@@ -185,7 +185,7 @@ export function InspirationFolder({
             fontFamily: sans,
             fontSize: 16,
             fontWeight: 500,
-            lineHeight: 1.45,
+            lineHeight: 1.42,
             margin: 0,
             maxWidth: 560,
           }}
@@ -202,8 +202,9 @@ export function InspirationFolder({
             display: 'grid',
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
             alignItems: 'end',
-            gap: 5,
-            paddingInline: 14,
+            gap: 4,
+            marginBottom: -1,
+            paddingInline: 6,
             position: 'relative',
             zIndex: 2,
           }}
@@ -226,9 +227,9 @@ export function InspirationFolder({
             borderRadius: 26,
             boxShadow: '0 10px 26px rgba(36,48,31,0.12)',
             color: '#F8F4E9',
-            marginTop: -1,
+            marginTop: 0,
             overflow: 'hidden',
-            padding: '32px 23px 28px',
+            padding: '38px 24px 28px',
           }}
         >
           <FolderPanel tab={activeTab} content={activeContent} />
@@ -264,20 +265,20 @@ function FolderTab({
         cursor: 'pointer',
         display: 'inline-flex',
         fontFamily: sans,
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: active ? 800 : 650,
-        gap: 8,
+        gap: 7,
         justifyContent: 'center',
-        minHeight: 50,
+        minHeight: 48,
         minWidth: 0,
         opacity: active ? 1 : 0.64,
-        padding: '0 14px',
+        padding: '0 6px',
         position: 'relative',
         top: active ? 0 : 6,
         transition: 'background 160ms ease, color 160ms ease, top 160ms ease',
       }}
     >
-      <Icon width={15} height={15} strokeWidth={1.75} aria-hidden />
+      <Icon width={14} height={14} strokeWidth={1.75} aria-hidden />
       <span
         style={{
           overflow: 'hidden',
