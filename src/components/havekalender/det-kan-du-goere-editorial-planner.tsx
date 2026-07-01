@@ -159,13 +159,14 @@ export function DetKanDuGoereEditorialPlanner({
         <BotanicalLineArt />
       </div>
       <div style={{ maxWidth: 760, marginInline: 'auto' }}>
-        <header style={{ marginBottom: 18 }}>
+        <header style={{ marginBottom: 0 }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
-              padding: '21px clamp(20px, 5vw, 38px) 15px',
+              gap: 10,
+              marginBottom: 14,
+              padding: '8px clamp(20px, 5vw, 38px) 6px',
               borderBottom: '1px solid rgba(64,58,42,0.10)',
               background:
                 'linear-gradient(180deg, rgba(255,252,244,0.82), rgba(255,252,244,0.34))',
@@ -177,8 +178,8 @@ export function DetKanDuGoereEditorialPlanner({
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 34,
-                height: 34,
+                width: 18,
+                height: 18,
                 color: olive,
               }}
             >
@@ -189,8 +190,8 @@ export function DetKanDuGoereEditorialPlanner({
                 fontFamily: sans,
                 fontSize: 12,
                 fontWeight: 850,
-                letterSpacing: '0.34em',
-                lineHeight: 1.2,
+                letterSpacing: '0.22em',
+                lineHeight: 1,
                 margin: 0,
                 textTransform: 'uppercase',
                 color: olive,
@@ -210,29 +211,30 @@ export function DetKanDuGoereEditorialPlanner({
 
           <div
             style={{
-              padding: '18px clamp(28px, 7vw, 76px) 12px',
+              padding: '0 clamp(28px, 7vw, 76px)',
             }}
           >
             <span
               aria-hidden
               style={{
                 display: 'block',
-                width: 58,
+                width: 44,
                 height: 4,
-                margin: '0 auto 17px',
+                margin: '16px auto 22px',
+                borderRadius: 999,
                 background: gold,
               }}
             />
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(23px, 6.4vw, 30px)',
+                fontSize: 'clamp(21px, 5.8vw, 30px)',
                 fontStyle: 'italic',
                 fontWeight: 500,
-                lineHeight: 1.25,
-                margin: 0,
-                maxWidth: 680,
-                color: 'rgba(36,48,31,0.82)',
+                lineHeight: 1.45,
+                margin: '0 auto 24px',
+                maxWidth: 320,
+                color: 'rgba(38,53,31,0.78)',
               }}
             >
               Juni er haven i fuld vækst.
@@ -363,10 +365,12 @@ function MonthLoopHeader({
       className="grid items-center"
       style={{
         position: 'relative',
-        gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+        gridTemplateColumns: 'calc((100% - 196px) / 2) 196px calc((100% - 196px) / 2)',
         columnGap: 0,
         margin: 0,
-        minHeight: 156,
+        height: 136,
+        maxHeight: 136,
+        minHeight: 136,
         width: '100%',
         background:
           'linear-gradient(90deg, rgba(250,246,237,0.92) 0%, rgba(250,246,237,0.92) 24%, transparent 24%, transparent 76%, rgba(250,246,237,0.92) 76%, rgba(250,246,237,0.92) 100%)',
@@ -378,24 +382,30 @@ function MonthLoopHeader({
         aria-label={`Forrige måned: ${prevLabel}`}
         className="inline-flex items-center justify-start"
         style={{
-          gap: 5,
+          gap: 0,
           minWidth: 0,
-          minHeight: 94,
-          padding: '0 10px 0 20px',
+          minHeight: 136,
+          padding: 0,
           background: 'rgba(255,252,244,0.52)',
           border: 0,
           borderRadius: '0 34px 34px 0',
-          color: 'rgba(36,48,31,0.70)',
+          color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 'clamp(22px, 6.2vw, 29px)',
-          fontWeight: 650,
+          fontSize: 22,
+          fontWeight: 500,
           letterSpacing: '0.02em',
           lineHeight: 1,
           textTransform: 'lowercase',
         }}
       >
-        <ChevronLeft width={14} height={14} strokeWidth={1.7} aria-hidden />
+        <ChevronLeft
+          width={16}
+          height={16}
+          strokeWidth={1.7}
+          aria-hidden
+          style={{ color: 'rgba(38,53,31,0.65)', margin: '0 6px' }}
+        />
         <span>{prevLabel.toLowerCase()}</span>
       </button>
 
@@ -403,19 +413,21 @@ function MonthLoopHeader({
         aria-current="date"
         data-active-month="true"
         style={{
-          alignSelf: 'stretch',
+          position: 'relative',
+          alignSelf: 'center',
           display: 'grid',
           placeItems: 'center',
-          minWidth: 'min(46vw, 330px)',
-          padding: '16px 24px',
+          width: 196,
+          height: 136,
+          padding: 0,
           background:
             'radial-gradient(circle at 78% 36%, rgba(135,69,45,0.34), transparent 32%), linear-gradient(145deg, #C66B43, #A94E35)',
-          color: '#FFF8EA',
+          color: '#FFF7E8',
           fontFamily: serif,
-          fontSize: 'clamp(61px, 17vw, 96px)',
-          fontWeight: 800,
-          letterSpacing: '0.02em',
-          lineHeight: 1,
+          fontSize: 58,
+          fontWeight: 600,
+          letterSpacing: '-0.035em',
+          lineHeight: 0.9,
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
@@ -430,47 +442,53 @@ function MonthLoopHeader({
         aria-label={`Næste måned: ${nextLabel}`}
         className="inline-flex items-center justify-end"
         style={{
-          gap: 5,
+          gap: 0,
           minWidth: 0,
-          minHeight: 94,
-          padding: '0 20px 0 10px',
+          minHeight: 136,
+          padding: 0,
           background: 'rgba(255,252,244,0.52)',
           border: 0,
           borderRadius: '34px 0 0 34px',
-          color: 'rgba(36,48,31,0.70)',
+          color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 'clamp(22px, 6.2vw, 29px)',
-          fontWeight: 650,
+          fontSize: 22,
+          fontWeight: 500,
           letterSpacing: '0.02em',
           lineHeight: 1,
           textTransform: 'lowercase',
         }}
       >
         <span>{nextLabel.toLowerCase()}</span>
-        <ChevronRight width={14} height={14} strokeWidth={1.7} aria-hidden />
+        <ChevronRight
+          width={16}
+          height={16}
+          strokeWidth={1.7}
+          aria-hidden
+          style={{ color: 'rgba(38,53,31,0.65)', margin: '0 6px' }}
+        />
       </button>
       <span
         aria-hidden
         style={{
           position: 'absolute',
           left: '50%',
-          bottom: 22,
+          top: 'calc(50% + 39px)',
           display: 'inline-flex',
-          gap: 16,
+          gap: 14,
           transform: 'translateX(-50%)',
-          color: 'rgba(255,248,234,0.55)',
+          color: '#FFF7E8',
           fontFamily: sans,
-          fontSize: 21,
+          fontSize: 18,
           fontWeight: 900,
           letterSpacing: 0,
           lineHeight: 1,
           pointerEvents: 'none',
         }}
       >
-        <span style={{ opacity: 0.55 }}>•</span>
+        <span style={{ opacity: 0.35 }}>•</span>
         <span>•</span>
-        <span style={{ opacity: 0.55 }}>•</span>
+        <span style={{ opacity: 0.35 }}>•</span>
       </span>
     </div>
   )
