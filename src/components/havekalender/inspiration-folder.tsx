@@ -101,7 +101,7 @@ const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
 
 const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
   { id: 'seedbank', label: 'Frøbank', Icon: Sprout },
-  { id: 'june', label: 'Juni-greb', Icon: Wheat },
+  { id: 'june', label: 'Sæsonråd', Icon: Wheat },
   { id: 'guides', label: 'Guides', Icon: BookOpen },
 ]
 
@@ -120,7 +120,7 @@ export function InspirationFolder({
       return {
         title: 'Fra din frøbank',
         subtitle: hasSeedSuggestions
-          ? `Du har ${seedItems.length} sorter, der passer godt til ${monthName}.`
+          ? 'Sorter, der stadig kan nå at give noget i år.'
           : 'Din frøbank hviler lidt endnu.',
         cta: hasSeedSuggestions ? 'Se frøbanken' : 'Tilføj frø',
         href: hasSeedSuggestions ? '/froebank' : '/froebank/tilfoej',
@@ -131,16 +131,16 @@ export function InspirationFolder({
     if (activeTab === 'june') {
       return {
         title: `Få mere ud af ${monthName}`,
-        subtitle: '',
-        cta: `Se flere ${monthName}-greb`,
+        subtitle: 'Små råd, der hjælper haven gennem varme, vækst og høst.',
+        cta: 'Se flere sæsonråd',
         href: '/kalender',
         items: juneItems,
       }
     }
 
     return {
-      title: 'Fordyb dig i haven',
-      subtitle: 'Lær hvorfor planterne gør, som de gør.',
+      title: 'Forstå det, der gror',
+      subtitle: 'Guides til planterne, vejret og sæsonen.',
       cta: 'Åbn guides',
       href: '/guides',
       items: guideItems,
@@ -176,7 +176,7 @@ export function InspirationFolder({
             margin: '10px 0 12px',
           }}
         >
-          Dyk ned i {monthName}
+          Når du vil mere med {monthName}
         </h2>
         <p
           style={{
@@ -189,7 +189,7 @@ export function InspirationFolder({
             maxWidth: 560,
           }}
         >
-          Små idéer, sæsongreb og guides, når du har lyst til mere end dagens opgaver.
+          Frøbank, sæsonråd og guides samlet ét sted.
         </p>
       </header>
 
