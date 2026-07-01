@@ -122,12 +122,12 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 20 // top af aktiv tab (lavt drop ned i mappen)
-const Y_TAB_TOP_IN = 24 // top af inaktive tabs (mere tilbagetrukne)
+const Y_TAB_TOP = 29 // top af aktiv tab (meget lavt drop → flad papirfane)
+const Y_TAB_TOP_IN = 32 // top af inaktive tabs (3px lavere = lag bagved)
 const Y_SURFACE = 42 // mappens øverste flade (mellem tabs)
 const Y_BOTTOM = 82 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 14 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 13 // hjørne-radius, inaktive tab-tops (indre sider)
+const TAB_R = 10 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 9 // hjørne-radius, inaktive tab-tops (indre sider)
 const OUTER_R = 18 // ydre hjørner — deles af kant-tab og mappekant (mindre runde)
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
@@ -340,8 +340,6 @@ export function InspirationFolder({
             )}
             {/* aktiv tab + skuldre + mappe-top som ét ark, løftet over baglagene */}
             <path d={frontPath(activeIndex)} fill="url(#folderFront)" filter="url(#folderLift)" />
-            {/* diskret top-highlight langs det aktive arks kant (papir-lysning) */}
-            <path d={frontPath(activeIndex)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth={1} />
           </svg>
 
           {/* klikbare labels — transparent overlay oven på silhuetten */}
@@ -358,17 +356,17 @@ export function InspirationFolder({
                   style={{
                     background: 'transparent',
                     border: 0,
-                    color: active ? '#F6F1E6' : 'rgba(38,53,31,0.48)',
+                    color: active ? '#F6F1E6' : 'rgba(38,53,31,0.50)',
                     cursor: 'pointer',
                     fontFamily: sans,
-                    fontSize: 17,
-                    fontWeight: active ? 600 : 560,
+                    fontSize: 16,
+                    fontWeight: active ? 600 : 500,
                     left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
                     lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 23 : 25,
+                    top: active ? 30 : 33,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
@@ -386,7 +384,7 @@ export function InspirationFolder({
           style={{
             background: 'linear-gradient(180deg, #62766B 0%, #5A6E63 100%)',
             borderRadius: '0 0 24px 24px',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.13), 0 10px 24px rgba(35,45,34,0.13)',
+            boxShadow: '0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
             marginTop: -18, // rykker mappens overskrifter op mod tabs (m. luft til serif-top)
             padding: '12px 24px 28px',
