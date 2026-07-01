@@ -103,9 +103,9 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '12px 15px 11px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '11px 14px 10px 13px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
     >
-      <div className="flex items-start gap-2.5">
+      <div className="flex items-start gap-2">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
         <div className="min-w-0 flex-1">
           {markoer && (
@@ -116,8 +116,8 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
-                fontFamily: serif, fontSize: 28, fontWeight: 600, lineHeight: 0.98,
-                letterSpacing: '-0.03em', color: '#24311d', margin: 0, maxWidth: '10ch',
+                fontFamily: serif, fontSize: 25, fontWeight: 600, lineHeight: 1.02,
+                letterSpacing: '-0.025em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
                 textDecoration: done ? 'line-through' : 'none',
               }}
             >
@@ -125,12 +125,12 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
             </h3>
             <Chip h={h} month={month} size="lg" />
           </div>
-          <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.42, letterSpacing: '-0.01em', maxWidth: '27ch' }}>
+          <p style={{ fontFamily: sans, fontSize: 16, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.36, letterSpacing: '-0.01em', maxWidth: '29ch' }}>
             {h.hvorfor}
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 17, fontWeight: 700, color: '#567036', display: 'inline-block', marginTop: 6, lineHeight: 1.2, letterSpacing: '-0.015em' }}
+            style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, color: '#567036', display: 'inline-block', marginTop: 10, lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
