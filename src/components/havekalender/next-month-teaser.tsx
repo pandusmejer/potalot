@@ -10,44 +10,25 @@
  */
 
 import Link from 'next/link'
-import {
-  ArrowRight,
-  Droplets,
-  ShoppingBasket,
-  Sprout,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
-interface NextMonthChip {
-  label: string
-  Icon: LucideIcon
-}
-
 interface NextMonthTeaserProps {
   /** Kalenderens AKTUELLE måned (1-12). Teaseren viser ALTID currentMonth+1
    *  — aldrig samme måned som topheroen. */
   currentMonth?: number
   href?: string
-  chips?: NextMonthChip[]
   /** Valgfri override; ellers afledt af NÆSTE måneds hero-foto. */
   heroImage?: string
 }
 
-const DEFAULT_CHIPS: NextMonthChip[] = [
-  { label: 'Høst ofte', Icon: ShoppingBasket },
-  { label: 'Vand dybt', Icon: Droplets },
-  { label: 'Så igen', Icon: Sprout },
-]
-
 export function NextMonthTeaser({
   currentMonth = 7,
   href = '/kalender',
-  chips = DEFAULT_CHIPS,
   heroImage,
 }: NextMonthTeaserProps) {
   // Produktregel: "Kig mod [måned]" er ALTID næste måned relativt til
@@ -140,19 +121,6 @@ export function NextMonthTeaser({
           {body}
         </p>
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 8,
-            marginTop: 18,
-          }}
-        >
-          {chips.map(chip => (
-            <TeaserChip key={chip.label} chip={chip} />
-          ))}
-        </div>
-
         <Link
           href={href}
           style={{
@@ -163,7 +131,7 @@ export function NextMonthTeaser({
             fontSize: 15,
             fontWeight: 800,
             gap: 9,
-            marginTop: 21,
+            marginTop: 30,
             textDecoration: 'none',
           }}
         >
@@ -172,31 +140,6 @@ export function NextMonthTeaser({
         </Link>
       </div>
     </section>
-  )
-}
-
-function TeaserChip({ chip }: { chip: NextMonthChip }) {
-  const Icon = chip.Icon
-
-  return (
-    <span
-      style={{
-        alignItems: 'center',
-        background: 'rgba(36,48,31,0.08)',
-        borderRadius: 999,
-        color: '#405B33',
-        display: 'inline-flex',
-        fontFamily: sans,
-        fontSize: 13.5,
-        fontWeight: 750,
-        gap: 7,
-        minHeight: 36,
-        padding: '0 13px',
-      }}
-    >
-      <Icon width={15} height={15} strokeWidth={1.9} aria-hidden />
-      {chip.label}
-    </span>
   )
 }
 
@@ -231,6 +174,4 @@ function HeroPreview({ src }: { src: string }) {
     />
   )
 }
-
-export const NEXT_MONTH_TEASER_DEMO_CHIPS = DEFAULT_CHIPS
 
