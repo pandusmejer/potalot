@@ -34,6 +34,10 @@ import {
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+const rust = '#B75C3E'
+const rustDark = '#98472F'
+const olive = '#3F5232'
+const gold = '#C99A24'
 
 type PlannerGroupId = 'goer_nu' | 'hold_oeje_med' | 'hvis_du_har_tid'
 type PlannerItemState = 'idle' | 'added' | 'hidden'
@@ -128,28 +132,73 @@ export function DetKanDuGoereEditorialPlanner({
     <section
       aria-labelledby="editorial-planner-title"
       style={{
+        position: 'relative',
+        overflow: 'hidden',
         marginTop: 8,
-        padding: 'clamp(26px, 6vw, 42px) clamp(20px, 5vw, 38px) 64px',
-        background: '#F4F0E6',
+        borderRadius: 28,
+        border: '1px solid rgba(64,58,42,0.10)',
+        background:
+          'linear-gradient(180deg, rgba(255,252,244,0.86) 0%, #F7F1E5 46%, #F3EBDD 100%)',
+        boxShadow:
+          '0 18px 44px rgba(64,58,42,0.10), inset 0 1px 0 rgba(255,255,255,0.62)',
         color: '#24301F',
       }}
     >
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute',
+          right: -24,
+          bottom: 4,
+          width: 184,
+          height: 138,
+          opacity: 0.18,
+          pointerEvents: 'none',
+        }}
+      >
+        <BotanicalLineArt />
+      </div>
       <div style={{ maxWidth: 760, marginInline: 'auto' }}>
-        <header style={{ marginBottom: 18 }}>
-          <p
+        <header style={{ marginBottom: 26 }}>
+          <div
             style={{
-              fontFamily: sans,
-              fontSize: 10.5,
-              fontWeight: 800,
-              letterSpacing: '0.18em',
-              lineHeight: 1.2,
-              margin: 0,
-              textTransform: 'uppercase',
-              color: 'rgba(36,48,31,0.58)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '24px clamp(20px, 5vw, 38px) 18px',
+              borderBottom: '1px solid rgba(64,58,42,0.10)',
+              background:
+                'linear-gradient(180deg, rgba(255,252,244,0.82), rgba(255,252,244,0.34))',
             }}
           >
-            Det kan du gøre i
-          </p>
+            <span
+              aria-hidden
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 34,
+                height: 34,
+                color: olive,
+              }}
+            >
+              <SproutMark />
+            </span>
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 12,
+                fontWeight: 850,
+                letterSpacing: '0.34em',
+                lineHeight: 1.2,
+                margin: 0,
+                textTransform: 'uppercase',
+                color: olive,
+              }}
+            >
+              Det kan du gøre i
+            </p>
+          </div>
 
           <MonthLoopHeader
             activeLabel={monthName}
@@ -161,20 +210,29 @@ export function DetKanDuGoereEditorialPlanner({
 
           <div
             style={{
-              borderBottom: '1px solid rgba(36,48,31,0.16)',
-              padding: '8px 0 13px',
+              padding: '24px clamp(28px, 7vw, 76px) 18px',
             }}
           >
+            <span
+              aria-hidden
+              style={{
+                display: 'block',
+                width: 58,
+                height: 4,
+                margin: '0 auto 22px',
+                background: gold,
+              }}
+            />
             <p
               style={{
-                fontFamily: sans,
-                fontSize: 13.2,
+                fontFamily: serif,
+                fontSize: 'clamp(25px, 7vw, 33px)',
                 fontStyle: 'italic',
-                fontWeight: 350,
-                lineHeight: 1.5,
+                fontWeight: 500,
+                lineHeight: 1.34,
                 margin: 0,
-                maxWidth: 620,
-                color: 'rgba(36,48,31,0.66)',
+                maxWidth: 680,
+                color: 'rgba(36,48,31,0.82)',
               }}
             >
               Juni er haven i fuld vækst.
@@ -185,7 +243,8 @@ export function DetKanDuGoereEditorialPlanner({
           </div>
         </header>
 
-        <div style={{ display: 'grid', gap: 22 }}>
+        <div style={{ display: 'grid', gap: 24, padding: '0 clamp(20px, 5vw, 38px)' }}>
+          <EditorialSectionLabel />
           {GROUPS.map(group => {
             const groupItems = visibleItems.filter(item => item.group === group.id)
             const shownItems = showAll ? groupItems : groupItems.slice(0, groupLimits[group.id])
@@ -196,6 +255,7 @@ export function DetKanDuGoereEditorialPlanner({
                 key={group.id}
                 label={group.label}
                 items={shownItems}
+                startIndex={visibleItems.findIndex(item => item.id === shownItems[0]?.id) + 1}
                 itemStates={itemStates}
                 onSelect={setSelectedItem}
               />
@@ -204,32 +264,70 @@ export function DetKanDuGoereEditorialPlanner({
         </div>
 
         {totalHiddenByLimit > 0 && (
-          <button
-            type="button"
-            onClick={() => setShowAll(value => !value)}
+          <div
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              marginTop: 18,
-              padding: '13px 0 0',
-              background: 'transparent',
-              border: 0,
-              borderRadius: 0,
-              color: 'rgba(36,48,31,0.58)',
-              cursor: 'pointer',
-              fontFamily: sans,
-              fontSize: 11,
-              fontWeight: 850,
-              letterSpacing: '0.14em',
-              lineHeight: 1.35,
-              textTransform: 'uppercase',
-              width: '100%',
+              position: 'relative',
+              marginTop: 30,
+              padding: '26px clamp(20px, 5vw, 38px) 30px',
+              background:
+                'linear-gradient(90deg, rgba(127,143,106,0.36), rgba(199,163,65,0.18))',
+              borderTop: '1px solid rgba(64,58,42,0.10)',
+              overflow: 'hidden',
             }}
           >
-            <span>{showAll ? 'Vis kortere uddrag' : `Se alle gøremål i ${monthName.toLowerCase()}`}</span>
-            {!showAll && <span aria-hidden style={{ letterSpacing: 0 }}>→</span>}
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowAll(value => !value)}
+              style={{
+                position: 'relative',
+                zIndex: 1,
+                display: 'grid',
+                gridTemplateColumns: '64px minmax(0, 1fr)',
+                alignItems: 'center',
+                gap: 18,
+                width: '100%',
+                padding: 0,
+                background: 'transparent',
+                border: 0,
+                color: olive,
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 64,
+                  height: 64,
+                  borderRadius: 999,
+                  background: gold,
+                  color: '#FEFCF6',
+                  boxShadow: '0 10px 22px rgba(153,111,22,0.18)',
+                  fontFamily: sans,
+                  fontSize: 30,
+                  fontWeight: 500,
+                  lineHeight: 1,
+                }}
+              >
+                →
+              </span>
+              <span
+                style={{
+                  fontFamily: sans,
+                  fontSize: 15,
+                  fontWeight: 850,
+                  letterSpacing: '0.25em',
+                  lineHeight: 1.35,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {showAll ? 'Vis kortere uddrag' : `Se alle gøremål i ${monthName.toLowerCase()}`}
+              </span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -264,10 +362,14 @@ function MonthLoopHeader({
       aria-label={`Månedsvælger: ${activeLabel}`}
       className="grid items-center"
       style={{
+        position: 'relative',
         gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
-        columnGap: 12,
-        margin: '13px 0 13px',
+        columnGap: 0,
+        margin: 0,
+        minHeight: 190,
         width: '100%',
+        background:
+          'linear-gradient(90deg, rgba(250,246,237,0.92) 0%, rgba(250,246,237,0.92) 24%, transparent 24%, transparent 76%, rgba(250,246,237,0.92) 76%, rgba(250,246,237,0.92) 100%)',
       }}
     >
       <button
@@ -278,13 +380,15 @@ function MonthLoopHeader({
         style={{
           gap: 5,
           minWidth: 0,
-          padding: 0,
-          background: 'transparent',
+          minHeight: 112,
+          padding: '0 8px 0 18px',
+          background: 'rgba(255,252,244,0.52)',
           border: 0,
-          color: 'rgba(36,48,31,0.50)',
+          borderRadius: '0 34px 34px 0',
+          color: 'rgba(36,48,31,0.74)',
           cursor: 'pointer',
-          fontFamily: sans,
-          fontSize: 'clamp(15px, 4.4vw, 19px)',
+          fontFamily: serif,
+          fontSize: 'clamp(25px, 7.2vw, 34px)',
           fontWeight: 650,
           letterSpacing: '0.02em',
           lineHeight: 1,
@@ -293,19 +397,26 @@ function MonthLoopHeader({
       >
         <ChevronLeft width={14} height={14} strokeWidth={1.7} aria-hidden />
         <span>{prevLabel.toLowerCase()}</span>
-        <MonthDots side="left" />
       </button>
 
       <span
         aria-current="date"
         data-active-month="true"
         style={{
-          color: '#24301F',
-          fontFamily: sans,
-          fontSize: 'clamp(34px, 9.5vw, 42px)',
-          fontWeight: 900,
-          letterSpacing: '0.08em',
+          alignSelf: 'stretch',
+          display: 'grid',
+          placeItems: 'center',
+          minWidth: 'min(46vw, 360px)',
+          padding: '20px 28px',
+          background:
+            'radial-gradient(circle at 78% 36%, rgba(135,69,45,0.34), transparent 32%), linear-gradient(145deg, #C66B43, #A94E35)',
+          color: '#FFF8EA',
+          fontFamily: serif,
+          fontSize: 'clamp(72px, 20vw, 118px)',
+          fontWeight: 800,
+          letterSpacing: '0.02em',
           lineHeight: 1,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
@@ -321,59 +432,60 @@ function MonthLoopHeader({
         style={{
           gap: 5,
           minWidth: 0,
-          padding: 0,
-          background: 'transparent',
+          minHeight: 112,
+          padding: '0 18px 0 8px',
+          background: 'rgba(255,252,244,0.52)',
           border: 0,
-          color: 'rgba(36,48,31,0.50)',
+          borderRadius: '34px 0 0 34px',
+          color: 'rgba(36,48,31,0.74)',
           cursor: 'pointer',
-          fontFamily: sans,
-          fontSize: 'clamp(15px, 4.4vw, 19px)',
+          fontFamily: serif,
+          fontSize: 'clamp(25px, 7.2vw, 34px)',
           fontWeight: 650,
           letterSpacing: '0.02em',
           lineHeight: 1,
           textTransform: 'lowercase',
         }}
       >
-        <MonthDots side="right" />
         <span>{nextLabel.toLowerCase()}</span>
         <ChevronRight width={14} height={14} strokeWidth={1.7} aria-hidden />
       </button>
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          left: '50%',
+          bottom: 28,
+          display: 'inline-flex',
+          gap: 19,
+          transform: 'translateX(-50%)',
+          color: 'rgba(255,248,234,0.55)',
+          fontFamily: sans,
+          fontSize: 26,
+          fontWeight: 900,
+          letterSpacing: 0,
+          lineHeight: 1,
+          pointerEvents: 'none',
+        }}
+      >
+        <span style={{ opacity: 0.55 }}>•</span>
+        <span>•</span>
+        <span style={{ opacity: 0.55 }}>•</span>
+      </span>
     </div>
-  )
-}
-
-function MonthDots({ side }: { side: 'left' | 'right' }) {
-  return (
-    <span
-      aria-hidden
-      style={{
-        display: 'inline-flex',
-        gap: 8,
-        marginLeft: side === 'left' ? 11 : 0,
-        marginRight: side === 'right' ? 11 : 0,
-        color: 'rgba(36,48,31,0.28)',
-        fontFamily: sans,
-        fontSize: 13,
-        fontWeight: 900,
-        letterSpacing: '0',
-        lineHeight: 1,
-      }}
-    >
-      <span>·</span>
-      <span>·</span>
-      <span>·</span>
-    </span>
   )
 }
 
 function PlannerGroup({
   label,
   items,
+  startIndex,
   itemStates,
   onSelect,
 }: {
   label: string
   items: EditorialPlannerItem[]
+  startIndex: number
   itemStates: Record<string, PlannerItemState>
   onSelect: (item: EditorialPlannerItem) => void
 }) {
@@ -384,13 +496,13 @@ function PlannerGroup({
           id={`planner-group-${slugify(label)}`}
           style={{
             fontFamily: sans,
-            fontSize: 12.5,
+            fontSize: 10.5,
             fontWeight: 850,
-            letterSpacing: '0.17em',
+            letterSpacing: '0.19em',
             lineHeight: 1.2,
             margin: 0,
             textTransform: 'uppercase',
-            color: '#2F3D28',
+            color: 'rgba(36,48,31,0.58)',
           }}
         >
           {label}
@@ -400,18 +512,19 @@ function PlannerGroup({
           style={{
             display: 'block',
             width: 22,
-            height: 2,
+            height: 1,
             marginTop: 9,
-            background: '#7E8D5E',
+            background: 'rgba(36,48,31,0.30)',
           }}
         />
       </div>
 
-      <div style={{ borderTop: '1px solid rgba(36,48,31,0.12)' }}>
-        {items.map(item => (
+      <div>
+        {items.map((item, index) => (
           <PlannerRow
             key={item.id}
             item={item}
+            index={startIndex + index}
             state={itemStates[item.id] ?? 'idle'}
             onClick={() => onSelect(item)}
           />
@@ -423,10 +536,12 @@ function PlannerGroup({
 
 function PlannerRow({
   item,
+  index,
   state,
   onClick,
 }: {
   item: EditorialPlannerItem
+  index: number
   state: PlannerItemState
   onClick: () => void
 }) {
@@ -438,25 +553,56 @@ function PlannerRow({
       onClick={onClick}
       className="group grid w-full text-left"
       style={{
-        gridTemplateColumns: 'minmax(0, 1fr) auto',
-        columnGap: 10,
-        alignItems: 'start',
-        padding: '9px 0 10px',
+        gridTemplateColumns: '76px minmax(0, 1fr) 48px',
+        columnGap: 16,
+        alignItems: 'center',
+        minHeight: 94,
+        padding: '17px 0',
         background: 'transparent',
         border: 0,
-        borderBottom: '1px solid rgba(36,48,31,0.12)',
+        borderBottom: '1px solid rgba(64,58,42,0.13)',
         color: 'inherit',
         cursor: 'pointer',
         opacity: isAdded ? 0.66 : 1,
       }}
     >
+      <span
+        aria-hidden
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1px',
+          alignItems: 'center',
+          gap: 15,
+          minHeight: 66,
+        }}
+      >
+        <span
+          style={{
+            color: rust,
+            fontFamily: serif,
+            fontSize: 'clamp(39px, 11vw, 54px)',
+            fontWeight: 800,
+            letterSpacing: '0.01em',
+            lineHeight: 0.94,
+          }}
+        >
+          {String(index).padStart(2, '0')}
+        </span>
+        <span
+          style={{
+            width: 1,
+            height: 58,
+            background: gold,
+          }}
+        />
+      </span>
       <span style={{ minWidth: 0 }}>
         <span
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 15,
-            fontWeight: 780,
+            fontSize: 17,
+            fontWeight: 850,
             lineHeight: 1.24,
             color: '#24301F',
           }}
@@ -468,7 +614,7 @@ function PlannerRow({
             display: 'block',
             marginTop: 5,
             fontFamily: sans,
-            fontSize: 13.2,
+            fontSize: 14,
             fontWeight: 500,
             lineHeight: 1.42,
             color: 'rgba(36,48,31,0.64)',
@@ -483,21 +629,116 @@ function PlannerRow({
 
       <span
         aria-hidden
-        className="inline-flex items-center justify-end"
+        className="inline-flex items-center justify-center"
         style={{
-          minWidth: 20,
-          height: 22,
+          width: 42,
+          height: 42,
+          borderRadius: 999,
+          border: '1px solid rgba(184,112,63,0.24)',
           marginTop: 0,
-          color: isAdded ? 'rgba(98,125,78,0.80)' : 'rgba(36,48,31,0.34)',
+          color: isAdded ? 'rgba(98,125,78,0.80)' : rustDark,
           fontFamily: sans,
           fontSize: isAdded ? 11.5 : 16,
           fontWeight: 800,
           lineHeight: 1,
+          background: 'rgba(255,252,244,0.34)',
         }}
       >
-        {isAdded ? 'Tilføjet' : <Plus width={14} height={14} strokeWidth={1.6} />}
+        {isAdded ? '✓' : <Plus width={20} height={20} strokeWidth={1.8} />}
       </span>
     </button>
+  )
+}
+
+function EditorialSectionLabel() {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '64px minmax(0, 1fr)',
+        alignItems: 'center',
+        gap: 16,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 52,
+          height: 52,
+          borderRadius: 999,
+          background: olive,
+          color: '#F7F1E5',
+        }}
+      >
+        <SproutMark />
+      </span>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'auto minmax(0, 1fr)',
+          alignItems: 'center',
+          gap: 18,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: olive,
+            fontFamily: sans,
+            fontSize: 22,
+            fontWeight: 900,
+            letterSpacing: '0.32em',
+            lineHeight: 1,
+            textTransform: 'uppercase',
+          }}
+        >
+          Gør nu
+        </p>
+        <span
+          aria-hidden
+          style={{
+            height: 1,
+            background: 'rgba(36,48,31,0.42)',
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function SproutMark() {
+  return (
+    <svg viewBox="0 0 32 32" width="100%" height="100%" fill="none" aria-hidden>
+      <path d="M16 27V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M15.8 14.4C11 8.2 6.8 6.5 3.8 7.1c-.1 5.7 4.8 9.2 12 9.3Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.3 18.4c5.8-7.2 10.2-9.6 13-8.8.1 6-5.4 9.9-13 10.7Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function BotanicalLineArt() {
+  return (
+    <svg viewBox="0 0 184 138" width="100%" height="100%" fill="none" aria-hidden>
+      <path d="M48 132C75 92 87 58 82 22" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M91 134C106 93 126 65 164 39" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M74 52c-24-8-42-2-54 19 23 6 42-1 54-19Z" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M82 35c15-20 30-27 47-24-5 21-21 31-47 24Z" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M112 86c17-19 35-25 54-19-8 19-25 28-54 19Z" stroke="#6E7B51" strokeWidth="2" />
+      <path d="M101 105c-20-8-35-3-45 14 18 7 33 3 45-14Z" stroke="#6E7B51" strokeWidth="2" />
+    </svg>
   )
 }
 
@@ -721,12 +962,6 @@ function humanCategory(category: string): string {
     .replaceAll('_', ' ')
     .replaceAll('-', ' ')
     .replace(/^\w/, letter => letter.toUpperCase())
-}
-
-function genitiveMonth(monthName: string): string {
-  const lower = monthName.toLowerCase()
-  if (lower.endsWith('s')) return lower
-  return `${lower}s`
 }
 
 function slugify(value: string): string {
