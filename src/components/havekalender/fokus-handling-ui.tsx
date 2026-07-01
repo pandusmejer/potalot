@@ -20,7 +20,7 @@ import { markDerivedTaskDone, unmarkDerivedTaskDone } from '@/actions/plant-task
 import type { FokusHandling } from '@/lib/kalender/dagens-fokus'
 
 const sans = 'var(--font-manrope)'
-const display = 'var(--font-gabarito), var(--font-manrope), sans-serif'
+const serif = 'var(--font-cormorant), var(--font-gabarito), serif'
 
 /**
  * Chip = lille LÆSE-signal for grad af timing/konsekvens — ikke et statusfelt.
@@ -52,13 +52,23 @@ export function chipLabel(h: FokusHandling, month: number): string {
   }
 }
 
-export function Chip({ h, month }: { h: FokusHandling; month: number }) {
+export function Chip({ h, month, size }: { h: FokusHandling; month: number; size?: 'lg' }) {
   const label = chipLabel(h, month)
   const tone = CHIP_TONE[label] ?? CHIP_TONE['Mulighed']
+  const lg = size === 'lg'
   return (
     <span
       className="shrink-0 rounded-full"
-      style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, color: tone.color, background: tone.bg, padding: '2.5px 8px' }}
+      style={{
+        fontFamily: sans,
+        fontSize: lg ? 14 : 10.5,
+        fontWeight: 600,
+        letterSpacing: lg ? '-0.01em' : undefined,
+        lineHeight: lg ? 1 : undefined,
+        color: tone.color,
+        background: tone.bg,
+        padding: lg ? '4px 11px' : '2.5px 8px',
+      }}
     >
       {label}
     </span>
@@ -106,21 +116,21 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
-                fontFamily: display, fontSize: 20.5, fontWeight: 800, lineHeight: 1.04,
-                letterSpacing: '-0.015em', color: 'var(--foreground)', margin: 0,
+                fontFamily: serif, fontSize: 28, fontWeight: 600, lineHeight: 0.98,
+                letterSpacing: '-0.03em', color: '#24311d', margin: 0, maxWidth: '10ch',
                 textDecoration: done ? 'line-through' : 'none',
               }}
             >
               {h.titel}
             </h3>
-            <Chip h={h} month={month} />
+            <Chip h={h} month={month} size="lg" />
           </div>
-          <p style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 500, color: 'rgba(42,51,32,0.62)', margin: '3px 0 0', lineHeight: 1.3 }}>
+          <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.42, letterSpacing: '-0.01em', maxWidth: '27ch' }}>
             {h.hvorfor}
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: 'var(--primary)', display: 'inline-block', marginTop: 6 }}
+            style={{ fontFamily: sans, fontSize: 17, fontWeight: 700, color: '#567036', display: 'inline-block', marginTop: 6, lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
