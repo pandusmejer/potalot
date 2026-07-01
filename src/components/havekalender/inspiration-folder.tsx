@@ -158,7 +158,7 @@ export function InspirationFolder({
             fontWeight: 850,
             letterSpacing: '0.22em',
             lineHeight: 1.2,
-            margin: '0 0 18px',
+            margin: '0 0 calc(18px - 2mm)',
             textTransform: 'uppercase',
           }}
         >
@@ -169,7 +169,7 @@ export function InspirationFolder({
           style={{
             color: '#9F7A24',
             fontFamily: serif,
-            fontSize: 'clamp(40px, 10vw, 47px)',
+            fontSize: 'clamp(38px, 9.5vw, 45px)',
             fontWeight: 600,
             letterSpacing: '-0.035em',
             lineHeight: 0.96,
@@ -177,7 +177,7 @@ export function InspirationFolder({
             maxWidth: 320,
           }}
         >
-          Når du vil mere med {monthName}
+          Når du vil mere<br />med {monthName}
         </h2>
         <p
           style={{
