@@ -79,8 +79,6 @@ const DEFAULT_JUNE_ITEMS: FolderItem[] = [
   {
     title: 'Tyv tomaterne',
     text: 'Brug få minutter hver anden dag, så planterne ikke bliver et grønt trafikuheld i juli.',
-    image: '/images/frokort/tomat-gardeners-delight.png',
-    imageAlt: 'Tomat',
   },
   {
     title: 'Så til sensommeren',
@@ -92,8 +90,6 @@ const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
   {
     title: 'Tomater i juni',
     text: 'Opbinding, sideskud og vand - det vigtigste lige nu.',
-    image: '/images/frokort/tomat-san-marzano.png',
-    imageAlt: 'Tomat',
   },
   {
     title: 'Såning i varme perioder',
@@ -122,75 +118,87 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
 const VB_W = 342
 const Y_TAB_TOP = 4 // top af aktiv tab
 const Y_TAB_TOP_IN = 16 // top af inaktive tabs (mere tilbagetrukne)
-const Y_SURFACE = 46 // mappens øverste flade (mellem/ved siden af tabs)
+const Y_SURFACE = 46 // mappens øverste flade (mellem tabs)
 const Y_BOTTOM = 84 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 18 // hjørne-radius, aktiv tab-top
-const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops
-const OUTER_R = 26 // øvre ydre hjørner på mappekroppen
-const TAB_CENTERS = [86, 171, 256] // tab-midter (ydre tabs rykket ind)
+const TAB_R = 18 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 15 // hjørne-radius, inaktive tab-tops (indre sider)
+const OUTER_R = 26 // ydre hjørner — deles af kant-tab og mappekant (flush)
+const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 54 // halv bredde, aktiv tab
-const IW = 48 // halv bredde, inaktive tabs
-const SR_L = 34 // venstre skulder-løb (bredere → asymmetri)
+const IW = 48 // halv bredde, inaktive tabs (indre side)
+const SR_L = 32 // venstre skulder-løb (bredere → asymmetri)
 const SR_R = 27 // højre skulder-løb (kortere)
+const LAST = TAB_CENTERS.length - 1
 
-/** Aktiv tab + skuldre + mappe-top som ét die-cut path. */
+/**
+ * Aktiv tab + skuldre + mappe-top som ét die-cut path.
+ * Yder-tabs (index 0 / sidste) deler mappens ydre hjørne, så de går helt
+ * ud til kanten; kun de indre sider har bløde skuldre.
+ */
 function frontPath(active: number): string {
   const cx = TAB_CENTERS[active]
   const lx = cx - AW
   const rx = cx + AW
-  const sL = lx - SR_L
-  const sR = rx + SR_R
-  const hasLeft = sL > OUTER_R + 4
-  const hasRight = sR < VB_W - OUTER_R - 4
+  const flushLeft = active === 0
+  const flushRight = active === LAST
   const knee = Y_TAB_TOP + TAB_R + (Y_SURFACE - Y_TAB_TOP) * 0.35
+  const p: string[] = [`M 0 ${Y_BOTTOM}`]
 
-  const p: string[] = [
-    `M 0 ${Y_BOTTOM}`,
-    `L 0 ${Y_SURFACE + OUTER_R}`,
-    `Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`,
-  ]
-
-  // venstre skulder op i tabben (bred rolig kurve) — eller kort løft ved kanten
-  if (hasLeft) {
+  // venstre side af den aktive tab
+  if (flushLeft) {
+    // tab deler mappens venstre kant → ydre hjørne op i tab-toppen
+    p.push(`L 0 ${Y_TAB_TOP + OUTER_R}`)
+    p.push(`Q 0 ${Y_TAB_TOP} ${OUTER_R} ${Y_TAB_TOP}`)
+  } else {
+    p.push(`L 0 ${Y_SURFACE + OUTER_R}`)
+    p.push(`Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`)
+    const sL = lx - SR_L
     p.push(`L ${sL} ${Y_SURFACE}`)
     p.push(`C ${sL + (lx - sL) * 0.5} ${Y_SURFACE} ${lx} ${knee} ${lx} ${Y_TAB_TOP + TAB_R}`)
-  } else {
-    p.push(`L ${Math.max(OUTER_R, lx)} ${Y_SURFACE}`)
-    p.push(`C ${lx} ${Y_SURFACE} ${lx} ${knee} ${lx} ${Y_TAB_TOP + TAB_R}`)
+    p.push(`Q ${lx} ${Y_TAB_TOP} ${lx + TAB_R} ${Y_TAB_TOP}`)
   }
 
   // tab-top
-  p.push(`Q ${lx} ${Y_TAB_TOP} ${lx + TAB_R} ${Y_TAB_TOP}`)
-  p.push(`L ${rx - TAB_R} ${Y_TAB_TOP}`)
-  p.push(`Q ${rx} ${Y_TAB_TOP} ${rx} ${Y_TAB_TOP + TAB_R}`)
+  p.push(`L ${flushRight ? VB_W - OUTER_R : rx - TAB_R} ${Y_TAB_TOP}`)
 
-  // højre skulder ned i mappe-fladen
-  if (hasRight) {
-    p.push(`C ${rx} ${knee} ${sR - (sR - rx) * 0.5} ${Y_SURFACE} ${sR} ${Y_SURFACE}`)
+  // højre side af den aktive tab
+  if (flushRight) {
+    p.push(`Q ${VB_W} ${Y_TAB_TOP} ${VB_W} ${Y_TAB_TOP + OUTER_R}`)
+    p.push(`L ${VB_W} ${Y_BOTTOM}`)
   } else {
-    p.push(`C ${rx} ${knee} ${rx} ${Y_SURFACE} ${Math.min(VB_W - OUTER_R, rx)} ${Y_SURFACE}`)
+    p.push(`Q ${rx} ${Y_TAB_TOP} ${rx} ${Y_TAB_TOP + TAB_R}`)
+    const sR = rx + SR_R
+    p.push(`C ${rx} ${knee} ${sR - (sR - rx) * 0.5} ${Y_SURFACE} ${sR} ${Y_SURFACE}`)
+    p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
+    p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
+    p.push(`L ${VB_W} ${Y_BOTTOM}`)
   }
 
-  p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
-  p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
-  p.push(`L ${VB_W} ${Y_BOTTOM}`)
   p.push('Z')
   return p.join(' ')
 }
 
-/** Én inaktiv tab som blødt afrundet baglag, der tuckes ind under fronten. */
+/**
+ * Én inaktiv tab som blødt afrundet baglag. Yder-tabs går flush ud til
+ * mappens kant og deler det ydre hjørne; de strækker sig ned bag fronten,
+ * så der aldrig opstår en hak mellem tab og mappekrop.
+ */
 function backPath(index: number): string {
   const cx = TAB_CENTERS[index]
-  const lx = cx - IW
-  const rx = cx + IW
+  const flushLeft = index === 0
+  const flushRight = index === LAST
+  const lx = flushLeft ? 0 : cx - IW
+  const rx = flushRight ? VB_W : cx + IW
+  const rL = flushLeft ? OUTER_R : TAB_R_IN
+  const rR = flushRight ? OUTER_R : TAB_R_IN
   const yt = Y_TAB_TOP_IN
-  const yb = Y_SURFACE + 8
+  const yb = Y_BOTTOM
   return [
     `M ${lx} ${yb}`,
-    `L ${lx} ${yt + TAB_R_IN}`,
-    `Q ${lx} ${yt} ${lx + TAB_R_IN} ${yt}`,
-    `L ${rx - TAB_R_IN} ${yt}`,
-    `Q ${rx} ${yt} ${rx} ${yt + TAB_R_IN}`,
+    `L ${lx} ${yt + rL}`,
+    `Q ${lx} ${yt} ${lx + rL} ${yt}`,
+    `L ${rx - rR} ${yt}`,
+    `Q ${rx} ${yt} ${rx} ${yt + rR}`,
     `L ${rx} ${yb}`,
     'Z',
   ].join(' ')
@@ -355,7 +363,7 @@ export function InspirationFolder({
             borderRadius: '0 0 32px 32px',
             boxShadow: '0 14px 30px rgba(60,80,72,0.20)',
             color: '#F8F4E9',
-            marginTop: -1,
+            marginTop: -25, // rykker mappens overskrifter ~6 mm op mod tabs
             overflow: 'hidden',
             padding: '12px 24px 28px',
           }}
@@ -387,8 +395,8 @@ function FolderPanel({
           style={{
             color: '#F6F1E6',
             fontFamily: serif,
-            fontSize: tab === 'june' ? 30 : 36,
-            fontWeight: tab === 'june' ? 700 : 600,
+            fontSize: 36,
+            fontWeight: 600,
             letterSpacing: '0',
             lineHeight: 0.98,
             margin: 0,
@@ -401,7 +409,7 @@ function FolderPanel({
             style={{
               color: 'rgba(246,241,230,0.84)',
               fontFamily: sans,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 500,
               lineHeight: 1.35,
               margin: '8px 0 0',
@@ -479,7 +487,7 @@ function FolderItemCard({
             color: '#23382B',
             display: 'block',
             fontFamily: sans,
-            fontSize: 21,
+            fontSize: 19,
             fontWeight: 700,
             lineHeight: 1.12,
             marginBottom: 6,
@@ -492,7 +500,7 @@ function FolderItemCard({
             color: '#5E675D',
             display: '-webkit-box',
             fontFamily: sans,
-            fontSize: 15.5,
+            fontSize: 14,
             fontWeight: 500,
             lineHeight: 1.32,
             overflow: 'hidden',
@@ -531,7 +539,8 @@ function LeadingVisual({
 }) {
   const [errored, setErrored] = useState(false)
 
-  if (image && !errored) {
+  // Thumbnails bruges KUN på Frøbank-fanen; øvrige faner får neutral markør.
+  if (image && !errored && sourceTab === 'seedbank') {
     return (
       <span
         style={{
