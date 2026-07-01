@@ -55,6 +55,11 @@ function derivedSourceChip(h: FokusHandling) {
   return <SourceChip label={h.plantId !== null ? 'Fra planter' : 'Fra frøbank'} />
 }
 
+/** Lette planlægningsfiltre (ikke store knapper): lav højde, dæmpet aktiv-skygge. */
+const tabCls = 'h-[42px] text-[13px] data-[state=active]:shadow-[0_1px_2px_rgba(42,51,32,0.07)] data-[state=active]:font-semibold'
+/** Tæller: 2px mindre end label + dæmpet. */
+const countCls = 'ml-1.5 text-[11px] opacity-60'
+
 export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month }: Props) {
   const { isDone, toggle } = useDerivedCompletions(
     [...dagensFokus.fokus, ...dagensFokus.flere, ...dagensFokus.rytme],
@@ -167,18 +172,21 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </div>
           ) : null}
 
-          {/* Faner = opgaveoverblikket. */}
+          {/* Faner = opgaveoverblikket — lette planlægningsfiltre (2×2), ikke en kasse. */}
           <Tabs defaultValue="idag">
-            <TabsList className="w-full overflow-x-auto h-auto flex-wrap sm:flex-nowrap">
-              <TabsTrigger value="idag">I dag <span className="ml-1.5 text-xs opacity-60">({antal(derivedIDag, userIDag)})</span></TabsTrigger>
-              <TabsTrigger value="uge">Denne uge <span className="ml-1.5 text-xs opacity-60">({antal(derivedUge, userUge)})</span></TabsTrigger>
-              <TabsTrigger value="maaned">Denne måned <span className="ml-1.5 text-xs opacity-60">({antal(derivedMaaned, userMaaned)})</span></TabsTrigger>
+            <TabsList
+              className="grid w-full grid-cols-2 gap-1.5 h-auto rounded-xl p-1.5"
+              style={{ background: 'rgba(42,51,32,0.05)' }}
+            >
+              <TabsTrigger value="idag" className={tabCls}>I dag <span className={countCls}>({antal(derivedIDag, userIDag)})</span></TabsTrigger>
+              <TabsTrigger value="uge" className={tabCls}>Denne uge <span className={countCls}>({antal(derivedUge, userUge)})</span></TabsTrigger>
+              <TabsTrigger value="maaned" className={tabCls}>Denne måned <span className={countCls}>({antal(derivedMaaned, userMaaned)})</span></TabsTrigger>
               {forsinkede.length > 0 && (
-                <TabsTrigger value="forsinket" className="text-destructive">
-                  Forsinket <span className="ml-1.5 text-xs opacity-60">({forsinkede.length})</span>
+                <TabsTrigger value="forsinket" className={`${tabCls} text-destructive`}>
+                  Forsinket <span className={countCls}>({forsinkede.length})</span>
                 </TabsTrigger>
               )}
-              <TabsTrigger value="afsluttet">Afsluttet <span className="ml-1.5 text-xs opacity-60">({afsluttede.length + derivedDone.length})</span></TabsTrigger>
+              <TabsTrigger value="afsluttet" className={tabCls}>Afsluttet <span className={countCls}>({afsluttede.length + derivedDone.length})</span></TabsTrigger>
             </TabsList>
 
             <TabsContent value="idag">
@@ -227,13 +235,16 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </TabsContent>
           </Tabs>
 
-          {/* Ny opgave — samme board (aflang fuld-bredde knap). */}
-          <AddTaskDialog plants={aktivePlanter}>
-            <Button className="w-full">
-              <Plus className="h-4 w-4" />
-              Ny opgave
-            </Button>
-          </AddTaskDialog>
+          {/* Ny opgave — nedtonet støttehandling: grøn primær, men lavere og uden
+              tung skygge, så den ikke bliver sektionens visuelle hovedperson. */}
+          <div style={{ marginTop: 20 }}>
+            <AddTaskDialog plants={aktivePlanter}>
+              <Button className="w-full h-10" style={{ boxShadow: 'none' }}>
+                <Plus className="h-4 w-4" />
+                Ny opgave
+              </Button>
+            </AddTaskDialog>
+          </div>
         </div>
       </Card>
     </section>
