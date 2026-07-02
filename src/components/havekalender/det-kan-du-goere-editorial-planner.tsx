@@ -375,7 +375,9 @@ function MonthLoopHeader({
           zIndex: 3,
           gap: 0,
           minWidth: 0,
-          minHeight: 136,
+          height: 'calc(136px - 5mm)',
+          minHeight: 'calc(136px - 5mm)',
+          alignSelf: 'start',
           padding: '0 8px',
           background: 'transparent',
           border: 0,
@@ -384,7 +386,7 @@ function MonthLoopHeader({
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 21,
-          fontWeight: 500,
+          fontWeight: 600,
           letterSpacing: '0.01em',
           lineHeight: 1,
           textTransform: 'lowercase',
@@ -397,7 +399,7 @@ function MonthLoopHeader({
             left: 0,
             right: 0,
             top: 0,
-            bottom: '5mm',
+            bottom: 0,
             zIndex: 0,
             background: '#F1E7D9',
             borderRadius: '0 16px 16px 0',
@@ -415,8 +417,8 @@ function MonthLoopHeader({
           }}
         >
           <ChevronLeft
-            width={18}
-            height={18}
+            width={20}
+            height={20}
             strokeWidth={1.8}
             aria-hidden
             style={{ color: '#46482F', flex: '0 0 auto' }}
@@ -482,7 +484,9 @@ function MonthLoopHeader({
           zIndex: 3,
           gap: 0,
           minWidth: 0,
-          minHeight: 136,
+          height: 'calc(136px - 5mm)',
+          minHeight: 'calc(136px - 5mm)',
+          alignSelf: 'start',
           padding: '0 8px',
           background: 'transparent',
           border: 0,
@@ -491,7 +495,7 @@ function MonthLoopHeader({
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 21,
-          fontWeight: 500,
+          fontWeight: 600,
           letterSpacing: '0.01em',
           lineHeight: 1,
           textTransform: 'lowercase',
@@ -504,7 +508,7 @@ function MonthLoopHeader({
             left: 0,
             right: 0,
             top: 0,
-            bottom: '5mm',
+            bottom: 0,
             zIndex: 0,
             background: '#F1E7D9',
             borderRadius: '16px 0 0 16px',
@@ -523,8 +527,8 @@ function MonthLoopHeader({
         >
           <span>{nextLabel.toLowerCase()}</span>
           <ChevronRight
-            width={18}
-            height={18}
+            width={20}
+            height={20}
             strokeWidth={1.8}
             aria-hidden
             style={{ color: '#46482F', flex: '0 0 auto' }}
