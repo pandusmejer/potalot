@@ -651,7 +651,7 @@ function FeaturedGuideCard() {
         textDecoration: 'none',
       }}
     >
-      <BotanicalSprig />
+      <MoleculeWatermark />
       <p
         style={{
           color: 'rgba(35,56,43,0.50)',
@@ -717,40 +717,45 @@ function FeaturedGuideCard() {
 }
 
 /**
- * Botanisk line-art (dild-agtig skærm + blade) som rolig editorial-tekstur i
- * intro-kortets højre side — erstatter det gentagne bog-ikon. Ingen ekstern
- * asset; tegnet inline så den kan cropes blødt af kortets runding.
+ * Molekyle-/netværks-vandmærke i intro-kortets højre side (30% fra toppen,
+ * delvist bag teksten) — signalerer viden/systematik i feltguide-sproget.
+ * Tegnet inline i sage, så det kan cropes af kortets runding og holdes diskret.
  */
-function BotanicalSprig() {
+function MoleculeWatermark() {
   return (
     <svg
-      viewBox="0 0 120 160"
-      width={140}
+      viewBox="0 0 1420 2000"
+      width={196}
       aria-hidden
       style={{
-        bottom: 16,
-        opacity: 0.2,
+        opacity: 0.16,
         pointerEvents: 'none',
         position: 'absolute',
-        right: 14,
+        right: -34,
+        top: '30%',
       }}
     >
-      <g
-        fill="none"
-        stroke="rgba(35,56,43,0.9)"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M60 158 C57 128 63 104 60 78 C58 56 62 42 60 26" />
-        <path d="M60 100 C44 96 30 102 24 116 C40 118 54 112 60 100 Z" />
-        <path d="M60 74 C76 70 90 76 96 90 C80 92 66 86 60 74 Z" />
-        <path d="M60 26 L48 8 M60 26 L60 5 M60 26 L72 8 M60 26 L54 13 M60 26 L66 13" />
-        <circle cx="48" cy="7" r="2.6" fill="rgba(35,56,43,0.9)" />
-        <circle cx="60" cy="4" r="2.6" fill="rgba(35,56,43,0.9)" />
-        <circle cx="72" cy="7" r="2.6" fill="rgba(35,56,43,0.9)" />
-        <circle cx="54" cy="12" r="2.1" fill="rgba(35,56,43,0.9)" />
-        <circle cx="66" cy="12" r="2.1" fill="rgba(35,56,43,0.9)" />
+      <g fill="#7f8c68" stroke="#7f8c68" strokeWidth={13}>
+        {/* bindinger */}
+        <line x1="1045" y1="255" x2="895" y2="620" />
+        <line x1="895" y1="620" x2="448" y2="705" />
+        <line x1="895" y1="620" x2="1200" y2="962" />
+        <line x1="448" y1="705" x2="162" y2="525" />
+        <line x1="448" y1="705" x2="345" y2="1140" />
+        <line x1="345" y1="1140" x2="632" y2="1470" />
+        <line x1="632" y1="1470" x2="448" y2="1745" />
+        <line x1="632" y1="1470" x2="1092" y2="1400" />
+        <line x1="1092" y1="1400" x2="1200" y2="962" />
+        {/* atomer */}
+        <circle cx="1045" cy="255" r="132" />
+        <circle cx="895" cy="620" r="78" />
+        <circle cx="448" cy="705" r="152" />
+        <circle cx="162" cy="525" r="88" />
+        <circle cx="345" cy="1140" r="58" />
+        <circle cx="632" cy="1470" r="74" />
+        <circle cx="448" cy="1745" r="140" />
+        <circle cx="1200" cy="962" r="138" />
+        <circle cx="1092" cy="1400" r="128" />
       </g>
     </svg>
   )
