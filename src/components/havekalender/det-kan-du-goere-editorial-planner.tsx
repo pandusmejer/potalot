@@ -212,10 +212,10 @@ export function DetKanDuGoereEditorialPlanner({
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(20px, 5.2vw, 23px)',
+                fontSize: 'clamp(19px, 5vw, 22px)',
                 fontStyle: 'italic',
                 fontWeight: 600,
-                lineHeight: 1.3,
+                lineHeight: 1.25,
                 margin: '-3mm auto 48px',
                 maxWidth: '34ch',
                 color: 'rgba(35,56,43,0.84)',
@@ -362,7 +362,7 @@ function MonthLoopHeader({
         overflow: 'hidden',
         // Terracotta-feltet fylder nu HELE headeren som ét rektangel, kant til
         // kant i siderne (samme højde) — ikke længere et indskudt centerfelt.
-        background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 92%, #F7F1E5 100%)',
+        background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14)',
       }}
     >
@@ -707,7 +707,7 @@ function PlannerRow({
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 18,
+            fontSize: 16.7,
             fontWeight: 750,
             lineHeight: 1.18,
             color: '#203024',
@@ -720,7 +720,7 @@ function PlannerRow({
             display: 'block',
             marginTop: 5,
             fontFamily: sans,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: 500,
             lineHeight: 1.25,
             color: 'rgba(35,56,43,0.66)',
