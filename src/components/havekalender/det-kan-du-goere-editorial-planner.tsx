@@ -349,7 +349,7 @@ function MonthLoopHeader({
       className="grid items-center"
       style={{
         position: 'relative',
-        gridTemplateColumns: '1fr clamp(150px, 41vw, 176px) 1fr',
+        gridTemplateColumns: '1fr auto 1fr',
         columnGap: 0,
         margin: 0,
         marginTop: '-4mm',
@@ -377,10 +377,10 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 8px',
-          background: 'transparent',
+          background: '#F1E7D9',
           border: 0,
           borderRadius: 0,
-          color: 'rgba(255,247,232,0.82)',
+          color: '#46482F',
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 21,
@@ -405,7 +405,7 @@ function MonthLoopHeader({
             height={18}
             strokeWidth={1.8}
             aria-hidden
-            style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
+            style={{ color: '#46482F', flex: '0 0 auto' }}
           />
           <span>{prevLabel.toLowerCase()}</span>
         </span>
@@ -422,9 +422,9 @@ function MonthLoopHeader({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '100%',
+          width: 'auto',
           height: 136,
-          padding: 0,
+          padding: '0 5mm',
           overflow: 'visible',
           background: 'transparent',
           color: '#FFF7E8',
@@ -447,14 +447,14 @@ function MonthLoopHeader({
             zIndex: 1,
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 18,
+            gap: 18.9,
             marginTop: 'calc(16px + 3mm)',
             pointerEvents: 'none',
           }}
         >
-          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
-          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: '#FFF7E8' }} />
-          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: '#FFF7E8' }} />
+          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
         </span>
       </span>
 
@@ -470,10 +470,10 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 8px',
-          background: 'transparent',
+          background: '#F1E7D9',
           border: 0,
           borderRadius: 0,
-          color: 'rgba(255,247,232,0.82)',
+          color: '#46482F',
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 21,
@@ -499,7 +499,7 @@ function MonthLoopHeader({
             height={18}
             strokeWidth={1.8}
             aria-hidden
-            style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
+            style={{ color: '#46482F', flex: '0 0 auto' }}
           />
         </span>
       </button>
