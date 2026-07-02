@@ -374,12 +374,12 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           left: 0,
-          bottom: '-7mm',
+          bottom: '-9mm',
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
-          borderRadius: '0 16px 16px 0',
+          borderRadius: '0 28px 28px 0',
           boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
           pointerEvents: 'none',
         }}
@@ -389,12 +389,12 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           right: 0,
-          bottom: '-7mm',
+          bottom: '-9mm',
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
-          borderRadius: '16px 0 0 16px',
+          borderRadius: '28px 0 0 28px',
           boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
           pointerEvents: 'none',
         }}
@@ -437,7 +437,7 @@ function MonthLoopHeader({
             zIndex: 0,
             background: '#F1E7D9',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
-            borderRadius: '0 16px 16px 0',
+            borderRadius: '0 24px 24px 0',
             pointerEvents: 'none',
           }}
         />
@@ -547,7 +547,7 @@ function MonthLoopHeader({
             zIndex: 0,
             background: '#F1E7D9',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
-            borderRadius: '16px 0 0 16px',
+            borderRadius: '24px 0 0 24px',
             pointerEvents: 'none',
           }}
         />
