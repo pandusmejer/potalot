@@ -204,7 +204,7 @@ export function DetKanDuGoereEditorialPlanner({
                 display: 'block',
                 width: 46,
                 height: 3,
-                margin: 'calc(16px - 2mm) auto 28px',
+                margin: 'calc(16px - 4mm) auto 28px',
                 borderRadius: 999,
                 background: '#9F7A24',
               }}
@@ -212,13 +212,13 @@ export function DetKanDuGoereEditorialPlanner({
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(21px, 5.4vw, 24px)',
+                fontSize: 'clamp(20px, 5.2vw, 23px)',
                 fontStyle: 'italic',
                 fontWeight: 600,
                 lineHeight: 1.3,
-                margin: '0 auto 48px',
+                margin: '-3mm auto 48px',
                 maxWidth: '34ch',
-                color: 'rgba(35,56,43,0.74)',
+                color: 'rgba(35,56,43,0.84)',
               }}
             >
               Juli er haven i fuld vækst.
@@ -374,7 +374,7 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           left: 0,
-          bottom: '-9mm',
+          bottom: '-10mm',
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
@@ -388,7 +388,7 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           right: 0,
-          bottom: '-9mm',
+          bottom: '-10mm',
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
@@ -435,7 +435,7 @@ function MonthLoopHeader({
             zIndex: 0,
             background: '#F1E7D9',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
-            borderRadius: '0 24px 24px 0',
+            borderRadius: '0 28px 28px 0',
             pointerEvents: 'none',
           }}
         />
@@ -545,7 +545,7 @@ function MonthLoopHeader({
             zIndex: 0,
             background: '#F1E7D9',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
-            borderRadius: '24px 0 0 24px',
+            borderRadius: '28px 0 0 28px',
             pointerEvents: 'none',
           }}
         />
