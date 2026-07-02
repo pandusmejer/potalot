@@ -362,7 +362,7 @@ function MonthLoopHeader({
         overflow: 'hidden',
         // Terracotta-feltet fylder nu HELE headeren som ét rektangel, kant til
         // kant i siderne (samme højde) — ikke længere et indskudt centerfelt.
-        background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
+        background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 92%, #F7F1E5 100%)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14)',
       }}
     >
