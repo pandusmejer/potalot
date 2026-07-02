@@ -195,7 +195,7 @@ export function DetKanDuGoereEditorialPlanner({
 
           <div
             style={{
-              padding: '0 clamp(34px, 8vw, 38px)',
+              padding: '0 clamp(20px, 5vw, 24px)',
             }}
           >
             <span
@@ -215,13 +215,13 @@ export function DetKanDuGoereEditorialPlanner({
                 fontSize: 'clamp(21px, 5.4vw, 24px)',
                 fontStyle: 'italic',
                 fontWeight: 600,
-                lineHeight: 1.4,
+                lineHeight: 1.3,
                 margin: '0 auto 48px',
-                maxWidth: '29ch',
+                maxWidth: '34ch',
                 color: 'rgba(35,56,43,0.74)',
               }}
             >
-              Juni er haven i fuld vækst.
+              Juli er haven i fuld vækst.
               <br />
               Nye skud tager fart, blomsterne folder sig ud, og de første afgrøder
               melder sig. Nu handler det om at hjælpe haven godt ind i sommeren.
@@ -374,8 +374,8 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           left: 0,
-          top: '7mm',
-          zIndex: 1,
+          bottom: '-7mm',
+          zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
@@ -389,8 +389,8 @@ function MonthLoopHeader({
         style={{
           position: 'absolute',
           right: 0,
-          top: '7mm',
-          zIndex: 1,
+          bottom: '-7mm',
+          zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
