@@ -126,13 +126,15 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 29 // top af aktiv tab (meget lavt drop → flad papirfane)
-const Y_TAB_TOP_IN = 32 // top af inaktive tabs (3px lavere = lag bagved)
-const Y_SURFACE = 42 // mappens øverste flade (mellem tabs)
-const Y_BOTTOM = 82 // bund af SVG = top af mappekroppen (flush)
-const TAB_R = 10 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 9 // hjørne-radius, inaktive tab-tops (indre sider)
-const OUTER_R = 18 // ydre hjørner — deles af kant-tab og mappekant (mindre runde)
+const Y_TAB_TOP = 8 // top af aktiv tab
+const Y_TAB_TOP_IN = 12 // top af inaktive tabs (4px lavere = lag bagved)
+const Y_SURFACE = 50 // mappens øverste flade (mellem tabs)
+const Y_BOTTOM = 66 // bund af SVG = top af mappekroppen (flush)
+// Aktiv fanehøjde = Y_SURFACE - Y_TAB_TOP = 42px → 16px tekst med rigelig luft
+// over/under, så intet klippes. Inaktiv = 38px.
+const TAB_R = 15 // hjørne-radius, aktiv tab-top (indre sider)
+const TAB_R_IN = 13 // hjørne-radius, inaktive tab-tops (indre sider)
+const OUTER_R = 14 // ydre hjørner — deles af kant-tab og mappekant
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
 const IW = 62 // halv bredde, inaktive tabs — overlapper aktiv en smule (lag)
@@ -370,7 +372,7 @@ export function InspirationFolder({
                     lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 30 : 33,
+                    top: active ? 22 : 25,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
@@ -390,7 +392,7 @@ export function InspirationFolder({
             borderRadius: '0 0 24px 24px',
             boxShadow: '0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
-            marginTop: -18, // rykker mappens overskrifter op mod tabs (m. luft til serif-top)
+            marginTop: -2, // kroppen dækker kun 2px af fanernes bund (æder ikke tekst)
             padding: '12px 24px 28px',
           }}
         >
