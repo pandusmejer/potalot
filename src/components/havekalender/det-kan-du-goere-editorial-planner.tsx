@@ -380,7 +380,6 @@ function MonthLoopHeader({
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
           borderRadius: '0 28px 28px 0',
-          boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
           pointerEvents: 'none',
         }}
       />
@@ -395,7 +394,6 @@ function MonthLoopHeader({
           height: 'calc((136px - 5mm) / 2)',
           background: '#F7F1E5',
           borderRadius: '28px 0 0 28px',
-          boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
           pointerEvents: 'none',
         }}
       />
