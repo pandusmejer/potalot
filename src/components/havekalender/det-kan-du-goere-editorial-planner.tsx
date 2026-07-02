@@ -135,12 +135,12 @@ export function DetKanDuGoereEditorialPlanner({
         position: 'relative',
         overflow: 'hidden',
         marginTop: 8,
-        borderRadius: 28,
-        border: '1px solid rgba(64,58,42,0.10)',
+        borderRadius: 30,
+        border: '1px solid rgba(64,58,42,0.08)',
         background:
           'linear-gradient(180deg, rgba(255,252,244,0.86) 0%, #F7F1E5 46%, #F3EBDD 100%)',
         boxShadow:
-          '0 18px 44px rgba(64,58,42,0.10), inset 0 1px 0 rgba(255,255,255,0.62)',
+          '0 14px 30px rgba(64,58,42,0.08), inset 0 1px 0 rgba(255,255,255,0.35)',
         color: '#24301F',
       }}
     >
@@ -166,8 +166,8 @@ export function DetKanDuGoereEditorialPlanner({
               alignItems: 'center',
               gap: 10,
               marginBottom: 14,
-              padding: '8px clamp(20px, 5vw, 38px) 6px',
-              borderBottom: '1px solid rgba(64,58,42,0.10)',
+              padding: '20px clamp(20px, 5vw, 38px) 14px',
+              borderBottom: '1px solid rgba(64,58,42,0.08)',
               background:
                 'linear-gradient(180deg, rgba(255,252,244,0.82), rgba(255,252,244,0.34))',
             }}
@@ -178,9 +178,9 @@ export function DetKanDuGoereEditorialPlanner({
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 18,
-                height: 18,
-                color: olive,
+                width: 19,
+                height: 19,
+                color: 'rgba(35,56,43,0.78)',
               }}
             >
               <SproutMark />
@@ -188,13 +188,13 @@ export function DetKanDuGoereEditorialPlanner({
             <p
               style={{
                 fontFamily: sans,
-                fontSize: 12,
-                fontWeight: 850,
-                letterSpacing: '0.22em',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.18em',
                 lineHeight: 1,
                 margin: 0,
                 textTransform: 'uppercase',
-                color: olive,
+                color: 'rgba(35,56,43,0.78)',
               }}
             >
               Det kan du gøre i
@@ -211,36 +211,35 @@ export function DetKanDuGoereEditorialPlanner({
 
           <div
             style={{
-              padding: '0 clamp(28px, 7vw, 76px)',
+              padding: '0 clamp(34px, 8vw, 38px)',
             }}
           >
             <span
               aria-hidden
               style={{
                 display: 'block',
-                width: 44,
-                height: 4,
-                margin: '16px auto 22px',
+                width: 46,
+                height: 5,
+                margin: '16px auto 28px',
                 borderRadius: 999,
-                background: gold,
+                background: '#D2A11F',
               }}
             />
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(21px, 5.8vw, 30px)',
+                fontSize: 'clamp(22px, 5.6vw, 25px)',
                 fontStyle: 'italic',
                 fontWeight: 500,
-                lineHeight: 1.45,
-                margin: '0 auto 24px',
-                maxWidth: 320,
-                color: 'rgba(38,53,31,0.78)',
+                lineHeight: 1.5,
+                margin: '0 auto 48px',
+                maxWidth: '29ch',
+                color: 'rgba(35,56,43,0.74)',
               }}
             >
-              Juni er haven i fuld vækst.
-              <br />
-              Nye skud tager fart, blomsterne folder sig ud, og de første afgrøder
-              melder sig. Nu handler det om at hjælpe haven godt ind i sommeren.
+              Juni er haven i fuld vækst. Nye skud tager fart, blomsterne folder sig
+              ud, og de første afgrøder melder sig. Nu handler det om at hjælpe haven
+              godt ind i sommeren.
             </p>
           </div>
         </header>
