@@ -526,7 +526,7 @@ function FolderItemCard({
             fontFamily: sourceTab === 'guides' ? guideDisplay : sans,
             fontSize: sourceTab === 'guides' ? 18 : 17,
             fontWeight: sourceTab === 'guides' ? 600 : 700,
-            letterSpacing: sourceTab === 'guides' ? '-0.01em' : undefined,
+            letterSpacing: sourceTab === 'guides' ? '0' : undefined,
             lineHeight: sourceTab === 'guides' ? 1.12 : 1.14,
             marginBottom: 5,
           }}
@@ -654,11 +654,11 @@ function FeaturedGuideCard() {
       <BotanicalSprig />
       <p
         style={{
-          color: 'rgba(35,56,43,0.52)',
+          color: 'rgba(35,56,43,0.50)',
           fontFamily: guideMono,
-          fontSize: 10.5,
+          fontSize: 10,
           fontWeight: 500,
-          letterSpacing: '0.14em',
+          letterSpacing: '0.18em',
           margin: '0 0 16px',
           position: 'relative',
           textTransform: 'uppercase',
@@ -672,7 +672,7 @@ function FeaturedGuideCard() {
           fontFamily: guideDisplay,
           fontSize: 34,
           fontWeight: 600,
-          letterSpacing: '-0.015em',
+          letterSpacing: '-0.005em',
           lineHeight: 1,
           margin: '0 0 14px',
           maxWidth: '13ch',
