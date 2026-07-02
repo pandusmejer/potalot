@@ -169,19 +169,6 @@ export function DetKanDuGoereEditorialPlanner({
               background: '#F7F1E5',
             }}
           >
-            <span
-              aria-hidden
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 19,
-                height: 19,
-                color: '#46482F',
-              }}
-            >
-              <SproutMark />
-            </span>
             <p
               style={{
                 fontFamily: sans,
@@ -442,7 +429,7 @@ function MonthLoopHeader({
           background: 'transparent',
           color: '#FFF7E8',
           fontFamily: serif,
-          fontSize: 58,
+          fontSize: 60,
           fontWeight: 700,
           letterSpacing: '0.02em',
           lineHeight: 0.9,
@@ -450,7 +437,7 @@ function MonthLoopHeader({
           whiteSpace: 'nowrap',
         }}
       >
-        <span style={{ position: 'relative', zIndex: 1, marginTop: 2 }}>
+        <span style={{ position: 'relative', zIndex: 1, marginTop: 2, transform: 'translate(3mm, -3mm)' }}>
           {activeLabel.toUpperCase()}
         </span>
         <span
@@ -461,13 +448,13 @@ function MonthLoopHeader({
             display: 'inline-flex',
             alignItems: 'center',
             gap: 18,
-            marginTop: 16,
+            marginTop: 'calc(16px + 3mm)',
             pointerEvents: 'none',
           }}
         >
-          <span style={{ width: 7, height: 7, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
-          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#FFF7E8' }} />
-          <span style={{ width: 7, height: 7, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 14, height: 14, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 14, height: 14, borderRadius: 999, background: '#FFF7E8' }} />
+          <span style={{ width: 14, height: 14, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
         </span>
       </span>
 
