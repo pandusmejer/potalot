@@ -133,12 +133,15 @@ export function DetKanDuGoereEditorialPlanner({
         position: 'relative',
         overflow: 'hidden',
         marginTop: 8,
-        borderRadius: 30,
+        // Samme hjørner + dropskygge som MINE OPGAVER-kortet (delt Card:
+        // rounded-2xl = 16px + Card-skyggen), så sektionerne står som samme
+        // familie i kalenderfeedet.
+        borderRadius: 16,
         border: '1px solid rgba(64,58,42,0.08)',
         background:
           'linear-gradient(180deg, rgba(255,252,244,0.86) 0%, #F7F1E5 46%, #F3EBDD 100%)',
         boxShadow:
-          '0 14px 30px rgba(64,58,42,0.08), inset 0 1px 0 rgba(255,255,255,0.35)',
+          '0 1px 2px rgba(60,65,40,0.05), 0 4px 14px -4px rgba(60,65,40,0.1)',
         color: '#24301F',
       }}
     >
