@@ -363,7 +363,7 @@ function MonthLoopHeader({
         // Terracotta-feltet fylder nu HELE headeren som ét rektangel, kant til
         // kant i siderne (samme højde) — ikke længere et indskudt centerfelt.
         background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -10px 18px rgba(75,34,22,0.10)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14)',
       }}
     >
       {/* Nederste tier: to lavere sand-firkanter der stikker 5mm længere ind mod
@@ -433,7 +433,7 @@ function MonthLoopHeader({
             top: 0,
             bottom: 0,
             zIndex: 0,
-            background: '#F1E7D9',
+            background: 'rgba(255,247,232,0.35)',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
             borderRadius: '0 28px 28px 0',
             pointerEvents: 'none',
@@ -543,7 +543,7 @@ function MonthLoopHeader({
             top: 0,
             bottom: 0,
             zIndex: 0,
-            background: '#F1E7D9',
+            background: 'rgba(255,247,232,0.35)',
             boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
             borderRadius: '28px 0 0 28px',
             pointerEvents: 'none',
