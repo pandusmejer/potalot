@@ -22,7 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       className="min-h-screen w-full"
       style={{ background: 'color-mix(in oklab, var(--primary) 12%, var(--background))' }}
     >
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col app-canvas shadow-[0_0_50px_rgba(42,51,32,0.10)]">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col overflow-x-clip app-canvas shadow-[0_0_50px_rgba(42,51,32,0.10)]">
         <Topbar profile={profile} />
         {!profile && <DemoBanner />}
         <main className="w-full px-4 py-6 pb-28">
