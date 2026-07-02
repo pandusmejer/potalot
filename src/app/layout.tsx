@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito } from 'next/font/google'
+import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -40,6 +40,21 @@ const gabarito = Gabarito({
   weight: ['400', '500', '600', '700', '800'],
 })
 
+// IBM Plex Sans Condensed + Mono — KUN Guides-fanen i kalenderen: giver
+// guiderne et "botanisk opslagsværk / feltguide"-sprog, adskilt fra
+// Frøbank/Sæsonråd. Condensed til guide-titler, Mono til små meta-labels.
+const plexCondensed = IBM_Plex_Sans_Condensed({
+  variable: '--font-plex-condensed',
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+})
+
+const plexMono = IBM_Plex_Mono({
+  variable: '--font-plex-mono',
+  subsets: ['latin'],
+  weight: ['500'],
+})
+
 export const metadata: Metadata = {
   title: 'PotAlot',
   description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
@@ -72,7 +87,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} antialiased`}>
         {children}
       </body>
     </html>

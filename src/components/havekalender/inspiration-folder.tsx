@@ -30,6 +30,9 @@ import type { LucideIcon } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Guide-sprog (KUN Guides-fanen): opslagsværk/feltguide-karakter.
+const guideDisplay = 'var(--font-plex-condensed), sans-serif'
+const guideMono = 'var(--font-plex-mono), monospace'
 
 type TabId = 'seedbank' | 'june' | 'guides'
 
@@ -519,9 +522,11 @@ function FolderItemCard({
           style={{
             color: '#23382B',
             display: 'block',
-            fontFamily: sans,
-            fontSize: 17,
+            // Guides får condensed guide-font; øvrige faner beholder UI-sans.
+            fontFamily: sourceTab === 'guides' ? guideDisplay : sans,
+            fontSize: sourceTab === 'guides' ? 19 : 17,
             fontWeight: 700,
+            letterSpacing: sourceTab === 'guides' ? '-0.01em' : undefined,
             lineHeight: 1.14,
             marginBottom: 5,
           }}
@@ -649,13 +654,28 @@ function FeaturedGuideCard() {
       <BotanicalSprig />
       <p
         style={{
+          color: 'rgba(35,56,43,0.55)',
+          fontFamily: guideMono,
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: '0.12em',
+          margin: '0 0 12px',
+          position: 'relative',
+          textTransform: 'uppercase',
+        }}
+      >
+        Feltguide
+      </p>
+      <p
+        style={{
           color: '#173826',
-          fontFamily: serif,
-          fontSize: 40,
+          fontFamily: guideDisplay,
+          fontSize: 37,
           fontWeight: 600,
-          lineHeight: 0.95,
+          letterSpacing: '-0.02em',
+          lineHeight: 1,
           margin: '0 0 14px',
-          maxWidth: '12ch',
+          maxWidth: '13ch',
           position: 'relative',
         }}
       >
