@@ -396,7 +396,7 @@ export function InspirationFolder({
             padding: '12px 24px 28px',
           }}
         >
-          <FolderPanel tab={activeTab} content={activeContent} monthName={monthName} />
+          <FolderPanel tab={activeTab} content={activeContent} />
         </div>
       </div>
     </section>
@@ -406,7 +406,6 @@ export function InspirationFolder({
 function FolderPanel({
   tab,
   content,
-  monthName,
 }: {
   tab: TabId
   content: {
@@ -416,7 +415,6 @@ function FolderPanel({
     href: string
     items: FolderItem[]
   }
-  monthName: string
 }) {
   return (
     <div>
@@ -454,7 +452,7 @@ function FolderPanel({
         )}
       </div>
 
-      {tab === 'guides' && <FeaturedGuideCard monthName={monthName} />}
+      {tab === 'guides' && <FeaturedGuideCard />}
 
       <div style={{ display: 'grid', gap: 12 }}>
         {content.items.map(item => (
@@ -631,7 +629,7 @@ function LeadingVisual({
   )
 }
 
-function FeaturedGuideCard({ monthName }: { monthName: string }) {
+function FeaturedGuideCard() {
   return (
     <Link
       href="/guides"
@@ -675,7 +673,7 @@ function FeaturedGuideCard({ monthName }: { monthName: string }) {
           position: 'relative',
         }}
       >
-        Råd og sæsonforståelse for planterne i {monthName}.
+        Forstå planterne, vejret og sæsonen.
       </p>
       <span
         aria-hidden
