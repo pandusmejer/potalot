@@ -35,8 +35,6 @@ import {
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 const rust = '#B75C3E'
-const rustDark = '#98472F'
-const olive = '#3F5232'
 const gold = '#C99A24'
 
 type PlannerGroupId = 'goer_nu' | 'hold_oeje_med' | 'hvis_du_har_tid'
@@ -168,8 +166,7 @@ export function DetKanDuGoereEditorialPlanner({
               marginBottom: 14,
               padding: '20px clamp(20px, 5vw, 38px) 14px',
               borderBottom: '1px solid rgba(64,58,42,0.08)',
-              background:
-                'linear-gradient(180deg, rgba(255,252,244,0.82), rgba(255,252,244,0.34))',
+              background: '#F7F1E5',
             }}
           >
             <span
@@ -180,7 +177,7 @@ export function DetKanDuGoereEditorialPlanner({
                 justifyContent: 'center',
                 width: 19,
                 height: 19,
-                color: 'rgba(35,56,43,0.78)',
+                color: '#46482F',
               }}
             >
               <SproutMark />
@@ -194,7 +191,7 @@ export function DetKanDuGoereEditorialPlanner({
                 lineHeight: 1,
                 margin: 0,
                 textTransform: 'uppercase',
-                color: 'rgba(35,56,43,0.78)',
+                color: '#46482F',
               }}
             >
               Det kan du gøre i
@@ -368,6 +365,7 @@ function MonthLoopHeader({
         gridTemplateColumns: '1fr clamp(182px, 48vw, 210px) 1fr',
         columnGap: 0,
         margin: 0,
+        marginTop: '-4mm',
         marginBottom: 18,
         height: 136,
         maxHeight: 136,
@@ -443,30 +441,15 @@ function MonthLoopHeader({
           overflow: 'visible',
           background: 'transparent',
           color: '#FFF7E8',
-          fontFamily: serif,
-          fontSize: 56,
-          fontWeight: 600,
-          letterSpacing: '0.02em',
+          fontFamily: sans,
+          fontSize: 52,
+          fontWeight: 800,
+          letterSpacing: '0.01em',
           lineHeight: 0.9,
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
       >
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            right: 2,
-            bottom: 0,
-            zIndex: 0,
-            width: 104,
-            height: 78,
-            opacity: 0.24,
-            pointerEvents: 'none',
-          }}
-        >
-          <BotanicalLineArt />
-        </span>
         <span style={{ position: 'relative', zIndex: 1, marginTop: 2 }}>
           {activeLabel.toUpperCase()}
         </span>
