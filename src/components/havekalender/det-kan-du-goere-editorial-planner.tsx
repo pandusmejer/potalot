@@ -203,8 +203,8 @@ export function DetKanDuGoereEditorialPlanner({
               style={{
                 display: 'block',
                 width: 46,
-                height: 3.75,
-                margin: '16px auto 28px',
+                height: 3,
+                margin: 'calc(16px - 2mm) auto 28px',
                 borderRadius: 999,
                 background: '#9F7A24',
               }}
@@ -212,18 +212,19 @@ export function DetKanDuGoereEditorialPlanner({
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(22px, 5.6vw, 25px)',
+                fontSize: 'clamp(21px, 5.4vw, 24px)',
                 fontStyle: 'italic',
-                fontWeight: 500,
-                lineHeight: 1.5,
+                fontWeight: 600,
+                lineHeight: 1.4,
                 margin: '0 auto 48px',
                 maxWidth: '29ch',
                 color: 'rgba(35,56,43,0.74)',
               }}
             >
-              Juni er haven i fuld vækst. Nye skud tager fart, blomsterne folder sig
-              ud, og de første afgrøder melder sig. Nu handler det om at hjælpe haven
-              godt ind i sommeren.
+              Juni er haven i fuld vækst.
+              <br />
+              Nye skud tager fart, blomsterne folder sig ud, og de første afgrøder
+              melder sig. Nu handler det om at hjælpe haven godt ind i sommeren.
             </p>
           </div>
         </header>
@@ -402,6 +403,7 @@ function MonthLoopHeader({
             bottom: 0,
             zIndex: 0,
             background: '#F1E7D9',
+            boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
             borderRadius: '0 16px 16px 0',
             pointerEvents: 'none',
           }}
@@ -412,7 +414,7 @@ function MonthLoopHeader({
             zIndex: 2,
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 8,
+            gap: 'calc(8px - 1mm)',
             minWidth: 0,
           }}
         >
@@ -511,6 +513,7 @@ function MonthLoopHeader({
             bottom: 0,
             zIndex: 0,
             background: '#F1E7D9',
+            boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
             borderRadius: '16px 0 0 16px',
             pointerEvents: 'none',
           }}
@@ -521,7 +524,7 @@ function MonthLoopHeader({
             zIndex: 2,
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 8,
+            gap: 'calc(8px - 1mm)',
             minWidth: 0,
           }}
         >
