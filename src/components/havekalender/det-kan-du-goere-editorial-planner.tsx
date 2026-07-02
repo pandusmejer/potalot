@@ -366,6 +366,39 @@ function MonthLoopHeader({
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -10px 18px rgba(75,34,22,0.10)',
       }}
     >
+      {/* Nederste tier: to lavere sand-firkanter der stikker 5mm længere ind mod
+          midten end de øverste. Halv højde, bund-justeret, BAG JULI (zIndex 1).
+          Bredde = eksisterende firkant (99px @ JULI) + 5mm. */}
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          zIndex: 1,
+          width: 'calc(99px + 5mm)',
+          height: 'calc((136px - 5mm) / 2)',
+          background: '#F1E7D9',
+          borderRadius: '0 16px 16px 0',
+          boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
+          pointerEvents: 'none',
+        }}
+      />
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+          width: 'calc(99px + 5mm)',
+          height: 'calc((136px - 5mm) / 2)',
+          background: '#F1E7D9',
+          borderRadius: '16px 0 0 16px',
+          boxShadow: '0 2px 11px rgba(64,26,15,0.30)',
+          pointerEvents: 'none',
+        }}
+      />
       <button
         type="button"
         onClick={onPrev}
