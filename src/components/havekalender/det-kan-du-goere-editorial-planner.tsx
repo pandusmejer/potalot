@@ -374,6 +374,10 @@ function MonthLoopHeader({
         minHeight: 136,
         width: '100%',
         overflow: 'hidden',
+        // Terracotta-feltet fylder nu HELE headeren som ét rektangel, kant til
+        // kant i siderne (samme højde) — ikke længere et indskudt centerfelt.
+        background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -10px 18px rgba(75,34,22,0.10)',
       }}
     >
       <button
@@ -388,10 +392,10 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 12px',
-          background: 'rgba(250,246,232,0.92)',
+          background: 'transparent',
           border: 0,
           borderRadius: 0,
-          color: 'rgba(38,53,31,0.72)',
+          color: 'rgba(255,247,232,0.82)',
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 20,
@@ -401,22 +405,6 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
-        {/* Én blød cream-cirkel biter en rolig concave die-cut-notch (dybde ~28px)
-            i terracottaens venstre kant — ikke to kvartcirkler (timeglas). */}
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            right: -28,
-            top: 2,
-            zIndex: 1,
-            width: 132,
-            height: 132,
-            borderRadius: 999,
-            background: 'rgba(250,246,232,0.92)',
-            pointerEvents: 'none',
-          }}
-        />
         <span
           style={{
             position: 'relative',
@@ -432,7 +420,7 @@ function MonthLoopHeader({
             height={16}
             strokeWidth={1.8}
             aria-hidden
-            style={{ color: 'rgba(38,53,31,0.68)', flex: '0 0 auto' }}
+            style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
           />
           <span>{prevLabel.toLowerCase()}</span>
         </span>
@@ -452,15 +440,14 @@ function MonthLoopHeader({
           width: '100%',
           height: 136,
           padding: 0,
-          overflow: 'hidden',
-          background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
+          overflow: 'visible',
+          background: 'transparent',
           color: '#FFF7E8',
           fontFamily: serif,
           fontSize: 56,
           fontWeight: 600,
           letterSpacing: '0.02em',
           lineHeight: 0.9,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -10px 18px rgba(75,34,22,0.10)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
@@ -513,10 +500,10 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 12px',
-          background: 'rgba(250,246,232,0.92)',
+          background: 'transparent',
           border: 0,
           borderRadius: 0,
-          color: 'rgba(38,53,31,0.72)',
+          color: 'rgba(255,247,232,0.82)',
           cursor: 'pointer',
           fontFamily: serif,
           fontSize: 20,
@@ -526,21 +513,6 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
-        {/* Symmetrisk blød concave die-cut-notch i terracottaens højre kant. */}
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            left: -28,
-            top: 2,
-            zIndex: 1,
-            width: 132,
-            height: 132,
-            borderRadius: 999,
-            background: 'rgba(250,246,232,0.92)',
-            pointerEvents: 'none',
-          }}
-        />
         <span
           style={{
             position: 'relative',
@@ -557,7 +529,7 @@ function MonthLoopHeader({
             height={16}
             strokeWidth={1.8}
             aria-hidden
-            style={{ color: 'rgba(38,53,31,0.68)', flex: '0 0 auto' }}
+            style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
           />
         </span>
       </button>
