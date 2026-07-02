@@ -364,7 +364,7 @@ function MonthLoopHeader({
       className="grid items-center"
       style={{
         position: 'relative',
-        gridTemplateColumns: '1fr clamp(208px, 56vw, 232px) 1fr',
+        gridTemplateColumns: '1fr clamp(182px, 48vw, 210px) 1fr',
         columnGap: 0,
         margin: 0,
         marginBottom: 18,
@@ -393,37 +393,25 @@ function MonthLoopHeader({
           color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: 500,
-          letterSpacing: '0.02em',
+          letterSpacing: '0.01em',
           lineHeight: 1,
           textTransform: 'lowercase',
         }}
       >
+        {/* Én blød cream-cirkel biter en rolig concave die-cut-notch (dybde ~28px)
+            i terracottaens venstre kant — ikke to kvartcirkler (timeglas). */}
         <span
           aria-hidden
           style={{
             position: 'absolute',
-            right: -44,
-            top: 0,
+            right: -28,
+            top: 2,
             zIndex: 1,
-            width: 68,
-            height: 68,
-            borderRadius: '0 0 999px 0',
-            background: 'rgba(250,246,232,0.92)',
-            pointerEvents: 'none',
-          }}
-        />
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            right: -44,
-            bottom: 0,
-            zIndex: 1,
-            width: 68,
-            height: 68,
-            borderRadius: '0 999px 0 0',
+            width: 132,
+            height: 132,
+            borderRadius: 999,
             background: 'rgba(250,246,232,0.92)',
             pointerEvents: 'none',
           }}
@@ -464,14 +452,14 @@ function MonthLoopHeader({
           height: 136,
           padding: 0,
           overflow: 'hidden',
-          background: 'linear-gradient(180deg, #C16D4C 0%, #B75E40 52%, #A9522F 100%)',
+          background: 'linear-gradient(180deg, #C56B48 0%, #B75A3A 100%)',
           color: '#FFF7E8',
           fontFamily: serif,
-          fontSize: 64,
+          fontSize: 56,
           fontWeight: 600,
-          letterSpacing: '-0.035em',
-          lineHeight: 0.86,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -16px 24px rgba(120,50,28,0.22)',
+          letterSpacing: '0.02em',
+          lineHeight: 0.9,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -10px 18px rgba(75,34,22,0.10)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
@@ -485,7 +473,7 @@ function MonthLoopHeader({
             zIndex: 0,
             width: 104,
             height: 78,
-            opacity: 0.34,
+            opacity: 0.24,
             pointerEvents: 'none',
           }}
         >
@@ -500,19 +488,15 @@ function MonthLoopHeader({
             position: 'relative',
             zIndex: 1,
             display: 'inline-flex',
-            gap: 14,
+            alignItems: 'center',
+            gap: 18,
             marginTop: 16,
-            fontFamily: sans,
-            fontSize: 18,
-            fontWeight: 900,
-            letterSpacing: 0,
-            lineHeight: 1,
             pointerEvents: 'none',
           }}
         >
-          <span style={{ color: 'rgba(255,247,232,0.34)' }}>•</span>
-          <span style={{ color: 'rgba(255,247,232,0.95)' }}>•</span>
-          <span style={{ color: 'rgba(255,247,232,0.34)' }}>•</span>
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#FFF7E8' }} />
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
         </span>
       </span>
 
@@ -534,37 +518,24 @@ function MonthLoopHeader({
           color: 'rgba(38,53,31,0.72)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: 500,
-          letterSpacing: '0.02em',
+          letterSpacing: '0.01em',
           lineHeight: 1,
           textTransform: 'lowercase',
         }}
       >
+        {/* Symmetrisk blød concave die-cut-notch i terracottaens højre kant. */}
         <span
           aria-hidden
           style={{
             position: 'absolute',
-            left: -44,
-            top: 0,
+            left: -28,
+            top: 2,
             zIndex: 1,
-            width: 68,
-            height: 68,
-            borderRadius: '0 0 0 999px',
-            background: 'rgba(250,246,232,0.92)',
-            pointerEvents: 'none',
-          }}
-        />
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            left: -44,
-            bottom: 0,
-            zIndex: 1,
-            width: 68,
-            height: 68,
-            borderRadius: '999px 0 0 0',
+            width: 132,
+            height: 132,
+            borderRadius: 999,
             background: 'rgba(250,246,232,0.92)',
             pointerEvents: 'none',
           }}
