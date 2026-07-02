@@ -203,10 +203,10 @@ export function DetKanDuGoereEditorialPlanner({
               style={{
                 display: 'block',
                 width: 46,
-                height: 5,
+                height: 3.75,
                 margin: '16px auto 28px',
                 borderRadius: 999,
-                background: '#D2A11F',
+                background: '#9F7A24',
               }}
             />
             <p
@@ -377,7 +377,7 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 8px',
-          background: '#F1E7D9',
+          background: 'transparent',
           border: 0,
           borderRadius: 0,
           color: '#46482F',
@@ -390,6 +390,20 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: '5mm',
+            zIndex: 0,
+            background: '#F1E7D9',
+            borderRadius: '0 16px 16px 0',
+            pointerEvents: 'none',
+          }}
+        />
         <span
           style={{
             position: 'relative',
@@ -470,7 +484,7 @@ function MonthLoopHeader({
           minWidth: 0,
           minHeight: 136,
           padding: '0 8px',
-          background: '#F1E7D9',
+          background: 'transparent',
           border: 0,
           borderRadius: 0,
           color: '#46482F',
@@ -483,6 +497,20 @@ function MonthLoopHeader({
           textTransform: 'lowercase',
         }}
       >
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: '5mm',
+            zIndex: 0,
+            background: '#F1E7D9',
+            borderRadius: '16px 0 0 16px',
+            pointerEvents: 'none',
+          }}
+        />
         <span
           style={{
             position: 'relative',
