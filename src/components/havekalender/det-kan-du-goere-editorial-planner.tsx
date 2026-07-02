@@ -378,7 +378,11 @@ function MonthLoopHeader({
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
-          background: '#F7F1E5',
+          // Matcher sektionsgradientens renderede farve PRÆCIS ved firkantens
+          // bund-søm (fraktion ~0.20 → rgba(255,252,244,.86)→#F7F1E5 blendet
+          // over app-canvas), så cremen smelter usynligt sammen med baggrunden
+          // i stedet for en fast #F7F1E5 der er en anelse mørkere end gradienten.
+          background: 'rgb(251,247,236)',
           borderRadius: '0 28px 28px 0',
           pointerEvents: 'none',
         }}
@@ -392,7 +396,7 @@ function MonthLoopHeader({
           zIndex: 5,
           width: 'calc(99px + 5mm)',
           height: 'calc((136px - 5mm) / 2)',
-          background: '#F7F1E5',
+          background: 'rgb(251,247,236)',
           borderRadius: '28px 0 0 28px',
           pointerEvents: 'none',
         }}
