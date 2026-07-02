@@ -96,8 +96,8 @@ const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
   {
     title: 'Tomater i juni',
     text: 'Opbinding, sideskud og vand - det vigtigste lige nu.',
-    image: '/images/kalender/guides/tomat.jpg',
-    imageAlt: 'Tomater',
+    image: '/images/kalender/guides/tomat-ranke.jpg',
+    imageAlt: 'Tomater på ranken',
   },
   {
     title: 'Såning i varme perioder',
