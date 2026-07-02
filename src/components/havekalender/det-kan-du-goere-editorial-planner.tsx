@@ -268,10 +268,10 @@ export function DetKanDuGoereEditorialPlanner({
           <div
             style={{
               position: 'relative',
-              marginTop: 24,
-              padding: '20px clamp(20px, 5vw, 38px) 22px',
+              marginTop: 30,
+              padding: '28px clamp(24px, 7vw, 34px) 32px',
               background:
-                'linear-gradient(90deg, rgba(127,143,106,0.36), rgba(199,163,65,0.18))',
+                'linear-gradient(90deg, rgba(214,219,190,0.72) 0%, rgba(229,214,162,0.62) 100%)',
               borderTop: '1px solid rgba(64,58,42,0.10)',
               overflow: 'hidden',
             }}
@@ -283,14 +283,14 @@ export function DetKanDuGoereEditorialPlanner({
                 position: 'relative',
                 zIndex: 1,
                 display: 'grid',
-                gridTemplateColumns: '54px minmax(0, 1fr)',
+                gridTemplateColumns: '64px minmax(0, 1fr)',
                 alignItems: 'center',
-                gap: 16,
+                gap: 18,
                 width: '100%',
                 padding: 0,
                 background: 'transparent',
                 border: 0,
-                color: olive,
+                color: '#2F4D2B',
                 cursor: 'pointer',
                 textAlign: 'left',
               }}
@@ -301,14 +301,14 @@ export function DetKanDuGoereEditorialPlanner({
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 54,
-                  height: 54,
+                  width: 64,
+                  height: 64,
                   borderRadius: 999,
-                  background: gold,
-                  color: '#FEFCF6',
+                  background: '#D2A11F',
+                  color: '#FFF7E8',
                   boxShadow: '0 10px 22px rgba(153,111,22,0.18)',
                   fontFamily: sans,
-                  fontSize: 26,
+                  fontSize: 30,
                   fontWeight: 500,
                   lineHeight: 1,
                 }}
@@ -319,10 +319,11 @@ export function DetKanDuGoereEditorialPlanner({
                 style={{
                   fontFamily: sans,
                   fontSize: 14,
-                  fontWeight: 850,
-                  letterSpacing: '0.22em',
+                  fontWeight: 800,
+                  letterSpacing: '0.18em',
                   lineHeight: 1.35,
                   textTransform: 'uppercase',
+                  color: '#2F4D2B',
                 }}
               >
                 {showAll ? 'Vis kortere uddrag' : `Se alle gøremål i ${monthName.toLowerCase()}`}
@@ -649,10 +650,10 @@ function PlannerRow({
       onClick={onClick}
       className="group grid w-full text-left"
       style={{
-        gridTemplateColumns: '68px minmax(0, 1fr) 44px',
-        columnGap: 14,
+        gridTemplateColumns: '64px minmax(0, 1fr) 48px',
+        columnGap: 16,
         alignItems: 'center',
-        minHeight: 86,
+        minHeight: 98,
         padding: '14px 0',
         background: 'transparent',
         border: 0,
@@ -666,9 +667,9 @@ function PlannerRow({
         aria-hidden
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1px',
+          gridTemplateColumns: '1fr 1.5px',
           alignItems: 'center',
-          gap: 13,
+          gap: 14,
           minHeight: 54,
         }}
       >
@@ -676,19 +677,20 @@ function PlannerRow({
           style={{
             color: rust,
             fontFamily: serif,
-            fontSize: 'clamp(37px, 10vw, 50px)',
+            fontSize: 'clamp(33px, 9vw, 40px)',
             fontWeight: 800,
             letterSpacing: '0.01em',
-            lineHeight: 0.94,
+            lineHeight: 1,
           }}
         >
           {String(index).padStart(2, '0')}
         </span>
         <span
           style={{
-            width: 1,
-            height: 42,
+            width: 1.5,
+            height: 52,
             background: gold,
+            opacity: 0.75,
           }}
         />
       </span>
@@ -697,10 +699,10 @@ function PlannerRow({
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 16.5,
-            fontWeight: 850,
-            lineHeight: 1.24,
-            color: '#24301F',
+            fontSize: 18,
+            fontWeight: 750,
+            lineHeight: 1.18,
+            color: '#203024',
           }}
         >
           {item.title}
@@ -710,10 +712,10 @@ function PlannerRow({
             display: 'block',
             marginTop: 5,
             fontFamily: sans,
-            fontSize: 13.5,
+            fontSize: 15,
             fontWeight: 500,
-            lineHeight: 1.42,
-            color: 'rgba(36,48,31,0.64)',
+            lineHeight: 1.25,
+            color: 'rgba(35,56,43,0.66)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -728,20 +730,20 @@ function PlannerRow({
         className="inline-flex items-center justify-center"
         style={{
           alignSelf: 'center',
-          width: 40,
-          height: 40,
+          width: 47,
+          height: 47,
           borderRadius: 999,
-          border: '1px solid rgba(184,112,63,0.24)',
+          border: '1px solid rgba(184,91,61,0.25)',
           marginTop: 0,
-          color: isAdded ? 'rgba(98,125,78,0.80)' : rustDark,
+          color: isAdded ? 'rgba(98,125,78,0.80)' : '#A95137',
           fontFamily: sans,
-          fontSize: isAdded ? 11.5 : 16,
+          fontSize: isAdded ? 13 : 16,
           fontWeight: 800,
           lineHeight: 1,
-          background: 'rgba(255,252,244,0.34)',
+          background: 'rgba(255,247,232,0.35)',
         }}
       >
-        {isAdded ? '✓' : <Plus width={20} height={20} strokeWidth={1.8} />}
+        {isAdded ? '✓' : <Plus width={22} height={22} strokeWidth={1.8} />}
       </span>
     </button>
   )
@@ -763,10 +765,10 @@ function EditorialSectionLabel() {
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: 52,
-          height: 52,
+          width: 54,
+          height: 54,
           borderRadius: 999,
-          background: olive,
+          background: '#2F4D2B',
           color: '#F7F1E5',
         }}
       >
@@ -777,17 +779,17 @@ function EditorialSectionLabel() {
           display: 'grid',
           gridTemplateColumns: 'auto minmax(0, 1fr)',
           alignItems: 'center',
-          gap: 18,
+          gap: 20,
         }}
       >
         <p
           style={{
             margin: 0,
-            color: olive,
+            color: '#2F4D2B',
             fontFamily: sans,
-            fontSize: 22,
-            fontWeight: 900,
-            letterSpacing: '0.32em',
+            fontSize: 19,
+            fontWeight: 800,
+            letterSpacing: '0.22em',
             lineHeight: 1,
             textTransform: 'uppercase',
           }}
@@ -798,7 +800,7 @@ function EditorialSectionLabel() {
           aria-hidden
           style={{
             height: 1,
-            background: 'rgba(36,48,31,0.42)',
+            background: 'rgba(35,56,43,0.35)',
           }}
         />
       </div>
