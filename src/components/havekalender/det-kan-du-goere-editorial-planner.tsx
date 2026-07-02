@@ -349,7 +349,7 @@ function MonthLoopHeader({
       className="grid items-center"
       style={{
         position: 'relative',
-        gridTemplateColumns: '1fr clamp(182px, 48vw, 210px) 1fr',
+        gridTemplateColumns: '1fr clamp(150px, 41vw, 176px) 1fr',
         columnGap: 0,
         margin: 0,
         marginTop: '-4mm',
@@ -376,14 +376,14 @@ function MonthLoopHeader({
           gap: 0,
           minWidth: 0,
           minHeight: 136,
-          padding: '0 12px',
+          padding: '0 8px',
           background: 'transparent',
           border: 0,
           borderRadius: 0,
           color: 'rgba(255,247,232,0.82)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 20,
+          fontSize: 21,
           fontWeight: 500,
           letterSpacing: '0.01em',
           lineHeight: 1,
@@ -401,8 +401,8 @@ function MonthLoopHeader({
           }}
         >
           <ChevronLeft
-            width={16}
-            height={16}
+            width={18}
+            height={18}
             strokeWidth={1.8}
             aria-hidden
             style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
@@ -437,7 +437,7 @@ function MonthLoopHeader({
           whiteSpace: 'nowrap',
         }}
       >
-        <span style={{ position: 'relative', zIndex: 1, marginTop: 2, transform: 'translate(3mm, -3mm)' }}>
+        <span style={{ position: 'relative', zIndex: 1, marginTop: 2, transform: 'translateY(-1mm)' }}>
           {activeLabel.toUpperCase()}
         </span>
         <span
@@ -452,9 +452,9 @@ function MonthLoopHeader({
             pointerEvents: 'none',
           }}
         >
-          <span style={{ width: 14, height: 14, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
-          <span style={{ width: 14, height: 14, borderRadius: 999, background: '#FFF7E8' }} />
-          <span style={{ width: 14, height: 14, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: '#FFF7E8' }} />
+          <span style={{ width: 12.6, height: 12.6, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
         </span>
       </span>
 
@@ -469,14 +469,14 @@ function MonthLoopHeader({
           gap: 0,
           minWidth: 0,
           minHeight: 136,
-          padding: '0 12px',
+          padding: '0 8px',
           background: 'transparent',
           border: 0,
           borderRadius: 0,
           color: 'rgba(255,247,232,0.82)',
           cursor: 'pointer',
           fontFamily: serif,
-          fontSize: 20,
+          fontSize: 21,
           fontWeight: 500,
           letterSpacing: '0.01em',
           lineHeight: 1,
@@ -495,8 +495,8 @@ function MonthLoopHeader({
         >
           <span>{nextLabel.toLowerCase()}</span>
           <ChevronRight
-            width={16}
-            height={16}
+            width={18}
+            height={18}
             strokeWidth={1.8}
             aria-hidden
             style={{ color: 'rgba(255,247,232,0.7)', flex: '0 0 auto' }}
