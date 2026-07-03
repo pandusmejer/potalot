@@ -101,10 +101,20 @@ export function CheckCircle({ done, onToggle, label, size = 18 }: {
 /** Det fremhævede primære fokus — sektionens redaktionelle hovedperson. */
 export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling; done: boolean; month: number; markoer?: string; onToggle: () => void }) {
   const checkbar = h.plantId !== null
+  // Farvet venstremarkør + varmere papir efter handlingens urgency — giver
+  // fokus-kortet særstatus (dagens vigtigste) uden at blive produktivitets-SaaS.
+  const accent = (CHIP_TONE[chipLabel(h, month)] ?? CHIP_TONE['Mulighed']).color
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
-      style={{ background: 'rgba(238,232,211,0.6)', border: '1px solid rgba(95,103,72,0.12)', padding: '11px 14px 4px 13px', opacity: done ? 0.6 : 1, transition: 'opacity .2s' }}
+      style={{
+        background: 'linear-gradient(158deg, rgba(242,236,217,0.92) 0%, rgba(233,227,205,0.72) 100%)',
+        border: '1px solid rgba(95,103,72,0.14)',
+        borderLeft: `3px solid ${accent}`,
+        padding: '11px 14px 4px 14px',
+        opacity: done ? 0.6 : 1,
+        transition: 'opacity .2s',
+      }}
     >
       <div className="flex items-start gap-2">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}

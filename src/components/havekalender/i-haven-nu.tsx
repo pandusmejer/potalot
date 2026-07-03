@@ -7,15 +7,19 @@
  * Sammenlægger (Anna 2026-06-30, "én arbejdsseddel"):
  *   • BRAIN'ens top-prioritet som et pinned "Fokus lige nu"-kort OVER fanerne
  *     — altid synligt, ejer den øverste prioritet (vises aldrig igen i listen).
- *   • Fanerne (I dag / Denne uge / Denne måned / Forsinket / Afsluttet) =
- *     opgaveoverblikket: brugerens egne daterede `calendar_tasks` + afledte
- *     "nu"-handlinger fra Planter/Frøbank, hver med diskret kilde-chip.
+ *   • Fanerne (I dag / Denne uge / Kan vente / Færdige) = opgaveoverblikket:
+ *     brugerens egne daterede `calendar_tasks` + afledte "nu"-handlinger fra
+ *     Planter/Frøbank, hver med diskret kilde-chip.
  *
- * Afløser standalone "Ugens fokus" (DagensFokusSection) + den gamle "Mine
- * opgaver"-Card. Genbruger fokus-handling-ui.tsx (pinned/rækker/tap-to-check)
- * og TodoTabs' dato-bucketing — opfinder ikke ny mekanik.
+ * Design (Anna 3/7): "Dagens havebriefing", ikke flad to-do i beige kort.
+ *   1. Briefing-header (titel + hvad kalder i dag)
+ *   2. Fokus-kort (dagens vigtigste, særstatus)
+ *   3. Mini-statuskort (let overblik/filter — IKKE tung tabs-boks)
+ *   4. Opgaver opdelt i grupper (Gør nu / Snart / Når du har tid / Dine opgaver)
+ *   5. Sekundær "Tilføj opgave"-CTA
  *
- * Grænse: ingen ny BRAIN-logik, ingen admin-opgaver som datakilde her.
+ * Grænse: ingen ny BRAIN-logik, ingen admin-opgaver som datakilde her. Data-
+ * og completion-logik er UÆNDRET — kun informationsarkitektur + visuelt.
  */
 
 import { Card } from '@/components/ui/card'
@@ -25,10 +29,10 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, SecondaryRow, useDerivedCompletions,
+  PrimaryFocus, SecondaryRow, useDerivedCompletions, chipLabel,
 } from '@/components/havekalender/fokus-handling-ui'
 import { SourceChip } from '@/components/havekalender/source-chip'
-import { ListChecks, CalendarCheck, Info, Plus } from 'lucide-react'
+import { CalendarCheck, Info, Plus } from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
 import type { DagensFokus, FokusHandling } from '@/lib/kalender/dagens-fokus'
@@ -41,6 +45,9 @@ interface Props {
   /** Aktuel måned (1-12) — til chip-logikken. Stabil pr. dag (ingen hydration-mismatch). */
   month: number
 }
+
+const sans = 'var(--font-manrope)'
+const serif = 'var(--font-cormorant), Georgia, serif'
 
 /** Inden for `dage` dage frem (≥ i dag) — samme regel som TodoTabs. */
 function erInden(date: string, dage: number): boolean {
@@ -55,11 +62,9 @@ function derivedSourceChip(h: FokusHandling) {
   return <SourceChip label={h.plantId !== null ? 'Fra planter' : 'Fra frøbank'} />
 }
 
-/** Papir-filter-faner (ikke segment-control): lav højde, dæmpet inaktiv-tekst,
- *  blød creme aktiv-flade med let løft — ikke en grålig knap-blok. */
-const tabCls = 'h-[40px] rounded-lg text-[13px] text-[rgba(35,56,43,0.55)] data-[state=active]:bg-[rgba(255,250,238,0.85)] data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-[0_2px_5px_rgba(64,58,42,0.08)]'
-/** Tæller: mindre end label + dæmpet. */
-const countCls = 'ml-1.5 text-[11px] opacity-[0.55]'
+/** Chip-labels der betyder "tidskritisk nu" hhv. "snart". Resten = når du har tid. */
+const URGENT = new Set(['Haster', 'Høst nu', 'Godt vindue'])
+const SOON = new Set(['Plant ud', 'Tjek', 'Mere plads'])
 
 export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month }: Props) {
   const { isDone, toggle } = useDerivedCompletions(
@@ -68,7 +73,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   )
 
   // ── Pinned fokus = BRAIN-toppen. Ejer den øverste prioritet og udelades
-  //    derfor af alle fanelister (ingen dublet). ───────────────────────
+  //    derfor af alle lister (ingen dublet). ───────────────────────────
   const pinned = dagensFokus.fokus[0] ?? null
   const pinnedKey = pinned?.taskKey
 
@@ -92,16 +97,45 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   const forsinkede = aaben.filter(t => erForsinket(t.date))
   const afsluttede = tasks.filter(t => t.status === 'completed').slice(0, 20)
 
-  /** Antal i en fane = aktive afledte (ikke-udførte) + brugeropgaver. */
+  /** Antal i en horisont = aktive afledte (ikke-udførte) + brugeropgaver. */
   const antal = (derived: FokusHandling[], user: CalendarTask[]) =>
     derived.filter(h => !isDone(h)).length + user.length
 
-  function DerivedRows({ list }: { list: FokusHandling[] }) {
+  /** Gruppér afledte efter urgency (BRAIN har allerede prioriteret rækkefølgen). */
+  function groupDerived(list: FokusHandling[]) {
     const active = list.filter(h => !isDone(h))
-    if (active.length === 0) return null
+    return {
+      nu:     active.filter(h => URGENT.has(chipLabel(h, month))),
+      snart:  active.filter(h => SOON.has(chipLabel(h, month))),
+      senere: active.filter(h => !URGENT.has(chipLabel(h, month)) && !SOON.has(chipLabel(h, month))),
+    }
+  }
+
+  // ── Briefing-linje: hvad kalder i dag. ──────────────────────────────
+  const iDagAntal = antal(derivedIDag, userIDag)
+  const hasterAntal = forsinkede.length + derivedIDag.filter(
+    h => !isDone(h) && (chipLabel(h, month) === 'Haster' || chipLabel(h, month) === 'Høst nu'),
+  ).length
+  const briefing = iDagAntal === 0 && forsinkede.length === 0
+    ? 'Roligt i haven i dag'
+    : `${iDagAntal} ${iDagAntal === 1 ? 'opgave' : 'opgaver'} i dag${hasterAntal > 0 ? ` · ${hasterAntal} haster` : ''}`
+
+  // ── Render-hjælpere (funktions-kald, ikke nestede komponenter) ──────
+  function groupLabel(text: string, tone?: string) {
+    return (
+      <p
+        className="uppercase"
+        style={{ fontFamily: sans, fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', color: tone ?? 'rgba(35,56,43,0.46)', margin: '2px 0 7px' }}
+      >
+        {text}
+      </p>
+    )
+  }
+
+  function derivedList(list: FokusHandling[]) {
     return (
       <div>
-        {active.map((h, i) => (
+        {list.map((h, i) => (
           <SecondaryRow
             key={h.taskKey}
             h={h}
@@ -116,21 +150,73 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     )
   }
 
-  function renderTab(derived: FokusHandling[], user: CalendarTask[], emptyTitle: string, emptyDescription: string) {
-    const hasDerived = derived.some(h => !isDone(h))
-    if (!hasDerived && user.length === 0) {
+  function statTab(value: string, label: string, count: number, danger?: boolean) {
+    return (
+      <TabsTrigger
+        value={value}
+        className="flex h-auto flex-col items-start justify-center gap-0.5 rounded-xl border px-3.5 py-2.5 text-left transition-all border-[rgba(64,58,42,0.08)] bg-[rgba(255,252,244,0.5)] data-[state=active]:border-[rgba(76,96,56,0.28)] data-[state=active]:bg-[rgba(255,250,238,0.96)] data-[state=active]:shadow-[0_2px_6px_rgba(64,58,42,0.09)]"
+      >
+        <span
+          className="tabular-nums"
+          style={{ fontFamily: sans, fontSize: 22, fontWeight: 750, lineHeight: 1, color: danger && count > 0 ? '#B5602F' : '#2F4D2B' }}
+        >
+          {count}
+        </span>
+        <span style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: 'rgba(35,56,43,0.58)' }}>
+          {label}
+        </span>
+      </TabsTrigger>
+    )
+  }
+
+  /** Grupperet horisont: Forsinket (rød) → Gør nu → Snart → Når du har tid → Dine opgaver. */
+  function renderHorizon(
+    derived: FokusHandling[],
+    user: CalendarTask[],
+    opts: { showOverdue?: boolean; emptyTitle: string; emptyDescription: string },
+  ) {
+    const { nu, snart, senere } = groupDerived(derived)
+    const overdue = opts.showOverdue ? forsinkede : []
+    if (nu.length + snart.length + senere.length + user.length + overdue.length === 0) {
+      return <EmptyState icon={<CalendarCheck className="h-8 w-8" />} title={opts.emptyTitle} description={opts.emptyDescription} />
+    }
+    return (
+      <div className="space-y-4">
+        {overdue.length > 0 && (
+          <div>
+            {groupLabel('Forsinket', 'rgba(181,96,47,0.92)')}
+            <div className="space-y-2">{overdue.map(t => <TaskRow key={t.id} task={t} showSource />)}</div>
+          </div>
+        )}
+        {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{derivedList(nu)}</div>}
+        {snart.length > 0 && <div>{groupLabel('Snart')}{derivedList(snart)}</div>}
+        {senere.length > 0 && <div>{groupLabel('Når du har tid')}{derivedList(senere)}</div>}
+        {user.length > 0 && (
+          <div>
+            {groupLabel('Dine opgaver')}
+            <div className="space-y-2">{user.map(t => <TaskRow key={t.id} task={t} showSource />)}</div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  function renderDone() {
+    if (afsluttede.length === 0 && derivedDone.length === 0) {
       return (
         <EmptyState
           icon={<CalendarCheck className="h-8 w-8" />}
-          title={emptyTitle}
-          description={emptyDescription}
+          title="Ingen afsluttede opgaver endnu"
+          description="Når du markerer opgaver som udført, dukker de op her."
         />
       )
     }
     return (
       <div className="space-y-2">
-        <DerivedRows list={derived} />
-        {user.map(t => <TaskRow key={t.id} task={t} showSource />)}
+        {derivedDone.map((h, i) => (
+          <SecondaryRow key={h.taskKey} h={h} done first={i === 0} month={month} onToggle={() => toggle(h)} sourceChip={derivedSourceChip(h)} />
+        ))}
+        {afsluttede.map(t => <TaskRow key={t.id} task={t} compact showSource />)}
       </div>
     )
   }
@@ -140,47 +226,33 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
       <Card
         className="overflow-hidden"
         style={{
-          // Varmt papir frem for flad app-card: blød creme-gradient, hairline,
-          // meget diskret løft + inset-toplys — matcher kalenderens materialitet.
+          // Varmt papir frem for flad app-card — matcher kalenderens materialitet.
           borderRadius: 26,
           border: '1px solid rgba(64,58,42,0.10)',
           background: 'linear-gradient(180deg, #FBF7EC 0%, #F5EFE1 100%)',
           boxShadow: '0 10px 24px rgba(64,58,42,0.07), inset 0 1px 0 rgba(255,255,255,0.35)',
         }}
       >
-        {/* Header som arbejdsseddel-label: mindre ikon, editorial titel, info
-            tæt på titlen, "HAVEN LIGE NU" som sekundær stemme. */}
-        <div className="flex items-center gap-2.5 px-5 pt-4 pb-2.5">
-          <ListChecks className="shrink-0 text-primary" style={{ width: 32, height: 32 }} strokeWidth={1.6} aria-hidden />
-          <div className="min-w-0">
-            <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 25, fontWeight: 600 }}>
-              Mine opgaver
-              <span
-                className="inline-flex items-center"
-                title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
-              >
-                <Info className="h-3 w-3 text-muted-foreground" />
-              </span>
-            </h3>
-            <p
-              className="uppercase"
-              style={{ fontFamily: 'var(--font-manrope)', fontSize: 11, fontWeight: 700, letterSpacing: '0.20em', color: 'rgba(35,56,43,0.52)', margin: '8px 0 0' }}
+        {/* 1 · Briefing-header — "dagens havebriefing", ikke standard modulheader. */}
+        <div className="px-5 pt-4 pb-3">
+          <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: serif, fontSize: 26, fontWeight: 600 }}>
+            I haven nu
+            <span
+              className="inline-flex items-center"
+              title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
             >
-              Haven lige nu
-            </p>
-          </div>
+              <Info className="h-3 w-3 text-muted-foreground" />
+            </span>
+          </h3>
+          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, letterSpacing: '-0.005em', color: 'rgba(76,96,56,0.9)', margin: '7px 0 0' }}>
+            {briefing}
+          </p>
         </div>
 
-        <div className="space-y-3 px-5 pb-4">
-          {/* Pinned fokus — over fanerne, altid synlig. */}
+        <div className="space-y-4 px-5 pb-5">
+          {/* 2 · Fokus-kort — dagens vigtigste, altid synligt. */}
           {pinned ? (
-            <PrimaryFocus
-              h={pinned}
-              done={isDone(pinned)}
-              month={month}
-              markoer="Fokus"
-              onToggle={() => toggle(pinned)}
-            />
+            <PrimaryFocus h={pinned} done={isDone(pinned)} month={month} markoer="Fokus" onToggle={() => toggle(pinned)} />
           ) : dagensFokus.almanak ? (
             <div
               className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
@@ -191,89 +263,47 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </div>
           ) : null}
 
-          {/* Faner = opgaveoverblikket — lette planlægningsfiltre (2×2), ikke en kasse. */}
+          {/* 3 · Mini-statuskort (overblik/filter) + 4 · grupperede lister. */}
           <Tabs defaultValue="idag">
-            <TabsList
-              className="grid w-full grid-cols-2 gap-1.5 h-auto rounded-xl p-1"
-              style={{ background: 'rgba(42,51,32,0.035)' }}
-            >
-              <TabsTrigger value="idag" className={tabCls}>I dag <span className={countCls}>({antal(derivedIDag, userIDag)})</span></TabsTrigger>
-              <TabsTrigger value="uge" className={tabCls}>Denne uge <span className={countCls}>({antal(derivedUge, userUge)})</span></TabsTrigger>
-              <TabsTrigger value="maaned" className={tabCls}>Denne måned <span className={countCls}>({antal(derivedMaaned, userMaaned)})</span></TabsTrigger>
-              {forsinkede.length > 0 && (
-                <TabsTrigger value="forsinket" className={`${tabCls} text-destructive`}>
-                  Forsinket <span className={countCls}>({forsinkede.length})</span>
-                </TabsTrigger>
-              )}
-              <TabsTrigger value="afsluttet" className={tabCls}>Afsluttet <span className={countCls}>({afsluttede.length + derivedDone.length})</span></TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 gap-2 h-auto bg-transparent p-0">
+              {statTab('idag', 'I dag', iDagAntal, hasterAntal > 0)}
+              {statTab('uge', 'Denne uge', antal(derivedUge, userUge))}
+              {statTab('maaned', 'Kan vente', antal(derivedMaaned, userMaaned))}
+              {statTab('afsluttet', 'Færdige', afsluttede.length + derivedDone.length)}
             </TabsList>
 
             <TabsContent value="idag">
-              {renderTab(derivedIDag, userIDag, 'Ingen opgaver i dag', 'Fokus-kortet ovenfor har dig dækket — ellers: nyd kaffen.')}
+              {renderHorizon(derivedIDag, userIDag, { showOverdue: true, emptyTitle: 'Roligt i haven i dag', emptyDescription: 'Fokus-kortet ovenfor har dig dækket — ellers: nyd kaffen.' })}
             </TabsContent>
             <TabsContent value="uge">
-              {renderTab(derivedUge, userUge, 'Roligt program i denne uge', 'Intet på listen — pust ud.')}
+              {renderHorizon(derivedUge, userUge, { emptyTitle: 'Roligt program i denne uge', emptyDescription: 'Intet på listen — pust ud.' })}
             </TabsContent>
             <TabsContent value="maaned">
-              {renderTab(derivedMaaned, userMaaned, 'Tomt indtil videre i denne måned', 'Find inspiration længere nede på siden.')}
-            </TabsContent>
-            <TabsContent value="forsinket">
-              {forsinkede.length === 0 ? (
-                <EmptyState icon={<CalendarCheck className="h-8 w-8" />} title="Intet er forsinket" description="Du har styr på det hele." />
-              ) : (
-                <div className="space-y-2">{forsinkede.map(t => <TaskRow key={t.id} task={t} showSource />)}</div>
-              )}
+              {renderHorizon(derivedMaaned, userMaaned, { emptyTitle: 'Tomt indtil videre', emptyDescription: 'Find inspiration længere nede på siden.' })}
             </TabsContent>
             <TabsContent value="afsluttet">
-              {afsluttede.length === 0 && derivedDone.length === 0 ? (
-                <EmptyState
-                  icon={<ListChecks className="h-8 w-8" />}
-                  title="Ingen afsluttede opgaver endnu"
-                  description="Når du markerer opgaver som udført, dukker de op her."
-                />
-              ) : (
-                <div className="space-y-2">
-                  {derivedDone.length > 0 && (
-                    <div>
-                      {derivedDone.map((h, i) => (
-                        <SecondaryRow
-                          key={h.taskKey}
-                          h={h}
-                          done
-                          first={i === 0}
-                          month={month}
-                          onToggle={() => toggle(h)}
-                          sourceChip={derivedSourceChip(h)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {afsluttede.map(t => <TaskRow key={t.id} task={t} compact showSource />)}
-                </div>
-              )}
+              {renderDone()}
             </TabsContent>
           </Tabs>
 
-          {/* Ny opgave — sekundær støttehandling, ikke sektionens hovedperson:
-              let papirknap (grøn tint + hairline), ikke massiv mørkegrøn pille.
-              Brugeren skal handle på listen først; oprettelse er sekundært. */}
-          <div style={{ marginTop: 18 }}>
+          {/* 5 · Sekundær CTA — støtter flowet, dominerer ikke. */}
+          <div className="pt-1">
             <AddTaskDialog plants={aktivePlanter}>
               <Button
                 variant="ghost"
                 className="w-full rounded-full"
                 style={{
-                  height: 54,
-                  background: 'rgba(89,112,61,0.12)',
+                  height: 48,
+                  background: 'rgba(89,112,61,0.10)',
                   color: '#2F4D2B',
                   border: '1px solid rgba(47,77,43,0.16)',
                   boxShadow: 'none',
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: 700,
                 }}
               >
-                <Plus style={{ width: 20, height: 20 }} />
-                Ny opgave
+                <Plus style={{ width: 18, height: 18 }} />
+                Tilføj opgave
               </Button>
             </AddTaskDialog>
           </div>
