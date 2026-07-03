@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from 'next/font/google'
+import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono, Libre_Baskerville } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -55,6 +55,14 @@ const plexMono = IBM_Plex_Mono({
   weight: ['500'],
 })
 
+// Libre Baskerville — TEST-alternativ til den store månedslabel i ticket-
+// headeren (mere klassisk/trykt bog-serif). Kun bold (700).
+const libreBaskerville = Libre_Baskerville({
+  variable: '--font-libre-baskerville',
+  subsets: ['latin'],
+  weight: ['700'],
+})
+
 export const metadata: Metadata = {
   title: 'PotAlot',
   description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
@@ -87,7 +95,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} ${libreBaskerville.variable} antialiased`}>
         {children}
       </body>
     </html>

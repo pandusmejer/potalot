@@ -492,14 +492,12 @@ function MonthLoopHeader({
           overflow: 'visible',
           background: 'transparent',
           color: '#FFF7E8',
-          // DM Serif Display (kun her): rolig, bred display-serif — rundere
-          // end Cormorant, men editorial og voksen, ikke chunky/retro som
-          // Fraunces. Kun regular-vægt (fonten har kun 400).
-          fontFamily: 'var(--font-dm-serif), Georgia, serif',
-          fontSize: 72,
-          fontWeight: 400,
-          letterSpacing: '0.015em',
-          lineHeight: 0.78,
+          // TEST: Libre Baskerville Bold — mere klassisk/trykt bog-serif.
+          fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
+          fontSize: 64,
+          fontWeight: 700,
+          letterSpacing: '0.01em',
+          lineHeight: 0.82,
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
