@@ -215,10 +215,10 @@ export function DetKanDuGoereEditorialPlanner({
             <p
               style={{
                 fontFamily: serif,
-                fontSize: 'clamp(19px, 5vw, 22px)',
+                fontSize: 'clamp(18px, 4.7vw, 21px)',
                 fontStyle: 'italic',
                 fontWeight: 600,
-                lineHeight: 1.25,
+                lineHeight: 1.2,
                 margin: '-3mm auto 48px',
                 maxWidth: '34ch',
                 color: 'rgba(35,56,43,0.84)',
@@ -232,7 +232,7 @@ export function DetKanDuGoereEditorialPlanner({
           </div>
         </header>
 
-        <div style={{ display: 'grid', gap: 20, padding: '0 clamp(20px, 5vw, 38px)' }}>
+        <div style={{ display: 'grid', gap: 20, padding: '0 clamp(20px, 5vw, 38px)', marginTop: '-1cm' }}>
           {GROUPS.map(group => {
             const groupItems = visibleItems.filter(item => item.group === group.id)
             const shownItems = showAll ? groupItems : groupItems.slice(0, groupLimits[group.id])
@@ -705,6 +705,7 @@ function PlannerRow({
             height: 52,
             background: gold,
             opacity: 0.75,
+            transform: 'translateX(-3mm)',
           }}
         />
       </span>
@@ -713,7 +714,7 @@ function PlannerRow({
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 16.7,
+            fontSize: 15.5,
             fontWeight: 750,
             lineHeight: 1.18,
             color: '#203024',
@@ -744,8 +745,8 @@ function PlannerRow({
         className="inline-flex items-center justify-center"
         style={{
           alignSelf: 'center',
-          width: 47,
-          height: 47,
+          width: 42,
+          height: 42,
           borderRadius: 999,
           border: '1px solid rgba(184,91,61,0.25)',
           marginTop: 0,
@@ -757,7 +758,7 @@ function PlannerRow({
           background: 'rgba(255,247,232,0.35)',
         }}
       >
-        {isAdded ? '✓' : <Plus width={22} height={22} strokeWidth={1.8} />}
+        {isAdded ? '✓' : <Plus width={20} height={20} strokeWidth={1.8} />}
       </span>
     </button>
   )
