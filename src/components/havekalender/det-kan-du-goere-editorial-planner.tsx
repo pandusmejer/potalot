@@ -494,7 +494,7 @@ function MonthLoopHeader({
           color: '#FFF7E8',
           // TEST: Libre Baskerville Bold — mere klassisk/trykt bog-serif.
           fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
-          fontSize: 60.8,
+          fontSize: 57.8,
           fontWeight: 700,
           letterSpacing: '0.01em',
           lineHeight: 0.82,
@@ -507,7 +507,7 @@ function MonthLoopHeader({
             position: 'relative',
             zIndex: 1,
             marginTop: 2,
-            transform: 'translateY(-1mm)',
+            transform: 'translateY(1mm)',
           }}
         >
           {(() => {
