@@ -132,7 +132,10 @@ export function DetKanDuGoereEditorialPlanner({
       style={{
         position: 'relative',
         overflow: 'hidden',
-        marginTop: 8,
+        // Halvér afstanden til MINE OPGAVER ovenover: parentens space-y-7 giver
+        // 28px margin-bottom på forrige sektion; negativ margin-top kollapser
+        // med den → 28 + (-14) = 14px gap. Rører ikke den globale spacing.
+        marginTop: -14,
         // Samme hjørner + dropskygge som MINE OPGAVER-kortet (delt Card:
         // rounded-2xl = 16px + Card-skyggen), så sektionerne står som samme
         // familie i kalenderfeedet.
