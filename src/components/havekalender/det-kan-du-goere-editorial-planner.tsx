@@ -496,8 +496,8 @@ function MonthLoopHeader({
           // ticket" end klassisk serif. SOFT/opsz gør formerne bløde+botaniske.
           fontFamily: 'var(--font-fraunces), Georgia, serif',
           fontSize: 66,
-          fontWeight: 900,
-          fontVariationSettings: '"SOFT" 70, "WONK" 0, "opsz" 144',
+          fontWeight: 800,
+          fontVariationSettings: '"SOFT" 52, "WONK" 0, "opsz" 144',
           letterSpacing: '0.01em',
           lineHeight: 0.78,
           textTransform: 'uppercase',
