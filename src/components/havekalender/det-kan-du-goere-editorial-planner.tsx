@@ -709,8 +709,11 @@ function PlannerRow({
       onClick={onClick}
       className="group grid w-full text-left"
       style={{
-        gridTemplateColumns: '64px minmax(0, 1fr) 48px',
-        columnGap: 16,
+        // Plus-kolonne 48→42 (= cirkel-diameter) + gaps 16→8 giver titel-
+        // kolonnen ~22px mere, så "Så spinat til sensommeren" (188.9px) står
+        // på én linje. Tal-kolonnen holdes på 64px (clamp-tallet kræver plads).
+        gridTemplateColumns: '64px minmax(0, 1fr) 42px',
+        columnGap: 8,
         alignItems: 'center',
         minHeight: 98,
         padding: '14px 0',
