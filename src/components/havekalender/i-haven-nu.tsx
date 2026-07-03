@@ -1,25 +1,23 @@
 'use client'
 
 /**
- * "I HAVEN NU" — Kalenderens samlede handlingscenter. Ét sted der svarer på
- * "Hvad skal jeg faktisk holde øje med og gøre?".
+ * "I HAVEN NU" — Kalenderens samlede handlingscenter som en "Dagens have-
+ * briefing" (Anna 3/7): ét sted der svarer på "Hvad kræver handling nu, hvad
+ * kommer næst, hvad kan vente — og hvor kommer det fra?".
  *
- * Sammenlægger (Anna 2026-06-30, "én arbejdsseddel"):
- *   • BRAIN'ens top-prioritet som et pinned "Fokus lige nu"-kort OVER fanerne
- *     — altid synligt, ejer den øverste prioritet (vises aldrig igen i listen).
- *   • Fanerne (I dag / Denne uge / Kan vente / Færdige) = opgaveoverblikket:
- *     brugerens egne daterede `calendar_tasks` + afledte "nu"-handlinger fra
- *     Planter/Frøbank, hver med diskret kilde-chip.
+ * Struktur (top→bund):
+ *   1. Briefing-header — titel + dynamisk "hvad kalder i dag"-linje.
+ *   2. Fokus-kort — dagens vigtigste, farvet venstremarkør efter urgency.
+ *   3. Mini-statuskort (2×2) — let overblik/filter, IKKE tung tabs-boks.
+ *   4. Opgaver som små taktile task-cards, opdelt i grupper med rytme:
+ *      Forsinket → Gør nu → Næste i haven → Når du har tid → Dine opgaver.
+ *   5. Sekundær "Tilføj opgave"-CTA.
  *
- * Design (Anna 3/7): "Dagens havebriefing", ikke flad to-do i beige kort.
- *   1. Briefing-header (titel + hvad kalder i dag)
- *   2. Fokus-kort (dagens vigtigste, særstatus)
- *   3. Mini-statuskort (let overblik/filter — IKKE tung tabs-boks)
- *   4. Opgaver opdelt i grupper (Gør nu / Snart / Når du har tid / Dine opgaver)
- *   5. Sekundær "Tilføj opgave"-CTA
+ * ÆRLIGHED: FokusHandling bærer hverken billede eller tids-estimat, så rækkerne
+ * bruger en neutral KILDE-MARKØR (ikon-badge: plante/frøbank/rutine) — ingen
+ * opdigtede plantefotos, ingen fabrikerede "5 min". Metadata = ægte kilde.
  *
- * Grænse: ingen ny BRAIN-logik, ingen admin-opgaver som datakilde her. Data-
- * og completion-logik er UÆNDRET — kun informationsarkitektur + visuelt.
+ * Data- og completion-logik er UÆNDRET (genbruger BRAIN + fokus-handling-ui).
  */
 
 import { Card } from '@/components/ui/card'
@@ -29,10 +27,12 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, SecondaryRow, useDerivedCompletions, chipLabel,
+  PrimaryFocus, CheckCircle, Chip, useDerivedCompletions, chipLabel,
 } from '@/components/havekalender/fokus-handling-ui'
-import { SourceChip } from '@/components/havekalender/source-chip'
-import { CalendarCheck, Info, Plus } from 'lucide-react'
+import Link from 'next/link'
+import {
+  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Info, Plus,
+} from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
 import type { DagensFokus, FokusHandling } from '@/lib/kalender/dagens-fokus'
@@ -49,6 +49,10 @@ interface Props {
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
+/** Chip-labels der betyder "tidskritisk nu" hhv. "snart". Resten = når du har tid. */
+const URGENT = new Set(['Haster', 'Høst nu', 'Godt vindue'])
+const SOON = new Set(['Plant ud', 'Tjek', 'Mere plads'])
+
 /** Inden for `dage` dage frem (≥ i dag) — samme regel som TodoTabs. */
 function erInden(date: string, dage: number): boolean {
   const today = new Date(idag())
@@ -57,14 +61,23 @@ function erInden(date: string, dage: number): boolean {
   return diff >= 0 && diff <= dage
 }
 
-/** Kilde-chip for en afledt handling: plante-bunden vs. frøbank-invitation. */
-function derivedSourceChip(h: FokusHandling) {
-  return <SourceChip label={h.plantId !== null ? 'Fra planter' : 'Fra frøbank'} />
+/** Neutral kilde-markør — ikon-badge frem for opdigtet foto (der er endnu ingen
+ *  ægte plante-thumbnails i datamodellen). Farve/ikon efter kilde. */
+function SourceMarker({ kind }: { kind: 'plant' | 'seed' | 'routine' }) {
+  const m = {
+    plant:   { Icon: Sprout,    bg: 'rgba(107,138,74,0.16)', color: '#4C6038' },
+    seed:    { Icon: Flower2,   bg: 'rgba(168,124,59,0.15)', color: '#8A6A2E' },
+    routine: { Icon: RefreshCw, bg: 'rgba(64,58,42,0.07)',   color: 'rgba(64,58,42,0.55)' },
+  }[kind]
+  return (
+    <span
+      aria-hidden
+      style={{ width: 46, height: 46, borderRadius: 999, background: m.bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}
+    >
+      <m.Icon style={{ width: 21, height: 21, color: m.color }} strokeWidth={1.7} />
+    </span>
+  )
 }
-
-/** Chip-labels der betyder "tidskritisk nu" hhv. "snart". Resten = når du har tid. */
-const URGENT = new Set(['Haster', 'Høst nu', 'Godt vindue'])
-const SOON = new Set(['Plant ud', 'Tjek', 'Mere plads'])
 
 export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month }: Props) {
   const { isDone, toggle } = useDerivedCompletions(
@@ -77,13 +90,11 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   const pinned = dagensFokus.fokus[0] ?? null
   const pinnedKey = pinned?.taskKey
 
-  // Afledte "nu"-handlinger (lag 1-4) minus den pinnede + vedligehold ("rytme", lag 5).
   const akutResten = [...dagensFokus.fokus.slice(1), ...dagensFokus.flere]
     .filter(h => h.taskKey !== pinnedKey)
   const rytme = dagensFokus.rytme
+  const rytmeKeys = new Set(rytme.map(h => h.taskKey))
 
-  // Afledte pr. horisont. "Nu"-handlinger er relevante i dag OG ugen; rytme
-  // hører til uge/måned (vedligehold, ikke dagens hast).
   const derivedIDag   = akutResten
   const derivedUge    = [...akutResten, ...rytme]
   const derivedMaaned = [...akutResten, ...rytme]
@@ -97,7 +108,6 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   const forsinkede = aaben.filter(t => erForsinket(t.date))
   const afsluttede = tasks.filter(t => t.status === 'completed').slice(0, 20)
 
-  /** Antal i en horisont = aktive afledte (ikke-udførte) + brugeropgaver. */
   const antal = (derived: FokusHandling[], user: CalendarTask[]) =>
     derived.filter(h => !isDone(h)).length + user.length
 
@@ -118,58 +128,96 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
   ).length
   const briefing = iDagAntal === 0 && forsinkede.length === 0
     ? 'Roligt i haven i dag'
-    : `${iDagAntal} ${iDagAntal === 1 ? 'opgave' : 'opgaver'} i dag${hasterAntal > 0 ? ` · ${hasterAntal} haster` : ''}`
+    : `${iDagAntal} ${iDagAntal === 1 ? 'ting' : 'ting'} kalder i dag${hasterAntal > 0 ? ` · ${hasterAntal} haster` : ''}`
 
-  // ── Render-hjælpere (funktions-kald, ikke nestede komponenter) ──────
+  // ── Render-hjælpere ─────────────────────────────────────────────────
   function groupLabel(text: string, tone?: string) {
+    const color = tone ?? 'rgba(47,77,43,0.72)'
     return (
-      <p
-        className="uppercase"
-        style={{ fontFamily: sans, fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', color: tone ?? 'rgba(35,56,43,0.46)', margin: '2px 0 7px' }}
-      >
-        {text}
-      </p>
-    )
-  }
-
-  function derivedList(list: FokusHandling[]) {
-    return (
-      <div>
-        {list.map((h, i) => (
-          <SecondaryRow
-            key={h.taskKey}
-            h={h}
-            done={false}
-            first={i === 0}
-            month={month}
-            onToggle={() => toggle(h)}
-            sourceChip={derivedSourceChip(h)}
-          />
-        ))}
+      <div className="flex items-center gap-1.5" style={{ margin: '26px 0 12px' }}>
+        <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color }}>
+          {text}
+        </span>
+        <Sprout style={{ width: 13, height: 13, color, opacity: 0.75 }} strokeWidth={1.9} aria-hidden />
       </div>
     )
   }
 
-  function statTab(value: string, label: string, count: number, danger?: boolean) {
+  /** Én afledt handling som lille taktilt task-card. */
+  function derivedCard(h: FokusHandling) {
+    const routine = rytmeKeys.has(h.taskKey)
+    const checkbar = h.plantId !== null
+    const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
+    const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra planter' : 'Fra frøbank'
+    const done = isDone(h)
+    return (
+      <div
+        key={h.taskKey}
+        className="grid"
+        style={{
+          gridTemplateColumns: '46px minmax(0, 1fr)',
+          gap: 12,
+          alignItems: 'start',
+          padding: '13px 14px',
+          borderRadius: 18,
+          background: 'rgba(255,250,238,0.72)',
+          border: '1px solid rgba(64,58,42,0.08)',
+          boxShadow: '0 3px 8px rgba(64,58,42,0.045), inset 0 1px 0 rgba(255,255,255,0.4)',
+          marginBottom: 10,
+          opacity: done ? 0.55 : 1,
+          transition: 'opacity .2s',
+        }}
+      >
+        <SourceMarker kind={kind} />
+        <div className="min-w-0">
+          <div className="flex items-start gap-2">
+            {checkbar ? (
+              <CheckCircle done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={22} />
+            ) : (
+              <span className="shrink-0" style={{ width: 2 }} aria-hidden />
+            )}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none' }}>
+                  <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
+                    {h.titel}
+                  </span>
+                </Link>
+                {!done && <Chip h={h} month={month} size="lg" />}
+              </div>
+              <Link href={h.href} style={{ textDecoration: 'none' }}>
+                <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.32, color: 'rgba(35,56,43,0.68)', marginTop: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {h.hvorfor}
+                </span>
+              </Link>
+              <span style={{ display: 'block', fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)', marginTop: 8 }}>
+                {meta}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  function statTab(value: string, label: string, count: number, Icon: typeof CalendarDays, danger?: boolean) {
     return (
       <TabsTrigger
         value={value}
-        className="flex h-auto flex-col items-start justify-center gap-0.5 rounded-xl border px-3.5 py-2.5 text-left transition-all border-[rgba(64,58,42,0.08)] bg-[rgba(255,252,244,0.5)] data-[state=active]:border-[rgba(76,96,56,0.28)] data-[state=active]:bg-[rgba(255,250,238,0.96)] data-[state=active]:shadow-[0_2px_6px_rgba(64,58,42,0.09)]"
+        className="flex h-auto flex-col items-start justify-center gap-0.5 rounded-[18px] border px-4 py-2 text-left transition-all border-[rgba(64,58,42,0.09)] bg-[rgba(255,250,238,0.55)] data-[state=active]:border-[rgba(85,116,59,0.26)] data-[state=active]:bg-[rgba(252,248,230,0.95)] data-[state=active]:shadow-[0_4px_10px_rgba(64,58,42,0.08)]"
       >
-        <span
-          className="tabular-nums"
-          style={{ fontFamily: sans, fontSize: 22, fontWeight: 750, lineHeight: 1, color: danger && count > 0 ? '#B5602F' : '#2F4D2B' }}
-        >
+        <span className="tabular-nums" style={{ fontFamily: sans, fontSize: 23, fontWeight: 800, lineHeight: 1, color: danger && count > 0 ? '#B5602F' : '#2F4D2B' }}>
           {count}
         </span>
-        <span style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: 'rgba(35,56,43,0.58)' }}>
-          {label}
+        <span className="flex w-full items-center justify-between">
+          <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(35,56,43,0.6)' }}>{label}</span>
+          <Icon style={{ width: 14, height: 14, color: 'rgba(35,56,43,0.32)' }} strokeWidth={1.9} aria-hidden />
         </span>
       </TabsTrigger>
     )
   }
 
-  /** Grupperet horisont: Forsinket (rød) → Gør nu → Snart → Når du har tid → Dine opgaver. */
+  /** Grupperet horisont: Forsinket (rød) → Gør nu → Næste i haven → Når du har tid → Dine opgaver. */
   function renderHorizon(
     derived: FokusHandling[],
     user: CalendarTask[],
@@ -181,16 +229,16 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
       return <EmptyState icon={<CalendarCheck className="h-8 w-8" />} title={opts.emptyTitle} description={opts.emptyDescription} />
     }
     return (
-      <div className="space-y-4">
+      <div>
         {overdue.length > 0 && (
           <div>
             {groupLabel('Forsinket', 'rgba(181,96,47,0.92)')}
             <div className="space-y-2">{overdue.map(t => <TaskRow key={t.id} task={t} showSource />)}</div>
           </div>
         )}
-        {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{derivedList(nu)}</div>}
-        {snart.length > 0 && <div>{groupLabel('Snart')}{derivedList(snart)}</div>}
-        {senere.length > 0 && <div>{groupLabel('Når du har tid')}{derivedList(senere)}</div>}
+        {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{nu.map(derivedCard)}</div>}
+        {snart.length > 0 && <div>{groupLabel('Næste i haven')}{snart.map(derivedCard)}</div>}
+        {senere.length > 0 && <div>{groupLabel('Når du har tid')}{senere.map(derivedCard)}</div>}
         {user.length > 0 && (
           <div>
             {groupLabel('Dine opgaver')}
@@ -212,11 +260,9 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
       )
     }
     return (
-      <div className="space-y-2">
-        {derivedDone.map((h, i) => (
-          <SecondaryRow key={h.taskKey} h={h} done first={i === 0} month={month} onToggle={() => toggle(h)} sourceChip={derivedSourceChip(h)} />
-        ))}
-        {afsluttede.map(t => <TaskRow key={t.id} task={t} compact showSource />)}
+      <div>
+        {derivedDone.map(derivedCard)}
+        <div className="space-y-2">{afsluttede.map(t => <TaskRow key={t.id} task={t} compact showSource />)}</div>
       </div>
     )
   }
@@ -226,31 +272,30 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
       <Card
         className="overflow-hidden"
         style={{
-          // Varmt papir frem for flad app-card — matcher kalenderens materialitet.
-          borderRadius: 26,
+          borderRadius: 30,
           border: '1px solid rgba(64,58,42,0.10)',
           background: 'linear-gradient(180deg, #FBF7EC 0%, #F5EFE1 100%)',
-          boxShadow: '0 10px 24px rgba(64,58,42,0.07), inset 0 1px 0 rgba(255,255,255,0.35)',
+          boxShadow: '0 14px 32px rgba(64,58,42,0.08), inset 0 1px 0 rgba(255,255,255,0.45)',
         }}
       >
-        {/* 1 · Briefing-header — "dagens havebriefing", ikke standard modulheader. */}
-        <div className="px-5 pt-4 pb-3">
-          <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: serif, fontSize: 26, fontWeight: 600 }}>
+        {/* 1 · Briefing-header. */}
+        <div className="px-5 pt-5 pb-3">
+          <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: serif, fontSize: 28, fontWeight: 600 }}>
             I haven nu
             <span
               className="inline-flex items-center"
-              title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter dine egne opgaver og afledte handlinger fra planter og frøbank."
+              title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter opgaver og afledte handlinger fra planter og frøbank."
             >
-              <Info className="h-3 w-3 text-muted-foreground" />
+              <Info style={{ width: 15, height: 15 }} className="text-muted-foreground" />
             </span>
           </h3>
-          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, letterSpacing: '-0.005em', color: 'rgba(76,96,56,0.9)', margin: '7px 0 0' }}>
+          <p style={{ fontFamily: sans, fontSize: 15.5, fontWeight: 700, letterSpacing: '-0.005em', color: '#55743B', margin: '9px 0 0' }}>
             {briefing}
           </p>
         </div>
 
-        <div className="space-y-4 px-5 pb-5">
-          {/* 2 · Fokus-kort — dagens vigtigste, altid synligt. */}
+        <div className="space-y-4 px-5 pb-6">
+          {/* 2 · Fokus-kort. */}
           {pinned ? (
             <PrimaryFocus h={pinned} done={isDone(pinned)} month={month} markoer="Fokus" onToggle={() => toggle(pinned)} />
           ) : dagensFokus.almanak ? (
@@ -263,13 +308,13 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </div>
           ) : null}
 
-          {/* 3 · Mini-statuskort (overblik/filter) + 4 · grupperede lister. */}
+          {/* 3 · Mini-statuskort + 4 · grupperede task-cards. */}
           <Tabs defaultValue="idag">
-            <TabsList className="grid w-full grid-cols-2 gap-2 h-auto bg-transparent p-0">
-              {statTab('idag', 'I dag', iDagAntal, hasterAntal > 0)}
-              {statTab('uge', 'Denne uge', antal(derivedUge, userUge))}
-              {statTab('maaned', 'Kan vente', antal(derivedMaaned, userMaaned))}
-              {statTab('afsluttet', 'Færdige', afsluttede.length + derivedDone.length)}
+            <TabsList className="grid w-full grid-cols-2 gap-3 h-auto bg-transparent p-0">
+              {statTab('idag', 'I dag', iDagAntal, Sprout, hasterAntal > 0)}
+              {statTab('uge', 'Denne uge', antal(derivedUge, userUge), CalendarDays)}
+              {statTab('maaned', 'Kan vente', antal(derivedMaaned, userMaaned), Clock)}
+              {statTab('afsluttet', 'Færdige', afsluttede.length + derivedDone.length, CheckCheck)}
             </TabsList>
 
             <TabsContent value="idag">
@@ -286,23 +331,23 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </TabsContent>
           </Tabs>
 
-          {/* 5 · Sekundær CTA — støtter flowet, dominerer ikke. */}
+          {/* 5 · Sekundær CTA. */}
           <div className="pt-1">
             <AddTaskDialog plants={aktivePlanter}>
               <Button
                 variant="ghost"
                 className="w-full rounded-full"
                 style={{
-                  height: 48,
+                  height: 54,
                   background: 'rgba(89,112,61,0.10)',
                   color: '#2F4D2B',
-                  border: '1px solid rgba(47,77,43,0.16)',
+                  border: '1px solid rgba(47,77,43,0.18)',
                   boxShadow: 'none',
-                  fontSize: 15,
-                  fontWeight: 700,
+                  fontSize: 16,
+                  fontWeight: 750,
                 }}
               >
-                <Plus style={{ width: 18, height: 18 }} />
+                <Plus style={{ width: 20, height: 20 }} />
                 Tilføj opgave
               </Button>
             </AddTaskDialog>
