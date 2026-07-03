@@ -492,11 +492,14 @@ function MonthLoopHeader({
           overflow: 'visible',
           background: 'transparent',
           color: '#FFF7E8',
-          fontFamily: serif,
-          fontSize: 60,
-          fontWeight: 700,
-          letterSpacing: '0.02em',
-          lineHeight: 0.9,
+          // Fraunces (kun her): rund, tung display-månedslabel — mere "trykt
+          // ticket" end klassisk serif. SOFT/opsz gør formerne bløde+botaniske.
+          fontFamily: 'var(--font-fraunces), Georgia, serif',
+          fontSize: 66,
+          fontWeight: 900,
+          fontVariationSettings: '"SOFT" 70, "WONK" 0, "opsz" 144',
+          letterSpacing: '0.01em',
+          lineHeight: 0.78,
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
         }}
