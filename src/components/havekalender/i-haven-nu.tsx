@@ -325,7 +325,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
         <div className="space-y-4 px-5 pb-6">
           {/* 2 · Fokus-kort. */}
           {pinned ? (
-            <PrimaryFocus h={pinned} done={isDone(pinned)} month={month} markoer="Fokus" onToggle={() => toggle(pinned)} />
+            <PrimaryFocus h={pinned} done={isDone(pinned)} month={month} onToggle={() => toggle(pinned)} />
           ) : dagensFokus.almanak ? (
             <div
               className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
