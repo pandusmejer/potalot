@@ -55,10 +55,11 @@ function derivedSourceChip(h: FokusHandling) {
   return <SourceChip label={h.plantId !== null ? 'Fra planter' : 'Fra frøbank'} />
 }
 
-/** Lette planlægningsfiltre (ikke store knapper): lav højde, dæmpet aktiv-skygge. */
-const tabCls = 'h-[38px] text-[13px] data-[state=active]:shadow-[0_1px_2px_rgba(42,51,32,0.07)] data-[state=active]:font-semibold'
-/** Tæller: 2px mindre end label + dæmpet. */
-const countCls = 'ml-1.5 text-[11px] opacity-60'
+/** Papir-filter-faner (ikke segment-control): lav højde, dæmpet inaktiv-tekst,
+ *  blød creme aktiv-flade med let løft — ikke en grålig knap-blok. */
+const tabCls = 'h-[40px] rounded-lg text-[13px] text-[rgba(35,56,43,0.55)] data-[state=active]:bg-[rgba(255,250,238,0.85)] data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-[0_2px_5px_rgba(64,58,42,0.08)]'
+/** Tæller: mindre end label + dæmpet. */
+const countCls = 'ml-1.5 text-[11px] opacity-[0.55]'
 
 export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month }: Props) {
   const { isDone, toggle } = useDerivedCompletions(
@@ -136,13 +137,23 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
 
   return (
     <section id="mine-opgaver" className="scroll-mt-20">
-      <Card>
-        {/* Header: stort ikon spænder over to linjer; "Mine opgaver" + fokus-
-            label ligger venstrejusteret i samme kolonne til højre for ikonet. */}
-        <div className="flex items-center gap-3 px-5 pt-5 pb-3">
-          <ListChecks className="shrink-0 text-primary" style={{ width: 38, height: 38 }} strokeWidth={1.6} aria-hidden />
+      <Card
+        className="overflow-hidden"
+        style={{
+          // Varmt papir frem for flad app-card: blød creme-gradient, hairline,
+          // meget diskret løft + inset-toplys — matcher kalenderens materialitet.
+          borderRadius: 26,
+          border: '1px solid rgba(64,58,42,0.10)',
+          background: 'linear-gradient(180deg, #FBF7EC 0%, #F5EFE1 100%)',
+          boxShadow: '0 10px 24px rgba(64,58,42,0.07), inset 0 1px 0 rgba(255,255,255,0.35)',
+        }}
+      >
+        {/* Header som arbejdsseddel-label: mindre ikon, editorial titel, info
+            tæt på titlen, "HAVEN LIGE NU" som sekundær stemme. */}
+        <div className="flex items-center gap-2.5 px-5 pt-4 pb-2.5">
+          <ListChecks className="shrink-0 text-primary" style={{ width: 32, height: 32 }} strokeWidth={1.6} aria-hidden />
           <div className="min-w-0">
-            <h3 className="flex items-center gap-2 font-serif text-lg leading-tight text-foreground">
+            <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 25, fontWeight: 600 }}>
               Mine opgaver
               <span
                 className="inline-flex items-center"
@@ -153,7 +164,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </h3>
             <p
               className="uppercase"
-              style={{ fontFamily: 'var(--font-manrope)', fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(42,51,32,0.55)', margin: '3px 0 0' }}
+              style={{ fontFamily: 'var(--font-manrope)', fontSize: 11, fontWeight: 700, letterSpacing: '0.20em', color: 'rgba(35,56,43,0.52)', margin: '8px 0 0' }}
             >
               Haven lige nu
             </p>
@@ -167,6 +178,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
               h={pinned}
               done={isDone(pinned)}
               month={month}
+              markoer="Fokus"
               onToggle={() => toggle(pinned)}
             />
           ) : dagensFokus.almanak ? (
@@ -182,8 +194,8 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {/* Faner = opgaveoverblikket — lette planlægningsfiltre (2×2), ikke en kasse. */}
           <Tabs defaultValue="idag">
             <TabsList
-              className="grid w-full grid-cols-2 gap-1 h-auto rounded-xl p-1"
-              style={{ background: 'rgba(42,51,32,0.04)' }}
+              className="grid w-full grid-cols-2 gap-1.5 h-auto rounded-xl p-1"
+              style={{ background: 'rgba(42,51,32,0.035)' }}
             >
               <TabsTrigger value="idag" className={tabCls}>I dag <span className={countCls}>({antal(derivedIDag, userIDag)})</span></TabsTrigger>
               <TabsTrigger value="uge" className={tabCls}>Denne uge <span className={countCls}>({antal(derivedUge, userUge)})</span></TabsTrigger>
@@ -242,12 +254,25 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
             </TabsContent>
           </Tabs>
 
-          {/* Ny opgave — nedtonet støttehandling: grøn primær, men lavere og uden
-              tung skygge, så den ikke bliver sektionens visuelle hovedperson. */}
-          <div style={{ marginTop: 20 }}>
+          {/* Ny opgave — sekundær støttehandling, ikke sektionens hovedperson:
+              let papirknap (grøn tint + hairline), ikke massiv mørkegrøn pille.
+              Brugeren skal handle på listen først; oprettelse er sekundært. */}
+          <div style={{ marginTop: 18 }}>
             <AddTaskDialog plants={aktivePlanter}>
-              <Button className="w-full h-10" style={{ boxShadow: 'none' }}>
-                <Plus className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                className="w-full rounded-full"
+                style={{
+                  height: 54,
+                  background: 'rgba(89,112,61,0.12)',
+                  color: '#2F4D2B',
+                  border: '1px solid rgba(47,77,43,0.16)',
+                  boxShadow: 'none',
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                <Plus style={{ width: 20, height: 20 }} />
                 Ny opgave
               </Button>
             </AddTaskDialog>

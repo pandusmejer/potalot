@@ -61,14 +61,14 @@ export function Chip({ h, month, size }: { h: FokusHandling; month: number; size
       className="shrink-0 rounded-full"
       style={{
         fontFamily: sans,
-        fontSize: lg ? 14 : 10.5,
+        fontSize: lg ? 13 : 10.5,
         fontWeight: 600,
         letterSpacing: lg ? '-0.01em' : undefined,
         lineHeight: lg ? 1 : undefined,
         marginTop: lg ? 2 : undefined,
         color: tone.color,
         background: tone.bg,
-        padding: lg ? '4px 11px' : '2.5px 8px',
+        padding: lg ? '3px 9px' : '2.5px 8px',
       }}
     >
       {label}
@@ -117,7 +117,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           <div className="flex items-start justify-between gap-2">
             <h3
               style={{
-                fontFamily: serif, fontSize: 25, fontWeight: 600, lineHeight: 1.02,
+                fontFamily: serif, fontSize: 22, fontWeight: 600, lineHeight: 1.0,
                 letterSpacing: '-0.025em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
                 textDecoration: done ? 'line-through' : 'none',
               }}
@@ -126,12 +126,12 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
             </h3>
             <Chip h={h} month={month} size="lg" />
           </div>
-          <p style={{ fontFamily: sans, fontSize: 16, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.36, letterSpacing: '-0.01em', maxWidth: '29ch' }}>
+          <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.3, letterSpacing: '-0.01em', maxWidth: '29ch' }}>
             {h.hvorfor}
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: '#567036', display: 'inline-block', marginTop: 10, lineHeight: 1.2, letterSpacing: '-0.015em' }}
+            style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#567036', display: 'inline-block', marginTop: 9, lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
@@ -147,7 +147,7 @@ export function SecondaryRow({ h, done, first, month, onToggle, sourceChip }: { 
   return (
     <div
       className="flex items-start gap-2.5 px-0.5"
-      style={{ paddingTop: 7, paddingBottom: 7, borderTop: first ? 'none' : '1px solid rgba(42,51,32,0.06)' }}
+      style={{ paddingTop: 7, paddingBottom: 7, borderTop: first ? 'none' : '1px solid rgba(64,58,42,0.05)' }}
     >
       {checkbar
         ? <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} />
