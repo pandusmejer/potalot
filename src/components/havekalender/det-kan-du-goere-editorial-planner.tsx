@@ -21,7 +21,7 @@
  */
 
 import { useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
 import {
@@ -298,16 +298,18 @@ export function DetKanDuGoereEditorialPlanner({
                   backdropFilter: 'blur(8px) saturate(115%)',
                   WebkitBackdropFilter: 'blur(8px) saturate(115%)',
                   border: '1px solid rgba(255,248,230,0.42)',
-                  color: '#FFF8EA',
+                  // Mørk olivenpil (matcher CTA-teksten) — føles trykt ind i
+                  // glasset i stedet for et generisk off-white UI-ikon der
+                  // druknede mod den varme amber-flade.
+                  color: '#2F4D2B',
+                  opacity: 0.92,
                   boxShadow:
                     'inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(143,116,33,0.16)',
                   fontFamily: sans,
-                  fontSize: 24,
-                  fontWeight: 500,
                   lineHeight: 1,
                 }}
               >
-                →
+                <ArrowRight width={28} height={28} strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden />
               </span>
               <span
                 style={{
