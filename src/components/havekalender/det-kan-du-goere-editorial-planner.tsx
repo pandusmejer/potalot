@@ -494,7 +494,7 @@ function MonthLoopHeader({
           color: '#FFF7E8',
           // TEST: Libre Baskerville Bold — mere klassisk/trykt bog-serif.
           fontFamily: 'var(--font-libre-baskerville), Georgia, serif',
-          fontSize: 54.9,
+          fontSize: 53.2,
           fontWeight: 700,
           letterSpacing: '0.01em',
           lineHeight: 0.82,
@@ -546,9 +546,9 @@ function MonthLoopHeader({
             pointerEvents: 'none',
           }}
         >
-          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
-          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: '#FFF7E8' }} />
-          <span style={{ width: 10.08, height: 10.08, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 9.78, height: 9.78, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
+          <span style={{ width: 9.78, height: 9.78, borderRadius: 999, background: '#FFF7E8' }} />
+          <span style={{ width: 9.78, height: 9.78, borderRadius: 999, background: 'rgba(255,247,232,0.35)' }} />
         </span>
       </span>
 
@@ -756,7 +756,7 @@ function PlannerRow({
           style={{
             display: 'block',
             fontFamily: sans,
-            fontSize: 15.5,
+            fontSize: 14.5,
             fontWeight: 750,
             lineHeight: 1.18,
             color: '#203024',
@@ -769,7 +769,7 @@ function PlannerRow({
             display: 'block',
             marginTop: 5,
             fontFamily: sans,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 500,
             lineHeight: 1.25,
             color: 'rgba(35,56,43,0.66)',
