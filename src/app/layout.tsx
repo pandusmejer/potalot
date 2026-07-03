@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono, Fraunces } from 'next/font/google'
+import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -55,16 +55,6 @@ const plexMono = IBM_Plex_Mono({
   weight: ['500'],
 })
 
-// Fraunces — KUN den store månedslabel i kalenderens ticket-header (JULI).
-// Bevidst månedsskifter-display: rundere, tungere, "trykt planner-label" —
-// ikke Cormorant, ikke samme font som de øvrige editorial headings. Variabel
-// font, så SOFT/WONK/opsz kan styres via font-variation-settings i CTA'en.
-const fraunces = Fraunces({
-  variable: '--font-fraunces',
-  subsets: ['latin'],
-  axes: ['opsz', 'SOFT', 'WONK'],
-})
-
 export const metadata: Metadata = {
   title: 'PotAlot',
   description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
@@ -97,7 +87,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} ${fraunces.variable} antialiased`}>
+      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} antialiased`}>
         {children}
       </body>
     </html>

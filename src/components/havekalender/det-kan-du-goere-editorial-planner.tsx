@@ -492,13 +492,13 @@ function MonthLoopHeader({
           overflow: 'visible',
           background: 'transparent',
           color: '#FFF7E8',
-          // Fraunces (kun her): rund, tung display-månedslabel — mere "trykt
-          // ticket" end klassisk serif. SOFT/opsz gør formerne bløde+botaniske.
-          fontFamily: 'var(--font-fraunces), Georgia, serif',
-          fontSize: 66,
-          fontWeight: 800,
-          fontVariationSettings: '"SOFT" 52, "WONK" 0, "opsz" 144',
-          letterSpacing: '0.01em',
+          // DM Serif Display (kun her): rolig, bred display-serif — rundere
+          // end Cormorant, men editorial og voksen, ikke chunky/retro som
+          // Fraunces. Kun regular-vægt (fonten har kun 400).
+          fontFamily: 'var(--font-dm-serif), Georgia, serif',
+          fontSize: 72,
+          fontWeight: 400,
+          letterSpacing: '0.015em',
           lineHeight: 0.78,
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
