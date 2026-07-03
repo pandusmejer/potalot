@@ -53,6 +53,31 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 const URGENT = new Set(['Haster', 'Høst nu', 'Godt vindue'])
 const SOON = new Set(['Plant ud', 'Tjek', 'Mere plads'])
 
+/**
+ * Statuskort-tints — hver status sin egen TEMPERATUR (farvet papir, ikke KPI-
+ * fliser): I dag = sage (aktivt/levende), Denne uge = sand/amber (planlægning),
+ * Kan vente = eucalyptus (afventende), Færdige = næsten neutral creme (stille).
+ * Aktiv-tilstand løfter samme tint en anelse + stærkere kant.
+ */
+const STAT_TINTS: Record<string, { cls: string; text: string }> = {
+  idag: {
+    cls: 'bg-[rgba(218,229,203,0.42)] border-[rgba(85,116,59,0.24)] data-[state=active]:bg-[rgba(224,234,207,0.58)] data-[state=active]:border-[rgba(85,116,59,0.30)]',
+    text: '#2F4D2B',
+  },
+  uge: {
+    cls: 'bg-[rgba(235,216,165,0.34)] border-[rgba(190,145,45,0.18)] data-[state=active]:bg-[rgba(235,216,165,0.52)] data-[state=active]:border-[rgba(190,145,45,0.30)]',
+    text: '#49613A',
+  },
+  maaned: {
+    cls: 'bg-[rgba(205,218,207,0.30)] border-[rgba(95,124,105,0.16)] data-[state=active]:bg-[rgba(205,218,207,0.48)] data-[state=active]:border-[rgba(95,124,105,0.28)]',
+    text: '#425B48',
+  },
+  afsluttet: {
+    cls: 'bg-[rgba(238,235,218,0.36)] border-[rgba(64,58,42,0.10)] data-[state=active]:bg-[rgba(238,235,218,0.54)] data-[state=active]:border-[rgba(64,58,42,0.18)]',
+    text: 'rgba(47,77,43,0.70)',
+  },
+}
+
 /** Inden for `dage` dage frem (≥ i dag) — samme regel som TodoTabs. */
 function erInden(date: string, dage: number): boolean {
   const today = new Date(idag())
@@ -200,19 +225,22 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     )
   }
 
-  function statTab(value: string, label: string, count: number, Icon: typeof CalendarDays, danger?: boolean) {
+  function statTab(value: string, label: string, count: number, Icon: typeof CalendarDays, tint: { cls: string; text: string }, danger?: boolean) {
     return (
       <TabsTrigger
         value={value}
-        className="flex h-auto flex-col items-start justify-center gap-0.5 rounded-[18px] border px-4 py-2 text-left transition-all border-[rgba(64,58,42,0.09)] bg-[rgba(255,250,238,0.55)] data-[state=active]:border-[rgba(85,116,59,0.26)] data-[state=active]:bg-[rgba(252,248,230,0.95)] data-[state=active]:shadow-[0_4px_10px_rgba(64,58,42,0.08)]"
+        className={`group relative flex h-auto flex-col items-start justify-center gap-0.5 rounded-[18px] border px-4 py-2 text-left transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.40)] data-[state=active]:shadow-[0_5px_12px_rgba(64,58,42,0.08),inset_0_1px_0_rgba(255,255,255,0.55)] ${tint.cls}`}
       >
-        <span className="tabular-nums" style={{ fontFamily: sans, fontSize: 23, fontWeight: 800, lineHeight: 1, color: danger && count > 0 ? '#B5602F' : '#2F4D2B' }}>
+        <span className="tabular-nums" style={{ fontFamily: sans, fontSize: 23, fontWeight: 800, lineHeight: 1, color: danger && count > 0 ? '#B5602F' : tint.text }}>
           {count}
         </span>
-        <span className="flex w-full items-center justify-between">
-          <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(35,56,43,0.6)' }}>{label}</span>
-          <Icon style={{ width: 14, height: 14, color: 'rgba(35,56,43,0.32)' }} strokeWidth={1.9} aria-hidden />
-        </span>
+        <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: tint.text, opacity: 0.74 }}>{label}</span>
+        <Icon
+          className="absolute right-[18px] bottom-[16px] opacity-[0.42] group-data-[state=active]:opacity-[0.62]"
+          style={{ width: 18, height: 18, color: tint.text }}
+          strokeWidth={1.9}
+          aria-hidden
+        />
       </TabsTrigger>
     )
   }
@@ -311,10 +339,10 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {/* 3 · Mini-statuskort + 4 · grupperede task-cards. */}
           <Tabs defaultValue="idag">
             <TabsList className="grid w-full grid-cols-2 gap-3 h-auto bg-transparent p-0">
-              {statTab('idag', 'I dag', iDagAntal, Sprout, hasterAntal > 0)}
-              {statTab('uge', 'Denne uge', antal(derivedUge, userUge), CalendarDays)}
-              {statTab('maaned', 'Kan vente', antal(derivedMaaned, userMaaned), Clock)}
-              {statTab('afsluttet', 'Færdige', afsluttede.length + derivedDone.length, CheckCheck)}
+              {statTab('idag', 'I dag', iDagAntal, Sprout, STAT_TINTS.idag, hasterAntal > 0)}
+              {statTab('uge', 'Denne uge', antal(derivedUge, userUge), CalendarDays, STAT_TINTS.uge)}
+              {statTab('maaned', 'Kan vente', antal(derivedMaaned, userMaaned), Clock, STAT_TINTS.maaned)}
+              {statTab('afsluttet', 'Færdige', afsluttede.length + derivedDone.length, CheckCheck, STAT_TINTS.afsluttet)}
             </TabsList>
 
             <TabsContent value="idag">
