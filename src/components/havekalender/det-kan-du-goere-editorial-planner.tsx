@@ -502,7 +502,17 @@ function MonthLoopHeader({
           whiteSpace: 'nowrap',
         }}
       >
-        <span style={{ position: 'relative', zIndex: 1, marginTop: 2, transform: 'translateY(-1mm)' }}>
+        <span
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            marginTop: 2,
+            // Mas ordet sammen lodret med top-anker, så bunden (J-buen) løftes
+            // ~4 mm op uden at toppen flytter sig. scaleY 0.712 = (52.5-15.1)/52.5.
+            transform: 'translateY(-1mm) scaleY(0.712)',
+            transformOrigin: 'top center',
+          }}
+        >
           {activeLabel.toUpperCase()}
         </span>
         <span
