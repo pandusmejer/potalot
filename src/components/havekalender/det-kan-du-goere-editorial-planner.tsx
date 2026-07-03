@@ -291,9 +291,16 @@ export function DetKanDuGoereEditorialPlanner({
                   width: 51,
                   height: 51,
                   borderRadius: 999,
-                  background: '#D2A11F',
-                  color: '#FFF7E8',
-                  boxShadow: '0 10px 22px rgba(153,111,22,0.18)',
+                  // Varm amber-glas (retning A): lader summer-gradienten skinne
+                  // igennem, let blur + gylden glaskant + blødt gelé-toplys.
+                  // Bevidst IKKE kold iOS-glas — holder papir/sol/varme-universet.
+                  background: 'rgba(214,168,52,0.72)',
+                  backdropFilter: 'blur(8px) saturate(115%)',
+                  WebkitBackdropFilter: 'blur(8px) saturate(115%)',
+                  border: '1px solid rgba(255,248,230,0.42)',
+                  color: '#FFF8EA',
+                  boxShadow:
+                    'inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(143,116,33,0.16)',
                   fontFamily: sans,
                   fontSize: 24,
                   fontWeight: 500,
