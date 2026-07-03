@@ -233,7 +233,6 @@ export function DetKanDuGoereEditorialPlanner({
         </header>
 
         <div style={{ display: 'grid', gap: 20, padding: '0 clamp(20px, 5vw, 38px)' }}>
-          <EditorialSectionLabel />
           {GROUPS.map(group => {
             const groupItems = visibleItems.filter(item => item.group === group.id)
             const shownItems = showAll ? groupItems : groupItems.slice(0, groupLimits[group.id])
@@ -761,85 +760,6 @@ function PlannerRow({
         {isAdded ? '✓' : <Plus width={22} height={22} strokeWidth={1.8} />}
       </span>
     </button>
-  )
-}
-
-function EditorialSectionLabel() {
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '64px minmax(0, 1fr)',
-        alignItems: 'center',
-        gap: 16,
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 54,
-          height: 54,
-          borderRadius: 999,
-          background: '#2F4D2B',
-          color: '#F7F1E5',
-        }}
-      >
-        <SproutMark />
-      </span>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'auto minmax(0, 1fr)',
-          alignItems: 'center',
-          gap: 20,
-        }}
-      >
-        <p
-          style={{
-            margin: 0,
-            color: '#2F4D2B',
-            fontFamily: sans,
-            fontSize: 19,
-            fontWeight: 800,
-            letterSpacing: '0.22em',
-            lineHeight: 1,
-            textTransform: 'uppercase',
-          }}
-        >
-          Gør nu
-        </p>
-        <span
-          aria-hidden
-          style={{
-            height: 1,
-            background: 'rgba(35,56,43,0.35)',
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
-function SproutMark() {
-  return (
-    <svg viewBox="0 0 32 32" width="100%" height="100%" fill="none" aria-hidden>
-      <path d="M16 27V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path
-        d="M15.8 14.4C11 8.2 6.8 6.5 3.8 7.1c-.1 5.7 4.8 9.2 12 9.3Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M16.3 18.4c5.8-7.2 10.2-9.6 13-8.8.1 6-5.4 9.9-13 10.7Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }
 
