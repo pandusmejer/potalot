@@ -256,7 +256,7 @@ export function DetKanDuGoereEditorialPlanner({
             style={{
               position: 'relative',
               marginTop: 'calc(30px - 8mm)',
-              padding: '28px clamp(24px, 7vw, 34px) 32px',
+              padding: 'calc(28px - 3mm) clamp(24px, 7vw, 34px) calc(32px - 3mm)',
               background:
                 'linear-gradient(90deg, rgba(214,219,190,0.72) 0%, rgba(229,214,162,0.62) 100%)',
               borderTop: '1px solid rgba(64,58,42,0.10)',
@@ -288,14 +288,14 @@ export function DetKanDuGoereEditorialPlanner({
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 64,
-                  height: 64,
+                  width: 51,
+                  height: 51,
                   borderRadius: 999,
                   background: '#D2A11F',
                   color: '#FFF7E8',
                   boxShadow: '0 10px 22px rgba(153,111,22,0.18)',
                   fontFamily: sans,
-                  fontSize: 30,
+                  fontSize: 24,
                   fontWeight: 500,
                   lineHeight: 1,
                 }}
@@ -305,7 +305,7 @@ export function DetKanDuGoereEditorialPlanner({
               <span
                 style={{
                   fontFamily: sans,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 800,
                   letterSpacing: '0.18em',
                   lineHeight: 1.35,
