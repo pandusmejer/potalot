@@ -255,7 +255,7 @@ export function DetKanDuGoereEditorialPlanner({
           <div
             style={{
               position: 'relative',
-              marginTop: 30,
+              marginTop: 'calc(30px - 8mm)',
               padding: '28px clamp(24px, 7vw, 34px) 32px',
               background:
                 'linear-gradient(90deg, rgba(214,219,190,0.72) 0%, rgba(229,214,162,0.62) 100%)',
@@ -638,6 +638,7 @@ function PlannerGroup({
             index={startIndex + index}
             state={itemStates[item.id] ?? 'idle'}
             onClick={() => onSelect(item)}
+            isLast={index === items.length - 1}
           />
         ))}
       </div>
@@ -650,11 +651,13 @@ function PlannerRow({
   index,
   state,
   onClick,
+  isLast = false,
 }: {
   item: EditorialPlannerItem
   index: number
   state: PlannerItemState
   onClick: () => void
+  isLast?: boolean
 }) {
   const isAdded = state === 'added'
 
@@ -671,7 +674,7 @@ function PlannerRow({
         padding: '14px 0',
         background: 'transparent',
         border: 0,
-        borderBottom: '1px solid rgba(64,58,42,0.13)',
+        borderBottom: isLast ? 'none' : '1px solid rgba(64,58,42,0.13)',
         color: 'inherit',
         cursor: 'pointer',
         opacity: isAdded ? 0.66 : 1,
