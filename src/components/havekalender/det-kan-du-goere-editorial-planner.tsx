@@ -712,7 +712,7 @@ function PlannerRow({
           }}
         />
       </span>
-      <span style={{ minWidth: 0 }}>
+      <span style={{ minWidth: 0, transform: 'translateX(-2mm)' }}>
         <span
           style={{
             display: 'block',
