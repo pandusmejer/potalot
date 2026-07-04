@@ -254,7 +254,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         {/* Thumbnail-holder — sidder i spændingsfeltet mellem content og bund-
             stribe: ~40 % af cirklen skærer ned i banneret (binder dem sammen).
             Ægte foto når plantId har et; ellers ikon-badge-fallback. */}
-        <div style={{ position: 'absolute', right: 14, bottom: 10, zIndex: 5 }}>
+        <div style={{ position: 'absolute', right: 14, bottom: 10, zIndex: 5, display: 'flex', lineHeight: 0 }}>
           <SourceMarker
             kind={kind}
             size={59}
