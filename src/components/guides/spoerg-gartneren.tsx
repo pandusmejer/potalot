@@ -70,8 +70,8 @@ export function SpoergGartneren() {
         style={{
           fontFamily: plex,
           fontWeight: 600,
-          fontSize: 27,
-          lineHeight: 0.98,
+          fontSize: 24,
+          lineHeight: 1,
           letterSpacing: '-0.01em',
           color: '#242019',
           margin: '0 0 8px',
@@ -110,7 +110,7 @@ export function SpoergGartneren() {
           type="text"
           value={spoergsmaal}
           onChange={e => setSpoergsmaal(e.target.value)}
-          placeholder="Hvorfor krøller mine tomatblade?"
+          placeholder="Hvorfor krøller tomatblade?"
           aria-label="Skriv dit havespørgsmål"
           style={{
             flex: 1,
@@ -131,13 +131,13 @@ export function SpoergGartneren() {
           style={{
             flexShrink: 0,
             fontFamily: sans,
-            fontSize: 14,
+            fontSize: 13.5,
             fontWeight: 700,
             color: '#F6F3EB',
             background: '#4E6138',
             border: 'none',
             borderRadius: 12,
-            padding: '9px 18px',
+            padding: '9px 14px',
             cursor: 'pointer',
           }}
         >
