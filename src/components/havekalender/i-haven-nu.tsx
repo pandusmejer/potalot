@@ -31,7 +31,7 @@ import {
 } from '@/components/havekalender/fokus-handling-ui'
 import Link from 'next/link'
 import {
-  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Coffee, Info, Plus,
+  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Coffee, Plus,
 } from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
@@ -345,14 +345,8 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
       >
         {/* 1 · Briefing-header. */}
         <div className="px-5 pt-5 pb-3">
-          <h3 className="flex items-center gap-1.5 leading-none text-foreground" style={{ fontFamily: serif, fontSize: 28, fontWeight: 600 }}>
+          <h3 className="leading-none text-foreground" style={{ fontFamily: serif, fontSize: 28, fontWeight: 600 }}>
             I haven nu
-            <span
-              className="inline-flex items-center"
-              title="Kalenderens handlingscenter: dagens vigtigste fokus øverst, derefter opgaver og afledte handlinger fra planter og frøbank."
-            >
-              <Info style={{ width: 15, height: 15 }} className="text-muted-foreground" />
-            </span>
           </h3>
           <p style={{ fontFamily: sans, fontSize: 15.5, fontWeight: 700, letterSpacing: '-0.005em', color: '#55743B', margin: '9px 0 0' }}>
             {briefing}
