@@ -27,11 +27,14 @@ export function SpoergGartneren() {
     <section
       aria-labelledby="spoerg-gartneren-titel"
       style={{
-        background: 'rgba(238, 234, 219, 0.72)',
-        border: '1px solid rgba(90,110,72,0.18)',
+        // Hvisker grønt, holder ikke tale: meget let salvie-tone + lidt
+        // tydeligere oliven-omrids. Ingen kraftigt farvet flade.
+        background: 'rgba(232, 236, 218, 0.38)',
+        border: '1px solid rgba(86, 111, 60, 0.26)',
         borderRadius: 30,
         padding: '22px 22px 24px',
-        boxShadow: '0 10px 24px rgba(64,58,42,0.05)',
+        boxShadow:
+          '0 18px 36px rgba(64, 58, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.45)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
@@ -44,8 +47,9 @@ export function SpoergGartneren() {
             width: 32,
             height: 32,
             borderRadius: 999,
-            background: 'rgba(78,97,56,0.12)',
-            color: '#4E6138',
+            background: 'rgba(86, 111, 60, 0.14)',
+            border: '1px solid rgba(86, 111, 60, 0.20)',
+            color: '#566F3C',
             flexShrink: 0,
           }}
         >
@@ -77,7 +81,7 @@ export function SpoergGartneren() {
           margin: '0 0 8px',
         }}
       >
-        Spørg gartneren
+        Spørg Potalot-gartneren
       </h2>
 
       <p
