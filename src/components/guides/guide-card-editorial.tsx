@@ -32,6 +32,19 @@ import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+const plex = 'var(--font-plex-condensed), sans-serif'
+
+// Card-specifikke, dyrkningsnære preview-summaries (fallback på guide.id).
+// Holdes LOKALT i kortet, så den globale guide-data ikke ændres og
+// "siver rundt" andre steder i appen. Ukendte guides falder tilbage på
+// guide.summary.
+const CARD_SUMMARIES: Record<string, string> = {
+  agurk: 'Sås varmt, vokser hurtigt og skal bindes op tidligt.',
+  tomat: 'Trives med varme, lys og jævn vanding gennem sæsonen.',
+  chili: 'Forspires tidligt, plantes ud sent og høstes over lang tid.',
+  dahlia: 'Forkultivér knolde, støt stænglerne og klip løbende blomster.',
+  peberfrugt: 'Elsker varme og lys og modner langsomt fra grøn til fuld farve.',
+}
 
 interface Props {
   guide: Guide
@@ -71,6 +84,7 @@ export function GuideCardEditorial({
 
   const title = guide.variety ?? guide.plantName
   const subtitleName = guide.variety ? guide.plantName : null
+  const cardSummary = CARD_SUMMARIES[guide.id] ?? guide.summary
 
   const showBadge = kind !== 'potalot'
 
@@ -89,8 +103,8 @@ export function GuideCardEditorial({
           <div
             className={cn(
               'relative overflow-hidden bg-[#EAE6D8]',
-              isVariety ? 'ml-8 h-[190px] rounded-[22px]' : 'h-[255px] rounded-[28px]',
-              isCompact && (isVariety ? 'h-[164px]' : 'h-[210px]'),
+              isVariety ? 'ml-8 h-[160px] rounded-[22px]' : 'h-[214px] rounded-[28px]',
+              isCompact && (isVariety ? 'h-[138px]' : 'h-[178px]'),
             )}
             style={{
               border: '1px solid rgba(45,42,36,0.08)',
@@ -138,8 +152,8 @@ export function GuideCardEditorial({
           className={cn(
             'relative z-10 flex items-start gap-3',
             isVariety
-              ? '-mt-12 mr-5 rounded-[22px] border px-4 pb-4 pt-4'
-              : '-mt-8 ml-4 mr-3 rounded-[24px] border px-4 pb-4 pt-5',
+              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-5 pt-5'
+              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-5 pt-6',
           )}
           style={{
             background: 'rgba(244,240,229,0.96)',
@@ -172,12 +186,12 @@ export function GuideCardEditorial({
 
           <h3
             style={{
-              fontFamily: serif,
-              fontWeight: 500,
-              fontSize: isCompact ? 25 : isVariety ? 31 : 36,
+              fontFamily: plex,
+              fontWeight: 600,
+              fontSize: isCompact ? 24 : isVariety ? 29 : 34,
               lineHeight: 1.0,
-              letterSpacing: 0,
-              color: '#2D2A24',
+              letterSpacing: '-0.01em',
+              color: '#242019',
               margin: 0,
             }}
           >
@@ -217,20 +231,20 @@ export function GuideCardEditorial({
             </p>
           )}
 
-          {guide.summary && (
+          {cardSummary && (
             <p
               className="line-clamp-2"
               style={{
-                fontFamily: isVariety ? sans : serif,
-                fontSize: isCompact ? 14 : isVariety ? 14.5 : 16,
-                fontWeight: isVariety ? 500 : 400,
-                lineHeight: isVariety ? 1.45 : 1.48,
+                fontFamily: sans,
+                fontSize: isCompact ? 13.5 : 14.5,
+                fontWeight: 500,
+                lineHeight: 1.42,
                 color: '#6A665C',
                 margin: 0,
-                marginTop: isVariety ? 9 : 11,
+                marginTop: isVariety ? 9 : 10,
               }}
             >
-              {guide.summary}
+              {cardSummary}
             </p>
           )}
 

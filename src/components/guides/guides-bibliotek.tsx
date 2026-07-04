@@ -133,14 +133,28 @@ export function GuidesBibliotek({
       <section id="guides-i-felten" className="relative pt-2">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
-          <div className="max-w-[360px]">
+          <div className="max-w-[380px]">
             <SektionEyebrow>
               <TrustBadge kind="potalot" size="sm" />
-              <span>Kvalitetssikrede dyrkningsnoter</span>
+              <span>Feltnoter · Artsguider · Sortsguider</span>
             </SektionEyebrow>
             <SektionTitel>
               {aktivtEmne ? `${aktivtEmne.navn} i felten` : 'Guides i felten'}
             </SektionTitel>
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 14,
+                fontWeight: 400,
+                lineHeight: 1.42,
+                color: '#6A665C',
+                margin: '10px 0 0',
+                maxWidth: 340,
+              }}
+            >
+              Til det øjeblik, hvor du står ved planten og skal vide, hvad du
+              gør nu.
+            </p>
           </div>
 
           {potalot.length === 0 ? (
