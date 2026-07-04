@@ -146,14 +146,19 @@ const SR = 35.92 // skulder-løb (bredde) = runding 7.16 + diagonal 21.6 + rundi
 const FW = 89 // flad fane-bredde — 3mm bredere (var 78) → fanerne overlapper let
 const CORNER = 8 // top-venstre radius på ikke-forreste faner (skjult bag fronten)
 
-// index 0 = forrest (venstre, mørkest) … 2 = bagest (højre, lysest).
+// Aktiv fane = mørk front-farve + hvid tekst, tegnet ØVERST (dens krop bliver
+// panelet). Inaktive faner ligger bagved i en lysere position-gradient med mørk
+// tekst. Klik → den valgte fanes mørke farve + hvide tekst kommer forrest, så
+// skiftet er tydeligt for brugeren.
 // Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides. xL er sat så Guides'
-// skulder stadig lander ved VB_W-OUTER_R (329) = blokkens højre kant, samtidig
-// med at de bredere faner overlapper hinanden let (~23 enheder mod ~6 før).
+// skulder lander ved VB_W-OUTER_R (329) = blokkens højre kant, og de bredere
+// faner overlapper hinanden let.
+const ACTIVE_FILL = '#5A6B4E' // mørk front — panelets farve
+const ACTIVE_LABEL = '#F4F1E7' // hvid tekst på aktiv fane
 const LAYERS = [
-  { xL: 0, labelCx: 46, fill: '#5A6B4E', label: '#F2EEE2' }, // Frøbank — forrest/mørkest
-  { xL: 102, labelCx: 158, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
-  { xL: 204, labelCx: 260, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
+  { xL: 0, labelCx: 46, idleFill: '#79896B', idleLabel: '#28331F' }, // Frøbank
+  { xL: 102, labelCx: 158, idleFill: '#8A9A7B', idleLabel: '#28331F' }, // Sæsonråd
+  { xL: 204, labelCx: 260, idleFill: '#9BAA8B', idleLabel: '#28331F' }, // Guides
 ]
 
 /**
@@ -289,12 +294,20 @@ export function InspirationFolder({
                 <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#2A3020" floodOpacity="0.16" />
               </filter>
             </defs>
-            {/* Tegn bagest→forrest: bagest (lysest) først, forrest (mørkest) sidst
-                oven på — så den forreste mappes krop bliver panelet og dækker de
-                bagvedliggende kroppe; kun fanerne kigger frem. */}
-            {[2, 1, 0].map(i => (
-              <path key={i} d={folderLayer(LAYERS[i].xL)} fill={LAYERS[i].fill} filter="url(#folderLift)" />
-            ))}
+            {/* Inaktive faner tegnes bagest→forrest (lysere), og den AKTIVE
+                tegnes SIDST = øverst, med den mørke front-farve. Så den klikkede
+                fane + dens farve kommer forrest, og dens krop bliver panelet. */}
+            {[2, 1, 0]
+              .filter(i => i !== activeIndex)
+              .concat(activeIndex)
+              .map(i => (
+                <path
+                  key={i}
+                  d={folderLayer(LAYERS[i].xL)}
+                  fill={i === activeIndex ? ACTIVE_FILL : LAYERS[i].idleFill}
+                  filter="url(#folderLift)"
+                />
+              ))}
           </svg>
 
           {/* klikbare labels — transparent overlay oven på silhuetten */}
@@ -312,18 +325,18 @@ export function InspirationFolder({
                   style={{
                     background: 'transparent',
                     border: 0,
-                    color: layer.label,
+                    color: active ? ACTIVE_LABEL : layer.idleLabel,
                     cursor: 'pointer',
                     fontFamily: sans,
-                    // Alle tre ENS: samme størrelse, samme vægt, samme top → de
-                    // flugter og ser lige store/lige bold ud. Farve følger lagets
-                    // dybde; aktiv markeres kun ved fuld opacitet (inaktiv dæmpet).
+                    // Alle tre ENS størrelse/vægt/top → flugter og lige bold.
+                    // Aktiv = hvid tekst på den mørke front-fane; inaktiv = mørk
+                    // tekst på de lysere faner bagved (let dæmpet).
                     fontSize: 14,
                     fontWeight: 600,
                     left: `${(layer.labelCx / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
                     lineHeight: 1,
-                    opacity: active ? 1 : 0.72,
+                    opacity: active ? 1 : 0.82,
                     position: 'absolute',
                     textAlign: 'center',
                     top: 15,
