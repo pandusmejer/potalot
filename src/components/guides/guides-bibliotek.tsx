@@ -114,10 +114,14 @@ export function GuidesBibliotek({
        * Skjules hvis ingen makro kunne resolves (ingen død blok uden billede).
        */}
       {bridgeMacroSrc && (
-        <Dyrkningsforloeb
-          imageSrc={bridgeMacroSrc}
-          imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
-        />
+        // -mt trækker KUN fugen mellem "Spørg gartneren" og "Dyrkningsforløb"
+        // ind (~3mm), uden at ændre resten af sektions-rytmen.
+        <div className="-mt-[11px]">
+          <Dyrkningsforloeb
+            imageSrc={bridgeMacroSrc}
+            imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
+          />
+        </div>
       )}
 
       {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
