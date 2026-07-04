@@ -9,12 +9,11 @@
  *
  * Bevidst uden backend/AI-endpoint endnu — det er en visuel CTA/søge-agtig
  * komponent, der kan wires til en rigtig rådgiver senere. Ingen robot-ikon,
- * ingen glitrende AI-cirkus. Sprout (Potalots eget tegn) + rolig copy gør
- * arbejdet — mere botanisk havehjælp end supportchat.
+ * ingen glitrende AI-cirkus. Et blødt Potalot-plante-glyph + rolig copy gør
+ * arbejdet — botanisk havehjælp, ikke supportchat.
  */
 
 import { useState } from 'react'
-import { Sprout } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
@@ -54,7 +53,13 @@ export function SpoergGartneren() {
             flexShrink: 0,
           }}
         >
-          <Sprout width={17} height={17} strokeWidth={2} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/glyphs/plante.png"
+            alt=""
+            aria-hidden
+            style={{ width: 'auto', height: 23, display: 'block' }}
+          />
         </span>
         <span
           style={{
