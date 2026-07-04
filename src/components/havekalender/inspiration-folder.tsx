@@ -129,23 +129,23 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
 const VB_W = 342
-const Y_TAB_TOP = 8 // top af aktiv tab
-const Y_TAB_TOP_IN = 12 // top af inaktive tabs (4px lavere = lag bagved)
-const Y_SURFACE = 50 // mappens øverste flade (mellem tabs)
-const Y_BOTTOM = 66 // bund af SVG = top af mappekroppen (flush)
-// Aktiv fanehøjde = Y_SURFACE - Y_TAB_TOP = 42px → 16px tekst med rigelig luft
-// over/under, så intet klippes. Inaktiv = 38px.
-const TAB_R = 15 // hjørne-radius, aktiv tab-top (indre sider)
-const TAB_R_IN = 13 // hjørne-radius, inaktive tab-tops (indre sider)
-const OUTER_R = 14 // ydre hjørner — deles af kant-tab og mappekant
+// Skulderen er Annas referencemappes EKSAKTE skulder (SVG-path):
+//   flad top → lille runding (7.16×2.97) → ren 45° diagonal (14.32×14.37) →
+//   blød runding (7.16×2.97) ned på fladen.
+// Total skulder = 28.64 bred × 20.31 høj. HØJDEN er taget 1:1 fra referencen;
+// KUN den flade fane-bredde (AW) er tilpasset, så tre faner ligger ved siden
+// af hinanden og passer i mobil-scroll. Sub-segmenterne indsættes som relative
+// cubic/line-kommandoer i frontPath (spejlet på venstre skulder).
+const Y_TAB_TOP = 7 // top af aktiv tab
+const Y_TAB_TOP_IN = 10 // top af inaktive tabs (lag bagved)
+const Y_SURFACE = 27.31 // flade = Y_TAB_TOP + skulderhøjde 20.31 (reference)
+const Y_BOTTOM = 40 // bund af SVG = top af mappekroppen (flush)
+const TAB_R_IN = 9 // hjørne-radius, inaktive tab-tops
+const OUTER_R = 13 // ydre hjørner — deles af kant-tab og mappekant
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
-const AW = 53 // halv bredde, aktiv tab — smallere → tydelige hak/mellemrum
-const IW = 57 // halv bredde, inaktive tabs — lidt bredere → lagdelt overlap bagved
-const SR_L = 30 // skulder-løb — blød, rundet step (som frøbank-redesignets notch)
-const SR_R = 30 // symmetrisk
-// Lavere KNEE = blødere, rundet step-skulder (frøbank-mappens seedFolderClip-
-// karakter: flad fane-top → blød S-nedgang → mappekrop).
-const KNEE = 0.35
+const AW = 37 // halv bredde af FLAD fane-top — KUN denne tilpasses for 3 faner
+const IW = 57 // halv bredde, inaktive tabs — lagdelt overlap bagved
+const SR = 28.64 // skulder-løb (bredde) — reference, urørt
 const LAST = TAB_CENTERS.length - 1
 
 /**
@@ -159,7 +159,6 @@ function frontPath(active: number): string {
   const rx = cx + AW
   const flushLeft = active === 0
   const flushRight = active === LAST
-  const knee = Y_TAB_TOP + TAB_R + (Y_SURFACE - Y_TAB_TOP) * KNEE
   const p: string[] = [`M 0 ${Y_BOTTOM}`]
 
   // venstre side af den aktive tab
@@ -170,23 +169,27 @@ function frontPath(active: number): string {
   } else {
     p.push(`L 0 ${Y_SURFACE + OUTER_R}`)
     p.push(`Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`)
-    const sL = lx - SR_L
-    p.push(`L ${sL} ${Y_SURFACE}`)
-    p.push(`C ${sL + (lx - sL) * 0.5} ${Y_SURFACE} ${lx} ${knee} ${lx} ${Y_TAB_TOP + TAB_R}`)
-    p.push(`Q ${lx} ${Y_TAB_TOP} ${lx + TAB_R} ${Y_TAB_TOP}`)
+    p.push(`L ${lx - SR} ${Y_SURFACE}`)
+    // venstre skulder OP til tab-top = referencens skulder spejlet:
+    // blød runding af fladen → ren 45° diagonal → lille runding på tab-toppen.
+    p.push('c 2.69 0 5.27 -1.07 7.16 -2.97')
+    p.push('l 14.32 -14.37')
+    p.push('c 1.9 -1.9 4.48 -2.97 7.16 -2.97')
   }
 
-  // tab-top
-  p.push(`L ${flushRight ? VB_W - OUTER_R : rx - TAB_R} ${Y_TAB_TOP}`)
+  // flad fane-top (fra lx / OUTER_R til rx / VB_W-OUTER_R)
+  p.push(`L ${flushRight ? VB_W - OUTER_R : rx} ${Y_TAB_TOP}`)
 
   // højre side af den aktive tab
   if (flushRight) {
     p.push(`Q ${VB_W} ${Y_TAB_TOP} ${VB_W} ${Y_TAB_TOP + OUTER_R}`)
     p.push(`L ${VB_W} ${Y_BOTTOM}`)
   } else {
-    p.push(`Q ${rx} ${Y_TAB_TOP} ${rx} ${Y_TAB_TOP + TAB_R}`)
-    const sR = rx + SR_R
-    p.push(`C ${rx} ${knee} ${sR - (sR - rx) * 0.5} ${Y_SURFACE} ${sR} ${Y_SURFACE}`)
+    // højre skulder NED til fladen = referencens skulder 1:1:
+    // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
+    p.push('c 2.68 0 5.26 1.07 7.16 2.97')
+    p.push('l 14.32 14.37')
+    p.push('c 1.89 1.9 4.47 2.97 7.16 2.97')
     p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
     p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
     p.push(`L ${VB_W} ${Y_BOTTOM}`)
@@ -368,14 +371,14 @@ export function InspirationFolder({
                     color: active ? '#F6F1E6' : 'rgba(38,53,31,0.50)',
                     cursor: 'pointer',
                     fontFamily: sans,
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: active ? 600 : 500,
                     left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
                     lineHeight: 1,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 22 : 25,
+                    top: active ? 11 : 13,
                     transform: 'translateX(-50%)',
                     transition: 'color 160ms ease, top 160ms ease',
                     whiteSpace: 'nowrap',
