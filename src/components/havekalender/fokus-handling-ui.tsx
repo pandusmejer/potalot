@@ -20,7 +20,6 @@ import { markDerivedTaskDone, unmarkDerivedTaskDone } from '@/actions/plant-task
 import type { FokusHandling } from '@/lib/kalender/dagens-fokus'
 
 const sans = 'var(--font-manrope)'
-const serif = 'var(--font-cormorant), var(--font-gabarito), serif'
 
 /**
  * Chip = lille LÆSE-signal for grad af timing/konsekvens — ikke et statusfelt.
@@ -177,8 +176,8 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           )}
           <h3
             style={{
-              fontFamily: serif, fontSize: 22, fontWeight: 600, lineHeight: 1.0,
-              letterSpacing: '-0.025em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
+              fontFamily: sans, fontSize: 22, fontWeight: 600, lineHeight: 1.12,
+              letterSpacing: '-0.01em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
               textDecoration: done ? 'line-through' : 'none',
             }}
           >
