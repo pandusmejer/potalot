@@ -185,12 +185,12 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
     const routine = rytmeKeys.has(h.taskKey)
     const checkbar = h.plantId !== null
     const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
-    const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
+    const meta = routine ? 'Vedligehold' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
     // Farvet papir-label i bunden efter kilde — afdæmpet, ikke hård farveblok.
     const band = {
       plant:   { bg: 'rgba(105,132,112,0.80)', text: '#FFF8EA' }, // eucalyptus/sage
       seed:    { bg: 'rgba(158,133,84,0.74)',  text: '#FFF8EA' }, // varm sand
-      routine: { bg: 'rgba(126,119,88,0.76)',  text: '#FFF8EA' }, // varm oliven/sand
+      routine: { bg: 'rgba(151,139,98,0.66)',  text: '#FFF8EA' }, // varm sand (vedligehold)
     }[kind]
     const done = isDone(h)
     return (
