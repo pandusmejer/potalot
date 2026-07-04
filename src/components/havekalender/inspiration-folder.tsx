@@ -318,7 +318,7 @@ export function InspirationFolder({
                     // Alle tre ENS: samme størrelse, samme vægt, samme top → de
                     // flugter og ser lige store/lige bold ud. Farve følger lagets
                     // dybde; aktiv markeres kun ved fuld opacitet (inaktiv dæmpet).
-                    fontSize: 13,
+                    fontSize: 14,
                     fontWeight: 600,
                     left: `${(layer.labelCx / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
@@ -326,7 +326,7 @@ export function InspirationFolder({
                     opacity: active ? 1 : 0.72,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: 16,
+                    top: 15,
                     transform: 'translateX(-50%)',
                     transition: 'opacity 160ms ease',
                     whiteSpace: 'nowrap',
