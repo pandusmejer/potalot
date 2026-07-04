@@ -200,7 +200,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           position: 'relative',
           overflow: 'hidden',
           paddingTop: 20, paddingLeft: 16, paddingRight: 16, paddingBottom: 40,
-          borderRadius: 22,
+          borderRadius: 14,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.09)',
           boxShadow: '0 5px 14px rgba(64,58,42,0.055), inset 0 1px 0 rgba(255,255,255,0.38)',
