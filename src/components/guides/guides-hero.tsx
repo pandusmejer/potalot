@@ -54,7 +54,9 @@ export function GuidesHero() {
           maxWidth: 420,
         }}
       >
-        Fra frø, jord og første blade til høst, frøtagning og næste sæson.
+        Fra frø, jord og første blade til høst,
+        <br />
+        frøtagning og næste sæson.
       </p>
     </section>
   )
