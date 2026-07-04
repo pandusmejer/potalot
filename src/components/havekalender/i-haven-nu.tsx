@@ -27,11 +27,11 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, CheckCircle, useDerivedCompletions, chipLabel,
+  PrimaryFocus, useDerivedCompletions, chipLabel,
 } from '@/components/havekalender/fokus-handling-ui'
 import Link from 'next/link'
 import {
-  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Info, Plus,
+  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Check, Info, Plus,
 } from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
@@ -88,18 +88,19 @@ function erInden(date: string, dage: number): boolean {
 
 /** Neutral kilde-markør — ikon-badge frem for opdigtet foto (der er endnu ingen
  *  ægte plante-thumbnails i datamodellen). Farve/ikon efter kilde. */
-function SourceMarker({ kind }: { kind: 'plant' | 'seed' | 'routine' }) {
+function SourceMarker({ kind, size = 46 }: { kind: 'plant' | 'seed' | 'routine'; size?: number }) {
   const m = {
     plant:   { Icon: Sprout,    bg: 'rgba(107,138,74,0.16)', color: '#4C6038' },
     seed:    { Icon: Flower2,   bg: 'rgba(168,124,59,0.15)', color: '#8A6A2E' },
     routine: { Icon: RefreshCw, bg: 'rgba(64,58,42,0.07)',   color: 'rgba(64,58,42,0.55)' },
   }[kind]
+  const icon = Math.round(size * 0.46)
   return (
     <span
       aria-hidden
-      style={{ width: 46, height: 46, borderRadius: 999, background: m.bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}
+      style={{ width: size, height: size, borderRadius: 999, background: m.bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}
     >
-      <m.Icon style={{ width: 21, height: 21, color: m.color }} strokeWidth={1.7} />
+      <m.Icon style={{ width: icon, height: icon, color: m.color }} strokeWidth={1.7} />
     </span>
   )
 }
@@ -190,9 +191,30 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           transition: 'opacity .2s',
         }}
       >
-        {/* Overskrift + brødtekst flugter, rykket 2 mm til højre. (Ingen chip —
-            urgency-chippen gentog blot overskriften.) */}
-        <div style={{ paddingLeft: '2mm' }}>
+        {/* Afkrydsningsfelt — øverste højre hjørne. Tydeligt tappebart: kant +
+            blød hvid fyld + spøgelses-flueben, så det IKKE ligner dekoration. */}
+        {checkbar && (
+          <button
+            type="button"
+            onClick={() => toggle(h)}
+            aria-pressed={done}
+            aria-label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`}
+            className="flex items-center justify-center rounded-full transition-transform active:scale-90"
+            style={{
+              position: 'absolute', top: 12, right: 12, zIndex: 2,
+              width: 30, height: 30,
+              border: done ? '2px solid #5A7038' : '2px solid rgba(90,112,56,0.5)',
+              background: done ? '#5A7038' : 'rgba(255,255,255,0.75)',
+              boxShadow: done ? 'none' : 'inset 0 1px 2px rgba(64,58,42,0.06), 0 1px 3px rgba(64,58,42,0.06)',
+              cursor: 'pointer',
+            }}
+          >
+            <Check style={{ width: 17, height: 17, color: done ? '#fff' : 'rgba(90,112,56,0.45)' }} strokeWidth={done ? 3 : 2.4} aria-hidden />
+          </button>
+        )}
+
+        {/* Overskrift + brødtekst, venstre (2 mm ind), plads til checkboks til højre. */}
+        <div style={{ paddingLeft: '2mm', paddingRight: 42 }}>
           <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
             <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
@@ -203,19 +225,14 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
               {h.hvorfor}
             </span>
           </Link>
-          <span style={{ display: 'block', fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)', marginTop: 8 }}>
-            {meta}
-          </span>
         </div>
 
-        {/* Bund: thumbnail-markør nederst venstre, afkrydsning nederst højre. */}
+        {/* Bund: kilde-metadata nederst venstre, thumbnail nederst højre (10 % større). */}
         <div className="flex items-end justify-between" style={{ marginTop: 12 }}>
-          <SourceMarker kind={kind} />
-          {checkbar ? (
-            <CheckCircle done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={22} />
-          ) : (
-            <span aria-hidden style={{ width: 22 }} />
-          )}
+          <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)' }}>
+            {meta}
+          </span>
+          <SourceMarker kind={kind} size={51} />
         </div>
       </div>
     )
