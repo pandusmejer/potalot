@@ -42,6 +42,9 @@ interface Props {
   dagensFokus: DagensFokus
   canPersist: boolean
   aktivePlanter: React.ComponentProps<typeof AddTaskDialog>['plants']
+  /** plantId → ægte foto-URL (server-resolveret). Bruges som thumbnail på
+   *  plante-baserede task-cards; mangler et id → ikon-badge-fallback. */
+  plantImages: Record<string, string>
   /** Aktuel måned (1-12) — til chip-logikken. Stabil pr. dag (ingen hydration-mismatch). */
   month: number
 }
@@ -117,7 +120,7 @@ function SourceMarker({ kind, size = 46, image }: { kind: 'plant' | 'seed' | 'ro
   )
 }
 
-export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month }: Props) {
+export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantImages, month }: Props) {
   const { isDone, toggle } = useDerivedCompletions(
     [...dagensFokus.fokus, ...dagensFokus.flere, ...dagensFokus.rytme],
     canPersist,
@@ -247,12 +250,13 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {meta}
         </span>
         {/* Thumbnail-holder nederst højre — ØVERSTE lag, hævet et par mm så den
-            tydeligt ligger ovenpå båndet. TESTBILLEDE på Tomat-kortet. */}
+            tydeligt ligger ovenpå båndet. Ægte foto når plantId har et; ellers
+            ikon-badge-fallback. */}
         <div style={{ position: 'absolute', right: 14, bottom: 'calc(5px + 2.5mm)', zIndex: 5 }}>
           <SourceMarker
             kind={kind}
             size={51}
-            image={/tomat sweetie/i.test(h.titel) ? '/images/kalender/guides/tomat-ranke.jpg' : undefined}
+            image={h.plantId ? plantImages[h.plantId] : undefined}
           />
         </div>
       </div>

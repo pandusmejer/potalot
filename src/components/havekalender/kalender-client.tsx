@@ -50,6 +50,8 @@ interface Props {
   isLoggedIn: boolean
   /** Kalenderens hjerne — dagens 1-3 vigtigste (lib/kalender/dagens-fokus). */
   dagensFokus: DagensFokus
+  /** plantId → ægte foto-URL (server-resolveret; kun rigtige billeder). */
+  plantImages: Record<string, string>
 }
 
 /** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
@@ -138,7 +140,7 @@ function vejrNote(alerts: GardenAlert[], month: number): { headline: string; sub
   return { headline: 'Lad haven hvile.', subline: 'Vinterro — planlæg næste sæson.' }
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, isLoggedIn, dagensFokus }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, isLoggedIn, dagensFokus, plantImages }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -183,6 +185,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         dagensFokus={dagensFokus}
         canPersist={isLoggedIn}
         aktivePlanter={aktivePlanter}
+        plantImages={plantImages}
         month={nuMaaned}
       />
 

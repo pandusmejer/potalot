@@ -8,6 +8,7 @@ import { getGardenAlerts } from '@/actions/weather'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getCurrentUser } from '@/lib/auth'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
+import { resolvePlantCard } from '@/lib/images/resolve-potalot-image'
 import { mockPlants } from '@/data/mock-plants'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 
@@ -49,6 +50,18 @@ export default async function KalenderPage() {
   const brainGuides = me === null && guides.length === 0 ? IMPORTED_GUIDES : guides
   const dagensFokus = byggDagensFokus({ plants: brainPlants, inventory, guides: brainGuides, alerts, completions, today: new Date() })
 
+  // plantId → ægte foto (server-side via den kanoniske billed-resolver). Bygges
+  // fra brainPlants, så nøglerne matcher FokusHandling.plantId (også i demo, hvor
+  // hjernen kører på mockPlants). Kun rigtige billeder — fallback/placeholder
+  // udelades, så task-cards falder tilbage til ikon-badge når intet foto findes.
+  const plantImages: Record<string, string> = {}
+  for (const p of brainPlants) {
+    const { src, source } = resolvePlantCard({
+      guideId: p.guideId, name: p.name, variety: p.variety, preferredSrc: p.primaryImageId,
+    })
+    if (source !== 'fallback') plantImages[p.id] = src
+  }
+
   // (Den sensoriske stemnings-note vises ikke længere på kalenderen —
   // garden-notes kører fortsat på /froebank og /mine-planter.)
 
@@ -63,6 +76,7 @@ export default async function KalenderPage() {
       alerts={alerts}
       isLoggedIn={me !== null}
       dagensFokus={dagensFokus}
+      plantImages={plantImages}
     />
   )
 }
