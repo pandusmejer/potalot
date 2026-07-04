@@ -176,7 +176,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           )}
           <h3
             style={{
-              fontFamily: sans, fontSize: 19, fontWeight: 600, lineHeight: 1.12,
+              fontFamily: sans, fontSize: 18, fontWeight: 600, lineHeight: 1.12,
               letterSpacing: '-0.01em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
               textDecoration: done ? 'line-through' : 'none',
             }}
