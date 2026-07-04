@@ -367,16 +367,16 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
                 variant="ghost"
                 className="w-full rounded-full"
                 style={{
-                  height: 54,
+                  height: 49,
                   background: 'rgba(89,112,61,0.10)',
                   color: '#2F4D2B',
                   border: '1px solid rgba(47,77,43,0.18)',
                   boxShadow: 'none',
-                  fontSize: 16,
+                  fontSize: 14.5,
                   fontWeight: 750,
                 }}
               >
-                <Plus style={{ width: 20, height: 20 }} />
+                <Plus style={{ width: 18, height: 18 }} />
                 Tilføj opgave
               </Button>
             </AddTaskDialog>
