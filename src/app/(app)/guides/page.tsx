@@ -88,16 +88,18 @@ export default async function GuidesPage() {
         aria-hidden
         className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[560px]"
         style={{
-          backgroundImage: 'url(/images/makro/tomat-san-marzano/blad-dug.jpg)',
+          backgroundImage: 'url(/images/makro/guides-hero-blad-draaber.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.18,
           mixBlendMode: 'multiply',
-          transform: 'rotate(-2deg)',
+          // Ingen rotation → ingen skæv diagonal-kant i toppen. Masken er
+          // trukket højt op (center 30%) så den grønne tint når helt op til
+          // banneren og ikke efterlader en lys creme-stribe.
           maskImage:
-            'radial-gradient(ellipse 72% 60% at 50% 40%, black 14%, rgba(0,0,0,0.72) 46%, transparent 88%)',
+            'radial-gradient(ellipse 86% 76% at 50% 30%, black 22%, rgba(0,0,0,0.66) 56%, transparent 92%)',
           WebkitMaskImage:
-            'radial-gradient(ellipse 72% 60% at 50% 40%, black 14%, rgba(0,0,0,0.72) 46%, transparent 88%)',
+            'radial-gradient(ellipse 86% 76% at 50% 30%, black 22%, rgba(0,0,0,0.66) 56%, transparent 92%)',
         }}
       />
       <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">

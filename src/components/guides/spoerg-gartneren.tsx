@@ -91,8 +91,8 @@ export function SpoergGartneren() {
           maxWidth: 420,
         }}
       >
-        Står du med en plante foran dig? Skriv hvad du dyrker, og få et roligt
-        svar baseret på Potalots guides.
+        Står du ved en plante og er i tvivl? Skriv hvad du ser, så hjælper
+        Potalot dig videre.
       </p>
 
       <div
