@@ -193,7 +193,8 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           transition: 'opacity .2s',
         }}
       >
-        <SourceMarker kind={kind} />
+        {/* Kilde-markør (thumbnail-pladsholder) i nederste venstre hjørne. */}
+        <div style={{ alignSelf: 'end' }}><SourceMarker kind={kind} /></div>
         <div className="min-w-0">
           <div className="flex items-start gap-2">
             {checkbar ? (
@@ -265,7 +266,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           </div>
         )}
         {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{nu.map(derivedCard)}</div>}
-        {snart.length > 0 && <div>{groupLabel('Næste i haven')}{snart.map(derivedCard)}</div>}
+        {snart.length > 0 && <div style={{ marginTop: nu.length > 0 ? 20 : 0 }}>{snart.map(derivedCard)}</div>}
         {senere.length > 0 && <div>{groupLabel('Når du har tid')}{senere.map(derivedCard)}</div>}
         {user.length > 0 && (
           <div>

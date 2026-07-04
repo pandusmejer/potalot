@@ -103,19 +103,41 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
   const checkbar = h.plantId !== null
   // Farvet venstremarkør + varmere papir efter handlingens urgency — giver
   // fokus-kortet særstatus (dagens vigtigste) uden at blive produktivitets-SaaS.
-  const accent = (CHIP_TONE[chipLabel(h, month)] ?? CHIP_TONE['Mulighed']).color
+  const label = chipLabel(h, month)
+  const tone = CHIP_TONE[label] ?? CHIP_TONE['Mulighed']
+  const accent = tone.color
   return (
     <div
       className="rounded-tl-[1.4rem] rounded-br-[1.4rem] rounded-tr-md rounded-bl-md"
       style={{
+        position: 'relative',
         background: 'linear-gradient(158deg, rgba(242,236,217,0.92) 0%, rgba(233,227,205,0.72) 100%)',
         border: '1px solid rgba(95,103,72,0.14)',
         borderLeft: `3px solid ${accent}`,
-        padding: '11px 14px 4px 14px',
+        // Kobber-kanten løber også hen over kortets øverste kant (L-ramme).
+        borderTop: `3px solid ${accent}`,
+        padding: '13px 14px 4px 14px',
         opacity: done ? 0.6 : 1,
         transition: 'opacity .2s',
       }}
     >
+      {/* Rundt urgency-mærkat der ligger OVENPÅ kortet — øverste højre hjørne,
+          overlapper den øverste kant. */}
+      {!done && (
+        <span
+          style={{
+            position: 'absolute', top: -13, right: 14, zIndex: 3,
+            fontFamily: sans, fontSize: 12.5, fontWeight: 750, lineHeight: 1, letterSpacing: '-0.01em',
+            color: tone.color, background: '#FBF4E1',
+            padding: '7px 13px', borderRadius: 999,
+            border: '1px solid rgba(64,58,42,0.10)',
+            boxShadow: '0 3px 9px rgba(64,26,15,0.16)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {label}
+        </span>
+      )}
       <div className="flex items-start gap-2">
         {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
         <div className="min-w-0 flex-1">
@@ -124,19 +146,16 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
               {markoer}
             </p>
           )}
-          <div className="flex items-start justify-between gap-2">
-            <h3
-              style={{
-                fontFamily: serif, fontSize: 22, fontWeight: 600, lineHeight: 1.0,
-                letterSpacing: '-0.025em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
-                textDecoration: done ? 'line-through' : 'none',
-              }}
-            >
-              {h.titel}
-            </h3>
-            <Chip h={h} month={month} size="lg" />
-          </div>
-          <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.3, letterSpacing: '-0.01em', maxWidth: '29ch' }}>
+          <h3
+            style={{
+              fontFamily: serif, fontSize: 22, fontWeight: 600, lineHeight: 1.0,
+              letterSpacing: '-0.025em', color: '#24311d', margin: 0, maxWidth: '13.5ch',
+              textDecoration: done ? 'line-through' : 'none',
+            }}
+          >
+            {h.titel}
+          </h3>
+          <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, color: 'rgba(36,49,29,0.72)', margin: '3px 0 0', lineHeight: 1.3, letterSpacing: '-0.01em', maxWidth: '29ch' }}>
             {h.hvorfor}
           </p>
           <Link
