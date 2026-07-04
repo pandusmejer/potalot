@@ -175,11 +175,11 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     const checkbar = h.plantId !== null
     const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
     const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
-    // Farvet underkant efter kilde — 4 mm bånd i bunden med metadata ovenpå.
+    // Farvet underkant efter kilde — 7 mm mættet bånd i bunden, creme-tekst ovenpå.
     const band = {
-      plant:   { bg: 'rgba(107,138,74,0.22)', text: '#42611f' },
-      seed:    { bg: 'rgba(168,124,59,0.20)', text: '#7d5a1f' },
-      routine: { bg: 'rgba(64,58,42,0.11)',   text: 'rgba(60,55,40,0.7)' },
+      plant:   { bg: '#5F7D33', text: '#F5F2E4' },
+      seed:    { bg: '#9A7328', text: '#F8F1DF' },
+      routine: { bg: '#6B6552', text: '#F2EFE6' },
     }[kind]
     const done = isDone(h)
     return (
@@ -223,11 +223,11 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           </Link>
         </div>
 
-        {/* Farvet underkant (4 mm, full-bleed) med metadata ovenpå. */}
-        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '4mm', background: band.bg, zIndex: 0 }} />
+        {/* Farvet underkant (7 mm, full-bleed) med metadata ovenpå. */}
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '7mm', background: band.bg, zIndex: 0 }} />
         <span
           style={{
-            position: 'absolute', left: 16, bottom: 0, height: '4mm', zIndex: 2,
+            position: 'absolute', left: 16, bottom: 0, height: '7mm', zIndex: 2,
             display: 'flex', alignItems: 'center',
             fontFamily: sans, fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: band.text,
           }}
