@@ -114,13 +114,10 @@ export function GuidesBibliotek({
        * Skjules hvis ingen makro kunne resolves (ingen død blok uden billede).
        */}
       {bridgeMacroSrc && (
-        // -mt trækker KUN fugen mellem "Spørg gartneren" og "Dyrkningsforløb"
-        // ind (~3mm), uden at ændre resten af sektions-rytmen.
+        // Ren tekst-bro (bladfoto fjernet). -mt strammer fugen til "Spørg
+        // gartneren", så zonen hænger sammen.
         <div className="-mt-[11px]">
-          <Dyrkningsforloeb
-            imageSrc={bridgeMacroSrc}
-            imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
-          />
+          <Dyrkningsforloeb />
         </div>
       )}
 
@@ -129,7 +126,7 @@ export function GuidesBibliotek({
           tung sektion. -mt trækker den tættere på intro-kortet. POTALOT-GUIDE-
           pillen ligger på sin EGEN linje (brækker ikke) over eyebrow-teksten;
           den præcise type (arts/sort) ligger som metadata på selve kortene. */}
-      <section id="guides-i-felten" className="relative -mt-9 pt-0">
+      <section id="guides-i-felten" className="relative -mt-3 pt-0">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
           <div className="max-w-[380px]">
@@ -227,7 +224,7 @@ function PopulaereEmner({
             fontFamily: sans,
             fontSize: 11,
             fontWeight: 700,
-            letterSpacing: '0.22em',
+            letterSpacing: '0.18em',
             textTransform: 'uppercase',
             color: 'rgba(36,48,31,0.55)',
             margin: 0,

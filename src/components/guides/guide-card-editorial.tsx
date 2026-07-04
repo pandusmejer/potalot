@@ -206,9 +206,11 @@ export function GuideCardEditorial({
             style={{
               fontFamily: plex,
               fontWeight: 600,
-              fontSize: isCompact ? 24 : isVariety ? 29 : 34,
-              lineHeight: 1.0,
-              letterSpacing: '-0.01em',
+              // ~10% ned + strammere tracking, så lange sortnavne (fx
+              // "Marketmore") lander pænt uden at dominere overlaypanelet.
+              fontSize: isCompact ? 22 : isVariety ? 26 : 31,
+              lineHeight: 0.95,
+              letterSpacing: '-0.02em',
               color: '#242019',
               margin: 0,
             }}
