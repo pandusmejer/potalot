@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const serif = 'var(--font-cormorant), Georgia, serif'
+const plex = 'var(--font-plex-condensed), sans-serif'
 const page = '#EAE6D8'
 const paper = '#F4F0E5'
 
@@ -83,6 +84,7 @@ export interface LayeredFactBlockProps {
   title: string
   columns: LayeredFactColumn[]
   kicker?: string
+  intro?: string
   image?: AtmosphericImageLayerProps
   children?: ReactNode
   className?: string
@@ -92,6 +94,7 @@ export function LayeredFactBlock({
   title,
   columns,
   kicker,
+  intro,
   image,
   children,
   className,
@@ -134,43 +137,57 @@ export function LayeredFactBlock({
       />
 
       <div
-        className="relative z-10 mx-auto max-w-[760px] rounded-[28px] border px-5 py-6 sm:rounded-[32px] sm:px-12 sm:py-12"
+        className="relative z-10 mx-auto max-w-[760px] rounded-[22px] border px-5 py-5 sm:rounded-[26px] sm:px-10 sm:py-9"
         style={{
           backgroundColor: paper,
-          borderColor: 'rgba(45,42,36,0.10)',
+          borderColor: 'rgba(45,42,36,0.12)',
           boxShadow: '0 1px 0 rgba(45,42,36,0.04)',
         }}
       >
+        {/* Tynd top-linje = felt-note-signal, ikke blød spa-boks. */}
+        <div
+          aria-hidden
+          className="mb-4 h-px w-10"
+          style={{ background: 'rgba(78,97,56,0.5)' }}
+        />
         {kicker && (
           <p
-            className="mb-3 text-[10px] font-bold uppercase sm:mb-5 sm:text-[11px]"
+            className="mb-2 text-[11px] font-bold uppercase"
             style={{
               fontFamily: sans,
-              color: 'rgba(36,48,31,0.56)',
-              letterSpacing: '0.22em',
+              color: 'rgba(36,48,31,0.55)',
+              letterSpacing: '0.2em',
             }}
           >
             {kicker}
           </p>
         )}
         <h2
-          className="text-center text-[29px] leading-[0.98] sm:text-[48px]"
+          className="text-[31px] leading-[0.96] sm:text-[40px]"
           style={{
-            fontFamily: serif,
-            fontWeight: 500,
-            color: '#24301F',
-            letterSpacing: 0,
+            fontFamily: plex,
+            fontWeight: 600,
+            color: '#242019',
+            letterSpacing: '-0.01em',
           }}
         >
           {title}
         </h2>
+        {intro && (
+          <p
+            className="mt-2 max-w-[440px] text-[14.5px] leading-[1.45]"
+            style={{ fontFamily: sans, fontWeight: 400, color: '#6A665C' }}
+          >
+            {intro}
+          </p>
+        )}
 
-        <div className="my-5 h-px w-full bg-[#2D2A24]/15 sm:my-9" />
+        <div className="my-4 h-px w-full bg-[#2D2A24]/12 sm:my-6" />
 
         {left && right ? (
           <div className="grid grid-cols-[1fr_1px_1fr] gap-3 sm:gap-10">
             <LayeredFactColumnView column={left} />
-            <div className="w-px bg-[#2D2A24]/15" aria-hidden />
+            <div className="w-px bg-[#2D2A24]/12" aria-hidden />
             <LayeredFactColumnView column={right} />
           </div>
         ) : (
@@ -185,12 +202,12 @@ function LayeredFactColumnView({ column }: { column: LayeredFactColumn }) {
   return (
     <div>
       <h3
-        className="mb-3 text-[22px] leading-none sm:mb-5 sm:text-[36px]"
+        className="mb-3 text-[20px] leading-none sm:mb-4 sm:text-[28px]"
         style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          color: '#24301F',
-          letterSpacing: 0,
+          fontFamily: plex,
+          fontWeight: 600,
+          color: '#242019',
+          letterSpacing: '-0.01em',
         }}
       >
         {column.heading}
@@ -358,7 +375,10 @@ export const layeredGuideSampleData = {
     ],
   },
   fact: {
-    title: 'Forskelle på chili og peberfrugter',
+    kicker: 'Kort forklaret',
+    title: 'Chili eller peberfrugt?',
+    intro:
+      'To planter fra samme familie, men med forskellig styrke, brug og dyrkningsrytme.',
     image: {
       src: '/images/makro/chili-habanero-orange/frugter.jpg',
       alt: 'Chili og peberfrugt som atmosfærisk baggrund',
