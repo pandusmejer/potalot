@@ -168,25 +168,38 @@ const LAYERS = [
  * venstre kant med et større ydre hjørne; de bagvedliggende har et lille
  * top-venstre hjørne, der alligevel skjules bag den forreste fanes skulder.
  */
-function folderLayer(xL: number): string {
+function folderLayer(xL: number, isActive = false): string {
   const flushLeft = xL === 0
   const rL = flushLeft ? OUTER_R : CORNER
   const xR = xL + FW
-  return [
-    `M ${xL} ${Y_BOTTOM}`,
-    `L ${xL} ${Y_TAB_TOP + rL}`,
-    `Q ${xL} ${Y_TAB_TOP} ${xL + rL} ${Y_TAB_TOP}`,
-    `L ${xR} ${Y_TAB_TOP}`,
-    // højre skulder = referencens skulder, diagonalen forlænget 2mm (bevaret 45°):
-    // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
-    'c 2.68 0 5.26 1.07 7.16 2.97',
-    'l 21.6 21.67',
-    'c 1.89 1.9 4.47 2.97 7.16 2.97',
-    `L ${VB_W - OUTER_R} ${Y_SURFACE}`,
-    `Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`,
-    `L ${VB_W} ${Y_BOTTOM}`,
-    'Z',
-  ].join(' ')
+  const p: string[] = []
+  if (isActive && !flushLeft) {
+    // AKTIV fane: kroppen fylder HELE bredden under flade-linjen (venstre kant
+    // ved x=0), så den aktive farve altid ligger under linjen — ingen
+    // bagvedliggende fane-farve rager under linjen ved faneskift. Selve fanen
+    // rejser sig fra fladen ved xL (lodret venstre kant, diagonal højre skulder).
+    p.push(`M 0 ${Y_BOTTOM}`)
+    p.push(`L 0 ${Y_SURFACE + OUTER_R}`)
+    p.push(`Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`)
+    p.push(`L ${xL} ${Y_SURFACE}`)
+    p.push(`L ${xL} ${Y_TAB_TOP + CORNER}`)
+    p.push(`Q ${xL} ${Y_TAB_TOP} ${xL + CORNER} ${Y_TAB_TOP}`)
+  } else {
+    p.push(`M ${xL} ${Y_BOTTOM}`)
+    p.push(`L ${xL} ${Y_TAB_TOP + rL}`)
+    p.push(`Q ${xL} ${Y_TAB_TOP} ${xL + rL} ${Y_TAB_TOP}`)
+  }
+  p.push(`L ${xR} ${Y_TAB_TOP}`)
+  // højre skulder = referencens skulder, diagonalen forlænget 2mm (bevaret 45°):
+  // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
+  p.push('c 2.68 0 5.26 1.07 7.16 2.97')
+  p.push('l 21.6 21.67')
+  p.push('c 1.89 1.9 4.47 2.97 7.16 2.97')
+  p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
+  p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
+  p.push(`L ${VB_W} ${Y_BOTTOM}`)
+  p.push('Z')
+  return p.join(' ')
 }
 
 export function InspirationFolder({
@@ -303,7 +316,7 @@ export function InspirationFolder({
               .map(i => (
                 <path
                   key={i}
-                  d={folderLayer(LAYERS[i].xL)}
+                  d={folderLayer(LAYERS[i].xL, i === activeIndex)}
                   fill={LAYERS[i].fill}
                   filter="url(#folderLift)"
                 />
