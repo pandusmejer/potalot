@@ -146,19 +146,18 @@ const SR = 35.92 // skulder-løb (bredde) = runding 7.16 + diagonal 21.6 + rundi
 const FW = 89 // flad fane-bredde — 3mm bredere (var 78) → fanerne overlapper let
 const CORNER = 8 // top-venstre radius på ikke-forreste faner (skjult bag fronten)
 
-// Aktiv fane = mørk front-farve + hvid tekst, tegnet ØVERST (dens krop bliver
-// panelet). Inaktive faner ligger bagved i en lysere position-gradient med mørk
-// tekst. Klik → den valgte fanes mørke farve + hvide tekst kommer forrest, så
-// skiftet er tydeligt for brugeren.
+// Hver fane har sin EGEN farve (Anna). Når en fane vælges, kommer den forrest
+// (tegnet øverst) OG dens farve fylder HELE fladen — panelet tager den valgte
+// fanes farve. Inaktive faner viser samme egen-farve som lille fane bagved.
 // Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides. xL er sat så Guides'
 // skulder lander ved VB_W-OUTER_R (329) = blokkens højre kant, og de bredere
 // faner overlapper hinanden let.
-const ACTIVE_FILL = '#5A6B4E' // mørk front — panelets farve
 const ACTIVE_LABEL = '#F4F1E7' // hvid tekst på aktiv fane
+const IDLE_LABEL = 'rgba(244,241,231,0.90)' // næsten-hvid på inaktive egen-farvede faner
 const LAYERS = [
-  { xL: 0, labelCx: 46, idleFill: '#79896B', idleLabel: '#28331F' }, // Frøbank
-  { xL: 102, labelCx: 158, idleFill: '#8A9A7B', idleLabel: '#28331F' }, // Sæsonråd
-  { xL: 204, labelCx: 260, idleFill: '#9BAA8B', idleLabel: '#28331F' }, // Guides
+  { xL: 0, labelCx: 46, fill: '#5A6B4E' }, // Frøbank — olivengrøn
+  { xL: 102, labelCx: 158, fill: '#4C6557' }, // Sæsonråd — fyrre-/dybgrøn
+  { xL: 204, labelCx: 260, fill: '#6A6746' }, // Guides — khaki-guld
 ]
 
 /**
@@ -294,9 +293,10 @@ export function InspirationFolder({
                 <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#2A3020" floodOpacity="0.16" />
               </filter>
             </defs>
-            {/* Inaktive faner tegnes bagest→forrest (lysere), og den AKTIVE
-                tegnes SIDST = øverst, med den mørke front-farve. Så den klikkede
-                fane + dens farve kommer forrest, og dens krop bliver panelet. */}
+            {/* Inaktive faner tegnes bagest→forrest, og den AKTIVE tegnes SIDST
+                = øverst. Hver fane bruger sin EGEN farve; den aktive fanes farve
+                fortsætter ned i panelet (samme fill nedenfor), så den valgte
+                fane + dens farve fylder hele fladen. */}
             {[2, 1, 0]
               .filter(i => i !== activeIndex)
               .concat(activeIndex)
@@ -304,7 +304,7 @@ export function InspirationFolder({
                 <path
                   key={i}
                   d={folderLayer(LAYERS[i].xL)}
-                  fill={i === activeIndex ? ACTIVE_FILL : LAYERS[i].idleFill}
+                  fill={LAYERS[i].fill}
                   filter="url(#folderLift)"
                 />
               ))}
@@ -325,7 +325,7 @@ export function InspirationFolder({
                   style={{
                     background: 'transparent',
                     border: 0,
-                    color: active ? ACTIVE_LABEL : layer.idleLabel,
+                    color: active ? ACTIVE_LABEL : IDLE_LABEL,
                     cursor: 'pointer',
                     fontFamily: sans,
                     // Alle tre ENS størrelse/vægt/top → flugter og lige bold.
@@ -352,10 +352,11 @@ export function InspirationFolder({
           </div>
         </div>
 
-        {/* Mappekrop — samme farve, fortsætter silhuetten */}
+        {/* Mappekrop — tager den AKTIVE fanes egen-farve, så den valgte fanes
+            farve fylder hele fladen (fortsætter silhuetten oppefra). */}
         <div
           style={{
-            background: 'linear-gradient(180deg, #5A6B4E 0%, #53634A 100%)',
+            background: LAYERS[activeIndex]?.fill ?? LAYERS[0].fill,
             borderRadius: '0 0 24px 24px',
             boxShadow: '0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
