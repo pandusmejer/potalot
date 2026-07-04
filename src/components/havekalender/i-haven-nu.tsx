@@ -234,8 +234,9 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
         >
           {meta}
         </span>
-        {/* Thumbnail-holder nederst højre — ligger øverst og overlapper båndet. */}
-        <div style={{ position: 'absolute', right: 14, bottom: 5, zIndex: 2 }}>
+        {/* Thumbnail-holder nederst højre — ØVERSTE lag, hævet et par mm så den
+            tydeligt ligger ovenpå båndet. */}
+        <div style={{ position: 'absolute', right: 14, bottom: 'calc(5px + 2.5mm)', zIndex: 5 }}>
           <SourceMarker kind={kind} size={51} />
         </div>
       </div>
