@@ -139,13 +139,13 @@ const TAB_R = 15 // hjørne-radius, aktiv tab-top (indre sider)
 const TAB_R_IN = 13 // hjørne-radius, inaktive tab-tops (indre sider)
 const OUTER_R = 14 // ydre hjørner — deles af kant-tab og mappekant
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
-const AW = 66 // halv bredde, aktiv tab (bredere folderfane)
-const IW = 62 // halv bredde, inaktive tabs — overlapper aktiv en smule (lag)
-const SR_L = 54 // venstre skulder-løb (bredt + fladt, lav skulder)
-const SR_R = 48 // højre skulder-løb (lidt kortere → asymmetri)
-// Skulder-kontrolpunktet holdes OVER mappefladen (< 1) så der ikke opstår et
-// konkavt "scoop"-overshoot; lav værdi = rolig, flad skulder uden dyb bue.
-const KNEE = 0.28
+const AW = 53 // halv bredde, aktiv tab — smallere → tydelige hak/mellemrum
+const IW = 57 // halv bredde, inaktive tabs — lidt bredere → lagdelt overlap bagved
+const SR_L = 22 // venstre skulder-løb (strammere → mere rektangulær fane)
+const SR_R = 22 // højre skulder-løb (symmetrisk, rette sider)
+// Højere KNEE = kontrolpunkt tættere på mappefladen → fane-siden går mere
+// lodret ned før den runder ind (rektangulær file-tab i stedet for bred skulder).
+const KNEE = 0.5
 const LAST = TAB_CENTERS.length - 1
 
 /**
