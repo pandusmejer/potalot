@@ -9,11 +9,12 @@
  *
  * Bevidst uden backend/AI-endpoint endnu — det er en visuel CTA/søge-agtig
  * komponent, der kan wires til en rigtig rådgiver senere. Ingen robot-ikon,
- * ingen glitrende AI-cirkus. MessageSquare + rolig copy gør arbejdet.
+ * ingen glitrende AI-cirkus. Sprout (Potalots eget tegn) + rolig copy gør
+ * arbejdet — mere botanisk havehjælp end supportchat.
  */
 
 import { useState } from 'react'
-import { MessageSquare } from 'lucide-react'
+import { Sprout } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
@@ -53,7 +54,7 @@ export function SpoergGartneren() {
             flexShrink: 0,
           }}
         >
-          <MessageSquare width={17} height={17} strokeWidth={2} />
+          <Sprout width={17} height={17} strokeWidth={2} />
         </span>
         <span
           style={{
