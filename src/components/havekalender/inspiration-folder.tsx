@@ -143,16 +143,17 @@ const Y_SURFACE = 34.61 // flade = Y_TAB_TOP + skulderhøjde 27.61 (reference 20
 const Y_BOTTOM = 47 // bund af SVG = top af mappekroppen (flush)
 const OUTER_R = 13 // ydre hjørner (venstre kant-fane + mappens højre kant)
 const SR = 35.92 // skulder-løb (bredde) = runding 7.16 + diagonal 21.6 + runding 7.16
-const FW = 78 // flad fane-bredde — sat så yderste fanes skulder rammer højre kant
+const FW = 89 // flad fane-bredde — 3mm bredere (var 78) → fanerne overlapper let
 const CORNER = 8 // top-venstre radius på ikke-forreste faner (skjult bag fronten)
 
 // index 0 = forrest (venstre, mørkest) … 2 = bagest (højre, lysest).
 // Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides. xL er sat så Guides'
-// skulder lander ved VB_W-OUTER_R (329) = blokkens højre kant.
+// skulder stadig lander ved VB_W-OUTER_R (329) = blokkens højre kant, samtidig
+// med at de bredere faner overlapper hinanden let (~23 enheder mod ~6 før).
 const LAYERS = [
-  { xL: 0, labelCx: 44, fill: '#5A6B4E', label: '#F2EEE2' }, // Frøbank — forrest/mørkest
-  { xL: 108, labelCx: 150, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
-  { xL: 215, labelCx: 257, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
+  { xL: 0, labelCx: 46, fill: '#5A6B4E', label: '#F2EEE2' }, // Frøbank — forrest/mørkest
+  { xL: 102, labelCx: 158, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
+  { xL: 204, labelCx: 260, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
 ]
 
 /**
