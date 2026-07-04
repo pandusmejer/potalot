@@ -27,11 +27,11 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, useDerivedCompletions, chipLabel,
+  PrimaryFocus, TaskCheckbox, useDerivedCompletions, chipLabel,
 } from '@/components/havekalender/fokus-handling-ui'
 import Link from 'next/link'
 import {
-  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Check, Info, Plus,
+  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Info, Plus,
 } from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
@@ -181,54 +181,43 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
         key={h.taskKey}
         style={{
           position: 'relative',
-          padding: '13px 14px 14px',
+          padding: '11px 14px',
           borderRadius: 18,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.08)',
           boxShadow: '0 3px 8px rgba(64,58,42,0.045), inset 0 1px 0 rgba(255,255,255,0.4)',
-          marginBottom: 10,
+          marginBottom: 9,
           opacity: done ? 0.55 : 1,
           transition: 'opacity .2s',
         }}
       >
-        {/* Afkrydsningsfelt — øverste højre hjørne. Tydeligt tappebart: kant +
-            blød hvid fyld + spøgelses-flueben, så det IKKE ligner dekoration. */}
+        {/* Afkrydsningsfelt — øverste højre hjørne (delt TaskCheckbox). */}
         {checkbar && (
-          <button
-            type="button"
-            onClick={() => toggle(h)}
-            aria-pressed={done}
-            aria-label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`}
-            className="flex items-center justify-center rounded-full transition-transform active:scale-90"
-            style={{
-              position: 'absolute', top: 12, right: 12, zIndex: 2,
-              width: 30, height: 30,
-              border: done ? '2px solid #5A7038' : '2px solid rgba(90,112,56,0.5)',
-              background: done ? '#5A7038' : 'rgba(255,255,255,0.75)',
-              boxShadow: done ? 'none' : 'inset 0 1px 2px rgba(64,58,42,0.06), 0 1px 3px rgba(64,58,42,0.06)',
-              cursor: 'pointer',
-            }}
-          >
-            <Check style={{ width: 17, height: 17, color: done ? '#fff' : 'rgba(90,112,56,0.45)' }} strokeWidth={done ? 3 : 2.4} aria-hidden />
-          </button>
+          <div style={{ position: 'absolute', top: 11, right: 12, zIndex: 2 }}>
+            <TaskCheckbox done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={30} />
+          </div>
         )}
 
-        {/* Overskrift + brødtekst, venstre (2 mm ind), plads til checkboks til højre. */}
+        {/* Overskrift — 2 mm ind, plads til checkboks, balanceret linjedeling. */}
         <div style={{ paddingLeft: '2mm', paddingRight: 42 }}>
           <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
-            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
+            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
             </span>
           </Link>
+        </div>
+
+        {/* Brødtekst — fuld bredde (korte tekster står på én linje). */}
+        <div style={{ paddingLeft: '2mm', marginTop: 4 }}>
           <Link href={h.href} style={{ textDecoration: 'none' }}>
-            <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.32, color: 'rgba(35,56,43,0.68)', marginTop: 5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.3, color: 'rgba(35,56,43,0.68)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {h.hvorfor}
             </span>
           </Link>
         </div>
 
-        {/* Bund: kilde-metadata nederst venstre, thumbnail nederst højre (10 % større). */}
-        <div className="flex items-end justify-between" style={{ marginTop: 12 }}>
+        {/* Bund-bånd: kilde-metadata venstre, thumbnail højre (10 % større). */}
+        <div className="flex items-center justify-between" style={{ marginTop: 8, paddingLeft: '2mm' }}>
           <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)' }}>
             {meta}
           </span>

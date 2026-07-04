@@ -98,6 +98,32 @@ export function CheckCircle({ done, onToggle, label, size = 18 }: {
   )
 }
 
+/** Tydeligt afkrydsningsFELT (I haven nu): hvid fyld + meget tynd kant + svagt
+ *  spøgelses-flueben, så det aflæses som "tap for at markere", ikke dekoration.
+ *  Udført = grøn fyld + hvidt flueben. Delt af fokus-kort + task-cards. */
+export function TaskCheckbox({ done, onToggle, label, size = 30 }: {
+  done: boolean; onToggle: () => void; label: string; size?: number
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={done}
+      aria-label={label}
+      className="flex shrink-0 items-center justify-center rounded-full transition-transform active:scale-90"
+      style={{
+        width: size, height: size,
+        border: done ? '1px solid #5A7038' : '1px solid rgba(90,112,56,0.5)',
+        background: done ? '#5A7038' : 'rgba(255,255,255,0.78)',
+        boxShadow: done ? 'none' : 'inset 0 1px 2px rgba(64,58,42,0.06), 0 1px 3px rgba(64,58,42,0.06)',
+        cursor: 'pointer',
+      }}
+    >
+      <Check style={{ width: size * 0.56, height: size * 0.56, color: done ? '#fff' : 'rgba(90,112,56,0.42)' }} strokeWidth={done ? 3 : 2.2} aria-hidden />
+    </button>
+  )
+}
+
 /** Det fremhævede primære fokus — sektionens redaktionelle hovedperson. */
 export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHandling; done: boolean; month: number; markoer?: string; onToggle: () => void }) {
   const checkbar = h.plantId !== null
@@ -139,7 +165,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
         </span>
       )}
       <div className="flex items-start gap-2">
-        {checkbar && <CheckCircle done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={20} />}
+        {checkbar && <TaskCheckbox done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={26} />}
         <div className="min-w-0 flex-1">
           {markoer && (
             <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 5px' }}>
