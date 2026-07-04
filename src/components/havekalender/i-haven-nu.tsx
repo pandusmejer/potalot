@@ -199,7 +199,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         style={{
           position: 'relative',
           overflow: 'hidden',
-          paddingTop: 20, paddingLeft: 16, paddingRight: 16, paddingBottom: 60,
+          paddingTop: 20, paddingLeft: 16, paddingRight: 16, paddingBottom: 40,
           borderRadius: 22,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.09)',
@@ -236,12 +236,12 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           </Link>
         </div>
 
-        {/* Bundstribe (fast 44 px, full-bleed). Låst højde — uafhængig af
+        {/* Bundstribe (fast 22 px, full-bleed). Låst højde — uafhængig af
             tekst/padding/thumbnail. */}
-        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 44, background: band.bg, zIndex: 0 }} />
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 22, background: band.bg, zIndex: 0 }} />
         <span
           style={{
-            position: 'absolute', left: 20, bottom: 0, height: 44, minHeight: 44, maxHeight: 44, boxSizing: 'border-box', zIndex: 2,
+            position: 'absolute', left: 20, bottom: 0, height: 22, minHeight: 22, maxHeight: 22, boxSizing: 'border-box', zIndex: 2,
             display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0, paddingBottom: 0,
             fontFamily: sans, fontSize: 11, lineHeight: 1, fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: band.text,
             transform: 'translateY(1px)',
@@ -252,7 +252,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         {/* Thumbnail-holder — sidder i spændingsfeltet mellem content og bund-
             stribe: ~40 % af cirklen skærer ned i banneret (binder dem sammen).
             Ægte foto når plantId har et; ellers ikon-badge-fallback. */}
-        <div style={{ position: 'absolute', right: 14, bottom: 16, zIndex: 5 }}>
+        <div style={{ position: 'absolute', right: 14, bottom: 10, zIndex: 5 }}>
           <SourceMarker
             kind={kind}
             size={72}
