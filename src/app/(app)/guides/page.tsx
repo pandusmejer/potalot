@@ -88,7 +88,7 @@ export default async function GuidesPage() {
         aria-hidden
         className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[560px]"
         style={{
-          backgroundImage: 'url(/images/makro/chili-habanero-orange/frugter.jpg)',
+          backgroundImage: 'url(/images/makro/tomat-san-marzano/blad-dug.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.18,
@@ -100,7 +100,7 @@ export default async function GuidesPage() {
             'radial-gradient(ellipse 72% 60% at 50% 40%, black 14%, rgba(0,0,0,0.72) 46%, transparent 88%)',
         }}
       />
-      <div className="relative z-10 space-y-10 sm:space-y-12">
+      <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">
         <GuidesHero />
         <GuidesBibliotek
           guides={visibleGuides}
