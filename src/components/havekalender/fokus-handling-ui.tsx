@@ -189,7 +189,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#567036', display: 'block', textAlign: 'right', marginTop: 9, lineHeight: 1.2, letterSpacing: '-0.015em' }}
+            style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#567036', display: 'block', textAlign: 'right', marginTop: 'calc(9px - 1mm)', lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>
