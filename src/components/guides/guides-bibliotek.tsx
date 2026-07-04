@@ -7,7 +7,7 @@ import { GuideCardEditorial } from './guide-card-editorial'
 import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
-import { EditorialBleedCard } from './editorial-bleed-card'
+import { Dyrkningsforloeb } from './dyrkningsforloeb'
 import { TrustBadge, guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
@@ -108,24 +108,15 @@ export function GuidesBibliotek({
       <SpoergGartneren />
 
       {/*
-       * Editorial bro: én EditorialBleedCard variant="band" der knytter
-       * "Begynd her"-laget til "Guides i felten"-listen. Per Annas spec:
-       * maks 1 pr. side, atmospheric makrofoto, ctaHref scroller til
-       * sektionen nedenunder. Skjules hvis ingen makro kunne resolves
-       * (ingen død blok uden billede).
+       * Dyrkningsforløb-bro: kompakt feltguide-sektion der forklarer at Guides
+       * følger planten gennem sæsonen (sortvalg → høst) og knytter inspirations-
+       * delen til "Guides i felten"-kortene. Atmosfærisk bladfoto som baggrund.
+       * Skjules hvis ingen makro kunne resolves (ingen død blok uden billede).
        */}
       {bridgeMacroSrc && (
-        <EditorialBleedCard
-          variant="band"
-          eyebrow="Dyrkningsguides"
-          title="Fra første frø til sidste høst"
-          description="Brug guides som en rolig vej gennem sæsonen — fra valg af sort til såning, udplantning, pleje og høst."
-          ctaLabel="Se alle guides"
-          ctaHref="#guides-i-felten"
+        <Dyrkningsforloeb
           imageSrc={bridgeMacroSrc}
           imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
-          objectPosition="50% 45%"
-          imageScale={1.08}
         />
       )}
 
