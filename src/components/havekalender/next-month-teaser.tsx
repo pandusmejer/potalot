@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
+import { MONTHLY_GARDEN_COPY } from '@/lib/kalender/maaneds-copy'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -39,10 +40,10 @@ export function NextMonthTeaser({
   // Eyebrow uden måneden — den store titel nedenunder bærer måneden (ingen dublet).
   const label = 'Kig mod'
   const subtitle = MAANEDS_STEMNING[nextMonth]?.tagline ?? ''
-  // Kun FØRSTE sætning som teaser — hele månedens tekst ligger bag "Se [måned]".
-  // Holder kortet kompakt uanset hvor lang måneds-beskrivelsen er.
-  const fullBody = MAANEDS_STEMNING[nextMonth]?.description ?? ''
-  const body = fullBody.match(/^[^.]*\./)?.[0] ?? fullBody
+  // Månedsskifter/preview → brug den kompakte shortText (ikke heroens
+  // description; det ville være copy-lasagne). shortText er skrevet netop som
+  // kort månedsmanchet til små UI-kontekster.
+  const body = MONTHLY_GARDEN_COPY[nextMonth]?.shortText ?? ''
   const heroSrc =
     heroImage ?? `/images/heroes-maaneder/hero-${monthName.toLowerCase()}-foto.png`
   return (
