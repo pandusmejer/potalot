@@ -91,7 +91,7 @@ export function Dyrkningsforloeb({
             color: '#4A4636',
           }}
         >
-          Brug Potalots guides som en rolig vej gennem sæsonen — fra valg af sort
+          Brug Potalots guides som en sikker vej gennem sæsonen — fra valg af sort
           til såning, udplantning, pleje og høst.
         </p>
 
