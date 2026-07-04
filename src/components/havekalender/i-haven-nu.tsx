@@ -27,7 +27,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { TaskRow } from '@/components/overblik/task-row'
 import { AddTaskDialog } from '@/components/havekalender/add-task-dialog'
 import {
-  PrimaryFocus, CheckCircle, Chip, useDerivedCompletions, chipLabel,
+  PrimaryFocus, CheckCircle, useDerivedCompletions, chipLabel,
 } from '@/components/havekalender/fokus-handling-ui'
 import Link from 'next/link'
 import {
@@ -190,18 +190,14 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           transition: 'opacity .2s',
         }}
       >
-        {/* Overskrift flush yderst til venstre (flugter med thumbnail nedenfor) + chip. */}
-        <div className="flex items-start justify-between gap-2">
-          <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none' }}>
+        {/* Overskrift + brødtekst flugter, rykket 2 mm til højre. (Ingen chip —
+            urgency-chippen gentog blot overskriften.) */}
+        <div style={{ paddingLeft: '2mm' }}>
+          <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
             <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
             </span>
           </Link>
-          {!done && <Chip h={h} month={month} size="lg" />}
-        </div>
-
-        {/* Brødtekst + metadata rykket til højre (indrykning fra overskriften). */}
-        <div style={{ paddingLeft: 16 }}>
           <Link href={h.href} style={{ textDecoration: 'none' }}>
             <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.32, color: 'rgba(35,56,43,0.68)', marginTop: 5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {h.hvorfor}
