@@ -14,6 +14,9 @@ import {
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Display-font på Guides = IBM Plex Sans Condensed (feltmanual/dyrkningsarkiv,
+// ikke romantisk herbarium). Kun store overskrifter + arts-/kort-titler.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 type Filter = 'alle' | 'potalot' | 'egen' | 'ai-udkast'
 
@@ -249,13 +252,13 @@ function PopulaereEmner({
               <div className="absolute inset-x-0 bottom-0 p-3.5">
                 <h3
                   style={{
-                    fontFamily: serif,
-                    fontWeight: 500,
-                    fontSize: 'clamp(23px, 7vw, 31px)',
-                    lineHeight: 0.95,
+                    fontFamily: plex,
+                    fontWeight: 600,
+                    fontSize: 'clamp(24px, 7.4vw, 33px)',
+                    lineHeight: 0.94,
                     color: '#FFFFFF',
                     margin: 0,
-                    letterSpacing: 0,
+                    letterSpacing: '-0.01em',
                     textShadow: '0 2px 12px rgba(20,14,8,0.50)',
                   }}
                 >
@@ -465,12 +468,12 @@ function SektionTitel({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontFamily: serif,
-        fontWeight: 500,
-        fontSize: 'clamp(31px, 8vw, 40px)',
-        lineHeight: 0.96,
-        letterSpacing: 0,
-        color: '#2D2A24',
+        fontFamily: plex,
+        fontWeight: 600,
+        fontSize: 'clamp(34px, 9vw, 46px)',
+        lineHeight: 0.94,
+        letterSpacing: '-0.01em',
+        color: '#242019',
         margin: 0,
       }}
     >
