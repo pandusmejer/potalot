@@ -233,7 +233,7 @@ function PopulaereEmner({
             margin: 0,
           }}
         >
-          Begynd her
+          Et godt sted at starte
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3">
