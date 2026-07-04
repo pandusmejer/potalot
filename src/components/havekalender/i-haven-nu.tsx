@@ -257,7 +257,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         <div style={{ position: 'absolute', right: 14, bottom: 10, zIndex: 5 }}>
           <SourceMarker
             kind={kind}
-            size={62}
+            size={59}
             image={h.plantId ? plantImages[h.plantId] : undefined}
           />
         </div>
