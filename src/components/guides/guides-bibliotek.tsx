@@ -5,7 +5,8 @@ import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
 import { SpoergGartneren } from './spoerg-gartneren'
-import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
+import { layeredGuideSampleData } from './layered-guide'
+import { KortForklaret } from './kort-forklaret'
 import { EditorialBleedCard } from './editorial-bleed-card'
 import { TrustBadge, guideKindFor } from './trust-badge'
 import {
@@ -106,12 +107,6 @@ export function GuidesBibliotek({
           "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
       <SpoergGartneren />
 
-      {/* Layered section: paper fact sheet sits over a faded macro image, compact on mobile. */}
-      <LayeredFactBlock
-        {...layeredGuideSampleData.fact}
-        className="-mt-3 sm:-mt-1"
-      />
-
       {/*
        * Editorial bro: én EditorialBleedCard variant="band" der knytter
        * "Begynd her"-laget til "Guides i felten"-listen. Per Annas spec:
@@ -169,6 +164,14 @@ export function GuidesBibliotek({
           )}
         </div>
       </section>
+
+      {/* Redaktionelt lær-mere-lag EFTER guidekortene — kompakt forklaringsnote,
+          ikke en stopklods i find-en-guide-flowet. Folder sammenligningen ud. */}
+      <KortForklaret
+        title="Chili eller peberfrugt?"
+        teaser="To planter fra samme familie, men chili indeholder capsaicin."
+        columns={layeredGuideSampleData.fact.columns}
+      />
 
       {/* Editorial transition: search stays functional, but behaves like a quiet field index. */}
       <SoegBar
