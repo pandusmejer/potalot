@@ -24,6 +24,7 @@ import { useMemo, useState } from 'react'
 import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
+import { MONTHLY_GARDEN_COPY } from '@/lib/kalender/maaneds-copy'
 import {
   Dialog,
   DialogContent,
@@ -227,10 +228,12 @@ export function DetKanDuGoereEditorialPlanner({
                 color: 'rgba(35,56,43,0.84)',
               }}
             >
-              Juli er haven i fuld vækst.
-              <br />
-              Nye skud tager fart, blomsterne folder sig ud, og de første afgrøder
-              melder sig. Nu handler det om at hjælpe haven godt ind i sommeren.
+              {/* Månedsafhængig manchet: kollapset = shortText (kort overblik),
+                  udfoldet ("Se alle gøremål") = longText (detail/udvidet).
+                  Følger planerens viewMonth. Kilde: maaneds-copy.ts (Annas copy). */}
+              {showAll
+                ? MONTHLY_GARDEN_COPY[viewMonth]?.longText ?? ''
+                : MONTHLY_GARDEN_COPY[viewMonth]?.shortText ?? ''}
             </p>
           </div>
         </header>
