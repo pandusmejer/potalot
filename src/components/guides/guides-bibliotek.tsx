@@ -129,7 +129,7 @@ export function GuidesBibliotek({
           tung sektion. -mt trækker den tættere på intro-kortet. POTALOT-GUIDE-
           pillen ligger på sin EGEN linje (brækker ikke) over eyebrow-teksten;
           den præcise type (arts/sort) ligger som metadata på selve kortene. */}
-      <section id="guides-i-felten" className="relative -mt-4 pt-2">
+      <section id="guides-i-felten" className="relative -mt-9 pt-0">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
           <div className="max-w-[380px]">

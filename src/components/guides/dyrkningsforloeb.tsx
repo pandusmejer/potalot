@@ -1,16 +1,16 @@
 /**
- * Dyrkningsforløb — kompakt bro mellem inspirations-delen og guidekortene.
+ * Dyrkningsforløb — åben editorial-bro mellem inspirations-delen og guidekortene.
  *
- * Erstatter den store EditorialBleedCard-"stemningshero" ("Fra første frø til
- * sidste høst"), der føltes som en anden hero midt på siden. Nu en lavere,
- * mere funktionel feltguide-bro: den forklarer at Guides følger planten gennem
- * hele sæsonen (sortvalg → høst) via små stage-chips. Bladfotoet er atmosfærisk
- * BAGGRUND (dæmpet af en creme-scrim), ikke hovedmotiv. Plex til titlen, sans
- * til alt andet. Ingen CTA — guidekortene ligger lige under.
+ * IKKE et lukket kort. En fuld-bredde atmosfærisk sektion, hvor bladfotoet
+ * bleeder ud i sidekanterne og BUNDEN fader ud i side-baggrunden — så der ikke
+ * er en hård kort-kant. Den opløses ned mod "Guides i felten", så øjet læser
+ * intro + guidekort som ÉN guideverden, ikke to adskilte moduler. Ingen hero-
+ * følelse: modest højde, rolig copy, Plex til titel, sans til resten.
  */
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const plex = 'var(--font-plex-condensed), sans-serif'
+const page = '#EAE6D8'
 
 export function Dyrkningsforloeb({
   imageSrc,
@@ -22,13 +22,7 @@ export function Dyrkningsforloeb({
   return (
     <section
       aria-labelledby="dyrkningsforloeb-titel"
-      className="relative isolate overflow-hidden"
-      style={{
-        borderRadius: 24,
-        minHeight: 150,
-        border: '1px solid rgba(45,42,36,0.12)',
-        background: '#F4F0E5',
-      }}
+      className="relative isolate -mx-4 overflow-hidden"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -37,18 +31,31 @@ export function Dyrkningsforloeb({
         className="absolute inset-0 h-full w-full object-cover"
         style={{ objectPosition: '50% 42%' }}
       />
-      {/* Creme-scrim: samler teksten til venstre, lader bladet ånde til højre.
-          Kontrolleret nok til at den mørke tekst er læsbar. */}
+      {/* Venstre-vægtet creme-scrim: samler teksten, lader bladet ånde til højre. */}
       <span
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'linear-gradient(112deg, rgba(244,240,229,0.96) 0%, rgba(244,240,229,0.88) 44%, rgba(244,240,229,0.52) 80%, rgba(244,240,229,0.3) 100%)',
+            'linear-gradient(110deg, rgba(238,234,219,0.95) 0%, rgba(238,234,219,0.86) 40%, rgba(238,234,219,0.5) 78%, rgba(238,234,219,0.3) 100%)',
+        }}
+      />
+      {/* Top: emergér blødt fra side-baggrunden (ingen hård overkant). */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-10"
+        style={{ background: `linear-gradient(to bottom, ${page}, rgba(234,230,216,0))` }}
+      />
+      {/* Bund: opløs ned mod "Guides i felten" — ingen kort-slutning. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28"
+        style={{
+          background: `linear-gradient(to top, ${page} 0%, rgba(234,230,216,0.72) 44%, rgba(234,230,216,0) 100%)`,
         }}
       />
 
-      <div className="relative z-10" style={{ padding: '20px 22px 22px' }}>
+      <div className="relative z-10 px-4" style={{ paddingTop: 20, paddingBottom: 26 }}>
         <p
           style={{
             margin: 0,
@@ -93,8 +100,8 @@ export function Dyrkningsforloeb({
           til såning, udplantning, pleje og høst.
         </p>
 
-        {/* Diskret overgangslinje → gør modulet til forspil til guidekortene,
-            ikke en lukket kampagneblok. Ingen CTA, ingen chips. */}
+        {/* Diskret bro-linje der peger ind i næste sektion, ikke sidste element
+            i et card. */}
         <p
           style={{
             margin: '14px 0 0',
