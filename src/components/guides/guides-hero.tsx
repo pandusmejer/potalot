@@ -46,12 +46,12 @@ export function GuidesHero() {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 'clamp(17px, 4.4vw, 20px)',
+          fontSize: 'clamp(15px, 3.9vw, 18px)',
           fontWeight: 400,
-          lineHeight: 1.4,
+          lineHeight: 1.42,
           color: '#6A665C',
           margin: 0,
-          maxWidth: 440,
+          maxWidth: 420,
         }}
       >
         Fra frø, jord og første blade til høst, frøtagning og næste sæson.
