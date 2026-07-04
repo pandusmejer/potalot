@@ -219,7 +219,9 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         {/* Overskrift — 2 mm ind, plads til checkboks, balanceret linjedeling. */}
         <div style={{ paddingLeft: '2mm', paddingRight: 44 }}>
           <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
-            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
+            {/* Roligere vægt (600 — Manrope har ikke 650); rutiner en anelse
+                blødere i farve. Fokus-kort + gruppeoverskrifter urørt. */}
+            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 600, lineHeight: 1.18, letterSpacing: '-0.01em', color: routine ? 'rgba(32,48,36,0.94)' : '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
             </span>
           </Link>
@@ -234,13 +236,15 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           </Link>
         </div>
 
-        {/* Papir-label i bunden (42 px, full-bleed) med kilde-tekst centreret. */}
-        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 42, background: band.bg, zIndex: 0 }} />
+        {/* Lav papir-label-strip i bunden (fast 36 px, full-bleed). Højden er
+            låst — afhænger IKKE af tekst/padding/thumbnail. */}
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 36, background: band.bg, zIndex: 0 }} />
         <span
           style={{
-            position: 'absolute', left: 22, bottom: 0, height: 42, zIndex: 2,
-            display: 'flex', alignItems: 'center',
-            fontFamily: sans, fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: band.text,
+            position: 'absolute', left: 22, bottom: 0, height: 36, minHeight: 36, maxHeight: 36, boxSizing: 'border-box', zIndex: 2,
+            display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0, paddingBottom: 0,
+            fontFamily: sans, fontSize: 11, lineHeight: 1, fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: band.text,
+            transform: 'translateY(1px)',
           }}
         >
           {meta}
