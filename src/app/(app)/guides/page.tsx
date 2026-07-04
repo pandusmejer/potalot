@@ -88,7 +88,7 @@ export default async function GuidesPage() {
         aria-hidden
         className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[560px]"
         style={{
-          backgroundImage: 'url(/images/makro/guides-hero-blad-draaber.jpg)',
+          backgroundImage: 'url(/images/makro/guides-hero-baggrund.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.18,
