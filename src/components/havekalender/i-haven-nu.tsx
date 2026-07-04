@@ -88,7 +88,19 @@ function erInden(date: string, dage: number): boolean {
 
 /** Neutral kilde-markør — ikon-badge frem for opdigtet foto (der er endnu ingen
  *  ægte plante-thumbnails i datamodellen). Farve/ikon efter kilde. */
-function SourceMarker({ kind, size = 46 }: { kind: 'plant' | 'seed' | 'routine'; size?: number }) {
+function SourceMarker({ kind, size = 46, image }: { kind: 'plant' | 'seed' | 'routine'; size?: number; image?: string }) {
+  // Med et ægte billede: rundt foto i holderen (fallback = ikon-badge).
+  if (image) {
+    return (
+      <span
+        aria-hidden
+        style={{ width: size, height: size, borderRadius: 999, overflow: 'hidden', display: 'inline-block', boxShadow: '0 3px 8px rgba(35,45,34,0.16), inset 0 0 0 1.5px rgba(255,255,255,0.55)' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
+      </span>
+    )
+  }
   const m = {
     plant:   { Icon: Sprout,    bg: 'rgba(107,138,74,0.16)', color: '#4C6038' },
     seed:    { Icon: Flower2,   bg: 'rgba(168,124,59,0.15)', color: '#8A6A2E' },
@@ -235,9 +247,13 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           {meta}
         </span>
         {/* Thumbnail-holder nederst højre — ØVERSTE lag, hævet et par mm så den
-            tydeligt ligger ovenpå båndet. */}
+            tydeligt ligger ovenpå båndet. TESTBILLEDE på Tomat-kortet. */}
         <div style={{ position: 'absolute', right: 14, bottom: 'calc(5px + 2.5mm)', zIndex: 5 }}>
-          <SourceMarker kind={kind} size={51} />
+          <SourceMarker
+            kind={kind}
+            size={51}
+            image={/tomat sweetie/i.test(h.titel) ? '/images/kalender/guides/tomat-ranke.jpg' : undefined}
+          />
         </div>
       </div>
     )
