@@ -129,7 +129,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
             position: 'absolute', top: -13, right: 14, zIndex: 3,
             fontFamily: sans, fontSize: 12.5, fontWeight: 750, lineHeight: 1, letterSpacing: '-0.01em',
             color: tone.color, background: '#FBF4E1',
-            padding: '7px 13px', borderRadius: 999,
+            padding: '10px 16px', borderRadius: 999,
             border: '1px solid rgba(64,58,42,0.10)',
             boxShadow: '0 3px 9px rgba(64,26,15,0.16)',
             whiteSpace: 'nowrap',
@@ -160,7 +160,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
           </p>
           <Link
             href={h.href}
-            style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#567036', display: 'inline-block', marginTop: 9, lineHeight: 1.2, letterSpacing: '-0.015em' }}
+            style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#567036', display: 'block', textAlign: 'right', marginTop: 9, lineHeight: 1.2, letterSpacing: '-0.015em' }}
           >
             {h.plantId !== null ? 'Se planten →' : 'Se i frøbanken →'}
           </Link>

@@ -178,12 +178,9 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     return (
       <div
         key={h.taskKey}
-        className="grid"
         style={{
-          gridTemplateColumns: '46px minmax(0, 1fr)',
-          gap: 12,
-          alignItems: 'start',
-          padding: '13px 14px',
+          position: 'relative',
+          padding: '13px 14px 14px',
           borderRadius: 18,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.08)',
@@ -193,34 +190,36 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           transition: 'opacity .2s',
         }}
       >
-        {/* Kilde-markør (thumbnail-pladsholder) i nederste venstre hjørne. */}
-        <div style={{ alignSelf: 'end' }}><SourceMarker kind={kind} /></div>
-        <div className="min-w-0">
-          <div className="flex items-start gap-2">
-            {checkbar ? (
-              <CheckCircle done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={22} />
-            ) : (
-              <span className="shrink-0" style={{ width: 2 }} aria-hidden />
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2">
-                <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none' }}>
-                  <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
-                    {h.titel}
-                  </span>
-                </Link>
-                {!done && <Chip h={h} month={month} size="lg" />}
-              </div>
-              <Link href={h.href} style={{ textDecoration: 'none' }}>
-                <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.32, color: 'rgba(35,56,43,0.68)', marginTop: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                  {h.hvorfor}
-                </span>
-              </Link>
-              <span style={{ display: 'block', fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)', marginTop: 8 }}>
-                {meta}
-              </span>
-            </div>
-          </div>
+        {/* Overskrift flush yderst til venstre (flugter med thumbnail nedenfor) + chip. */}
+        <div className="flex items-start justify-between gap-2">
+          <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none' }}>
+            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.22, letterSpacing: '-0.01em', color: '#203024', textDecoration: done ? 'line-through' : 'none' }}>
+              {h.titel}
+            </span>
+          </Link>
+          {!done && <Chip h={h} month={month} size="lg" />}
+        </div>
+
+        {/* Brødtekst + metadata rykket til højre (indrykning fra overskriften). */}
+        <div style={{ paddingLeft: 16 }}>
+          <Link href={h.href} style={{ textDecoration: 'none' }}>
+            <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.32, color: 'rgba(35,56,43,0.68)', marginTop: 5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {h.hvorfor}
+            </span>
+          </Link>
+          <span style={{ display: 'block', fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)', marginTop: 8 }}>
+            {meta}
+          </span>
+        </div>
+
+        {/* Bund: thumbnail-markør nederst venstre, afkrydsning nederst højre. */}
+        <div className="flex items-end justify-between" style={{ marginTop: 12 }}>
+          <SourceMarker kind={kind} />
+          {checkbar ? (
+            <CheckCircle done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={22} />
+          ) : (
+            <span aria-hidden style={{ width: 22 }} />
+          )}
         </div>
       </div>
     )
