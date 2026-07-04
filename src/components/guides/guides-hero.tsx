@@ -33,7 +33,7 @@ export function GuidesHero() {
         style={{
           fontFamily: plex,
           fontWeight: 600,
-          fontSize: 'clamp(40px, 11.4vw, 68px)',
+          fontSize: 'clamp(36px, 10.3vw, 61px)',
           lineHeight: 0.92,
           letterSpacing: '-0.02em',
           color: '#242019',
@@ -46,7 +46,7 @@ export function GuidesHero() {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 'clamp(15px, 3.9vw, 18px)',
+          fontSize: 'clamp(13.5px, 3.5vw, 16px)',
           fontWeight: 400,
           lineHeight: 1.42,
           color: '#6A665C',
