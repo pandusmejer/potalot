@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
+import { SpoergGartneren } from './spoerg-gartneren'
 import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
 import { EditorialBleedCard } from './editorial-bleed-card'
 import { TrustBadge, guideKindFor } from './trust-badge'
@@ -93,13 +94,17 @@ export function GuidesBibliotek({
   const potalot = filtered.filter(x => x.kind === 'potalot')
 
   return (
-    <div className="space-y-10 sm:space-y-12">
+    <div className="space-y-8 sm:space-y-10">
       {/* Layered section: topic papers overlap the hero's atmospheric photo field. */}
       <PopulaereEmner
         emner={POPULAERE_EMNER}
         aktivt={aktivtEmne}
         onVaelg={vaelgEmne}
       />
+
+      {/* Lavmælt hjælpe-modul lige efter "Begynd her" — brugeren er stadig i
+          "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
+      <SpoergGartneren />
 
       {/* Layered section: paper fact sheet sits over a faded macro image, compact on mobile. */}
       <LayeredFactBlock
