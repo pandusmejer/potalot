@@ -200,7 +200,10 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           position: 'relative',
           overflow: 'hidden',
           paddingTop: 20, paddingLeft: 16, paddingRight: 16, paddingBottom: 40,
-          borderRadius: 14,
+          // Samme "ticket"-form som fokus-kortet: stor top-venstre + bund-højre,
+          // små top-højre + bund-venstre.
+          borderTopLeftRadius: '1.4rem', borderTopRightRadius: 6,
+          borderBottomRightRadius: '1.4rem', borderBottomLeftRadius: 6,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.09)',
           boxShadow: '0 5px 14px rgba(64,58,42,0.055), inset 0 1px 0 rgba(255,255,255,0.38)',
@@ -243,8 +246,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           style={{
             position: 'absolute', left: 20, bottom: 0, height: 22, minHeight: 22, maxHeight: 22, boxSizing: 'border-box', zIndex: 2,
             display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0, paddingBottom: 0,
-            fontFamily: sans, fontSize: 11, lineHeight: 1, fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: band.text,
-            transform: 'translateY(1px)',
+            fontFamily: sans, fontSize: 10, lineHeight: 1, fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: band.text,
           }}
         >
           {meta}
@@ -255,7 +257,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         <div style={{ position: 'absolute', right: 14, bottom: 10, zIndex: 5 }}>
           <SourceMarker
             kind={kind}
-            size={72}
+            size={65}
             image={h.plantId ? plantImages[h.plantId] : undefined}
           />
         </div>
