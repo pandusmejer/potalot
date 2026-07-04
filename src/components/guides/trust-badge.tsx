@@ -45,6 +45,7 @@ export function TrustBadge({ kind, size = 'md' }: Props) {
         color: config.fg,
         border: `1px solid ${config.border}`,
         lineHeight: 1,
+        whiteSpace: 'nowrap', // pillen må aldrig brække "Potalot-/guide" over to linjer
       }}
     >
       <Icon style={{ width: iconSize, height: iconSize }} strokeWidth={2.2} />
