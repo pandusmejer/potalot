@@ -86,7 +86,7 @@ export default async function GuidesPage() {
       {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-[-42%] right-[-42%] top-[150px] h-[360px]"
+        className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[560px]"
         style={{
           backgroundImage: 'url(/images/makro/chili-habanero-orange/frugter.jpg)',
           backgroundSize: 'cover',
@@ -95,9 +95,9 @@ export default async function GuidesPage() {
           mixBlendMode: 'multiply',
           transform: 'rotate(-2deg)',
           maskImage:
-            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+            'radial-gradient(ellipse 72% 60% at 50% 40%, black 14%, rgba(0,0,0,0.72) 46%, transparent 88%)',
           WebkitMaskImage:
-            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+            'radial-gradient(ellipse 72% 60% at 50% 40%, black 14%, rgba(0,0,0,0.72) 46%, transparent 88%)',
         }}
       />
       <div className="relative z-10 space-y-10 sm:space-y-12">
