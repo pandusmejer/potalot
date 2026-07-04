@@ -86,7 +86,7 @@ export default async function GuidesPage() {
       {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[560px]"
+        className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[820px]"
         style={{
           backgroundImage: 'url(/images/makro/guides-hero-baggrund.jpg)',
           backgroundSize: 'cover',
@@ -97,9 +97,9 @@ export default async function GuidesPage() {
           // trukket højt op (center 30%) så den grønne tint når helt op til
           // banneren og ikke efterlader en lys creme-stribe.
           maskImage:
-            'radial-gradient(ellipse 86% 76% at 50% 30%, black 22%, rgba(0,0,0,0.66) 56%, transparent 92%)',
+            'radial-gradient(ellipse 94% 64% at 50% 34%, black 24%, rgba(0,0,0,0.6) 58%, transparent 90%)',
           WebkitMaskImage:
-            'radial-gradient(ellipse 86% 76% at 50% 30%, black 22%, rgba(0,0,0,0.66) 56%, transparent 92%)',
+            'radial-gradient(ellipse 94% 64% at 50% 34%, black 24%, rgba(0,0,0,0.6) 58%, transparent 90%)',
         }}
       />
       <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">
