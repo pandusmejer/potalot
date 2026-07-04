@@ -12,8 +12,6 @@
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const plex = 'var(--font-plex-condensed), sans-serif'
 
-const STAGES = ['Sortvalg', 'Såning', 'Udplantning', 'Pleje', 'Høst']
-
 export function Dyrkningsforloeb({
   imageSrc,
   imageAlt,
@@ -27,7 +25,7 @@ export function Dyrkningsforloeb({
       className="relative isolate overflow-hidden"
       style={{
         borderRadius: 24,
-        minHeight: 168,
+        minHeight: 150,
         border: '1px solid rgba(45,42,36,0.12)',
         background: '#F4F0E5',
       }}
@@ -95,27 +93,19 @@ export function Dyrkningsforloeb({
           til såning, udplantning, pleje og høst.
         </p>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
-          {STAGES.map(stage => (
-            <span
-              key={stage}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 600,
-                color: '#4E6138',
-                padding: '5px 11px',
-                borderRadius: 999,
-                border: '1px solid rgba(86,111,60,0.30)',
-                background: 'rgba(244,240,229,0.55)',
-              }}
-            >
-              {stage}
-            </span>
-          ))}
-        </div>
+        {/* Diskret overgangslinje → gør modulet til forspil til guidekortene,
+            ikke en lukket kampagneblok. Ingen CTA, ingen chips. */}
+        <p
+          style={{
+            margin: '14px 0 0',
+            fontFamily: sans,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: 'rgba(78,97,56,0.72)',
+          }}
+        >
+          Vælg en planteguide nedenfor.
+        </p>
       </div>
     </section>
   )

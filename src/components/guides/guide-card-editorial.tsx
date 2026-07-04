@@ -167,7 +167,10 @@ export function GuideCardEditorial({
             </div>
           )}
 
-          {isVariety && (
+          {/* Type-metadata bærer nu trust-signalet (POTALOT-pillen er fjernet fra
+              sektions-headeren): arts- vs sortsguide, mærket Potalot. Egne/AI-
+              guides beholder deres eksisterende plante-eyebrow. */}
+          {kind === 'potalot' ? (
             <p
               style={{
                 fontFamily: sans,
@@ -180,9 +183,24 @@ export function GuideCardEditorial({
                 marginBottom: 4,
               }}
             >
+              Potalot · {isVariety ? 'Sortsguide' : 'Artsguide'}
+            </p>
+          ) : isVariety ? (
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: '#7F8F6A',
+                margin: 0,
+                marginBottom: 4,
+              }}
+            >
               {subtitleName ?? guide.primaryCategoryId}
             </p>
-          )}
+          ) : null}
 
           <h3
             style={{

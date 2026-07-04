@@ -8,7 +8,7 @@ import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
 import { Dyrkningsforloeb } from './dyrkningsforloeb'
-import { TrustBadge, guideKindFor } from './trust-badge'
+import { guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
   type PopulaertEmne,
@@ -125,12 +125,15 @@ export function GuidesBibliotek({
       )}
 
       {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
-      <section id="guides-i-felten" className="relative pt-2">
+      {/* Guides i felten = fortsættelsen af Dyrkningsforløb-introen, ikke en ny
+          tung sektion. -mt trækker den tættere på intro-kortet; POTALOT-GUIDE-
+          pillen er fjernet (intro-modulet har allerede etableret guide-systemet
+          — trust-signalet ligger nu som type-metadata på selve kortene). */}
+      <section id="guides-i-felten" className="relative -mt-4 pt-2">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
           <div className="max-w-[380px]">
             <SektionEyebrow>
-              <TrustBadge kind="potalot" size="sm" />
               <span>Feltnoter · Artsguider · Sortsguider</span>
             </SektionEyebrow>
             <SektionTitel>
@@ -143,12 +146,11 @@ export function GuidesBibliotek({
                 fontWeight: 400,
                 lineHeight: 1.42,
                 color: '#6A665C',
-                margin: '10px 0 0',
+                margin: '8px 0 0',
                 maxWidth: 340,
               }}
             >
-              Til det øjeblik, hvor du står ved planten og skal vide, hvad du
-              gør nu.
+              Vælg den plante, du står med.
             </p>
           </div>
 
