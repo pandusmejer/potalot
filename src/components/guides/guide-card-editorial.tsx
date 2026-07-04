@@ -176,9 +176,9 @@ export function GuideCardEditorial({
                 fontFamily: sans,
                 fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: '0.14em',
+                letterSpacing: '0.13em',
                 textTransform: 'uppercase',
-                color: '#7F8F6A', // Salvie
+                color: 'rgba(86,111,60,0.78)', // muted olive — hvisker metadata, konkurrerer ikke med titlen
                 margin: 0,
                 marginBottom: 4,
               }}
@@ -191,9 +191,9 @@ export function GuideCardEditorial({
                 fontFamily: sans,
                 fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: '0.14em',
+                letterSpacing: '0.13em',
                 textTransform: 'uppercase',
-                color: '#7F8F6A',
+                color: 'rgba(86,111,60,0.78)',
                 margin: 0,
                 marginBottom: 4,
               }}
