@@ -137,19 +137,22 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
 // referencen; KUN den flade fane-bredde (FW) er tilpasset til mobil-bredden.
 const VB_W = 342
 const Y_TAB_TOP = 7 // fane-top (ens for alle tre → teksterne flugter)
-const Y_SURFACE = 27.31 // flade = Y_TAB_TOP + referencens skulderhøjde 20.31
-const Y_BOTTOM = 40 // bund af SVG = top af mappekroppen (flush)
+// Fladen er sænket ~7.3 enheder (≈ 2mm) → fanerne er 2mm højere = mere tekstplads.
+// Referencens 45°-diagonal er forlænget tilsvarende; rundinger + vinkel bevaret.
+const Y_SURFACE = 34.61 // flade = Y_TAB_TOP + skulderhøjde 27.61 (reference 20.31 + 2mm)
+const Y_BOTTOM = 47 // bund af SVG = top af mappekroppen (flush)
 const OUTER_R = 13 // ydre hjørner (venstre kant-fane + mappens højre kant)
-const SR = 28.64 // skulder-løb (bredde) — reference, urørt
-const FW = 88 // flad fane-bredde — KUN denne er tilpasset for 3 faner
+const SR = 35.92 // skulder-løb (bredde) = runding 7.16 + diagonal 21.6 + runding 7.16
+const FW = 78 // flad fane-bredde — sat så yderste fanes skulder rammer højre kant
 const CORNER = 8 // top-venstre radius på ikke-forreste faner (skjult bag fronten)
 
 // index 0 = forrest (venstre, mørkest) … 2 = bagest (højre, lysest).
-// Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides.
+// Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides. xL er sat så Guides'
+// skulder lander ved VB_W-OUTER_R (329) = blokkens højre kant.
 const LAYERS = [
   { xL: 0, labelCx: 44, fill: '#5A6B4E', label: '#F2EEE2' }, // Frøbank — forrest/mørkest
-  { xL: 100, labelCx: 152, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
-  { xL: 195, labelCx: 250, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
+  { xL: 108, labelCx: 150, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
+  { xL: 215, labelCx: 257, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
 ]
 
 /**
@@ -169,10 +172,10 @@ function folderLayer(xL: number): string {
     `L ${xL} ${Y_TAB_TOP + rL}`,
     `Q ${xL} ${Y_TAB_TOP} ${xL + rL} ${Y_TAB_TOP}`,
     `L ${xR} ${Y_TAB_TOP}`,
-    // højre skulder = referencens skulder 1:1:
+    // højre skulder = referencens skulder, diagonalen forlænget 2mm (bevaret 45°):
     // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
     'c 2.68 0 5.26 1.07 7.16 2.97',
-    'l 14.32 14.37',
+    'l 21.6 21.67',
     'c 1.89 1.9 4.47 2.97 7.16 2.97',
     `L ${VB_W - OUTER_R} ${Y_SURFACE}`,
     `Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`,
@@ -311,17 +314,18 @@ export function InspirationFolder({
                     color: layer.label,
                     cursor: 'pointer',
                     fontFamily: sans,
+                    // Alle tre ENS: samme størrelse, samme vægt, samme top → de
+                    // flugter og ser lige store/lige bold ud. Farve følger lagets
+                    // dybde; aktiv markeres kun ved fuld opacitet (inaktiv dæmpet).
                     fontSize: 13,
-                    // farve følger lagets dybde; aktiv = fuld styrke + halvfed,
-                    // inaktiv = dæmpet. top er ENS for alle tre → teksterne flugter.
-                    fontWeight: active ? 700 : 500,
+                    fontWeight: 600,
                     left: `${(layer.labelCx / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
                     lineHeight: 1,
-                    opacity: active ? 1 : 0.68,
+                    opacity: active ? 1 : 0.72,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: 11,
+                    top: 16,
                     transform: 'translateX(-50%)',
                     transition: 'opacity 160ms ease',
                     whiteSpace: 'nowrap',
