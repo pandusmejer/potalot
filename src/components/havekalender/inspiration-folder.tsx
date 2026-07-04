@@ -128,99 +128,55 @@ const TABS: Array<{ id: TabId; label: string; Icon: LucideIcon }> = [
  * Koordinater i et fast viewBox (342 × 84); SVG'en skalerer proportionalt med
  * bredden, så kurverne aldrig forvrænges.
  * ────────────────────────────────────────────────────────────────────────── */
+// Lagdelt mappe-stak (Annas reference-foto): TRE faner med SAMME form — flad
+// top + referencens 45°-diagonale højreskulder. Fast dybde venstre→højre =
+// forrest→bagest = mørkest→lysest. Hver fane er en fuld mappe (fane + krop der
+// strækker sig til højre kant + ned), tegnet bagest→forrest, så den forreste
+// (mørke) mappes krop bliver selve panelet og dækker de bagvedliggende kroppe;
+// kun fanerne kigger frem. Skulderen (28.64 bred × 20.31 høj) er 1:1 fra
+// referencen; KUN den flade fane-bredde (FW) er tilpasset til mobil-bredden.
 const VB_W = 342
-// Skulderen er Annas referencemappes EKSAKTE skulder (SVG-path):
-//   flad top → lille runding (7.16×2.97) → ren 45° diagonal (14.32×14.37) →
-//   blød runding (7.16×2.97) ned på fladen.
-// Total skulder = 28.64 bred × 20.31 høj. HØJDEN er taget 1:1 fra referencen;
-// KUN den flade fane-bredde (AW) er tilpasset, så tre faner ligger ved siden
-// af hinanden og passer i mobil-scroll. Sub-segmenterne indsættes som relative
-// cubic/line-kommandoer i frontPath (spejlet på venstre skulder).
-const Y_TAB_TOP = 7 // top af aktiv tab
-const Y_TAB_TOP_IN = 10 // top af inaktive tabs (lag bagved)
-const Y_SURFACE = 27.31 // flade = Y_TAB_TOP + skulderhøjde 20.31 (reference)
+const Y_TAB_TOP = 7 // fane-top (ens for alle tre → teksterne flugter)
+const Y_SURFACE = 27.31 // flade = Y_TAB_TOP + referencens skulderhøjde 20.31
 const Y_BOTTOM = 40 // bund af SVG = top af mappekroppen (flush)
-const TAB_R_IN = 9 // hjørne-radius, inaktive tab-tops
-const OUTER_R = 13 // ydre hjørner — deles af kant-tab og mappekant
-const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
-const AW = 37 // halv bredde af FLAD fane-top — KUN denne tilpasses for 3 faner
-const IW = 57 // halv bredde, inaktive tabs — lagdelt overlap bagved
+const OUTER_R = 13 // ydre hjørner (venstre kant-fane + mappens højre kant)
 const SR = 28.64 // skulder-løb (bredde) — reference, urørt
-const LAST = TAB_CENTERS.length - 1
+const FW = 88 // flad fane-bredde — KUN denne er tilpasset for 3 faner
+const CORNER = 8 // top-venstre radius på ikke-forreste faner (skjult bag fronten)
+
+// index 0 = forrest (venstre, mørkest) … 2 = bagest (højre, lysest).
+// Rækkefølge matcher TABS: 0=Frøbank, 1=Sæsonråd, 2=Guides.
+const LAYERS = [
+  { xL: 0, labelCx: 44, fill: '#5A6B4E', label: '#F2EEE2' }, // Frøbank — forrest/mørkest
+  { xL: 100, labelCx: 152, fill: '#7A8A6C', label: '#28331F' }, // Sæsonråd — midt
+  { xL: 195, labelCx: 250, fill: '#9EAB8C', label: '#28331F' }, // Guides — bagest/lysest
+]
 
 /**
- * Aktiv tab + skuldre + mappe-top som ét die-cut path.
- * Yder-tabs (index 0 / sidste) deler mappens ydre hjørne, så de går helt
- * ud til kanten; kun de indre sider har bløde skuldre.
+ * Én mappe i stakken som ét path: venstre kant op → flad fane-top →
+ * referencens 45°-diagonale HØJRE-skulder → mappe-flade ud til højre kant →
+ * ned → bund. Alle tre faner bruger SAMME funktion (samme form); kun `xL`
+ * (fanens venstre position) skifter. Den forreste (xL = 0) deler mappens
+ * venstre kant med et større ydre hjørne; de bagvedliggende har et lille
+ * top-venstre hjørne, der alligevel skjules bag den forreste fanes skulder.
  */
-function frontPath(active: number): string {
-  const cx = TAB_CENTERS[active]
-  const lx = cx - AW
-  const rx = cx + AW
-  const flushLeft = active === 0
-  const flushRight = active === LAST
-  const p: string[] = [`M 0 ${Y_BOTTOM}`]
-
-  // venstre side af den aktive tab
-  if (flushLeft) {
-    // tab deler mappens venstre kant → ydre hjørne op i tab-toppen
-    p.push(`L 0 ${Y_TAB_TOP + OUTER_R}`)
-    p.push(`Q 0 ${Y_TAB_TOP} ${OUTER_R} ${Y_TAB_TOP}`)
-  } else {
-    p.push(`L 0 ${Y_SURFACE + OUTER_R}`)
-    p.push(`Q 0 ${Y_SURFACE} ${OUTER_R} ${Y_SURFACE}`)
-    p.push(`L ${lx - SR} ${Y_SURFACE}`)
-    // venstre skulder OP til tab-top = referencens skulder spejlet:
-    // blød runding af fladen → ren 45° diagonal → lille runding på tab-toppen.
-    p.push('c 2.69 0 5.27 -1.07 7.16 -2.97')
-    p.push('l 14.32 -14.37')
-    p.push('c 1.9 -1.9 4.48 -2.97 7.16 -2.97')
-  }
-
-  // flad fane-top (fra lx / OUTER_R til rx / VB_W-OUTER_R)
-  p.push(`L ${flushRight ? VB_W - OUTER_R : rx} ${Y_TAB_TOP}`)
-
-  // højre side af den aktive tab
-  if (flushRight) {
-    p.push(`Q ${VB_W} ${Y_TAB_TOP} ${VB_W} ${Y_TAB_TOP + OUTER_R}`)
-    p.push(`L ${VB_W} ${Y_BOTTOM}`)
-  } else {
-    // højre skulder NED til fladen = referencens skulder 1:1:
-    // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
-    p.push('c 2.68 0 5.26 1.07 7.16 2.97')
-    p.push('l 14.32 14.37')
-    p.push('c 1.89 1.9 4.47 2.97 7.16 2.97')
-    p.push(`L ${VB_W - OUTER_R} ${Y_SURFACE}`)
-    p.push(`Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`)
-    p.push(`L ${VB_W} ${Y_BOTTOM}`)
-  }
-
-  p.push('Z')
-  return p.join(' ')
-}
-
-/**
- * Én inaktiv tab som blødt afrundet baglag. Yder-tabs går flush ud til
- * mappens kant og deler det ydre hjørne; de strækker sig ned bag fronten,
- * så der aldrig opstår en hak mellem tab og mappekrop.
- */
-function backPath(index: number): string {
-  const cx = TAB_CENTERS[index]
-  const flushLeft = index === 0
-  const flushRight = index === LAST
-  const lx = flushLeft ? 0 : cx - IW
-  const rx = flushRight ? VB_W : cx + IW
-  const rL = flushLeft ? OUTER_R : TAB_R_IN
-  const rR = flushRight ? OUTER_R : TAB_R_IN
-  const yt = Y_TAB_TOP_IN
-  const yb = Y_BOTTOM
+function folderLayer(xL: number): string {
+  const flushLeft = xL === 0
+  const rL = flushLeft ? OUTER_R : CORNER
+  const xR = xL + FW
   return [
-    `M ${lx} ${yb}`,
-    `L ${lx} ${yt + rL}`,
-    `Q ${lx} ${yt} ${lx + rL} ${yt}`,
-    `L ${rx - rR} ${yt}`,
-    `Q ${rx} ${yt} ${rx} ${yt + rR}`,
-    `L ${rx} ${yb}`,
+    `M ${xL} ${Y_BOTTOM}`,
+    `L ${xL} ${Y_TAB_TOP + rL}`,
+    `Q ${xL} ${Y_TAB_TOP} ${xL + rL} ${Y_TAB_TOP}`,
+    `L ${xR} ${Y_TAB_TOP}`,
+    // højre skulder = referencens skulder 1:1:
+    // lille runding af tab-toppen → ren 45° diagonal → blød runding på fladen.
+    'c 2.68 0 5.26 1.07 7.16 2.97',
+    'l 14.32 14.37',
+    'c 1.89 1.9 4.47 2.97 7.16 2.97',
+    `L ${VB_W - OUTER_R} ${Y_SURFACE}`,
+    `Q ${VB_W} ${Y_SURFACE} ${VB_W} ${Y_SURFACE + OUTER_R}`,
+    `L ${VB_W} ${Y_BOTTOM}`,
     'Z',
   ].join(' ')
 }
@@ -324,40 +280,24 @@ export function InspirationFolder({
             aria-hidden
           >
             <defs>
-              <linearGradient id="folderFront" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#6C8175" />
-                <stop offset="1" stopColor="#62766B" />
-              </linearGradient>
-              {/* Blød skygge så det aktive ark løfter sig over baglagene (papir-på-papir) */}
-              <filter id="folderLift" x="-10%" y="-30%" width="120%" height="170%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#2A3020" floodOpacity="0.18" />
-              </filter>
-              {/* Tynd papirskygge under hvert inaktivt ark → man ser at de ligger bagved */}
-              <filter id="paperLayer" x="-15%" y="-25%" width="130%" height="150%">
-                <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#26351F" floodOpacity="0.10" />
+              {/* Blød skygge så hver mappe løfter sig over den bagvedliggende */}
+              <filter id="folderLift" x="-10%" y="-40%" width="120%" height="180%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#2A3020" floodOpacity="0.16" />
               </filter>
             </defs>
-            {/* inaktive tabs som lysere papir-baglag, let forskudt bagved */}
-            {TABS.map((tab, i) =>
-              i === activeIndex ? null : (
-                <path
-                  key={tab.id}
-                  d={backPath(i)}
-                  fill="#E1E0D3"
-                  stroke="rgba(38,53,31,0.08)"
-                  strokeWidth={1}
-                  filter="url(#paperLayer)"
-                />
-              ),
-            )}
-            {/* aktiv tab + skuldre + mappe-top som ét ark, løftet over baglagene */}
-            <path d={frontPath(activeIndex)} fill="url(#folderFront)" filter="url(#folderLift)" />
+            {/* Tegn bagest→forrest: bagest (lysest) først, forrest (mørkest) sidst
+                oven på — så den forreste mappes krop bliver panelet og dækker de
+                bagvedliggende kroppe; kun fanerne kigger frem. */}
+            {[2, 1, 0].map(i => (
+              <path key={i} d={folderLayer(LAYERS[i].xL)} fill={LAYERS[i].fill} filter="url(#folderLift)" />
+            ))}
           </svg>
 
           {/* klikbare labels — transparent overlay oven på silhuetten */}
           <div role="tablist" aria-label="Inspiration" style={{ position: 'absolute', inset: 0 }}>
             {TABS.map((tab, i) => {
               const active = i === activeIndex
+              const layer = LAYERS[i]
               return (
                 <button
                   key={tab.id}
@@ -368,19 +308,22 @@ export function InspirationFolder({
                   style={{
                     background: 'transparent',
                     border: 0,
-                    color: active ? '#F6F1E6' : 'rgba(38,53,31,0.50)',
+                    color: layer.label,
                     cursor: 'pointer',
                     fontFamily: sans,
                     fontSize: 13,
-                    fontWeight: active ? 600 : 500,
-                    left: `${(TAB_CENTERS[i] / VB_W) * 100}%`,
+                    // farve følger lagets dybde; aktiv = fuld styrke + halvfed,
+                    // inaktiv = dæmpet. top er ENS for alle tre → teksterne flugter.
+                    fontWeight: active ? 700 : 500,
+                    left: `${(layer.labelCx / VB_W) * 100}%`,
                     letterSpacing: '-0.01em',
                     lineHeight: 1,
+                    opacity: active ? 1 : 0.68,
                     position: 'absolute',
                     textAlign: 'center',
-                    top: active ? 11 : 13,
+                    top: 11,
                     transform: 'translateX(-50%)',
-                    transition: 'color 160ms ease, top 160ms ease',
+                    transition: 'opacity 160ms ease',
                     whiteSpace: 'nowrap',
                   }}
                 >
@@ -394,7 +337,7 @@ export function InspirationFolder({
         {/* Mappekrop — samme farve, fortsætter silhuetten */}
         <div
           style={{
-            background: 'linear-gradient(180deg, #62766B 0%, #5A6E63 100%)',
+            background: 'linear-gradient(180deg, #5A6B4E 0%, #53634A 100%)',
             borderRadius: '0 0 24px 24px',
             boxShadow: '0 10px 24px rgba(35,45,34,0.13)',
             color: '#F8F4E9',
