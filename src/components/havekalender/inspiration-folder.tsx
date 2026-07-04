@@ -141,11 +141,11 @@ const OUTER_R = 14 // ydre hjørner — deles af kant-tab og mappekant
 const TAB_CENTERS = [54, 171, 288] // ydre tabs flush med mappens kant (0 / 342)
 const AW = 53 // halv bredde, aktiv tab — smallere → tydelige hak/mellemrum
 const IW = 57 // halv bredde, inaktive tabs — lidt bredere → lagdelt overlap bagved
-const SR_L = 22 // venstre skulder-løb (strammere → mere rektangulær fane)
-const SR_R = 22 // højre skulder-løb (symmetrisk, rette sider)
-// Højere KNEE = kontrolpunkt tættere på mappefladen → fane-siden går mere
-// lodret ned før den runder ind (rektangulær file-tab i stedet for bred skulder).
-const KNEE = 0.5
+const SR_L = 30 // skulder-løb — blød, rundet step (som frøbank-redesignets notch)
+const SR_R = 30 // symmetrisk
+// Lavere KNEE = blødere, rundet step-skulder (frøbank-mappens seedFolderClip-
+// karakter: flad fane-top → blød S-nedgang → mappekrop).
+const KNEE = 0.35
 const LAST = TAB_CENTERS.length - 1
 
 /**
