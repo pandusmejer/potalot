@@ -101,7 +101,7 @@ export function CheckCircle({ done, onToggle, label, size = 18 }: {
 /** Tydeligt afkrydsningsFELT (I haven nu): hvid fyld + meget tynd kant + svagt
  *  spøgelses-flueben, så det aflæses som "tap for at markere", ikke dekoration.
  *  Udført = grøn fyld + hvidt flueben. Delt af fokus-kort + task-cards. */
-export function TaskCheckbox({ done, onToggle, label, size = 30 }: {
+export function TaskCheckbox({ done, onToggle, label, size = 26 }: {
   done: boolean; onToggle: () => void; label: string; size?: number
 }) {
   return (
@@ -110,11 +110,15 @@ export function TaskCheckbox({ done, onToggle, label, size = 30 }: {
       onClick={onToggle}
       aria-pressed={done}
       aria-label={label}
-      className="flex shrink-0 items-center justify-center rounded-full transition-transform active:scale-90"
+      className={
+        'flex shrink-0 items-center justify-center rounded-full border transition-colors active:scale-90 ' +
+        (done
+          ? 'border-[#5A7038] bg-[#5A7038]'
+          // Hover-overlay: grøn tint så brugeren SER at feltet krydses af.
+          : 'border-[rgba(90,112,56,0.5)] bg-[rgba(255,255,255,0.78)] hover:bg-[rgba(90,112,56,0.24)] hover:border-[rgba(90,112,56,0.7)]')
+      }
       style={{
         width: size, height: size,
-        border: done ? '1px solid #5A7038' : '1px solid rgba(90,112,56,0.5)',
-        background: done ? '#5A7038' : 'rgba(255,255,255,0.78)',
         boxShadow: done ? 'none' : 'inset 0 1px 2px rgba(64,58,42,0.06), 0 1px 3px rgba(64,58,42,0.06)',
         cursor: 'pointer',
       }}
@@ -165,7 +169,7 @@ export function PrimaryFocus({ h, done, month, markoer, onToggle }: { h: FokusHa
         </span>
       )}
       <div className="flex items-start gap-2">
-        {checkbar && <TaskCheckbox done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={26} />}
+        {checkbar && <TaskCheckbox done={done} onToggle={onToggle} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={22} />}
         <div className="min-w-0 flex-1">
           {markoer && (
             <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em', color: 'var(--primary)', margin: '1px 0 5px' }}>

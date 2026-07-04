@@ -174,14 +174,21 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     const routine = rytmeKeys.has(h.taskKey)
     const checkbar = h.plantId !== null
     const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
-    const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra planter' : 'Fra frøbank'
+    const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
+    // Farvet underkant efter kilde — 4 mm bånd i bunden med metadata ovenpå.
+    const band = {
+      plant:   { bg: 'rgba(107,138,74,0.22)', text: '#42611f' },
+      seed:    { bg: 'rgba(168,124,59,0.20)', text: '#7d5a1f' },
+      routine: { bg: 'rgba(64,58,42,0.11)',   text: 'rgba(60,55,40,0.7)' },
+    }[kind]
     const done = isDone(h)
     return (
       <div
         key={h.taskKey}
         style={{
           position: 'relative',
-          padding: '11px 14px',
+          overflow: 'hidden',
+          paddingTop: 11, paddingLeft: 14, paddingRight: 14, paddingBottom: 54,
           borderRadius: 18,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.08)',
@@ -193,13 +200,13 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
       >
         {/* Afkrydsningsfelt — øverste højre hjørne (delt TaskCheckbox). */}
         {checkbar && (
-          <div style={{ position: 'absolute', top: 11, right: 12, zIndex: 2 }}>
-            <TaskCheckbox done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={30} />
+          <div style={{ position: 'absolute', top: 11, right: 12, zIndex: 3 }}>
+            <TaskCheckbox done={done} onToggle={() => toggle(h)} label={done ? `Fortryd: ${h.titel}` : `Markér udført: ${h.titel}`} size={26} />
           </div>
         )}
 
         {/* Overskrift — 2 mm ind, plads til checkboks, balanceret linjedeling. */}
-        <div style={{ paddingLeft: '2mm', paddingRight: 42 }}>
+        <div style={{ paddingLeft: '2mm', paddingRight: 44 }}>
           <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
             <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 750, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
@@ -207,20 +214,28 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           </Link>
         </div>
 
-        {/* Brødtekst — fuld bredde (korte tekster står på én linje). */}
-        <div style={{ paddingLeft: '2mm', marginTop: 4 }}>
+        {/* Brødtekst — en størrelse mindre + mere afstand til overskriften. */}
+        <div style={{ paddingLeft: '2mm', paddingRight: 8, marginTop: 9 }}>
           <Link href={h.href} style={{ textDecoration: 'none' }}>
-            <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 500, lineHeight: 1.3, color: 'rgba(35,56,43,0.68)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.3, color: 'rgba(35,56,43,0.68)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {h.hvorfor}
             </span>
           </Link>
         </div>
 
-        {/* Bund-bånd: kilde-metadata venstre, thumbnail højre (10 % større). */}
-        <div className="flex items-center justify-between" style={{ marginTop: 8, paddingLeft: '2mm' }}>
-          <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'rgba(35,56,43,0.4)' }}>
-            {meta}
-          </span>
+        {/* Farvet underkant (4 mm, full-bleed) med metadata ovenpå. */}
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '4mm', background: band.bg, zIndex: 0 }} />
+        <span
+          style={{
+            position: 'absolute', left: 16, bottom: 0, height: '4mm', zIndex: 2,
+            display: 'flex', alignItems: 'center',
+            fontFamily: sans, fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: band.text,
+          }}
+        >
+          {meta}
+        </span>
+        {/* Thumbnail-holder nederst højre — ligger øverst og overlapper båndet. */}
+        <div style={{ position: 'absolute', right: 14, bottom: 5, zIndex: 2 }}>
           <SourceMarker kind={kind} size={51} />
         </div>
       </div>
@@ -267,7 +282,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
           </div>
         )}
         {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{nu.map(derivedCard)}</div>}
-        {snart.length > 0 && <div style={{ marginTop: nu.length > 0 ? 20 : 0 }}>{snart.map(derivedCard)}</div>}
+        {snart.length > 0 && <div>{groupLabel('Næste i haven')}{snart.map(derivedCard)}</div>}
         {senere.length > 0 && <div>{groupLabel('Når du har tid')}{senere.map(derivedCard)}</div>}
         {user.length > 0 && (
           <div>
