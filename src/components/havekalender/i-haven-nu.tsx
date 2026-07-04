@@ -199,7 +199,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         style={{
           position: 'relative',
           overflow: 'hidden',
-          paddingTop: 12, paddingLeft: 14, paddingRight: 14, paddingBottom: 84,
+          paddingTop: 20, paddingLeft: 16, paddingRight: 16, paddingBottom: 60,
           borderRadius: 22,
           background: 'rgba(255,250,238,0.72)',
           border: '1px solid rgba(64,58,42,0.09)',
@@ -221,27 +221,27 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           <Link href={h.href} className="min-w-0" style={{ textDecoration: 'none', display: 'block' }}>
             {/* Roligere vægt (600 — Manrope har ikke 650); rutiner en anelse
                 blødere i farve. Fokus-kort + gruppeoverskrifter urørt. */}
-            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 600, lineHeight: 1.18, letterSpacing: '-0.01em', color: routine ? 'rgba(32,48,36,0.94)' : '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
+            <span style={{ display: 'block', fontFamily: sans, fontSize: 16.5, fontWeight: 600, lineHeight: 1.14, letterSpacing: '-0.01em', color: routine ? 'rgba(32,48,36,0.94)' : '#203024', textWrap: 'balance', textDecoration: done ? 'line-through' : 'none' }}>
               {h.titel}
             </span>
           </Link>
         </div>
 
-        {/* Brødtekst — en størrelse mindre + mere afstand til overskriften. */}
-        <div style={{ paddingLeft: '2mm', paddingRight: 8, marginTop: 9 }}>
+        {/* Brødtekst — max 2 linjer, holdes fri af thumbnailen via højre-margin. */}
+        <div style={{ paddingLeft: '2mm', paddingRight: 70, marginTop: 11 }}>
           <Link href={h.href} style={{ textDecoration: 'none' }}>
-            <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.3, color: 'rgba(35,56,43,0.68)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.26, color: 'rgba(35,56,43,0.68)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {h.hvorfor}
             </span>
           </Link>
         </div>
 
-        {/* Lav papir-label-strip i bunden (fast 36 px, full-bleed). Højden er
-            låst — afhænger IKKE af tekst/padding/thumbnail. */}
-        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 36, background: band.bg, zIndex: 0 }} />
+        {/* Bundstribe (fast 44 px, full-bleed). Låst højde — uafhængig af
+            tekst/padding/thumbnail. */}
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 44, background: band.bg, zIndex: 0 }} />
         <span
           style={{
-            position: 'absolute', left: 22, bottom: 0, height: 36, minHeight: 36, maxHeight: 36, boxSizing: 'border-box', zIndex: 2,
+            position: 'absolute', left: 20, bottom: 0, height: 44, minHeight: 44, maxHeight: 44, boxSizing: 'border-box', zIndex: 2,
             display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0, paddingBottom: 0,
             fontFamily: sans, fontSize: 11, lineHeight: 1, fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: band.text,
             transform: 'translateY(1px)',
@@ -249,12 +249,13 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         >
           {meta}
         </span>
-        {/* Thumbnail-holder nederst højre — ØVERSTE lag, luft omkring, overlapper
-            labelen let. Ægte foto når plantId har et; ellers ikon-badge-fallback. */}
-        <div style={{ position: 'absolute', right: 22, bottom: 24, zIndex: 5 }}>
+        {/* Thumbnail-holder — sidder i spændingsfeltet mellem content og bund-
+            stribe: ~40 % af cirklen skærer ned i banneret (binder dem sammen).
+            Ægte foto når plantId har et; ellers ikon-badge-fallback. */}
+        <div style={{ position: 'absolute', right: 14, bottom: 16, zIndex: 5 }}>
           <SourceMarker
             kind={kind}
-            size={58}
+            size={72}
             image={h.plantId ? plantImages[h.plantId] : undefined}
           />
         </div>
