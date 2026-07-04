@@ -31,7 +31,7 @@ import {
 } from '@/components/havekalender/fokus-handling-ui'
 import Link from 'next/link'
 import {
-  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Info, Plus,
+  Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Coffee, Info, Plus,
 } from 'lucide-react'
 import { erIDag, erForsinket, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
@@ -169,14 +169,14 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
     : `${iDagAntal} ${iDagAntal === 1 ? 'ting' : 'ting'} kalder i dag${hasterAntal > 0 ? ` · ${hasterAntal} haster` : ''}`
 
   // ── Render-hjælpere ─────────────────────────────────────────────────
-  function groupLabel(text: string, tone?: string) {
+  function groupLabel(text: string, tone?: string, Icon: typeof Sprout = Sprout) {
     const color = tone ?? 'rgba(47,77,43,0.72)'
     return (
       <div className="flex items-center gap-1.5" style={{ margin: '26px 0 12px' }}>
         <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color }}>
           {text}
         </span>
-        <Sprout style={{ width: 13, height: 13, color, opacity: 0.75 }} strokeWidth={1.9} aria-hidden />
+        <Icon style={{ width: 13, height: 13, color, opacity: 0.75 }} strokeWidth={1.9} aria-hidden />
       </div>
     )
   }
@@ -300,7 +300,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, month 
         )}
         {nu.length > 0 && <div>{groupLabel('Gør nu', 'rgba(76,96,56,0.92)')}{nu.map(derivedCard)}</div>}
         {snart.length > 0 && <div>{groupLabel('Næste i haven')}{snart.map(derivedCard)}</div>}
-        {senere.length > 0 && <div>{groupLabel('Når du har tid')}{senere.map(derivedCard)}</div>}
+        {senere.length > 0 && <div>{groupLabel('Når du har tid', undefined, Coffee)}{senere.map(derivedCard)}</div>}
         {user.length > 0 && (
           <div>
             {groupLabel('Dine opgaver')}
