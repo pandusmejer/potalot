@@ -111,19 +111,18 @@ export function TaskCheckbox({ done, onToggle, label, size = 26 }: {
       aria-pressed={done}
       aria-label={label}
       className={
-        'flex shrink-0 items-center justify-center rounded-full border transition-colors active:scale-90 ' +
-        (done
-          ? 'border-[#5A7038] bg-[#5A7038]'
-          // Hover-overlay: grøn tint så brugeren SER at feltet krydses af.
-          : 'border-[rgba(90,112,56,0.5)] bg-[rgba(255,255,255,0.78)] hover:bg-[rgba(90,112,56,0.24)] hover:border-[rgba(90,112,56,0.7)]')
+        'flex shrink-0 items-center justify-center rounded-full transition-colors active:scale-90 ' +
+        // Hover-overlay: grøn tint så brugeren SER at feltet krydses af.
+        (done ? 'bg-[#5A7038]' : 'bg-[rgba(255,250,238,0.82)] hover:bg-[rgba(90,112,56,0.22)]')
       }
       style={{
         width: size, height: size,
-        boxShadow: done ? 'none' : 'inset 0 1px 2px rgba(64,58,42,0.06), 0 1px 3px rgba(64,58,42,0.06)',
+        border: done ? '1.5px solid #5A7038' : '1.5px solid rgba(105,132,112,0.45)',
+        boxShadow: done ? 'none' : '0 2px 6px rgba(35,45,34,0.08)',
         cursor: 'pointer',
       }}
     >
-      <Check style={{ width: size * 0.56, height: size * 0.56, color: done ? '#fff' : 'rgba(90,112,56,0.42)' }} strokeWidth={done ? 3 : 2.2} aria-hidden />
+      <Check style={{ width: size * 0.56, height: size * 0.56, color: done ? '#fff' : 'rgba(85,116,59,0.72)' }} strokeWidth={done ? 3 : 2} aria-hidden />
     </button>
   )
 }

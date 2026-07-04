@@ -97,25 +97,21 @@ function SourceMarker({ kind, size = 46, image }: { kind: 'plant' | 'seed' | 'ro
     return (
       <span
         aria-hidden
-        style={{ width: size, height: size, borderRadius: 999, overflow: 'hidden', display: 'inline-block', boxShadow: '0 3px 8px rgba(35,45,34,0.16), inset 0 0 0 1.5px rgba(255,255,255,0.55)' }}
+        style={{ width: size, height: size, boxSizing: 'border-box', borderRadius: 999, overflow: 'hidden', display: 'inline-block', border: '2px solid rgba(255,248,234,0.75)', boxShadow: '0 5px 12px rgba(35,45,34,0.16)' }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
       </span>
     )
   }
-  const m = {
-    plant:   { Icon: Sprout,    bg: 'rgba(107,138,74,0.16)', color: '#4C6038' },
-    seed:    { Icon: Flower2,   bg: 'rgba(168,124,59,0.15)', color: '#8A6A2E' },
-    routine: { Icon: RefreshCw, bg: 'rgba(64,58,42,0.07)',   color: 'rgba(64,58,42,0.55)' },
-  }[kind]
-  const icon = Math.round(size * 0.46)
+  const Icon = { plant: Sprout, seed: Flower2, routine: RefreshCw }[kind]
+  const icon = Math.round(size * 0.44)
   return (
     <span
       aria-hidden
-      style={{ width: size, height: size, borderRadius: 999, background: m.bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}
+      style={{ width: size, height: size, boxSizing: 'border-box', borderRadius: 999, background: 'rgba(238,232,210,0.78)', border: '2px solid rgba(255,248,234,0.65)', boxShadow: '0 5px 12px rgba(35,45,34,0.16)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
     >
-      <m.Icon style={{ width: icon, height: icon, color: m.color }} strokeWidth={1.7} />
+      <Icon style={{ width: icon, height: icon, color: 'rgba(47,77,43,0.70)' }} strokeWidth={1.7} />
     </span>
   )
 }
@@ -190,11 +186,11 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
     const checkbar = h.plantId !== null
     const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
     const meta = routine ? 'Rutine' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
-    // Farvet underkant efter kilde — 7 mm mættet bånd i bunden, creme-tekst ovenpå.
+    // Farvet papir-label i bunden efter kilde — afdæmpet, ikke hård farveblok.
     const band = {
-      plant:   { bg: '#5F7D33', text: '#F5F2E4' },
-      seed:    { bg: '#9A7328', text: '#F8F1DF' },
-      routine: { bg: '#6B6552', text: '#F2EFE6' },
+      plant:   { bg: 'rgba(105,132,112,0.80)', text: '#FFF8EA' }, // eucalyptus/sage
+      seed:    { bg: 'rgba(158,133,84,0.74)',  text: '#FFF8EA' }, // varm sand
+      routine: { bg: 'rgba(126,119,88,0.76)',  text: '#FFF8EA' }, // varm oliven/sand
     }[kind]
     const done = isDone(h)
     return (
@@ -203,11 +199,11 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
         style={{
           position: 'relative',
           overflow: 'hidden',
-          paddingTop: 11, paddingLeft: 14, paddingRight: 14, paddingBottom: 54,
-          borderRadius: 18,
+          paddingTop: 12, paddingLeft: 14, paddingRight: 14, paddingBottom: 84,
+          borderRadius: 22,
           background: 'rgba(255,250,238,0.72)',
-          border: '1px solid rgba(64,58,42,0.08)',
-          boxShadow: '0 3px 8px rgba(64,58,42,0.045), inset 0 1px 0 rgba(255,255,255,0.4)',
+          border: '1px solid rgba(64,58,42,0.09)',
+          boxShadow: '0 5px 14px rgba(64,58,42,0.055), inset 0 1px 0 rgba(255,255,255,0.38)',
           marginBottom: 9,
           opacity: done ? 0.55 : 1,
           transition: 'opacity .2s',
@@ -238,24 +234,23 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
           </Link>
         </div>
 
-        {/* Farvet underkant (7 mm, full-bleed) med metadata ovenpå. */}
-        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '7mm', background: band.bg, zIndex: 0 }} />
+        {/* Papir-label i bunden (42 px, full-bleed) med kilde-tekst centreret. */}
+        <div aria-hidden style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 42, background: band.bg, zIndex: 0 }} />
         <span
           style={{
-            position: 'absolute', left: 16, bottom: 0, height: '7mm', zIndex: 2,
+            position: 'absolute', left: 22, bottom: 0, height: 42, zIndex: 2,
             display: 'flex', alignItems: 'center',
-            fontFamily: sans, fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: band.text,
+            fontFamily: sans, fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: band.text,
           }}
         >
           {meta}
         </span>
-        {/* Thumbnail-holder nederst højre — ØVERSTE lag, hævet et par mm så den
-            tydeligt ligger ovenpå båndet. Ægte foto når plantId har et; ellers
-            ikon-badge-fallback. */}
-        <div style={{ position: 'absolute', right: 14, bottom: 'calc(5px + 2.5mm)', zIndex: 5 }}>
+        {/* Thumbnail-holder nederst højre — ØVERSTE lag, luft omkring, overlapper
+            labelen let. Ægte foto når plantId har et; ellers ikon-badge-fallback. */}
+        <div style={{ position: 'absolute', right: 22, bottom: 24, zIndex: 5 }}>
           <SourceMarker
             kind={kind}
-            size={51}
+            size={58}
             image={h.plantId ? plantImages[h.plantId] : undefined}
           />
         </div>
