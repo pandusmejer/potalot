@@ -81,7 +81,7 @@ export default async function GuidesPage() {
   })
 
   return (
-    <div className="relative -mx-4 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
+    <div className="relative -mx-4 -mt-6 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
       {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
       <div

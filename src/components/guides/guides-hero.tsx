@@ -16,19 +16,6 @@ const plex = 'var(--font-plex-condensed), sans-serif'
 export function GuidesHero() {
   return (
     <section className="pt-2 sm:pt-3">
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 11.5,
-          fontWeight: 700,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.52)',
-          margin: '0 0 14px',
-        }}
-      >
-        Potalot feltguide
-      </p>
       <h1
         style={{
           fontFamily: plex,
