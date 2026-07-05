@@ -48,10 +48,11 @@ export function KalenderRytmeKapitel({
     <section
       className="rounded-[24px] px-5 py-6"
       style={{
-        // Svag salvie-tone (køligere/grønnere end 'Din have's varme beige) —
-        // giver kortet kalender-/sæson-identitet uden ekstra volumen.
-        background: '#E9EDE1',
-        border: '1px solid rgba(90,104,70,0.14)',
+        // Varm creme med KUN en svag salvie-undertone (~3-5% grønnere end
+        // standardkortet, ikke et grønt kort). Identiteten bæres af sæson-aksen,
+        // ikke af fladen.
+        background: '#F2F0E3',
+        border: '1px solid #D9D6BE',
       }}
     >
       <header className="mb-5">
@@ -73,7 +74,7 @@ export function KalenderRytmeKapitel({
           style={{
             fontFamily: serif,
             fontSize: 'clamp(24px, 7vw, 28px)',
-            fontWeight: 500,
+            fontWeight: 600,
             lineHeight: 1.02,
             letterSpacing: 0,
             color: '#2D2A24',
@@ -93,7 +94,7 @@ export function KalenderRytmeKapitel({
           className="absolute left-[3px] top-[11px] bottom-[11px] w-px"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(90,104,70,0.14), rgba(90,104,70,0.30) 45%, rgba(90,104,70,0.12))',
+              'linear-gradient(to bottom, rgba(123,139,99,0.28), rgba(123,139,99,0.5) 45%, rgba(123,139,99,0.24))',
           }}
         />
         {chapters.map((chapter, index) => (
