@@ -593,9 +593,9 @@ export async function GuideArticle({
                 letterSpacing: 0,
                 lineHeight: 1.05,
                 color: '#2D2A24',
-                // Mere luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi
-                // en mt-klasse ville blive overskrevet af margin herunder.)
-                margin: '18px 0 0',
+                // Luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi en
+                // mt-klasse ville blive overskrevet af margin herunder.)
+                margin: '15px 0 0',
                 maxWidth: '24ch',
               }}
             >
@@ -608,9 +608,9 @@ export async function GuideArticle({
                 fontWeight: 500,
                 lineHeight: 1.5,
                 color: 'rgba(36,48,31,0.62)',
-                // Mere luft mellem heading og brødtekst (inline, da mt-klasse
-                // ellers overskrives af margin herunder).
-                margin: '14px 0 0',
+                // Luft mellem heading og brødtekst (inline, da mt-klasse ellers
+                // overskrives af margin herunder).
+                margin: '7px 0 0',
                 maxWidth: '46ch',
               }}
             >
