@@ -215,10 +215,10 @@ export function GuideEvidenceImage({
   // smalle former (kvadratisk/høj); brede billeder står som fuldbredde-blok.
   if (float) {
     const width = variant === 'tall' ? '44%' : '48%'
-    // Mindre luft mod den ombrydende tekst (tekst-siden) så teksten kommer
-    // tættere på billedet; behold lidt luft under.
+    // Mindre luft mod den ombrydende tekst (tekst-siden) OG under billedet, så
+    // den første fuldbredde-linje rykker op tæt på billedets bund.
     const margin =
-      float === 'right' ? '3px 0 10px 11px' : '3px 11px 10px 0'
+      float === 'right' ? '3px 0 3px 11px' : '3px 11px 3px 0'
     return (
       <figure
         className="overflow-hidden rounded-[16px]"
