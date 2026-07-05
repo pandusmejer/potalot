@@ -13,7 +13,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
 import { GuideNotesCard } from '@/components/guides/guide-notes-card'
@@ -218,12 +217,17 @@ export async function GuideArticle({
           → lavere hero. Ét komponeret hoved, ikke spredte elementer. Hero'et
           identificerer planten, men blokerer ikke guiden. */}
       <header className="space-y-3.5">
-        <div className="-ml-2 flex items-center justify-between gap-2">
-          <Button asChild variant="ghost" size="icon">
-            <Link href={safeReturnTo} aria-label="Tilbage">
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="flex items-center justify-between gap-2">
+          {/* Ren, on-brand back-knap: blød creme-cirkel + hårfin border. IKKE
+              shadcn ghost-varianten, hvis hover:bg-accent er temaets lyserøde/
+              ler-tone og skriger i det rolige guide-univers. */}
+          <Link
+            href={safeReturnTo}
+            aria-label="Tilbage"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(45,42,36,0.12)] bg-[rgba(255,255,255,0.45)] text-[#2D2A24] transition-colors hover:bg-[rgba(45,42,36,0.06)] active:scale-[0.97]"
+          >
+            <ArrowLeft className="h-[18px] w-[18px]" strokeWidth={2} />
+          </Link>
           {isOwner && !isDemo && <UserGuideEditDialog guide={original} />}
         </div>
 
