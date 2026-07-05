@@ -20,8 +20,7 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
-import { VidsteDuMedMakro } from '@/components/guides/vidste-du-med-makro'
-import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
+import { GuideNote } from '@/components/guides/guide-note'
 import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
@@ -399,11 +398,11 @@ export async function GuideArticle({
 
       {effective.variety === 'San Marzano' && (
         <>
-          {debug && <DebugBlock name="VidsteDuMedMakro" note="signatur 1/3" />}
-          <VidsteDuMedMakro macroImage={noteImage} intensity="soft">
+          {debug && <DebugBlock name="GuideNote" note="Vidste du? — signatur 1/3" />}
+          <GuideNote label="Vidste du?" image={noteImage} imageSide="left">
             San Marzano har fast frugtkød og lavt vandindhold, hvilket gør
             sorten særlig velegnet til sauce og konservering.
-          </VidsteDuMedMakro>
+          </GuideNote>
         </>
       )}
 
@@ -666,11 +665,11 @@ export async function GuideArticle({
 
       {effective.variety === 'San Marzano' && (
         <>
-          {debug && <DebugBlock name="PotalotTipMedMakro" note="signatur 2/3" />}
-          <PotalotTipMedMakro macroImage={tipImage}>
+          {debug && <DebugBlock name="GuideNote" note="Potalot-tip — signatur 2/3" />}
+          <GuideNote label="Potalot-tip" image={tipImage} imageSide="right">
             Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano
             kvitterer for jævn fugt med færre revner og mere koncentreret smag.
-          </PotalotTipMedMakro>
+          </GuideNote>
         </>
       )}
 
