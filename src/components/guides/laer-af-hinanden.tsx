@@ -1,24 +1,21 @@
 'use client'
 
 /**
- * LaerAfHinanden — roligt "Lær af hinanden"-modul på guide-detaljesiden.
+ * LaerAfHinanden — roligt "Lær af hinanden"-teaser-modul på guide-detaljesiden.
  *
- * Dyrker-erfaringer og observationer fra andre haver — IKKE et socialt feed og
- * IKKE en erstatning for Potalot-guidens autoritet. Et lag UNDER guiden: praktisk
- * viden fra virkelige haver, tydeligt adskilt fra Potalots anbefalinger.
- *
- * Præsenteres som en VANDRET, rolig erfarings-strip (ikke en lodret stak, der
- * ligner endnu et tungt kapitel): lave, horisontale kort i horisontal scroll,
- * med antydning af næste kort. Tillidsgrænsen bæres af typografien — erfaringer
- * i Manrope (praktisk feltnote), Potalot-guiden i Cormorant (autoritet).
+ * Dyrker-erfaringer fra andre haver — IKKE et socialt feed. En ROLIG TEASER:
+ * én featured erfaring vises, resten åbnes aktivt via "Se flere". Ingen vandret
+ * carousel, ingen halvt-synligt næste kort (det gør sektionen travl). Tillids-
+ * grænsen bæres af typografien — alt i Manrope (praktisk feltnote), aldrig
+ * Cormorant (som er Potalot-guidens autoritet).
  *
  * V1 = design + demo-data + lokale/optimistiske interaktioner. Det rigtige
- * community-lag (deling på tværs, anerkendelses-notifikationer, privat/anonym-
- * persistens) er et separat backend-sprint.
+ * community-lag (deling, notifikationer, privat/anonym-persistens) er et
+ * separat backend-sprint.
  */
 
-import { useRef, useState } from 'react'
-import { Sprout, BookmarkPlus, Check, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { Sprout, BookmarkPlus, Check, ChevronDown } from 'lucide-react'
 import type { DyrkerErfaring, ErfaringKind } from '@/data/guides-erfaringer'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
@@ -37,26 +34,22 @@ export function LaerAfHinanden({
   subject: string
   erfaringer: DyrkerErfaring[]
 }) {
-  const stripRef = useRef<HTMLDivElement>(null)
+  const [expanded, setExpanded] = useState(false)
 
   if (erfaringer.length === 0) return null
 
-  function scrollNext() {
-    const el = stripRef.current
-    if (!el) return
-    // Rul cirka én kort-bredde frem (kortene fylder ~86% af strippen på mobil).
-    el.scrollBy({ left: Math.round(el.clientWidth * 0.86), behavior: 'smooth' })
-  }
+  const [teaser, ...resten] = erfaringer
 
   return (
     <section id="erfaringer" aria-labelledby="erfaringer-titel" className="scroll-mt-20">
+      {/* Rolig eyebrow-linje: LÆR AF HINANDEN · BETA (ét stop, ikke to). */}
       <div className="flex items-center gap-2">
         <p
           style={{
             fontFamily: sans,
             fontSize: 11,
             fontWeight: 700,
-            letterSpacing: '0.22em',
+            letterSpacing: '0.2em',
             textTransform: 'uppercase',
             color: 'rgba(36,48,31,0.55)',
             margin: 0,
@@ -67,193 +60,172 @@ export function LaerAfHinanden({
         <span
           style={{
             fontFamily: sans,
-            fontSize: 9.5,
+            fontSize: 9,
             fontWeight: 800,
-            letterSpacing: '0.12em',
+            letterSpacing: '0.1em',
             textTransform: 'uppercase',
             color: '#4E6138',
             background: 'rgba(123,148,96,0.16)',
-            border: '1px solid rgba(123,148,96,0.28)',
             borderRadius: 999,
-            padding: '2px 7px',
+            padding: '2px 6px',
           }}
         >
           Beta
         </span>
       </div>
 
-      <div className="mt-1.5 flex items-end justify-between gap-3">
-        <h2
-          id="erfaringer-titel"
-          style={{
-            fontFamily: sans,
-            fontSize: 'clamp(20px, 4.6vw, 23px)',
-            fontWeight: 800,
-            letterSpacing: '-0.01em',
-            color: '#2D2A24',
-            margin: 0,
-          }}
-        >
-          Erfaringer fra andre haver
-        </h2>
-        {erfaringer.length > 1 && (
-          <button
-            type="button"
-            onClick={scrollNext}
-            className="group inline-flex shrink-0 items-center gap-1"
-            style={{
-              fontFamily: sans,
-              fontSize: 12.5,
-              fontWeight: 700,
-              color: '#4E6138',
-              background: 'transparent',
-              border: 'none',
-              padding: '2px 0',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Se flere ({erfaringer.length})
-            <ChevronRight width={15} height={15} strokeWidth={2.25} aria-hidden />
-          </button>
-        )}
-      </div>
-
+      <h2
+        id="erfaringer-titel"
+        style={{
+          fontFamily: sans,
+          fontSize: 18,
+          fontWeight: 800,
+          letterSpacing: '-0.01em',
+          color: '#2D2A24',
+          margin: '5px 0 0',
+        }}
+      >
+        Erfaringer fra andre haver
+      </h2>
       <p
         style={{
           fontFamily: sans,
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: 500,
-          lineHeight: 1.5,
-          color: '#6A665C',
-          margin: '6px 0 0',
-          maxWidth: '48ch',
+          lineHeight: 1.4,
+          color: 'rgba(36,48,31,0.55)',
+          margin: '3px 0 0',
         }}
       >
-        Se hvad andre dyrkere har oplevet med {subject} i deres egne haver.
+        Se hvad andre har oplevet med {subject}.
       </p>
 
-      {/* Vandret strip: kortene fylder ~86% på mobil, så næste kort peeker; snap
-          giver rolig swipe. Negativ margin + padding lader strippen bløde ud til
-          skærmkanten uden at bryde sidens kolonne. */}
-      <div
-        ref={stripRef}
-        className="-mx-4 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {erfaringer.map(e => (
-          <ErfaringCard key={e.id} erfaring={e} />
-        ))}
+      <div className="mt-3 space-y-2.5">
+        <ErfaringCard erfaring={teaser} />
+        {expanded && resten.map(e => <ErfaringCard key={e.id} erfaring={e} />)}
       </div>
+
+      {resten.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded(v => !v)}
+          aria-expanded={expanded}
+          className="group mt-2.5 inline-flex items-center gap-1"
+          style={{
+            fontFamily: sans,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: '#4E6138',
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+          }}
+        >
+          {expanded ? 'Vis færre' : `Se flere erfaringer (${resten.length})`}
+          <ChevronDown
+            width={14}
+            height={14}
+            strokeWidth={2.25}
+            aria-hidden
+            style={{
+              transform: expanded ? 'rotate(180deg)' : 'none',
+              transition: 'transform 160ms ease',
+            }}
+          />
+        </button>
+      )}
 
       <p
         style={{
           fontFamily: sans,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 500,
-          lineHeight: 1.45,
-          color: 'rgba(36,48,31,0.45)',
-          margin: '14px 0 0',
-          maxWidth: '48ch',
+          lineHeight: 1.4,
+          color: 'rgba(36,48,31,0.4)',
+          margin: '12px 0 0',
         }}
       >
-        Erfaringer fra andre dyrkere kan variere efter vejr, jord og placering.
+        Erfaringer kan variere efter vejr, jord og placering.
       </p>
     </section>
   )
 }
 
 function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
-  // Optimistiske, lokale interaktioner (demo). Rigtig persistens + anerkendelses-
-  // notifikation til den oprindelige dyrker hører til backend-sprintet.
+  // Optimistiske, lokale interaktioner (demo). Rigtig persistens + notifikation
+  // til den oprindelige dyrker hører til backend-sprintet.
   const [acked, setAcked] = useState(false)
   const [saved, setSaved] = useState(false)
   const count = erfaring.helpfulCount + (acked ? 1 : 0)
 
   return (
     <article
-      className="flex w-[86%] shrink-0 snap-start flex-col sm:w-[300px]"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.09)',
-        borderRadius: 16,
-        padding: '13px 14px',
+        borderRadius: 14,
+        padding: '12px 14px',
       }}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: '#4E6138',
-            background: 'rgba(123,148,96,0.14)',
-            borderRadius: 999,
-            padding: '3px 8px',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {KIND_LABEL[erfaring.kind]}
-        </span>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 11,
-            fontWeight: 600,
-            color: 'rgba(36,48,31,0.42)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {erfaring.season}
-        </span>
-      </div>
+      {/* Kompakt meta-linje: type · sæson. */}
+      <p
+        className="m-0 uppercase"
+        style={{
+          fontFamily: sans,
+          fontSize: 9.5,
+          fontWeight: 800,
+          letterSpacing: '0.08em',
+          color: 'rgba(78,97,56,0.85)',
+        }}
+      >
+        {KIND_LABEL[erfaring.kind]}
+        <span style={{ color: 'rgba(36,48,31,0.34)' }}> · {erfaring.season}</span>
+      </p>
 
       <h3
-        className="line-clamp-2"
+        className="m-0 line-clamp-2"
         style={{
           fontFamily: sans,
           fontSize: 15,
           fontWeight: 700,
-          lineHeight: 1.25,
+          lineHeight: 1.2,
           letterSpacing: '-0.01em',
           color: '#2D2A24',
-          margin: '9px 0 0',
+          marginTop: 5,
         }}
       >
         {erfaring.title}
       </h3>
 
       <p
+        className="m-0"
         style={{
           fontFamily: sans,
           fontSize: 11.5,
           fontWeight: 600,
           color: 'rgba(36,48,31,0.5)',
-          margin: '6px 0 0',
+          marginTop: 3,
         }}
       >
         {erfaring.place} · Jord: {erfaring.soil}
       </p>
 
       <p
-        className="line-clamp-3"
+        className="m-0 line-clamp-2"
         style={{
           fontFamily: sans,
           fontSize: 13,
           fontWeight: 500,
-          lineHeight: 1.48,
+          lineHeight: 1.45,
           color: '#6A665C',
-          margin: '8px 0 0',
+          marginTop: 7,
         }}
       >
         {erfaring.excerpt}
       </p>
 
-      <div
-        className="mt-auto flex items-center justify-between gap-2"
-        style={{ paddingTop: 12 }}
-      >
+      <div className="mt-3 flex items-center justify-between gap-2">
         <button
           type="button"
           onClick={() => setAcked(v => !v)}
@@ -280,17 +252,15 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           type="button"
           onClick={() => setSaved(v => !v)}
           aria-pressed={saved}
-          className="inline-flex items-center gap-1.5"
+          className="inline-flex items-center gap-1"
           style={{
             fontFamily: sans,
-            fontSize: 12,
+            fontSize: 11.5,
             fontWeight: 700,
-            color: saved ? '#4E6138' : '#2D2A24',
-            background: saved ? 'rgba(123,148,96,0.14)' : 'rgba(36,48,31,0.05)',
-            border: '1px solid',
-            borderColor: saved ? 'rgba(123,148,96,0.32)' : 'rgba(45,42,36,0.12)',
-            borderRadius: 999,
-            padding: '5px 11px',
+            color: saved ? '#4E6138' : 'rgba(36,48,31,0.6)',
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
             cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
