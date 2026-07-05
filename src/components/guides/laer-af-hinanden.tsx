@@ -101,7 +101,7 @@ export function LaerAfHinanden({
           className="group inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: 700,
             lineHeight: 1.2,
             color: olive,
@@ -115,8 +115,8 @@ export function LaerAfHinanden({
         >
           {expanded ? 'Skjul erfaringer' : `Se flere erfaringer (${resten.length})`}
           <ChevronRight
-            width={18}
-            height={18}
+            width={16}
+            height={16}
             strokeWidth={2.25}
             aria-hidden
             style={{
@@ -151,6 +151,7 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 14,
         padding: '20px 20px 18px',
+        boxShadow: '0 6px 18px rgba(36,42,28,0.09)',
       }}
     >
       {/* Top: label-chip (venstre) + metadata (højre). */}
@@ -225,7 +226,7 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
             fontFamily: sans,
             fontSize: 11.5,
             fontWeight: 600,
-            color: 'rgba(36,48,31,0.5)',
+            color: 'rgba(36,48,31,0.64)',
             gap: 7,
             whiteSpace: 'nowrap',
           }}
