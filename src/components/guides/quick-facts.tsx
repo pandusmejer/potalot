@@ -4,7 +4,7 @@ import { LIGHT_META, WATER_META, DIFFICULTY_META, MONTHS_DA } from '@/lib/consta
 import type { Guide } from '@/lib/types'
 import {
   Sun, Droplets, Snowflake, Ruler, ArrowDown, Calendar,
-  ThermometerSun, Sprout, TreePine, Wheat,
+  ThermometerSun, Sprout, TreePine, Wheat, ChevronDown,
 } from 'lucide-react'
 
 interface Props {
@@ -36,6 +36,8 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
       <CardContent>
         <p className="text-sm text-foreground mb-4 leading-relaxed">{guide.summary}</p>
 
+        {/* Primære nøglefakta — de beslutningskritiske, altid synlige. Kortet
+            fylder mindre vertikalt; resten ligger i "Flere detaljer". */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {qf.growthType && (
             <Fact label="Vækstform" value={qf.growthType} />
@@ -52,20 +54,6 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
               label="Såning"
               value={formatMonths(qf.sowingMonths)}
               icon={<Calendar className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.directSowingMonths.length > 0 && (
-            <Fact
-              label="Direkte såning"
-              value={formatMonths(qf.directSowingMonths)}
-              icon={<Calendar className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.sowingDepthMm !== undefined && (
-            <Fact
-              label="Sådybde"
-              value={qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`}
-              icon={<ArrowDown className="h-3.5 w-3.5" />}
             />
           )}
           {qf.plantingOutMonths.length > 0 && (
@@ -103,38 +91,68 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
               icon={<Droplets className="h-3.5 w-3.5" />}
             />
           )}
-          {qf.soil && <Fact label="Jord" value={qf.soil} />}
-          {qf.germinationTemperature && (
-            <Fact
-              label="Spiretemp"
-              value={qf.germinationTemperature}
-              icon={<ThermometerSun className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.germinationDays && (
-            <Fact label="Spiretid" value={`${qf.germinationDays} dage`} />
-          )}
-          {qf.plantSpacing && (
-            <Fact label="Afstand" value={qf.plantSpacing} icon={<Ruler className="h-3.5 w-3.5" />} />
-          )}
-          {qf.rowSpacing && <Fact label="Rækkeafstand" value={qf.rowSpacing} />}
-          {qf.height && (
-            <Fact label="Højde" value={qf.height} icon={<Ruler className="h-3.5 w-3.5" />} />
-          )}
-          {qf.frostSensitive && (
-            <Fact
-              label="Frost"
-              value="Følsom"
-              icon={<Snowflake className="h-3.5 w-3.5 text-blue-600" />}
-            />
-          )}
-          {qf.minimumTemperature && (
-            <Fact label="Min. temp" value={qf.minimumTemperature} />
-          )}
-          {qf.primaryUse && (
-            <Fact label="Anvendelse" value={qf.primaryUse} />
-          )}
         </div>
+
+        {/* Sekundære detaljer — foldet væk, så kortet er scanbart som udgangs-
+            punkt. Native <details> (ingen JS i denne server-component). */}
+        {hasSecondary(qf) && (
+          <details className="group mt-3 border-t border-border pt-3">
+            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
+              Flere detaljer
+              <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {qf.soil && <Fact label="Jord" value={qf.soil} />}
+              {qf.germinationDays && (
+                <Fact
+                  label="Spiretid"
+                  value={/dage/i.test(qf.germinationDays) ? qf.germinationDays : `${qf.germinationDays} dage`}
+                />
+              )}
+              {qf.primaryUse && (
+                <Fact label="Anvendelse" value={qf.primaryUse} />
+              )}
+              {qf.height && (
+                <Fact label="Højde" value={qf.height} icon={<Ruler className="h-3.5 w-3.5" />} />
+              )}
+              {qf.directSowingMonths.length > 0 && (
+                <Fact
+                  label="Direkte såning"
+                  value={formatMonths(qf.directSowingMonths)}
+                  icon={<Calendar className="h-3.5 w-3.5" />}
+                />
+              )}
+              {qf.sowingDepthMm !== undefined && (
+                <Fact
+                  label="Sådybde"
+                  value={qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`}
+                  icon={<ArrowDown className="h-3.5 w-3.5" />}
+                />
+              )}
+              {qf.germinationTemperature && (
+                <Fact
+                  label="Spiretemp"
+                  value={qf.germinationTemperature}
+                  icon={<ThermometerSun className="h-3.5 w-3.5" />}
+                />
+              )}
+              {qf.plantSpacing && (
+                <Fact label="Afstand" value={qf.plantSpacing} icon={<Ruler className="h-3.5 w-3.5" />} />
+              )}
+              {qf.rowSpacing && <Fact label="Rækkeafstand" value={qf.rowSpacing} />}
+              {qf.frostSensitive && (
+                <Fact
+                  label="Frost"
+                  value="Følsom"
+                  icon={<Snowflake className="h-3.5 w-3.5 text-blue-600" />}
+                />
+              )}
+              {qf.minimumTemperature && (
+                <Fact label="Min. temp" value={qf.minimumTemperature} />
+              )}
+            </div>
+          </details>
+        )}
 
         {guide.tags.length > 0 && (
           <div className="flex gap-1.5 flex-wrap mt-4 pt-3 border-t border-border">
@@ -161,6 +179,23 @@ function Fact({ label, value, icon }: { label: string; value: string; icon?: Rea
       </span>
       <span className="text-sm text-foreground font-medium">{value}</span>
     </div>
+  )
+}
+
+/** Er der overhovedet sekundære felter at folde ud? Ellers skjules folden. */
+function hasSecondary(qf: Guide['quickFacts']): boolean {
+  return Boolean(
+    qf.soil ||
+      qf.germinationDays ||
+      qf.primaryUse ||
+      qf.height ||
+      qf.directSowingMonths.length > 0 ||
+      qf.sowingDepthMm !== undefined ||
+      qf.germinationTemperature ||
+      qf.plantSpacing ||
+      qf.rowSpacing ||
+      qf.frostSensitive ||
+      qf.minimumTemperature,
   )
 }
 
