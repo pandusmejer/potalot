@@ -19,10 +19,12 @@ export interface DyrkerErfaring {
   /** Styrer label-chippen: hvad slags bidrag er det? */
   kind: ErfaringKind
   title: string
-  /** Dyrkningsforhold — vises som små chips (drivhus, friland, krukke, jord). */
-  conditions: string[]
+  /** Voksested — Drivhus / Friland / Krukke (altan) osv. */
+  place: string
+  /** Jordtype — Muldjord / Sandmuld / Plantejord osv. */
+  soil: string
   excerpt: string
-  /** Sæson eller måned, fx "Sommer 2025" / "August". */
+  /** Sæson eller måned, fx "Sæson 2024" / "August". */
   season: string
   /** Hvor mange andre dyrkere der har haft gavn af observationen. */
   helpfulCount: number
@@ -31,93 +33,113 @@ export interface DyrkerErfaring {
 const ERFARINGER: Record<string, DyrkerErfaring[]> = {
   'tomat-san-marzano': [
     {
-      id: 'sm-log-knibning',
+      id: 'sm-sauce',
       guideId: 'tomat-san-marzano',
       kind: 'log',
-      title: 'Ugentlig knibning gav markant større klaser',
-      conditions: ['Drivhus', 'Krukke 20 L'],
+      title: 'Fantastisk til sauce – få kerner',
+      place: 'Drivhus',
+      soil: 'Muldjord',
       excerpt:
-        'Fjernede alle sideskud én gang om ugen og toppede planten sidst i august. Færre men tydeligt større og mere ensartede klaser end året før.',
+        'Dyrket i drivhus i år. Meget kødfulde og med virkelig få kerner. Lavede passata — den blev så cremet!',
+      season: 'Sæson 2024',
+      helpfulCount: 23,
+    },
+    {
+      id: 'sm-friland',
+      guideId: 'tomat-san-marzano',
+      kind: 'observation',
+      title: 'Lang sæson, stort udbytte',
+      place: 'Friland',
+      soil: 'Sandmuld',
+      excerpt:
+        'Dyrket på friland. Langsom start, men da den først kom i gang, gav den masser af aflange, flotte tomater.',
+      season: 'Sæson 2024',
+      helpfulCount: 18,
+    },
+    {
+      id: 'sm-altan',
+      guideId: 'tomat-san-marzano',
+      kind: 'erfaring',
+      title: 'Overraskende godt på altanen',
+      place: 'Krukke (altan)',
+      soil: 'Plantejord',
+      excerpt:
+        'Dyrket i stor krukke på altanen. Overraskende udbytte og super smag. Husk opbinding fra start!',
+      season: 'Sæson 2024',
+      helpfulCount: 15,
+    },
+    {
+      id: 'sm-knibning',
+      guideId: 'tomat-san-marzano',
+      kind: 'log',
+      title: 'Ugentlig knibning gav større klaser',
+      place: 'Drivhus',
+      soil: 'Muldjord',
+      excerpt:
+        'Fjernede alle sideskud én gang om ugen og toppede planten sidst i august. Færre, men tydeligt større klaser.',
       season: 'Juli–sep 2025',
       helpfulCount: 21,
     },
     {
-      id: 'sm-obs-blomsterende',
+      id: 'sm-blomsterende',
       guideId: 'tomat-san-marzano',
       kind: 'observation',
-      title: 'Blomsterendefald ved uregelmæssig vanding',
-      conditions: ['Drivhus'],
+      title: 'Blomsterendefald ved ujævn vanding',
+      place: 'Drivhus',
+      soil: 'Muldjord',
       excerpt:
-        'De første frugter fik sorte, indsunkne pletter i bunden. Det stoppede da jeg vandede jævnt hver morgen og tilførte lidt kalk til jorden.',
-      season: 'Juni',
+        'De første frugter fik sorte pletter i bunden. Det stoppede, da jeg vandede jævnt og tilførte lidt kalk til jorden.',
+      season: 'Juni 2025',
       helpfulCount: 17,
-    },
-    {
-      id: 'sm-erf-opbinding',
-      guideId: 'tomat-san-marzano',
-      kind: 'erfaring',
-      title: 'Skulle bindes op tidligere end jeg troede',
-      conditions: ['Drivhus', 'Ranketomat'],
-      excerpt:
-        'Planterne skød hurtigt i vejret i juni. Jeg ventede for længe, og et par stængler knækkede under vægten. Næste år binder jeg op allerede ved 40 cm.',
-      season: 'Sommer 2025',
-      helpfulCount: 14,
-    },
-    {
-      id: 'sm-obs-vanding',
-      guideId: 'tomat-san-marzano',
-      kind: 'observation',
-      title: 'Sparsom vanding gav tykkere sauce',
-      conditions: ['Friland', 'Sandet jord'],
-      excerpt:
-        'Vandede kun lidt de sidste par uger før høst. Frugterne blev en anelse mindre, men mere kødfulde — saucen kogte hurtigere ind.',
-      season: 'August',
-      helpfulCount: 9,
     },
   ],
   tomat: [
     {
-      id: 'tom-erf-forspiring',
+      id: 'tom-forspiring',
       guideId: 'tomat',
       kind: 'erfaring',
-      title: 'Forspiring i vindueskarm blev for spinkel',
-      conditions: ['Indendørs forspiring'],
+      title: 'Forspiring blev for spinkel uden lys',
+      place: 'Forspiring inde',
+      soil: 'Såjord',
       excerpt:
-        'Mine spirer blev lange og tynde ved vinduet. Med en billig vækstlampe et par timer om dagen blev de langt mere kompakte og stærke.',
-      season: 'Marts',
+        'Mine spirer blev lange og tynde ved vinduet. Med en billig vækstlampe blev de langt mere kompakte og stærke.',
+      season: 'Marts 2025',
       helpfulCount: 26,
     },
     {
-      id: 'tom-obs-drivhus',
+      id: 'tom-drivhus',
       guideId: 'tomat',
       kind: 'observation',
-      title: 'Drivhus gav næsten tre ugers tidligere høst',
-      conditions: ['Drivhus', 'Friland'],
+      title: 'Drivhus gav tre ugers forspring',
+      place: 'Drivhus',
+      soil: 'Muldjord',
       excerpt:
-        'Satte samme sort i drivhus og på friland side om side. Drivhusplanterne var klar til høst knap tre uger før frilandsplanterne.',
-      season: 'Sommer 2025',
+        'Satte samme sort i drivhus og på friland. Drivhusplanterne var klar til høst knap tre uger før frilandsplanterne.',
+      season: 'Sæson 2025',
       helpfulCount: 13,
     },
     {
-      id: 'tom-log-vanding',
+      id: 'tom-vanding',
       guideId: 'tomat',
       kind: 'log',
       title: 'Vanding ved rødderne, ikke på bladene',
-      conditions: ['Drivhus', 'Krukke'],
+      place: 'Krukke',
+      soil: 'Plantejord',
       excerpt:
-        'Skiftede til at vande direkte ved jorden om morgenen i stedet for oppefra. Mærkbart færre svampeproblemer resten af sæsonen.',
+        'Skiftede til at vande direkte ved jorden om morgenen. Mærkbart færre svampeproblemer resten af sæsonen.',
       season: 'Hele sæsonen',
       helpfulCount: 15,
     },
     {
-      id: 'tom-obs-meldug',
+      id: 'tom-meldug',
       guideId: 'tomat',
       kind: 'observation',
       title: 'Meldug kom efter en fugtig august',
-      conditions: ['Friland'],
+      place: 'Friland',
+      soil: 'Havejord',
       excerpt:
-        'Bladene fik hvidt belæg sidst i august. Året efter gav mere plads mellem planterne bedre luft — og langt mindre meldug.',
-      season: 'August',
+        'Bladene fik hvidt belæg sidst i august. Året efter gav mere plads mellem planterne bedre luft — og mindre meldug.',
+      season: 'August 2024',
       helpfulCount: 8,
     },
   ],

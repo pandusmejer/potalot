@@ -7,23 +7,24 @@
  * IKKE en erstatning for Potalot-guidens autoritet. Et lag UNDER guiden: praktisk
  * viden fra virkelige haver, tydeligt adskilt fra Potalots anbefalinger.
  *
- * Tillidsgrænsen bæres af typografien: erfaringer står i Manrope (praktisk
- * feltnote), mens Potalot-guiden er Cormorant (editorial autoritet). Label-chips
- * ("Erfaring fra dyrker" / "Observation" / "Dyrkningslog") gør det eksplicit.
+ * Præsenteres som en VANDRET, rolig erfarings-strip (ikke en lodret stak, der
+ * ligner endnu et tungt kapitel): lave, horisontale kort i horisontal scroll,
+ * med antydning af næste kort. Tillidsgrænsen bæres af typografien — erfaringer
+ * i Manrope (praktisk feltnote), Potalot-guiden i Cormorant (autoritet).
  *
  * V1 = design + demo-data + lokale/optimistiske interaktioner. Det rigtige
  * community-lag (deling på tværs, anerkendelses-notifikationer, privat/anonym-
  * persistens) er et separat backend-sprint.
  */
 
-import { useState } from 'react'
-import { Sprout, BookmarkPlus, Check, ChevronDown } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Sprout, BookmarkPlus, Check, ChevronRight } from 'lucide-react'
 import type { DyrkerErfaring, ErfaringKind } from '@/data/guides-erfaringer'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 
 const KIND_LABEL: Record<ErfaringKind, string> = {
-  erfaring: 'Erfaring fra dyrker',
+  erfaring: 'Erfaring',
   observation: 'Observation',
   log: 'Dyrkningslog',
 }
@@ -36,42 +37,88 @@ export function LaerAfHinanden({
   subject: string
   erfaringer: DyrkerErfaring[]
 }) {
-  const [expanded, setExpanded] = useState(false)
+  const stripRef = useRef<HTMLDivElement>(null)
 
   if (erfaringer.length === 0) return null
 
-  const teaser = erfaringer[0]
-  const resten = erfaringer.slice(1)
-  const synlige = expanded ? erfaringer : [teaser]
+  function scrollNext() {
+    const el = stripRef.current
+    if (!el) return
+    // Rul cirka én kort-bredde frem (kortene fylder ~86% af strippen på mobil).
+    el.scrollBy({ left: Math.round(el.clientWidth * 0.86), behavior: 'smooth' })
+  }
 
   return (
     <section id="erfaringer" aria-labelledby="erfaringer-titel" className="scroll-mt-20">
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.55)',
-          margin: 0,
-        }}
-      >
-        Lær af hinanden
-      </p>
-      <h2
-        id="erfaringer-titel"
-        style={{
-          fontFamily: sans,
-          fontSize: 'clamp(20px, 4.6vw, 23px)',
-          fontWeight: 800,
-          letterSpacing: '-0.01em',
-          color: '#2D2A24',
-          margin: '6px 0 0',
-        }}
-      >
-        Erfaringer fra andre haver
-      </h2>
+      <div className="flex items-center gap-2">
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.55)',
+            margin: 0,
+          }}
+        >
+          Lær af hinanden
+        </p>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 9.5,
+            fontWeight: 800,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: '#4E6138',
+            background: 'rgba(123,148,96,0.16)',
+            border: '1px solid rgba(123,148,96,0.28)',
+            borderRadius: 999,
+            padding: '2px 7px',
+          }}
+        >
+          Beta
+        </span>
+      </div>
+
+      <div className="mt-1.5 flex items-end justify-between gap-3">
+        <h2
+          id="erfaringer-titel"
+          style={{
+            fontFamily: sans,
+            fontSize: 'clamp(20px, 4.6vw, 23px)',
+            fontWeight: 800,
+            letterSpacing: '-0.01em',
+            color: '#2D2A24',
+            margin: 0,
+          }}
+        >
+          Erfaringer fra andre haver
+        </h2>
+        {erfaringer.length > 1 && (
+          <button
+            type="button"
+            onClick={scrollNext}
+            className="group inline-flex shrink-0 items-center gap-1"
+            style={{
+              fontFamily: sans,
+              fontSize: 12.5,
+              fontWeight: 700,
+              color: '#4E6138',
+              background: 'transparent',
+              border: 'none',
+              padding: '2px 0',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Se flere ({erfaringer.length})
+            <ChevronRight width={15} height={15} strokeWidth={2.25} aria-hidden />
+          </button>
+        )}
+      </div>
+
       <p
         style={{
           fontFamily: sans,
@@ -86,42 +133,17 @@ export function LaerAfHinanden({
         Se hvad andre dyrkere har oplevet med {subject} i deres egne haver.
       </p>
 
-      <div className="mt-4 space-y-3">
-        {synlige.map(e => (
+      {/* Vandret strip: kortene fylder ~86% på mobil, så næste kort peeker; snap
+          giver rolig swipe. Negativ margin + padding lader strippen bløde ud til
+          skærmkanten uden at bryde sidens kolonne. */}
+      <div
+        ref={stripRef}
+        className="-mx-4 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {erfaringer.map(e => (
           <ErfaringCard key={e.id} erfaring={e} />
         ))}
       </div>
-
-      {resten.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setExpanded(v => !v)}
-          aria-expanded={expanded}
-          className="group mt-3 inline-flex items-center gap-1.5"
-          style={{
-            fontFamily: sans,
-            fontSize: 13,
-            fontWeight: 700,
-            color: '#4E6138',
-            background: 'transparent',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
-          }}
-        >
-          {expanded ? 'Vis færre erfaringer' : `Se flere erfaringer (${resten.length})`}
-          <ChevronDown
-            width={15}
-            height={15}
-            strokeWidth={2.25}
-            aria-hidden
-            style={{
-              transform: expanded ? 'rotate(180deg)' : 'none',
-              transition: 'transform 160ms ease',
-            }}
-          />
-        </button>
-      )}
 
       <p
         style={{
@@ -130,7 +152,7 @@ export function LaerAfHinanden({
           fontWeight: 500,
           lineHeight: 1.45,
           color: 'rgba(36,48,31,0.45)',
-          margin: '16px 0 0',
+          margin: '14px 0 0',
           maxWidth: '48ch',
         }}
       >
@@ -149,26 +171,26 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
 
   return (
     <article
+      className="flex w-[86%] shrink-0 snap-start flex-col sm:w-[300px]"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.09)',
         borderRadius: 16,
-        padding: '15px 16px',
+        padding: '13px 14px',
       }}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center justify-between gap-2">
         <span
           style={{
             fontFamily: sans,
-            fontSize: 10,
+            fontSize: 9.5,
             fontWeight: 700,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             color: '#4E6138',
             background: 'rgba(123,148,96,0.14)',
-            border: '1px solid rgba(123,148,96,0.22)',
             borderRadius: 999,
-            padding: '4px 9px',
+            padding: '3px 8px',
             whiteSpace: 'nowrap',
           }}
         >
@@ -177,11 +199,10 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
         <span
           style={{
             fontFamily: sans,
-            fontSize: 11.5,
+            fontSize: 11,
             fontWeight: 600,
             color: 'rgba(36,48,31,0.42)',
             whiteSpace: 'nowrap',
-            marginTop: 2,
           }}
         >
           {erfaring.season}
@@ -189,54 +210,50 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
       </div>
 
       <h3
+        className="line-clamp-2"
         style={{
           fontFamily: sans,
-          fontSize: 15.5,
+          fontSize: 15,
           fontWeight: 700,
           lineHeight: 1.25,
           letterSpacing: '-0.01em',
           color: '#2D2A24',
-          margin: '10px 0 0',
+          margin: '9px 0 0',
         }}
       >
         {erfaring.title}
       </h3>
 
-      {erfaring.conditions.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {erfaring.conditions.map(c => (
-            <span
-              key={c}
-              style={{
-                fontFamily: sans,
-                fontSize: 11,
-                fontWeight: 600,
-                color: 'rgba(36,48,31,0.6)',
-                background: 'rgba(36,48,31,0.05)',
-                borderRadius: 6,
-                padding: '3px 8px',
-              }}
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-      )}
-
       <p
         style={{
           fontFamily: sans,
-          fontSize: 13.5,
+          fontSize: 11.5,
+          fontWeight: 600,
+          color: 'rgba(36,48,31,0.5)',
+          margin: '6px 0 0',
+        }}
+      >
+        {erfaring.place} · Jord: {erfaring.soil}
+      </p>
+
+      <p
+        className="line-clamp-3"
+        style={{
+          fontFamily: sans,
+          fontSize: 13,
           fontWeight: 500,
-          lineHeight: 1.5,
+          lineHeight: 1.48,
           color: '#6A665C',
-          margin: '10px 0 0',
+          margin: '8px 0 0',
         }}
       >
         {erfaring.excerpt}
       </p>
 
-      <div className="mt-3.5 flex items-center justify-between gap-3">
+      <div
+        className="mt-auto flex items-center justify-between gap-2"
+        style={{ paddingTop: 12 }}
+      >
         <button
           type="button"
           onClick={() => setAcked(v => !v)}
@@ -245,21 +262,17 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="inline-flex items-center gap-1.5"
           style={{
             fontFamily: sans,
-            fontSize: 12.5,
+            fontSize: 12,
             fontWeight: 600,
             color: acked ? '#4E6138' : 'rgba(36,48,31,0.55)',
             background: 'transparent',
             border: 'none',
             padding: 0,
             cursor: 'pointer',
+            whiteSpace: 'nowrap',
           }}
         >
-          <Sprout
-            width={16}
-            height={16}
-            strokeWidth={acked ? 2.4 : 1.9}
-            aria-hidden
-          />
+          <Sprout width={15} height={15} strokeWidth={acked ? 2.4 : 1.9} aria-hidden />
           {count} havde gavn
         </button>
 
@@ -270,23 +283,24 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="inline-flex items-center gap-1.5"
           style={{
             fontFamily: sans,
-            fontSize: 12.5,
+            fontSize: 12,
             fontWeight: 700,
             color: saved ? '#4E6138' : '#2D2A24',
             background: saved ? 'rgba(123,148,96,0.14)' : 'rgba(36,48,31,0.05)',
             border: '1px solid',
             borderColor: saved ? 'rgba(123,148,96,0.32)' : 'rgba(45,42,36,0.12)',
             borderRadius: 999,
-            padding: '6px 12px',
+            padding: '5px 11px',
             cursor: 'pointer',
+            whiteSpace: 'nowrap',
           }}
         >
           {saved ? (
-            <Check width={14} height={14} strokeWidth={2.4} aria-hidden />
+            <Check width={13} height={13} strokeWidth={2.4} aria-hidden />
           ) : (
-            <BookmarkPlus width={14} height={14} strokeWidth={2} aria-hidden />
+            <BookmarkPlus width={13} height={13} strokeWidth={2} aria-hidden />
           )}
-          {saved ? 'Gemt i din log' : 'Gem i min log'}
+          {saved ? 'Gemt' : 'Gem i min log'}
         </button>
       </div>
     </article>
