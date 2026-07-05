@@ -1833,24 +1833,24 @@ export const IMPORTED_GUIDES: Guide[] = [
         "variant": "comparison",
         "columns": [
           {
-            "heading": "San Marzano",
+            "heading": "Vælg San Marzano hvis",
             "items": [
-              "Fast frugtkød",
-              "Få kerner",
-              "Lavt vandindhold",
-              "Velegnet til sauce"
+              "du vil lave sauce",
+              "du vil have fast frugtkød",
+              "du vil have få kerner"
             ]
           },
           {
-            "heading": "Salattomat",
+            "heading": "Vælg salattomat hvis",
             "items": [
-              "Mere saftig",
-              "Flere kerner",
-              "Højere vandindhold",
-              "Frisk og snackklar fra planten"
+              "du vil spise den frisk",
+              "du vil have mere saft",
+              "du vil snacke direkte fra planten"
             ]
           }
-        ]
+        ],
+        "intro": "Det handler mest om, hvordan du vil bruge tomaten.",
+        "conclusion": "San Marzano er bedst i gryden. Salattomater er bedst friske."
       },
       {
         "key": "sortsspecifikke-detaljer",

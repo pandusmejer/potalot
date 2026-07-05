@@ -30,19 +30,21 @@ Det er tomaten bag nogle af de mest elskede italienske retter som pizza, ragù, 
 
 :::fact{variant="comparison" title="San Marzano eller salattomat?"}
 
-### San Marzano
+Det handler mest om, hvordan du vil bruge tomaten.
 
-- Fast frugtkød
-- Få kerner
-- Lavt vandindhold
-- Velegnet til sauce
+### Vælg San Marzano hvis
 
-### Salattomat
+- du vil lave sauce
+- du vil have fast frugtkød
+- du vil have få kerner
 
-- Mere saftig
-- Flere kerner
-- Højere vandindhold
-- Frisk og snackklar fra planten
+### Vælg salattomat hvis
+
+- du vil spise den frisk
+- du vil have mere saft
+- du vil snacke direkte fra planten
+
+San Marzano er bedst i gryden. Salattomater er bedst friske.
 
 :::
 

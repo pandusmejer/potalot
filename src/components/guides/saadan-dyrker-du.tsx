@@ -134,7 +134,15 @@ function renderSection(
     // factMacroImage-prop beholdes som no-op for bagudkompatibilitet
     // indtil page-laget også slettes — fjernes ved Commit 4D.
     return {
-      node: <GuideFactCard title={s.title} variant={s.variant} columns={s.columns} />,
+      node: (
+        <GuideFactCard
+          title={s.title}
+          variant={s.variant}
+          columns={s.columns}
+          intro={s.intro}
+          conclusion={s.conclusion}
+        />
+      ),
       nextChapter: chapterCounter,
     }
   }

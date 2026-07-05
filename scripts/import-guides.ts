@@ -210,6 +210,8 @@ interface FactBlock {
   title: string
   variant: string
   columns: Array<{ heading: string; items: string[] }>
+  intro?: string
+  conclusion?: string
 }
 interface GuideBlock {
   kind: 'guide'
@@ -376,17 +378,25 @@ function closeContainer(
   const content = c.lines.join('\n').trim()
 
   if (c.kind === 'fact') {
-    // Parse columns: ### Heading\n\n- item\n- item\n\n### Heading\n...
+    // Parse: [intro-prosa] ### Heading\n- item… ### Heading\n- item… [konklusion-prosa]
+    // Prosa FØR første ### = intro; prosa EFTER kolonnerne = konklusion.
     const columns: Array<{ heading: string; items: string[] }> = []
     let cur: { heading: string; items: string[] } | null = null
+    const introLines: string[] = []
+    const conclusionLines: string[] = []
     for (const line of content.split('\n')) {
       const t = line.trim()
+      if (!t) continue
       if (/^###\s+\S/.test(t)) {
         if (cur) columns.push(cur)
         cur = { heading: t.replace(/^###\s+/, '').trim(), items: [] }
       } else if (/^-\s+\S/.test(t)) {
         if (!cur) throw new ImportError(file, `:::fact blok ved linje ${closeLine}: bullet før ### heading`)
         cur.items.push(t.replace(/^-\s+/, '').trim())
+      } else {
+        // Prosa-linje: intro hvis før første kolonne, ellers konklusion.
+        if (columns.length === 0 && !cur) introLines.push(t)
+        else conclusionLines.push(t)
       }
     }
     if (cur) columns.push(cur)
@@ -398,6 +408,8 @@ function closeContainer(
       title: c.title ?? '',
       variant: c.variant ?? 'comparison',
       columns,
+      ...(introLines.length ? { intro: introLines.join(' ') } : {}),
+      ...(conclusionLines.length ? { conclusion: conclusionLines.join(' ') } : {}),
     }
   }
 
@@ -635,6 +647,8 @@ function buildGuide(
         title: b.title,
         variant: b.variant,
         columns: b.columns,
+        ...(b.intro ? { intro: b.intro } : {}),
+        ...(b.conclusion ? { conclusion: b.conclusion } : {}),
       })
     } else if (b.kind === 'guide') {
       const key = `guide-${b.slug || ++guideCounter}`

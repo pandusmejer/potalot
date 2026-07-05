@@ -413,6 +413,10 @@ export interface GuideFactSection {
   title: string
   variant: 'comparison'
   columns: GuideFactColumn[]
+  /** Kort intro-linje over kolonnerne (beslutnings-framing). */
+  intro?: string
+  /** Konklusion under kolonnerne ("X er bedst til …"). */
+  conclusion?: string
   body?: string                      // editor-compat; ikke renderet
 }
 
