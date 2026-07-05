@@ -77,11 +77,11 @@ export function LaerAfHinanden({
 
       <p
         style={{
-          fontFamily: sans,
-          fontSize: 16,
+          fontFamily: plex,
+          fontSize: 12,
           fontWeight: 500,
           lineHeight: 1.45,
-          color: 'rgba(36,48,31,0.6)',
+          color: 'rgba(36,42,28,0.82)',
           margin: '0 0 24px',
         }}
       >
