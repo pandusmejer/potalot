@@ -173,7 +173,7 @@ export function GuideComparisonList({
           border: '1px solid rgba(36,48,31,0.10)',
         }}
       >
-        {/* Kompakt header: bold serif-navne med lille 'vs.' som center-akse. */}
+        {/* Kompakt header: bold serif-navne med 'VS.' som center-akse. */}
         <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
         <h3
           className="m-0 text-left"

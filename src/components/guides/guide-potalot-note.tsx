@@ -11,8 +11,6 @@
  * særligt for at få signaturen.
  */
 
-import { Flower2 } from 'lucide-react'
-
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
@@ -36,10 +34,13 @@ export function GuidePotalotNote({ body }: Props) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Flower2
-          className="h-4 w-4"
+        {/* Potalot plante-glyph som signatur på anbefalings-noten. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/glyphs/plante.png"
+          alt=""
           aria-hidden
-          style={{ color: 'rgba(36,48,31,0.72)' }}
+          style={{ height: 20, width: 'auto' }}
         />
         <span
           style={{
