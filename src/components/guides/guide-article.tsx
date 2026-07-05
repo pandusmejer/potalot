@@ -586,7 +586,6 @@ export async function GuideArticle({
               Din have
             </p>
             <h3
-              className="mt-4"
               style={{
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontSize: 'clamp(24px, 6vw, 28px)',
@@ -594,7 +593,9 @@ export async function GuideArticle({
                 letterSpacing: 0,
                 lineHeight: 1.05,
                 color: '#2D2A24',
-                margin: 0,
+                // Mere luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi
+                // en mt-klasse ville blive overskrevet af margin herunder.)
+                margin: '18px 0 0',
                 maxWidth: '24ch',
               }}
             >
@@ -603,13 +604,13 @@ export async function GuideArticle({
             <p
               className="mt-3"
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontSize: 'clamp(15px, 3.8vw, 17px)',
-                fontStyle: 'italic',
-                lineHeight: 1.45,
-                color: 'rgba(36,48,31,0.68)',
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 12,
+                fontWeight: 500,
+                lineHeight: 1.5,
+                color: 'rgba(36,48,31,0.62)',
                 margin: 0,
-                maxWidth: '36ch',
+                maxWidth: '46ch',
               }}
             >
               Tilføj sorten til din frøbank eller opret den som plante, så
