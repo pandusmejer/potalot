@@ -463,12 +463,12 @@ function QuickSearch({
           margin: '0 0 8px',
         }}
       >
-        Find hurtigt en guide
+        Find en guide til
       </p>
       <SearchField
         value={value}
         onChange={onChange}
-        placeholder="Søg plante, sort eller problem"
+        placeholder="plante, sort eller problem"
       />
     </section>
   )
