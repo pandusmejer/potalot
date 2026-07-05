@@ -79,7 +79,7 @@ function BleedImage({ imageSrc, alt }: Pick<BleedBlockProps, 'imageSrc' | 'alt'>
 export function BleedFromLeft({ imageSrc, alt, label, description }: BleedBlockProps) {
   return (
     <figure
-      className="relative my-5 mx-6 h-[220px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
+      className="relative my-5 mx-6 h-[176px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
       style={{ backgroundColor: pageBackground }}
     >
       <BleedImage imageSrc={imageSrc} alt={alt} />
@@ -103,7 +103,7 @@ export function BleedFromLeft({ imageSrc, alt, label, description }: BleedBlockP
 export function BleedFromRight({ imageSrc, alt, label, description }: BleedBlockProps) {
   return (
     <figure
-      className="relative my-5 mx-6 h-[220px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
+      className="relative my-5 mx-6 h-[176px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
       style={{ backgroundColor: pageBackground }}
     >
       <BleedImage imageSrc={imageSrc} alt={alt} />
@@ -135,9 +135,9 @@ export function BleedBand({
   return (
     <figure
       className={[
-        'relative my-6 h-[300px] overflow-hidden rounded-[28px]',
+        'relative my-6 h-[236px] overflow-hidden rounded-[28px]',
         contained
-          ? 'mx-6 h-[260px] w-[calc(100vw-48px)]'
+          ? 'mx-6 h-[208px] w-[calc(100vw-48px)]'
           : 'left-1/2 w-screen -translate-x-1/2',
       ].join(' ')}
       style={{ backgroundColor: pageBackground }}
