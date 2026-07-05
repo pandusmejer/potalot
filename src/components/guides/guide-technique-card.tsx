@@ -101,8 +101,8 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
             minWidth: 0,
             alignSelf: 'flex-start',
             fontFamily: sans,
-            fontSize: 14,
-            lineHeight: 1.55,
+            fontSize: 13,
+            lineHeight: 1.5,
             color: 'rgba(36,48,31,0.72)',
             margin: 0,
           }}
