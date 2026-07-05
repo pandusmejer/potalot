@@ -151,31 +151,32 @@ export function GuideComparisonList({
   ctaDisabled,
 }: GuideComparisonListProps) {
   return (
-    <section
-      className="w-full rounded-[22px] px-5 py-5"
-      style={{
-        background: paper,
-        border: '1px solid rgba(36,48,31,0.10)',
-      }}
-    >
-      {/* Kompakt header: eyebrow + mindre serif-navne med lille 'vs.' som
-          center-akse, så det tydeligt er en sammenligning. */}
+    <div className="w-full">
+      {/* Overskrift OVER selve boksen. */}
       <p
-        className="m-0 uppercase"
+        className="m-0 mb-2.5 uppercase"
         style={{
           color: 'rgba(127,143,106,0.9)',
           fontFamily: sans,
-          fontSize: 10,
+          fontSize: 11,
           fontWeight: 800,
           letterSpacing: '0.16em',
         }}
       >
         Sammenlign sorter
       </p>
-      <div className="mt-1 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+      <section
+        className="w-full rounded-[22px] px-5 py-5"
+        style={{
+          background: paper,
+          border: '1px solid rgba(36,48,31,0.10)',
+        }}
+      >
+        {/* Kompakt header: bold serif-navne med lille 'vs.' som center-akse. */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
         <h3
           className="m-0 text-left"
-          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 500, lineHeight: 1 }}
+          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
         >
           {leftTitle}
         </h3>
@@ -196,7 +197,7 @@ export function GuideComparisonList({
         </span>
         <h3
           className="m-0 text-right"
-          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 500, lineHeight: 1 }}
+          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
         >
           {rightTitle}
         </h3>
@@ -240,13 +241,16 @@ export function GuideComparisonList({
         ))}
       </div>
 
-      <ComparisonCta
-        label={ctaLabel}
-        href={ctaHref}
-        onClick={onCtaClick}
-        disabled={ctaDisabled}
-      />
-    </section>
+        <div className="flex justify-end">
+          <ComparisonCta
+            label={ctaLabel}
+            href={ctaHref}
+            onClick={onCtaClick}
+            disabled={ctaDisabled}
+          />
+        </div>
+      </section>
+    </div>
   )
 }
 
