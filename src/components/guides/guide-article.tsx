@@ -602,14 +602,15 @@ export async function GuideArticle({
               Dyrk {effective.variety ?? effective.plantName}
             </h3>
             <p
-              className="mt-3"
               style={{
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 12,
                 fontWeight: 500,
                 lineHeight: 1.5,
                 color: 'rgba(36,48,31,0.62)',
-                margin: 0,
+                // Mere luft mellem heading og brødtekst (inline, da mt-klasse
+                // ellers overskrives af margin herunder).
+                margin: '14px 0 0',
                 maxWidth: '46ch',
               }}
             >
