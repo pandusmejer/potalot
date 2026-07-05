@@ -617,8 +617,7 @@ export async function GuideArticle({
                 maxWidth: '46ch',
               }}
             >
-              Tilføj sorten til din frøbank eller opret den som plante, så
-              Potalot kan følge med gennem sæsonen.
+              Tilføj sorten til din frøbank eller opret den som plante.
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Link

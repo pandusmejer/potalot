@@ -15,16 +15,10 @@
  */
 
 import { useState } from 'react'
-import { Sprout, BookmarkPlus, Check, ChevronDown } from 'lucide-react'
-import type { DyrkerErfaring, ErfaringKind } from '@/data/guides-erfaringer'
+import { BookmarkPlus, Check, ChevronDown } from 'lucide-react'
+import type { DyrkerErfaring } from '@/data/guides-erfaringer'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
-
-const KIND_LABEL: Record<ErfaringKind, string> = {
-  erfaring: 'Erfaring',
-  observation: 'Observation',
-  log: 'Dyrkningslog',
-}
 
 export function LaerAfHinanden({
   erfaringer,
@@ -128,11 +122,11 @@ export function LaerAfHinanden({
 }
 
 function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
-  // Optimistiske, lokale interaktioner (demo). Rigtig persistens + notifikation
-  // til den oprindelige dyrker hører til backend-sprintet.
-  const [acked, setAcked] = useState(false)
+  // Optimistisk, lokal "Gem i min log" (demo). Rigtig persistens hører til
+  // backend-sprintet. Ingen "havde gavn"/likes/avatarer — designet må ikke
+  // afhænge af en bestemt dyrkerstemme (erfaringer kommer på sigt fra rigtige
+  // brugere med varierende tone).
   const [saved, setSaved] = useState(false)
-  const count = erfaring.helpfulCount + (acked ? 1 : 0)
 
   return (
     <article
@@ -143,7 +137,8 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
         padding: '12px 14px',
       }}
     >
-      {/* Kompakt meta-linje: type · sæson. */}
+      {/* Proveniens: gør det tydeligt at afsenderen er EN ANDEN HAVE, ikke
+          Potalot. Generisk — uafhængig af den enkelte brugers tone. */}
       <p
         className="m-0 uppercase"
         style={{
@@ -154,8 +149,21 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           color: 'rgba(78,97,56,0.85)',
         }}
       >
-        {KIND_LABEL[erfaring.kind]}
-        <span style={{ color: 'rgba(36,48,31,0.34)' }}> · {erfaring.season}</span>
+        Erfaring fra en anden have
+      </p>
+
+      {/* Kompakt meta-linje: sted · jord · sæson. */}
+      <p
+        className="m-0"
+        style={{
+          fontFamily: sans,
+          fontSize: 11.5,
+          fontWeight: 600,
+          color: 'rgba(36,48,31,0.5)',
+          marginTop: 4,
+        }}
+      >
+        {erfaring.place} · Jord: {erfaring.soil} · {erfaring.season}
       </p>
 
       <h3
@@ -167,61 +175,39 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           lineHeight: 1.2,
           letterSpacing: '-0.01em',
           color: '#2D2A24',
-          marginTop: 5,
+          marginTop: 7,
         }}
       >
         {erfaring.title}
       </h3>
 
       <p
-        className="m-0"
-        style={{
-          fontFamily: sans,
-          fontSize: 11.5,
-          fontWeight: 600,
-          color: 'rgba(36,48,31,0.5)',
-          marginTop: 3,
-        }}
-      >
-        {erfaring.place} · Jord: {erfaring.soil}
-      </p>
-
-      <p
-        className="m-0 line-clamp-2"
+        className="m-0 line-clamp-3"
         style={{
           fontFamily: sans,
           fontSize: 13,
           fontWeight: 500,
           lineHeight: 1.45,
           color: '#6A665C',
-          marginTop: 7,
+          marginTop: 6,
         }}
       >
         {erfaring.excerpt}
       </p>
 
       <div className="mt-3 flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={() => setAcked(v => !v)}
-          aria-pressed={acked}
-          title="Marker at du havde gavn af den"
-          className="inline-flex items-center gap-1.5"
+        {/* Statisk social proof — ikke en knap, ikke et like. */}
+        <span
           style={{
             fontFamily: sans,
             fontSize: 12,
             fontWeight: 600,
-            color: acked ? '#4E6138' : 'rgba(36,48,31,0.55)',
-            background: 'transparent',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
+            color: 'rgba(36,48,31,0.5)',
             whiteSpace: 'nowrap',
           }}
         >
-          <Sprout width={15} height={15} strokeWidth={acked ? 2.4 : 1.9} aria-hidden />
-          {count} havde gavn
-        </button>
+          {erfaring.helpfulCount} gemte erfaringen
+        </span>
 
         <button
           type="button"
