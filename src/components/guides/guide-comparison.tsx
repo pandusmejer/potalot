@@ -181,14 +181,11 @@ export function GuideComparisonList({
           {leftTitle}
         </h3>
         <span
-          className="grid shrink-0 place-items-center rounded-full"
+          className="shrink-0 justify-self-center"
           style={{
-            width: 28,
-            height: 28,
-            background: 'rgba(127,143,106,0.18)',
             color: ink,
             fontFamily: sans,
-            fontSize: 10,
+            fontSize: 20,
             fontWeight: 800,
             lineHeight: 1,
           }}
