@@ -326,8 +326,11 @@ export async function GuideArticle({
             {effective.summary && (
               <div
                 style={{
-                  background: '#F4F0E5',
-                  border: '1px solid rgba(45,42,36,0.10)',
+                  // Varm, lys terracotta-creme udledt af tomatens toner i hero-
+                  // fotoet — ikke ren beige, ikke koral/pink. Farven skal anes,
+                  // ikke ses, så strippen føles integreret med billedet.
+                  background: '#F3E6DD',
+                  border: '1px solid #DCCABD',
                   borderRadius: 14,
                   padding: '11px 15px',
                 }}
