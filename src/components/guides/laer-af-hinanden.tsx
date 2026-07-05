@@ -101,22 +101,22 @@ export function LaerAfHinanden({
           className="group inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 700,
             lineHeight: 1.2,
             color: olive,
             background: 'transparent',
             border: 'none',
             padding: 0,
-            marginTop: 28,
+            marginTop: 'calc(28px - 2mm)',
             gap: 10,
             cursor: 'pointer',
           }}
         >
           {expanded ? 'Skjul erfaringer' : `Se flere erfaringer (${resten.length})`}
           <ChevronRight
-            width={16}
-            height={16}
+            width={14}
+            height={14}
             strokeWidth={2.25}
             aria-hidden
             style={{
