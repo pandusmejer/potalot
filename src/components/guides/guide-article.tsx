@@ -356,59 +356,65 @@ export async function GuideArticle({
       {parent && (
         <>
           {debug && <DebugBlock name="ArtsguideLink" />}
-          {/* Arts/sort-relation som editorial produkt-tekst, ikke database-besked:
-              brugeren skal mærke skabelonen, ikke se merge-logikken. */}
-          <aside
-            style={{
-              background: '#F4F0E5',
-              border: '1px solid rgba(45,42,36,0.10)',
-              borderRadius: 20,
-              padding: '18px 20px',
-            }}
-          >
+          {/* Arts/sort-relation som roligt editorial mellemstykke i flowet —
+              IKKE et UI-kort med border. Teksten bærer designet: eyebrow →
+              Cormorant-anslag → sans-brødtekst → CTA som tekstlinje. */}
+          <div className="max-w-[54ch]">
+            <p
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#7F8F6A',
+                margin: 0,
+              }}
+            >
+              Artsguide
+            </p>
             <h2
               style={{
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontWeight: 500,
-                fontSize: 'clamp(20px, 4.6vw, 23px)',
-                lineHeight: 1.12,
+                fontSize: 'clamp(23px, 5vw, 28px)',
+                lineHeight: 1.1,
                 letterSpacing: '-0.01em',
                 color: '#2D2A24',
-                margin: '0 0 6px',
+                margin: '8px 0 0',
               }}
             >
-              {effective.variety ?? effective.plantName} er en{' '}
-              {parent.plantName.toLowerCase()}sort
+              {effective.variety ?? effective.plantName} bygger på{' '}
+              {parent.plantName.toLowerCase()}guiden
             </h2>
             <p
               style={{
                 fontFamily: 'var(--font-manrope)',
-                fontSize: 14,
+                fontSize: 14.5,
                 fontWeight: 500,
-                lineHeight: 1.5,
+                lineHeight: 1.55,
                 color: '#6A665C',
-                margin: 0,
-                maxWidth: '52ch',
+                margin: '10px 0 0',
               }}
             >
-              {parent.plantName}guiden dækker såning, pasning og sygdomme. Her
-              viser vi, hvad der gør {effective.variety ?? effective.plantName}{' '}
-              anderledes.
+              {parent.plantName}guiden dækker såning, pasning og sygdomme. Her går
+              vi tættere på det, der gør {effective.variety ?? effective.plantName}{' '}
+              særlig.
             </p>
             <Link
               href={`/guides/${parent.id}`}
-              className="group mt-3 inline-flex items-center gap-1.5"
+              className="group mt-3.5 inline-flex items-center gap-1.5"
               style={{
                 fontFamily: 'var(--font-manrope)',
-                fontSize: 13,
+                fontSize: 13.5,
                 fontWeight: 700,
                 color: '#4E6138',
               }}
             >
               Se {parent.plantName.toLowerCase()}guiden
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-          </aside>
+          </div>
         </>
       )}
 
