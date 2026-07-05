@@ -711,7 +711,15 @@ export async function GuideArticle({
       {effective.variety === 'San Marzano' && (
         <>
           {debug && <DebugBlock name="GuideNote" note="Potalot-tip — signatur 2/3" />}
-          <GuideNote label="Potalot-tip" image={tipImage} imageSide="right">
+          <GuideNote
+            label="Potalot-tip"
+            image={{
+              src: '/images/teknik/tomat-vande.jpg',
+              alt: 'Vanding af San Marzano ved rødderne',
+            }}
+            imageSide="right"
+            glyph="/images/glyphs/beskarersaks.png"
+          >
             Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano
             kvitterer for jævn fugt med færre revner og mere koncentreret smag.
           </GuideNote>
@@ -725,12 +733,16 @@ export async function GuideArticle({
         if (!noteSection || !('body' in noteSection) || !noteSection.body)
           return null
         return (
-          <>
-            {debug && (
-              <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
-            )}
-            <GuidePotalotNote body={noteSection.body} />
-          </>
+          // Halveret fuge til Potalot-tip ovenfor (nested -mt så space-y-fugen
+          // overskrives pålideligt): tip og anbefaler hører sammen som note-par.
+          <div>
+            <div className="-mt-3">
+              {debug && (
+                <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
+              )}
+              <GuidePotalotNote body={noteSection.body} />
+            </div>
+          </div>
         )
       })()}
 

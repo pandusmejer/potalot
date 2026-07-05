@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { Leaf } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PotalotMacroOutput } from '@/lib/images/types'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -22,12 +21,16 @@ export function GuideNote({
   accent = '#7F8F6A',
   image = null,
   imageSide = 'right',
+  glyph = null,
   children,
 }: {
   label?: string
   accent?: string
-  image?: PotalotMacroOutput | null
+  image?: { src: string; alt: string } | null
   imageSide?: 'left' | 'right'
+  /** Sti til en soft-glyph der erstatter blad-ikonet ved labelen (fx en
+   *  handling-glyph på Potalot-tip). Uden den bruges Lucide-bladet. */
+  glyph?: string | null
   children: ReactNode
 }) {
   return (
@@ -58,7 +61,12 @@ export function GuideNote({
               marginBottom: 10,
             }}
           >
-            <Leaf width={13} height={13} strokeWidth={2} aria-hidden />
+            {glyph ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={glyph} alt="" aria-hidden style={{ height: 16, width: 'auto' }} />
+            ) : (
+              <Leaf width={13} height={13} strokeWidth={2} aria-hidden />
+            )}
             {label}
           </p>
           <div
