@@ -359,7 +359,7 @@ export async function GuideArticle({
           {/* Arts/sort-relation som roligt editorial mellemstykke i flowet —
               IKKE et UI-kort med border. Teksten bærer designet: eyebrow →
               Cormorant-anslag → sans-brødtekst → CTA som tekstlinje. */}
-          <div className="max-w-[54ch]">
+          <div className="max-w-[54ch] px-3 sm:px-4">
             <p
               style={{
                 fontFamily: 'var(--font-manrope)',
@@ -376,7 +376,7 @@ export async function GuideArticle({
             <h2
               style={{
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontWeight: 500,
+                fontWeight: 600,
                 fontSize: 'clamp(23px, 5vw, 28px)',
                 lineHeight: 1.1,
                 letterSpacing: '-0.01em',
