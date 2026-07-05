@@ -133,12 +133,15 @@ export function GuideCardEditorial({
               className="absolute left-3 top-3 inline-flex items-center rounded-full"
               style={{
                 fontFamily: sans,
-                fontSize: 10,
+                fontSize: 10.5,
                 fontWeight: 700,
-                letterSpacing: '0.12em',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                padding: '5px 10px',
-                background: 'rgba(244,240,229,0.92)',
+                padding: '5px 12px',
+                background: 'rgba(250,247,237,0.78)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(86,111,60,0.14)',
                 color: '#4E6138',
               }}
             >
@@ -149,12 +152,15 @@ export function GuideCardEditorial({
                 className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full"
                 style={{
                   fontFamily: sans,
-                  fontSize: 10,
+                  fontSize: 10.5,
                   fontWeight: 700,
                   letterSpacing: '0.10em',
                   textTransform: 'uppercase',
-                  padding: '5px 10px',
-                  background: 'rgba(244,240,229,0.92)',
+                  padding: '5px 12px',
+                  background: 'rgba(250,247,237,0.78)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(86,111,60,0.14)',
                   color: '#7F8F6A',
                 }}
                 title="Sorten findes i din frøbank"
@@ -169,8 +175,8 @@ export function GuideCardEditorial({
           className={cn(
             'relative z-10 flex items-start gap-3',
             isVariety
-              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-5 pt-[9px]'
-              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-5 pt-[13px]',
+              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-4 pt-[8px]'
+              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-4 pt-[11px]',
           )}
           style={{
             background: 'rgba(244,240,229,0.96)',
