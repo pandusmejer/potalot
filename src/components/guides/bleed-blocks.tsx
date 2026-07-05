@@ -197,13 +197,44 @@ export function GuideEvidenceImage({
   caption,
   variant = 'wide',
   align = 'right',
+  float,
 }: {
   imageSrc: string
   alt: string
   caption?: string
   variant?: EvidenceVariant
   align?: 'left' | 'right'
+  /** Når sat: figuren flyder, og brødteksten ombrydes omkring den. */
+  float?: 'left' | 'right'
 }) {
+  const aspect =
+    variant === 'square' ? '1 / 1' : variant === 'tall' ? '3 / 4' : '16 / 9'
+
+  // Float-tilstand: ægte tekst-ombrydning. Figuren tages ud af flow og
+  // brødteksten løber rundt om den (som et magasin-opslag). Bruges til de
+  // smalle former (kvadratisk/høj); brede billeder står som fuldbredde-blok.
+  if (float) {
+    const width = variant === 'tall' ? '44%' : '48%'
+    const margin =
+      float === 'right' ? '4px 0 12px 18px' : '4px 18px 12px 0'
+    return (
+      <figure
+        className="overflow-hidden rounded-[16px]"
+        style={{
+          float,
+          width,
+          margin,
+          aspectRatio: aspect,
+          border: '1px solid rgba(45,42,36,0.10)',
+          backgroundColor: pageBackground,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} alt={alt} className="h-full w-full object-cover" />
+      </figure>
+    )
+  }
+
   const shape: CSSProperties =
     variant === 'square'
       ? { aspectRatio: '1 / 1', width: '78%' }

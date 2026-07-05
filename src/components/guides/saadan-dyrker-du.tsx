@@ -161,36 +161,47 @@ function renderSection(
     return { node: <GuidePotalotNote body={body} />, nextChapter: chapterCounter }
   }
   const next = chapterCounter + 1
+  const shape = bleed ? evidenceShape(title) : undefined
   const evidence = bleed ? (
     <GuideEvidenceImage
       imageSrc={bleed.src}
       alt={bleed.alt}
-      {...evidenceShape(title)}
+      variant={shape!.variant}
+      float={shape!.float}
     />
   ) : undefined
   return {
-    node: <ProseSection chapter={next} title={title} body={body} evidence={evidence} />,
+    node: (
+      <ProseSection
+        chapter={next}
+        title={title}
+        body={body}
+        evidence={evidence}
+        // float = ægte ombrydning (figuren først i flowet); ellers fuldbredde-
+        // blok indsat mellem tekstblokke.
+        evidenceFloated={!!shape?.float}
+      />
+    ),
     nextChapter: next,
   }
 }
 
 /**
- * Billedform + forskydning pr. hovedafsnit — bryder den lineære
- * fuldbredde-rytme (spec #5/#7/#8):
- *   Om sorten            → kvadratisk insert (forskudt højre)
- *   Sortsspecifikke det. → højt sidebillede, vækstform (forskudt venstre)
- *   Smag og anvendelse   → kompakt kvadratisk frugt-makro (forskudt højre)
- * Siderne veksler, så to på hinanden følgende billeder ikke lander ens.
+ * Billedform pr. hovedafsnit — VARIERET redaktionel komposition:
+ *   Om sorten            → kvadratisk, float højre (tekst ombrydes)
+ *   Sortsspecifikke det. → højt vertikalt, float venstre (tekst ombrydes)
+ *   Smag og anvendelse   → bredt horisontalt, fuldbredde-blok (tekst over+under)
+ * Så nogle billeder har tekst omkring sig, andre har tekst over og under.
  */
 function evidenceShape(title: string): {
   variant: 'wide' | 'square' | 'tall'
-  align: 'left' | 'right'
+  float?: 'left' | 'right'
 } {
   const t = title.toLowerCase()
-  if (/^om sorten/.test(t)) return { variant: 'square', align: 'right' }
-  if (/sortsspecifik/.test(t)) return { variant: 'tall', align: 'left' }
-  if (/smag|anvendelse/.test(t)) return { variant: 'square', align: 'right' }
-  return { variant: 'wide', align: 'right' }
+  if (/^om sorten/.test(t)) return { variant: 'square', float: 'right' }
+  if (/sortsspecifik/.test(t)) return { variant: 'tall', float: 'left' }
+  if (/smag|anvendelse/.test(t)) return { variant: 'wide' }
+  return { variant: 'wide' }
 }
 
 /**
@@ -209,11 +220,14 @@ function ProseSection({
   title,
   body,
   evidence,
+  evidenceFloated = false,
 }: {
   chapter: number
   title: string
   body: string
   evidence?: React.ReactNode
+  /** true = float (tekst ombrydes); false = fuldbredde-blok mellem tekstblokke. */
+  evidenceFloated?: boolean
 }) {
   // Kapitel-greb: smal venstre akse-kolonne (nummer + hårfin lodret streg)
   // + titel/brødtekst til højre. Blød Potalot-oversættelse af reference —
@@ -268,7 +282,7 @@ function ProseSection({
         >
           {title}
         </h2>
-        <ProseBody body={body} evidence={evidence} />
+        <ProseBody body={body} evidence={evidence} floated={evidenceFloated} />
       </div>
     </article>
   )
@@ -284,7 +298,15 @@ function ProseSection({
  * undgå en tung markdown-dep i V1. Hvis vi senere har brug for
  * links, kode-blokke eller H4 i body, så er det tid til react-markdown.
  */
-function ProseBody({ body, evidence }: { body: string; evidence?: React.ReactNode }) {
+function ProseBody({
+  body,
+  evidence,
+  floated = false,
+}: {
+  body: string
+  evidence?: React.ReactNode
+  floated?: boolean
+}) {
   // Cormorant beholdt (artikel = Cormorant), men lettere visuel tyngde: mindre
   // skrift, strammere linjeafstand, kortere linjer. Overskrifterne bærer stadig
   // den store editorial-vægt — brødteksten skal læses, ikke råbe.
@@ -300,27 +322,42 @@ function ProseBody({ body, evidence }: { body: string; evidence?: React.ReactNod
 
   // Split body i paragraffer (blank linje mellem)
   const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
-  // Indsæt bevisbilledet EFTER første tekstblok (hvis der er mere end én),
-  // ellers efter den eneste blok. Så fotoet ligger inde i afsnittet — spec
-  // #5/#7: "tekstblok → foto → tekstblok fortsætter".
-  const insertAfter = paragraphs.length > 1 ? 0 : paragraphs.length - 1
 
+  const renderBlock = (para: string, i: number) => {
+    const lines = para.split('\n').map((l) => l.trim())
+    const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
+    return isBulletList ? (
+      <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
+        {lines.map((l, j) => (
+          <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
+        ))}
+      </ul>
+    ) : (
+      <p key={i} style={{ margin: 0, whiteSpace: 'pre-line' }}>
+        {renderInline(para)}
+      </p>
+    )
+  }
+
+  // FLOAT: ægte tekst-ombrydning. Figuren står FØRST i flowet og flyder til en
+  // side; brødteksten løber rundt om den. Ydre div = flow-root (BFC) så floaten
+  // holdes inde i afsnittet og ikke løber ned i næste kapitel.
+  if (floated && evidence) {
+    return (
+      <div style={{ ...bodyStyle, display: 'flow-root' }}>
+        {evidence}
+        <div className="space-y-5">{paragraphs.map(renderBlock)}</div>
+      </div>
+    )
+  }
+
+  // BLOK: bredt billede som fuldbredde-blok INDE i afsnittet — tekst over og
+  // under. Indsættes efter første tekstblok (eller efter den eneste).
+  const insertAfter = paragraphs.length > 1 ? 0 : paragraphs.length - 1
   return (
     <div className="space-y-5" style={bodyStyle}>
       {paragraphs.map((para, i) => {
-        const lines = para.split('\n').map((l) => l.trim())
-        const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
-        const block = isBulletList ? (
-          <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
-            {lines.map((l, j) => (
-              <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
-            ))}
-          </ul>
-        ) : (
-          <p key={i} style={{ margin: 0, whiteSpace: 'pre-line' }}>
-            {renderInline(para)}
-          </p>
-        )
+        const block = renderBlock(para, i)
         if (evidence && i === insertAfter) {
           return (
             <Fragment key={`p-${i}`}>
