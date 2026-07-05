@@ -46,7 +46,9 @@ const gabarito = Gabarito({
 const plexCondensed = IBM_Plex_Sans_Condensed({
   variable: '--font-plex-condensed',
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
+  // 200/300 tilføjet så tynde guide-linjer (fx Lær af hinanden-intro) faktisk
+  // kan rendere let — uden dem faldt vægt 200/300 tilbage til 500.
+  weight: ['200', '300', '500', '600', '700'],
 })
 
 const plexMono = IBM_Plex_Mono({

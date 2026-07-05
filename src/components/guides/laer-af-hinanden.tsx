@@ -79,9 +79,9 @@ export function LaerAfHinanden({
         style={{
           fontFamily: plex,
           fontSize: 14,
-          fontWeight: 300,
+          fontWeight: 200,
           lineHeight: 1.45,
-          color: 'rgba(36,42,28,0.82)',
+          color: 'rgba(36,42,28,0.62)',
           margin: '0 0 24px',
         }}
       >
