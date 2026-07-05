@@ -3,6 +3,7 @@ slug: tomat
 guideLevel: species
 parentSlug: null
 plantName: Tomat
+pluralName: tomater
 variety: null
 latinName: Solanum lycopersicum
 primaryCategoryId: fro

@@ -11,6 +11,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk",
     "plantName": "Agurk",
+    "pluralName": null,
     "variety": null,
     "latinName": "Cucumis sativus",
     "guideLevel": "species",
@@ -215,6 +216,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili",
     "plantName": "Chili",
+    "pluralName": null,
     "variety": null,
     "latinName": "Capsicum",
     "guideLevel": "species",
@@ -460,6 +462,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia",
     "plantName": "Dahlia",
+    "pluralName": null,
     "variety": null,
     "latinName": "Dahlia",
     "guideLevel": "species",
@@ -733,6 +736,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": null,
     "latinName": "Capsicum annuum",
     "guideLevel": "species",
@@ -950,6 +954,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat",
     "plantName": "Tomat",
+    "pluralName": "tomater",
     "variety": null,
     "latinName": "Solanum lycopersicum",
     "guideLevel": "species",
@@ -1200,6 +1205,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-marketmore",
     "plantName": "Agurk",
+    "pluralName": null,
     "variety": "Marketmore",
     "latinName": "Cucumis sativus 'Marketmore'",
     "guideLevel": "variety",
@@ -1282,6 +1288,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili-habanero-orange",
     "plantName": "Chili",
+    "pluralName": null,
     "variety": "Habanero Orange",
     "latinName": "Capsicum chinense 'Habanero Orange'",
     "guideLevel": "variety",
@@ -1400,6 +1407,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia-cafe-au-lait",
     "plantName": "Dahlia",
+    "pluralName": null,
     "variety": "Café au Lait",
     "latinName": "Dahlia 'Café au Lait'",
     "guideLevel": "variety",
@@ -1531,6 +1539,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt-california-wonder",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": "California Wonder",
     "latinName": "Capsicum annuum 'California Wonder'",
     "guideLevel": "variety",
@@ -1659,6 +1668,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt-corno-di-toro-rosso",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": "Corno di Toro Rosso",
     "latinName": "Capsicum annuum 'Corno di Toro Rosso'",
     "guideLevel": "variety",
@@ -1787,6 +1797,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-san-marzano",
     "plantName": "Tomat",
+    "pluralName": null,
     "variety": "San Marzano",
     "latinName": "Solanum lycopersicum 'San Marzano'",
     "guideLevel": "variety",

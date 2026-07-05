@@ -479,6 +479,7 @@ interface RawFrontmatter {
   guideLevel?: unknown
   parentSlug?: unknown
   plantName?: unknown
+  pluralName?: unknown
   variety?: unknown
   latinName?: unknown
   primaryCategoryId?: unknown
@@ -735,6 +736,7 @@ function buildGuide(
   return {
     id: slug,
     plantName: asString(raw.plantName),
+    pluralName: asString(raw.pluralName),
     variety: asString(raw.variety),
     latinName: asString(raw.latinName),
     guideLevel: asString(raw.guideLevel),

@@ -174,6 +174,29 @@ export async function GuideArticle({
   // signaturer), bruges arts-makros der. Bleed-blokke er sortsguide-
   // only fra V4.3.
   const isSpecies = effective.guideLevel === 'species'
+  // Flertalsform til arts-copy ("tomater"); fallback til plantName i småt.
+  const artPlural = effective.pluralName ?? effective.plantName.toLowerCase()
+
+  // Lær af hinanden bygges én gang og placeres forskelligt: sortguide viser
+  // det tidligt (før kalenderen — erfaringer om den konkrete variant), arts-
+  // guide skubber det NED (sekundært lag, efter at brugeren har set sorter/
+  // teknik) og folder det.
+  const erfaringerListe = erfaringerFor(effective.id)
+  const erfaringerNode =
+    erfaringerListe.length > 0 ? (
+      <LaerAfHinanden
+        subject={effective.variety ?? effective.plantName}
+        erfaringer={erfaringerListe}
+        heading={isSpecies ? `Erfaringer med ${artPlural}` : undefined}
+        intro={
+          isSpecies
+            ? `Se hvad andre dyrkere har oplevet med ${artPlural} i drivhus, krukker og på friland.`
+            : undefined
+        }
+        collapsible={isSpecies}
+      />
+    ) : null
+
   const bleedAnchorPatterns: RegExp[] = isSpecies
     ? []
     : [
@@ -456,37 +479,9 @@ export async function GuideArticle({
       {/* Lær af hinanden ligger FØR kalenderen: brugeren læser Potalots guide,
           får så praktiske dyrker-nuancer, og omsætter dét til planlægning i
           kalenderen + egen have. Efter kalenderen ville det føles som appendix. */}
-      {(() => {
-        const erfaringer = erfaringerFor(effective.id)
-        if (erfaringer.length === 0) return null
-        return (
-          <>
-            {debug && (
-              <DebugBlock
-                name="LaerAfHinanden"
-                note={`Erfaringer — ${erfaringer.length}`}
-              />
-            )}
-            <LaerAfHinanden
-              subject={effective.variety ?? effective.plantName}
-              erfaringer={erfaringer}
-              // Artsguide: arts-titel/intro + foldet (sekundært). Sortguide:
-              // fremhævet kort som standard.
-              heading={
-                isSpecies
-                  ? `Erfaringer med ${effective.plantName.toLowerCase()}`
-                  : undefined
-              }
-              intro={
-                isSpecies
-                  ? `Se hvad andre dyrkere har oplevet med ${effective.plantName.toLowerCase()} i drivhus, krukker og på friland.`
-                  : undefined
-              }
-              collapsible={isSpecies}
-            />
-          </>
-        )
-      })()}
+      {/* Sortguide: Erfaringer FØR kalenderen. Artsguide: skubbet ned (se
+          nedenfor, lige før Din have-CTA'en). */}
+      {!isSpecies && erfaringerNode}
 
       {(() => {
         const chapters = buildKalenderChapters(effective.calendarRules)
@@ -622,7 +617,7 @@ export async function GuideArticle({
               }}
             >
               {isSpecies
-                ? `Dyrk ${effective.plantName.toLowerCase()} i din have`
+                ? `Dyrk ${artPlural} i din have`
                 : `Dyrk ${effective.variety ?? effective.plantName}`}
             </h3>
             <p
@@ -739,6 +734,10 @@ export async function GuideArticle({
           </section>
         </>
       )}
+
+      {/* Artsguide: Erfaringer skubbet HELT ned — sekundært lag efter at
+          brugeren har set sorterne. (Sortguide viser det tidligt, før kalender.) */}
+      {isSpecies && erfaringerNode}
 
       {effective.variety === 'San Marzano' && (
         <div>

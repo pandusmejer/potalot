@@ -513,6 +513,8 @@ export interface Guide {
 
   // Identitet
   plantName: string
+  /** Flertalsform til arts-copy ("tomater"). Fallback: plantName i småt. */
+  pluralName?: string | null
   variety?: string | null
   latinName?: string | null
   guideLevel: GuideLevel
