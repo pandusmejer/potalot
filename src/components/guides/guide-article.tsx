@@ -228,12 +228,16 @@ export async function GuideArticle({
           >
             <ArrowLeft className="h-[18px] w-[18px]" strokeWidth={2} />
           </Link>
-          {isOwner && !isDemo && <UserGuideEditDialog guide={original} />}
+          {/* Trust-badgen sidder på back-knap-linjen (øverste højre) som guidens
+              afsender-mærke — væk fra badge/titel-blokken, så identiteten samles. */}
+          <div className="flex items-center gap-2">
+            <TrustBadge kind={kind} size="sm" />
+            {isOwner && !isDemo && <UserGuideEditDialog guide={original} />}
+          </div>
         </div>
 
         <div>
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            <TrustBadge kind={kind} size="sm" />
+          <div className="mb-2">
             <span
               className="text-xs uppercase"
               style={{
