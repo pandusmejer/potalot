@@ -54,8 +54,8 @@ export function KalenderRytmeKapitel({
         background: '#F2F0E3',
         borderTop: '1px solid #D9D6BE',
         borderBottom: '1px solid #D9D6BE',
-        borderLeft: '4px solid #7B8B63',
-        borderRight: '4px solid #7B8B63',
+        borderLeft: '3px solid #C9A94E',
+        borderRight: '3px solid #C9A94E',
         boxShadow: '0 4px 14px rgba(36,48,31,0.08)',
       }}
     >
