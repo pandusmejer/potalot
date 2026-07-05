@@ -163,7 +163,7 @@ export function GuideComparisonList({
           letterSpacing: '0.16em',
         }}
       >
-        Sammenlign sorter
+        Find din næste favoritsort
       </p>
       <section
         className="w-full rounded-[22px] px-5 py-5"
