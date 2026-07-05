@@ -718,7 +718,8 @@ export async function GuideArticle({
               alt: 'Vanding af San Marzano ved rødderne',
             }}
             imageSide="right"
-            glyph="/images/glyphs/beskarersaks.png"
+            imageScale={1.2}
+            glyph={false}
           >
             Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano
             kvitterer for jævn fugt med færre revner og mere koncentreret smag.

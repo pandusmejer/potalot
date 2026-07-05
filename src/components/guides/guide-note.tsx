@@ -21,6 +21,7 @@ export function GuideNote({
   accent = '#7F8F6A',
   image = null,
   imageSide = 'right',
+  imageScale = 1,
   glyph = null,
   children,
 }: {
@@ -28,9 +29,11 @@ export function GuideNote({
   accent?: string
   image?: { src: string; alt: string } | null
   imageSide?: 'left' | 'right'
-  /** Sti til en soft-glyph der erstatter blad-ikonet ved labelen (fx en
-   *  handling-glyph på Potalot-tip). Uden den bruges Lucide-bladet. */
-  glyph?: string | null
+  /** Ekstra indzoom på billedet (object-cover + scale), fx 1.2 = 20% tættere. */
+  imageScale?: number
+  /** Ikon ved labelen: sti til soft-glyph = brug den; false = intet ikon;
+   *  ellers Lucide-bladet (default, fx "Vidste du?"). */
+  glyph?: string | false | null
   children: ReactNode
 }) {
   return (
@@ -61,7 +64,7 @@ export function GuideNote({
               marginBottom: 10,
             }}
           >
-            {glyph ? (
+            {glyph === false ? null : glyph ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={glyph} alt="" aria-hidden style={{ height: 16, width: 'auto' }} />
             ) : (
@@ -93,6 +96,7 @@ export function GuideNote({
               src={image.src}
               alt={image.alt}
               className="h-full w-full object-cover"
+              style={{ transform: `scale(${imageScale})` }}
             />
           </div>
         )}
