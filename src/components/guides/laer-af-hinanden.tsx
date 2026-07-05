@@ -27,11 +27,11 @@ const KIND_LABEL: Record<ErfaringKind, string> = {
 }
 
 export function LaerAfHinanden({
-  subject,
   erfaringer,
 }: {
-  /** Sort- eller artsnavn, fx "San Marzano" / "Tomat". */
-  subject: string
+  /** Sort- eller artsnavn, fx "San Marzano" / "Tomat". Beholdt i API'et selv
+   *  om teaseren ikke længere skriver det i en intro-linje. */
+  subject?: string
   erfaringer: DyrkerErfaring[]
 }) {
   const [expanded, setExpanded] = useState(false)
@@ -42,37 +42,23 @@ export function LaerAfHinanden({
 
   return (
     <section id="erfaringer" aria-labelledby="erfaringer-titel" className="scroll-mt-20">
-      {/* Rolig eyebrow-linje: LÆR AF HINANDEN · BETA (ét stop, ikke to). */}
-      <div className="flex items-center gap-2">
-        <p
-          style={{
-            fontFamily: sans,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.55)',
-            margin: 0,
-          }}
-        >
-          Lær af hinanden
-        </p>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: '#4E6138',
-            background: 'rgba(123,148,96,0.16)',
-            borderRadius: 999,
-            padding: '2px 6px',
-          }}
-        >
-          Beta
-        </span>
-      </div>
+      {/* Rolig eyebrow-linje: LÆR AF HINANDEN · BETA som ét tekstligt stop —
+          BETA er nu inline i eyebrowen (ikke en separat pille), så modulet
+          taber et visuelt lag. */}
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.55)',
+          margin: 0,
+        }}
+      >
+        Lær af hinanden{' '}
+        <span style={{ color: 'rgba(78,97,56,0.75)' }}>· Beta</span>
+      </p>
 
       <h2
         id="erfaringer-titel"
@@ -87,19 +73,8 @@ export function LaerAfHinanden({
       >
         Erfaringer fra andre haver
       </h2>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 13,
-          fontWeight: 500,
-          lineHeight: 1.4,
-          color: 'rgba(36,48,31,0.55)',
-          margin: '3px 0 0',
-        }}
-      >
-        Se hvad andre har oplevet med {subject}.
-      </p>
 
+      {/* Ingen ekstra intro-linje — titlen bærer beskeden. Ét lag mindre. */}
       <div className="mt-3 space-y-2.5">
         <ErfaringCard erfaring={teaser} />
         {expanded && resten.map(e => <ErfaringCard key={e.id} erfaring={e} />)}

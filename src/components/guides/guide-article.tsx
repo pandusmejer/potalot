@@ -299,12 +299,12 @@ export async function GuideArticle({
           </p>
         )}
 
-        {/* Rent hero-foto + kompakt summary-strip UNDER fotoet. Ingen tekst/
-            chips/fade ovenpå — makroens sanselige kvalitet bevares. Foto og
-            strip grupperes tæt (8px), så strippen læses som billedets caption/
-            intro, ikke et nyt afsnit. */}
+        {/* Rent hero-foto + intro som ren editorial lede UNDER fotoet. INGEN
+            boks/chips/overlay/fade — den tonede summary-boks er fjernet (den
+            føltes som et UI-panel, ikke intro). Introen læses nu som en rolig
+            lede/caption: serif, luftig linjeafstand, står direkte på cremen. */}
         {(effective.primaryImageId || effective.summary) && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {effective.primaryImageId && (
               <>
                 {debug && <DebugBlock name="Hero" note="rent foto — ingen overlay" />}
@@ -326,32 +326,19 @@ export async function GuideArticle({
               </>
             )}
             {effective.summary && (
-              <div
+              <p
                 style={{
-                  // Varm, lys terracotta-creme udledt af tomatens toner i hero-
-                  // fotoet — ikke ren beige, ikke koral/pink. Farven skal anes,
-                  // ikke ses, så strippen føles integreret med billedet.
-                  background: '#F3E6DD',
-                  border: '1px solid #DCCABD',
-                  borderRadius: 14,
-                  padding: '11px 15px',
+                  fontFamily: 'var(--font-cormorant), Georgia, serif',
+                  fontSize: 'clamp(17px, 3.6vw, 19.5px)',
+                  fontWeight: 400,
+                  lineHeight: 1.5,
+                  color: '#3D3A31',
+                  margin: '2px 2px 0',
+                  maxWidth: '42ch',
                 }}
               >
-                <p
-                  style={{
-                    fontFamily: 'var(--font-manrope)',
-                    fontSize: 13.5,
-                    fontWeight: 500,
-                    lineHeight: 1.5,
-                    color: '#4A4636',
-                    margin: 0,
-                  }}
-                >
-                  {/* Én stærk sætning — heroen skal ånde. Resten af summaryen
-                      (anvendelse/lagring) lever i tags + Hurtigt overblik. */}
-                  {effective.summary.split(/(?<=\.)\s+/)[0]}
-                </p>
-              </div>
+                {effective.summary}
+              </p>
             )}
           </div>
         )}

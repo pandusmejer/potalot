@@ -191,36 +191,61 @@ function ProseSection({
   title: string
   body: string
 }) {
+  // Kapitel-greb: smal venstre akse-kolonne (nummer + hårfin lodret streg)
+  // + titel/brødtekst til højre. Blød Potalot-oversættelse af reference —
+  // oliven/sand, ikke sort-magasin. Kun hovedafsnit (prose) får dette;
+  // fact/teknik/note/related er allerede ekskluderet fra nummereringen.
   return (
-    <article>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: '0.12em',
-          color: '#7F8F6A', // Salvie
-          margin: 0,
-          marginBottom: 8,
-        }}
-      >
-        {String(chapter).padStart(2, '0')}
-      </p>
-      <h2
-        style={{
-          fontFamily: plex,
-          fontWeight: 600,
-          fontSize: 'clamp(25px, 5vw, 30px)',
-          lineHeight: 1.04,
-          letterSpacing: '-0.015em',
-          color: '#2D2A24',
-          margin: 0,
-          marginBottom: 14,
-        }}
-      >
-        {title}
-      </h2>
-      <ProseBody body={body} />
+    <article
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'clamp(30px, 8vw, 38px) 1fr',
+        columnGap: 'clamp(14px, 3.5vw, 20px)',
+      }}
+    >
+      {/* Venstre akse: sektionsnummer over en lodret oliven/sand-streg. */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <span
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 'clamp(26px, 6vw, 31px)',
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            color: '#5A6A3C', // dæmpet oliven — struktur, ikke sort
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
+          {String(chapter).padStart(2, '0')}
+        </span>
+        <span
+          aria-hidden
+          style={{
+            flex: 1,
+            width: 1,
+            marginTop: 10,
+            background: 'rgba(101,115,72,0.28)', // sand-oliven hårstreg
+          }}
+        />
+      </div>
+
+      {/* Højre: titel + brødtekst, flugter med akse-kolonnens højre kant. */}
+      <div>
+        <h2
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 'clamp(25px, 5vw, 30px)',
+            lineHeight: 1.04,
+            letterSpacing: '-0.015em',
+            color: '#2D2A24',
+            margin: '2px 0 14px',
+          }}
+        >
+          {title}
+        </h2>
+        <ProseBody body={body} />
+      </div>
     </article>
   )
 }

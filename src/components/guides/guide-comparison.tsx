@@ -165,7 +165,7 @@ export function GuideComparisonList({
           letterSpacing: '0.16em',
         }}
       >
-        Find din næste favoritsort
+        Sammenlign sorter
       </p>
       <section
         className="w-full rounded-[22px] px-5 py-5"
@@ -203,41 +203,69 @@ export function GuideComparisonList({
       </div>
 
       {/* Rækker: center-akse bærer sammenligningen — label i MIDTEN mellem de to
-          værdier (venstre-værdi ← LABEL → højre-værdi). Ingen ikon pr. række. */}
-      <div className="mt-3.5">
-        {rows.map((row) => (
-          <div
-            key={row.label}
-            className="grid grid-cols-[minmax(0,1fr)_84px_minmax(0,1fr)] items-start gap-2 py-2.5 min-[390px]:grid-cols-[minmax(0,1fr)_96px_minmax(0,1fr)]"
-            style={{ borderTop: `1px solid ${line}` }}
-          >
-            <p
-              className="m-0 text-left"
-              style={{ color: 'rgba(36,48,31,0.74)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
+          værdier (venstre-værdi ← LABEL → højre-værdi). Ingen ikon pr. række.
+          "Versus"-rygrad: to svagt tonede halvdele (varm sand ↔ salvie, begge
+          fra eksisterende palet) + prikket midterakse bryder den flade beige. */}
+      <div className="relative mt-3.5 overflow-hidden rounded-[14px]">
+        {/* Tonede halvdele bag rækkerne. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 right-1/2"
+          style={{ background: 'rgba(198,167,110,0.13)' }}
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-1/2 right-0"
+          style={{ background: 'rgba(127,143,106,0.10)' }}
+        />
+        {/* Prikket midterakse — versus-spine. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-1/2 w-px -translate-x-1/2"
+          style={{
+            background:
+              'repeating-linear-gradient(to bottom, rgba(36,48,31,0.18) 0 3px, transparent 3px 7px)',
+          }}
+        />
+        <div className="relative">
+          {rows.map((row, i) => (
+            <div
+              key={row.label}
+              className="grid grid-cols-[minmax(0,1fr)_84px_minmax(0,1fr)] items-center gap-1 px-2.5 py-2.5 min-[390px]:grid-cols-[minmax(0,1fr)_96px_minmax(0,1fr)]"
+              style={i > 0 ? { borderTop: `1px solid ${line}` } : undefined}
             >
-              {row.left}
-            </p>
-            <p
-              className="m-0 text-center uppercase"
-              style={{
-                color: 'rgba(127,143,106,0.82)',
-                fontFamily: sans,
-                fontSize: 9.5,
-                fontWeight: 800,
-                letterSpacing: '0.1em',
-                lineHeight: 1.3,
-              }}
-            >
-              {row.label}
-            </p>
-            <p
-              className="m-0 text-right"
-              style={{ color: 'rgba(36,48,31,0.74)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
-            >
-              {row.right}
-            </p>
-          </div>
-        ))}
+              <p
+                className="m-0 pr-1 text-left"
+                style={{ color: 'rgba(36,48,31,0.78)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
+              >
+                {row.left}
+              </p>
+              {/* Label sidder på aksen med en diskret paper-chip, så den prikkede
+                  linje ikke krydser teksten — forstærker "versus"-læsningen. */}
+              <p
+                className="m-0 mx-auto w-fit rounded-full text-center uppercase"
+                style={{
+                  color: 'rgba(74,90,50,0.92)',
+                  fontFamily: sans,
+                  fontSize: 9.5,
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  lineHeight: 1.25,
+                  background: paper,
+                  padding: '3px 7px',
+                }}
+              >
+                {row.label}
+              </p>
+              <p
+                className="m-0 pl-1 text-right"
+                style={{ color: 'rgba(36,48,31,0.78)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
+              >
+                {row.right}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
         <div className="flex justify-end">
