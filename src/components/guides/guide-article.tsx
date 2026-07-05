@@ -561,9 +561,10 @@ export async function GuideArticle({
           </Card>
         </>
       ) : (
-        // Formindsket fuge til kalender-sektionen ovenfor (nested -mt).
+        // Formindsket fuge til kalender-sektionen ovenfor (12px, samme som
+        // Din have↔Tip). Nested -mt så space-y-fugen overskrives.
         <div>
-          <div className="-mt-4">
+          <div className="-mt-7">
           {debug && (
             <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
           )}
