@@ -29,7 +29,6 @@ import {
   GuideComparisonList,
   type ComparisonRow,
 } from '@/components/guides/guide-comparison'
-import { CalendarDays, Circle, Leaf, Sprout as SproutIcon } from 'lucide-react'
 import { mergeGuide } from '@/lib/guide-merge'
 import { getGuide, getAllGuides } from '@/actions/guides'
 import { getMyGuideNote } from '@/actions/guide-notes'
@@ -838,25 +837,21 @@ function buildKalenderChapters(
 const SAN_MARZANO_VS_ROMA_ROWS: ComparisonRow[] = [
   {
     label: 'Frugt',
-    icon: <Circle />,
     left: 'Slanke, aflange frugter',
     right: 'Ovale, bredere frugter',
   },
   {
     label: 'Konsistens',
-    icon: <Leaf />,
     left: 'Få kerner og fast frugtkød',
     right: 'Mere kød end San Marzano',
   },
   {
     label: 'Anvendelse',
-    icon: <SproutIcon />,
     left: 'Perfekt til sauce',
     right: 'God til sauce og konservering',
   },
   {
     label: 'Modning',
-    icon: <CalendarDays />,
     left: 'Middeltidlig sort',
     right: 'Middeltidlig sort',
   },

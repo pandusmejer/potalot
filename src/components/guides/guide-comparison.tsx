@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { ArrowRight } from 'lucide-react'
 
 export type ComparisonRow = {
   label: string
@@ -68,32 +69,32 @@ function ComparisonCta({
 }) {
   if (!label) return null
 
-  const ctaClass = 'mx-auto mt-7 flex rounded-full px-[18px] py-2.5'
+  // Tekstlinje-CTA (ikke pill) — sparer højde, holder modulet kompakt.
+  const ctaClass = 'group mt-4 inline-flex items-center gap-1.5'
   const ctaStyle = {
-    background: 'rgba(244,240,229,0.80)',
-    border: '1px solid rgba(36,48,31,0.12)',
-    color: ink,
+    background: 'transparent',
+    border: 'none',
+    padding: 0,
+    color: '#4E6138',
     fontFamily: sans,
     fontSize: 13,
     fontWeight: 700,
     lineHeight: 1,
     textDecoration: 'none',
+    cursor: 'pointer',
   } as const
+  const arrow = (
+    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+  )
 
-  // Disabled: vises som ikke-interaktiv placeholder med dæmpet farve.
-  // Bruges når target-guide endnu ikke findes, så brugeren ikke
-  // navigerer til 404. Komponenten holder sin form i siden.
+  // Disabled: ikke-interaktiv placeholder med dæmpet farve (target-guide findes
+  // ikke endnu → ingen 404). Ingen pil, så det ikke ligner et aktivt link.
   if (disabled) {
     return (
       <span
         aria-disabled="true"
-        className={ctaClass}
-        style={{
-          ...ctaStyle,
-          opacity: 0.55,
-          cursor: 'not-allowed',
-          background: 'rgba(244,240,229,0.55)',
-        }}
+        className="mt-4 inline-flex items-center gap-1.5"
+        style={{ ...ctaStyle, color: 'rgba(36,48,31,0.42)', cursor: 'not-allowed' }}
         title="Guiden er endnu ikke skrevet"
       >
         {label}
@@ -105,6 +106,7 @@ function ComparisonCta({
     return (
       <Link href={href} className={ctaClass} style={ctaStyle}>
         {label}
+        {arrow}
       </Link>
     )
   }
@@ -112,6 +114,7 @@ function ComparisonCta({
   return (
     <button type="button" onClick={onClick} className={ctaClass} style={ctaStyle}>
       {label}
+      {arrow}
     </button>
   )
 }
@@ -147,36 +150,46 @@ export function GuideComparisonList({
 }: GuideComparisonListProps) {
   return (
     <section
-      className="mx-6 w-[calc(100vw-48px)] rounded-[28px] px-6 py-7"
+      className="mx-6 w-[calc(100vw-48px)] rounded-[22px] px-5 py-5"
       style={{
         background: paper,
         border: '1px solid rgba(36,48,31,0.10)',
-        boxShadow: '0 12px 40px rgba(36,48,31,0.06)',
       }}
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-3">
+      {/* Kompakt header: lille eyebrow + mindre serif-navne over hver kolonne,
+          så det er tydeligt hvilken side der er hvilken sort. Ingen stor vs-badge. */}
+      <p
+        className="m-0 uppercase"
+        style={{
+          color: 'rgba(127,143,106,0.9)',
+          fontFamily: sans,
+          fontSize: 10,
+          fontWeight: 800,
+          letterSpacing: '0.16em',
+        }}
+      >
+        Sammenlign sorter
+      </p>
+      <div className="mt-1 grid grid-cols-2 gap-3">
         <h3
-          className="m-0 text-left"
+          className="m-0"
           style={{
             color: ink,
             fontFamily: serif,
-            fontSize: 'clamp(28px, 8vw, 34px)',
+            fontSize: 'clamp(19px, 5vw, 22px)',
             fontWeight: 500,
-            letterSpacing: 0,
             lineHeight: 1,
           }}
         >
           {leftTitle}
         </h3>
-        <VsBadge />
         <h3
-          className="m-0 text-right"
+          className="m-0"
           style={{
             color: ink,
             fontFamily: serif,
-            fontSize: 'clamp(28px, 8vw, 34px)',
+            fontSize: 'clamp(19px, 5vw, 22px)',
             fontWeight: 500,
-            letterSpacing: 0,
             lineHeight: 1,
           }}
         >
@@ -184,60 +197,50 @@ export function GuideComparisonList({
         </h3>
       </div>
 
-      <div className="mt-7">
+      {/* Rækker: label som lille eyebrow OVER de to værdier — ingen midterkolonne,
+          ingen ikoner. Tabelagtigt men roligt. */}
+      <div className="mt-3.5">
         {rows.map((row) => (
-          <div
-            key={row.label}
-            className="grid grid-cols-[minmax(0,1fr)_74px_minmax(0,1fr)] items-center gap-3 py-4 min-[390px]:grid-cols-[minmax(0,1fr)_92px_minmax(0,1fr)]"
-            style={{ borderTop: `1px solid ${line}` }}
-          >
+          <div key={row.label} className="py-2.5" style={{ borderTop: `1px solid ${line}` }}>
             <p
-              className="m-0 text-left"
+              className="m-0 uppercase"
               style={{
-                color: 'rgba(36,48,31,0.74)',
+                color: 'rgba(127,143,106,0.82)',
                 fontFamily: sans,
-                fontSize: 13,
-                fontWeight: 650,
-                lineHeight: 1.45,
+                fontSize: 9.5,
+                fontWeight: 800,
+                letterSpacing: '0.12em',
+                lineHeight: 1.2,
               }}
             >
-              {row.left}
+              {row.label}
             </p>
-            <div className="flex min-w-0 flex-col items-center gap-1 text-center">
-              {row.icon && (
-                <span
-                  aria-hidden
-                  className="text-[rgba(127,143,106,0.72)] [&_svg]:h-4 [&_svg]:w-4"
-                >
-                  {row.icon}
-                </span>
-              )}
+            <div className="mt-1 grid grid-cols-2 gap-3">
               <p
-                className="m-0 uppercase"
+                className="m-0"
                 style={{
-                  color: 'rgba(127,143,106,0.86)',
+                  color: 'rgba(36,48,31,0.74)',
                   fontFamily: sans,
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: '0.12em',
-                  lineHeight: 1.2,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  lineHeight: 1.4,
                 }}
               >
-                {row.label}
+                {row.left}
+              </p>
+              <p
+                className="m-0"
+                style={{
+                  color: 'rgba(36,48,31,0.74)',
+                  fontFamily: sans,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  lineHeight: 1.4,
+                }}
+              >
+                {row.right}
               </p>
             </div>
-            <p
-              className="m-0 text-right"
-              style={{
-                color: 'rgba(36,48,31,0.74)',
-                fontFamily: sans,
-                fontSize: 13,
-                fontWeight: 650,
-                lineHeight: 1.45,
-              }}
-            >
-              {row.right}
-            </p>
           </div>
         ))}
       </div>
