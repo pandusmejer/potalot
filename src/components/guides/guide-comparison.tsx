@@ -184,13 +184,13 @@ export function GuideComparisonList({
           className="shrink-0 justify-self-center"
           style={{
             color: ink,
-            fontFamily: sans,
+            fontFamily: serif,
             fontSize: 20,
-            fontWeight: 800,
+            fontWeight: 600,
             lineHeight: 1,
           }}
         >
-          vs.
+          VS.
         </span>
         <h3
           className="m-0 text-right"
