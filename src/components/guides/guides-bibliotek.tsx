@@ -125,32 +125,12 @@ export function GuidesBibliotek({
           tung sektion. -mt trækker den tættere på intro-kortet. POTALOT-GUIDE-
           pillen ligger på sin EGEN linje (brækker ikke) over eyebrow-teksten;
           den præcise type (arts/sort) ligger som metadata på selve kortene. */}
-      <section id="guides-i-felten" className="relative -mt-3 pt-0">
+      {/* Ingen separat "Guides i felten"-overskrift: introen ovenfor forklarer
+          guidesystemet og leder direkte ned i kortene. Én intro → kort, ikke to
+          sektioner. id bevaret som scroll-anker fra "Begynd her". */}
+      <section id="guides-i-felten" className="relative -mt-1 pt-0 scroll-mt-24">
         <AtmosphericGuideField />
-        <div className="relative z-10 space-y-4">
-          {/* Forenklet: KUN titel + subline. Pillen + "FELTNOTER · ARTSGUIDER ·
-              SORTSGUIDER"-eyebrowen er fjernet her (for mange signaler før kortet);
-              type-metadataen bor på selve kortene. pl-2 flugter teksten med
-              guidekortenes indre rytme i stedet for at hugge skærmkanten. */}
-          <div className="max-w-[380px] pl-2">
-            <SektionTitel>
-              {aktivtEmne ? `${aktivtEmne.navn} i felten` : 'Guides i felten'}
-            </SektionTitel>
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 14,
-                fontWeight: 400,
-                lineHeight: 1.42,
-                color: '#6A665C',
-                margin: '6px 0 0',
-                maxWidth: 340,
-              }}
-            >
-              Vælg den plante, du står med.
-            </p>
-          </div>
-
+        <div className="relative z-10">
           {potalot.length === 0 ? (
             <EmptyNote text={
               aktivtEmne || effectiveSearch
@@ -462,26 +442,6 @@ function SoegBar({
         })}
       </div>
     </section>
-  )
-}
-
-function SektionTitel({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontFamily: plex,
-        fontWeight: 600,
-        // Mindre end før (var clamp 34-46): naturlig fortsættelse af intro-
-        // titlen, ikke en ny hero der konkurrerer med "Fra første frø …".
-        fontSize: 'clamp(26px, 6.8vw, 34px)',
-        lineHeight: 0.96,
-        letterSpacing: '-0.01em',
-        color: '#242019',
-        margin: 0,
-      }}
-    >
-      {children}
-    </h2>
   )
 }
 

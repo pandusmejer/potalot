@@ -57,7 +57,8 @@ export function Dyrkningsforloeb() {
         til såning, udplantning, pleje og høst.
       </p>
 
-      {/* Diskret bro-linje der peger ind i næste sektion. */}
+      {/* Én kort overgang der leder direkte ned i guidekortene (ingen ekstra
+          "Guides i felten"-overskrift imellem). */}
       <p
         style={{
           margin: '14px 0 0',
@@ -67,7 +68,7 @@ export function Dyrkningsforloeb() {
           color: 'rgba(78,97,56,0.72)',
         }}
       >
-        Vælg en planteguide nedenfor.
+        Vælg den plante, du står med.
       </p>
     </section>
   )
