@@ -152,8 +152,8 @@ export function GuideCardEditorial({
           className={cn(
             'relative z-10 flex items-start gap-3',
             isVariety
-              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-5 pt-5'
-              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-5 pt-6',
+              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-5 pt-[9px]'
+              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-5 pt-[13px]',
           )}
           style={{
             background: 'rgba(244,240,229,0.96)',
