@@ -181,21 +181,50 @@ export function BleedBand({
  *
  * (Bleed*-komponenterne beholdes til QA/demo-sider.)
  */
+export type EvidenceVariant = 'wide' | 'square' | 'tall'
+
+/**
+ * Formvalg pr. afsnit bryder den lineære "tekst → fuldbredde-billede"-rytme:
+ *   - wide   = fuld bredde 16:9 (default, roligt bånd)
+ *   - square = ~78% bredde 1:1, forskudt til en side (inline editorial insert)
+ *   - tall   = ~62% bredde 3:4, forskudt (viser vækstform/plantearkitektur)
+ * Forskydningen (align) veksler pr. billede, så to på hinanden følgende
+ * bevisbilleder ikke lander ens.
+ */
 export function GuideEvidenceImage({
   imageSrc,
   alt,
   caption,
+  variant = 'wide',
+  align = 'right',
 }: {
   imageSrc: string
   alt: string
   caption?: string
+  variant?: EvidenceVariant
+  align?: 'left' | 'right'
 }) {
+  const shape: CSSProperties =
+    variant === 'square'
+      ? { aspectRatio: '1 / 1', width: '78%' }
+      : variant === 'tall'
+        ? { aspectRatio: '3 / 4', width: '62%' }
+        : { aspectRatio: '16 / 9', width: '100%' }
+  // Forskyd smalle former til en side; fuld bredde står naturligt.
+  const offset: CSSProperties =
+    variant === 'wide'
+      ? {}
+      : align === 'left'
+        ? { marginRight: 'auto' }
+        : { marginLeft: 'auto' }
+
   return (
     <figure style={{ margin: '10px 0 0' }}>
       <div
         className="overflow-hidden rounded-[18px]"
         style={{
-          aspectRatio: '16 / 9',
+          ...shape,
+          ...offset,
           border: '1px solid rgba(45,42,36,0.10)',
           backgroundColor: pageBackground,
         }}
@@ -211,6 +240,7 @@ export function GuideEvidenceImage({
             fontWeight: 500,
             color: 'rgba(36,48,31,0.5)',
             margin: '6px 0 0',
+            textAlign: variant !== 'wide' && align === 'right' ? 'right' : 'left',
           }}
         >
           {caption}

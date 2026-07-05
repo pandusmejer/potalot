@@ -177,12 +177,15 @@ export async function GuideArticle({
   const bleedAnchorPatterns: RegExp[] = isSpecies
     ? []
     : [
+        // Tre anker-afsnit med HVER SIN billedform (se BleedSlot i
+        // saadan-dyrker-du): Om sorten = kvadratisk insert, Sortsspecifikke
+        // detaljer = højt sidebillede, Smag/anvendelse = roligt bånd. Det
+        // bryder den lineære "tekst → fuldbredde-billede"-rytme.
         /^om sorten/i,
+        /sortsspecifik/i,
         /smag|anvendelse/i,
-        // 'opbind|knib' fjernet: det ankrede en bleed på teknik-sektionerne, så
-        // et stort billede landede MELLEM de to teknikkort. Teknikkortene har nu
-        // deres eget thumbnail.
-        /næste|kalender/i,
+        // 'opbind|knib' + 'næste|kalender' droppet: de ankrede billeder mellem
+        // teknikkortene / før kalenderen uden redaktionel funktion.
       ]
   const bleedAfter: Record<
     string,

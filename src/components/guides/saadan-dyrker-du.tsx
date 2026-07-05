@@ -102,7 +102,13 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         return (
           <div key={blockKey} style={tightBottom ? { marginBottom: 12 } : undefined}>
             {rendered.node}
-            {showBleed && bleed && <BleedSlot image={bleed} />}
+            {showBleed && bleed && (
+              <BleedSlot
+                image={bleed}
+                title={'title' in s ? s.title : undefined}
+                index={i}
+              />
+            )}
           </div>
         )
       })}
@@ -167,8 +173,35 @@ function renderSection(
  * ét rent inline-bevis UDEN fade — teksturen er hele pointen, og et hårdt fade
  * hen over blade/frugter/stængler æder præcis det brugeren skal se.
  */
-function BleedSlot({ image }: { image: PotalotMacroOutput }) {
-  return <GuideEvidenceImage imageSrc={image.src} alt={image.alt} />
+function BleedSlot({
+  image,
+  title,
+  index,
+}: {
+  image: PotalotMacroOutput
+  title?: string
+  index: number
+}) {
+  // Form efter afsnittets emne — bryder den lineære fuldbredde-rytme:
+  //   Om sorten            → kvadratisk inline-insert
+  //   Sortsspecifikke det. → højt sidebillede (vækstform)
+  //   ellers               → roligt fuldbredde-bånd
+  const t = (title ?? '').toLowerCase()
+  const variant = /^om sorten/.test(t)
+    ? 'square'
+    : /sortsspecifik/.test(t)
+      ? 'tall'
+      : 'wide'
+  // Veksl forskydningen så to smalle billeder ikke lander ens.
+  const align = index % 2 === 0 ? 'right' : 'left'
+  return (
+    <GuideEvidenceImage
+      imageSrc={image.src}
+      alt={image.alt}
+      variant={variant}
+      align={align}
+    />
+  )
 }
 
 /**
