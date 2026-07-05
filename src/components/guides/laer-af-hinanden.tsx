@@ -78,8 +78,8 @@ export function LaerAfHinanden({
       <p
         style={{
           fontFamily: plex,
-          fontSize: 13,
-          fontWeight: 400,
+          fontSize: 14,
+          fontWeight: 300,
           lineHeight: 1.45,
           color: 'rgba(36,42,28,0.82)',
           margin: '0 0 24px',
