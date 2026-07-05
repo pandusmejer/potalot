@@ -150,7 +150,7 @@ export function GuideComparisonList({
 }: GuideComparisonListProps) {
   return (
     <section
-      className="mx-6 w-[calc(100vw-48px)] rounded-[22px] px-5 py-5"
+      className="w-full rounded-[22px] px-5 py-5"
       style={{
         background: paper,
         border: '1px solid rgba(36,48,31,0.10)',
