@@ -257,10 +257,10 @@ export async function GuideArticle({
           </div>
           <h1
             style={{
-              fontFamily: 'var(--font-cormorant), Georgia, serif',
-              fontWeight: 500,
-              fontSize: 'clamp(32px, 7.5vw, 44px)',
-              lineHeight: 0.95,
+              fontFamily: 'var(--font-plex-condensed), sans-serif',
+              fontWeight: 600,
+              fontSize: 'clamp(34px, 8vw, 46px)',
+              lineHeight: 0.98,
               letterSpacing: '-0.02em',
               color: '#2D2A24',
               margin: 0,
@@ -379,10 +379,10 @@ export async function GuideArticle({
             </p>
             <h2
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontFamily: 'var(--font-plex-condensed), sans-serif',
                 fontWeight: 600,
-                fontSize: 'clamp(23px, 5vw, 28px)',
-                lineHeight: 1.1,
+                fontSize: 'clamp(22px, 4.8vw, 26px)',
+                lineHeight: 1.12,
                 letterSpacing: '-0.01em',
                 color: '#2D2A24',
                 margin: '8px 0 0',
@@ -593,11 +593,11 @@ export async function GuideArticle({
             </p>
             <h3
               style={{
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontSize: 'clamp(24px, 6vw, 28px)',
-                fontWeight: 500,
-                letterSpacing: 0,
-                lineHeight: 1.05,
+                fontFamily: 'var(--font-plex-condensed), sans-serif',
+                fontSize: 'clamp(23px, 5.5vw, 27px)',
+                fontWeight: 600,
+                letterSpacing: '-0.01em',
+                lineHeight: 1.08,
                 color: '#2D2A24',
                 // Luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi en
                 // mt-klasse ville blive overskrevet af margin herunder.)

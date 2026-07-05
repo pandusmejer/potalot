@@ -142,9 +142,18 @@ hårde paneler.
 
 ## Typografisk rollefordeling (låst)
 
-- **Cormorant** = guidekapitler, titel, redaktionel autoritet
-- **Plex Condensed** = guidekort, navigation, labels
-- **Manrope** = brugerindhold, metadata, erfaringer, praktiske UI-tekster
+**Arts-/sortguides = botanisk reference (moderne artsleksikon), IKKE poetisk
+magasinartikel.** Derfor bærer den videnskabelige guidefont personligheden.
+
+- **Plex Condensed (videnskabelig guidefont) = PRIMÆR** til arts-/sortguides:
+  hero-titel · sektionsoverskrifter (Om sorten, Smag og anvendelse, Det skal du
+  være opmærksom på …) · kalender-titel + fasetitler · sammenligningskortets
+  sortsnavne + labels · teknikkort · guide-relaterede titler · guidekort/navigation.
+- **Manrope** = brugerindhold, metadata, erfaringer, praktiske UI-tekster.
+- **Cormorant** = KUN meget sparsom editorial accent — latin-navne (italic) og
+  note-bodies (Vidste du?/Potalot-tip/Potalot anbefaler). ALDRIG hovedsprog for
+  arts-/sortguides. Brødtekst-prosaen er (indtil videre) også Cormorant, men
+  fjernes ikke i samme omgang.
 
 ---
 

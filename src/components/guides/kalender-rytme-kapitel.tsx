@@ -1,5 +1,6 @@
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
-const serif = 'var(--font-cormorant), Georgia, serif'
+// Videnskabelig guidefont til titler; Cormorant er ude af kalenderkortet.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 interface KalenderRytmeChapter {
   title: string
@@ -76,11 +77,11 @@ export function KalenderRytmeKapitel({
         <h2
           className="mt-1.5"
           style={{
-            fontFamily: serif,
-            fontSize: 'clamp(24px, 7vw, 28px)',
+            fontFamily: plex,
+            fontSize: 'clamp(23px, 6.5vw, 27px)',
             fontWeight: 600,
-            lineHeight: 1.02,
-            letterSpacing: 0,
+            lineHeight: 1.04,
+            letterSpacing: '-0.015em',
             color: '#2D2A24',
             margin: '6px 0 0',
           }}
@@ -139,11 +140,11 @@ export function KalenderRytmeKapitel({
               <h3
                 className="m-0"
                 style={{
-                  fontFamily: serif,
-                  fontSize: 'clamp(19px, 5.2vw, 21px)',
-                  fontWeight: 500,
-                  lineHeight: 1.05,
-                  letterSpacing: 0,
+                  fontFamily: plex,
+                  fontSize: 'clamp(18px, 5vw, 20px)',
+                  fontWeight: 600,
+                  lineHeight: 1.08,
+                  letterSpacing: '-0.01em',
                   color: '#2D2A24',
                 }}
               >

@@ -17,6 +17,9 @@ import { GuideEvidenceImage } from './bleed-blocks'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Videnskabelig guidefont — primær til titler/overskrifter (botanisk reference,
+// ikke poetisk essay). Cormorant er nu kun brødtekst/sparsom accent.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 interface Props {
   sections: GuideSection[]
@@ -200,14 +203,14 @@ function ProseSection({
       </p>
       <h2
         style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(26px, 5vw, 32px)',
-          lineHeight: 1.0,
-          letterSpacing: '-0.01em',
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 'clamp(25px, 5vw, 30px)',
+          lineHeight: 1.04,
+          letterSpacing: '-0.015em',
           color: '#2D2A24',
           margin: 0,
-          marginBottom: 16,
+          marginBottom: 14,
         }}
       >
         {title}

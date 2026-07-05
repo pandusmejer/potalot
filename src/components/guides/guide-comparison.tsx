@@ -54,7 +54,8 @@ const muted = 'rgba(36,48,31,0.62)'
 const line = 'rgba(36,48,31,0.14)'
 const sage = '#7F8F6A'
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
-const serif = 'var(--font-cormorant), Georgia, serif'
+// Videnskabelig guidefont til sortsnavne/labels; Cormorant er ude af kortet.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 function ComparisonCta({
   label,
@@ -177,7 +178,7 @@ export function GuideComparisonList({
         <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
         <h3
           className="m-0 text-left"
-          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
+          style={{ color: ink, fontFamily: plex, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
         >
           {leftTitle}
         </h3>
@@ -185,7 +186,7 @@ export function GuideComparisonList({
           className="shrink-0 justify-self-center"
           style={{
             color: ink,
-            fontFamily: serif,
+            fontFamily: plex,
             fontSize: 18,
             fontWeight: 700,
             lineHeight: 1,
@@ -195,7 +196,7 @@ export function GuideComparisonList({
         </span>
         <h3
           className="m-0 text-right"
-          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
+          style={{ color: ink, fontFamily: plex, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 700, lineHeight: 1 }}
         >
           {rightTitle}
         </h3>
@@ -263,7 +264,7 @@ function ComparisonPortrait({ item }: { item: ComparisonItem }) {
         className="m-0 mt-4"
         style={{
           color: ink,
-          fontFamily: serif,
+          fontFamily: plex,
           fontSize: 'clamp(26px, 7vw, 32px)',
           fontWeight: 500,
           letterSpacing: 0,

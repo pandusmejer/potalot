@@ -14,7 +14,8 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
-const serif = 'var(--font-cormorant), Georgia, serif'
+// Teknikkort bruger den videnskabelige guidefont (jf. typografi-reglen).
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 /**
  * Thumbnail pr. teknik-slug. Bruger eksisterende plante-makroer der matcher
@@ -80,11 +81,11 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
 
       <h4
         style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(18px, 2.8vw, 21px)',
-          lineHeight: 1.2,
-          letterSpacing: '-0.015em',
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 'clamp(17px, 2.7vw, 20px)',
+          lineHeight: 1.15,
+          letterSpacing: '-0.01em',
           color: '#24301F',
           margin: '6px 0 0',
         }}
