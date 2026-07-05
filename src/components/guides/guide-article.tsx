@@ -477,15 +477,19 @@ export async function GuideArticle({
         const chapters = buildKalenderChapters(effective.calendarRules)
         if (chapters.length === 0) return null
         return (
-          <>
-            {debug && (
-              <DebugBlock
-                name="KalenderRytmeKapitel"
-                note={`3. Kalender — ${chapters.length} kapitler`}
-              />
-            )}
-            <KalenderRytmeKapitel chapters={chapters} />
-          </>
+          // Nested -mt trækker rytmesektionen lidt tættere på Lær af hinanden
+          // (efter disclaimeren blev fjernet). space-y-fugen overskrives.
+          <div>
+            <div className="-mt-4">
+              {debug && (
+                <DebugBlock
+                  name="KalenderRytmeKapitel"
+                  note={`3. Kalender — ${chapters.length} kapitler`}
+                />
+              )}
+              <KalenderRytmeKapitel chapters={chapters} />
+            </div>
+          </div>
         )
       })()}
 

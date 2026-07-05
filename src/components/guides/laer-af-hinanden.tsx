@@ -101,7 +101,7 @@ export function LaerAfHinanden({
           className="group inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 700,
             lineHeight: 1.2,
             color: olive,
@@ -115,8 +115,8 @@ export function LaerAfHinanden({
         >
           {expanded ? 'Skjul erfaringer' : `Se flere erfaringer (${resten.length})`}
           <ChevronRight
-            width={20}
-            height={20}
+            width={18}
+            height={18}
             strokeWidth={2.25}
             aria-hidden
             style={{
@@ -126,19 +126,6 @@ export function LaerAfHinanden({
           />
         </button>
       )}
-
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 16,
-          fontWeight: 500,
-          lineHeight: 1.45,
-          color: 'rgba(36,48,31,0.4)',
-          margin: '28px 0 0',
-        }}
-      >
-        Erfaringer kan variere efter vejr, jord og placering.
-      </p>
     </section>
   )
 }
@@ -236,14 +223,14 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 12.5,
+            fontSize: 11.5,
             fontWeight: 600,
             color: 'rgba(36,48,31,0.5)',
             gap: 7,
             whiteSpace: 'nowrap',
           }}
         >
-          <Bookmark width={15} height={15} strokeWidth={1.9} aria-hidden />
+          <Bookmark width={14} height={14} strokeWidth={1.9} aria-hidden />
           {erfaring.helpfulCount} gemte erfaringen
         </span>
 
@@ -253,14 +240,14 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           aria-pressed={saved}
           className="inline-flex shrink-0 items-center justify-center"
           style={{
-            height: 37,
-            padding: '0 13px',
+            height: 35,
+            padding: '0 12px',
             borderRadius: 8,
             border: `1.5px solid ${saved ? olive : 'rgba(78,97,56,0.55)'}`,
             background: saved ? 'rgba(123,148,96,0.14)' : 'transparent',
             color: olive,
             fontFamily: sans,
-            fontSize: 12.5,
+            fontSize: 11.5,
             fontWeight: 700,
             gap: 7,
             whiteSpace: 'nowrap',
@@ -268,9 +255,9 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           }}
         >
           {saved ? (
-            <BookmarkCheck width={15} height={15} strokeWidth={2.1} aria-hidden />
+            <BookmarkCheck width={14} height={14} strokeWidth={2.1} aria-hidden />
           ) : (
-            <BookmarkPlus width={15} height={15} strokeWidth={2} aria-hidden />
+            <BookmarkPlus width={14} height={14} strokeWidth={2} aria-hidden />
           )}
           {saved ? 'Gemt' : 'Gem i min log'}
         </button>
