@@ -46,13 +46,13 @@ export function KalenderRytmeKapitel({
 
   return (
     <section
-      className="relative overflow-hidden rounded-[28px] px-6 py-8"
+      className="rounded-[24px] px-5 py-6"
       style={{
         background: '#F4F0E5',
         border: '1px solid rgba(36,48,31,0.10)',
       }}
     >
-      <header className="mb-8 max-w-[330px]">
+      <header className="mb-5">
         <p
           className="m-0 uppercase"
           style={{
@@ -67,126 +67,82 @@ export function KalenderRytmeKapitel({
           {eyebrow}
         </p>
         <h2
-          className="mt-3"
+          className="mt-1.5"
           style={{
             fontFamily: serif,
-            fontSize: 'clamp(34px, 10vw, 46px)',
+            fontSize: 'clamp(24px, 7vw, 28px)',
             fontWeight: 500,
-            lineHeight: 0.98,
+            lineHeight: 1.02,
             letterSpacing: 0,
             color: '#2D2A24',
-            marginBottom: 0,
+            margin: '6px 0 0',
           }}
         >
           {title}
         </h2>
       </header>
 
-      <ol className="relative m-0 list-none space-y-8 p-0">
-        <span
-          aria-hidden
-          className="absolute left-[5px] top-2 h-[calc(100%-18px)] w-px"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(127,143,106,0.24), rgba(127,143,106,0.42) 45%, rgba(127,143,106,0.16))',
-          }}
-        />
-
+      {/* Kompakte fase-rækker: måned-kolonne + titel + opgaver på én linje.
+          Ingen lang vertikal timeline, ingen store italic-beskrivelser — hele
+          sæsonen på ~én skærm. */}
+      <div className="m-0 list-none">
         {chapters.map((chapter, index) => (
-          <li key={`${chapter.monthRange}-${chapter.title}`} className="relative pl-8">
-            <span
-              aria-hidden
-              className="absolute left-0 top-[7px] h-[11px] w-[11px] rounded-full"
+          <div
+            key={`${chapter.monthRange}-${chapter.title}`}
+            className="grid grid-cols-[64px_1fr] items-start gap-3"
+            style={{
+              paddingTop: index === 0 ? 0 : 14,
+              paddingBottom: index === chapters.length - 1 ? 0 : 14,
+              borderTop: index === 0 ? undefined : '1px solid rgba(36,48,31,0.08)',
+            }}
+          >
+            <p
+              className="m-0 uppercase"
               style={{
-                background: '#F4F0E5',
-                border: '1px solid rgba(127,143,106,0.70)',
+                fontFamily: sans,
+                fontSize: 10.5,
+                fontWeight: 800,
+                letterSpacing: '0.1em',
+                lineHeight: 1.2,
+                color: '#7F8F6A',
+                marginTop: 5,
               }}
-            />
-
-            <article>
-              <p
-                className="m-0 uppercase"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  lineHeight: 1.25,
-                  color: '#7F8F6A',
-                }}
-              >
-                {chapter.monthRange}
-              </p>
-
+            >
+              {chapter.monthRange}
+            </p>
+            <div className="min-w-0">
               <h3
-                className="mt-1"
+                className="m-0"
                 style={{
                   fontFamily: serif,
-                  fontSize: 'clamp(25px, 7vw, 32px)',
+                  fontSize: 'clamp(19px, 5.2vw, 21px)',
                   fontWeight: 500,
-                  lineHeight: 1,
+                  lineHeight: 1.05,
                   letterSpacing: 0,
                   color: '#2D2A24',
-                  marginBottom: 0,
                 }}
               >
                 {chapter.title}
               </h3>
-
-              {chapter.description && (
+              {chapter.actions.length > 0 && (
                 <p
-                  className="mt-3 max-w-[29rem]"
+                  className="m-0"
                   style={{
-                    fontFamily: serif,
-                    fontSize: 18,
-                    fontStyle: 'italic',
-                    lineHeight: 1.45,
-                    color: 'rgba(45,42,36,0.72)',
-                    marginBottom: 0,
+                    fontFamily: sans,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    lineHeight: 1.4,
+                    color: 'rgba(45,42,36,0.7)',
+                    marginTop: 5,
                   }}
                 >
-                  {chapter.description}
+                  {chapter.actions.slice(0, 3).join(' · ')}
                 </p>
               )}
-
-              <ul className="mt-4 m-0 list-none space-y-2 p-0">
-                {chapter.actions.slice(0, 3).map((action) => (
-                  <li key={action} className="flex items-baseline gap-3">
-                    <span
-                      aria-hidden
-                      className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ background: 'rgba(127,143,106,0.62)', transform: 'translateY(-2px)' }}
-                    />
-                    <p
-                      className="m-0"
-                      style={{
-                        fontFamily: sans,
-                        fontSize: 14,
-                        fontWeight: 550,
-                        lineHeight: 1.45,
-                        color: 'rgba(45,42,36,0.82)',
-                      }}
-                    >
-                      {action}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </article>
-
-            {index < chapters.length - 1 && (
-              <span
-                aria-hidden
-                className="mt-7 block h-px w-20"
-                style={{
-                  background:
-                    'linear-gradient(to right, rgba(127,143,106,0.32), rgba(127,143,106,0))',
-                }}
-              />
-            )}
-          </li>
+            </div>
+          </div>
         ))}
-      </ol>
+      </div>
     </section>
   )
 }
