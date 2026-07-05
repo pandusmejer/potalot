@@ -3,8 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { LIGHT_META, WATER_META, DIFFICULTY_META, MONTHS_DA } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
 import {
-  Sun, Droplets, Snowflake, Ruler, ArrowDown, Calendar,
-  ThermometerSun, Sprout, TreePine, Wheat, ChevronDown,
+  Sun, Droplets, Calendar, Sprout, TreePine, Wheat, ChevronDown,
 } from 'lucide-react'
 
 interface Props {
@@ -92,66 +91,79 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
           )}
         </div>
 
-        {/* Sekundære detaljer — foldet væk, så kortet er scanbart som udgangs-
-            punkt. Native <details> (ingen JS i denne server-component). */}
-        {hasSecondary(qf) && (
-          <details className="group mt-3 border-t border-border pt-3">
-            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
-              Flere detaljer
-              <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
-            </summary>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {qf.soil && <Fact label="Jord" value={qf.soil} />}
-              {qf.germinationDays && (
-                <Fact
-                  label="Spiretid"
-                  value={/dage/i.test(qf.germinationDays) ? qf.germinationDays : `${qf.germinationDays} dage`}
-                />
-              )}
-              {qf.primaryUse && (
-                <Fact label="Anvendelse" value={qf.primaryUse} />
-              )}
-              {qf.height && (
-                <Fact label="Højde" value={qf.height} icon={<Ruler className="h-3.5 w-3.5" />} />
-              )}
-              {qf.directSowingMonths.length > 0 && (
-                <Fact
-                  label="Direkte såning"
-                  value={formatMonths(qf.directSowingMonths)}
-                  icon={<Calendar className="h-3.5 w-3.5" />}
-                />
-              )}
-              {qf.sowingDepthMm !== undefined && (
-                <Fact
-                  label="Sådybde"
-                  value={qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`}
-                  icon={<ArrowDown className="h-3.5 w-3.5" />}
-                />
-              )}
-              {qf.germinationTemperature && (
-                <Fact
-                  label="Spiretemp"
-                  value={qf.germinationTemperature}
-                  icon={<ThermometerSun className="h-3.5 w-3.5" />}
-                />
-              )}
-              {qf.plantSpacing && (
-                <Fact label="Afstand" value={qf.plantSpacing} icon={<Ruler className="h-3.5 w-3.5" />} />
-              )}
-              {qf.rowSpacing && <Fact label="Rækkeafstand" value={qf.rowSpacing} />}
-              {qf.frostSensitive && (
-                <Fact
-                  label="Frost"
-                  value="Følsom"
-                  icon={<Snowflake className="h-3.5 w-3.5 text-blue-600" />}
-                />
-              )}
-              {qf.minimumTemperature && (
-                <Fact label="Min. temp" value={qf.minimumTemperature} />
-              )}
-            </div>
-          </details>
-        )}
+        {/* Sekundære detaljer — foldet væk som editorial undersektion, ikke endnu
+            et tæt ikon-grid. Grupperet i Dyrkning/Forhold/Planten med rolige
+            tekst-eyebrows; INGEN ikon pr. felt (labels bærer betydningen). Én
+            soft glyph som markør ved "Flere detaljer" (option B — vi har kun
+            plante.png; 3 gruppe-glyffer venter på sprout/leaf/fruit-uploads).
+            Native <details>, ingen JS i denne server-component. */}
+        {hasSecondary(qf) && (() => {
+          const grupper = [
+            {
+              titel: 'Dyrkning',
+              felter: [
+                qf.germinationDays && {
+                  label: 'Spiretid',
+                  value: /dage/i.test(qf.germinationDays) ? qf.germinationDays : `${qf.germinationDays} dage`,
+                },
+                qf.germinationTemperature && { label: 'Spiretemp', value: qf.germinationTemperature },
+                qf.directSowingMonths.length > 0 && { label: 'Direkte såning', value: formatMonths(qf.directSowingMonths) },
+                qf.sowingDepthMm !== undefined && {
+                  label: 'Sådybde',
+                  value: qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`,
+                },
+              ],
+            },
+            {
+              titel: 'Forhold',
+              felter: [
+                qf.soil && { label: 'Jord', value: qf.soil },
+                // Frost følger kortets oliven-univers via label (ingen blå snefnug).
+                qf.frostSensitive && { label: 'Frost', value: 'Følsom' },
+                qf.minimumTemperature && { label: 'Min. temp', value: qf.minimumTemperature },
+              ],
+            },
+            {
+              titel: 'Planten',
+              felter: [
+                qf.height && { label: 'Højde', value: qf.height },
+                qf.primaryUse && { label: 'Anvendelse', value: qf.primaryUse },
+                qf.plantSpacing && { label: 'Afstand', value: qf.plantSpacing },
+                qf.rowSpacing && { label: 'Rækkeafstand', value: qf.rowSpacing },
+              ],
+            },
+          ]
+            .map(g => ({
+              titel: g.titel,
+              felter: g.felter.filter((f): f is { label: string; value: string } => Boolean(f)),
+            }))
+            .filter(g => g.felter.length > 0)
+
+          return (
+            <details className="group mt-3 border-t border-border pt-3">
+              <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 18, width: 'auto', opacity: 0.45 }} />
+                Flere detaljer
+                <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+              </summary>
+              <div className="mt-3 space-y-4">
+                {grupper.map(g => (
+                  <div key={g.titel}>
+                    <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#7F8F6A]">
+                      {g.titel}
+                    </p>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {g.felter.map(f => (
+                        <Fact key={f.label} label={f.label} value={f.value} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )
+        })()}
 
         {guide.tags.length > 0 && (
           <div className="flex gap-1.5 flex-wrap mt-4 pt-3 border-t border-border">
