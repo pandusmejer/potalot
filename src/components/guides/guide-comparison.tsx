@@ -185,8 +185,8 @@ export function GuideComparisonList({
           style={{
             color: ink,
             fontFamily: serif,
-            fontSize: 20,
-            fontWeight: 600,
+            fontSize: 18,
+            fontWeight: 700,
             lineHeight: 1,
           }}
         >
