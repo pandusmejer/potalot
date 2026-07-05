@@ -90,6 +90,18 @@ export function GuidesBibliotek({
   const filtered = useMemo(() => {
     const q = effectiveSearch.trim().toLowerCase()
     return withKind
+      // Aktiv filterakse = guideLevel (art vs. sort). Biblioteket viser i dag
+      // KUN Potalot-laget, så en kind-chip ville aldrig ændre resultatet.
+      //
+      // FUTURE:
+      // When /guides-bibliotek starts rendering user-owned guides or AI drafts,
+      // reintroduce a separate kind-filter axis here:
+      //   kind: potalot | egen | ai-udkast   (afsender/tillid)
+      // Keep it SEPARATE from guideLevel:
+      //   guideLevel: art | sort             (indholdsniveau)
+      // Do not combine both axes in one single-select chip row (brugeren skal
+      // ikke vælge mellem "hvem skrev den?" og "hvad handler den om?" i samme
+      // klik). Maskineriet står klar: guideKindFor() + `kind` på hvert element.
       .filter(({ guide: g }) => filter === 'alle' || levelOf(g) === filter)
       .filter(({ guide: g }) => {
         if (!q) return true
