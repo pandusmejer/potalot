@@ -1872,14 +1872,14 @@ export const IMPORTED_GUIDES: Guide[] = [
         "key": "guide-opbinding-af-tomater",
         "title": "Sådan opbinder du tomater",
         "slug": "opbinding-af-tomater",
-        "description": "Høje tomatplanter kan hurtigt blive tunge af blade og frugter. Med den rette opbinding vokser planten sundere og bliver lettere at høste fra."
+        "description": "Høje tomatplanter bliver hurtigt tunge. Lær at støtte dem, så planten står stærkt og bliver lettere at høste fra."
       },
       {
         "kind": "guide",
         "key": "guide-knibning-af-tomater",
         "title": "Sådan kniber du tomater",
         "slug": "knibning-af-tomater",
-        "description": "Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten."
+        "description": "Ranketomater danner sideskud løbende. Lær at fjerne dem, så planten bruger kræfterne på vækst og frugt."
       },
       {
         "key": "potalot-note",

@@ -67,14 +67,14 @@ San Marzano er en ranketomat med kraftig vækst, og den kræver opbinding fra st
 :::guide
 slug: opbinding-af-tomater
 title: Sådan opbinder du tomater
-description: Høje tomatplanter kan hurtigt blive tunge af blade og frugter. Med den rette opbinding vokser planten sundere og bliver lettere at høste fra.
+description: Høje tomatplanter bliver hurtigt tunge. Lær at støtte dem, så planten står stærkt og bliver lettere at høste fra.
 :::
 
 :::guide
 
 slug: knibning-af-tomater
 title: Sådan kniber du tomater
-description: Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten.
+description: Ranketomater danner sideskud løbende. Lær at fjerne dem, så planten bruger kræfterne på vækst og frugt.
 
 :::
 

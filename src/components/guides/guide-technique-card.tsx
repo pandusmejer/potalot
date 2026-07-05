@@ -96,6 +96,7 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
       {/* Beskrivelse (venstre) + kvadratisk thumbnail bundet til nederste højre. */}
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 14, marginTop: 8 }}>
         <p
+          className="line-clamp-4"
           style={{
             flex: 1,
             minWidth: 0,
@@ -126,6 +127,7 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
               alt=""
               aria-hidden
               className="h-full w-full object-cover"
+              style={{ transform: 'scale(1.2)' }}
             />
           </div>
         )}
