@@ -25,6 +25,8 @@ import { PotalotTipMedMakro } from '@/components/guides/potalot-tip-med-makro'
 import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
+import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
+import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
   type ComparisonRow,
@@ -417,6 +419,25 @@ export async function GuideArticle({
               />
             )}
             <KalenderRytmeKapitel chapters={chapters} />
+          </>
+        )
+      })()}
+
+      {(() => {
+        const erfaringer = erfaringerFor(effective.id)
+        if (erfaringer.length === 0) return null
+        return (
+          <>
+            {debug && (
+              <DebugBlock
+                name="LaerAfHinanden"
+                note={`Erfaringer — ${erfaringer.length}`}
+              />
+            )}
+            <LaerAfHinanden
+              subject={effective.variety ?? effective.plantName}
+              erfaringer={erfaringer}
+            />
           </>
         )
       })()}
