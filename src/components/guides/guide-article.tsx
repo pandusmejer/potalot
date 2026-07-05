@@ -407,22 +407,9 @@ export async function GuideArticle({
         </>
       )}
 
-      {(() => {
-        const chapters = buildKalenderChapters(effective.calendarRules)
-        if (chapters.length === 0) return null
-        return (
-          <>
-            {debug && (
-              <DebugBlock
-                name="KalenderRytmeKapitel"
-                note={`3. Kalender — ${chapters.length} kapitler`}
-              />
-            )}
-            <KalenderRytmeKapitel chapters={chapters} />
-          </>
-        )
-      })()}
-
+      {/* Lær af hinanden ligger FØR kalenderen: brugeren læser Potalots guide,
+          får så praktiske dyrker-nuancer, og omsætter dét til planlægning i
+          kalenderen + egen have. Efter kalenderen ville det føles som appendix. */}
       {(() => {
         const erfaringer = erfaringerFor(effective.id)
         if (erfaringer.length === 0) return null
@@ -438,6 +425,22 @@ export async function GuideArticle({
               subject={effective.variety ?? effective.plantName}
               erfaringer={erfaringer}
             />
+          </>
+        )
+      })()}
+
+      {(() => {
+        const chapters = buildKalenderChapters(effective.calendarRules)
+        if (chapters.length === 0) return null
+        return (
+          <>
+            {debug && (
+              <DebugBlock
+                name="KalenderRytmeKapitel"
+                note={`3. Kalender — ${chapters.length} kapitler`}
+              />
+            )}
+            <KalenderRytmeKapitel chapters={chapters} />
           </>
         )
       })()}
