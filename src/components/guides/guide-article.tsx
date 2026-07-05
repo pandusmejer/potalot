@@ -432,26 +432,33 @@ export async function GuideArticle({
         </div>
       </div>
 
-      {debug && (
-        <DebugBlock
-          name="SaadanDyrkerDu"
-          note={`2. Sådan dyrker du — prose + ${Object.keys(bleedAfter).length} bleeds`}
+      {/* marginBottom 12 (overskriver space-y-10) → sidste sektion (teknikkort)
+          slutter 12px fra Vidste du, så den kort-cluster har ens 12px-rytme. */}
+      <div style={{ marginBottom: 12 }}>
+        {debug && (
+          <DebugBlock
+            name="SaadanDyrkerDu"
+            note={`2. Sådan dyrker du — prose + ${Object.keys(bleedAfter).length} bleeds`}
+          />
+        )}
+        <SaadanDyrkerDu
+          sections={effective.sections}
+          factMacroImage={factImage}
+          bleedAfter={bleedAfter}
         />
-      )}
-      <SaadanDyrkerDu
-        sections={effective.sections}
-        factMacroImage={factImage}
-        bleedAfter={bleedAfter}
-      />
+      </div>
 
       {effective.variety === 'San Marzano' && (
-        <>
-          {debug && <DebugBlock name="GuideNote" note="Vidste du? — signatur 1/3" />}
-          <GuideNote label="Vidste du?" image={noteImage} imageSide="left">
-            San Marzano har fast frugtkød og lavt vandindhold, hvilket gør
-            sorten særlig velegnet til sauce og konservering.
-          </GuideNote>
-        </>
+        // Nested -mt modvirker GuideNote's my-6, så tech↔Vidste du bliver 12px.
+        <div>
+          <div className="-mt-3">
+            {debug && <DebugBlock name="GuideNote" note="Vidste du? — signatur 1/3" />}
+            <GuideNote label="Vidste du?" image={noteImage} imageSide="left">
+              San Marzano har fast frugtkød og lavt vandindhold, hvilket gør
+              sorten særlig velegnet til sauce og konservering.
+            </GuideNote>
+          </div>
+        </div>
       )}
 
       {/* Lær af hinanden ligger FØR kalenderen: brugeren læser Potalots guide,

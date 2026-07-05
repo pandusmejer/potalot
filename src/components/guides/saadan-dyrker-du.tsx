@@ -94,8 +94,13 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // sidder tæt under teksten det dokumenterer, ikke som en pause
         // mellem kapitler.
         const blockKey = `${key}-${i}`
+        // Fortløbende teknikkort (kind 'guide') strammes til 12px — som de
+        // øvrige kort-cluster — i stedet for den brede prosa-rytme (56/72px).
+        // Tailwind v4 space-y sætter margin-BOTTOM på ikke-sidste barn, så vi
+        // overskriver marginBottom på det kort der efterfølges af et teknikkort.
+        const tightBottom = s.kind === 'guide' && body[i + 1]?.kind === 'guide'
         return (
-          <div key={blockKey}>
+          <div key={blockKey} style={tightBottom ? { marginBottom: 12 } : undefined}>
             {rendered.node}
             {showBleed && bleed && <BleedSlot image={bleed} />}
           </div>
