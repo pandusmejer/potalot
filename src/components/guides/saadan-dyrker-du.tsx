@@ -241,23 +241,24 @@ function ProseSection({
  * links, kode-blokke eller H4 i body, så er det tid til react-markdown.
  */
 function ProseBody({ body }: { body: string }) {
-  // V3: Cormorant 20px, line-height 1.75, max 70ch.
-  // "Cormorant. Ikke Manrope. Guides skal læses."
+  // Cormorant beholdt (artikel = Cormorant), men lettere visuel tyngde: mindre
+  // skrift, strammere linjeafstand, kortere linjer. Overskrifterne bærer stadig
+  // den store editorial-vægt — brødteksten skal læses, ikke råbe.
   const bodyStyle: React.CSSProperties = {
     fontFamily: serif,
     fontWeight: 400,
-    fontSize: 'clamp(18px, 3vw, 20px)',
-    lineHeight: 1.75,
+    fontSize: 'clamp(16px, 2.7vw, 17.5px)',
+    lineHeight: 1.58,
     color: '#2D2A24',
     margin: 0,
-    maxWidth: '70ch',
+    maxWidth: '62ch',
   }
 
   // Split body i paragraffer (blank linje mellem)
   const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
 
   return (
-    <div className="space-y-6" style={bodyStyle}>
+    <div className="space-y-5" style={bodyStyle}>
       {paragraphs.map((para, i) => {
         const lines = para.split('\n').map((l) => l.trim())
         const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
