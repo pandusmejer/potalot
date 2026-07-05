@@ -249,6 +249,7 @@ export async function GuideArticle({
               {cat.name}
               {original.guideLevel === 'variety' && parent && ' · sortsvariant'}
               {original.guideLevel === 'species' && ' · artsguide'}
+              {effective.variety && ` · ${effective.plantName}`}
             </span>
           </div>
           <h1
@@ -264,20 +265,6 @@ export async function GuideArticle({
           >
             {effective.variety ?? effective.plantName}
           </h1>
-          {effective.variety && (
-            <p
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: 13,
-                fontWeight: 500,
-                letterSpacing: '0.05em',
-                color: '#6A665C',
-                margin: '3px 0 0',
-              }}
-            >
-              {effective.plantName}
-            </p>
-          )}
           {effective.latinName && (
             <p
               style={{
