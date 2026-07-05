@@ -81,7 +81,7 @@ export function LaerAfHinanden({
           fontSize: 14,
           fontWeight: 300,
           lineHeight: 1.45,
-          color: 'rgba(36,42,28,0.62)',
+          color: 'rgba(36,42,28,0.72)',
           margin: '0 0 24px',
         }}
       >
@@ -177,7 +177,7 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
             background: 'rgba(123,148,96,0.18)',
             color: olive,
             fontFamily: sans,
-            fontSize: 11.5,
+            fontSize: 10.5,
             fontWeight: 700,
             letterSpacing: '0.12em',
             lineHeight: 1,
@@ -189,10 +189,10 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="text-right"
           style={{
             fontFamily: sans,
-            fontSize: 13.5,
+            fontSize: 11.5,
             fontWeight: 500,
             lineHeight: 1.3,
-            color: 'rgba(36,48,31,0.5)',
+            color: 'rgb(154,149,137)',
           }}
         >
           {meta}
