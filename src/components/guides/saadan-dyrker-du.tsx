@@ -326,6 +326,11 @@ function ProseBody({
     color: '#2D2A24',
     margin: 0,
     maxWidth: '62ch',
+    // Orddeling (dansk, arves fra <html lang="da">) pakker de smalle ombrydnings-
+    // spalter tættere og giver en jævnere overgang til fuld bredde under billedet.
+    hyphens: 'auto',
+    WebkitHyphens: 'auto',
+    textAlign: 'justify',
   }
 
   // Split body i paragraffer (blank linje mellem)
