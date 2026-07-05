@@ -47,6 +47,13 @@ export function GuidesBibliotek({
   const [filter, setFilter] = useState<Filter>('alle')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
 
+  // Delt af BÅDE quick-search (øverst) og biblioteks-søgning (nederst), så de
+  // to inputs styrer præcis samme query. At skrive rydder et aktivt emne-filter.
+  function handleSearch(v: string) {
+    setSearch(v)
+    setAktivtEmne(null)
+  }
+
   function vaelgEmne(e: PopulaertEmne) {
     setAktivtEmne(curr => (curr?.matchPlantName === e.matchPlantName ? null : e))
     setSearch('')
@@ -95,6 +102,12 @@ export function GuidesBibliotek({
 
   return (
     <div className="space-y-8 sm:space-y-10">
+      {/* Hurtig quick-search øverst: brugeren der VED hvad de leder efter kan
+          søge med det samme uden at scrolle forbi hele udstillingen. Kun input,
+          ingen chips/tællere/filtre — det fulde bibliotek ligger nederst. Deler
+          samme search-state som biblioteks-søgningen. */}
+      <QuickSearch value={search} onChange={handleSearch} />
+
       {/* Layered section: topic papers overlap the hero's atmospheric photo field. */}
       <PopulaereEmner
         emner={POPULAERE_EMNER}
@@ -158,10 +171,7 @@ export function GuidesBibliotek({
           index-stil. */}
       <SoegBar
         search={search}
-        onSearch={(v) => {
-          setSearch(v)
-          setAktivtEmne(null)
-        }}
+        onSearch={handleSearch}
         filter={filter}
         onFilter={setFilter}
         antal={{
@@ -353,6 +363,89 @@ function AtmosphericGuideField() {
   )
 }
 
+/**
+ * Delt søge-input — samme rolige felt-index-stil for både quick-search (øverst)
+ * og biblioteks-søgningen (nederst), så de to inputs ser ens ud og deler query.
+ */
+function SearchField({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+}) {
+  return (
+    <div
+      className="relative"
+      style={{
+        borderRadius: 18,
+        background: 'rgba(244,240,229,0.68)',
+        border: '1px solid rgba(36,48,31,0.10)',
+        padding: '3px 5px',
+      }}
+    >
+      <Search
+        aria-hidden
+        className="absolute left-4 top-1/2 -translate-y-1/2"
+        style={{ width: 15, height: 15, color: 'rgba(36,48,31,0.42)' }}
+      />
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: '100%',
+          border: 'none',
+          outline: 'none',
+          background: 'transparent',
+          fontFamily: sans,
+          fontSize: 14,
+          fontWeight: 500,
+          color: '#24301F',
+          padding: '11px 10px 11px 32px',
+        }}
+      />
+    </div>
+  )
+}
+
+/**
+ * QuickSearch — hurtig indgang øverst (efter hero, før "Et godt sted at starte").
+ * Bevidst let: lille sans-label + input. INGEN chips/tællere/filtre — det fulde
+ * bibliotek med filtrering ligger nederst. Distinkt fra bibliotekets serif-intro.
+ */
+function QuickSearch({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <section className="relative -mt-2">
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'rgba(36,48,31,0.62)',
+          margin: '0 0 8px',
+        }}
+      >
+        Find hurtigt en guide
+      </p>
+      <SearchField
+        value={value}
+        onChange={onChange}
+        placeholder="Søg plante, sort eller problem"
+      />
+    </section>
+  )
+}
+
 function SoegBar({
   search,
   onSearch,
@@ -371,11 +464,27 @@ function SoegBar({
     { id: 'potalot', label: 'Potalot-guides' },
   ]
   return (
-    <section className="relative pt-2">
+    <section className="relative pt-6">
       <div
         aria-hidden
         className="absolute left-10 right-10 top-0 h-px bg-[#2D2A24]/10"
       />
+      {/* Nederste søgning = det fulde bibliotek: egen sektionstitel + filtrering.
+          Adskiller sig fra quick-searchen øverst (der kun er label + input). */}
+      <p
+        className="text-center"
+        style={{
+          fontFamily: sans,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.55)',
+          margin: '0 0 6px',
+        }}
+      >
+        Alle guides
+      </p>
       <p
         className="mb-3 text-center"
         style={{
@@ -388,38 +497,11 @@ function SoegBar({
       >
         Find den plante, du står med.
       </p>
-      <div
-        className="relative"
-        style={{
-          borderRadius: 18,
-          background: 'rgba(244,240,229,0.68)',
-          border: '1px solid rgba(36,48,31,0.10)',
-          padding: '3px 5px',
-        }}
-      >
-        <Search
-          aria-hidden
-          className="absolute left-4 top-1/2 -translate-y-1/2"
-          style={{ width: 15, height: 15, color: 'rgba(36,48,31,0.42)' }}
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={e => onSearch(e.target.value)}
-          placeholder="Søg plante, sort eller problem"
-          style={{
-            width: '100%',
-            border: 'none',
-            outline: 'none',
-            background: 'transparent',
-            fontFamily: sans,
-            fontSize: 14,
-            fontWeight: 500,
-            color: '#24301F',
-            padding: '11px 10px 11px 32px',
-          }}
-        />
-      </div>
+      <SearchField
+        value={search}
+        onChange={onSearch}
+        placeholder="Søg plante, sort eller problem"
+      />
       <div className="mt-2 flex flex-wrap gap-1.5">
         {filterChips.map(c => {
           const active = filter === c.id
