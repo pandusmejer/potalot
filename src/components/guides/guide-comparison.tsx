@@ -87,17 +87,19 @@ function ComparisonCta({
     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
   )
 
-  // Disabled: ikke-interaktiv placeholder med dæmpet farve (target-guide findes
-  // ikke endnu → ingen 404). Ingen pil, så det ikke ligner et aktivt link.
+  // Disabled: target-guide findes ikke endnu (ingen 404). Beholder den grønne
+  // link-tone (blot let dæmpet) + pil, så den ikke føles grå/død — men er ikke-
+  // interaktiv med title-hint.
   if (disabled) {
     return (
       <span
         aria-disabled="true"
         className="mt-4 inline-flex items-center gap-1.5"
-        style={{ ...ctaStyle, color: 'rgba(36,48,31,0.42)', cursor: 'not-allowed' }}
+        style={{ ...ctaStyle, color: 'rgba(78,97,56,0.7)', cursor: 'not-allowed' }}
         title="Guiden er endnu ikke skrevet"
       >
         {label}
+        {arrow}
       </span>
     )
   }
@@ -156,8 +158,8 @@ export function GuideComparisonList({
         border: '1px solid rgba(36,48,31,0.10)',
       }}
     >
-      {/* Kompakt header: lille eyebrow + mindre serif-navne over hver kolonne,
-          så det er tydeligt hvilken side der er hvilken sort. Ingen stor vs-badge. */}
+      {/* Kompakt header: eyebrow + mindre serif-navne med lille 'vs.' som
+          center-akse, så det tydeligt er en sammenligning. */}
       <p
         className="m-0 uppercase"
         style={{
@@ -170,77 +172,70 @@ export function GuideComparisonList({
       >
         Sammenlign sorter
       </p>
-      <div className="mt-1 grid grid-cols-2 gap-3">
+      <div className="mt-1 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
         <h3
-          className="m-0"
-          style={{
-            color: ink,
-            fontFamily: serif,
-            fontSize: 'clamp(19px, 5vw, 22px)',
-            fontWeight: 500,
-            lineHeight: 1,
-          }}
+          className="m-0 text-left"
+          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 500, lineHeight: 1 }}
         >
           {leftTitle}
         </h3>
-        <h3
-          className="m-0"
+        <span
+          className="grid shrink-0 place-items-center rounded-full"
           style={{
+            width: 28,
+            height: 28,
+            background: 'rgba(127,143,106,0.18)',
             color: ink,
-            fontFamily: serif,
-            fontSize: 'clamp(19px, 5vw, 22px)',
-            fontWeight: 500,
+            fontFamily: sans,
+            fontSize: 10,
+            fontWeight: 800,
             lineHeight: 1,
           }}
+        >
+          vs.
+        </span>
+        <h3
+          className="m-0 text-right"
+          style={{ color: ink, fontFamily: serif, fontSize: 'clamp(19px, 5vw, 22px)', fontWeight: 500, lineHeight: 1 }}
         >
           {rightTitle}
         </h3>
       </div>
 
-      {/* Rækker: label som lille eyebrow OVER de to værdier — ingen midterkolonne,
-          ingen ikoner. Tabelagtigt men roligt. */}
+      {/* Rækker: center-akse bærer sammenligningen — label i MIDTEN mellem de to
+          værdier (venstre-værdi ← LABEL → højre-værdi). Ingen ikon pr. række. */}
       <div className="mt-3.5">
         {rows.map((row) => (
-          <div key={row.label} className="py-2.5" style={{ borderTop: `1px solid ${line}` }}>
+          <div
+            key={row.label}
+            className="grid grid-cols-[minmax(0,1fr)_84px_minmax(0,1fr)] items-start gap-2 py-2.5 min-[390px]:grid-cols-[minmax(0,1fr)_96px_minmax(0,1fr)]"
+            style={{ borderTop: `1px solid ${line}` }}
+          >
             <p
-              className="m-0 uppercase"
+              className="m-0 text-left"
+              style={{ color: 'rgba(36,48,31,0.74)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
+            >
+              {row.left}
+            </p>
+            <p
+              className="m-0 text-center uppercase"
               style={{
                 color: 'rgba(127,143,106,0.82)',
                 fontFamily: sans,
                 fontSize: 9.5,
                 fontWeight: 800,
-                letterSpacing: '0.12em',
-                lineHeight: 1.2,
+                letterSpacing: '0.1em',
+                lineHeight: 1.3,
               }}
             >
               {row.label}
             </p>
-            <div className="mt-1 grid grid-cols-2 gap-3">
-              <p
-                className="m-0"
-                style={{
-                  color: 'rgba(36,48,31,0.74)',
-                  fontFamily: sans,
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  lineHeight: 1.4,
-                }}
-              >
-                {row.left}
-              </p>
-              <p
-                className="m-0"
-                style={{
-                  color: 'rgba(36,48,31,0.74)',
-                  fontFamily: sans,
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  lineHeight: 1.4,
-                }}
-              >
-                {row.right}
-              </p>
-            </div>
+            <p
+              className="m-0 text-right"
+              style={{ color: 'rgba(36,48,31,0.74)', fontFamily: sans, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}
+            >
+              {row.right}
+            </p>
           </div>
         ))}
       </div>
