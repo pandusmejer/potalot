@@ -203,7 +203,7 @@ function PopulaereEmner({
             fontWeight: 700,
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.55)',
+            color: 'rgba(36,48,31,0.72)',
             margin: 0,
           }}
         >

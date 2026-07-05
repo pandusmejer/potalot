@@ -91,7 +91,7 @@ export default async function GuidesPage() {
           backgroundImage: 'url(/images/makro/guides-hero-baggrund.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.18,
+          opacity: 0.13,
           mixBlendMode: 'multiply',
           // Ingen rotation → ingen skæv diagonal-kant i toppen. Masken er
           // trukket højt op (center 30%) så den grønne tint når helt op til

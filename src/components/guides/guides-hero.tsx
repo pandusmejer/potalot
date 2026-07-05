@@ -36,7 +36,7 @@ export function GuidesHero() {
           fontSize: 'clamp(13.5px, 3.5vw, 16px)',
           fontWeight: 400,
           lineHeight: 1.42,
-          color: '#6A665C',
+          color: '#55524A',
           margin: 0,
           maxWidth: 420,
         }}
