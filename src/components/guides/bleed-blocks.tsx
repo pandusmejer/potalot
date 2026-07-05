@@ -167,3 +167,55 @@ export function BleedBand({
     </figure>
   )
 }
+
+/**
+ * GuideEvidenceImage — inline makro-BEVIS inde i et guideafsnit.
+ *
+ * Afløser de fade-tunge Bleed*-blokke i den levende artikel. Makrofotoet skal
+ * være et konkret plantebevis (blad, stængel, frugt, fugt, struktur), ikke en
+ * stemningspause mellem kapitler:
+ *   - INTET top/bund-fade der æder teksturen — kun blød radius + hårfin border.
+ *   - Kompakt højde (16:9) så det sparer scroll på mobil.
+ *   - Sidder tæt under afsnittet det dokumenterer (wrappes sammen med kapitlet
+ *     i saadan-dyrker-du, så sektions-rytmen kun adskiller kapitler).
+ *
+ * (Bleed*-komponenterne beholdes til QA/demo-sider.)
+ */
+export function GuideEvidenceImage({
+  imageSrc,
+  alt,
+  caption,
+}: {
+  imageSrc: string
+  alt: string
+  caption?: string
+}) {
+  return (
+    <figure style={{ margin: '10px 0 0' }}>
+      <div
+        className="overflow-hidden rounded-[18px]"
+        style={{
+          aspectRatio: '16 / 9',
+          border: '1px solid rgba(45,42,36,0.10)',
+          backgroundColor: pageBackground,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} alt={alt} className="h-full w-full object-cover" />
+      </div>
+      {caption && (
+        <figcaption
+          style={{
+            fontFamily: sans,
+            fontSize: 12,
+            fontWeight: 500,
+            color: 'rgba(36,48,31,0.5)',
+            margin: '6px 0 0',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}

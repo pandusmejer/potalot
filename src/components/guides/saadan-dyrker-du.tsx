@@ -7,14 +7,13 @@
  * Bygger på Guide.sections (key, title, body) — eksisterende datafelt.
  */
 
-import { Fragment } from 'react'
 import type { GuideSection } from '@/lib/types'
 import type { PotalotMacroOutput } from '@/lib/images/types'
 import { GuideFactCard } from './guide-fact-card'
 import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
-import { BleedFromLeft, BleedFromRight, BleedBand } from './bleed-blocks'
+import { GuideEvidenceImage } from './bleed-blocks'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -87,14 +86,16 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // sektion. renderSection returnerer det nye chapter-tal sammen
         // med jsx'et så vi ikke dobbelt-tæller.
         chapterCounter = rendered.nextChapter
-        // React kræver unik key for hvert Fragment-barn — dubletter
-        // i sektion.key får tilføjet indeks-suffix.
-        const fragmentKey = `${key}-${i}`
+        // Kapitel + dets bevis-billede wrappes SAMMEN i én blok, så
+        // section-rytmen (56/72px) kun adskiller kapitler — billedet
+        // sidder tæt under teksten det dokumenterer, ikke som en pause
+        // mellem kapitler.
+        const blockKey = `${key}-${i}`
         return (
-          <Fragment key={fragmentKey}>
+          <div key={blockKey}>
             {rendered.node}
             {showBleed && bleed && <BleedSlot image={bleed} />}
-          </Fragment>
+          </div>
         )
       })}
     </section>
@@ -153,27 +154,13 @@ function renderSection(
 }
 
 /**
- * Vælger Bleed-komponent baseret på makroens rolle.
- *
- *   leaf, structure       → BleedFromLeft  (blade, stængler, vækst-
- *                                          punkter, rodhals, struktur)
- *   fruit, flower         → BleedFromRight (frugter, blomster, høst,
- *                                          modne afgrøder)
- *   atmosphere, detail,   → BleedBand      (sanseligt, kronblade,
- *   seed                                   klaser, frøstande,
- *                                          atmosfæriske makroer)
- *
- * Tekstløs som udgangspunkt (Annas regel: label/description bruges
- * kun til Vidste du? / Potalot-tip / kort observation).
+ * Makro-billedet i et guideafsnit = konkret plantebevis, ikke stemningspause.
+ * Alle roller (blad/stængel/frugt/blomst/struktur/atmosfære) renderes nu som
+ * ét rent inline-bevis UDEN fade — teksturen er hele pointen, og et hårdt fade
+ * hen over blade/frugter/stængler æder præcis det brugeren skal se.
  */
 function BleedSlot({ image }: { image: PotalotMacroOutput }) {
-  if (image.role === 'leaf' || image.role === 'structure') {
-    return <BleedFromLeft imageSrc={image.src} alt={image.alt} />
-  }
-  if (image.role === 'fruit' || image.role === 'flower') {
-    return <BleedFromRight imageSrc={image.src} alt={image.alt} />
-  }
-  return <BleedBand imageSrc={image.src} alt={image.alt} />
+  return <GuideEvidenceImage imageSrc={image.src} alt={image.alt} />
 }
 
 /**
