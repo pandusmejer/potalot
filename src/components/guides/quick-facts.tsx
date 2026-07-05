@@ -34,8 +34,7 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-foreground mb-4 leading-relaxed">{guide.summary}</p>
-
+        {/* Summary er flyttet op i guide-toppen som sort-dom (ingen dublet her). */}
         {/* Primære nøglefakta — de beslutningskritiske, altid synlige. Kortet
             fylder mindre vertikalt; resten ligger i "Flere detaljer". */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

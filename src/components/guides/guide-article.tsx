@@ -37,7 +37,7 @@ import { getMyGuideNote } from '@/actions/guide-notes'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser } from '@/lib/auth'
-import { PRIMARY_CATEGORIES } from '@/lib/constants'
+import { PRIMARY_CATEGORIES, DIFFICULTY_META } from '@/lib/constants'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
@@ -213,9 +213,12 @@ export async function GuideArticle({
 
   return (
     <article className="max-w-3xl space-y-10 overflow-x-clip pb-6 sm:space-y-12">
-      {debug && <DebugBlock name="Header" note="identitet + trust-badge" />}
-      <header className="space-y-4">
-        <div className="flex items-center justify-between gap-2">
+      {debug && <DebugBlock name="Header" note="identitet + sort-dom + hero" />}
+      {/* Kompakt, samlet mobil-top: back → badges → titel/art/latin → sort-dom
+          → lavere hero. Ét komponeret hoved, ikke spredte elementer. Hero'et
+          identificerer planten, men blokerer ikke guiden. */}
+      <header className="space-y-3.5">
+        <div className="-ml-2 flex items-center justify-between gap-2">
           <Button asChild variant="ghost" size="icon">
             <Link href={safeReturnTo} aria-label="Tilbage">
               <ArrowLeft className="h-4 w-4" />
@@ -224,11 +227,11 @@ export async function GuideArticle({
           {isOwner && !isDemo && <UserGuideEditDialog guide={original} />}
         </div>
 
-        <div className="space-y-2.5">
-          <div className="flex items-center gap-2 flex-wrap">
+        <div>
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             <TrustBadge kind={kind} size="sm" />
             <span
-              className="text-xs uppercase tracking-wider"
+              className="text-xs uppercase"
               style={{
                 color: 'rgba(36,48,31,0.55)',
                 fontWeight: 600,
@@ -244,7 +247,7 @@ export async function GuideArticle({
             style={{
               fontFamily: 'var(--font-cormorant), Georgia, serif',
               fontWeight: 500,
-              fontSize: 'clamp(36px, 8vw, 48px)',
+              fontSize: 'clamp(32px, 7.5vw, 44px)',
               lineHeight: 0.95,
               letterSpacing: '-0.02em',
               color: '#2D2A24',
@@ -261,8 +264,7 @@ export async function GuideArticle({
                 fontWeight: 500,
                 letterSpacing: '0.05em',
                 color: '#6A665C',
-                margin: 0,
-                marginTop: 4,
+                margin: '3px 0 0',
               }}
             >
               {effective.plantName}
@@ -273,12 +275,11 @@ export async function GuideArticle({
               style={{
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontStyle: 'italic',
-                fontSize: 'clamp(17px, 3vw, 20px)',
+                fontSize: 'clamp(15px, 2.8vw, 18px)',
                 fontWeight: 400,
                 color: '#2D2A24',
-                opacity: 0.72,
-                margin: 0,
-                marginTop: 8,
+                opacity: 0.6,
+                margin: '4px 0 0',
               }}
             >
               {effective.latinName}
@@ -299,28 +300,80 @@ export async function GuideArticle({
             Baseret på Potalot-guiden om {parent.plantName}.
           </p>
         )}
-      </header>
 
-      {effective.primaryImageId && (
-        <>
-          {debug && <DebugBlock name="Hovedbillede" note="primaryImageId" />}
-          <div
-            className="overflow-hidden"
+        {/* Kort sort-dom: praktisk 'hvorfor dyrke den' FØR fotoet. Sætningen
+            er guidens summary (flyttet op fra Hurtigt overblik → ingen dublet);
+            chips afledes af strukturerede felter (vækstform, anvendelse,
+            sværhed). Ikke et kort — kompakt tekst + chip-række. */}
+        {effective.summary && (
+          <p
             style={{
-              borderRadius: 24,
-              border: '1px solid rgba(45,42,36,0.06)',
+              fontFamily: 'var(--font-manrope)',
+              fontSize: 14.5,
+              fontWeight: 500,
+              lineHeight: 1.5,
+              color: '#4A4636',
+              margin: 0,
+              maxWidth: '52ch',
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={effective.primaryImageId}
-              alt={effective.plantName}
-              className="w-full object-cover"
-              style={{ aspectRatio: '4/5', maxHeight: 420 }}
-            />
-          </div>
-        </>
-      )}
+            {effective.summary}
+          </p>
+        )}
+        {(() => {
+          const qf = effective.quickFacts
+          const chips = [
+            qf.growthType
+              ? qf.growthType.charAt(0).toUpperCase() + qf.growthType.slice(1)
+              : null,
+            qf.primaryUse ?? null,
+            effective.difficulty ? DIFFICULTY_META[effective.difficulty].label : null,
+          ].filter((c): c is string => Boolean(c))
+          if (chips.length === 0) return null
+          return (
+            <div className="flex flex-wrap gap-1.5">
+              {chips.map(c => (
+                <span
+                  key={c}
+                  style={{
+                    fontFamily: 'var(--font-manrope)',
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    color: '#4E6138',
+                    background: 'rgba(123,148,96,0.12)',
+                    border: '1px solid rgba(123,148,96,0.22)',
+                    borderRadius: 999,
+                    padding: '4px 10px',
+                  }}
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          )
+        })()}
+
+        {effective.primaryImageId && (
+          <>
+            {debug && <DebugBlock name="Hovedbillede" note="primaryImageId — lavere" />}
+            <div
+              className="overflow-hidden"
+              style={{
+                borderRadius: 24,
+                border: '1px solid rgba(45,42,36,0.06)',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={effective.primaryImageId}
+                alt={effective.plantName}
+                className="w-full object-cover"
+                style={{ height: 'clamp(240px, 62vw, 320px)' }}
+              />
+            </div>
+          </>
+        )}
+      </header>
 
       {parent && (
         <>
