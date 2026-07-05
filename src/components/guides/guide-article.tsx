@@ -336,7 +336,7 @@ export async function GuideArticle({
                   fontWeight: 500,
                   lineHeight: 1.4,
                   color: 'rgba(36,48,31,0.66)',
-                  margin: '2px 0 0',
+                  margin: '2px 0 0 3mm',
                   maxWidth: '34ch',
                 }}
               >
