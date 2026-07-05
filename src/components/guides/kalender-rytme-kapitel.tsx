@@ -46,13 +46,17 @@ export function KalenderRytmeKapitel({
 
   return (
     <section
-      className="rounded-[24px] px-5 py-6"
+      className="rounded-[4px] px-5 py-6"
       style={{
         // Varm creme med KUN en svag salvie-undertone (~3-5% grønnere end
-        // standardkortet, ikke et grønt kort). Identiteten bæres af sæson-aksen,
-        // ikke af fladen.
+        // standardkortet, ikke et grønt kort). Identiteten bæres af sæson-aksen
+        // + de grønne lodrette side-striber, ikke af fladen.
         background: '#F2F0E3',
-        border: '1px solid #D9D6BE',
+        borderTop: '1px solid #D9D6BE',
+        borderBottom: '1px solid #D9D6BE',
+        borderLeft: '4px solid #7B8B63',
+        borderRight: '4px solid #7B8B63',
+        boxShadow: '0 4px 14px rgba(36,48,31,0.08)',
       }}
     >
       <header className="mb-5">
