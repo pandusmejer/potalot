@@ -63,10 +63,12 @@ export function LaerAfHinanden({
       <h2
         id="erfaringer-titel"
         style={{
+          // Sekundært teaser-modul — må ikke over-bolde de nummererede
+          // hovedkapitler (Plex 25/600). Tydelig, men ikke dominerende.
           fontFamily: plex,
-          fontSize: 'clamp(27px, 7.4vw, 31px)',
-          fontWeight: 700,
-          lineHeight: 1.08,
+          fontSize: 'clamp(24px, 6.2vw, 26px)',
+          fontWeight: 600,
+          lineHeight: 1.13,
           letterSpacing: '-0.015em',
           color: dark,
           margin: '0 0 12px',
