@@ -112,8 +112,8 @@ export function KalenderRytmeKapitel({
               style={{
                 left: -18,
                 top: (index === 0 ? 0 : 14) + 6,
-                background: '#E9EDE1',
-                border: '1px solid rgba(90,104,70,0.55)',
+                // Farvemættet oliven — prikkerne skal poppe på den lyse skinne.
+                background: '#5F7040',
               }}
             />
             <p
