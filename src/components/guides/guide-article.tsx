@@ -586,7 +586,7 @@ export async function GuideArticle({
               Din have
             </p>
             <h3
-              className="mt-3"
+              className="mt-4"
               style={{
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontSize: 'clamp(24px, 6vw, 28px)',
@@ -598,7 +598,7 @@ export async function GuideArticle({
                 maxWidth: '24ch',
               }}
             >
-              Dyrk {effective.variety ?? effective.plantName} i din egen have
+              Dyrk {effective.variety ?? effective.plantName}
             </h3>
             <p
               className="mt-3"
@@ -709,7 +709,10 @@ export async function GuideArticle({
       )}
 
       {effective.variety === 'San Marzano' && (
-        <>
+        <div>
+          {/* Halveret fuge til 'Din have' ovenfor (samme som TIP↔ANBEFALER):
+              note-parret hører sammen. Nested -mt så space-y-fugen overskrives. */}
+          <div className="-mt-7">
           {debug && <DebugBlock name="GuideNote" note="Potalot-tip — signatur 2/3" />}
           <GuideNote
             label="Potalot-tip"
@@ -724,7 +727,8 @@ export async function GuideArticle({
             Vand dybt og regelmæssigt frem for lidt hver dag. San Marzano
             kvitterer for jævn fugt med færre revner og mere koncentreret smag.
           </GuideNote>
-        </>
+          </div>
+        </div>
       )}
 
       {(() => {
@@ -737,7 +741,7 @@ export async function GuideArticle({
           // Halveret fuge til Potalot-tip ovenfor (nested -mt så space-y-fugen
           // overskrives pålideligt): tip og anbefaler hører sammen som note-par.
           <div>
-            <div className="-mt-3">
+            <div className="-mt-7">
               {debug && (
                 <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
               )}
