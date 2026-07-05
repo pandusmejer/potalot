@@ -470,6 +470,19 @@ export async function GuideArticle({
             <LaerAfHinanden
               subject={effective.variety ?? effective.plantName}
               erfaringer={erfaringer}
+              // Artsguide: arts-titel/intro + foldet (sekundært). Sortguide:
+              // fremhævet kort som standard.
+              heading={
+                isSpecies
+                  ? `Erfaringer med ${effective.plantName.toLowerCase()}`
+                  : undefined
+              }
+              intro={
+                isSpecies
+                  ? `Se hvad andre dyrkere har oplevet med ${effective.plantName.toLowerCase()} i drivhus, krukker og på friland.`
+                  : undefined
+              }
+              collapsible={isSpecies}
             />
           </>
         )
@@ -608,7 +621,9 @@ export async function GuideArticle({
                 maxWidth: '24ch',
               }}
             >
-              Dyrk {effective.variety ?? effective.plantName}
+              {isSpecies
+                ? `Dyrk ${effective.plantName.toLowerCase()} i din have`
+                : `Dyrk ${effective.variety ?? effective.plantName}`}
             </h3>
             <p
               style={{
@@ -623,11 +638,13 @@ export async function GuideArticle({
                 maxWidth: '46ch',
               }}
             >
-              Tilføj sorten til din frøbank eller opret den som plante.
+              {isSpecies
+                ? `Vælg en sort til frøbanken, eller opret en ${effective.plantName.toLowerCase()}plante du allerede dyrker.`
+                : 'Tilføj sorten til din frøbank eller opret den som plante.'}
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Link
-                href="/froebank/tilfoej"
+                href={isSpecies ? '#sortsvarianter' : '/froebank/tilfoej'}
                 className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 hover:opacity-90 transition"
                 style={{
                   background: '#7F8F6A',
@@ -641,7 +658,9 @@ export async function GuideArticle({
                 }}
               >
                 <Package className="h-3.5 w-3.5" />
-                Tilføj til frøbank
+                {isSpecies
+                  ? `Se ${effective.plantName.toLowerCase()}sorter`
+                  : 'Tilføj til frøbank'}
               </Link>
               <Link
                 href="/mine-planter"
@@ -659,7 +678,9 @@ export async function GuideArticle({
                 }}
               >
                 <Sprout className="h-3.5 w-3.5" />
-                Opret plante
+                {isSpecies
+                  ? `Opret ${effective.plantName.toLowerCase()}plante`
+                  : 'Opret plante'}
               </Link>
             </div>
           </section>
@@ -682,7 +703,7 @@ export async function GuideArticle({
               note={`6. ${sortsvarianter.length} sortsguider`}
             />
           )}
-          <section className="space-y-3">
+          <section id="sortsvarianter" className="scroll-mt-20 space-y-3">
             <p
               style={{
                 fontFamily: 'var(--font-manrope)',

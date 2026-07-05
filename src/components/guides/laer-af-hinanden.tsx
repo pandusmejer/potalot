@@ -31,16 +31,43 @@ const muted = 'rgba(36,48,31,0.55)'
 export function LaerAfHinanden({
   subject,
   erfaringer,
+  heading,
+  intro,
+  collapsible = false,
 }: {
   /** Sort- eller artsnavn, fx "San Marzano" / "Tomat". */
   subject?: string
   erfaringer: DyrkerErfaring[]
+  /** Overskrift (arts: "Erfaringer med tomater"). Falder tilbage til standard. */
+  heading?: string
+  /** Intro-linje. Falder tilbage til subject-baseret standard. */
+  intro?: string
+  /** Arts: foldet/sekundært — ingen kort vises før brugeren åbner modulet. */
+  collapsible?: boolean
 }) {
   const [expanded, setExpanded] = useState(false)
 
   if (erfaringer.length === 0) return null
 
   const [featured, ...resten] = erfaringer
+
+  // Foldet (arts): intet kort før åbning; toggle viser/skjuler ALLE.
+  // Standard (sort): fremhævet kort + "Se flere".
+  const cardsToShow = collapsible
+    ? expanded
+      ? erfaringer
+      : []
+    : expanded
+      ? erfaringer
+      : [featured]
+  const toggleLabel = collapsible
+    ? expanded
+      ? 'Skjul erfaringer'
+      : `Vis erfaringer (${erfaringer.length})`
+    : expanded
+      ? 'Skjul erfaringer'
+      : `Se flere erfaringer (${resten.length})`
+  const showToggle = collapsible ? erfaringer.length > 0 : resten.length > 0
 
   return (
     <section id="erfaringer" aria-labelledby="erfaringer-titel" className="scroll-mt-20">
@@ -74,7 +101,7 @@ export function LaerAfHinanden({
           margin: '0 0 12px',
         }}
       >
-        Erfaringer fra andre haver
+        {heading ?? 'Erfaringer fra andre haver'}
       </h2>
 
       <p
@@ -87,15 +114,18 @@ export function LaerAfHinanden({
           margin: '0 0 24px',
         }}
       >
-        Se, hvad andre dyrkere har oplevet med {subject ?? 'sorten'}.
+        {intro ?? `Se, hvad andre dyrkere har oplevet med ${subject ?? 'sorten'}.`}
       </p>
 
-      <div className="space-y-3">
-        <ErfaringCard erfaring={featured} />
-        {expanded && resten.map((e) => <ErfaringCard key={e.id} erfaring={e} />)}
-      </div>
+      {cardsToShow.length > 0 && (
+        <div className="space-y-3">
+          {cardsToShow.map((e) => (
+            <ErfaringCard key={e.id} erfaring={e} />
+          ))}
+        </div>
+      )}
 
-      {resten.length > 0 && (
+      {showToggle && (
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
@@ -110,12 +140,13 @@ export function LaerAfHinanden({
             background: 'transparent',
             border: 'none',
             padding: 0,
-            marginTop: 'calc(28px - 2mm)',
+            // Foldet-modus har ingen kort over knappen → mindre top-margin.
+            marginTop: cardsToShow.length > 0 ? 'calc(28px - 2mm)' : 4,
             gap: 10,
             cursor: 'pointer',
           }}
         >
-          {expanded ? 'Skjul erfaringer' : `Se flere erfaringer (${resten.length})`}
+          {toggleLabel}
           <ChevronRight
             width={14}
             height={14}
