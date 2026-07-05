@@ -26,7 +26,7 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle>Hurtigt overblik</CardTitle>
           {guide.difficulty && (
-            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${difficultyMeta.chipClass}`}>
+            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
               {difficultyMeta.label}
             </span>
           )}
@@ -117,7 +117,9 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
             {
               titel: 'Forhold',
               felter: [
-                qf.soil && { label: 'Jord', value: qf.soil },
+                // Jord er ofte den længste værdi — får fuld bredde (egen linje),
+                // så den ikke bliver en høj, dominerende venstre-kolonne-mur.
+                qf.soil && { label: 'Jord', value: qf.soil, wide: true },
                 // Frost følger kortets oliven-univers via label (ingen blå snefnug).
                 qf.frostSensitive && { label: 'Frost', value: 'Følsom' },
                 qf.minimumTemperature && { label: 'Min. temp', value: qf.minimumTemperature },
@@ -135,27 +137,37 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
           ]
             .map(g => ({
               titel: g.titel,
-              felter: g.felter.filter((f): f is { label: string; value: string } => Boolean(f)),
+              felter: g.felter.filter(
+                (f): f is { label: string; value: string; wide?: boolean } => Boolean(f),
+              ),
             }))
             .filter(g => g.felter.length > 0)
 
           return (
             <details className="group mt-3 border-t border-border pt-3">
               <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
+                {/* Soft glyph = næsten vandmærke; pilen er den primære markør. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 18, width: 'auto', opacity: 0.45 }} />
+                <img src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 16, width: 'auto', opacity: 0.22 }} />
                 Flere detaljer
                 <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
               </summary>
-              <div className="mt-3 space-y-4">
+              <div className="mt-3 space-y-3.5">
                 {grupper.map(g => (
                   <div key={g.titel}>
-                    <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#7F8F6A]">
+                    {/* Gruppetitler guider, men skal ikke ligne nye kapitler:
+                        mindre, lettere vægt, dæmpet salvie. */}
+                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(127,143,106,0.72)]">
                       {g.titel}
                     </p>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3">
                       {g.felter.map(f => (
-                        <Fact key={f.label} label={f.label} value={f.value} />
+                        <Fact
+                          key={f.label}
+                          label={f.label}
+                          value={f.value}
+                          className={f.wide ? 'col-span-full' : undefined}
+                        />
                       ))}
                     </div>
                   </div>
@@ -166,7 +178,7 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
         })()}
 
         {guide.tags.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap mt-4 pt-3 border-t border-border">
+          <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pb-1 pt-3">
             {guide.tags.map(t => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
           </div>
         )}
@@ -181,9 +193,19 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
   )
 }
 
-function Fact({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function Fact({
+  label,
+  value,
+  icon,
+  className,
+}: {
+  label: string
+  value: string
+  icon?: React.ReactNode
+  className?: string
+}) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className={`flex flex-col gap-0.5 ${className ?? ''}`}>
       <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
         {icon}
         {label}
