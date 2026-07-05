@@ -20,7 +20,18 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 // ikke romantisk herbarium). Kun store overskrifter + arts-/kort-titler.
 const plex = 'var(--font-plex-condensed), sans-serif'
 
-type Filter = 'alle' | 'potalot' | 'egen' | 'ai-udkast'
+// Biblioteket viser kun det redaktionelle 'potalot'-lag, så en "Potalot"-chip
+// ville vise præcis det samme som "Alle" (pynt forklædt som funktion). Den ægte,
+// meningsfulde dimension her er guideLevel: art vs. sort.
+type Filter = 'alle' | 'species' | 'variety'
+
+/**
+ * Arts- vs sortsguide — samme regel som kortenes egen type-chip (guideLevel med
+ * variety-navn som fallback), så filtre og kort-mærkater altid er enige.
+ */
+function levelOf(g: Guide): 'species' | 'variety' {
+  return g.guideLevel === 'variety' || g.variety ? 'variety' : 'species'
+}
 
 interface Props {
   guides: Guide[]
@@ -79,7 +90,7 @@ export function GuidesBibliotek({
   const filtered = useMemo(() => {
     const q = effectiveSearch.trim().toLowerCase()
     return withKind
-      .filter(({ kind }) => filter === 'alle' || kind === filter)
+      .filter(({ guide: g }) => filter === 'alle' || levelOf(g) === filter)
       .filter(({ guide: g }) => {
         if (!q) return true
         return (
@@ -175,10 +186,15 @@ export function GuidesBibliotek({
         filter={filter}
         onFilter={setFilter}
         antal={{
-          alle: withKind.length,
-          potalot: withKind.filter(x => x.kind === 'potalot').length,
-          egen: withKind.filter(x => x.kind === 'egen').length,
-          'ai-udkast': withKind.filter(x => x.kind === 'ai-udkast').length,
+          // Tællere over det viste 'potalot'-lag, ikke alle kinds — ellers
+          // ville tallene love guides der aldrig vises i biblioteket.
+          alle: withKind.filter(x => x.kind === 'potalot').length,
+          species: withKind.filter(
+            x => x.kind === 'potalot' && levelOf(x.guide) === 'species',
+          ).length,
+          variety: withKind.filter(
+            x => x.kind === 'potalot' && levelOf(x.guide) === 'variety',
+          ).length,
         }}
       />
 
@@ -461,7 +477,8 @@ function SoegBar({
 }) {
   const filterChips: { id: Filter; label: string }[] = [
     { id: 'alle', label: 'Alle' },
-    { id: 'potalot', label: 'Potalot-guides' },
+    { id: 'species', label: 'Artsguides' },
+    { id: 'variety', label: 'Sortsguides' },
   ]
   return (
     <section className="relative pt-6">
