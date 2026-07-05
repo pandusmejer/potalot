@@ -48,7 +48,7 @@ export function LaerAfHinanden({
       <p
         style={{
           fontFamily: sans,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 700,
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
@@ -78,8 +78,8 @@ export function LaerAfHinanden({
       <p
         style={{
           fontFamily: plex,
-          fontSize: 12,
-          fontWeight: 500,
+          fontSize: 13,
+          fontWeight: 400,
           lineHeight: 1.45,
           color: 'rgba(36,42,28,0.82)',
           margin: '0 0 24px',
