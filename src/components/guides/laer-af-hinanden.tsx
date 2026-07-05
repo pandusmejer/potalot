@@ -218,7 +218,7 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
         className="line-clamp-3"
         style={{
           fontFamily: sans,
-          fontSize: 'clamp(14.5px, 4vw, 16px)',
+          fontSize: 'clamp(13px, 3.6vw, 14.5px)',
           fontWeight: 500,
           lineHeight: 1.5,
           color: 'rgba(45,42,36,0.78)',
@@ -236,14 +236,14 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 13.5,
+            fontSize: 12.5,
             fontWeight: 600,
             color: 'rgba(36,48,31,0.5)',
-            gap: 8,
+            gap: 7,
             whiteSpace: 'nowrap',
           }}
         >
-          <Bookmark width={16} height={16} strokeWidth={1.9} aria-hidden />
+          <Bookmark width={15} height={15} strokeWidth={1.9} aria-hidden />
           {erfaring.helpfulCount} gemte erfaringen
         </span>
 
@@ -253,24 +253,24 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           aria-pressed={saved}
           className="inline-flex shrink-0 items-center justify-center"
           style={{
-            height: 40,
-            padding: '0 14px',
-            borderRadius: 12,
+            height: 37,
+            padding: '0 13px',
+            borderRadius: 8,
             border: `1.5px solid ${saved ? olive : 'rgba(78,97,56,0.55)'}`,
             background: saved ? 'rgba(123,148,96,0.14)' : 'transparent',
             color: olive,
             fontFamily: sans,
-            fontSize: 13.5,
+            fontSize: 12.5,
             fontWeight: 700,
-            gap: 8,
+            gap: 7,
             whiteSpace: 'nowrap',
             cursor: 'pointer',
           }}
         >
           {saved ? (
-            <BookmarkCheck width={16} height={16} strokeWidth={2.1} aria-hidden />
+            <BookmarkCheck width={15} height={15} strokeWidth={2.1} aria-hidden />
           ) : (
-            <BookmarkPlus width={16} height={16} strokeWidth={2} aria-hidden />
+            <BookmarkPlus width={15} height={15} strokeWidth={2} aria-hidden />
           )}
           {saved ? 'Gemt' : 'Gem i min log'}
         </button>
