@@ -151,7 +151,10 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 14,
         padding: '20px 20px 18px',
-        boxShadow: '0 6px 18px rgba(36,42,28,0.09)',
+        // Varm, lav-kontrast papir-løft — ikke app-card/material-skygge.
+        // Skal knap opdages; borderen bærer stadig kortets form.
+        boxShadow:
+          '0 10px 24px rgba(64,58,42,0.06), 0 3px 8px rgba(64,58,42,0.035)',
       }}
     >
       {/* Top: label-chip (venstre) + metadata (højre). */}
