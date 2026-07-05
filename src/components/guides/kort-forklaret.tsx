@@ -69,7 +69,9 @@ export function KortForklaret({
         style={{
           fontFamily: plex,
           fontWeight: 600,
-          fontSize: 24,
+          // Bevidst mindre end guidekortenes titler + søgeintroen: dette er
+          // sekundær læring nederst, ikke sidens hovedhandling.
+          fontSize: 21,
           lineHeight: 1,
           letterSpacing: '-0.01em',
           color: '#242019',

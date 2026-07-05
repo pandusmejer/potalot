@@ -153,15 +153,9 @@ export function GuidesBibliotek({
         </div>
       </section>
 
-      {/* Redaktionelt lær-mere-lag EFTER guidekortene — kompakt forklaringsnote,
-          ikke en stopklods i find-en-guide-flowet. Folder sammenligningen ud. */}
-      <KortForklaret
-        title="Chili eller peberfrugt?"
-        teaser="To planter fra samme familie, men chili indeholder capsaicin."
-        columns={layeredGuideSampleData.fact.columns}
-      />
-
-      {/* Editorial transition: search stays functional, but behaves like a quiet field index. */}
+      {/* Det praktiske værktøj kommer FØRST efter guidekortene: brugeren er på
+          Guides for at finde en konkret plante. Søgning + filtre, rolig felt-
+          index-stil. */}
       <SoegBar
         search={search}
         onSearch={(v) => {
@@ -177,6 +171,18 @@ export function GuidesBibliotek({
           'ai-udkast': withKind.filter(x => x.kind === 'ai-udkast').length,
         }}
       />
+
+      {/* Sekundært lær-mere-lag NEDERST — ekstra læring efter find-en-guide-
+          værktøjet, ikke en stopklods før søgningen. Bevidst nedtonet så den
+          ikke konkurrerer med søgningen. Ekstra bundluft så bottom-nav ikke
+          klemmer noten. */}
+      <div className="pb-10">
+        <KortForklaret
+          title="Chili eller peberfrugt?"
+          teaser="To planter fra samme familie, men chili indeholder capsaicin."
+          columns={layeredGuideSampleData.fact.columns}
+        />
+      </div>
 
       {/* Biblioteket viser kun det redaktionelle 'potalot'-lag. Egne
           guider og AI-udkast åbnes fra frø/plante/notifikation, ikke her. */}
@@ -362,7 +368,7 @@ function SoegBar({
 }) {
   const filterChips: { id: Filter; label: string }[] = [
     { id: 'alle', label: 'Alle' },
-    { id: 'potalot', label: 'Potalot' },
+    { id: 'potalot', label: 'Potalot-guides' },
   ]
   return (
     <section className="relative pt-2">
@@ -400,7 +406,7 @@ function SoegBar({
           type="text"
           value={search}
           onChange={e => onSearch(e.target.value)}
-          placeholder="Søg plante, sort eller latin"
+          placeholder="Søg plante, sort eller problem"
           style={{
             width: '100%',
             border: 'none',
