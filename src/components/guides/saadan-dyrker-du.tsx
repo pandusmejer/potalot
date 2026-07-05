@@ -7,6 +7,7 @@
  * Bygger på Guide.sections (key, title, body) — eksisterende datafelt.
  */
 
+import { Fragment } from 'react'
 import type { GuideSection } from '@/lib/types'
 import type { PotalotMacroOutput } from '@/lib/images/types'
 import { GuideFactCard } from './guide-fact-card'
@@ -84,15 +85,20 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         const bleed = bleedAfter?.[key]
         const showBleed = !!bleed && !renderedBleedKeys.has(key)
         if (showBleed) renderedBleedKeys.add(key)
-        const rendered = renderSection(s, key, chapterCounter, factMacroImage)
+        // Bevisbilledet sendes IND i sektionen (efter første tekstblok) i stedet
+        // for at ligge efter hele afsnittet — så fotoet føles som en del af
+        // læsningen, ikke en pause bagefter.
+        const rendered = renderSection(
+          s,
+          key,
+          chapterCounter,
+          factMacroImage,
+          showBleed ? bleed : undefined,
+        )
         // chapterCounter må kun øges når sektionen faktisk er en prose-
         // sektion. renderSection returnerer det nye chapter-tal sammen
         // med jsx'et så vi ikke dobbelt-tæller.
         chapterCounter = rendered.nextChapter
-        // Kapitel + dets bevis-billede wrappes SAMMEN i én blok, så
-        // section-rytmen (56/72px) kun adskiller kapitler — billedet
-        // sidder tæt under teksten det dokumenterer, ikke som en pause
-        // mellem kapitler.
         const blockKey = `${key}-${i}`
         // Fortløbende teknikkort (kind 'guide') strammes til 12px — som de
         // øvrige kort-cluster — i stedet for den brede prosa-rytme (56/72px).
@@ -102,13 +108,6 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         return (
           <div key={blockKey} style={tightBottom ? { marginBottom: 12 } : undefined}>
             {rendered.node}
-            {showBleed && bleed && (
-              <BleedSlot
-                image={bleed}
-                title={'title' in s ? s.title : undefined}
-                index={i}
-              />
-            )}
           </div>
         )
       })}
@@ -126,6 +125,7 @@ function renderSection(
   key: string,
   chapterCounter: number,
   factMacroImage: PotalotMacroOutput | null | undefined,
+  bleed?: PotalotMacroOutput,
 ): { node: React.ReactNode; nextChapter: number } {
   if (s.kind === 'fact') {
     // V4.2: fact-cardet står RENT — ingen AtmosphericImageLayer bag det.
@@ -161,56 +161,45 @@ function renderSection(
     return { node: <GuidePotalotNote body={body} />, nextChapter: chapterCounter }
   }
   const next = chapterCounter + 1
+  const evidence = bleed ? (
+    <GuideEvidenceImage
+      imageSrc={bleed.src}
+      alt={bleed.alt}
+      {...evidenceShape(title)}
+    />
+  ) : undefined
   return {
-    node: <ProseSection chapter={next} title={title} body={body} />,
+    node: <ProseSection chapter={next} title={title} body={body} evidence={evidence} />,
     nextChapter: next,
   }
 }
 
 /**
- * Makro-billedet i et guideafsnit = konkret plantebevis, ikke stemningspause.
- * Alle roller (blad/stængel/frugt/blomst/struktur/atmosfære) renderes nu som
- * ét rent inline-bevis UDEN fade — teksturen er hele pointen, og et hårdt fade
- * hen over blade/frugter/stængler æder præcis det brugeren skal se.
+ * Billedform + forskydning pr. hovedafsnit — bryder den lineære
+ * fuldbredde-rytme (spec #5/#7/#8):
+ *   Om sorten            → kvadratisk insert (forskudt højre)
+ *   Sortsspecifikke det. → højt sidebillede, vækstform (forskudt venstre)
+ *   Smag og anvendelse   → kompakt kvadratisk frugt-makro (forskudt højre)
+ * Siderne veksler, så to på hinanden følgende billeder ikke lander ens.
  */
-function BleedSlot({
-  image,
-  title,
-  index,
-}: {
-  image: PotalotMacroOutput
-  title?: string
-  index: number
-}) {
-  // Form efter afsnittets emne — bryder den lineære fuldbredde-rytme:
-  //   Om sorten            → kvadratisk inline-insert
-  //   Sortsspecifikke det. → højt sidebillede (vækstform)
-  //   ellers               → roligt fuldbredde-bånd
-  const t = (title ?? '').toLowerCase()
-  const variant = /^om sorten/.test(t)
-    ? 'square'
-    : /sortsspecifik/.test(t)
-      ? 'tall'
-      : 'wide'
-  // Veksl forskydningen så to smalle billeder ikke lander ens.
-  const align = index % 2 === 0 ? 'right' : 'left'
-  return (
-    <GuideEvidenceImage
-      imageSrc={image.src}
-      alt={image.alt}
-      variant={variant}
-      align={align}
-    />
-  )
+function evidenceShape(title: string): {
+  variant: 'wide' | 'square' | 'tall'
+  align: 'left' | 'right'
+} {
+  const t = title.toLowerCase()
+  if (/^om sorten/.test(t)) return { variant: 'square', align: 'right' }
+  if (/sortsspecifik/.test(t)) return { variant: 'tall', align: 'left' }
+  if (/smag|anvendelse/.test(t)) return { variant: 'square', align: 'right' }
+  return { variant: 'wide', align: 'right' }
 }
 
 /**
  * V3 prose-sektion.
  *
- *   - Kapitelnummer (Manrope 12px, salvie-grøn, tracking 0.12em)
- *   - H2 (Cormorant 32px, weight 500, line-height 1.0)
- *   - 16px mellem H2 og tekst
- *   - Body via ProseBody (Cormorant 20px, line-height 1.75, max 70ch)
+ *   - Kapitelnummer (Plex, dæmpet oliven) i venstre akse-kolonne
+ *   - H2 (Plex) + brødtekst (Cormorant) i højre kolonne
+ *   - evidence (valgfrit bevisbillede) indsættes INDE i brødteksten
+ *     efter første tekstblok, så fotoet er en del af afsnittet.
  *
  * Sektioner adskilles af 72px (eller 56px på mobil) — den vertikale
  * rytme er låst i guides.md sektion 15.4.
@@ -219,10 +208,12 @@ function ProseSection({
   chapter,
   title,
   body,
+  evidence,
 }: {
   chapter: number
   title: string
   body: string
+  evidence?: React.ReactNode
 }) {
   // Kapitel-greb: smal venstre akse-kolonne (nummer + hårfin lodret streg)
   // + titel/brødtekst til højre. Blød Potalot-oversættelse af reference —
@@ -277,7 +268,7 @@ function ProseSection({
         >
           {title}
         </h2>
-        <ProseBody body={body} />
+        <ProseBody body={body} evidence={evidence} />
       </div>
     </article>
   )
@@ -293,7 +284,7 @@ function ProseSection({
  * undgå en tung markdown-dep i V1. Hvis vi senere har brug for
  * links, kode-blokke eller H4 i body, så er det tid til react-markdown.
  */
-function ProseBody({ body }: { body: string }) {
+function ProseBody({ body, evidence }: { body: string; evidence?: React.ReactNode }) {
   // Cormorant beholdt (artikel = Cormorant), men lettere visuel tyngde: mindre
   // skrift, strammere linjeafstand, kortere linjer. Overskrifterne bærer stadig
   // den store editorial-vægt — brødteksten skal læses, ikke råbe.
@@ -309,26 +300,36 @@ function ProseBody({ body }: { body: string }) {
 
   // Split body i paragraffer (blank linje mellem)
   const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+  // Indsæt bevisbilledet EFTER første tekstblok (hvis der er mere end én),
+  // ellers efter den eneste blok. Så fotoet ligger inde i afsnittet — spec
+  // #5/#7: "tekstblok → foto → tekstblok fortsætter".
+  const insertAfter = paragraphs.length > 1 ? 0 : paragraphs.length - 1
 
   return (
     <div className="space-y-5" style={bodyStyle}>
       {paragraphs.map((para, i) => {
         const lines = para.split('\n').map((l) => l.trim())
         const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
-        if (isBulletList) {
-          return (
-            <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
-              {lines.map((l, j) => (
-                <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
-              ))}
-            </ul>
-          )
-        }
-        return (
+        const block = isBulletList ? (
+          <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
+            {lines.map((l, j) => (
+              <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
+            ))}
+          </ul>
+        ) : (
           <p key={i} style={{ margin: 0, whiteSpace: 'pre-line' }}>
             {renderInline(para)}
           </p>
         )
+        if (evidence && i === insertAfter) {
+          return (
+            <Fragment key={`p-${i}`}>
+              {block}
+              {evidence}
+            </Fragment>
+          )
+        }
+        return block
       })}
     </div>
   )
