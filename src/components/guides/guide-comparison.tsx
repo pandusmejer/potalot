@@ -152,9 +152,10 @@ export function GuideComparisonList({
 }: GuideComparisonListProps) {
   return (
     <div className="w-full">
-      {/* Overskrift OVER selve boksen. */}
+      {/* Overskrift OVER selve boksen — pl så den flugter med boksens indhold
+          (San Marzano), ikke med boksens ydre kant. */}
       <p
-        className="m-0 mb-2.5 uppercase"
+        className="m-0 mb-2.5 pl-5 uppercase"
         style={{
           color: 'rgba(127,143,106,0.9)',
           fontFamily: sans,
