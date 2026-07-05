@@ -98,7 +98,12 @@ export function GuideFactCard({ title, variant, columns, intro, conclusion }: Pr
               margin: 0,
             }}
           >
-            {conclusion}
+            {/* Hver sætning på sin egen linje — "… i gryden." / "… friske." */}
+            {conclusion.split(/(?<=\.)\s+/).map((sentence, i) => (
+              <span key={i} style={{ display: 'block' }}>
+                {sentence}
+              </span>
+            ))}
           </p>
         </>
       )}
