@@ -22,9 +22,17 @@ const plex = 'var(--font-plex-condensed), sans-serif'
  * teknikken (knibning sker ved Y-leddet; opbinding handler om stænglen).
  * TODO: erstat med billed-resolver/kuraterede teknik-thumbs når de findes.
  */
-const TECHNIQUE_THUMBS: Record<string, string> = {
-  'knibning-af-tomater': '/images/teknik/knibning-thumb.jpg',
-  'opbinding-af-tomater': '/images/teknik/opbinding-thumb.jpg',
+const TECHNIQUE_THUMBS: Record<
+  string,
+  { src: string; objectPosition?: string; scale?: number }
+> = {
+  'knibning-af-tomater': { src: '/images/teknik/knibning-thumb.jpg' },
+  // Opbindingspinden ligger til højre i fotoet → crop mod højre + lidt mere zoom.
+  'opbinding-af-tomater': {
+    src: '/images/teknik/opbinding-thumb.jpg',
+    objectPosition: '100% center',
+    scale: 1.15,
+  },
 }
 
 interface Props {
@@ -36,7 +44,7 @@ interface Props {
 }
 
 export function GuideTechniqueCard({ slug, title, description, thumbnail }: Props) {
-  const thumb = thumbnail ?? TECHNIQUE_THUMBS[slug]
+  const thumb = thumbnail ? { src: thumbnail } : TECHNIQUE_THUMBS[slug]
 
   return (
     <Link
@@ -123,11 +131,14 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={thumb}
+              src={thumb.src}
               alt=""
               aria-hidden
               className="h-full w-full object-cover"
-              style={{ transform: 'scale(1.2)' }}
+              style={{
+                transform: `scale(${thumb.scale ?? 1.2})`,
+                objectPosition: thumb.objectPosition,
+              }}
             />
           </div>
         )}
