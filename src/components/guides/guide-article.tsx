@@ -374,8 +374,8 @@ export async function GuideArticle({
                 margin: '0 0 6px',
               }}
             >
-              {effective.variety ?? effective.plantName} er en sort af{' '}
-              {parent.plantName.toLowerCase()}
+              {effective.variety ?? effective.plantName} er en{' '}
+              {parent.plantName.toLowerCase()}sort
             </h2>
             <p
               style={{
@@ -388,9 +388,9 @@ export async function GuideArticle({
                 maxWidth: '52ch',
               }}
             >
-              De grundlæggende råd om såning, pasning og sygdomme kommer fra{' '}
-              {parent.plantName.toLowerCase()}guiden. Her får du det, der gør{' '}
-              {effective.variety ?? effective.plantName} anderledes.
+              {parent.plantName}guiden dækker såning, pasning og sygdomme. Her
+              viser vi, hvad der gør {effective.variety ?? effective.plantName}{' '}
+              anderledes.
             </p>
             <Link
               href={`/guides/${parent.id}`}
