@@ -14,28 +14,25 @@ Fire modultyper + farvesystem + typografisk rollefordeling. Prioritet nederst.
 
 ---
 
-## 1. Overlay Hero
+## 1. Hero Summary Strip (IKKE overlay hero)
 
-**Formål:** toppen af guiden mere clean og samlet — hero-billedet bærer både
-sanselighed og hurtig forståelse.
+**Formål:** toppen af guiden clean og samlet — rent hero-foto bærer
+sanseligheden, en kompakt tonet strip UNDER fotoet bærer den hurtige forståelse.
+
+**AFVIST:** overlay hero med tekst/chips PÅ fotoet. Testet 5/7 og forkastet —
+selv en blød creme-bundflade sløvede makroens tekstur. Hero-foto skal være rent.
 
 **Struktur**
-- Over foto: badge-linje · titel · art · latin
-- På foto, nederst: 1 kort sort-/arts-dom + 2–3 kompakte chips
+- Over foto: badge-linje · titel · art · latin (Cormorant i ro på beige)
+- Rent foto: ingen tekst, chips, fade, frosted panel eller blur
+- UNDER foto: kompakt summary-strip — plante-tonet bg, diskret border, lav højde,
+  grupperet tæt (~8px) med fotoet så den læses som caption
 
-**Stil:** foto tydeligt/sanseligt/botanisk, ingen fade. Overlay = blød lys
-bundflade (varm creme/ivory, høj transparens), ikke en hård indre kortboks.
+**Mobil:** hero ~clamp(260px, 72vw, 330px); strip lige under.
 
-**Mobil:** hero ~300–340px; overlay nederst; chips i 1–2 linjer, max 3.
+**Designregel:** *Titel identificerer. Foto sanseliggør. Strip forklarer — under, ikke ovenpå.*
 
-**Designregel:** *Titel identificerer. Foto sanseliggør. Overlay forklarer.*
-
-> ⚠️ **ÅBEN BESLUTNING (Potalot-test 5/7):** vi implementerede bund-overlayet og
-> forkastede det — selv en blød creme-bundflade sløvede makroens tekstur. Den
-> nuværende hero er den KALME fortolkning: **rent foto → tonet summary-strip
-> UNDER fotoet** (leverer "foto sanseliggør, tonet felt forklarer" uden fade på
-> makroen). Indtil andet besluttes er dét Potalots Overlay-Hero. Overlay-grebet
-> gemmes til steder UDEN fin makro-tekstur (fx featured-kort på forsiden).
+Status: ✅ bygget (rent foto + terracotta-strip, 10233d4 + 2513671).
 
 ---
 
@@ -119,9 +116,17 @@ Status: ✅ bygget (`LaerAfHinanden`, b2fe1e6).
 
 Tonede baggrunde/farveblokke UDLEDES af planten/fotoet — vælges aldrig vilkårligt.
 
-**Princip:** tag motivets midtones → gør dem lysere og mindre mættede → brug som
-modulbaggrund eller accent. De mættede kilde-hex (fra reference-paletten) er
-ACCENT, ikke bg; bg er en ultra-lys udledning ("anes mere end ses").
+**Princip:** tag motivets midtones → gør dem lysere og **15–25% mindre mættede**
+→ brug som modulbaggrund eller accent. Farverne skal føles som en atmosfærisk
+forlængelse af billedet, ikke som brandingblokke. De mættede kilde-hex (fra
+reference-paletten) er ACCENT, ikke bg; bg er en ultra-lys udledning ("anes mere
+end ses").
+
+**Tone-retning pr. motiv:**
+- Tomat/frugt: støvet terracotta · fersken · varm creme
+- Blade/grønne planter: salvie · oliven · botanisk grøn
+- Blomster: creme · lys abrikos · dæmpet rosa/koral
+- Rod/løg/jord: sand · hør · støvet jordtone
 
 | Motiv | Accent (kilde) | Lys blok-bg | Border |
 |---|---|---|---|
@@ -143,6 +148,17 @@ hårde paneler.
 
 ---
 
+## Hvor systemet må bruges
+
+**Bruges gerne på:** Vidste du? · Potalot-tip · små editorial noter · Lær af
+hinanden · lokale tekst+billede-moduler · udvalgte guideforside-kort (senere).
+
+**Bruges forsigtigt eller ikke på:** Hurtigt overblik · relation til artsguide ·
+kalenderforløb · nøgterne datafelter · systembeskeder. Disse skal forblive
+nøgterne og læsbare — ellers taber siden troværdighed og scanbarhed.
+
+---
+
 ## Hårde regler
 
 **Ja til:** tekst+billede som samme modul · farvefelter udledt af planten · bløde
@@ -155,9 +171,13 @@ feed/social-stemning · to-kolonne sidearkitektur som primær løsning.
 
 ---
 
-## Implementeringsprioritet
+## Implementeringsrækkefølge (efter spec)
 
-1. Overlay Hero *(se åben beslutning — reelt allerede løst via rent foto + tonet strip)*
-2. Editorial Split
-3. Tinted Note Block
-4. Experience Strip *(✅ bygget)*
+Skriv spec først (dette dok), lav derefter kun ÉN anvendelse ad gangen, så
+retningen valideres uden at systemet spredes ukontrolleret.
+
+- **A. Lær af hinanden-strippen** — første anvendelse/validering
+- **B. Note/tip-moduler** (Vidste du? · Potalot-tip · Potalot-note)
+- **C. Detaljemoduler forsigtigt** (Smag og anvendelse · Sortsspecifikke detaljer)
+- **D. Guides-forsiden** — VENT; fortjener sin egen separate runde (ellers halv
+  ny designretning midt i en detaljeside-oprydning)

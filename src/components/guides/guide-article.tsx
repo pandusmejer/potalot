@@ -397,9 +397,9 @@ export async function GuideArticle({
                 margin: '10px 0 0',
               }}
             >
-              {parent.plantName}guiden dækker såning, pasning og sygdomme. Her går
-              vi tættere på det, der gør {effective.variety ?? effective.plantName}{' '}
-              særlig.
+              Artsguiden for {parent.plantName.toLowerCase()} dækker såning,
+              pasning og sygdomme. Her går vi tættere på det, der gør{' '}
+              {effective.variety ?? effective.plantName} særlig.
             </p>
             <Link
               href={`/guides/${parent.id}`}
