@@ -36,7 +36,6 @@ import { getMyGuideNote } from '@/actions/guide-notes'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser } from '@/lib/auth'
-import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
@@ -128,7 +127,6 @@ export async function GuideArticle({
     (p) => p.guideId === effective.id || p.guideId === parent?.id,
   )
 
-  const cat = PRIMARY_CATEGORIES[effective.primaryCategoryId]
   const isOwner = !!currentUser && original.visibility === 'private'
 
   const nextGuide = effective.sections.find((s) => s.kind === 'next')
@@ -246,9 +244,12 @@ export async function GuideArticle({
                 letterSpacing: '0.18em',
               }}
             >
-              {cat.name}
-              {original.guideLevel === 'variety' && parent && ' · sortsvariant'}
-              {original.guideLevel === 'species' && ' · artsguide'}
+              {/* Kun guide-klassifikation (art/sort + art-navn). Frøbank-
+                  kategorien (Frø/Løg/Knolde…) hører hjemme i Frøbank, ikke i
+                  guide-eyebrowen — den blandede akser. */}
+              {original.guideLevel === 'variety' && parent
+                ? 'Sortsvariant'
+                : 'Artsguide'}
               {effective.variety && ` · ${effective.plantName}`}
             </span>
           </div>
