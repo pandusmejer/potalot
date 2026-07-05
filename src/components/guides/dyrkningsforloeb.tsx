@@ -74,7 +74,7 @@ export function Dyrkningsforloeb() {
           color: '#4E6138',
         }}
       >
-        Find din planteguide nedenfor.
+        Find din planteguide nedenfor
         <ChevronDown width={15} height={15} strokeWidth={2.5} aria-hidden />
       </p>
     </section>
