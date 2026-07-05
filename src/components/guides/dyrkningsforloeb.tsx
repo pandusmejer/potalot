@@ -7,6 +7,8 @@
  * — atmosfæren bæres af hero-baggrunden og guide-sektionen omkring.
  */
 
+import { ChevronDown } from 'lucide-react'
+
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
 const plex = 'var(--font-plex-condensed), sans-serif'
 
@@ -57,18 +59,23 @@ export function Dyrkningsforloeb() {
         til såning, udplantning, pleje og høst.
       </p>
 
-      {/* Én kort overgang der leder direkte ned i guidekortene (ingen ekstra
-          "Guides i felten"-overskrift imellem). */}
+      {/* Markant overgangs-/handlingslinje der leder direkte ned i guidekortene
+          (ingen ekstra sektionsoverskrift imellem). Mørkere grøn + semibold +
+          lille chevron ned = tydelig bro. */}
       <p
         style={{
-          margin: '14px 0 0',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 4,
+          margin: '16px 0 0',
           fontFamily: sans,
-          fontSize: 12.5,
-          fontWeight: 600,
-          color: 'rgba(78,97,56,0.72)',
+          fontSize: 13,
+          fontWeight: 700,
+          color: '#4E6138',
         }}
       >
-        Vælg den plante, du står med.
+        Find din planteguide nedenfor.
+        <ChevronDown width={15} height={15} strokeWidth={2.5} aria-hidden />
       </p>
     </section>
   )

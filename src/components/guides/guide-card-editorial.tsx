@@ -83,7 +83,6 @@ export function GuideCardEditorial({
   })
 
   const title = guide.variety ?? guide.plantName
-  const subtitleName = guide.variety ? guide.plantName : null
   const cardSummary = CARD_SUMMARIES[guide.id] ?? guide.summary
 
   const showBadge = kind !== 'potalot'
@@ -127,9 +126,27 @@ export function GuideCardEditorial({
                   'linear-gradient(180deg, rgba(20,14,8,0) 0%, rgba(20,14,8,0.28) 100%)',
               }}
             />
+            {/* Guide-type som lille diskret billed-chip (øverst venstre) — letter
+                overlay-panelet. Kun typen (arts/sort); "Potalot" udelades her, da
+                alle guider i sektionen er Potalot-guider. */}
+            <span
+              className="absolute left-3 top-3 inline-flex items-center rounded-full"
+              style={{
+                fontFamily: sans,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                padding: '5px 10px',
+                background: 'rgba(244,240,229,0.92)',
+                color: '#4E6138',
+              }}
+            >
+              {isVariety ? 'Sortsguide' : 'Artsguide'}
+            </span>
             {iFroebank && (
               <span
-                className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full"
+                className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full"
                 style={{
                   fontFamily: sans,
                   fontSize: 10,
@@ -167,41 +184,8 @@ export function GuideCardEditorial({
             </div>
           )}
 
-          {/* Type-metadata bærer nu trust-signalet (POTALOT-pillen er fjernet fra
-              sektions-headeren): arts- vs sortsguide, mærket Potalot. Egne/AI-
-              guides beholder deres eksisterende plante-eyebrow. */}
-          {kind === 'potalot' ? (
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: '0.13em',
-                textTransform: 'uppercase',
-                color: 'rgba(86,111,60,0.78)', // muted olive — hvisker metadata, konkurrerer ikke med titlen
-                margin: 0,
-                marginBottom: 4,
-              }}
-            >
-              Potalot · {isVariety ? 'Sortsguide' : 'Artsguide'}
-            </p>
-          ) : isVariety ? (
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: '0.13em',
-                textTransform: 'uppercase',
-                color: 'rgba(86,111,60,0.78)',
-                margin: 0,
-                marginBottom: 4,
-              }}
-            >
-              {subtitleName ?? guide.primaryCategoryId}
-            </p>
-          ) : null}
-
+          {/* Metadata-linjen er flyttet op på billedet (type-chip) → overlayet
+              rummer nu kun titel, latin, summary og pil = lettere tekstblok. */}
           <h3
             style={{
               fontFamily: plex,
