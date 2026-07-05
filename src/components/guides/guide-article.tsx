@@ -561,7 +561,9 @@ export async function GuideArticle({
           </Card>
         </>
       ) : (
-        <>
+        // Formindsket fuge til kalender-sektionen ovenfor (nested -mt).
+        <div>
+          <div className="-mt-4">
           {debug && (
             <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
           )}
@@ -655,7 +657,8 @@ export async function GuideArticle({
               </Link>
             </div>
           </section>
-        </>
+          </div>
+        </div>
       )}
 
       {currentUser && !isDemo && myNote !== null && (
