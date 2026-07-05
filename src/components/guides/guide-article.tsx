@@ -345,7 +345,9 @@ export async function GuideArticle({
                     margin: 0,
                   }}
                 >
-                  {effective.summary}
+                  {/* Én stærk sætning — heroen skal ånde. Resten af summaryen
+                      (anvendelse/lagring) lever i tags + Hurtigt overblik. */}
+                  {effective.summary.split(/(?<=\.)\s+/)[0]}
                 </p>
               </div>
             )}
