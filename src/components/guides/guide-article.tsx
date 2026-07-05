@@ -750,7 +750,7 @@ export async function GuideArticle({
                   leftTitle="San Marzano"
                   rightTitle="Roma"
                   rows={SAN_MARZANO_VS_ROMA_ROWS}
-                  ctaLabel="Se Roma-guiden"
+                  ctaLabel="Gå til Roma-guiden"
                   ctaHref={targetExists ? `/guides/${nextGuide.slug}` : undefined}
                   ctaDisabled={!targetExists}
                 />
