@@ -6,7 +6,7 @@ plantName: Tomat
 variety: San Marzano
 latinName: Solanum lycopersicum 'San Marzano'
 primaryCategoryId: fro
-summary: "Klassisk italiensk pastatomat med fast frugtkød og lavt vandindhold. Velegnet til sauce, konservering og lang lagring."
+summary: "Kødfuld italiensk pastatomat til sauce og konservering."
 difficulty: medium
 tags: [italiensk, pasta, kødfuld, lagringsdygtig, pastatomat, arvesort]
 quickFacts:

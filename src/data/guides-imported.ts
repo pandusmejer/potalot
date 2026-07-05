@@ -1793,7 +1793,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     "parentGuideId": "tomat",
     "primaryCategoryId": "fro",
     "subcategoryId": null,
-    "summary": "Klassisk italiensk pastatomat med fast frugtkød og lavt vandindhold. Velegnet til sauce, konservering og lang lagring.",
+    "summary": "Kødfuld italiensk pastatomat til sauce og konservering.",
     "difficulty": "medium",
     "tags": [
       "italiensk",

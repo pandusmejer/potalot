@@ -302,10 +302,10 @@ export async function GuideArticle({
           </p>
         )}
 
-        {/* Rent hero-foto + intro som ren editorial lede UNDER fotoet. INGEN
-            boks/chips/overlay/fade — den tonede summary-boks er fjernet (den
-            føltes som et UI-panel, ikke intro). Introen læses nu som en rolig
-            lede/caption: serif, luftig linjeafstand, står direkte på cremen. */}
+        {/* Rent hero-foto + intro som en NØGTERN sortsdeklaration UNDER fotoet.
+            IKKE en poetisk Cormorant-lede (den lignede starten på et essay og
+            gentog fakta) — en kort sans-reference-linje der orienterer: hvad er
+            sorten god til. Ingen boks/chips/overlay/fade. */}
         {(effective.primaryImageId || effective.summary) && (
           <div className="space-y-3">
             {effective.primaryImageId && (
@@ -331,13 +331,13 @@ export async function GuideArticle({
             {effective.summary && (
               <p
                 style={{
-                  fontFamily: 'var(--font-cormorant), Georgia, serif',
-                  fontSize: 'clamp(17px, 3.6vw, 19.5px)',
-                  fontWeight: 400,
-                  lineHeight: 1.5,
-                  color: '#3D3A31',
-                  margin: '2px 2px 0',
-                  maxWidth: '42ch',
+                  fontFamily: 'var(--font-manrope)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  lineHeight: 1.4,
+                  color: 'rgba(36,48,31,0.66)',
+                  margin: '2px 0 0',
+                  maxWidth: '34ch',
                 }}
               >
                 {effective.summary}
