@@ -403,7 +403,7 @@ export async function GuideArticle({
             </p>
             <Link
               href={`/guides/${parent.id}`}
-              className="group mt-3.5 inline-flex items-center gap-1.5"
+              className="group mt-3.5 ml-auto flex w-fit items-center gap-1.5"
               style={{
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 13.5,
@@ -418,8 +418,15 @@ export async function GuideArticle({
         </>
       )}
 
-      {debug && <DebugBlock name="QuickFactsCard" note="1. Hurtigt overblik" />}
-      <QuickFactsCard guide={effective} inheritedFields={inheritedFromParent} />
+      {/* Hurtigt overblik rykket ~3mm op mod relations-mellemstykket. Nested
+          negativ margin (ikke på selve space-y-barnet) for at overskrive fugen
+          pålideligt. */}
+      <div>
+        <div className="-mt-3">
+          {debug && <DebugBlock name="QuickFactsCard" note="1. Hurtigt overblik" />}
+          <QuickFactsCard guide={effective} inheritedFields={inheritedFromParent} />
+        </div>
+      </div>
 
       {debug && (
         <DebugBlock
