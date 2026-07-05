@@ -1,30 +1,38 @@
 'use client'
 
 /**
- * LaerAfHinanden — roligt "Lær af hinanden"-teaser-modul på guide-detaljesiden.
+ * LaerAfHinanden — rolig, redaktionel "Lær af hinanden"-teaser på guide-
+ * detaljesiden. IKKE et feed, en carousel eller social UI.
  *
- * Dyrker-erfaringer fra andre haver — IKKE et socialt feed. En ROLIG TEASER:
- * én featured erfaring vises, resten åbnes aktivt via "Se flere". Ingen vandret
- * carousel, ingen halvt-synligt næste kort (det gør sektionen travl). Tillids-
- * grænsen bæres af typografien — alt i Manrope (praktisk feltnote), aldrig
- * Cormorant (som er Potalot-guidens autoritet).
+ * Bygget nøjagtigt efter Anna-spec (mobil-only, ~390px):
+ *   eyebrow (BETA inline) → sektionstitel (guidefont) → intro →
+ *   ét fremhævet erfaringskort → "Se flere (N) →" → lille disclaimer.
  *
- * V1 = design + demo-data + lokale/optimistiske interaktioner. Det rigtige
- * community-lag (deling, notifikationer, privat/anonym-persistens) er et
- * separat backend-sprint.
+ * Regler: kun ét kort i standardvisning, ingen carousel-peek, ingen avatarer,
+ * ingen likes/"havde gavn", ingen billeder. Alt brugerindhold i Manrope, så
+ * det tydeligt adskiller sig fra Potalot-guidens indhold. Ingen Cormorant her.
+ *
+ * V1 = design + demo-data + lokal "Gem i min log". Det rigtige community-lag
+ * (deling, notifikationer, persistens) er et separat backend-sprint.
  */
 
 import { useState } from 'react'
-import { BookmarkPlus, Check, ChevronDown } from 'lucide-react'
+import { Bookmark, BookmarkPlus, BookmarkCheck, ChevronRight } from 'lucide-react'
 import type { DyrkerErfaring } from '@/data/guides-erfaringer'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
+// Videnskabelig guidefont — samme som guideoverskrifter (ikke Cormorant).
+const plex = 'var(--font-plex-condensed), sans-serif'
+
+const olive = '#4E6138'
+const dark = '#2D2A24'
+const muted = 'rgba(36,48,31,0.55)'
 
 export function LaerAfHinanden({
+  subject,
   erfaringer,
 }: {
-  /** Sort- eller artsnavn, fx "San Marzano" / "Tomat". Beholdt i API'et selv
-   *  om teaseren ikke længere skriver det i en intro-linje. */
+  /** Sort- eller artsnavn, fx "San Marzano" / "Tomat". */
   subject?: string
   erfaringer: DyrkerErfaring[]
 }) {
@@ -32,73 +40,87 @@ export function LaerAfHinanden({
 
   if (erfaringer.length === 0) return null
 
-  const [teaser, ...resten] = erfaringer
+  const [featured, ...resten] = erfaringer
 
   return (
     <section id="erfaringer" aria-labelledby="erfaringer-titel" className="scroll-mt-20">
-      {/* Rolig eyebrow-linje: LÆR AF HINANDEN · BETA som ét tekstligt stop —
-          BETA er nu inline i eyebrowen (ikke en separat pille), så modulet
-          taber et visuelt lag. */}
+      {/* Eyebrow — BETA inline efter punktum, ikke en separat pille. */}
       <p
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: 700,
-          letterSpacing: '0.2em',
+          letterSpacing: '0.22em',
           textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.55)',
-          margin: 0,
+          lineHeight: 1,
+          color: muted,
+          margin: '0 0 12px',
         }}
       >
-        Lær af hinanden{' '}
-        <span style={{ color: 'rgba(78,97,56,0.75)' }}>· Beta</span>
+        Lær af hinanden <span style={{ color: 'rgba(78,97,56,0.8)' }}>· Beta</span>
       </p>
 
       <h2
         id="erfaringer-titel"
         style={{
-          fontFamily: sans,
-          fontSize: 18,
-          fontWeight: 800,
-          letterSpacing: '-0.01em',
-          color: '#2D2A24',
-          margin: '5px 0 0',
+          fontFamily: plex,
+          fontSize: 'clamp(27px, 7.4vw, 31px)',
+          fontWeight: 700,
+          lineHeight: 1.08,
+          letterSpacing: '-0.015em',
+          color: dark,
+          margin: '0 0 12px',
         }}
       >
         Erfaringer fra andre haver
       </h2>
 
-      {/* Ingen ekstra intro-linje — titlen bærer beskeden. Ét lag mindre. */}
-      <div className="mt-3 space-y-2.5">
-        <ErfaringCard erfaring={teaser} />
-        {expanded && resten.map(e => <ErfaringCard key={e.id} erfaring={e} />)}
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 16,
+          fontWeight: 500,
+          lineHeight: 1.45,
+          color: 'rgba(36,48,31,0.6)',
+          margin: '0 0 24px',
+        }}
+      >
+        Se, hvad andre dyrkere har oplevet med {subject ?? 'sorten'}.
+      </p>
+
+      <div className="space-y-3">
+        <ErfaringCard erfaring={featured} />
+        {expanded && resten.map((e) => <ErfaringCard key={e.id} erfaring={e} />)}
       </div>
 
       {resten.length > 0 && (
         <button
           type="button"
-          onClick={() => setExpanded(v => !v)}
+          onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          className="group mt-2.5 inline-flex items-center gap-1"
+          className="group inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 12.5,
-            fontWeight: 600,
-            color: '#4E6138',
+            fontSize: 20,
+            fontWeight: 700,
+            lineHeight: 1.2,
+            color: olive,
             background: 'transparent',
             border: 'none',
             padding: 0,
+            marginTop: 28,
+            gap: 10,
             cursor: 'pointer',
           }}
         >
-          {expanded ? 'Vis færre' : `Se flere erfaringer (${resten.length})`}
-          <ChevronDown
-            width={14}
-            height={14}
+          {expanded ? 'Skjul erfaringer' : `Se flere erfaringer (${resten.length})`}
+          <ChevronRight
+            width={20}
+            height={20}
             strokeWidth={2.25}
             aria-hidden
             style={{
-              transform: expanded ? 'rotate(180deg)' : 'none',
+              transform: expanded ? 'rotate(90deg)' : 'none',
               transition: 'transform 160ms ease',
             }}
           />
@@ -108,11 +130,11 @@ export function LaerAfHinanden({
       <p
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 16,
           fontWeight: 500,
-          lineHeight: 1.4,
+          lineHeight: 1.45,
           color: 'rgba(36,48,31,0.4)',
-          margin: '12px 0 0',
+          margin: '28px 0 0',
         }}
       >
         Erfaringer kan variere efter vejr, jord og placering.
@@ -122,114 +144,133 @@ export function LaerAfHinanden({
 }
 
 function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
-  // Optimistisk, lokal "Gem i min log" (demo). Rigtig persistens hører til
-  // backend-sprintet. Ingen "havde gavn"/likes/avatarer — designet må ikke
-  // afhænge af en bestemt dyrkerstemme (erfaringer kommer på sigt fra rigtige
-  // brugere med varierende tone).
+  // Optimistisk, lokal "Gem i min log" (demo). Ingen likes/"havde gavn"/avatar.
   const [saved, setSaved] = useState(false)
+
+  // Metadata: sted · jord · sæson. Manglende felter udelades, så vi aldrig
+  // viser tomme punktummer. Sæson vises som årstal ("Sæson 2024" → "2024").
+  const meta = [
+    erfaring.place,
+    erfaring.soil,
+    erfaring.season?.replace(/^sæson\s+/i, ''),
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <article
       style={{
         background: 'rgba(244,240,229,0.96)',
-        border: '1px solid rgba(45,42,36,0.09)',
-        borderRadius: 14,
-        padding: '12px 14px',
+        border: '1px solid rgba(45,42,36,0.10)',
+        borderRadius: 22,
+        padding: '20px 20px 18px',
       }}
     >
-      {/* Proveniens: gør det tydeligt at afsenderen er EN ANDEN HAVE, ikke
-          Potalot. Generisk — uafhængig af den enkelte brugers tone. */}
-      <p
-        className="m-0 uppercase"
-        style={{
-          fontFamily: sans,
-          fontSize: 9.5,
-          fontWeight: 800,
-          letterSpacing: '0.08em',
-          color: 'rgba(78,97,56,0.85)',
-        }}
-      >
-        Erfaring fra en anden have
-      </p>
-
-      {/* Kompakt meta-linje: sted · jord · sæson. */}
-      <p
-        className="m-0"
-        style={{
-          fontFamily: sans,
-          fontSize: 11.5,
-          fontWeight: 600,
-          color: 'rgba(36,48,31,0.5)',
-          marginTop: 4,
-        }}
-      >
-        {erfaring.place} · Jord: {erfaring.soil} · {erfaring.season}
-      </p>
+      {/* Top: label-chip (venstre) + metadata (højre). */}
+      <div className="flex items-center justify-between gap-3" style={{ marginBottom: 20 }}>
+        <span
+          className="inline-flex items-center uppercase"
+          style={{
+            height: 27,
+            padding: '0 13px',
+            borderRadius: 999,
+            background: 'rgba(123,148,96,0.18)',
+            color: olive,
+            fontFamily: sans,
+            fontSize: 11.5,
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            lineHeight: 1,
+          }}
+        >
+          Erfaring
+        </span>
+        <span
+          className="text-right"
+          style={{
+            fontFamily: sans,
+            fontSize: 13.5,
+            fontWeight: 500,
+            lineHeight: 1.3,
+            color: 'rgba(36,48,31,0.5)',
+          }}
+        >
+          {meta}
+        </span>
+      </div>
 
       <h3
-        className="m-0 line-clamp-2"
+        className="line-clamp-2"
         style={{
           fontFamily: sans,
-          fontSize: 15,
+          fontSize: 'clamp(18px, 5vw, 20px)',
           fontWeight: 700,
-          lineHeight: 1.2,
+          lineHeight: 1.15,
           letterSpacing: '-0.01em',
-          color: '#2D2A24',
-          marginTop: 7,
+          color: dark,
+          margin: '0 0 12px',
         }}
       >
         {erfaring.title}
       </h3>
 
       <p
-        className="m-0 line-clamp-3"
+        className="line-clamp-3"
         style={{
           fontFamily: sans,
-          fontSize: 13,
+          fontSize: 'clamp(14.5px, 4vw, 16px)',
           fontWeight: 500,
-          lineHeight: 1.45,
-          color: '#6A665C',
-          marginTop: 6,
+          lineHeight: 1.5,
+          color: 'rgba(45,42,36,0.78)',
+          margin: '0 0 18px',
         }}
       >
         {erfaring.excerpt}
       </p>
 
-      <div className="mt-3 flex items-center justify-between gap-2">
-        {/* Statisk social proof — ikke en knap, ikke et like. */}
+      <div style={{ height: 1, background: 'rgba(45,42,36,0.10)', margin: '0 0 16px' }} />
+
+      {/* Bund: statisk gemt-tæller (venstre) + "Gem i min log"-knap (højre). */}
+      <div className="flex items-center justify-between gap-3">
         <span
+          className="inline-flex items-center"
           style={{
             fontFamily: sans,
-            fontSize: 12,
+            fontSize: 13.5,
             fontWeight: 600,
             color: 'rgba(36,48,31,0.5)',
+            gap: 8,
             whiteSpace: 'nowrap',
           }}
         >
+          <Bookmark width={16} height={16} strokeWidth={1.9} aria-hidden />
           {erfaring.helpfulCount} gemte erfaringen
         </span>
 
         <button
           type="button"
-          onClick={() => setSaved(v => !v)}
+          onClick={() => setSaved((v) => !v)}
           aria-pressed={saved}
-          className="inline-flex items-center gap-1"
+          className="inline-flex shrink-0 items-center justify-center"
           style={{
+            height: 40,
+            padding: '0 14px',
+            borderRadius: 12,
+            border: `1.5px solid ${saved ? olive : 'rgba(78,97,56,0.55)'}`,
+            background: saved ? 'rgba(123,148,96,0.14)' : 'transparent',
+            color: olive,
             fontFamily: sans,
-            fontSize: 11.5,
+            fontSize: 13.5,
             fontWeight: 700,
-            color: saved ? '#4E6138' : 'rgba(36,48,31,0.6)',
-            background: 'transparent',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
+            gap: 8,
             whiteSpace: 'nowrap',
+            cursor: 'pointer',
           }}
         >
           {saved ? (
-            <Check width={13} height={13} strokeWidth={2.4} aria-hidden />
+            <BookmarkCheck width={16} height={16} strokeWidth={2.1} aria-hidden />
           ) : (
-            <BookmarkPlus width={13} height={13} strokeWidth={2} aria-hidden />
+            <BookmarkPlus width={16} height={16} strokeWidth={2} aria-hidden />
           )}
           {saved ? 'Gemt' : 'Gem i min log'}
         </button>
