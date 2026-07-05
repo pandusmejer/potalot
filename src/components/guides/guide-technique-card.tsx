@@ -114,7 +114,7 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
               flexShrink: 0,
               width: '2cm',
               height: '2cm',
-              borderRadius: 8,
+              borderRadius: 12,
               overflow: 'hidden',
               border: '1px solid rgba(36,48,31,0.10)',
             }}

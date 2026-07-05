@@ -179,7 +179,10 @@ export async function GuideArticle({
     : [
         /^om sorten/i,
         /smag|anvendelse/i,
-        /næste|kalender|opbind|knib/i,
+        // 'opbind|knib' fjernet: det ankrede en bleed på teknik-sektionerne, så
+        // et stort billede landede MELLEM de to teknikkort. Teknikkortene har nu
+        // deres eget thumbnail.
+        /næste|kalender/i,
       ]
   const bleedAfter: Record<
     string,
