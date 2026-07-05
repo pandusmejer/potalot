@@ -12,7 +12,7 @@ const plex = 'var(--font-plex-condensed), sans-serif'
 
 export function Dyrkningsforloeb() {
   return (
-    <section aria-labelledby="dyrkningsforloeb-titel" className="relative">
+    <section aria-labelledby="dyrkningsforloeb-titel" className="relative pl-2">
       <p
         style={{
           margin: 0,

@@ -8,7 +8,7 @@ import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
 import { Dyrkningsforloeb } from './dyrkningsforloeb'
-import { TrustBadge, guideKindFor } from './trust-badge'
+import { guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
   type PopulaertEmne,
@@ -42,7 +42,6 @@ export function GuidesBibliotek({
   aiGuideIds,
   iFroebankIds,
   bridgeMacroSrc,
-  bridgeMacroAlt,
 }: Props) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('alle')
@@ -129,13 +128,11 @@ export function GuidesBibliotek({
       <section id="guides-i-felten" className="relative -mt-3 pt-0">
         <AtmosphericGuideField />
         <div className="relative z-10 space-y-4">
-          <div className="max-w-[380px]">
-            <div className="mb-2">
-              <TrustBadge kind="potalot" size="sm" />
-            </div>
-            <SektionEyebrow>
-              <span>Feltnoter · Artsguider · Sortsguider</span>
-            </SektionEyebrow>
+          {/* Forenklet: KUN titel + subline. Pillen + "FELTNOTER · ARTSGUIDER ·
+              SORTSGUIDER"-eyebrowen er fjernet her (for mange signaler før kortet);
+              type-metadataen bor på selve kortene. pl-2 flugter teksten med
+              guidekortenes indre rytme i stedet for at hugge skærmkanten. */}
+          <div className="max-w-[380px] pl-2">
             <SektionTitel>
               {aktivtEmne ? `${aktivtEmne.navn} i felten` : 'Guides i felten'}
             </SektionTitel>
@@ -146,7 +143,7 @@ export function GuidesBibliotek({
                 fontWeight: 400,
                 lineHeight: 1.42,
                 color: '#6A665C',
-                margin: '8px 0 0',
+                margin: '6px 0 0',
                 maxWidth: 340,
               }}
             >
@@ -341,7 +338,7 @@ function AtmosphericGuideField() {
           backgroundImage: 'url(/images/makro/agurk/blad.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.18,
+          opacity: 0.08,
           mixBlendMode: 'multiply',
           transform: 'rotate(-7deg)',
           maskImage:
@@ -357,7 +354,7 @@ function AtmosphericGuideField() {
           backgroundImage: 'url(/images/makro/tomat-san-marzano/dug.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.2,
+          opacity: 0.09,
           mixBlendMode: 'multiply',
           transform: 'rotate(5deg)',
           maskImage:
@@ -468,29 +465,16 @@ function SoegBar({
   )
 }
 
-function SektionEyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase"
-      style={{
-        fontFamily: sans,
-        letterSpacing: '0.18em',
-        color: 'rgba(36,48,31,0.55)',
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
 function SektionTitel({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
         fontFamily: plex,
         fontWeight: 600,
-        fontSize: 'clamp(34px, 9vw, 46px)',
-        lineHeight: 0.94,
+        // Mindre end før (var clamp 34-46): naturlig fortsættelse af intro-
+        // titlen, ikke en ny hero der konkurrerer med "Fra første frø …".
+        fontSize: 'clamp(26px, 6.8vw, 34px)',
+        lineHeight: 0.96,
         letterSpacing: '-0.01em',
         color: '#242019',
         margin: 0,
