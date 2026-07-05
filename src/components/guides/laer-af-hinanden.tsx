@@ -79,7 +79,7 @@ export function LaerAfHinanden({
         style={{
           fontFamily: plex,
           fontSize: 14,
-          fontWeight: 200,
+          fontWeight: 300,
           lineHeight: 1.45,
           color: 'rgba(36,42,28,0.62)',
           margin: '0 0 24px',
@@ -162,7 +162,7 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.10)',
-        borderRadius: 22,
+        borderRadius: 14,
         padding: '20px 20px 18px',
       }}
     >
@@ -172,8 +172,8 @@ function ErfaringCard({ erfaring }: { erfaring: DyrkerErfaring }) {
           className="inline-flex items-center uppercase"
           style={{
             height: 27,
-            padding: '0 13px',
-            borderRadius: 999,
+            padding: '0 12px',
+            borderRadius: 8,
             background: 'rgba(123,148,96,0.18)',
             color: olive,
             fontFamily: sans,
