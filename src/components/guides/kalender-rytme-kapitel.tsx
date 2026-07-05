@@ -48,8 +48,10 @@ export function KalenderRytmeKapitel({
     <section
       className="rounded-[24px] px-5 py-6"
       style={{
-        background: '#F4F0E5',
-        border: '1px solid rgba(36,48,31,0.10)',
+        // Svag salvie-tone (køligere/grønnere end 'Din have's varme beige) —
+        // giver kortet kalender-/sæson-identitet uden ekstra volumen.
+        background: '#E9EDE1',
+        border: '1px solid rgba(90,104,70,0.14)',
       }}
     >
       <header className="mb-5">
@@ -83,19 +85,37 @@ export function KalenderRytmeKapitel({
       </header>
 
       {/* Kompakte fase-rækker: måned-kolonne + titel + opgaver på én linje.
-          Ingen lang vertikal timeline, ingen store italic-beskrivelser — hele
-          sæsonen på ~én skærm. */}
-      <div className="m-0 list-none">
+          Diskret venstre sæson-skinne (lodret linje + prik pr. fase) giver
+          "tid/rytme"-identitet uden ekstra højde. */}
+      <div className="relative m-0 list-none pl-[18px]">
+        <span
+          aria-hidden
+          className="absolute left-[3px] top-[11px] bottom-[11px] w-px"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(90,104,70,0.14), rgba(90,104,70,0.30) 45%, rgba(90,104,70,0.12))',
+          }}
+        />
         {chapters.map((chapter, index) => (
           <div
             key={`${chapter.monthRange}-${chapter.title}`}
-            className="grid grid-cols-[64px_1fr] items-start gap-3"
+            className="relative grid grid-cols-[64px_1fr] items-start gap-3"
             style={{
               paddingTop: index === 0 ? 0 : 14,
               paddingBottom: index === chapters.length - 1 ? 0 : 14,
-              borderTop: index === 0 ? undefined : '1px solid rgba(36,48,31,0.08)',
+              borderTop: index === 0 ? undefined : '1px solid rgba(90,104,70,0.1)',
             }}
           >
+            <span
+              aria-hidden
+              className="absolute h-[7px] w-[7px] rounded-full"
+              style={{
+                left: -18,
+                top: (index === 0 ? 0 : 14) + 6,
+                background: '#E9EDE1',
+                border: '1px solid rgba(90,104,70,0.55)',
+              }}
+            />
             <p
               className="m-0 uppercase"
               style={{
