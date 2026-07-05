@@ -56,8 +56,8 @@ export function GuideNote({
             style={{
               fontFamily: sans,
               fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: '0.14em',
+              fontWeight: 700,
+              letterSpacing: '0.2em',
               textTransform: 'uppercase',
               color: accent,
               margin: 0,

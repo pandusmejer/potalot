@@ -66,8 +66,8 @@ export function KalenderRytmeKapitel({
           style={{
             fontFamily: sans,
             fontSize: 11,
-            fontWeight: 800,
-            letterSpacing: '0.18em',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
             lineHeight: 1.25,
             color: 'rgba(36,48,31,0.56)',
           }}

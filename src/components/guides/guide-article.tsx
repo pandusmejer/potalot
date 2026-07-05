@@ -242,11 +242,13 @@ export async function GuideArticle({
         <div>
           <div className="mb-2">
             <span
-              className="text-xs uppercase"
+              className="uppercase"
               style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 11,
                 color: 'rgba(36,48,31,0.55)',
-                fontWeight: 600,
-                letterSpacing: '0.18em',
+                fontWeight: 700,
+                letterSpacing: '0.2em',
               }}
             >
               {/* Kun guide-klassifikation (art/sort + art-navn). Frøbank-
@@ -508,7 +510,7 @@ export async function GuideArticle({
                   fontFamily: 'var(--font-manrope)',
                   fontSize: 11,
                   fontWeight: 700,
-                  letterSpacing: '0.22em',
+                  letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                   color: 'rgba(36,48,31,0.55)',
                   margin: 0,
@@ -584,8 +586,8 @@ export async function GuideArticle({
               style={{
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: '0.18em',
+                fontWeight: 700,
+                letterSpacing: '0.2em',
                 lineHeight: 1.25,
                 color: '#7F8F6A',
               }}

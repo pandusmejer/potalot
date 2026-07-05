@@ -161,8 +161,8 @@ export function GuideComparisonList({
           color: 'rgba(127,143,106,0.9)',
           fontFamily: sans,
           fontSize: 11,
-          fontWeight: 800,
-          letterSpacing: '0.16em',
+          fontWeight: 700,
+          letterSpacing: '0.2em',
         }}
       >
         Sammenlign sorter

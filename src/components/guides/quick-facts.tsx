@@ -24,7 +24,16 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle>Hurtigt overblik</CardTitle>
+          <CardTitle
+            style={{
+              fontFamily: 'var(--font-plex-condensed), sans-serif',
+              fontWeight: 600,
+              fontSize: 20,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Hurtigt overblik
+          </CardTitle>
           {guide.difficulty && (
             <span className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
               {difficultyMeta.label}
@@ -157,7 +166,7 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
                   <div key={g.titel}>
                     {/* Gruppetitler guider, men skal ikke ligne nye kapitler:
                         mindre, lettere vægt, dæmpet salvie. */}
-                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(127,143,106,0.72)]">
+                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(127,143,106,0.72)]" style={{ fontFamily: 'var(--font-manrope)' }}>
                       {g.titel}
                     </p>
                     <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3">
@@ -206,11 +215,11 @@ function Fact({
 }) {
   return (
     <div className={`flex flex-col gap-0.5 ${className ?? ''}`}>
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1" style={{ fontFamily: 'var(--font-manrope)' }}>
         {icon}
         {label}
       </span>
-      <span className="text-sm text-foreground font-medium">{value}</span>
+      <span className="text-sm text-foreground font-medium" style={{ fontFamily: 'var(--font-manrope)' }}>{value}</span>
     </div>
   )
 }

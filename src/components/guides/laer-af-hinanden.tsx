@@ -50,7 +50,7 @@ export function LaerAfHinanden({
           fontFamily: sans,
           fontSize: 11,
           fontWeight: 700,
-          letterSpacing: '0.22em',
+          letterSpacing: '0.2em',
           textTransform: 'uppercase',
           lineHeight: 1,
           color: muted,
