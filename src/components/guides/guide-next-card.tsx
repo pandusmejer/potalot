@@ -14,6 +14,8 @@ import { ArrowRight } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Videnskabelig guidefont — titler på arts-/sortguide-kort (jf. typografi-regel).
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 interface Props {
   title: string
@@ -40,7 +42,7 @@ export function GuideNextCard({ title, description, slug, label }: Props) {
           fontFamily: sans,
           fontSize: 11,
           fontWeight: 700,
-          letterSpacing: '0.22em',
+          letterSpacing: '0.2em',
           textTransform: 'uppercase',
           color: 'rgba(36,48,31,0.55)',
           margin: 0,
@@ -50,11 +52,11 @@ export function GuideNextCard({ title, description, slug, label }: Props) {
       </p>
       <h3
         style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(26px, 5vw, 34px)',
-          lineHeight: 1.1,
-          letterSpacing: '-0.02em',
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 'clamp(24px, 5.4vw, 28px)',
+          lineHeight: 1.12,
+          letterSpacing: '-0.015em',
           color: '#24301F',
           margin: '8px 0 0',
         }}

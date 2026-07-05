@@ -688,7 +688,7 @@ export async function GuideArticle({
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: '0.22em',
+                letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 color: 'rgba(36,48,31,0.55)',
                 margin: 0,
