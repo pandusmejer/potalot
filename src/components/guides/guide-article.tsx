@@ -36,7 +36,7 @@ import { getMyGuideNote } from '@/actions/guide-notes'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getCurrentUser } from '@/lib/auth'
-import { PRIMARY_CATEGORIES, DIFFICULTY_META } from '@/lib/constants'
+import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
@@ -305,96 +305,57 @@ export async function GuideArticle({
           </p>
         )}
 
-        {/* Hero-card: fotoet BÆRER introen. Titel/art/latin står i ro ovenfor;
-            en blød creme-bundzone PÅ fotoet samler den korte sort-dom + max 3
-            chips. Ét samlet hero, ikke separat tekstblok + chip-række + foto. */}
-        {effective.primaryImageId && (() => {
-          const qf = effective.quickFacts
-          // Kort sort-dom = summaryens første sætning (kortere på fotoet; den
-          // fulde summary/anvendelse står i Hurtigt overblik længere nede).
-          const shortDom = effective.summary
-            ? effective.summary.split(/(?<=\.)\s+/)[0]
-            : null
-          const chips = [
-            qf.growthType
-              ? qf.growthType.charAt(0).toUpperCase() + qf.growthType.slice(1)
-              : null,
-            // Kortet anvendelse i hero ("Sauce og madlavning" → "Sauce"); fuld
-            // form bevares i Hurtigt overblik.
-            qf.primaryUse ? qf.primaryUse.split(/\s+og\s+|\s*,\s*/)[0] : null,
-            effective.difficulty ? DIFFICULTY_META[effective.difficulty].label : null,
-          ]
-            .filter((c): c is string => Boolean(c))
-            .slice(0, 3)
-          return (
-            <>
-              {debug && <DebugBlock name="Hero" note="foto + creme-bund-overlay" />}
+        {/* Rent hero-foto + kompakt summary-strip UNDER fotoet. Ingen tekst/
+            chips/fade ovenpå — makroens sanselige kvalitet bevares. Foto og
+            strip grupperes tæt (8px), så strippen læses som billedets caption/
+            intro, ikke et nyt afsnit. */}
+        {(effective.primaryImageId || effective.summary) && (
+          <div className="space-y-2">
+            {effective.primaryImageId && (
+              <>
+                {debug && <DebugBlock name="Hero" note="rent foto — ingen overlay" />}
+                <div
+                  className="overflow-hidden"
+                  style={{
+                    borderRadius: 24,
+                    border: '1px solid rgba(45,42,36,0.06)',
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={effective.primaryImageId}
+                    alt={effective.plantName}
+                    className="block w-full object-cover"
+                    style={{ height: 'clamp(260px, 72vw, 330px)' }}
+                  />
+                </div>
+              </>
+            )}
+            {effective.summary && (
               <div
-                className="relative overflow-hidden"
                 style={{
-                  borderRadius: 24,
-                  border: '1px solid rgba(45,42,36,0.06)',
-                  height: 'clamp(300px, 80vw, 340px)',
+                  background: '#F4F0E5',
+                  border: '1px solid rgba(45,42,36,0.10)',
+                  borderRadius: 14,
+                  padding: '11px 15px',
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={effective.primaryImageId}
-                  alt={effective.plantName}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                {(shortDom || chips.length > 0) && (
-                  <div
-                    className="absolute inset-x-0 bottom-0 px-4 pb-4 pt-12"
-                    style={{
-                      // Blød varm creme-bundzone — ingen mørk dramatisk gradient.
-                      // Kun nederste ~halvdel; makroens motiv foroven forbliver rent.
-                      background:
-                        'linear-gradient(to top, rgba(244,240,229,0.97) 0%, rgba(244,240,229,0.88) 42%, rgba(244,240,229,0) 100%)',
-                    }}
-                  >
-                    {shortDom && (
-                      <p
-                        style={{
-                          fontFamily: 'var(--font-manrope)',
-                          fontSize: 13.5,
-                          fontWeight: 600,
-                          lineHeight: 1.45,
-                          color: '#3A362E',
-                          margin: 0,
-                          maxWidth: '42ch',
-                        }}
-                      >
-                        {shortDom}
-                      </p>
-                    )}
-                    {chips.length > 0 && (
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
-                        {chips.map(c => (
-                          <span
-                            key={c}
-                            style={{
-                              fontFamily: 'var(--font-manrope)',
-                              fontSize: 11,
-                              fontWeight: 600,
-                              color: '#4E6138',
-                              background: 'rgba(255,255,255,0.62)',
-                              border: '1px solid rgba(123,148,96,0.28)',
-                              borderRadius: 999,
-                              padding: '4px 10px',
-                            }}
-                          >
-                            {c}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
+                <p
+                  style={{
+                    fontFamily: 'var(--font-manrope)',
+                    fontSize: 13.5,
+                    fontWeight: 500,
+                    lineHeight: 1.5,
+                    color: '#4A4636',
+                    margin: 0,
+                  }}
+                >
+                  {effective.summary}
+                </p>
               </div>
-            </>
-          )
-        })()}
+            )}
+          </div>
+        )}
       </header>
 
       {parent && (
