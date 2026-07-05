@@ -41,7 +41,7 @@ import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
 import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
-import { ArrowLeft, BookOpen, Package, Sprout, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Package, Sprout, ArrowRight } from 'lucide-react'
 
 interface GuideArticleProps {
   id: string
@@ -324,20 +324,59 @@ export async function GuideArticle({
       {parent && (
         <>
           {debug && <DebugBlock name="ArtsguideLink" />}
-          <Card className="bg-secondary/30 border-secondary">
-            <CardContent className="flex items-center gap-3 py-3 flex-wrap">
-              <BookOpen className="h-4 w-4 text-primary" />
-              <p className="text-sm flex-1 min-w-[180px]">
-                Sortsvariant af <strong>{parent.plantName}</strong>. Felter
-                uden override arves fra artsguiden.
-              </p>
-              <Button asChild variant="ghost" size="sm">
-                <Link href={`/guides/${parent.id}`}>
-                  Se artsguide <ArrowRight className="h-3 w-3" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+          {/* Arts/sort-relation som editorial produkt-tekst, ikke database-besked:
+              brugeren skal mærke skabelonen, ikke se merge-logikken. */}
+          <aside
+            style={{
+              background: '#F4F0E5',
+              border: '1px solid rgba(45,42,36,0.10)',
+              borderRadius: 20,
+              padding: '18px 20px',
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontWeight: 500,
+                fontSize: 'clamp(20px, 4.6vw, 23px)',
+                lineHeight: 1.12,
+                letterSpacing: '-0.01em',
+                color: '#2D2A24',
+                margin: '0 0 6px',
+              }}
+            >
+              {effective.variety ?? effective.plantName} er en sort af{' '}
+              {parent.plantName.toLowerCase()}
+            </h2>
+            <p
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 14,
+                fontWeight: 500,
+                lineHeight: 1.5,
+                color: '#6A665C',
+                margin: 0,
+                maxWidth: '52ch',
+              }}
+            >
+              De grundlæggende råd om såning, pasning og sygdomme kommer fra{' '}
+              {parent.plantName.toLowerCase()}guiden. Her får du det, der gør{' '}
+              {effective.variety ?? effective.plantName} anderledes.
+            </p>
+            <Link
+              href={`/guides/${parent.id}`}
+              className="group mt-3 inline-flex items-center gap-1.5"
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 13,
+                fontWeight: 700,
+                color: '#4E6138',
+              }}
+            >
+              Se {parent.plantName.toLowerCase()}guiden
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </aside>
         </>
       )}
 
