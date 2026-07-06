@@ -351,41 +351,83 @@ function ProseBody({
   const renderBlock = (para: string, i: number) => {
     const lines = para.split('\n').map((l) => l.trim())
     const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
-    return isBulletList ? (
-      // Lister behandles som EGEN scanbar komponent — ikke arvet serif-prosa.
-      // Manrope, kompakt, små diskrete oliven-bullets, lavt indryk. Så en liste
-      // med typer/principper kan scannes hurtigt i stedet for at læses som roman.
-      <ul key={i} style={{ listStyle: 'none', padding: 0, margin: '16px 0 20px' }}>
-        {lines.map((l, j) => (
-          <li
-            key={j}
-            style={{
-              display: 'flex',
-              gap: 9,
-              marginBottom: j === lines.length - 1 ? 0 : 12,
-              fontFamily: sans,
-              fontSize: 16,
-              lineHeight: 1.5,
-              color: 'rgba(45,42,36,0.82)',
-              textAlign: 'left',
-            }}
-          >
-            <span
-              aria-hidden
+    if (isBulletList) {
+      const items = lines.map((l) => l.replace(/^-\s+/, ''))
+      // Definition-list: hvert punkt = "**Typenavn** – forklaring". Renderes
+      // som dt/dd (typenavn som anker på egen linje, forklaring under), så
+      // typer kan skimmes hurtigt. Teksten er UÆNDRET — kun opsætningen skifter
+      // (den forbindende tankestreg erstattes af linjeskiftet).
+      const defRe = /^\*\*(.+?)\*\*\s*[–—-]\s*(.+)$/
+      const defs = items.map((t) => t.match(defRe))
+      if (defs.every(Boolean)) {
+        return (
+          <dl key={i} style={{ margin: '16px 0 20px' }}>
+            {defs.map((m, j) => (
+              <div key={j} style={{ marginTop: j === 0 ? 0 : 14 }}>
+                <dt
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    lineHeight: 1.35,
+                    color: '#2D2A24',
+                  }}
+                >
+                  {m![1]}
+                </dt>
+                <dd
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 16,
+                    fontWeight: 400,
+                    lineHeight: 1.5,
+                    color: 'rgba(45,42,36,0.72)',
+                    margin: '2px 0 0',
+                  }}
+                >
+                  {renderInline(m![2])}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+      // Almindelig punktliste (ikke navn+forklaring): kompakt Manrope-stil med
+      // små diskrete oliven-bullets — ikke arvet serif-prosa.
+      return (
+        <ul key={i} style={{ listStyle: 'none', padding: 0, margin: '16px 0 20px' }}>
+          {lines.map((l, j) => (
+            <li
+              key={j}
               style={{
-                flexShrink: 0,
-                marginTop: '0.6em',
-                width: 5,
-                height: 5,
-                borderRadius: 999,
-                background: 'rgba(123,143,99,0.9)',
+                display: 'flex',
+                gap: 9,
+                marginBottom: j === lines.length - 1 ? 0 : 12,
+                fontFamily: sans,
+                fontSize: 16,
+                lineHeight: 1.5,
+                color: 'rgba(45,42,36,0.82)',
+                textAlign: 'left',
               }}
-            />
-            <span>{renderInline(l.replace(/^-\s+/, ''))}</span>
-          </li>
-        ))}
-      </ul>
-    ) : (
+            >
+              <span
+                aria-hidden
+                style={{
+                  flexShrink: 0,
+                  marginTop: '0.6em',
+                  width: 5,
+                  height: 5,
+                  borderRadius: 999,
+                  background: 'rgba(123,143,99,0.9)',
+                }}
+              />
+              <span>{renderInline(l.replace(/^-\s+/, ''))}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    return (
       <p key={i} style={{ margin: 0, whiteSpace: 'pre-line' }}>
         {renderInline(para)}
       </p>
