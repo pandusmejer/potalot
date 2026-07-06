@@ -105,8 +105,17 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // Tailwind v4 space-y sætter margin-BOTTOM på ikke-sidste barn, så vi
         // overskriver marginBottom på det kort der efterfølges af et teknikkort.
         const tightBottom = s.kind === 'guide' && body[i + 1]?.kind === 'guide'
+        // Fact-kortet (fx "vækstformer") rykkes 6 mm op — tættere på afsnittet
+        // det knytter sig til (Anna-justering).
+        const wrapperStyle: React.CSSProperties = {
+          ...(tightBottom ? { marginBottom: 12 } : {}),
+          ...(s.kind === 'fact' ? { marginTop: '-6mm' } : {}),
+        }
         return (
-          <div key={blockKey} style={tightBottom ? { marginBottom: 12 } : undefined}>
+          <div
+            key={blockKey}
+            style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}
+          >
             {rendered.node}
           </div>
         )
