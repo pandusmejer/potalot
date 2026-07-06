@@ -287,15 +287,7 @@ function SpeciesQuickFacts({ guide }: { guide: Guide }) {
             <Fact key={f.label} label={f.label} value={f.value} icon={f.icon} />
           ))}
         </div>
-
-        {guide.tags.length > 0 && (
-          <div className="mt-3.5 flex flex-wrap gap-1.5 border-t border-border pt-3">
-            {/* Max 3 tags på arts — lange tag-rækker gør kortet højt uden gevinst. */}
-            {guide.tags.slice(0, 3).map(t => (
-              <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>
-            ))}
-          </div>
-        )}
+        {/* Ingen tags på artsguide-overblik — de er mere nyttige på sortsguides. */}
       </CardContent>
     </Card>
   )
