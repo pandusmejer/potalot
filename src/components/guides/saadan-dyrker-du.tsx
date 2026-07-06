@@ -329,13 +329,16 @@ function ProseBody({
   // Cormorant beholdt (artikel = Cormorant), men lettere visuel tyngde: mindre
   // skrift, strammere linjeafstand, kortere linjer. Overskrifterne bærer stadig
   // den store editorial-vægt — brødteksten skal læses, ikke råbe.
+  // Delt tekststørrelse: Manrope-lister (dt/dd/bullets) skal have PRÆCIS samme
+  // størrelse som Cormorant-prosaen, så de ikke stikker ud.
+  const proseFontSize = 'clamp(16px, 2.5vw, 17px)'
   const bodyStyle: React.CSSProperties = {
     fontFamily: serif,
     fontWeight: 400,
     // Roligere mobil-læsning: cap på 17px (16 på mobil), luftig linjeafstand,
     // VENSTRESTILLET (ikke justeret — hård justering gør stor seriftekst stiv
     // og presset på mobil). Orddeling beholdt så float-spalterne stadig pakker.
-    fontSize: 'clamp(16px, 2.5vw, 17px)',
+    fontSize: proseFontSize,
     lineHeight: 1.65,
     color: '#2D2A24',
     margin: 0,
@@ -367,7 +370,7 @@ function ProseBody({
                 <dt
                   style={{
                     fontFamily: sans,
-                    fontSize: 16,
+                    fontSize: proseFontSize,
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: '#2D2A24',
@@ -378,7 +381,7 @@ function ProseBody({
                 <dd
                   style={{
                     fontFamily: sans,
-                    fontSize: 16,
+                    fontSize: proseFontSize,
                     fontWeight: 400,
                     lineHeight: 1.5,
                     color: 'rgba(45,42,36,0.72)',
@@ -404,7 +407,7 @@ function ProseBody({
                 gap: 9,
                 marginBottom: j === lines.length - 1 ? 0 : 12,
                 fontFamily: sans,
-                fontSize: 16,
+                fontSize: proseFontSize,
                 lineHeight: 1.5,
                 color: 'rgba(45,42,36,0.82)',
                 textAlign: 'left',
