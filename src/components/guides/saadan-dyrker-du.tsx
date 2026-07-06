@@ -275,8 +275,9 @@ function ProseSection({
         />
       </div>
 
-      {/* Højre: titel + brødtekst, flugter med akse-kolonnens højre kant. */}
-      <div>
+      {/* Højre: titel + brødtekst. Ekstra højre-padding så seriftekst får luft
+          mod skærmkanten (venstre side har allerede aksen som margin). */}
+      <div style={{ paddingRight: 'clamp(10px, 2.5vw, 14px)' }}>
         <h2
           style={{
             fontFamily: plex,
@@ -321,16 +322,17 @@ function ProseBody({
   const bodyStyle: React.CSSProperties = {
     fontFamily: serif,
     fontWeight: 400,
-    fontSize: 'clamp(16px, 2.7vw, 17.5px)',
-    lineHeight: 1.58,
+    // Roligere mobil-læsning: cap på 17px (16 på mobil), luftig linjeafstand,
+    // VENSTRESTILLET (ikke justeret — hård justering gør stor seriftekst stiv
+    // og presset på mobil). Orddeling beholdt så float-spalterne stadig pakker.
+    fontSize: 'clamp(16px, 2.5vw, 17px)',
+    lineHeight: 1.65,
     color: '#2D2A24',
     margin: 0,
-    maxWidth: '62ch',
-    // Orddeling (dansk, arves fra <html lang="da">) pakker de smalle ombrydnings-
-    // spalter tættere og giver en jævnere overgang til fuld bredde under billedet.
+    maxWidth: '60ch',
     hyphens: 'auto',
     WebkitHyphens: 'auto',
-    textAlign: 'justify',
+    textAlign: 'left',
   }
 
   // Split body i paragraffer (blank linje mellem)
