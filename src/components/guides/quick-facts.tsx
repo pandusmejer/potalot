@@ -10,15 +10,25 @@ interface Props {
   guide: Guide
   /** Hvilke felter er arvet fra parent (vises diskret) */
   inheritedFields?: Set<string>
+  /**
+   * Artsguide: åbent, kompakt arts-snapshot (2×4 grid, INGEN "Flere detaljer"-
+   * fold-ud). På arts er der kun få generelle artsdata, så fold-ud giver kun
+   * et unødigt klik. Sortguide beholder fold-ud-strukturen.
+   */
+  species?: boolean
 }
 
 /**
  * "Hurtigt overblik" — quick card til toppen af guide-detail.
  * Én skærm, scanbar, alt det vigtigste.
  */
-export function QuickFactsCard({ guide, inheritedFields }: Props) {
+export function QuickFactsCard({ guide, inheritedFields, species = false }: Props) {
   const qf = guide.quickFacts
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
+
+  if (species) {
+    return <SpeciesQuickFacts guide={guide} />
+  }
 
   return (
     <Card>
@@ -196,6 +206,95 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
           <p className="text-xs text-muted-foreground italic mt-3">
             Visse felter kommer fra arts-guiden.
           </p>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+/**
+ * Artsguide-overblik: åbent, kompakt 2×4-snapshot. Ingen fold-ud, ingen
+ * gruppeoverskrifter — alt vigtigt ses med det samme. Max 3 tags.
+ */
+function SpeciesQuickFacts({ guide }: { guide: Guide }) {
+  const qf = guide.quickFacts
+  const difficultyMeta = DIFFICULTY_META[guide.difficulty]
+
+  const facts = [
+    qf.preCultivation !== undefined && {
+      label: 'Forspiring',
+      value: qf.preCultivation ? 'Ja' : 'Nej',
+      icon: <Sprout className="h-3.5 w-3.5" />,
+    },
+    qf.sowingMonths.length > 0 && {
+      label: 'Såning',
+      value: formatMonths(qf.sowingMonths),
+      icon: <Calendar className="h-3.5 w-3.5" />,
+    },
+    qf.plantingOutMonths.length > 0 && {
+      label: 'Plant ud',
+      value: formatMonths(qf.plantingOutMonths),
+      icon: <TreePine className="h-3.5 w-3.5" />,
+    },
+    qf.harvestMonths.length > 0 && {
+      label: 'Høst',
+      value: formatMonths(qf.harvestMonths),
+      icon: <Wheat className="h-3.5 w-3.5" />,
+    },
+    qf.light && {
+      label: 'Lys',
+      value: LIGHT_META[qf.light].label,
+      icon: <Sun className="h-3.5 w-3.5" />,
+    },
+    qf.water && {
+      label: 'Vand',
+      value: WATER_META[qf.water].label,
+      icon: <Droplets className="h-3.5 w-3.5" />,
+    },
+    qf.soil && { label: 'Jord', value: qf.soil },
+    qf.frostSensitive && { label: 'Frost', value: 'Følsom' },
+  ].filter(Boolean) as {
+    label: string
+    value: string
+    icon?: React.ReactNode
+  }[]
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle
+            style={{
+              fontFamily: 'var(--font-plex-condensed), sans-serif',
+              fontWeight: 600,
+              fontSize: 20,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Hurtigt overblik
+          </CardTitle>
+          {guide.difficulty && (
+            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
+              {difficultyMeta.label}
+            </span>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        {/* 2 kolonner (ikke 3 — dansk tekst bliver klemt i 3). Kompakte rækker. */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+          {facts.map(f => (
+            <Fact key={f.label} label={f.label} value={f.value} icon={f.icon} />
+          ))}
+        </div>
+
+        {guide.tags.length > 0 && (
+          <div className="mt-3.5 flex flex-wrap gap-1.5 border-t border-border pt-3">
+            {/* Max 3 tags på arts — lange tag-rækker gør kortet højt uden gevinst. */}
+            {guide.tags.slice(0, 3).map(t => (
+              <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

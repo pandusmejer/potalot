@@ -443,7 +443,11 @@ export async function GuideArticle({
       <div>
         <div className="-mt-3">
           {debug && <DebugBlock name="QuickFactsCard" note="1. Hurtigt overblik" />}
-          <QuickFactsCard guide={effective} inheritedFields={inheritedFromParent} />
+          <QuickFactsCard
+            guide={effective}
+            inheritedFields={inheritedFromParent}
+            species={isSpecies}
+          />
         </div>
       </div>
 
