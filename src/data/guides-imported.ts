@@ -1043,28 +1043,28 @@ export const IMPORTED_GUIDES: Guide[] = [
       },
       {
         "kind": "fact",
-        "key": "fact-tomater-findes-som-to-typer-vaekstformer",
-        "title": "Tomater findes som to typer vækstformer",
+        "key": "fact-ranke-eller-busk",
+        "title": "Ranke eller busk?",
         "variant": "comparison",
         "columns": [
           {
-            "heading": "Ranketomat",
+            "heading": "Vælg ranketomat hvis",
             "items": [
-              "Vokser i højden hele sæsonen",
-              "Skal opbindes",
-              "Sideskud skal knibes"
+              "du har plads i højden",
+              "du vil høste længe",
+              "du kan binde op og knibe sideskud"
             ]
           },
           {
-            "heading": "Busktomat",
+            "heading": "Vælg busktomat hvis",
             "items": [
-              "Lavtvoksende og kompakt",
-              "Velegnet til krukker",
-              "Kræver sjældent opbinding",
-              "Sideskud skal ikke knibes"
+              "du dyrker i krukke",
+              "du vil have en kompakt plante",
+              "du vil slippe for knibning"
             ]
           }
-        ]
+        ],
+        "intro": "Tomater vokser enten opad som ranker eller mere kompakt som buske. Det afgør, hvor meget plads og pasning planten kræver."
       },
       {
         "key": "forskellige-typer-tomater",

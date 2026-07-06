@@ -80,20 +80,21 @@ Tomater stammer oprindeligt fra Sydamerika og dyrkes i dag over hele verden. Tom
 
 Tomater er varmeelskende planter med en lang sæson. De fleste sorter trives bedst, når de får en tidlig start indendørs, masser af lys og en lun placering senere på året. I Danmark dyrker mange tomater i drivhus, men flere sorter kan også klare sig på en varm altan eller et læfyldt sted på friland.
 
-:::fact{variant="comparison" title="Tomater findes som to typer vækstformer"}
+:::fact{variant="comparison" title="Ranke eller busk?"}
 
-### Ranketomat
+Tomater vokser enten opad som ranker eller mere kompakt som buske. Det afgør, hvor meget plads og pasning planten kræver.
 
-- Vokser i højden hele sæsonen
-- Skal opbindes
-- Sideskud skal knibes
+### Vælg ranketomat hvis
 
-### Busktomat
+- du har plads i højden
+- du vil høste længe
+- du kan binde op og knibe sideskud
 
-- Lavtvoksende og kompakt
-- Velegnet til krukker
-- Kræver sjældent opbinding
-- Sideskud skal ikke knibes
+### Vælg busktomat hvis
+
+- du dyrker i krukke
+- du vil have en kompakt plante
+- du vil slippe for knibning
 
 :::
 

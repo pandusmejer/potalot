@@ -237,7 +237,7 @@ export async function GuideArticle({
   }
 
   return (
-    <article className="max-w-3xl space-y-10 overflow-x-clip pb-6 sm:space-y-12">
+    <article className="max-w-3xl space-y-5 overflow-x-clip pb-6 sm:space-y-6">
       {debug && <DebugBlock name="Header" note="identitet + sort-dom + hero" />}
       {/* Kompakt, samlet mobil-top: back → badges → titel/art/latin → sort-dom
           → lavere hero. Ét komponeret hoved, ikke spredte elementer. Hero'et
@@ -441,7 +441,7 @@ export async function GuideArticle({
           negativ margin (ikke på selve space-y-barnet) for at overskrive fugen
           pålideligt. */}
       <div>
-        <div className="-mt-3">
+        <div className="-mt-1">
           {debug && <DebugBlock name="QuickFactsCard" note="1. Hurtigt overblik" />}
           <QuickFactsCard
             guide={effective}
@@ -491,10 +491,11 @@ export async function GuideArticle({
         const chapters = buildKalenderChapters(effective.calendarRules)
         if (chapters.length === 0) return null
         return (
-          // Nested -mt trækker rytmesektionen lidt tættere på Lær af hinanden
-          // (efter disclaimeren blev fjernet). space-y-fugen overskrives.
+          // Kalenderen får den halverede modul-fuge (SaadanDyrkerDu har allerede
+          // marginBottom 12) — ingen ekstra negativ margin, ellers bliver den
+          // for stram.
           <div>
-            <div className="-mt-4">
+            <div>
               {debug && (
                 <DebugBlock
                   name="KalenderRytmeKapitel"
@@ -582,7 +583,7 @@ export async function GuideArticle({
         // Formindsket fuge til kalender-sektionen ovenfor (12px, samme som
         // Din have↔Tip). Nested -mt så space-y-fugen overskrives.
         <div>
-          <div className="-mt-7">
+          <div className="-mt-2">
           {debug && (
             <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
           )}
@@ -747,7 +748,7 @@ export async function GuideArticle({
         <div>
           {/* Halveret fuge til 'Din have' ovenfor (samme som TIP↔ANBEFALER):
               note-parret hører sammen. Nested -mt så space-y-fugen overskrives. */}
-          <div className="-mt-7">
+          <div className="-mt-3">
           {debug && <DebugBlock name="GuideNote" note="Potalot-tip — signatur 2/3" />}
           <GuideNote
             label="Potalot-tip"
@@ -776,7 +777,7 @@ export async function GuideArticle({
           // Halveret fuge til Potalot-tip ovenfor (nested -mt så space-y-fugen
           // overskrives pålideligt): tip og anbefaler hører sammen som note-par.
           <div>
-            <div className="-mt-7">
+            <div className="-mt-3">
               {debug && (
                 <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
               )}

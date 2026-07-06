@@ -79,7 +79,7 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
   const renderedBleedKeys = new Set<string>()
 
   return (
-    <section className="space-y-[56px] sm:space-y-[72px]">
+    <section className="space-y-[28px] sm:space-y-[36px]">
       {body.map((s, i) => {
         const key = s.key ?? `section-${i}`
         const bleed = bleedAfter?.[key]
@@ -105,12 +105,12 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // Tailwind v4 space-y sætter margin-BOTTOM på ikke-sidste barn, så vi
         // overskriver marginBottom på det kort der efterfølges af et teknikkort.
         const tightBottom = s.kind === 'guide' && body[i + 1]?.kind === 'guide'
-        // Fact-kortet (fx "vækstformer") rykkes 6 mm op — tættere på afsnittet
-        // over. Og gappet NED til næste afsnit halveres (56 → 28px), så kortet
-        // ikke svæver frit (Anna-justering).
+        // Fact-kortet (fx "vækstformer") tuckes tæt på afsnittene omkring —
+        // let op mod afsnittet over og lidt strammere ned. Justeret til den
+        // halverede kapitel-rytme (28px base).
         const wrapperStyle: React.CSSProperties = {
           ...(tightBottom ? { marginBottom: 12 } : {}),
-          ...(s.kind === 'fact' ? { marginTop: '-6mm', marginBottom: 28 } : {}),
+          ...(s.kind === 'fact' ? { marginTop: '-3mm', marginBottom: 20 } : {}),
         }
         return (
           <div
@@ -352,9 +352,37 @@ function ProseBody({
     const lines = para.split('\n').map((l) => l.trim())
     const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
     return isBulletList ? (
-      <ul key={i} style={{ paddingLeft: '1.2em', margin: 0 }} className="list-disc space-y-2">
+      // Lister behandles som EGEN scanbar komponent — ikke arvet serif-prosa.
+      // Manrope, kompakt, små diskrete oliven-bullets, lavt indryk. Så en liste
+      // med typer/principper kan scannes hurtigt i stedet for at læses som roman.
+      <ul key={i} style={{ listStyle: 'none', padding: 0, margin: '16px 0 20px' }}>
         {lines.map((l, j) => (
-          <li key={j}>{renderInline(l.replace(/^-\s+/, ''))}</li>
+          <li
+            key={j}
+            style={{
+              display: 'flex',
+              gap: 9,
+              marginBottom: j === lines.length - 1 ? 0 : 12,
+              fontFamily: sans,
+              fontSize: 16,
+              lineHeight: 1.5,
+              color: 'rgba(45,42,36,0.82)',
+              textAlign: 'left',
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                flexShrink: 0,
+                marginTop: '0.6em',
+                width: 5,
+                height: 5,
+                borderRadius: 999,
+                background: 'rgba(123,143,99,0.9)',
+              }}
+            />
+            <span>{renderInline(l.replace(/^-\s+/, ''))}</span>
+          </li>
         ))}
       </ul>
     ) : (
