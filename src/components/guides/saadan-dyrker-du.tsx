@@ -106,10 +106,11 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // overskriver marginBottom på det kort der efterfølges af et teknikkort.
         const tightBottom = s.kind === 'guide' && body[i + 1]?.kind === 'guide'
         // Fact-kortet (fx "vækstformer") rykkes 6 mm op — tættere på afsnittet
-        // det knytter sig til (Anna-justering).
+        // over. Og gappet NED til næste afsnit halveres (56 → 28px), så kortet
+        // ikke svæver frit (Anna-justering).
         const wrapperStyle: React.CSSProperties = {
           ...(tightBottom ? { marginBottom: 12 } : {}),
-          ...(s.kind === 'fact' ? { marginTop: '-6mm' } : {}),
+          ...(s.kind === 'fact' ? { marginTop: '-6mm', marginBottom: 28 } : {}),
         }
         return (
           <div
