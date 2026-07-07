@@ -20,7 +20,6 @@ import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
 import { GuideNote } from '@/components/guides/guide-note'
-import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
@@ -196,6 +195,16 @@ export async function GuideArticle({
         collapsible={isSpecies}
       />
     ) : null
+
+  // "Potalot anbefaler"-noten flyttes INDE i prose-flowet (mellem kapitel 03
+  // og 04) i stedet for som lukke-blok i bunden.
+  const potalotNoteSection = effective.sections.find(
+    (s) => 'title' in s && s.title && /potalot[-\s]?note/i.test(s.title),
+  )
+  const potalotNoteBody =
+    potalotNoteSection && 'body' in potalotNoteSection
+      ? potalotNoteSection.body
+      : null
 
   const bleedAnchorPatterns: RegExp[] = isSpecies
     ? []
@@ -464,6 +473,7 @@ export async function GuideArticle({
           sections={effective.sections}
           factMacroImage={factImage}
           bleedAfter={bleedAfter}
+          potalotNoteBody={potalotNoteBody ?? undefined}
         />
       </div>
 
@@ -847,25 +857,8 @@ export async function GuideArticle({
         </div>
       )}
 
-      {(() => {
-        const noteSection = effective.sections.find(
-          (s) => 'title' in s && s.title && /potalot[-\s]?note/i.test(s.title),
-        )
-        if (!noteSection || !('body' in noteSection) || !noteSection.body)
-          return null
-        return (
-          // Halveret fuge til Potalot-tip ovenfor (nested -mt så space-y-fugen
-          // overskrives pålideligt): tip og anbefaler hører sammen som note-par.
-          <div>
-            <div className="-mt-3">
-              {debug && (
-                <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
-              )}
-              <GuidePotalotNote body={noteSection.body} />
-            </div>
-          </div>
-        )
-      })()}
+      {/* "Potalot anbefaler" rendres nu INDE i prose-flowet (mellem kapitel 03
+          og 04) via SaadanDyrkerDu — ikke længere som lukke-blok her. */}
 
       {nextGuide && nextGuide.kind === 'next' && (
         effective.variety === 'San Marzano' ? (

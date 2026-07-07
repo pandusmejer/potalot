@@ -38,9 +38,19 @@ interface Props {
    * træffes her baseret på makroens rolle.
    */
   bleedAfter?: Record<string, PotalotMacroOutput | undefined>
+  /**
+   * "Potalot anbefaler"-note der indsættes MELLEM 3. og 4. kapitel (Anna-
+   * placering). Rendres ikke længere som lukke-blok i bunden.
+   */
+  potalotNoteBody?: string
 }
 
-export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) {
+export function SaadanDyrkerDu({
+  sections,
+  factMacroImage,
+  bleedAfter,
+  potalotNoteBody,
+}: Props) {
   // V4.2 audit: vi udelukker BÅDE next-guide OG Potalot-note fra body —
   // begge rendres explicit på page-niveau (Potalot-note som lukke-blok
   // næstsidst, next-guide som CTA allersidst). Det forhindrer "Anna
@@ -98,7 +108,11 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
         // chapterCounter må kun øges når sektionen faktisk er en prose-
         // sektion. renderSection returnerer det nye chapter-tal sammen
         // med jsx'et så vi ikke dobbelt-tæller.
+        const chapterBefore = chapterCounter
         chapterCounter = rendered.nextChapter
+        // Potalot-noten indsættes lige EFTER 3. kapitel (mellem 03 og 04).
+        const afterThirdChapter =
+          !!potalotNoteBody && chapterBefore === 2 && rendered.nextChapter === 3
         const blockKey = `${key}-${i}`
         // Fortløbende teknikkort (kind 'guide') strammes til 12px — som de
         // øvrige kort-cluster — i stedet for den brede prosa-rytme (56/72px).
@@ -118,6 +132,11 @@ export function SaadanDyrkerDu({ sections, factMacroImage, bleedAfter }: Props) 
             style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}
           >
             {rendered.node}
+            {afterThirdChapter && potalotNoteBody && (
+              <div style={{ marginTop: 22 }}>
+                <GuidePotalotNote body={potalotNoteBody} />
+              </div>
+            )}
           </div>
         )
       })}
