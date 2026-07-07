@@ -642,10 +642,12 @@ export async function GuideArticle({
                 ? `Vælg en sort til frøbanken, eller opret en ${effective.plantName.toLowerCase()}plante du allerede dyrker.`
                 : 'Tilføj sorten til din frøbank eller opret den som plante.'}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2.5">
+            {/* Piller deler bredden ligeligt (flex-1) og bliver på én linje —
+                også når arts-labels som "Opret tomatplante" er lange. */}
+            <div className="mt-5 flex gap-2">
               <Link
                 href={isSpecies ? '#sortsvarianter' : '/froebank/tilfoej'}
-                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 hover:opacity-90 transition"
+                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:opacity-90 transition"
                 style={{
                   background: '#7F8F6A',
                   color: '#F4F0E5',
@@ -664,7 +666,7 @@ export async function GuideArticle({
               </Link>
               <Link
                 href="/mine-planter"
-                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 hover:bg-secondary/30 transition"
+                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:bg-secondary/30 transition"
                 style={{
                   background: 'transparent',
                   color: '#2D2A24',
