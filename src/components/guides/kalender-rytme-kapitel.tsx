@@ -54,18 +54,16 @@ export function KalenderRytmeKapitel({
 
   return (
     <section
-      className={open ? '' : 'rounded-[4px] px-5 py-6'}
+      className={open ? '' : 'rounded-[16px] px-5 py-4'}
       style={
         open
           ? undefined
           : {
-              // Boxed (sortguide): varm creme + hø-gule side-striber + sæson-akse.
+              // Boxed (sortguide): kompakt, praktisk kalenderkort. Diskret sand/
+              // oliven border — INGEN gul ramme (den lignede et advarselsmodul).
               background: '#F2F0E3',
-              borderTop: '1px solid #D9D6BE',
-              borderBottom: '1px solid #D9D6BE',
-              borderLeft: '3px solid #C9A94E',
-              borderRight: '3px solid #C9A94E',
-              boxShadow: '0 4px 14px rgba(36,48,31,0.08)',
+              border: '1px solid rgba(45,42,36,0.11)',
+              boxShadow: '0 2px 8px rgba(36,48,31,0.04)',
             }
       }
     >
