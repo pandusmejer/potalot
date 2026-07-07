@@ -75,7 +75,7 @@ export function KalenderRytmeKapitel({
             fontWeight: 700,
             letterSpacing: '0.2em',
             lineHeight: 1.2,
-            color: 'rgba(108,103,73,0.9)',
+            color: 'rgb(153,137,117)',
           }}
         >
           {eyebrow}
@@ -83,7 +83,7 @@ export function KalenderRytmeKapitel({
         <h2
           style={{
             fontFamily: plex,
-            fontSize: 'clamp(25px, 6.8vw, 29px)',
+            fontSize: 'clamp(23px, 6vw, 27px)',
             fontWeight: 600,
             lineHeight: 1.08,
             letterSpacing: '-0.015em',
@@ -104,9 +104,8 @@ export function KalenderRytmeKapitel({
             left: AXIS,
             width: 1.5,
             transform: 'translateX(-50%)',
-            // Dæmpet sand/oliven, lav kontrast (ikke frisk grøn).
             background:
-              'linear-gradient(to bottom, rgba(118,111,80,0.28), rgba(118,111,80,0.42) 45%, rgba(118,111,80,0.24))',
+              'linear-gradient(to bottom, rgba(153,137,117,0.45), rgba(153,137,117,0.6) 45%, rgba(153,137,117,0.4))',
           }}
         />
         {chapters.map((chapter, index) => {
@@ -126,8 +125,7 @@ export function KalenderRytmeKapitel({
                   transform: 'translateX(-50%)',
                   height: 10,
                   width: 10,
-                  // Dæmpet oliven-brun, ikke frisk grøn.
-                  background: '#6E6B49',
+                  background: 'rgb(153,137,117)',
                 }}
               />
               <div
@@ -147,7 +145,7 @@ export function KalenderRytmeKapitel({
                     fontWeight: 700,
                     letterSpacing: '0.15em',
                     lineHeight: 1.2,
-                    color: '#8A876A',
+                    color: 'rgb(153,137,117)',
                   }}
                 >
                   {chapter.monthRange}
@@ -156,7 +154,7 @@ export function KalenderRytmeKapitel({
                   className="m-0"
                   style={{
                     fontFamily: plex,
-                    fontSize: 'clamp(19px, 5.2vw, 21px)',
+                    fontSize: 'clamp(17px, 4.8vw, 19px)',
                     fontWeight: 600,
                     lineHeight: 1.1,
                     letterSpacing: '-0.01em',
@@ -171,7 +169,7 @@ export function KalenderRytmeKapitel({
                     className="m-0"
                     style={{
                       fontFamily: sans,
-                      fontSize: 15,
+                      fontSize: 13,
                       fontWeight: 400,
                       lineHeight: 1.45,
                       color: 'rgba(45,42,36,0.7)',
