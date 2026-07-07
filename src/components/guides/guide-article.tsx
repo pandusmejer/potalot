@@ -731,29 +731,30 @@ export async function GuideArticle({
                 lineHeight: 1,
                 letterSpacing: '0.22em',
                 color: 'rgb(113,122,96)',
-                margin: '0 0 22px',
+                margin: '0 0 18px',
               }}
             >
               Sortsvarianter
             </p>
             <p
               style={{
-                // Stor editorial serif-intro (jf. reference), max-width styrer
-                // linjedelingen — ingen manuelle <br>.
+                // Editorial serif-intro — men IKKE hero. På 390px klemmer 34px
+                // kortene; 28px + max-width 310 holder forholdet redaktionelt
+                // uden at dominere sektionen. max-width styrer linjedelingen.
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontSize: 'clamp(30px, 8.7vw, 34px)',
+                fontSize: 28,
                 fontWeight: 400,
                 lineHeight: 1.18,
                 color: 'rgb(42,39,34)',
-                margin: '0 0 34px',
-                maxWidth: 330,
+                margin: '0 0 28px',
+                maxWidth: 310,
               }}
             >
               Find en sort, der passer til din måde at dyrke og spise {artPlural}{' '}
               på.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
@@ -763,19 +764,19 @@ export async function GuideArticle({
                     // Stort redaktionelt sortkort: foto flush til venstre, tekst
                     // åbent til højre, rund pil-knap. Varm ivory, diskret border.
                     display: 'grid',
-                    // Fallback-mål (jf. spec): 132px foto blev for bredt på
-                    // 390px og klemte teksten (titel wrappede). Strammet så
-                    // content-kolonnen får plads til titel på én linje.
-                    gridTemplateColumns: '116px 1fr 42px',
+                    // Proportioner tilpasset ægte 390px-bredde (jf. spec):
+                    // foto ~38-40%, tekst ~60%, pil sekundær. Kortet er højere
+                    // og mere rummeligt end en klemt mobil-row.
+                    gridTemplateColumns: '124px 1fr 40px',
                     alignItems: 'center',
-                    columnGap: 16,
-                    minHeight: 168,
+                    columnGap: 18,
+                    minHeight: 156,
                     width: '100%',
-                    padding: '0 18px 0 0',
-                    background: 'rgba(255,252,242,0.78)',
-                    border: '1px solid rgba(153,137,117,0.26)',
+                    padding: '0 16px 0 0',
+                    background: 'rgba(255,252,242,0.82)',
+                    border: '1px solid rgba(153,137,117,0.24)',
                     borderRadius: 22,
-                    boxShadow: '0 14px 28px rgba(64,58,42,0.045)',
+                    boxShadow: '0 10px 22px rgba(64,58,42,0.04)',
                     overflow: 'hidden',
                   }}
                 >
@@ -785,7 +786,7 @@ export async function GuideArticle({
                       alignSelf: 'stretch',
                       overflow: 'hidden',
                       background: '#ECE6D6',
-                      borderRadius: '22px 42px 42px 22px',
+                      borderRadius: '22px 34px 34px 22px',
                     }}
                   >
                     {v.primaryImageId && (
@@ -798,15 +799,15 @@ export async function GuideArticle({
                     )}
                   </div>
 
-                  <div style={{ minWidth: 0, padding: '22px 0 20px' }}>
+                  <div style={{ minWidth: 0, padding: '18px 0 16px' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--font-cormorant), Georgia, serif',
-                        fontSize: 'clamp(26px, 6.8vw, 29px)',
+                        fontSize: 25,
                         fontWeight: 500,
-                        lineHeight: 1.05,
+                        lineHeight: 1.08,
                         color: 'rgb(34,34,30)',
-                        margin: '0 0 14px',
+                        margin: '0 0 10px',
                       }}
                     >
                       {v.variety}
@@ -816,11 +817,11 @@ export async function GuideArticle({
                         className="line-clamp-2"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 16,
+                          fontSize: 14.5,
                           fontWeight: 400,
-                          lineHeight: 1.42,
-                          color: 'rgb(42,39,34)',
-                          margin: '0 0 18px',
+                          lineHeight: 1.35,
+                          color: 'rgb(82,84,72)',
+                          margin: '0 0 14px',
                         }}
                       >
                         {v.summary}
@@ -829,18 +830,18 @@ export async function GuideArticle({
                     <div
                       aria-hidden
                       style={{
-                        width: 34,
+                        width: 30,
                         height: 2,
                         background: 'rgb(153,137,117)',
-                        opacity: 0.75,
-                        margin: '0 0 16px',
+                        opacity: 0.65,
+                        margin: '0 0 12px',
                       }}
                     />
                     {v.tags.length > 0 && (
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: 400,
                           lineHeight: 1.2,
                           color: 'rgb(103,111,90)',
@@ -861,16 +862,16 @@ export async function GuideArticle({
                     className="flex items-center justify-center transition-transform group-hover:translate-x-0.5"
                     style={{
                       justifySelf: 'center',
-                      width: 44,
-                      height: 44,
+                      width: 36,
+                      height: 36,
                       borderRadius: 999,
-                      border: '1px solid rgba(153,137,117,0.28)',
-                      background: 'rgba(255,252,242,0.42)',
+                      border: '1px solid rgba(153,137,117,0.24)',
+                      background: 'rgba(255,252,242,0.36)',
                       color: 'rgb(153,137,117)',
                       flexShrink: 0,
                     }}
                   >
-                    <ArrowRight style={{ width: 24, height: 24 }} strokeWidth={1.75} />
+                    <ArrowRight style={{ width: 21, height: 21 }} strokeWidth={1.7} />
                   </span>
                 </Link>
               ))}
