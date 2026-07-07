@@ -99,9 +99,96 @@ export function KalenderRytmeKapitel({
         </h2>
       </header>
 
-      {/* Kompakte fase-rækker: måned-kolonne + titel + opgaver på én linje.
-          Diskret venstre sæson-skinne (lodret linje + prik pr. fase) giver
-          "tid/rytme"-identitet uden ekstra højde. */}
+      {/* ÅBEN (artsguide): skiftevis venstre/højre om en let forskudt akse
+          (42%) — en rolig sæsonrytme, ikke et corporate timeline-kort. Faserne
+          veksler side; aksen + dots bærer identiteten. */}
+      {open ? (
+        <div className="relative">
+          {/* Akse ved 42% (højre side får lidt mere plads til den længste fase). */}
+          <span
+            aria-hidden
+            className="absolute top-2 bottom-2 w-px"
+            style={{
+              left: '42%',
+              background:
+                'linear-gradient(to bottom, rgba(123,139,99,0.28), rgba(123,139,99,0.5) 45%, rgba(123,139,99,0.24))',
+            }}
+          />
+          {chapters.map((chapter, index) => {
+            const onLeft = index % 2 === 0
+            return (
+              <div
+                key={`${chapter.monthRange}-${chapter.title}`}
+                className="relative"
+                style={{ marginTop: index === 0 ? 0 : 22 }}
+              >
+                <span
+                  aria-hidden
+                  className="absolute h-[8px] w-[8px] rounded-full"
+                  style={{
+                    left: '42%',
+                    top: 5,
+                    transform: 'translateX(-50%)',
+                    background: '#5F7040',
+                  }}
+                />
+                <div
+                  style={{
+                    width: onLeft ? '42%' : '58%',
+                    marginLeft: onLeft ? 0 : '42%',
+                    paddingRight: onLeft ? 18 : 0,
+                    paddingLeft: onLeft ? 0 : 18,
+                    textAlign: onLeft ? 'right' : 'left',
+                  }}
+                >
+                  <p
+                    className="m-0 uppercase"
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 10.5,
+                      fontWeight: 800,
+                      letterSpacing: '0.1em',
+                      lineHeight: 1.2,
+                      color: '#7F8F6A',
+                    }}
+                  >
+                    {chapter.monthRange}
+                  </p>
+                  <h3
+                    className="m-0"
+                    style={{
+                      fontFamily: plex,
+                      fontSize: 'clamp(17px, 4.5vw, 19px)',
+                      fontWeight: 600,
+                      lineHeight: 1.1,
+                      letterSpacing: '-0.01em',
+                      color: '#2D2A24',
+                      marginTop: 4,
+                    }}
+                  >
+                    {chapter.title}
+                  </h3>
+                  {chapter.actions.length > 0 && (
+                    <p
+                      className="m-0"
+                      style={{
+                        fontFamily: sans,
+                        fontSize: 13,
+                        fontWeight: 500,
+                        lineHeight: 1.4,
+                        color: 'rgba(45,42,36,0.7)',
+                        marginTop: 5,
+                      }}
+                    >
+                      {chapter.actions.slice(0, 3).join(' · ')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ) : (
       <div className="relative m-0 list-none pl-[18px]">
         <span
           aria-hidden
@@ -178,6 +265,7 @@ export function KalenderRytmeKapitel({
           </div>
         ))}
       </div>
+      )}
     </section>
   )
 }
