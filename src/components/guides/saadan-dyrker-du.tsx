@@ -332,7 +332,7 @@ function ProseBody({
   // Prosa-størrelse (Cormorant). Manrope-lister sættes 2 punktstørrelser mindre,
   // så de læser lettere/mere funktionelt end den løbende brødtekst.
   const proseFontSize = 'clamp(16px, 2.5vw, 17px)'
-  const listFontSize = 'clamp(14px, 2.2vw, 15px)'
+  const listFontSize = 'clamp(13px, 2vw, 14px)'
   const bodyStyle: React.CSSProperties = {
     fontFamily: serif,
     fontWeight: 400,
