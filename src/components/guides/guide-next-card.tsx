@@ -22,21 +22,45 @@ interface Props {
   description: string
   slug: string
   label: string
+  /** Valgfrit baggrundsfoto — fades bag teksten. */
+  backgroundImage?: string | null
 }
 
-export function GuideNextCard({ title, description, slug, label }: Props) {
+export function GuideNextCard({ title, description, slug, label, backgroundImage }: Props) {
   return (
     <Link
       href={`/guides/${slug}`}
-      className="not-prose group block no-underline"
+      className="not-prose group relative block overflow-hidden no-underline"
       style={{
         backgroundColor: '#EFE6D0',
         border: '1px solid rgba(36,48,31,0.12)',
         borderRadius: 20,
-        padding: 'clamp(24px, 4vw, 32px)',
         maxWidth: 640,
       }}
     >
+      {backgroundImage && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={backgroundImage}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ opacity: 0.85 }}
+          />
+          {/* Fade: opaque creme i venstre side (hvor teksten står) → billedet
+              toner frem mod højre, så teksten forbliver læsbar. */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to right, #EFE6D0 0%, rgba(239,230,208,0.94) 52%, rgba(239,230,208,0.55) 100%)',
+            }}
+          />
+        </>
+      )}
+      <div className="relative" style={{ padding: 'clamp(24px, 4vw, 32px)' }}>
       <p
         style={{
           fontFamily: sans,
@@ -96,6 +120,7 @@ export function GuideNextCard({ title, description, slug, label }: Props) {
           className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
           aria-hidden
         />
+      </div>
       </div>
     </Link>
   )

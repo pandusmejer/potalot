@@ -820,6 +820,9 @@ export async function GuideArticle({
               description={nextGuide.description}
               slug={nextGuide.slug}
               label={nextGuide.label}
+              backgroundImage={
+                noteImage?.src ?? factImage?.src ?? effective.primaryImageId
+              }
             />
           </>
         )
