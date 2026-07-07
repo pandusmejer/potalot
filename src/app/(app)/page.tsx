@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
+import { HavebogDateline } from '@/components/havebog/havebog-dateline'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
@@ -91,6 +92,12 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
+      {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
+          ~12 mm under bølgens højeste punkt. Den negative margin overskriver
+          space-y-fugen og løfter resten af siden med op. */}
+      <div style={{ marginTop: -128, position: 'relative', zIndex: 20 }}>
+        <HavebogDateline />
+      </div>
       <HavensStemme dato={idag} opslag={dagensOpslag} />
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
           Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),
