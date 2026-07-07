@@ -765,7 +765,7 @@ export async function GuideArticle({
             <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
               <defs>
                 <clipPath id="variety-image-curve" clipPathUnits="objectBoundingBox">
-                  <path d="M 0 0 H 0.42 C 0.80 0 1 0.22 1 0.5 C 1 0.78 0.80 1 0.42 1 H 0 Z" />
+                  <path d="M 0 0 H 0.74 C 0.90 0 1 0.20 1 0.5 C 1 0.80 0.90 1 0.74 1 H 0 Z" />
                 </clipPath>
               </defs>
             </svg>
