@@ -749,25 +749,27 @@ export async function GuideArticle({
               på.
             </p>
 
-            <div className="mt-4 space-y-2.5">
+            <div className="mt-3.5 space-y-2">
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
                   href={`/guides/${v.id}`}
-                  className="group flex items-center gap-3 no-underline transition-colors hover:border-[rgba(45,42,36,0.22)]"
+                  className="group flex items-center gap-3 no-underline transition-colors hover:border-[rgba(45,42,36,0.16)]"
                   style={{
-                    background: '#F5F0E2',
-                    border: '1px solid rgba(45,42,36,0.10)',
-                    borderRadius: 20,
-                    padding: '16px 18px',
-                    boxShadow: '0 8px 18px rgba(64,58,42,0.045)',
+                    // LIST CARD: kun svagt adskilt fra siden, meget diskret
+                    // border, ingen skygge, lav radius — en stram listepost,
+                    // ikke en stor promo-pude.
+                    background: 'rgba(255,252,244,0.5)',
+                    border: '1px solid rgba(45,42,36,0.08)',
+                    borderRadius: 16,
+                    padding: '13px 16px',
                   }}
                 >
                   <div className="min-w-0 flex-1">
                     <p
                       style={{
                         fontFamily: 'var(--font-plex-condensed), sans-serif',
-                        fontSize: 21,
+                        fontSize: 20,
                         fontWeight: 600,
                         lineHeight: 1.15,
                         letterSpacing: '-0.01em',
@@ -785,7 +787,7 @@ export async function GuideArticle({
                           fontSize: 15,
                           lineHeight: 1.35,
                           color: 'rgba(36,48,31,0.6)',
-                          margin: '4px 0 0',
+                          margin: '3px 0 0',
                         }}
                       >
                         {v.summary}
@@ -793,13 +795,12 @@ export async function GuideArticle({
                     )}
                     {v.tags.length > 0 && (
                       <p
-                        className="capitalize"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 13,
+                          fontSize: 12.5,
                           fontWeight: 500,
-                          color: 'rgba(78,97,56,0.85)',
-                          margin: '8px 0 0',
+                          color: 'rgba(36,48,31,0.42)',
+                          margin: '6px 0 0',
                         }}
                       >
                         {v.tags.slice(0, 3).join(' · ')}
@@ -807,8 +808,8 @@ export async function GuideArticle({
                     )}
                   </div>
                   <ArrowRight
-                    className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5"
-                    style={{ color: 'rgba(36,48,31,0.4)' }}
+                    className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5"
+                    style={{ color: 'rgba(36,48,31,0.3)' }}
                   />
                 </Link>
               ))}
