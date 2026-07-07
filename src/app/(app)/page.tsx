@@ -42,11 +42,6 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const MAANED_DA = [
-  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
-  'juli', 'august', 'september', 'oktober', 'november', 'december',
-]
-
 /**
  * 📖 HAVEBOG — den offentlige forside.
  *
@@ -80,9 +75,6 @@ export default async function HavebogPage() {
   const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
-  const nu = new Date()
-  const idag = `${nu.getDate()}. ${MAANED_DA[nu.getMonth()]}`
-
   // Det faste lag — forsiden + ildstedet + Tal til din have.
   const forside = (
     <>
@@ -106,7 +98,11 @@ export default async function HavebogPage() {
       >
         <HavebogDateline />
       </div>
-      <HavensStemme dato={idag} opslag={dagensOpslag} />
+      {/* Ildstedet trukket op, så "Dagens historie" starter ~15 mm under
+          adressen (overskriver space-y-fugen). */}
+      <div style={{ marginTop: -78 }}>
+        <HavensStemme opslag={dagensOpslag} />
+      </div>
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
           Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),
           det eneste rum der SKABER indhold til alle de andre. */}

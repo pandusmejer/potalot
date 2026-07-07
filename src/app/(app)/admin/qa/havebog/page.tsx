@@ -36,11 +36,6 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const MAANED_DA = [
-  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
-  'juli', 'august', 'september', 'oktober', 'november', 'december',
-]
-
 /**
  * QA / design-lab: Havebog — HELE HUSET.
  *
@@ -53,8 +48,6 @@ const MAANED_DA = [
  * skal ikke vandre rundt i værkstedet og tro det er stuen.)
  */
 export default function HavebogDesignLabPage() {
-  const nu = new Date()
-  const idag = `${nu.getDate()}. ${MAANED_DA[nu.getMonth()]}`
 
   function Sep({ label }: { label: string }) {
     return (
@@ -129,7 +122,7 @@ export default function HavebogDesignLabPage() {
 
       <Sep label="1-3 · Forside: hero (m. dagtæller ovenpå) · ildsted" />
       <HavebogHero stats={DEMO_HERO_STATS} tidslinje={DEMO_TIDSLINJE} narrative={DEMO_HERO_NARRATIVE} />
-      <HavensStemme dato={idag} opslag={DEMO_DAGENS_OPSLAG} />
+      <HavensStemme opslag={DEMO_DAGENS_OPSLAG} />
 
       <Sep label="4 · Tal til din have" />
       <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />

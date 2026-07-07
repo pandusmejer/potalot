@@ -4,8 +4,6 @@ const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
-  /** Dagens dato som folio — "17. juni" */
-  dato: string
   opslag: DagensOpslag
 }
 
@@ -30,20 +28,17 @@ const kickerStyle = {
  * opholde sig ved. Stor serif, massiv luft, hierarki frem for
  * sammenstilling. Ændrer sig dagligt (takterne roterer i actionen).
  */
-export function HavensStemme({ dato, opslag }: Props) {
+export function HavensStemme({ opslag }: Props) {
   if (!opslag.lead?.tekst) return null
 
   return (
     <section
       style={{
-        paddingBlock: 'clamp(20px, 7vw, 52px) clamp(16px, 6vw, 40px)',
+        paddingBlock: '0 clamp(16px, 6vw, 40px)',
       }}
     >
-      {/* Datolinje — dagens folio, gør det til "i dag" */}
-      <p style={{ ...kickerStyle, fontSize: 11, marginBottom: 'clamp(28px, 8vw, 48px)' }}>
-        {dato}
-      </p>
-
+      {/* Datolinjen er fjernet — adressen (HavebogDateline) under hero-
+          bølgen ejer nu datoen. Ildstedet starter direkte på hovedhistorien. */}
       {/* Hovedhistorien — ét bål i centrum */}
       <p style={{ ...kickerStyle, fontSize: 11, color: 'rgba(36,48,31,0.5)' }}>
         {opslag.lead.kicker}
