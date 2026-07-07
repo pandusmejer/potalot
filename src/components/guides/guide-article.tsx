@@ -515,7 +515,7 @@ export async function GuideArticle({
                   note={`3. Kalender — ${chapters.length} kapitler`}
                 />
               )}
-              <KalenderRytmeKapitel chapters={chapters} open={isSpecies} />
+              <KalenderRytmeKapitel chapters={chapters} />
             </div>
           </div>
         )
