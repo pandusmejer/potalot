@@ -776,7 +776,7 @@ export async function GuideArticle({
                     columnGap: 18,
                     minHeight: 156,
                     width: '100%',
-                    padding: '0 16px 12px 0',
+                    padding: '0 16px 0 0',
                     background: 'rgba(255,252,242,0.82)',
                     border: '1px solid rgba(153,137,117,0.24)',
                     borderRadius: 14,
@@ -784,13 +784,14 @@ export async function GuideArticle({
                     overflow: 'hidden',
                   }}
                 >
-                  {/* Foto — flush til kortets venstre/top/bund, let organisk højre-radius. */}
+                  {/* Foto — bløder helt til kortets top OG bund; organisk bue
+                      i højre side (som før), rolige 14px-hjørner i venstre. */}
                   <div
                     style={{
                       alignSelf: 'stretch',
                       overflow: 'hidden',
                       background: '#ECE6D6',
-                      borderRadius: '14px 22px 22px 14px',
+                      borderRadius: '14px 34px 34px 14px',
                     }}
                   >
                     {v.primaryImageId && (
@@ -803,7 +804,7 @@ export async function GuideArticle({
                     )}
                   </div>
 
-                  <div style={{ minWidth: 0, padding: '18px 0 4px' }}>
+                  <div style={{ minWidth: 0, alignSelf: 'start', padding: '14px 0 0' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--font-cormorant), Georgia, serif',
@@ -818,14 +819,15 @@ export async function GuideArticle({
                     </h3>
                     {v.summary && (
                       <p
-                        className="line-clamp-2"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 11.5,
+                          // Så lille at hele sætningen kan stå på kortet
+                          // (ingen clamp/afkortning).
+                          fontSize: 10,
                           fontWeight: 400,
-                          lineHeight: 1.35,
+                          lineHeight: 1.32,
                           color: 'rgb(82,84,72)',
-                          margin: '0 0 12px',
+                          margin: '0 0 10px',
                         }}
                       >
                         {v.summary}
@@ -868,6 +870,7 @@ export async function GuideArticle({
                     style={{
                       justifySelf: 'center',
                       alignSelf: 'end',
+                      marginBottom: 20,
                       width: 36,
                       height: 36,
                       borderRadius: 999,
