@@ -834,9 +834,10 @@ export async function GuideArticle({
         </>
       )}
 
-      {/* Artsguide: Erfaringer skubbet HELT ned — sekundært lag efter at
-          brugeren har set sorterne. (Sortguide viser det tidligt, før kalender.) */}
-      {isSpecies && erfaringerNode}
+      {/* Artsguide viser IKKE "Lær af hinanden": bruger-erfaringer er for
+          brede/løse på artsniveau og afbryder referenceflowet. Kun sortguider
+          viser det (erfaringer om en konkret variant = beslutningsstøtte).
+          Arts-erfaringer hører på sigt hjemme i Havebog (kontekstuelt). */}
 
       {effective.variety === 'San Marzano' && (
         <div>
