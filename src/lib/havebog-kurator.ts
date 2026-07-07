@@ -74,12 +74,17 @@ export interface KuratorCtx {
   maaned: number // 1-12
   /** Har rummet ÆGTE data at vise? Falsk = vises ikke til rigtig bruger. */
   harData: Partial<Record<RumId, boolean>>
+  /**
+   * Samlet antal kuraterede rum (roterende + nederste) ud over de faste.
+   * Default 4. Sæt til 3 når "Tal til din have" rendres som et fast 4.
+   * rum, så det samlede opslag holder sig på maks 7.
+   */
+  maks?: number
 }
 
 /**
- * Vælg dagens kuraterede rum (ud over de 3 faste). Højst 4, så det
- * samlede opslag aldrig overstiger 7. Kun rum med ægte data kommer
- * i betragtning.
+ * Vælg dagens kuraterede rum (ud over de faste). Kun rum med ægte data
+ * kommer i betragtning. Antallet cappes af ctx.maks (default 4).
  */
 export function kurater(ctx: KuratorCtx): RumId[] {
   const s = saeson(ctx.maaned)
@@ -91,7 +96,7 @@ export function kurater(ctx: KuratorCtx): RumId[] {
 
   const nederste = RUM.filter(r => r.tier === 'nederste' && harData(r.id))
 
-  const MAKS = 4
+  const MAKS = ctx.maks ?? 4
   const harNederste = nederste.length > 0
   const roterendeMaks = harNederste ? MAKS - 1 : MAKS
 
