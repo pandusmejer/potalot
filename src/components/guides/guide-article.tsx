@@ -758,6 +758,18 @@ export async function GuideArticle({
               spise {artPlural} på.
             </p>
 
+            {/* Foto-form: bue KUN i højre side. Venstre + top/bund er helt lige
+                (fotoet løber flush til kortkanten; kortets overflow:hidden
+                klipper venstre hjørner til kortets egne 14px). SVG clip-path
+                (objectBoundingBox) så buen skalerer rent med billedboksen. */}
+            <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
+              <defs>
+                <clipPath id="variety-image-curve" clipPathUnits="objectBoundingBox">
+                  <path d="M 0 0 H 0.750 C 0.895 0 1 0.103 1 0.231 V 0.769 C 1 0.897 0.895 1 0.750 1 H 0 Z" />
+                </clipPath>
+              </defs>
+            </svg>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
@@ -785,14 +797,14 @@ export async function GuideArticle({
                     overflow: 'hidden',
                   }}
                 >
-                  {/* Foto — bløder helt til kortets top OG bund; organisk bue
-                      i højre side (som før), rolige 14px-hjørner i venstre. */}
+                  {/* Foto — flush venstre/top/bund; buen ligger KUN i højre side
+                      via SVG clip-path (#variety-image-curve). */}
                   <div
                     style={{
                       alignSelf: 'stretch',
                       overflow: 'hidden',
                       background: '#ECE6D6',
-                      borderRadius: '14px 34px 34px 14px',
+                      clipPath: 'url(#variety-image-curve)',
                     }}
                   >
                     {v.primaryImageId && (
