@@ -100,8 +100,8 @@ export default async function HavebogPage() {
           marginTop: -128,
           position: 'relative',
           zIndex: 20,
-          // Ryk ind under bølgens crest: 14 mm mod venstre + 6 mm op.
-          transform: 'translate(-53px, -23px)',
+          // Ryk ind under bølgens crest: 20 mm mod venstre + 6 mm op.
+          transform: 'translate(-76px, -23px)',
         }}
       >
         <HavebogDateline />
