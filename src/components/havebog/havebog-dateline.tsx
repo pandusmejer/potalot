@@ -20,35 +20,20 @@ const MONTHS = [
 export function HavebogDateline({ date = new Date() }: { date?: Date }) {
   const weekday = WEEKDAYS[date.getDay()]
   const linje2 = `${date.getDate()}. ${MONTHS[date.getMonth()]} ${date.getFullYear()}`
+  // Begge linjer ens: samme størrelse, font og (mørkere) farve.
+  const linje = {
+    fontFamily: sans,
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: '0.18em',
+    color: 'rgba(36,48,31,0.86)',
+    margin: 0,
+    paddingLeft: '0.18em', // optisk-centrér trods trailing tracking
+  } as const
   return (
     <div style={{ textAlign: 'center' }}>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.3em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.5)',
-          margin: 0,
-          paddingLeft: '0.3em', // optisk-centrér trods trailing tracking
-        }}
-      >
-        {weekday}
-      </p>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: '0.16em',
-          color: 'rgba(36,48,31,0.66)',
-          margin: '5px 0 0',
-          paddingLeft: '0.16em',
-        }}
-      >
-        {linje2}
-      </p>
+      <p style={{ ...linje, textTransform: 'uppercase' }}>{weekday}</p>
+      <p style={{ ...linje, marginTop: 5 }}>{linje2}</p>
     </div>
   )
 }
