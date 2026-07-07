@@ -767,11 +767,12 @@ export async function GuideArticle({
                   style={{
                     // Stort redaktionelt sortkort: foto flush til venstre, tekst
                     // åbent til højre, rund pil-knap. Varm ivory, diskret border.
+                    position: 'relative',
                     display: 'grid',
-                    // Proportioner tilpasset ægte 390px-bredde (jf. spec):
-                    // foto ~38-40%, tekst ~60%, pil sekundær. Kortet er højere
-                    // og mere rummeligt end en klemt mobil-row.
-                    gridTemplateColumns: '124px 1fr 40px',
+                    // To kolonner: foto + tekst. Teksten rækker helt ud til
+                    // højre kant (pilen ligger absolut i hjørnet, uden for
+                    // tekstflowet), så brødteksten kan være større.
+                    gridTemplateColumns: '124px 1fr',
                     alignItems: 'center',
                     columnGap: 18,
                     minHeight: 156,
@@ -821,10 +822,11 @@ export async function GuideArticle({
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          // Størrelse afstemt så sætningen falder på 2 linjer
-                          // (fx "Kødfuld italiensk pastatomat / til sauce og
-                          // konservering") i den ~125px brede tekstkolonne.
-                          fontSize: 9,
+                          // Teksten rækker nu helt ud til højre kant (~183px),
+                          // så størrelsen kan op igen og sætningen stadig falde
+                          // på 2 linjer ("Kødfuld italiensk pastatomat / til
+                          // sauce og konservering").
+                          fontSize: 13,
                           fontWeight: 400,
                           lineHeight: 1.4,
                           color: 'rgb(82,84,72)',
@@ -853,6 +855,8 @@ export async function GuideArticle({
                           lineHeight: 1.2,
                           color: 'rgb(103,111,90)',
                           margin: 0,
+                          // Frihold pilen i nederste højre hjørne.
+                          paddingRight: 46,
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -864,14 +868,15 @@ export async function GuideArticle({
                   </div>
 
                   {/* Pil i diskret rund knap — navigation, ikke webshop.
-                      Forankret i kortets nederste højre hjørne. */}
+                      Absolut forankret i kortets nederste højre hjørne, uden
+                      for tekstflowet, så teksten kan række hele vejen ud. */}
                   <span
                     aria-hidden
                     className="flex items-center justify-center transition-transform group-hover:translate-x-0.5"
                     style={{
-                      justifySelf: 'center',
-                      alignSelf: 'end',
-                      marginBottom: 20,
+                      position: 'absolute',
+                      right: 16,
+                      bottom: 20,
                       width: 36,
                       height: 36,
                       borderRadius: 999,
