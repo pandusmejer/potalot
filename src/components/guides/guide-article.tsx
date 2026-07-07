@@ -805,7 +805,7 @@ export async function GuideArticle({
                     )}
                   </div>
 
-                  <div style={{ minWidth: 0, alignSelf: 'start', padding: '14px 0 0' }}>
+                  <div style={{ minWidth: 0, alignSelf: 'start', padding: '24px 0 0' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--font-cormorant), Georgia, serif',
@@ -822,15 +822,17 @@ export async function GuideArticle({
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          // Teksten rækker nu helt ud til højre kant (~183px),
-                          // så størrelsen kan op igen og sætningen stadig falde
-                          // på 2 linjer ("Kødfuld italiensk pastatomat / til
-                          // sauce og konservering").
-                          fontSize: 13,
+                          // Teksten rækker helt ud til højre kant (~183px), så
+                          // sætningen stadig falder på 2 linjer ("Kødfuld
+                          // italiensk pastatomat / til sauce og konservering").
+                          fontSize: 11,
                           fontWeight: 400,
                           lineHeight: 1.4,
                           color: 'rgb(82,84,72)',
                           margin: '0 0 10px',
+                          // Balancér de 2 linjer, så bruddet falder naturligt
+                          // (fx efter "pastatomat") uanset skriftstørrelse.
+                          textWrap: 'balance',
                         }}
                       >
                         {v.summary}
