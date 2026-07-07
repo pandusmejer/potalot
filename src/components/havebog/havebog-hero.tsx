@@ -3,13 +3,6 @@ import { aktuelMaaned } from '@/lib/datetime'
 import { pickHavebogHero } from '@/lib/havebog-hero-photo'
 import { DagTaeller } from '@/components/havebog/dag-taeller'
 
-const sans = 'var(--font-manrope)'
-
-const MAANED_FULD_UPPER = [
-  'JANUAR', 'FEBRUAR', 'MARTS', 'APRIL', 'MAJ', 'JUNI',
-  'JULI', 'AUGUST', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DECEMBER',
-] as const
-
 interface Props {
   /** Bevaret som API-kontrakt — stats render'es ikke i hero (V3+) */
   stats?: HeroStats | null
@@ -45,11 +38,6 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
   const userState = narrative?.userState ?? 'active'
   const fotoPath = photoOverride ?? pickHavebogHero(month, userState)
 
-  const today = new Date()
-  const dayNum = String(today.getDate()).padStart(2, '0')
-  const monthName = MAANED_FULD_UPPER[month - 1]
-  const yearNum = today.getFullYear()
-
   return (
     <section
       className="relative -mx-4 -mt-6 overflow-hidden"
@@ -77,55 +65,6 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
         }}
       />
 
-      {/* Datostak øverst højre — diskret kolofon (mockup: 08/JUNI/2026).
-          Hver linje har tracking; den efterfølgende bogstavafstand skubber
-          ellers den højre kant ujævnt ud (så datoen så klemt/skæv ud). Vi
-          neutraliserer trailing-tracking med negativ margin-right = tracking,
-          så alle tre linjer flugter rent på samme højre kant. */}
-      <div
-        className="absolute z-10 flex flex-col items-end"
-        style={{ top: 18, right: 24, gap: 2 }}
-      >
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            marginRight: '-0.08em',
-            color: 'rgba(255,255,255,0.92)',
-            textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 2px 16px rgba(0,0,0,0.45)',
-          }}
-        >
-          {dayNum}
-        </span>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 14,
-            fontWeight: 700,
-            letterSpacing: '0.22em',
-            marginRight: '-0.22em',
-            color: 'rgba(255,255,255,0.96)',
-            textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 2px 16px rgba(0,0,0,0.45)',
-          }}
-        >
-          {monthName}
-        </span>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 10,
-            fontWeight: 500,
-            letterSpacing: '0.14em',
-            marginRight: '-0.14em',
-            color: 'rgba(255,255,255,0.72)',
-            textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 2px 16px rgba(0,0,0,0.45)',
-          }}
-        >
-          {yearNum}
-        </span>
-      </div>
 
       {/* Ingen tekst-blok mere (nameplate/hilsen/stemning fjernet). Hero
           er nu rent foto + dagtælleren lagt ovenpå som eneste indhold.
