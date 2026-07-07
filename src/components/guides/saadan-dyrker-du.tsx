@@ -371,7 +371,7 @@ function ProseBody({
                 <dt
                   style={{
                     fontFamily: sans,
-                    fontSize: listFontSize,
+                    fontSize: 14,
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: '#2D2A24',
@@ -382,7 +382,7 @@ function ProseBody({
                 <dd
                   style={{
                     fontFamily: sans,
-                    fontSize: listFontSize,
+                    fontSize: 13,
                     fontWeight: 400,
                     lineHeight: 1.5,
                     color: 'rgba(45,42,36,0.72)',
