@@ -44,9 +44,13 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
 
   const cifre = String(vist).padStart(3, '0').split('')
 
-  // Farver: dæmpet mørk på creme-bunden — eller lys-med-skygge når
-  // tælleren ligger oven på hero-fotoet.
-  const skygge = onImage ? '0 2px 18px rgba(0,0,0,0.5)' : undefined
+  // Farver: dæmpet mørk på creme-bunden — eller lys når tælleren ligger
+  // oven på hero-fotoet. Læsbarheds-skyggen lægges som drop-shadow FILTER
+  // på hele sektionen (følger tallenes form) — ikke text-shadow på ciffer-
+  // boksen, som overflow:hidden ellers ville klippe til en firkant.
+  const glow = onImage
+    ? 'drop-shadow(0 1px 3px rgba(0,0,0,0.55)) drop-shadow(0 3px 16px rgba(0,0,0,0.42))'
+    : undefined
   const labelColor = onImage ? 'rgba(255,255,255,0.75)' : 'rgba(36,48,31,0.45)'
   const cifferColor = onImage ? '#FFFFFF' : '#24301F'
   const etiketColor = onImage ? 'rgba(255,255,255,0.92)' : 'rgba(36,48,31,0.62)'
@@ -54,7 +58,7 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
   return (
     <section
       className="flex flex-col items-center"
-      style={{ textAlign: 'center', paddingBlock: onImage ? 0 : '8px 4px' }}
+      style={{ textAlign: 'center', paddingBlock: onImage ? 0 : '8px 4px', filter: glow }}
     >
       <style>{`
         @keyframes dagtaeller-tick {
@@ -71,7 +75,6 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
           letterSpacing: '0.34em',
           textTransform: 'uppercase',
           color: labelColor,
-          textShadow: skygge,
           margin: 0,
           marginBottom: 10,
         }}
@@ -91,7 +94,6 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
           letterSpacing: '0.04em',
           fontVariantNumeric: 'tabular-nums',
           color: cifferColor,
-          textShadow: skygge,
         }}
       >
         {cifre.map((c, i) => (
@@ -118,7 +120,6 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
           fontSize: 'clamp(18px, 3.8vw, 22px)',
           lineHeight: 1.3,
           color: etiketColor,
-          textShadow: skygge,
           margin: 0,
           marginTop: 14,
         }}
