@@ -821,11 +821,12 @@ export async function GuideArticle({
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          // Så lille at hele sætningen kan stå på kortet
-                          // (ingen clamp/afkortning).
-                          fontSize: 10,
+                          // Størrelse afstemt så sætningen falder på 2 linjer
+                          // (fx "Kødfuld italiensk pastatomat / til sauce og
+                          // konservering") i den ~125px brede tekstkolonne.
+                          fontSize: 9,
                           fontWeight: 400,
-                          lineHeight: 1.32,
+                          lineHeight: 1.4,
                           color: 'rgb(82,84,72)',
                           margin: '0 0 10px',
                         }}
