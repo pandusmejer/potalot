@@ -731,27 +731,29 @@ export async function GuideArticle({
                 lineHeight: 1,
                 letterSpacing: '0.22em',
                 color: 'rgb(113,122,96)',
-                margin: '0 0 18px',
+                margin: '0 0 18px 8px',
               }}
             >
               Sortsvarianter
             </p>
             <p
               style={{
-                // Editorial serif-intro — men IKKE hero. Ét trin ned (26px) +
-                // strammere bogstavafstand; eksplicit linjeskift efter "og" så
-                // "spise …" står på sin egen linje (jf. reference).
+                // Editorial serif-intro — men IKKE hero. Ét trin ned (26px),
+                // presset sammen (tæt bogstavafstand + line-height); eksplicit
+                // linjeskift efter "til" og "og" (jf. reference). ~2mm indrykket.
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontSize: 26,
                 fontWeight: 400,
-                lineHeight: 1.18,
-                letterSpacing: '-0.01em',
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
                 color: 'rgb(42,39,34)',
-                margin: '0 0 28px',
+                margin: '0 0 28px 8px',
                 maxWidth: 310,
               }}
             >
-              Find en sort, der passer til din måde at dyrke og
+              Find en sort, der passer til
+              <br />
+              din måde at dyrke og
               <br />
               spise {artPlural} på.
             </p>
@@ -805,7 +807,7 @@ export async function GuideArticle({
                     <h3
                       style={{
                         fontFamily: 'var(--font-cormorant), Georgia, serif',
-                        fontSize: 25,
+                        fontSize: 24,
                         fontWeight: 600,
                         lineHeight: 1.08,
                         color: 'rgb(34,34,30)',
@@ -819,7 +821,7 @@ export async function GuideArticle({
                         className="line-clamp-2"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 12.5,
+                          fontSize: 11.5,
                           fontWeight: 400,
                           lineHeight: 1.35,
                           color: 'rgb(82,84,72)',
@@ -843,7 +845,7 @@ export async function GuideArticle({
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: 400,
                           lineHeight: 1.2,
                           color: 'rgb(103,111,90)',
