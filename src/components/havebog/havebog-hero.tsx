@@ -1,10 +1,9 @@
 import type { HeroStats, Tidslinje, HeroNarrative } from '@/data/havebog-demo'
 import { aktuelMaaned } from '@/lib/datetime'
 import { pickHavebogHero } from '@/lib/havebog-hero-photo'
-import { dagensHilsen } from '@/lib/havehilsen'
+import { DagTaeller } from '@/components/havebog/dag-taeller'
 
 const sans = 'var(--font-manrope)'
-const serif = 'var(--font-cormorant), Georgia, serif'
 
 const MAANED_FULD_UPPER = [
   'JANUAR', 'FEBRUAR', 'MARTS', 'APRIL', 'MAJ', 'JUNI',
@@ -41,7 +40,7 @@ interface Props {
  * Ingen sæsondag (intet sået) → ingen tæller; hilsnen bærer alene.
  * Fallback-seasonLine vises kun når tælleren mangler.
  */
-export function HavebogHero({ narrative, fornavn, photoOverride }: Props) {
+export function HavebogHero({ narrative, photoOverride }: Props) {
   const month = aktuelMaaned() // 1-12
   const userState = narrative?.userState ?? 'active'
   const fotoPath = photoOverride ?? pickHavebogHero(month, userState)
@@ -50,15 +49,6 @@ export function HavebogHero({ narrative, fornavn, photoOverride }: Props) {
   const dayNum = String(today.getDate()).padStart(2, '0')
   const monthName = MAANED_FULD_UPPER[month - 1]
   const yearNum = today.getFullYear()
-
-  const hilsen = dagensHilsen(today, fornavn)
-
-  // V13 (premium magasin): hilsnen er KÆMPE og navnet lander på sin
-  // egen linje ("God aften, / Rasmus.") som åbningen i et magasin.
-  // Splittes på kommaet; uden fornavn står hilsnen alene.
-  const kommaIdx = hilsen.hilsen.indexOf(', ')
-  const hilsenLinje1 = kommaIdx >= 0 ? hilsen.hilsen.slice(0, kommaIdx + 1) : hilsen.hilsen
-  const hilsenNavn = kommaIdx >= 0 ? hilsen.hilsen.slice(kommaIdx + 2) : null
 
   return (
     <section
@@ -137,78 +127,14 @@ export function HavebogHero({ narrative, fornavn, photoOverride }: Props) {
         </span>
       </div>
 
-      {/* Den daglige åbning — KUN hilsnen (V13: én ting ad gangen).
-          Dagtælleren er flyttet ud i sin egen sektion efter heroen.
-          Hilsnen er forankret lavt, så den store typografi får luft
-          ovenover — som åbningssiden i et magasin. */}
-      <div
-        className="relative z-10 flex h-full flex-col justify-end"
-        style={{ padding: '0 24px 100px 24px' }}
-      >
-        <div
-          style={{
-            borderLeft: '2px solid rgba(255,255,255,0.5)',
-            paddingLeft: 20,
-          }}
-        >
-          {/* Magasin-nameplate — lille og rolig */}
-          <p
-            style={{
-              fontFamily: sans,
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: '0.32em',
-              lineHeight: 1,
-              color: 'rgba(255,255,255,0.66)',
-              textShadow: '0 1px 8px rgba(0,0,0,0.4)',
-              margin: 0,
-              marginBottom: 16,
-            }}
-          >
-            HAVEBOG
-          </p>
-
-          {/* Hilsnen — kæmpe; navnet på egen linje */}
-          <h1
-            style={{
-              fontFamily: serif,
-              fontWeight: 500,
-              fontSize: 'clamp(40px, 12vw, 64px)',
-              lineHeight: 1.02,
-              letterSpacing: '-0.02em',
-              color: '#FFFFFF',
-              textShadow: '0 2px 20px rgba(0,0,0,0.4)',
-              margin: 0,
-            }}
-          >
-            {hilsenLinje1}
-            {hilsenNavn && (
-              <>
-                <br />
-                {hilsenNavn}
-              </>
-            )}
-          </h1>
-
-          {/* Sæson-stemningen — dagens ene observation */}
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontWeight: 400,
-              fontSize: 'clamp(19px, 4.4vw, 25px)',
-              lineHeight: 1.3,
-              color: 'rgba(255,255,255,0.92)',
-              textShadow: '0 1px 14px rgba(0,0,0,0.45)',
-              margin: 0,
-              marginTop: 18,
-              maxWidth: '22ch',
-            }}
-          >
-            {hilsen.stemning}
-          </p>
+      {/* Ingen tekst-blok mere (nameplate/hilsen/stemning fjernet). Hero
+          er nu rent foto + dagtælleren lagt ovenpå som eneste indhold.
+          Centreret, så bølgen i bunden ikke skærer i tallet. */}
+      {narrative?.saesonDag != null && narrative?.saesonEtiket && (
+        <div className="relative z-10 flex h-full flex-col items-center justify-center" style={{ paddingBottom: 40 }}>
+          <DagTaeller dag={narrative.saesonDag} etiket={narrative.saesonEtiket} onImage />
         </div>
-      </div>
+      )}
 
       {/* ORGANISK BØLGE — overgangen til sidens baggrund. ÉT stort
           sving (mockup'et): høj kam mod venstre, langt elegant fald

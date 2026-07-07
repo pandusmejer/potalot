@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
-import { DagTaeller } from '@/components/havebog/dag-taeller'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
@@ -92,9 +91,6 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
-      {heroNarrative.saesonDag !== null && heroNarrative.saesonEtiket && (
-        <DagTaeller dag={heroNarrative.saesonDag} etiket={heroNarrative.saesonEtiket} />
-      )}
       <HavensStemme dato={idag} opslag={dagensOpslag} />
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
           Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),

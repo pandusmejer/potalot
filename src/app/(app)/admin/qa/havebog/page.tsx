@@ -1,5 +1,4 @@
 import { HavebogHero } from '@/components/havebog/havebog-hero'
-import { DagTaeller } from '@/components/havebog/dag-taeller'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
@@ -128,11 +127,8 @@ export default function HavebogDesignLabPage() {
         </p>
       </header>
 
-      <Sep label="1-3 · Forside: hero · dagtæller · ildsted" />
+      <Sep label="1-3 · Forside: hero (m. dagtæller ovenpå) · ildsted" />
       <HavebogHero stats={DEMO_HERO_STATS} tidslinje={DEMO_TIDSLINJE} narrative={DEMO_HERO_NARRATIVE} />
-      {DEMO_HERO_NARRATIVE.saesonDag !== null && DEMO_HERO_NARRATIVE.saesonEtiket && (
-        <DagTaeller dag={DEMO_HERO_NARRATIVE.saesonDag} etiket={DEMO_HERO_NARRATIVE.saesonEtiket} />
-      )}
       <HavensStemme dato={idag} opslag={DEMO_DAGENS_OPSLAG} />
 
       <Sep label="4 · Tal til din have" />
