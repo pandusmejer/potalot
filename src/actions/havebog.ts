@@ -15,6 +15,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
+import { byggDagensHistorie } from '@/lib/havebog-dagens-historie'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -30,7 +31,6 @@ import type {
   IDinHaveTal,
   Vendepunkt,
   Minde,
-  Takt,
   DagensOpslag,
 } from '@/data/havebog-demo'
 
@@ -204,10 +204,6 @@ function daysBetween(from: Date, to: Date): number {
   const fromMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate()).getTime()
   const toMidnight = new Date(to.getFullYear(), to.getMonth(), to.getDate()).getTime()
   return Math.round((toMidnight - fromMidnight) / 86400000)
-}
-
-function hasYearOnePlus(history: HistoryYear[], currentYear: number): boolean {
-  return history.some(h => h.year < currentYear)
 }
 
 /** "2026-05-18" → "18. maj" — bogens datostemme, uden år. */
@@ -827,49 +823,24 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const ligeNuFakta = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
-    // V16: ikke fire ligeværdige afsnit, men en DAGSSIDE med
-    // redaktion — én hovedhistorie + støtte-takter, hver med sin
-    // rubrik-etiket. Takterne bygges typet (kicker + tekst); lead'en
-    // vælges som den mest fængende. Ingen nye data; samme motorer.
-    const present: Takt | null = ligeNuFakta
-      ? { kicker: 'Lige nu i haven', tekst: ligeNuFakta.statement }
-      : null
-    const personlig: Takt | null = opdagelse
-      ? { kicker: 'Fra din have', tekst: opdagelse }
-      : erNy
-        ? { kicker: 'Fra fællesskabet', tekst: laantErfaring(maaned1).ligeNu }
-        : null
-    const statusTakt: Takt | null =
-      klarTilUdplantning > 0
-        ? {
-            kicker: 'Klar nu',
-            tekst: hasYearOnePlus(history, currentYear)
-              ? 'Flere af dine planter er klar til at komme udenfor.'
-              : 'Dine første planter er klar til at komme udenfor.',
-          }
-        : null
-    const inspirationTakt: Takt =
-      inspirationer.length > 0
-        ? { kicker: 'Fra haven', tekst: inspirationer[dagNr % inspirationer.length] }
-        : (() => {
-            const v = havevisdomPulje(maaned1)
-            return { kicker: 'Fra haven', tekst: v[dagNr % v.length] }
-          })()
-    const fremad: Takt = {
-      kicker: 'På denne tid af året',
-      tekst: forventningsLinje(maaned1, dagNr),
-    }
-
-    // Lead = mest fængende: personlig opdagelse > inspiration >
-    // nutidsanker. Resten følger i læserækkefølge, lead trukket ud.
-    const lead: Takt = personlig ?? inspirationTakt ?? present ?? fremad
-    const beats: Takt[] = [present, personlig, statusTakt, inspirationTakt, fremad]
-      .filter((t): t is Takt => t !== null && t !== lead)
-
-    const dagensOpslag: DagensOpslag = {
-      lead: { kicker: 'Dagens historie', tekst: lead.tekst },
-      beats,
-    }
+    // V16 + Fase B: én DAGSSIDE med redaktion — én hovedhistorie +
+    // støtte-takter. Lead vælges af Dagens historie-motoren efter Annas
+    // prioritering (frisk personlig milepæl > guideviden). Se
+    // byggDagensHistorie for vægtning og recency-regler.
+    const dagensOpslag = byggDagensHistorie({
+      logs,
+      plant: (id: string) => plantById.get(id),
+      currentYear,
+      today,
+      opdagelse,
+      onThisDay,
+      ligeNuFakta,
+      inspirationer,
+      klarTilUdplantning,
+      erNy,
+      maaned1,
+      dagNr,
+    })
 
     // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
     // Begivenheder, ikke måneder: årets første af hver fase,
