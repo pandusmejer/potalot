@@ -728,110 +728,150 @@ export async function GuideArticle({
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: '0.2em',
-                color: 'rgba(36,48,31,0.55)',
-                margin: 0,
+                lineHeight: 1,
+                letterSpacing: '0.22em',
+                color: 'rgb(113,122,96)',
+                margin: '0 0 22px',
               }}
             >
               Sortsvarianter
             </p>
             <p
               style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: 16,
+                // Stor editorial serif-intro (jf. reference), max-width styrer
+                // linjedelingen — ingen manuelle <br>.
+                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontSize: 'clamp(30px, 8.7vw, 34px)',
                 fontWeight: 400,
-                lineHeight: 1.45,
-                color: 'rgba(36,48,31,0.6)',
-                margin: '8px 0 0',
+                lineHeight: 1.18,
+                color: 'rgb(42,39,34)',
+                margin: '0 0 34px',
+                maxWidth: 330,
               }}
             >
               Find en sort, der passer til din måde at dyrke og spise {artPlural}{' '}
               på.
             </p>
 
-            <div className="mt-4 space-y-2.5">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
                   href={`/guides/${v.id}`}
-                  className="group flex items-center gap-3.5 no-underline transition-colors hover:border-[rgba(45,42,36,0.18)]"
+                  className="group no-underline transition-colors hover:border-[rgba(153,137,117,0.42)]"
                   style={{
-                    // Sortkort med foto — redaktionel sort-entry, IKKE et webshop-
-                    // produktkort. Varm ivory, diskret border, knap nogen skygge.
-                    background: 'rgba(255,253,246,0.6)',
-                    border: '1px solid rgba(45,42,36,0.10)',
-                    borderRadius: 20,
-                    padding: 12,
-                    boxShadow: '0 8px 18px rgba(64,58,42,0.04)',
+                    // Stort redaktionelt sortkort: foto flush til venstre, tekst
+                    // åbent til højre, rund pil-knap. Varm ivory, diskret border.
+                    display: 'grid',
+                    // Fallback-mål (jf. spec): 132px foto blev for bredt på
+                    // 390px og klemte teksten (titel wrappede). Strammet så
+                    // content-kolonnen får plads til titel på én linje.
+                    gridTemplateColumns: '116px 1fr 42px',
+                    alignItems: 'center',
+                    columnGap: 16,
+                    minHeight: 168,
+                    width: '100%',
+                    padding: '0 18px 0 0',
+                    background: 'rgba(255,252,242,0.78)',
+                    border: '1px solid rgba(153,137,117,0.26)',
+                    borderRadius: 22,
+                    boxShadow: '0 14px 28px rgba(64,58,42,0.045)',
+                    overflow: 'hidden',
                   }}
                 >
-                  {/* Foto til venstre (sortsfoto, helst frugt på plante). */}
+                  {/* Foto — flush til kortets venstre/top/bund, organisk højre-radius. */}
                   <div
                     style={{
-                      flexShrink: 0,
-                      width: 100,
-                      height: 124,
-                      borderRadius: 16,
+                      alignSelf: 'stretch',
                       overflow: 'hidden',
                       background: '#ECE6D6',
+                      borderRadius: '22px 42px 42px 22px',
                     }}
                   >
                     {v.primaryImageId && (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={v.primaryImageId}
-                        alt=""
-                        aria-hidden
+                        alt={v.variety ?? ''}
                         className="h-full w-full object-cover"
                       />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p
+
+                  <div style={{ minWidth: 0, padding: '22px 0 20px' }}>
+                    <h3
                       style={{
-                        fontFamily: 'var(--font-plex-condensed), sans-serif',
-                        fontSize: 22,
-                        fontWeight: 600,
-                        lineHeight: 1.1,
-                        letterSpacing: '-0.01em',
-                        color: '#2D2A24',
-                        margin: 0,
+                        fontFamily: 'var(--font-cormorant), Georgia, serif',
+                        fontSize: 'clamp(26px, 6.8vw, 29px)',
+                        fontWeight: 500,
+                        lineHeight: 1.05,
+                        color: 'rgb(34,34,30)',
+                        margin: '0 0 14px',
                       }}
                     >
                       {v.variety}
-                    </p>
+                    </h3>
                     {v.summary && (
                       <p
                         className="line-clamp-2"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 15,
-                          lineHeight: 1.35,
-                          color: 'rgba(36,48,31,0.6)',
-                          margin: '4px 0 0',
+                          fontSize: 16,
+                          fontWeight: 400,
+                          lineHeight: 1.42,
+                          color: 'rgb(42,39,34)',
+                          margin: '0 0 18px',
                         }}
                       >
                         {v.summary}
                       </p>
                     )}
+                    <div
+                      aria-hidden
+                      style={{
+                        width: 34,
+                        height: 2,
+                        background: 'rgb(153,137,117)',
+                        opacity: 0.75,
+                        margin: '0 0 16px',
+                      }}
+                    />
                     {v.tags.length > 0 && (
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: 'rgba(94,100,64,0.72)',
-                          margin: '7px 0 0',
+                          fontSize: 14,
+                          fontWeight: 400,
+                          lineHeight: 1.2,
+                          color: 'rgb(103,111,90)',
+                          margin: 0,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
                         }}
                       >
-                        {v.tags.slice(0, 3).join(' · ')}
+                        {v.tags.slice(0, 3).join(' · ').toLowerCase()}
                       </p>
                     )}
                   </div>
-                  <ArrowRight
-                    className="h-[22px] w-[22px] shrink-0 self-center transition-transform group-hover:translate-x-0.5"
-                    style={{ color: 'rgba(36,48,31,0.32)' }}
-                  />
+
+                  {/* Pil i diskret rund knap — navigation, ikke webshop. */}
+                  <span
+                    aria-hidden
+                    className="flex items-center justify-center transition-transform group-hover:translate-x-0.5"
+                    style={{
+                      justifySelf: 'center',
+                      width: 44,
+                      height: 44,
+                      borderRadius: 999,
+                      border: '1px solid rgba(153,137,117,0.28)',
+                      background: 'rgba(255,252,242,0.42)',
+                      color: 'rgb(153,137,117)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <ArrowRight style={{ width: 24, height: 24 }} strokeWidth={1.75} />
+                  </span>
                 </Link>
               ))}
             </div>
@@ -839,12 +879,12 @@ export async function GuideArticle({
             {sortsvarianter.length > 4 && (
               <Link
                 href="/guides"
-                className="group mt-4 inline-flex items-center gap-1.5"
+                className="group mt-[22px] inline-flex items-center gap-1.5"
                 style={{
                   fontFamily: 'var(--font-manrope)',
-                  fontSize: 14,
+                  fontSize: 17,
                   fontWeight: 700,
-                  color: '#4E6138',
+                  color: 'rgb(87,104,65)',
                 }}
               >
                 Se flere {effective.plantName.toLowerCase()}sorter
