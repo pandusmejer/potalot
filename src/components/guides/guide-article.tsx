@@ -738,20 +738,22 @@ export async function GuideArticle({
             </p>
             <p
               style={{
-                // Editorial serif-intro — men IKKE hero. På 390px klemmer 34px
-                // kortene; 28px + max-width 310 holder forholdet redaktionelt
-                // uden at dominere sektionen. max-width styrer linjedelingen.
+                // Editorial serif-intro — men IKKE hero. Ét trin ned (26px) +
+                // strammere bogstavafstand; eksplicit linjeskift efter "og" så
+                // "spise …" står på sin egen linje (jf. reference).
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontSize: 28,
+                fontSize: 26,
                 fontWeight: 400,
                 lineHeight: 1.18,
+                letterSpacing: '-0.01em',
                 color: 'rgb(42,39,34)',
                 margin: '0 0 28px',
                 maxWidth: 310,
               }}
             >
-              Find en sort, der passer til din måde at dyrke og spise {artPlural}{' '}
-              på.
+              Find en sort, der passer til din måde at dyrke og
+              <br />
+              spise {artPlural} på.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -772,21 +774,21 @@ export async function GuideArticle({
                     columnGap: 18,
                     minHeight: 156,
                     width: '100%',
-                    padding: '0 16px 0 0',
+                    padding: '0 16px 12px 0',
                     background: 'rgba(255,252,242,0.82)',
                     border: '1px solid rgba(153,137,117,0.24)',
-                    borderRadius: 22,
+                    borderRadius: 14,
                     boxShadow: '0 10px 22px rgba(64,58,42,0.04)',
                     overflow: 'hidden',
                   }}
                 >
-                  {/* Foto — flush til kortets venstre/top/bund, organisk højre-radius. */}
+                  {/* Foto — flush til kortets venstre/top/bund, let organisk højre-radius. */}
                   <div
                     style={{
                       alignSelf: 'stretch',
                       overflow: 'hidden',
                       background: '#ECE6D6',
-                      borderRadius: '22px 34px 34px 22px',
+                      borderRadius: '14px 22px 22px 14px',
                     }}
                   >
                     {v.primaryImageId && (
@@ -799,12 +801,12 @@ export async function GuideArticle({
                     )}
                   </div>
 
-                  <div style={{ minWidth: 0, padding: '18px 0 16px' }}>
+                  <div style={{ minWidth: 0, padding: '18px 0 4px' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--font-cormorant), Georgia, serif',
                         fontSize: 25,
-                        fontWeight: 500,
+                        fontWeight: 600,
                         lineHeight: 1.08,
                         color: 'rgb(34,34,30)',
                         margin: '0 0 10px',
@@ -817,11 +819,11 @@ export async function GuideArticle({
                         className="line-clamp-2"
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 14.5,
+                          fontSize: 12.5,
                           fontWeight: 400,
                           lineHeight: 1.35,
                           color: 'rgb(82,84,72)',
-                          margin: '0 0 14px',
+                          margin: '0 0 12px',
                         }}
                       >
                         {v.summary}
@@ -834,14 +836,14 @@ export async function GuideArticle({
                         height: 2,
                         background: 'rgb(153,137,117)',
                         opacity: 0.65,
-                        margin: '0 0 12px',
+                        margin: '0 0 10px',
                       }}
                     />
                     {v.tags.length > 0 && (
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 13,
+                          fontSize: 11,
                           fontWeight: 400,
                           lineHeight: 1.2,
                           color: 'rgb(103,111,90)',
@@ -856,12 +858,14 @@ export async function GuideArticle({
                     )}
                   </div>
 
-                  {/* Pil i diskret rund knap — navigation, ikke webshop. */}
+                  {/* Pil i diskret rund knap — navigation, ikke webshop.
+                      Forankret i kortets nederste højre hjørne. */}
                   <span
                     aria-hidden
                     className="flex items-center justify-center transition-transform group-hover:translate-x-0.5"
                     style={{
                       justifySelf: 'center',
+                      alignSelf: 'end',
                       width: 36,
                       height: 36,
                       borderRadius: 999,
