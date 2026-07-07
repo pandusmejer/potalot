@@ -19,6 +19,7 @@ import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
 import { SaadanDyrkerDu } from '@/components/guides/saadan-dyrker-du'
+import { GuidePotalotNote } from '@/components/guides/guide-potalot-note'
 import { GuideNote } from '@/components/guides/guide-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
@@ -473,7 +474,9 @@ export async function GuideArticle({
           sections={effective.sections}
           factMacroImage={factImage}
           bleedAfter={bleedAfter}
-          potalotNoteBody={potalotNoteBody ?? undefined}
+          // KUN artsguide: noten placeres mellem kapitel 03 og 04. Sortguide
+          // beholder den som lukke-blok i bunden (se nedenfor).
+          potalotNoteBody={isSpecies ? potalotNoteBody ?? undefined : undefined}
         />
       </div>
 
@@ -857,8 +860,19 @@ export async function GuideArticle({
         </div>
       )}
 
-      {/* "Potalot anbefaler" rendres nu INDE i prose-flowet (mellem kapitel 03
-          og 04) via SaadanDyrkerDu — ikke længere som lukke-blok her. */}
+      {/* Sortguide: "Potalot anbefaler" som lukke-blok i bunden (note-par med
+          Potalot-tip ovenfor). Artsguide placerer den mellem kapitel 03 og 04
+          via SaadanDyrkerDu i stedet. */}
+      {!isSpecies && potalotNoteBody && (
+        <div>
+          <div className="-mt-3">
+            {debug && (
+              <DebugBlock name="GuidePotalotNote" note="signatur 3/3 — lukke" />
+            )}
+            <GuidePotalotNote body={potalotNoteBody} />
+          </div>
+        </div>
+      )}
 
       {nextGuide && nextGuide.kind === 'next' && (
         effective.variety === 'San Marzano' ? (
