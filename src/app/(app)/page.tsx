@@ -95,7 +95,15 @@ export default async function HavebogPage() {
       {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
           ~12 mm under bølgens højeste punkt. Den negative margin overskriver
           space-y-fugen og løfter resten af siden med op. */}
-      <div style={{ marginTop: -128, position: 'relative', zIndex: 20 }}>
+      <div
+        style={{
+          marginTop: -128,
+          position: 'relative',
+          zIndex: 20,
+          // Ryk ind under bølgens crest: 14 mm mod venstre + 6 mm op.
+          transform: 'translate(-53px, -23px)',
+        }}
+      >
         <HavebogDateline />
       </div>
       <HavensStemme dato={idag} opslag={dagensOpslag} />
