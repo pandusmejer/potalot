@@ -705,39 +705,117 @@ export async function GuideArticle({
               note={`6. ${sortsvarianter.length} sortsguider`}
             />
           )}
-          <section id="sortsvarianter" className="scroll-mt-20 space-y-3">
+          {/* Skalerbar sortliste — IKKE en promo-boks for én sort. Ingen ydre
+              container/kort-i-kort; hver sort er et kompakt list-card med samme
+              vægt. Bærer 1, 2, 4 eller mange sorter (viser 4 + "Se alle"). */}
+          <section id="sortsvarianter" className="scroll-mt-20">
             <p
+              className="uppercase"
               style={{
                 fontFamily: 'var(--font-manrope)',
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: '0.2em',
-                textTransform: 'uppercase',
                 color: 'rgba(36,48,31,0.55)',
                 margin: 0,
               }}
             >
               Sortsvarianter
             </p>
-            <Card>
-              <CardContent className="space-y-2 py-3">
-                {sortsvarianter.map((v) => (
-                  <Link
-                    key={v.id}
-                    href={`/guides/${v.id}`}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-accent/30"
-                  >
-                    <div>
-                      <p className="font-medium text-foreground">{v.variety}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-1">
+            <p
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 16,
+                fontWeight: 400,
+                lineHeight: 1.45,
+                color: 'rgba(36,48,31,0.6)',
+                margin: '8px 0 0',
+              }}
+            >
+              Find en sort, der passer til din måde at dyrke og spise {artPlural}{' '}
+              på.
+            </p>
+
+            <div className="mt-4 space-y-2.5">
+              {sortsvarianter.slice(0, 4).map((v) => (
+                <Link
+                  key={v.id}
+                  href={`/guides/${v.id}`}
+                  className="group flex items-center gap-3 no-underline transition-colors hover:border-[rgba(45,42,36,0.22)]"
+                  style={{
+                    background: '#F5F0E2',
+                    border: '1px solid rgba(45,42,36,0.10)',
+                    borderRadius: 20,
+                    padding: '16px 18px',
+                    boxShadow: '0 8px 18px rgba(64,58,42,0.045)',
+                  }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-plex-condensed), sans-serif',
+                        fontSize: 21,
+                        fontWeight: 600,
+                        lineHeight: 1.15,
+                        letterSpacing: '-0.01em',
+                        color: '#2D2A24',
+                        margin: 0,
+                      }}
+                    >
+                      {v.variety}
+                    </p>
+                    {v.summary && (
+                      <p
+                        className="line-clamp-2"
+                        style={{
+                          fontFamily: 'var(--font-manrope)',
+                          fontSize: 15,
+                          lineHeight: 1.35,
+                          color: 'rgba(36,48,31,0.6)',
+                          margin: '4px 0 0',
+                        }}
+                      >
                         {v.summary}
                       </p>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
-                ))}
-              </CardContent>
-            </Card>
+                    )}
+                    {v.tags.length > 0 && (
+                      <p
+                        className="capitalize"
+                        style={{
+                          fontFamily: 'var(--font-manrope)',
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: 'rgba(78,97,56,0.85)',
+                          margin: '8px 0 0',
+                        }}
+                      >
+                        {v.tags.slice(0, 3).join(' · ')}
+                      </p>
+                    )}
+                  </div>
+                  <ArrowRight
+                    className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5"
+                    style={{ color: 'rgba(36,48,31,0.4)' }}
+                  />
+                </Link>
+              ))}
+            </div>
+
+            {sortsvarianter.length > 4 && (
+              <Link
+                href="/guides"
+                className="group mt-3.5 inline-flex items-center gap-1.5"
+                style={{
+                  fontFamily: 'var(--font-manrope)',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: '#4E6138',
+                }}
+              >
+                Se alle sorter ({sortsvarianter.length})
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            )}
           </section>
         </>
       )}
