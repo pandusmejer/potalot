@@ -13,6 +13,12 @@ interface KalenderRytmeKapitelProps {
   eyebrow?: string
   title?: string
   chapters: KalenderRytmeChapter[]
+  /**
+   * Åben sektion (artsguide): ingen kort-flade/border/skygge — sektionen står
+   * direkte på sidebaggrunden, og kun tidsaksen + dots bærer identiteten.
+   * Default = boxed kort (sortguide).
+   */
+  open?: boolean
 }
 
 export const sanMarzanoKalenderRytme: KalenderRytmeChapter[] = [
@@ -40,6 +46,7 @@ export function KalenderRytmeKapitel({
   eyebrow = 'RYTME I KALENDEREN',
   title = 'Fra forspiring til høst',
   chapters,
+  open = false,
 }: KalenderRytmeKapitelProps) {
   if (chapters.length === 0) {
     return null
@@ -47,18 +54,20 @@ export function KalenderRytmeKapitel({
 
   return (
     <section
-      className="rounded-[4px] px-5 py-6"
-      style={{
-        // Varm creme med KUN en svag salvie-undertone (~3-5% grønnere end
-        // standardkortet, ikke et grønt kort). Identiteten bæres af sæson-aksen
-        // + de grønne lodrette side-striber, ikke af fladen.
-        background: '#F2F0E3',
-        borderTop: '1px solid #D9D6BE',
-        borderBottom: '1px solid #D9D6BE',
-        borderLeft: '3px solid #C9A94E',
-        borderRight: '3px solid #C9A94E',
-        boxShadow: '0 4px 14px rgba(36,48,31,0.08)',
-      }}
+      className={open ? '' : 'rounded-[4px] px-5 py-6'}
+      style={
+        open
+          ? undefined
+          : {
+              // Boxed (sortguide): varm creme + hø-gule side-striber + sæson-akse.
+              background: '#F2F0E3',
+              borderTop: '1px solid #D9D6BE',
+              borderBottom: '1px solid #D9D6BE',
+              borderLeft: '3px solid #C9A94E',
+              borderRight: '3px solid #C9A94E',
+              boxShadow: '0 4px 14px rgba(36,48,31,0.08)',
+            }
+      }
     >
       <header className="mb-5">
         <p

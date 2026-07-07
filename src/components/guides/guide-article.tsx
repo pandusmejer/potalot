@@ -515,7 +515,7 @@ export async function GuideArticle({
                   note={`3. Kalender — ${chapters.length} kapitler`}
                 />
               )}
-              <KalenderRytmeKapitel chapters={chapters} />
+              <KalenderRytmeKapitel chapters={chapters} open={isSpecies} />
             </div>
           </div>
         )
@@ -601,7 +601,7 @@ export async function GuideArticle({
             <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
           )}
           <section
-            className="rounded-[28px] px-6 py-7"
+            className="rounded-[28px] px-6 py-6"
             style={{
               background: '#F4F0E5',
               border: '1px solid rgba(36,48,31,0.10)',
@@ -874,7 +874,9 @@ export async function GuideArticle({
         </div>
       )}
 
-      {nextGuide && nextGuide.kind === 'next' && (
+      {/* Artsguide: intet "Næste skridt"-kort — det dublerer Sortsvarianter-
+          sektionen. Kun sortguider viser næste-guide/sammenligning. */}
+      {!isSpecies && nextGuide && nextGuide.kind === 'next' && (
         effective.variety === 'San Marzano' ? (
           (() => {
             const targetExists = allGuides.some((g) => g.id === nextGuide.slug)
