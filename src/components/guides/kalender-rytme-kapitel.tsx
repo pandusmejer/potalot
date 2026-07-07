@@ -95,27 +95,34 @@ export function KalenderRytmeKapitel({
         </h2>
       </header>
 
-      {/* Tidslinje: tynd lodret akse + 3 faser der veksler venstre/højre. */}
+      {/* Tidslinje: 3 faser der veksler venstre/højre. Aksen tegnes som
+          segmenter MELLEM dots (fra hver dot til den næste) — så linjen stopper
+          ved det nederste punkt og fortsætter ikke ned. */}
       <div className="relative">
-        <span
-          aria-hidden
-          className="absolute top-1 bottom-1"
-          style={{
-            left: AXIS,
-            width: 1.5,
-            transform: 'translateX(-50%)',
-            background:
-              'linear-gradient(to bottom, rgba(153,137,117,0.45), rgba(153,137,117,0.6) 45%, rgba(153,137,117,0.4))',
-          }}
-        />
         {chapters.map((chapter, index) => {
           const onLeft = index % 2 === 0
+          const isLast = index === chapters.length - 1
           return (
             <div
               key={`${chapter.monthRange}-${chapter.title}`}
               className="relative"
               style={{ marginTop: index === 0 ? 0 : 22 }}
             >
+              {/* Linjesegment fra denne dot ned til næste dot (ikke på sidste). */}
+              {!isLast && (
+                <span
+                  aria-hidden
+                  className="absolute"
+                  style={{
+                    left: AXIS,
+                    top: 5,
+                    bottom: -27,
+                    width: 1.5,
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(153,137,117,0.5)',
+                  }}
+                />
+              )}
               <span
                 aria-hidden
                 className="absolute rounded-full"
@@ -176,7 +183,13 @@ export function KalenderRytmeKapitel({
                       marginTop: 6,
                     }}
                   >
-                    {chapter.actions.slice(0, 3).join(' · ')}
+                    {/* Hvert punkt på sin egen linje (linjeskift markerer dem —
+                        ingen "·"-separatorer). */}
+                    {chapter.actions.slice(0, 3).map((action, i) => (
+                      <span key={i} style={{ display: 'block' }}>
+                        {action}
+                      </span>
+                    ))}
                   </p>
                 )}
               </div>
