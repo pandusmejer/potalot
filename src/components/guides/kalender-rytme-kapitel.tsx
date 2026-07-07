@@ -59,14 +59,14 @@ export function KalenderRytmeKapitel({
   return (
     <section
       style={{
-        // Næsten usynlig grønlig toneflade — giver sæson-identitet UDEN at
-        // blive endnu et kort (ingen border, ingen skygge).
-        background: '#EFF1E6',
+        // Neutral VARM creme-whisper (ikke grøn) — svag toneflade uden at blive
+        // et kort (ingen border/skygge). Tidslinjen bærer identiteten.
+        background: 'rgba(255,251,240,0.5)',
         borderRadius: 22,
-        padding: '36px 20px 32px',
+        padding: '30px 24px 32px',
       }}
     >
-      <header style={{ marginBottom: 26 }}>
+      <header style={{ marginBottom: 28 }}>
         <p
           className="m-0 uppercase"
           style={{
@@ -75,7 +75,7 @@ export function KalenderRytmeKapitel({
             fontWeight: 700,
             letterSpacing: '0.2em',
             lineHeight: 1.2,
-            color: 'rgba(94,112,64,0.85)',
+            color: 'rgba(108,103,73,0.9)',
           }}
         >
           {eyebrow}
@@ -88,7 +88,7 @@ export function KalenderRytmeKapitel({
             lineHeight: 1.08,
             letterSpacing: '-0.015em',
             color: '#2D2A24',
-            margin: '9px 0 0',
+            margin: '10px 0 0',
           }}
         >
           {title}
@@ -104,8 +104,9 @@ export function KalenderRytmeKapitel({
             left: AXIS,
             width: 1.5,
             transform: 'translateX(-50%)',
+            // Dæmpet sand/oliven, lav kontrast (ikke frisk grøn).
             background:
-              'linear-gradient(to bottom, rgba(123,139,99,0.32), rgba(123,139,99,0.55) 45%, rgba(123,139,99,0.28))',
+              'linear-gradient(to bottom, rgba(118,111,80,0.28), rgba(118,111,80,0.42) 45%, rgba(118,111,80,0.24))',
           }}
         />
         {chapters.map((chapter, index) => {
@@ -114,7 +115,7 @@ export function KalenderRytmeKapitel({
             <div
               key={`${chapter.monthRange}-${chapter.title}`}
               className="relative"
-              style={{ marginTop: index === 0 ? 0 : 30 }}
+              style={{ marginTop: index === 0 ? 0 : 22 }}
             >
               <span
                 aria-hidden
@@ -125,7 +126,8 @@ export function KalenderRytmeKapitel({
                   transform: 'translateX(-50%)',
                   height: 10,
                   width: 10,
-                  background: '#5F7040',
+                  // Dæmpet oliven-brun, ikke frisk grøn.
+                  background: '#6E6B49',
                 }}
               />
               <div
@@ -143,9 +145,9 @@ export function KalenderRytmeKapitel({
                     fontFamily: sans,
                     fontSize: 11,
                     fontWeight: 700,
-                    letterSpacing: '0.13em',
+                    letterSpacing: '0.15em',
                     lineHeight: 1.2,
-                    color: '#7F8F6A',
+                    color: '#8A876A',
                   }}
                 >
                   {chapter.monthRange}
@@ -154,7 +156,7 @@ export function KalenderRytmeKapitel({
                   className="m-0"
                   style={{
                     fontFamily: plex,
-                    fontSize: 'clamp(18px, 5vw, 20px)',
+                    fontSize: 'clamp(19px, 5.2vw, 21px)',
                     fontWeight: 600,
                     lineHeight: 1.1,
                     letterSpacing: '-0.01em',

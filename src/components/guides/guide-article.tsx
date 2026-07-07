@@ -749,29 +749,50 @@ export async function GuideArticle({
               på.
             </p>
 
-            <div className="mt-3.5 space-y-2">
+            <div className="mt-4 space-y-2.5">
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
                   href={`/guides/${v.id}`}
-                  className="group flex items-center gap-3 no-underline transition-colors hover:border-[rgba(45,42,36,0.16)]"
+                  className="group flex items-center gap-3.5 no-underline transition-colors hover:border-[rgba(45,42,36,0.18)]"
                   style={{
-                    // LIST CARD: kun svagt adskilt fra siden, meget diskret
-                    // border, ingen skygge, lav radius — en stram listepost,
-                    // ikke en stor promo-pude.
-                    background: 'rgba(255,252,244,0.5)',
-                    border: '1px solid rgba(45,42,36,0.08)',
-                    borderRadius: 16,
-                    padding: '13px 16px',
+                    // Sortkort med foto — redaktionel sort-entry, IKKE et webshop-
+                    // produktkort. Varm ivory, diskret border, knap nogen skygge.
+                    background: 'rgba(255,253,246,0.6)',
+                    border: '1px solid rgba(45,42,36,0.10)',
+                    borderRadius: 20,
+                    padding: 12,
+                    boxShadow: '0 8px 18px rgba(64,58,42,0.04)',
                   }}
                 >
+                  {/* Foto til venstre (sortsfoto, helst frugt på plante). */}
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: 100,
+                      height: 124,
+                      borderRadius: 16,
+                      overflow: 'hidden',
+                      background: '#ECE6D6',
+                    }}
+                  >
+                    {v.primaryImageId && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={v.primaryImageId}
+                        alt=""
+                        aria-hidden
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
                   <div className="min-w-0 flex-1">
                     <p
                       style={{
                         fontFamily: 'var(--font-plex-condensed), sans-serif',
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: 600,
-                        lineHeight: 1.15,
+                        lineHeight: 1.1,
                         letterSpacing: '-0.01em',
                         color: '#2D2A24',
                         margin: 0,
@@ -787,7 +808,7 @@ export async function GuideArticle({
                           fontSize: 15,
                           lineHeight: 1.35,
                           color: 'rgba(36,48,31,0.6)',
-                          margin: '3px 0 0',
+                          margin: '4px 0 0',
                         }}
                       >
                         {v.summary}
@@ -797,10 +818,10 @@ export async function GuideArticle({
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
-                          fontSize: 12.5,
+                          fontSize: 13,
                           fontWeight: 500,
-                          color: 'rgba(36,48,31,0.42)',
-                          margin: '6px 0 0',
+                          color: 'rgba(94,100,64,0.72)',
+                          margin: '7px 0 0',
                         }}
                       >
                         {v.tags.slice(0, 3).join(' · ')}
@@ -808,8 +829,8 @@ export async function GuideArticle({
                     )}
                   </div>
                   <ArrowRight
-                    className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5"
-                    style={{ color: 'rgba(36,48,31,0.3)' }}
+                    className="h-[22px] w-[22px] shrink-0 self-center transition-transform group-hover:translate-x-0.5"
+                    style={{ color: 'rgba(36,48,31,0.32)' }}
                   />
                 </Link>
               ))}
@@ -818,7 +839,7 @@ export async function GuideArticle({
             {sortsvarianter.length > 4 && (
               <Link
                 href="/guides"
-                className="group mt-3.5 inline-flex items-center gap-1.5"
+                className="group mt-4 inline-flex items-center gap-1.5"
                 style={{
                   fontFamily: 'var(--font-manrope)',
                   fontSize: 14,
@@ -826,7 +847,7 @@ export async function GuideArticle({
                   color: '#4E6138',
                 }}
               >
-                Se alle sorter ({sortsvarianter.length})
+                Se flere {effective.plantName.toLowerCase()}sorter
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             )}
