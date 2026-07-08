@@ -42,7 +42,8 @@ export interface DagensHistorieInput {
   logs: HistorieLog[]
   /** Slå plante op på id — undgår Map-varians mellem action og lib. */
   plant: (id: string) => HistoriePlant | undefined
-  currentYear: number
+  /** Aktuel sæsons start (ISO) — "denne sæson"-vinduet [seasonStart, nu]. */
+  seasonStart: string | null
   today: Date
   /** Guide-/år-opdagelse om spiretid (fra byggOpdagelse) — kan være null. */
   opdagelse: string | null
@@ -108,16 +109,17 @@ function hoestFlertal(plantName: string): string | null {
 }
 
 /**
- * For hver plante: dens FØRSTE log af typen i år. Returnér den friskeste
- * (nyeste dato) blandt disse "førster" + hvor mange dage siden. Så en fersk
- * første-høst af ét afgrøde surfacer, selv om et andet blev høstet før.
+ * For hver plante: dens FØRSTE log af typen i sæsonen. Returnér den
+ * friskeste (nyeste dato) blandt disse "førster" + hvor mange dage siden.
+ * Så en fersk første-høst af ét afgrøde surfacer, selv om et andet blev
+ * høstet før. Vinduet er [seasonStart, nu] — aktivitet, ikke kalenderår.
  */
 function friskesteFoerste(
-  logs: HistorieLog[], type: string, currentYear: number, today: Date,
+  logs: HistorieLog[], type: string, seasonStart: string, today: Date,
 ): { log: HistorieLog; dage: number } | null {
   const foersteByPlant = new Map<string, HistorieLog>()
   for (const l of logs) { // logs er nyeste-først → sidste write pr. plante = tidligste
-    if (l.type !== type || !l.date.startsWith(String(currentYear))) continue
+    if (l.type !== type || l.date < seasonStart) continue
     foersteByPlant.set(l.plant_id, l)
   }
   let best: HistorieLog | null = null
@@ -132,7 +134,7 @@ function friskesteFoerste(
  */
 export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
   const {
-    logs, plant, currentYear, today, opdagelse, onThisDay,
+    logs, plant, seasonStart, today, opdagelse, onThisDay,
     ligeNuFakta, inspirationer, klarTilUdplantning, erNy, maaned1, dagNr,
   } = input
 
@@ -143,11 +145,14 @@ export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
   }
   const dagOrd = (dage: number, dato: string): string =>
     dage === 0 ? 'i dag' : dage === 1 ? 'i går' : formatDagMaaned(dato)
+  // Frisk "første af typen i sæsonen" — kun når der ER en sæson.
+  const foerste = (type: string) =>
+    seasonStart ? friskesteFoerste(logs, type, seasonStart, today) : null
 
   const kand: HistorieKandidat[] = []
 
   // 1 · Frisk første høst — sæsonens pay-off, stærkest.
-  const hoest = friskesteFoerste(logs, 'harvest', currentYear, today)
+  const hoest = foerste('harvest')
   if (hoest) {
     const p = plant(hoest.log.plant_id)
     const flertal = p ? hoestFlertal(p.name) : null
@@ -162,7 +167,7 @@ export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
 
   // 3 · Frisk spiring — bruger den rigere guide-/år-opdagelse hvis den
   //     findes (dækker samtidig #5 guideafvigelse om samme fase).
-  const spiring = friskesteFoerste(logs, 'germination', currentYear, today)
+  const spiring = foerste('germination')
   if (spiring) {
     const tekst = opdagelse ?? `${navnAf(spiring.log)} er spiret.`
     kand.push({ score: (opdagelse ? 84 : 82) * recencyFaktor(spiring.dage), kicker: 'Fra din have', tekst, gruppe: 'spiring', reason: opdagelse ? 'frisk spiring m. opdagelse' : 'frisk spiring' })
@@ -172,7 +177,7 @@ export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
   }
 
   // 4 · Frisk udplantning / flyttet ud.
-  const udplant = friskesteFoerste(logs, 'planting_out', currentYear, today)
+  const udplant = foerste('planting_out')
   if (udplant) {
     kand.push({ score: 72 * recencyFaktor(udplant.dage), kicker: 'Fra din have', tekst: `${navnAf(udplant.log)} flyttede ud ${dagOrd(udplant.dage, udplant.log.date)}.`, gruppe: 'udplantning', reason: `udplantning ${udplant.dage} dage` })
   }

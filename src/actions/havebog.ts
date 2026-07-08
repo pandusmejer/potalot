@@ -16,6 +16,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
 import { byggDagensHistorie } from '@/lib/havebog-dagens-historie'
+import { beregnSaeson, saesonEtiket, type SaesonInfo } from '@/lib/havebog-saeson'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -220,8 +221,9 @@ function formatDagMaaned(iso: string): string {
 function byggMinder(
   logs: PlantLogRow[],
   plantById: Map<string, PlantRow>,
-  currentYear: number,
+  seasonStart: string | null,
 ): Minde[] {
+  if (!seasonStart) return []
   const MILEPAELE: Array<{ type: string; titel: string }> = [
     { type: 'harvest', titel: 'Første høst' },
     { type: 'germination', titel: 'Første spire' },
@@ -231,10 +233,10 @@ function byggMinder(
 
   const out: Array<Minde & { _date: string }> = []
   for (const m of MILEPAELE) {
-    // logs er sorteret nyeste-først — årets FØRSTE af typen er den
-    // sidste i listen inden for året.
+    // logs er sorteret nyeste-først — sæsonens FØRSTE af typen er den
+    // sidste i listen inden for sæson-vinduet [seasonStart, nu].
     const aaretsLogs = logs.filter(
-      l => l.type === m.type && l.date.startsWith(String(currentYear)),
+      l => l.type === m.type && l.date >= seasonStart,
     )
     const foerste = aaretsLogs[aaretsLogs.length - 1]
     if (!foerste) continue
@@ -267,8 +269,9 @@ function byggMinder(
 function byggVendepunkter(
   logs: PlantLogRow[],
   plantById: Map<string, PlantRow>,
-  currentYear: number,
+  seasonStart: string | null,
 ): Vendepunkt[] {
+  if (!seasonStart) return []
   const FASER: Array<{ type: string; titel: string; linje: (navn: string, dato: string) => string }> = [
     { type: 'sowing',       titel: 'Sæsonen begyndte', linje: (n, d) => `${n} blev sået ${d}.` },
     { type: 'germination',  titel: 'Væksten tog fart', linje: (n, d) => `${n} spirede ${d}.` },
@@ -278,10 +281,10 @@ function byggVendepunkter(
 
   const out: Array<Vendepunkt & { _date: string }> = []
   for (const fase of FASER) {
-    // logs er sorteret nyeste-først — årets FØRSTE af typen er den
-    // sidste i listen inden for året.
+    // logs er sorteret nyeste-først — sæsonens FØRSTE af typen er den
+    // sidste i listen inden for sæson-vinduet.
     const aaretsLogs = logs.filter(
-      l => l.type === fase.type && l.date.startsWith(String(currentYear)),
+      l => l.type === fase.type && l.date >= seasonStart,
     )
     const foerste = aaretsLogs[aaretsLogs.length - 1]
     if (!foerste) continue
@@ -315,45 +318,50 @@ function byggVendepunkter(
 function byggOpdagelse(
   logs: PlantLogRow[],
   plantById: Map<string, PlantRow>,
-  currentYear: number,
+  seasonStart: string | null,
+  prevSeasonStart: string | null,
 ): string | null {
-  // Spiretid pr. plante pr. år: dage fra sowing-log til germination-log
-  const spiretider = new Map<number, Array<{ art: string; variety: string | null; dage: number }>>()
-  const sowingByPlant = new Map<string, Map<number, string>>()
+  if (!seasonStart) return null
+
+  // Spiretid: dage fra plantens seneste såning FØR spiringen til spiringen.
+  // (Robust på tværs af årsskifter — vi kigger ikke på kalenderår.)
+  type Spire = { art: string; variety: string | null; dage: number; dato: string }
+  const alle: Spire[] = []
+  // Sånings-datoer pr. plante, ældste-først (logs er nyeste-først).
+  const sowByPlant = new Map<string, string[]>()
   for (const l of logs) {
     if (l.type !== 'sowing') continue
-    const yr = parseInt(l.date.slice(0, 4), 10)
-    const m = sowingByPlant.get(l.plant_id) ?? new Map()
-    // nyeste-først: behold den TIDLIGSTE såning i året
-    m.set(yr, l.date)
-    sowingByPlant.set(l.plant_id, m)
+    const arr = sowByPlant.get(l.plant_id) ?? []
+    arr.unshift(l.date) // nyeste-først input → unshift giver ældste-først
+    sowByPlant.set(l.plant_id, arr)
   }
   for (const l of logs) {
     if (l.type !== 'germination') continue
-    const yr = parseInt(l.date.slice(0, 4), 10)
-    const sow = sowingByPlant.get(l.plant_id)?.get(yr)
+    const saaninger = sowByPlant.get(l.plant_id)
+    if (!saaninger) continue
+    // seneste såning på eller før spiringen
+    const sow = [...saaninger].reverse().find(d => d <= l.date)
     if (!sow) continue
-    const dage = Math.round(
-      (new Date(l.date).getTime() - new Date(sow).getTime()) / 86400000,
-    )
+    const dage = Math.round((new Date(l.date).getTime() - new Date(sow).getTime()) / 86400000)
     if (dage <= 0 || dage > 90) continue
     const plant = plantById.get(l.plant_id)
     if (!plant) continue
-    const arr = spiretider.get(yr) ?? []
-    arr.push({ art: plant.name, variety: plant.variety, dage })
-    spiretider.set(yr, arr)
+    alle.push({ art: plant.name, variety: plant.variety, dage, dato: l.date })
   }
 
-  const iAar = spiretider.get(currentYear) ?? []
+  // Denne sæson vs. forrige sæson (aktivitet, ikke kalenderår).
+  const iAar = alle.filter(s => s.dato >= seasonStart)
   if (iAar.length === 0) return null
+  const sidsteAar = prevSeasonStart
+    ? alle.filter(s => s.dato >= prevSeasonStart && s.dato < seasonStart)
+    : []
 
-  // 1) År-over-år pr. art — den mest personlige opdagelse
-  const sidsteAar = spiretider.get(currentYear - 1) ?? []
+  // 1) Sæson-over-sæson pr. art — den mest personlige opdagelse
   for (const nu of iAar) {
     const foer = sidsteAar.find(s => s.art === nu.art)
     if (foer && Math.abs(nu.dage - foer.dage) >= 3) {
       const navn = capitalize(bestemtFlertal(nu.art))
-      return `${navn} spirede på ${nu.dage} dage i år — sidste år tog det ${foer.dage}.`
+      return `${navn} spirede på ${nu.dage} dage i år — sidste sæson tog det ${foer.dage}.`
     }
   }
 
@@ -409,35 +417,32 @@ function buildHeroNarrative(
   history: HistoryYear[],
   onThisDay: OnThisDayEntry[],
   today: Date,
-  /** Første sånings-dato i indeværende år — sæsonens "Dag 1". Null hvis intet er sået. */
-  seasonStart: string | null = null,
+  /** Aktivitets-sæson (fra beregnSaeson) — driver dag-tæller + sæsonnummer. */
+  saeson: SaesonInfo,
 ): HeroNarrative {
   const month = MAANED_FULD_LOWER[today.getMonth()]
   const currentYear = today.getFullYear()
-  const hasYearOnePlusHistory = history.some(h => h.year < currentYear)
+  // Har brugeren en fortid? Enten en tidligere sæson-cyklus, eller
+  // historik fra et tidligere kalenderår (driver "Velkommen tilbage"
+  // + på-denne-dag-fortællingen).
+  const hasYearOnePlusHistory =
+    saeson.nummer > 1 || history.some(h => h.year < currentYear)
 
-  // Sæsondag — dagbogs-stemmen ("Dag 66 af din første sæson").
-  // Dag 1 = første såning i året. Tæller kun når der ER en såning;
-  // en bruger uden noget i jorden har ingen sæsondag (ærlighed
-  // over poesi). Kun rimelige værdier (1-365) bruges.
-  const saesonDag = seasonStart
-    ? daysBetween(new Date(seasonStart), today) + 1
+  // Sæsondag — dagbogs-stemmen ("Dag 66 af din første sæson"). Dag 1 =
+  // sæsonens første såning (aktivitet, IKKE kalenderår). Tæller videre
+  // over nytår og nulstilles først ved næste sæsons første såning
+  // (se lib/havebog-saeson.ts). Tæller kun når der ER sået noget.
+  const saesonDag = saeson.start
+    ? daysBetween(new Date(saeson.start), today) + 1
     : null
-  const harSaesonDag = saesonDag !== null && saesonDag >= 1 && saesonDag <= 365
+  // Øvre sanity-cap (~11 år) fanger korrupte datoer, men tillader en
+  // sæson at løbe forbi 365 dage (Annas eksempel: DAG 366 før ny såning).
+  const harSaesonDag = saesonDag !== null && saesonDag >= 1 && saesonDag <= 4000
 
-  // V9 (dagtælleren): hvilken sæson er det? Antal distinkte år
-  // med historik + indeværende år → "af din tredje sæson".
-  const ORDINAL = [
-    'første', 'anden', 'tredje', 'fjerde', 'femte',
-    'sjette', 'syvende', 'ottende', 'niende', 'tiende',
-  ]
-  const saesonNr = new Set(history.map(h => h.year)).add(currentYear).size
-  const saesonEtiket = harSaesonDag
-    ? `af din ${ORDINAL[Math.min(saesonNr, ORDINAL.length) - 1]} sæson`
-    : null
+  const etiket = harSaesonDag ? saesonEtiket(saeson.nummer) : null
   const taeller = {
     saesonDag: harSaesonDag ? saesonDag : null,
-    saesonEtiket,
+    saesonEtiket: etiket,
   }
 
   // ── År 1+: brugeren har tidligere sæsoner ────────────────
@@ -591,9 +596,19 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     const today = new Date()
     const currentYear = today.getFullYear()
 
+    // ── Aktivitets-sæson ─────────────────────────────────────
+    // Sæsonen følger AKTIVITET, ikke kalenderåret: den løber fra årets
+    // første såning til næste års første såning (se lib/havebog-saeson.ts).
+    // seasonStart bruges som "denne sæson"-vindue [seasonStart, nu] i
+    // alle deriveringer nedenfor — så intet nulstilles 1. januar.
+    const saeson = beregnSaeson(
+      logs.filter(l => l.type === 'sowing').map(l => l.date),
+    )
+    const seasonStart = saeson.start
+
     // ── Hero stats ───────────────────────────────────────────
     const harvestsThisYear = logs.filter(
-      l => l.type === 'harvest' && l.date.startsWith(String(currentYear)),
+      l => l.type === 'harvest' && seasonStart !== null && l.date >= seasonStart,
     ).length
     const heroStats: HeroStats = {
       notes: logs.length,
@@ -753,19 +768,8 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           (p.archived_at ? new Date(p.archived_at).getFullYear() : currentYear),
       }))
 
-    // Sæsonstart = første sånings-log i indeværende år (fallback:
-    // tidligste log i året overhovedet — en plante købt som plante
-    // starter også en sæson).
-    const currentYearLogs = logs.filter(l => l.date.startsWith(String(currentYear)))
-    const sowingDates = currentYearLogs
-      .filter(l => l.type === 'sowing')
-      .map(l => l.date)
-      .sort()
-    const allDates = currentYearLogs.map(l => l.date).sort()
-    const seasonStart = sowingDates[0] ?? allDates[0] ?? null
-
     const heroNarrative = buildHeroNarrative(
-      heroStats, tidslinje, history, onThisDay, today, seasonStart,
+      heroStats, tidslinje, history, onThisDay, today, saeson,
     )
 
     // "I DIN HAVE" — åbningstallene (V4-mockup). Stilhed ved huller:
@@ -813,7 +817,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     const dagNr = Math.floor(
       (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000,
     )
-    const opdagelse = byggOpdagelse(logs, plantById, currentYear)
+    const opdagelse = byggOpdagelse(logs, plantById, seasonStart, saeson.forrigeStart)
     const dyrkedeSorter = [
       ...inventoryItems,
       ...plants.filter(p => !p.is_archived).map(p => ({ name: p.name, variety: p.variety })),
@@ -830,7 +834,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     const dagensOpslag = byggDagensHistorie({
       logs,
       plant: (id: string) => plantById.get(id),
-      currentYear,
+      seasonStart,
       today,
       opdagelse,
       onThisDay,
@@ -846,12 +850,12 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     // Begivenheder, ikke måneder: årets første af hver fase,
     // fortalt kronologisk. Linjerne kan senere skrives af AI;
     // strukturen er låst nu.
-    const vendepunkter = byggVendepunkter(logs, plantById, currentYear)
+    const vendepunkter = byggVendepunkter(logs, plantById, seasonStart)
 
     // ── Kapitel 4: Minder — kuraterede førster (V7) ───────────
     // Potalot VÆLGER: årets første af hver milepæls-type, max 4.
     // Ikke alle logs, ikke et galleri — kun højdepunkterne.
-    const minder = byggMinder(logs, plantById, currentYear)
+    const minder = byggMinder(logs, plantById, seasonStart)
 
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]

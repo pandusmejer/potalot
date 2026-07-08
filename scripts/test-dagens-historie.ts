@@ -32,7 +32,7 @@ function base(overrides: Partial<Parameters<typeof byggDagensHistorie>[0]> = {})
   return {
     logs: [] as HistorieLog[],
     plant,
-    currentYear: YEAR,
+    seasonStart: `${YEAR}-01-01`,
     today: TODAY,
     opdagelse: null as string | null,
     onThisDay: [] as OnThisDayEntry[],
