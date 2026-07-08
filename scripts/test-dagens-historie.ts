@@ -13,6 +13,7 @@ import {
   byggDagensHistorie,
   type HistorieLog,
   type HistoriePlant,
+  type Opdagelse,
 } from '@/lib/havebog-dagens-historie'
 import type { NaturFakta, OnThisDayEntry } from '@/data/havebog-demo'
 
@@ -34,7 +35,7 @@ function base(overrides: Partial<Parameters<typeof byggDagensHistorie>[0]> = {})
     plant,
     seasonStart: `${YEAR}-01-01`,
     today: TODAY,
-    opdagelse: null as string | null,
+    opdagelse: null as Opdagelse | null,
     onThisDay: [] as OnThisDayEntry[],
     ligeNuFakta: VEJR,
     inspirationer: [] as string[],
@@ -64,7 +65,7 @@ function tjek(navn: string, faktisk: string, forventetSub: string) {
       { plant_id: 'chili', date: '2026-07-06', type: 'germination' },
       { plant_id: 'chili', date: '2026-06-27', type: 'sowing' },
     ],
-    opdagelse: 'Chilierne spirede på 9 dage — hurtigere end guiden regner med.',
+    opdagelse: { overskrift: 'Chilierne spirede på 9 dage', underrubrik: 'Guiden regner normalt med 10–21. I år var de hurtigere end forventet.' },
   }))
   tjek('Fersk første høst > fersk spiring-opdagelse', r.lead.tekst, 'De første jordbær kom i dag.')
 }
@@ -77,7 +78,7 @@ function tjek(navn: string, faktisk: string, forventetSub: string) {
       { plant_id: 'chili', date: '2026-06-27', type: 'sowing' },
       { plant_id: 'jordbaer', date: '2026-05-28', type: 'harvest' },
     ],
-    opdagelse: 'Chilierne spirede på 9 dage — hurtigere end guiden regner med.',
+    opdagelse: { overskrift: 'Chilierne spirede på 9 dage', underrubrik: 'Guiden regner normalt med 10–21. I år var de hurtigere end forventet.' },
   }))
   tjek('Gammel høst < fersk spiring-opdagelse', r.lead.tekst, 'spirede på 9 dage')
 }

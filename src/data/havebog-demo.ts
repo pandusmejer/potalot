@@ -283,6 +283,8 @@ export interface Takt {
   /** Rubrik-etiket — "Dagens historie", "Fra haven", ... */
   kicker: string
   tekst: string
+  /** Undertekst — kun på lead'en: "aha"-laget under hovedhistorien. */
+  underrubrik?: string
 }
 
 export interface DagensOpslag {
@@ -295,7 +297,8 @@ export interface DagensOpslag {
 export const DEMO_DAGENS_OPSLAG: DagensOpslag = {
   lead: {
     kicker: 'Dagens historie',
-    tekst: 'Chilierne spirede på 9 dage — guiden regner med 10-21.',
+    tekst: 'Chilierne spirede på 9 dage',
+    underrubrik: 'Guiden regner normalt med 10–21. I år var de hurtigere end forventet.',
   },
   beats: [
     { kicker: 'Lige nu i haven', tekst: 'Jorden er nu varm nok til tomater og chili.' },

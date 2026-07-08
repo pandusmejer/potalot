@@ -38,6 +38,12 @@ export interface HistoriePlant {
   variety: string | null
 }
 
+/** Opdagelse (spiretid vs. guide/sæson): kort overskrift + "aha"-underrubrik. */
+export interface Opdagelse {
+  overskrift: string
+  underrubrik: string
+}
+
 export interface DagensHistorieInput {
   logs: HistorieLog[]
   /** Slå plante op på id — undgår Map-varians mellem action og lib. */
@@ -45,8 +51,8 @@ export interface DagensHistorieInput {
   /** Aktuel sæsons start (ISO) — "denne sæson"-vinduet [seasonStart, nu]. */
   seasonStart: string | null
   today: Date
-  /** Guide-/år-opdagelse om spiretid (fra byggOpdagelse) — kan være null. */
-  opdagelse: string | null
+  /** Spiretid-opdagelse (fra byggOpdagelse) — overskrift + underrubrik, eller null. */
+  opdagelse: Opdagelse | null
   onThisDay: OnThisDayEntry[]
   ligeNuFakta: NaturFakta | null
   inspirationer: string[]
@@ -60,6 +66,8 @@ interface HistorieKandidat {
   score: number
   kicker: string
   tekst: string
+  /** Undertekst — kun relevant på lead'en (fx "aha"-laget). */
+  underrubrik?: string
   /** grov gruppe, så en støtte-takt ikke gentager lead'ens pointe */
   gruppe: string
   /** intern begrundelse — ALDRIG i UI */
@@ -169,11 +177,11 @@ export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
   //     findes (dækker samtidig #5 guideafvigelse om samme fase).
   const spiring = foerste('germination')
   if (spiring) {
-    const tekst = opdagelse ?? `${navnAf(spiring.log)} er spiret.`
-    kand.push({ score: (opdagelse ? 84 : 82) * recencyFaktor(spiring.dage), kicker: 'Fra din have', tekst, gruppe: 'spiring', reason: opdagelse ? 'frisk spiring m. opdagelse' : 'frisk spiring' })
+    const tekst = opdagelse?.overskrift ?? `${navnAf(spiring.log)} er spiret.`
+    kand.push({ score: (opdagelse ? 84 : 82) * recencyFaktor(spiring.dage), kicker: 'Fra din have', tekst, underrubrik: opdagelse?.underrubrik, gruppe: 'spiring', reason: opdagelse ? 'frisk spiring m. opdagelse' : 'frisk spiring' })
   } else if (opdagelse) {
-    // 5 · Guideafvigelse uden fersk spiring-event (fx år-over-år).
-    kand.push({ score: 60, kicker: 'Fra din have', tekst: opdagelse, gruppe: 'spiring', reason: 'guideafvigelse uden fersk event' })
+    // 5 · Guideafvigelse uden fersk spiring-event (fx sæson-over-sæson).
+    kand.push({ score: 60, kicker: 'Fra din have', tekst: opdagelse.overskrift, underrubrik: opdagelse.underrubrik, gruppe: 'spiring', reason: 'guideafvigelse uden fersk event' })
   }
 
   // 4 · Frisk udplantning / flyttet ud.
@@ -232,5 +240,8 @@ export function byggDagensHistorie(input: DagensHistorieInput): DagensOpslag {
   }
   if (lead.gruppe !== 'fremad') beats.push({ kicker: fremad.kicker, tekst: fremad.tekst })
 
-  return { lead: { kicker: 'Dagens historie', tekst: lead.tekst }, beats }
+  return {
+    lead: { kicker: 'Dagens historie', tekst: lead.tekst, underrubrik: lead.underrubrik },
+    beats,
+  }
 }

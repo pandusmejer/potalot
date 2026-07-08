@@ -15,7 +15,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
-import { byggDagensHistorie } from '@/lib/havebog-dagens-historie'
+import { byggDagensHistorie, type Opdagelse } from '@/lib/havebog-dagens-historie'
 import { beregnSaeson, saesonEtiket, type SaesonInfo } from '@/lib/havebog-saeson'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
@@ -320,7 +320,7 @@ function byggOpdagelse(
   plantById: Map<string, PlantRow>,
   seasonStart: string | null,
   prevSeasonStart: string | null,
-): string | null {
+): Opdagelse | null {
   if (!seasonStart) return null
 
   // Spiretid: dage fra plantens seneste såning FØR spiringen til spiringen.
@@ -356,35 +356,46 @@ function byggOpdagelse(
     ? alle.filter(s => s.dato >= prevSeasonStart && s.dato < seasonStart)
     : []
 
-  // 1) Sæson-over-sæson pr. art — den mest personlige opdagelse
+  // 1) Sæson-over-sæson pr. art — den mest personlige opdagelse.
+  //    Kort overskrift (hændelsen) + underrubrik ("aha"-laget).
   for (const nu of iAar) {
     const foer = sidsteAar.find(s => s.art === nu.art)
     if (foer && Math.abs(nu.dage - foer.dage) >= 3) {
       const navn = capitalize(bestemtFlertal(nu.art))
-      return `${navn} spirede på ${nu.dage} dage i år — sidste sæson tog det ${foer.dage}.`
+      const hurtigere = nu.dage < foer.dage
+      return {
+        overskrift: `${navn} spirede på ${nu.dage} dage`,
+        underrubrik: `Sidste sæson tog det ${foer.dage}. I år var de ${hurtigere ? 'hurtigere' : 'langsommere'} end sidst.`,
+      }
     }
   }
 
-  // 2) Mod guidens interval — tilgængelig allerede i første sæson
-  let bedste: { tekst: string; afvigelse: number } | null = null
+  // 2) Mod guidens interval — tilgængelig allerede i første sæson.
+  let bedste: { opdagelse: Opdagelse; afvigelse: number } | null = null
   for (const nu of iAar) {
     const germ = parseGerminationDays(quickFactsForNavn(nu.art, nu.variety)?.germinationDays)
     if (!germ) continue
     const navn = nu.variety ? `${nu.art} ${nu.variety}` : capitalize(bestemtFlertal(nu.art))
-    let tekst: string | null = null
+    let opdagelse: Opdagelse | null = null
     let afvigelse = 0
     if (nu.dage < germ.min) {
       afvigelse = germ.min - nu.dage
-      tekst = `${navn} spirede på ${nu.dage} dage — guiden regner med ${germ.min}-${germ.max}.`
+      opdagelse = {
+        overskrift: `${navn} spirede på ${nu.dage} dage`,
+        underrubrik: `Guiden regner normalt med ${germ.min}–${germ.max}. I år var de hurtigere end forventet.`,
+      }
     } else if (nu.dage > germ.max) {
       afvigelse = nu.dage - germ.max
-      tekst = `${navn} brugte ${nu.dage} dage på at spire — guiden regner med ${germ.min}-${germ.max}.`
+      opdagelse = {
+        overskrift: `${navn} brugte ${nu.dage} dage på at spire`,
+        underrubrik: `Guiden regner normalt med ${germ.min}–${germ.max}. I år tog det længere end forventet.`,
+      }
     }
-    if (tekst && (!bedste || afvigelse > bedste.afvigelse)) {
-      bedste = { tekst, afvigelse }
+    if (opdagelse && (!bedste || afvigelse > bedste.afvigelse)) {
+      bedste = { opdagelse, afvigelse }
     }
   }
-  return bedste?.tekst ?? null
+  return bedste?.opdagelse ?? null
 }
 
 const MAANED_FULD_LOWER = [

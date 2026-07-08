@@ -89,18 +89,18 @@ export default async function HavebogPage() {
           space-y-fugen og løfter resten af siden med op. */}
       <div
         style={{
-          marginTop: -128,
+          marginTop: -141,
           position: 'relative',
           zIndex: 20,
-          // Ryk ind under bølgens crest: 23 mm mod venstre + 6 mm op.
-          transform: 'translate(-87px, -23px)',
+          // Vandret: ind under bølgens crest (venstre for midten).
+          transform: 'translateX(-87px)',
         }}
       >
         <HavebogDateline />
       </div>
-      {/* Ildstedet trukket op, så "Dagens historie" starter ~15 mm under
-          adressen (overskriver space-y-fugen). */}
-      <div style={{ marginTop: -78 }}>
+      {/* Ildstedet: ~100 px luft mellem dato og "Dagens historie", så
+          hovedopslaget føles som en ny magasin-side (overskriver space-y). */}
+      <div style={{ marginTop: -12 }}>
         <HavensStemme opslag={dagensOpslag} />
       </div>
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
