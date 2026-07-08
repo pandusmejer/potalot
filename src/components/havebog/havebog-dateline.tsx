@@ -20,9 +20,10 @@ const MONTHS = [
 export function HavebogDateline({ date = new Date() }: { date?: Date }) {
   const weekday = WEEKDAYS[date.getDay()]
   const linje2 = `${date.getDate()}. ${MONTHS[date.getMonth()]} ${date.getFullYear()}`
-  // Rolig overgang efter bølgen. Støvet salvie-grøn/grå (#8F9282).
+  // Rolig, VENSTRESTILLET overgang efter bølgen (samme akse som Dagens
+  // historie). Støvet salvie-grøn/grå (#8F9282).
   return (
-    <div style={{ textAlign: 'center', color: '#8F9282' }}>
+    <div style={{ textAlign: 'left', color: '#8F9282' }}>
       <p
         style={{
           fontFamily: sans,
@@ -31,7 +32,6 @@ export function HavebogDateline({ date = new Date() }: { date?: Date }) {
           letterSpacing: '0.24em',
           textTransform: 'uppercase',
           margin: 0,
-          paddingLeft: '0.24em', // optisk-centrér trods trailing tracking
         }}
       >
         {weekday}
@@ -43,7 +43,6 @@ export function HavebogDateline({ date = new Date() }: { date?: Date }) {
           fontWeight: 600,
           letterSpacing: '0.22em',
           margin: '6px 0 0',
-          paddingLeft: '0.22em',
         }}
       >
         {linje2}

@@ -52,8 +52,8 @@ export function HavensStemme({ opslag }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(50px, 15.5vw, 68px)',
-          lineHeight: 0.98,
+          fontSize: 'clamp(44px, 12.8vw, 56px)',
+          lineHeight: 1.02,
           letterSpacing: '-0.02em',
           color: '#1F2D1D',
           margin: 0,

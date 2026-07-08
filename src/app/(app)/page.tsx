@@ -92,8 +92,9 @@ export default async function HavebogPage() {
           marginTop: -141,
           position: 'relative',
           zIndex: 20,
-          // Vandret: ind under bølgens crest (venstre for midten).
-          transform: 'translateX(-87px)',
+          // Venstrestillet, samme venstre-akse som Dagens historie
+          // (main px-4 = 16 + samme paddingInline som Ildstedet).
+          paddingLeft: 'clamp(12px, 3.5vw, 16px)',
         }}
       >
         <HavebogDateline />
