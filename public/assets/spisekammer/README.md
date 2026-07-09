@@ -42,3 +42,21 @@ det automatisk.
 
 Indtil rigtige spisekammer-fotos produceres, seeder registret de eksisterende
 botaniske makroer (`/images/makro/…`), så systemet virker i dag uden dead-images.
+
+## Forvandlinger-tiles ("Det kan haven blive til")
+
+Forvandlings-tiles i mosaikken bruger en SEPARAT selektor,
+`selectForvandlingAssets` (`src/lib/forvandling-assets.ts`), med samme fallback:
+sort → afgrøde → kategori/mood → farve-tile.
+
+For at et foto må bruges på en forvandlings-tile (og ikke bare på de generiske
+crop-foto-tiles) skal det **eksplicit tagges**:
+
+- **Afgrøde-/sort-foto:** læg i `crops/{afgrøde}/` og registrér i
+  `SPISEKAMMER_ASSETS` med `useCases: ['forvandling', …]`.
+- **Kategori/mood-foto:** læg i `mood/` som `{kategori}-stemning-01.jpg` og
+  tilføj en linje i `FORVANDLING_KATEGORI_ASSETS` (`forvandling-assets.ts`).
+
+Uden `'forvandling'`-taggede fotos falder alle forvandlings-tiles til farve-
+posteren (kategori-farve) — det nuværende, godkendte udseende. Læg ét foto ind
++ tag det, så begynder den tile at vise foto. Ingen komponent-ændring nødvendig.

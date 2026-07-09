@@ -23,7 +23,11 @@ export function saesonForMaaned(m: number): Saeson {
   return 'winter'
 }
 type Mood = 'fresh' | 'warm' | 'green' | 'summer' | 'kitchen' | 'quiet'
-type UseCase = 'mosaic' | 'recipeTile' | 'cropTile' | 'background' | 'noteTile'
+// 'forvandling' = eksplicit egnet til en forvandlings-tile i mosaikken. Bevidst
+// adskilt fra 'mosaic'/'cropTile' (crop-foto-tiles), så generiske makroer ikke
+// kaprer de redaktionelle forvandlings-felter — kun fotos tagget 'forvandling'
+// vælges af selectForvandlingAssets.
+export type UseCase = 'mosaic' | 'recipeTile' | 'cropTile' | 'background' | 'noteTile' | 'forvandling'
 
 export interface SpisekammerAsset {
   crop: string          // normaliseret nøgle (ingen æøå): tomat, jordbaer, agurk…

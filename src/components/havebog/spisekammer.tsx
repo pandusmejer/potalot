@@ -11,6 +11,7 @@ import {
   KATEGORI_LABEL,
   type ForvandlingKategori,
 } from '@/lib/havebog-forvandlinger'
+import { selectForvandlingAssets } from '@/lib/forvandling-assets'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -21,7 +22,7 @@ interface Props {
 }
 
 type Tile =
-  | { slag: 'forvandling'; id: string; title: string; kategori: ForvandlingKategori; farve: string; lead: boolean }
+  | { slag: 'forvandling'; id: string; title: string; kategori: ForvandlingKategori; farve: string; foto?: string; lead: boolean }
   | { slag: 'foto'; foto: string; label: string; role: SpisekammerAssetRole }
   | { slag: 'note'; linjer: string[] }
   | { slag: 'status'; poster: { antal: string; navn: string }[]; kunNavne: boolean }
@@ -46,11 +47,23 @@ export function Spisekammer({ data }: Props) {
     antalErHoester: data.antalErHoester,
   })
   const forvandlinger = vaelgForvandlinger({ crops, maxTiles: 6 })
+  const saeson = saesonForMaaned(maaned)
 
   // ── Byg mosaik-tiles (varieret rækkefølge, tydeligt hierarki) ──
   const tiles: Tile[] = []
   forvandlinger.forEach((f, i) => {
-    tiles.push({ slag: 'forvandling', id: f.id, title: f.title, kategori: f.category, farve: KATEGORI_FARVE[f.category], lead: i === 0 })
+    // Asset-fallback: sort → afgrøde → kategori/mood → farve-tile. Findes der
+    // intet foto (i dag: altid), rammer farve-tilen og udseendet er uændret.
+    const asset = selectForvandlingAssets(f, { season: saeson })
+    tiles.push({
+      slag: 'forvandling',
+      id: f.id,
+      title: f.title,
+      kategori: f.category,
+      farve: KATEGORI_FARVE[f.category],
+      foto: asset.slag === 'foto' ? asset.path : undefined,
+      lead: i === 0,
+    })
     if (i === 1) tiles.push({ slag: 'note', linjer: valg.note })
   })
   const fotoTiles: Tile[] = valg.fotos.map(f => ({ slag: 'foto', foto: f.path, label: f.cropLabel, role: f.role }))
@@ -92,18 +105,42 @@ export function Spisekammer({ data }: Props) {
 function MosaikTile({ tile }: { tile: Tile }) {
   if (tile.slag === 'forvandling') {
     const lead = tile.lead
+    const eyebrow = (
+      <span className="uppercase" style={{ display: 'block', fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.72)', marginBottom: lead ? 12 : 8 }}>
+        {KATEGORI_LABEL[tile.kategori]}
+      </span>
+    )
+    const titel = (
+      <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(30px, 8.4vw, 38px)' : 'clamp(21px, 5.6vw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
+        {tile.title}
+      </span>
+    )
+    // Foto-behandling når asset-fallback fandt et billede; ellers farve-poster.
+    if (tile.foto) {
+      return (
+        <Link
+          href={`/havebog/forvandlinger/${tile.id}`}
+          className="no-underline block"
+          style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: lead ? '3 / 4' : '1 / 1', background: tile.farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={tile.foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div aria-hidden style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${tile.farve}E6 0%, ${tile.farve}66 38%, rgba(0,0,0,0) 72%)` }} />
+          <div style={{ position: 'relative', padding: lead ? '0 18px 22px' : '0 16px 18px' }}>
+            {eyebrow}
+            {titel}
+          </div>
+        </Link>
+      )
+    }
     return (
       <Link
         href={`/havebog/forvandlinger/${tile.id}`}
         className="no-underline block"
         style={{ background: tile.farve, borderRadius: 20, padding: lead ? '34px 18px 40px' : '20px 18px 24px', overflow: 'hidden' }}
       >
-        <span className="uppercase" style={{ display: 'block', fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.72)', marginBottom: lead ? 12 : 8 }}>
-          {KATEGORI_LABEL[tile.kategori]}
-        </span>
-        <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(30px, 8.4vw, 38px)' : 'clamp(21px, 5.6vw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
-          {tile.title}
-        </span>
+        {eyebrow}
+        {titel}
       </Link>
     )
   }
