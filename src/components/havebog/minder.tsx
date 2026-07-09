@@ -128,7 +128,7 @@ function MindeRaekke({ minde, sidst }: { minde: Minde; sidst: boolean }) {
         {minde.meta && (
           <span
             className="inline-flex items-center"
-            style={{ gap: 6, marginTop: 9, fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#5E6658', background: k.felt, borderRadius: 8, padding: '4px 11px' }}
+            style={{ gap: 6, marginTop: 9, fontFamily: sans, fontSize: 11, fontWeight: 500, color: '#5E6658', background: k.felt, borderRadius: 8, padding: '4px 11px' }}
           >
             <ChipIkon className="h-3.5 w-3.5" style={{ color: 'rgba(94,102,88,0.7)' }} aria-hidden strokeWidth={1.8} />
             {minde.meta}
