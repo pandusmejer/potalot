@@ -3,6 +3,7 @@ import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { HavebogDateline } from '@/components/havebog/havebog-dateline'
+import { HavebogDivider } from '@/components/havebog/havebog-divider'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
@@ -104,6 +105,8 @@ export default async function HavebogPage() {
       <div style={{ marginTop: -12 }}>
         <HavensStemme opslag={dagensOpslag} />
       </div>
+      {/* Ornament — lukker Dagens historie-opslaget før Tal til din have. */}
+      <HavebogDivider />
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
           Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),
           det eneste rum der SKABER indhold til alle de andre. */}
