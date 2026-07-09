@@ -61,7 +61,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           lineHeight: 1.5,
           color: 'rgba(36,48,31,0.5)',
           margin: 0,
-          marginBottom: 76,
+          marginBottom: 46,
         }}
       >
         Tryk og tal
@@ -130,7 +130,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           lineHeight: 1.32,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,
-          marginTop: 58,
+          marginTop: 28,
           maxWidth: '22ch',
         }}
       >
