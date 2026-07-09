@@ -120,7 +120,7 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
   return (
     <div
       className="flex items-center"
-      style={{ gap: 14, background: '#EEE7D5', border: '1px solid #D8D0B9', borderRadius: 20, padding: '14px 16px' }}
+      style={{ gap: 12, background: '#EEE7D5', border: '1px solid #D8D0B9', borderRadius: 20, padding: '12px 14px' }}
     >
       {/* Thumbnail eller farvefelt (136×140 @2x ≈ 68×70) */}
       <div style={{ flexShrink: 0, width: 68, height: 70, borderRadius: 14, overflow: 'hidden', background: '#E2D9C1' }}>
@@ -130,34 +130,34 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
         )}
       </div>
 
-      {/* År-chip */}
-      <span
-        style={{ flexShrink: 0, fontFamily: sans, fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', color: 'rgba(36,48,31,0.5)', background: '#E3DAC3', borderRadius: 8, padding: '5px 9px' }}
-      >
-        {p.archivedYear}
-      </span>
-
-      {/* Titel + resultat */}
+      {/* Tekst — art + sort på samme linje, år og resultat vandret nedenunder */}
       <div style={{ minWidth: 0, flex: 1 }}>
         <p
-          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(19px, 4.4vw, 23px)', lineHeight: 1.12, color: '#24301F', margin: 0 }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(17px, 4.2vw, 20px)', lineHeight: 1.1, color: '#24301F', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {p.name}
           {p.variety && (
             <span style={{ fontStyle: 'italic', fontWeight: 400, color: 'rgba(36,48,31,0.58)' }}> {p.variety}</span>
           )}
         </p>
-        {p.summary && (
-          <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.52)', margin: '3px 0 0' }}>
-            {p.summary}
-          </p>
-        )}
+        <div className="flex items-center" style={{ gap: 8, marginTop: 6 }}>
+          <span
+            style={{ flexShrink: 0, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em', color: 'rgba(36,48,31,0.5)', background: '#E3DAC3', borderRadius: 7, padding: '3px 7px' }}
+          >
+            {p.archivedYear}
+          </span>
+          {p.summary && (
+            <span style={{ minWidth: 0, fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(36,48,31,0.52)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {p.summary}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Åbne-indikation */}
       <div
         aria-hidden
-        style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 999, border: '1px solid rgba(36,48,31,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 999, border: '1px solid rgba(36,48,31,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <ArrowRight className="h-4 w-4" style={{ color: 'rgba(36,48,31,0.55)' }} strokeWidth={1.8} />
       </div>
