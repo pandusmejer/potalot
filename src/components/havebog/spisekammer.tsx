@@ -136,7 +136,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
   }
   if (tile.slag === 'status') {
     return (
-      <div style={{ background: '#E7DFC9', borderRadius: 20, padding: '22px 18px' }}>
+      <div style={{ background: '#E7DDB2', borderRadius: 20, padding: '22px 18px' }}>
         <div aria-hidden style={{ width: 22, height: 2, background: 'rgba(94,102,88,0.4)', marginBottom: 13 }} />
         <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.2em', color: '#8E9383', margin: '0 0 15px' }}>
           I kurven lige nu
