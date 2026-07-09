@@ -77,13 +77,14 @@ export function byggSpisekammer(hoest: HoestEntry[]): SpisekammerData | null {
     .sort((a, b) => b[1].antal - a[1].antal || b[1].seneste.localeCompare(a[1].seneste))
   const top = sorteret.slice(0, 3)
 
+  // Op til 5 opskrifter (mosaikken har brug for flere tiles end 3).
   const opskrifter: string[] = []
   for (const [key] of top) {
     for (const o of OPSKRIFTER[key] ?? []) {
       if (!opskrifter.includes(o)) opskrifter.push(o)
-      if (opskrifter.length >= 3) break
+      if (opskrifter.length >= 5) break
     }
-    if (opskrifter.length >= 3) break
+    if (opskrifter.length >= 5) break
   }
 
   return {
