@@ -103,7 +103,7 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
       {/* Indgang til sæsonarkivet — visuel intention, rute bygges senere */}
       <div
         className="flex items-center"
-        style={{ gap: 12, marginTop: 20, padding: '15px 18px', background: 'rgba(59,74,47,0.045)', borderRadius: 16 }}
+        style={{ gap: 12, marginTop: 22 }}
       >
         <BookOpen className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.5)', flexShrink: 0 }} aria-hidden strokeWidth={1.7} />
         <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.7)' }}>
@@ -122,8 +122,8 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
       className="flex items-center"
       style={{ gap: 14, background: '#EEE7D5', border: '1px solid #D8D0B9', borderRadius: 20, padding: '14px 16px' }}
     >
-      {/* Thumbnail eller farvefelt */}
-      <div style={{ flexShrink: 0, width: 56, height: 56, borderRadius: 14, overflow: 'hidden', background: '#E2D9C1' }}>
+      {/* Thumbnail eller farvefelt (136×140 @2x ≈ 68×70) */}
+      <div style={{ flexShrink: 0, width: 68, height: 70, borderRadius: 14, overflow: 'hidden', background: '#E2D9C1' }}>
         {p.primaryImageId && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={p.primaryImageId} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
@@ -140,7 +140,7 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
       {/* Titel + resultat */}
       <div style={{ minWidth: 0, flex: 1 }}>
         <p
-          style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(19px, 4.4vw, 23px)', lineHeight: 1.12, color: '#24301F', margin: 0 }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(19px, 4.4vw, 23px)', lineHeight: 1.12, color: '#24301F', margin: 0 }}
         >
           {p.name}
           {p.variety && (
