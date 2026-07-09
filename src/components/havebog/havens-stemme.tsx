@@ -45,7 +45,7 @@ export function HavensStemme({ opslag }: Props) {
           bølgen ejer nu datoen. Ildstedet starter direkte på hovedhistorien
           som et stort editorial-opslag, ikke en fortsættelse af heroen. */}
       {/* Eyebrow */}
-      <p style={{ ...kickerStyle, fontSize: 12, color: '#929787' }}>
+      <p style={{ ...kickerStyle, fontSize: 12, color: '#8F9484' }}>
         {opslag.lead.kicker}
       </p>
       {/* Hovedhistorien — ét bål i centrum. Kort titel; sammenligningen
@@ -70,7 +70,7 @@ export function HavensStemme({ opslag }: Props) {
           style={{
             fontFamily: serif,
             fontWeight: 500,
-            fontSize: 'clamp(26px, 7vw, 32px)',
+            fontSize: 'clamp(24px, 6.4vw, 30px)',
             lineHeight: 1.22,
             color: '#5F6658',
             margin: 0,
@@ -93,18 +93,18 @@ export function HavensStemme({ opslag }: Props) {
               i === 0 ? 'clamp(52px, 14vw, 76px)' : 'clamp(28px, 7.5vw, 42px)',
           }}
         >
-          <p style={{ ...kickerStyle, fontSize: 10.5, color: '#929787' }}>{b.kicker}</p>
+          <p style={{ ...kickerStyle, fontSize: 10.5, color: '#8F9484' }}>{b.kicker}</p>
           <p
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: 'clamp(19px, 4.6vw, 25px)',
-              lineHeight: 1.28,
+              fontSize: 'clamp(17px, 4.2vw, 22px)',
+              lineHeight: 1.24,
               letterSpacing: '-0.01em',
               color: '#596151',
               margin: 0,
               marginTop: 9,
-              maxWidth: '22ch',
+              maxWidth: 290,
             }}
           >
             {b.tekst}

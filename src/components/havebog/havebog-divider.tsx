@@ -13,7 +13,7 @@ export function HavebogDivider() {
     <div
       aria-hidden
       style={{
-        marginTop: 'clamp(48px, 13vw, 64px)',
+        marginTop: 'clamp(56px, 15vw, 72px)',
         marginBottom: 'clamp(56px, 15vw, 72px)',
         // Samme side-akse som teksten (main px-4 = 16 + samme paddingInline).
         paddingInline: 'clamp(12px, 3.5vw, 16px)',
@@ -45,10 +45,10 @@ export function HavebogDivider() {
             display: 'inline-flex',
             padding: '0 12px',
             background: 'var(--background)',
-            color: '#6A7554',
+            color: '#7C8560',
           }}
         >
-          <Sprout style={{ width: 24, height: 24 }} strokeWidth={1.6} />
+          <Sprout style={{ width: 22, height: 22 }} strokeWidth={1.5} />
         </span>
       </div>
     </div>
