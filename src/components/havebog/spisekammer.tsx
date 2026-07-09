@@ -1,9 +1,16 @@
+import Link from 'next/link'
 import type { SpisekammerData } from '@/data/havebog-demo'
 import {
   selectSpisekammerAssets,
   saesonForMaaned,
   type SpisekammerAssetRole,
 } from '@/lib/spisekammer-assets'
+import {
+  vaelgForvandlinger,
+  KATEGORI_FARVE,
+  KATEGORI_LABEL,
+  type ForvandlingKategori,
+} from '@/lib/havebog-forvandlinger'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -14,46 +21,43 @@ interface Props {
 }
 
 type Tile =
-  | { slag: 'opskrift'; navn: string; farve: string; lead: boolean }
+  | { slag: 'forvandling'; id: string; title: string; kategori: ForvandlingKategori; farve: string; lead: boolean }
   | { slag: 'foto'; foto: string; label: string; role: SpisekammerAssetRole }
   | { slag: 'note'; linjer: string[] }
   | { slag: 'status'; poster: { antal: string; navn: string }[]; kunNavne: boolean }
   | { slag: 'cta'; tekst: string }
 
 /**
- * RUM 10 · Spisekammer — have → høst → køkken som EDITORIAL MOSAIK.
+ * RUM 10 · "Det kan haven blive til" — havens OUTPUT-univers som mosaik.
  *
- * Et visuelt reward-moment: 2-søjlers staggered mosaik der veksler mellem
- * opskrift-typografi på dæmpede sæson-farvefelter, afgrøde-fotos valgt fra
- * Spisekammer-asset-systemet (lib/spisekammer-assets), en stemnings-note og
- * et stille høst-status. Fotos vælges med fallback sort → art → mood →
- * farvetile, så mosaikken aldrig knækker på et manglende billede.
+ * Ikke en opskriftssektion: forvandlinger på tværs af 8 kategorier (spis,
+ * gem, tør, bryg, duft, plej, pynt, så igen) valgt ud fra brugerens afgrøder.
+ * Tiles linker ind i /havebog/forvandlinger. Veksler mellem forvandlings-
+ * typografi på kategori-farvefelter, afgrøde-fotos, note og høst-status.
  */
 export function Spisekammer({ data }: Props) {
   const maaned = new Date().getMonth() + 1
+  const crops = data.hoest.map(h => h.navn)
   const valg = selectSpisekammerAssets({
     harvestedCrops: data.hoest,
-    recipeIdeas: data.opskrifter,
+    recipeIdeas: [],
     season: saesonForMaaned(maaned),
     maxPhotos: 2,
     antalErHoester: data.antalErHoester,
   })
+  const forvandlinger = vaelgForvandlinger({ crops, maxTiles: 6 })
 
   // ── Byg mosaik-tiles (varieret rækkefølge, tydeligt hierarki) ──
   const tiles: Tile[] = []
-  valg.opskrifter.forEach((o, i) => {
-    tiles.push({ slag: 'opskrift', navn: o.navn, farve: o.farve, lead: i === 0 })
+  forvandlinger.forEach((f, i) => {
+    tiles.push({ slag: 'forvandling', id: f.id, title: f.title, kategori: f.category, farve: KATEGORI_FARVE[f.category], lead: i === 0 })
     if (i === 1) tiles.push({ slag: 'note', linjer: valg.note })
   })
   const fotoTiles: Tile[] = valg.fotos.map(f => ({ slag: 'foto', foto: f.path, label: f.cropLabel, role: f.role }))
   if (fotoTiles[0]) tiles.splice(1, 0, fotoTiles[0])
   if (fotoTiles[1]) tiles.splice(Math.min(4, tiles.length), 0, fotoTiles[1])
   if (valg.hoest.length > 0) {
-    tiles.push({
-      slag: 'status',
-      poster: valg.hoest.map(h => ({ antal: h.antal, navn: h.navn.toLowerCase() })),
-      kunNavne: valg.antalErHoester, // ægte data: skjul tal (18 = logs, ikke stk.)
-    })
+    tiles.push({ slag: 'status', poster: valg.hoest.map(h => ({ antal: h.antal, navn: h.navn.toLowerCase() })), kunNavne: valg.antalErHoester })
   }
   tiles.push({ slag: 'cta', tekst: 'Flere idéer' })
 
@@ -86,14 +90,21 @@ export function Spisekammer({ data }: Props) {
 }
 
 function MosaikTile({ tile }: { tile: Tile }) {
-  if (tile.slag === 'opskrift') {
+  if (tile.slag === 'forvandling') {
     const lead = tile.lead
     return (
-      <div style={{ background: tile.farve, borderRadius: 20, padding: lead ? '40px 18px 44px' : '22px 18px 24px', overflow: 'hidden' }}>
-        <p style={{ fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(32px, 9vw, 40px)' : 'clamp(22px, 6vw, 27px)', lineHeight: 1.02, letterSpacing: '-0.01em', color: CREME, margin: 0 }}>
-          {tile.navn}
-        </p>
-      </div>
+      <Link
+        href={`/havebog/forvandlinger/${tile.id}`}
+        className="no-underline block"
+        style={{ background: tile.farve, borderRadius: 20, padding: lead ? '34px 18px 40px' : '20px 18px 24px', overflow: 'hidden' }}
+      >
+        <span className="uppercase" style={{ display: 'block', fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.72)', marginBottom: lead ? 12 : 8 }}>
+          {KATEGORI_LABEL[tile.kategori]}
+        </span>
+        <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(30px, 8.4vw, 38px)' : 'clamp(21px, 5.6vw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
+          {tile.title}
+        </span>
+      </Link>
     )
   }
   if (tile.slag === 'foto') {
@@ -124,8 +135,6 @@ function MosaikTile({ tile }: { tile: Tile }) {
     )
   }
   if (tile.slag === 'status') {
-    // Editorial status-tile, ikke adminfelt: varm sand-bund, markante tal,
-    // serif-afgrøder, plakat-luft + subtil ornamental streg (note-familie).
     return (
       <div style={{ background: '#E7DFC9', borderRadius: 20, padding: '22px 18px' }}>
         <div aria-hidden style={{ width: 22, height: 2, background: 'rgba(94,102,88,0.4)', marginBottom: 13 }} />
@@ -143,13 +152,13 @@ function MosaikTile({ tile }: { tile: Tile }) {
       </div>
     )
   }
-  // cta — diskret "mere"-åbning (antyder liv; ingen destination endnu)
+  // cta → oversigten over forvandlinger
   return (
-    <div style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
+    <Link href="/havebog/forvandlinger" className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
       <span className="flex items-center" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
         {tile.tekst}
         <span aria-hidden>→</span>
       </span>
-    </div>
+    </Link>
   )
 }
