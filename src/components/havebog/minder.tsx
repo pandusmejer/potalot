@@ -61,14 +61,14 @@ export function Minder({ minder }: Props) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: ITEM_GAP }}>
         {minder.map((m, i) => (
-          <MindeRaekke key={`${m.titel}-${m.dato}`} minde={m} foerst={i === 0} sidst={i === minder.length - 1} />
+          <MindeRaekke key={`${m.titel}-${m.dato}`} minde={m} sidst={i === minder.length - 1} />
         ))}
       </div>
     </section>
   )
 }
 
-function MindeRaekke({ minde, foerst, sidst }: { minde: Minde; foerst: boolean; sidst: boolean }) {
+function MindeRaekke({ minde, sidst }: { minde: Minde; sidst: boolean }) {
   const k = minde.kind ? KIND[minde.kind] : NEUTRAL
   const Ikon = k.ikon
   const ChipIkon = chipIkon(minde.kind)
@@ -110,13 +110,13 @@ function MindeRaekke({ minde, foerst, sidst }: { minde: Minde; foerst: boolean; 
         )}
       </div>
 
-      {/* Tekst */}
-      <div style={{ minWidth: 0, paddingTop: 2 }}>
-        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.2em', color: '#8F9484', margin: 0 }}>
+      {/* Tekst — dato flugter med billedets overkant */}
+      <div style={{ minWidth: 0, paddingTop: 0 }}>
+        <p className="uppercase" style={{ fontFamily: sans, fontSize: 8.5, fontWeight: 700, letterSpacing: '0.2em', color: '#74796A', lineHeight: 1, margin: 0 }}>
           {minde.dato}
         </p>
         <p
-          style={{ fontFamily: serif, fontWeight: 500, fontSize: foerst ? 'clamp(26px, 6vw, 32px)' : 'clamp(22px, 5vw, 28px)', lineHeight: 1.08, letterSpacing: '-0.01em', color: '#1F2D1D', margin: '3px 0 0' }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(21px, 4.8vw, 26px)', lineHeight: 1.08, letterSpacing: '-0.01em', color: '#1F2D1D', margin: '5px 0 0' }}
         >
           {minde.titel}
         </p>
@@ -128,7 +128,7 @@ function MindeRaekke({ minde, foerst, sidst }: { minde: Minde; foerst: boolean; 
         {minde.meta && (
           <span
             className="inline-flex items-center"
-            style={{ gap: 6, marginTop: 9, fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#5E6658', background: 'rgba(94,102,88,0.10)', borderRadius: 999, padding: '4px 11px' }}
+            style={{ gap: 6, marginTop: 9, fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#5E6658', background: k.felt, borderRadius: 8, padding: '4px 11px' }}
           >
             <ChipIkon className="h-3.5 w-3.5" style={{ color: 'rgba(94,102,88,0.7)' }} aria-hidden strokeWidth={1.8} />
             {minde.meta}
