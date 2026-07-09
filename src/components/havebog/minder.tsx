@@ -43,12 +43,12 @@ export function Minder({ minder }: Props) {
     <section>
       <p
         className="uppercase"
-        style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.24em', color: 'rgba(36,48,31,0.50)', margin: 0 }}
+        style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, letterSpacing: '0.24em', color: 'rgba(36,48,31,0.50)', margin: 0 }}
       >
         Minder
       </p>
       <p
-        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(15px, 3.4vw, 18px)', color: 'rgba(36,48,31,0.55)', margin: '4px 0 22px' }}
+        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 3.9vw, 20px)', color: 'rgba(36,48,31,0.55)', margin: '4px 0 22px' }}
       >
         Sæsonens små vendepunkter
       </p>
@@ -77,7 +77,7 @@ function MindeRaekke({ minde, foerst }: { minde: Minde; foerst: boolean }) {
   return (
     <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
       {/* Markør på tidslinjen */}
-      <div style={{ position: 'relative', zIndex: 1, flexShrink: 0, marginTop: 24 }}>
+      <div style={{ position: 'relative', zIndex: 1, flexShrink: 0, marginTop: 28 }}>
         <div
           style={{ width: 33, height: 33, borderRadius: 999, background: k.farve, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 4px #F4EFE1' }}
         >
@@ -85,15 +85,15 @@ function MindeRaekke({ minde, foerst }: { minde: Minde; foerst: boolean }) {
         </div>
       </div>
 
-      {/* Thumbnail — foto eller farvefelt+ikon */}
+      {/* Thumbnail — foto eller farvefelt+ikon (200×177 @2x ≈ 100×89) */}
       <div
-        style={{ flexShrink: 0, width: 58, height: 74, borderRadius: 16, overflow: 'hidden', background: k.felt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        style={{ flexShrink: 0, width: 100, height: 89, borderRadius: 16, overflow: 'hidden', background: k.felt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         {minde.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={minde.imageUrl} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
         ) : (
-          <Ikon className="h-6 w-6" style={{ color: k.farve }} aria-hidden strokeWidth={1.6} />
+          <Ikon className="h-8 w-8" style={{ color: k.farve }} aria-hidden strokeWidth={1.5} />
         )}
       </div>
 
