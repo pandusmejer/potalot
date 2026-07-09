@@ -71,11 +71,11 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
           fontFamily: serif,
           fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(19px, 3.8vw, 24px)',
+          fontSize: 'clamp(15px, 4.1vw, 24px)',
           lineHeight: 1.35,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,
-          maxWidth: '30ch',
+          whiteSpace: 'nowrap',
         }}
       >
         Det der er afsluttet, er blevet erfaring.
