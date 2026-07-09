@@ -576,14 +576,22 @@ export const DEMO_TAL_EKSEMPLER: string[] = [
   '"Jeg så bladlus på roserne i dag."',
 ]
 // V18: seneste optagelser — viser at stemmen bliver til noter/minder
+export type OptagelseStatus =
+  | 'unprocessed'
+  | 'log'
+  | 'opgave'
+  | 'minde'
+  | 'observation'
 export interface Optagelse {
   tekst: string
   tid: string
+  /** Hvad optagelsen er blevet til (diktafon = indbakke, ikke lydarkiv). */
+  status?: OptagelseStatus
 }
 export const DEMO_OPTAGELSER: Optagelse[] = [
-  { tekst: 'Tomaterne ser trætte ud efter regnen.', tid: 'I dag, 17.42' },
-  { tekst: 'Husk at så mere salat til efteråret.', tid: 'I går, 10.31' },
-  { tekst: 'Første tomat er ved at få farve!', tid: '8. juni, 18.09' },
+  { tekst: 'Tomaterne ser trætte ud efter regnen.', tid: 'I dag, 17.42', status: 'unprocessed' },
+  { tekst: 'Husk at så mere salat til efteråret.', tid: 'I går, 10.31', status: 'opgave' },
+  { tekst: 'Første tomat er ved at få farve!', tid: '8. juni, 18.09', status: 'minde' },
 ]
 
 // 4 · Inspirér mig (som selvstændigt rum)
