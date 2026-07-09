@@ -105,16 +105,20 @@ export default async function HavebogPage() {
       <div style={{ marginTop: -12 }}>
         <HavensStemme opslag={dagensOpslag} />
       </div>
-      {/* Ornament — lukker Dagens historie-opslaget før Tal til din have. */}
+      {/* Ornament — lukker Dagens historie-opslaget før Tal til din have.
+          marginTop:0 dræber space-y-fugen, så divider-bundmarginen (64) ejer
+          afstanden divider→diktafon. */}
       <HavebogDivider />
       {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
           Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),
           det eneste rum der SKABER indhold til alle de andre. */}
-      {isDemo ? (
-        <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />
-      ) : (
-        <TalOptager />
-      )}
+      <div style={{ marginTop: 0 }}>
+        {isDemo ? (
+          <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />
+        ) : (
+          <TalOptager />
+        )}
+      </div>
     </>
   )
 

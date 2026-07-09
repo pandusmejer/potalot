@@ -61,7 +61,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           lineHeight: 1.5,
           color: 'rgba(36,48,31,0.5)',
           margin: 0,
-          marginBottom: 28,
+          marginBottom: 76,
         }}
       >
         Tryk og tal
@@ -69,12 +69,13 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
         til din have
       </p>
 
-      {/* Mikrofonen med glød-halo */}
+      {/* Mikrofonen med glød-halo. Snæver container (haloen pulser frit
+          udenfor via absolut position) — så den reserverer minimal luft. */}
       <div
         style={{
           position: 'relative',
-          width: 168,
-          height: 168,
+          width: 104,
+          height: 104,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -129,7 +130,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           lineHeight: 1.32,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,
-          marginTop: 22,
+          marginTop: 58,
           maxWidth: '22ch',
         }}
       >
@@ -138,7 +139,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
 
       {/* Seneste optagelser — beviset på at stemmen bliver til noget */}
       {optagelser.length > 0 && (
-        <div style={{ width: '100%', marginTop: 34, textAlign: 'left' }}>
+        <div style={{ width: '100%', marginTop: 68, textAlign: 'left' }}>
           <div className="flex items-baseline justify-between" style={{ marginBottom: 14 }}>
             <p
               className="uppercase"
@@ -158,9 +159,9 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
               className="uppercase"
               style={{
                 fontFamily: sans,
-                fontSize: 10.5,
-                fontWeight: 700,
-                letterSpacing: '0.18em',
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.22em',
                 color: '#6A7554',
                 margin: 0,
               }}
