@@ -34,9 +34,11 @@ import type {
   Minde,
   DagensOpslag,
   InspirerForslag,
+  SpisekammerData,
 } from '@/data/havebog-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
+import { byggSpisekammer } from '@/lib/havebog-spisekammer'
 
 export interface HavebogData {
   heroStats: HeroStats
@@ -49,6 +51,8 @@ export interface HavebogData {
   dagensOpslag: DagensOpslag
   /** Prøv næste år (Fase C): ét fremadrettet forslag. Null = skjul rummet. */
   inspirerForslag: InspirerForslag | null
+  /** Spisekammer (Fase E): sæsonens høst pr. afgrøde. Null = skjul rummet. */
+  spisekammer: SpisekammerData | null
   /** Kapitel 3: sæsonens vendepunkter — begivenheder, ikke måneder */
   vendepunkter: Vendepunkt[]
   /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
@@ -881,13 +885,17 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       ...plants.filter(p => !p.is_archived).map(p => ({ art: p.name, variety: p.variety })),
     ]
     const hoestPrArt: Record<string, number> = {}
+    const hoestEntries: { art: string; date: string }[] = []
     for (const l of logs) {
       if (l.type !== 'harvest') continue
       if (seasonStart !== null && l.date < seasonStart) continue
       const p = plantById.get(l.plant_id)
       if (!p) continue
       hoestPrArt[p.name] = (hoestPrArt[p.name] ?? 0) + 1
+      hoestEntries.push({ art: p.name, date: l.date })
     }
+    // ── Spisekammer (Fase E) — sæsonens høst grupperet pr. afgrøde ──
+    const spisekammer = byggSpisekammer(hoestEntries)
     const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt })
     const inspirerForslag: InspirerForslag | null = proev
       ? {
@@ -921,6 +929,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       iDinHave,
       dagensOpslag,
       inspirerForslag,
+      spisekammer,
       vendepunkter,
       minder,
       naturenLigeNu,

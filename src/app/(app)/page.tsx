@@ -144,6 +144,7 @@ export default async function HavebogPage() {
       }
     : {
         inspirerMig: data.inspirerForslag !== null,
+        spisekammer: data.spisekammer !== null,
         paaDenneDag: onThisDay.length > 0,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
@@ -158,7 +159,7 @@ export default async function HavebogPage() {
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
     minder: <Minder minder={minder} />,
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
-    spisekammer: <Spisekammer data={DEMO_SPISEKAMMER} />,
+    spisekammer: <Spisekammer data={isDemo ? DEMO_SPISEKAMMER : data?.spisekammer ?? DEMO_SPISEKAMMER} />,
     projekter: <Projekter projekt={DEMO_PROJEKT} />,
     bedrifter: <Bedrifter bedrifter={DEMO_BEDRIFTER} />,
     vejret: <VejretIHaven vejr={DEMO_VEJR} />,
