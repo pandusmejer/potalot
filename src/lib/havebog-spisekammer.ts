@@ -90,5 +90,7 @@ export function byggSpisekammer(hoest: HoestEntry[]): SpisekammerData | null {
   return {
     hoest: top.map(([, g]) => ({ navn: g.navn, antal: String(g.antal) })),
     opskrifter,
+    // antal = høst-registreringer (ingen mængde-felt) → UI viser kun navne.
+    antalErHoester: true,
   }
 }

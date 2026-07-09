@@ -658,6 +658,12 @@ export const DEMO_KOMPETENCER: Kompetenceomraade[] = [
 export interface SpisekammerData {
   hoest: { navn: string; antal: string }[]
   opskrifter: string[]
+  /**
+   * Er `antal` høst-REGISTRERINGER (ægte data) frem for faktiske mængder?
+   * Så må UI ikke skrive "18 jordbær" (misvisende) — vis kun afgrødenavne.
+   * Demo = false (kuraterede tal). Udfyldes true af den ægte motor.
+   */
+  antalErHoester?: boolean
 }
 export const DEMO_SPISEKAMMER: SpisekammerData = {
   hoest: [
