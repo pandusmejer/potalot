@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Optagelse, OptagelseStatus } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -154,9 +155,10 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
             >
               Seneste optagelser
             </p>
-            {/* Se alle → optagelsesarkivet (bygges i eget sprint). */}
-            <span
-              className="uppercase"
+            {/* Se alle → optagelsesarkivet. */}
+            <Link
+              href="/havebog/optagelser"
+              className="uppercase no-underline"
               style={{
                 fontFamily: sans,
                 fontSize: 11,
@@ -167,7 +169,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
               }}
             >
               Se alle
-            </span>
+            </Link>
           </div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0 }} className="divide-y divide-border/50">
             {optagelser.map((o, i) => (
