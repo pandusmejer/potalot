@@ -124,17 +124,20 @@ function MosaikTile({ tile }: { tile: Tile }) {
     )
   }
   if (tile.slag === 'status') {
+    // Editorial status-tile, ikke adminfelt: varm sand-bund, markante tal,
+    // serif-afgrøder, plakat-luft + subtil ornamental streg (note-familie).
     return (
-      <div style={{ background: 'rgba(59,74,47,0.07)', borderRadius: 20, padding: '18px 16px' }}>
-        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.42)', margin: '0 0 10px' }}>
+      <div style={{ background: '#E7DFC9', borderRadius: 20, padding: '22px 18px' }}>
+        <div aria-hidden style={{ width: 22, height: 2, background: 'rgba(94,102,88,0.4)', marginBottom: 13 }} />
+        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.2em', color: '#8E9383', margin: '0 0 15px' }}>
           I kurven lige nu
         </p>
         {tile.poster.map(p => (
-          <p key={p.navn} style={{ margin: 0, display: 'flex', alignItems: 'baseline', gap: 8, lineHeight: 1.28 }}>
+          <p key={p.navn} style={{ margin: 0, display: 'flex', alignItems: 'baseline', gap: 12, lineHeight: 1.42 }}>
             {!tile.kunNavne && (
-              <span style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, color: '#24301F', fontVariantNumeric: 'tabular-nums', minWidth: '1.8ch' }}>{p.antal}</span>
+              <span style={{ fontFamily: sans, fontSize: 20, fontWeight: 600, color: '#24301F', fontVariantNumeric: 'tabular-nums', minWidth: '1.9ch' }}>{p.antal}</span>
             )}
-            <span style={{ fontFamily: serif, fontWeight: 400, fontSize: tile.kunNavne ? 19 : 17, color: 'rgba(36,48,31,0.72)' }}>{p.navn}</span>
+            <span style={{ fontFamily: serif, fontWeight: 400, fontSize: tile.kunNavne ? 20 : 19, color: '#5E6658' }}>{p.navn}</span>
           </p>
         ))}
       </div>
