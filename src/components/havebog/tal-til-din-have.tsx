@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { OptagelseStatusIkon } from '@/components/havebog/optagelse-status-ikon'
 import type { Optagelse, OptagelseStatus } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -174,10 +175,8 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           <ul style={{ listStyle: 'none', margin: 0, padding: 0 }} className="divide-y divide-border/50">
             {optagelser.map((o, i) => (
               <li key={i} className="flex items-center" style={{ gap: 12, paddingBlock: 12 }}>
-                <span aria-hidden style={{ flexShrink: 0, color: '#3B4A2F' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M12 20c0-5 0-9 5-12-4 0-7 2-8 6-1-3-3-4-6-4 3 2 4 5 4 10" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-                  </svg>
+                <span aria-hidden style={{ flexShrink: 0 }}>
+                  <OptagelseStatusIkon status={o.status} />
                 </span>
                 <span style={{ flex: 1, minWidth: 0 }}>
                   <span
@@ -222,23 +221,24 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
                     )}
                   </span>
                 </span>
-                <span
-                  aria-hidden
+                <button
+                  type="button"
+                  aria-label="Afspil optagelse"
+                  className="flex items-center justify-center flex-shrink-0 transition-colors hover:border-[#3B4A2F] hover:bg-[rgba(59,74,47,0.08)]"
                   style={{
-                    flexShrink: 0,
                     width: 32,
                     height: 32,
                     borderRadius: '50%',
                     border: '1.5px solid rgba(36,48,31,0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    background: 'transparent',
+                    color: '#24301F',
+                    cursor: 'pointer',
                   }}
                 >
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="#24301F" aria-hidden>
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
                     <path d="M2 1.5v9l8-4.5z" />
                   </svg>
-                </span>
+                </button>
               </li>
             ))}
           </ul>

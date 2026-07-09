@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { fortolkTale } from '@/actions/tale'
+import { OptagelseStatusIkon } from '@/components/havebog/optagelse-status-ikon'
 import { behandlOptagelse, type OptagelseRow } from '@/actions/optagelser'
 import type { OptagelseStatus } from '@/data/havebog-demo'
 import type { TaleForslag } from '@/lib/tale-fortolk'
@@ -114,10 +115,8 @@ export function OptagelserArkiv({ optagelser }: { optagelser: OptagelseRow[] }) 
         {synlige.map(row => (
           <li key={row.id} style={{ paddingBlock: 16 }}>
             <div className="flex items-start" style={{ gap: 12 }}>
-              <span aria-hidden style={{ flexShrink: 0, marginTop: 3, color: '#3B4A2F' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M12 20c0-5 0-9 5-12-4 0-7 2-8 6-1-3-3-4-6-4 3 2 4 5 4 10" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-                </svg>
+              <span aria-hidden style={{ flexShrink: 0, marginTop: 3 }}>
+                <OptagelseStatusIkon status={row.status} />
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: '#24301F', lineHeight: 1.35, margin: 0 }}>
