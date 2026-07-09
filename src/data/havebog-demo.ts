@@ -339,17 +339,23 @@ export const DEMO_VENDEPUNKTER: Vendepunkt[] = [
  * Ikke alle billeder, ikke alle logs — kun sæsonens førster og
  * største øjeblikke. Emotionelt indhold, Potalot vælger.
  */
+/** Milepæl-type — styrer markørfarve + ikon i tidslinjen. */
+export type MindeKind = 'knop' | 'blomst' | 'hoest' | 'saaning' | 'udplantning' | 'spire'
+
 export interface Minde {
   titel: string          // "Første knop", "Første høst"
-  detalje: string        // "Dahlia Café au Lait"
+  detalje: string        // sorten, fx "Dahlia Café au Lait"
   dato: string           // "4. juni"
+  kind?: MindeKind       // markør + ikon; udeladt → neutral
+  imageUrl?: string | null // lille thumbnail; mangler → farvefelt + ikon
+  meta?: string          // lille chip, fx "knapt 90 gram", "seks frø i bakke"
 }
 
 export const DEMO_MINDER: Minde[] = [
   // Nyeste først — samme rækkefølge som byggMinder i actions/havebog.ts.
-  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni' },
-  { titel: 'Første høst', detalje: 'Salat Crispy Mint — knapt 90 gram, perfekt sprød', dato: '18. maj' },
-  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano — seks frø i bakke med varme under', dato: '18. marts' },
+  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni', kind: 'knop', imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint', dato: '18. maj', kind: 'hoest', meta: 'knapt 90 gram' },
+  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano', dato: '18. marts', kind: 'saaning', meta: 'seks frø i bakke' },
 ]
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [

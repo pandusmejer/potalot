@@ -32,6 +32,7 @@ import type {
   IDinHaveTal,
   Vendepunkt,
   Minde,
+  MindeKind,
   DagensOpslag,
   InspirerForslag,
   SpisekammerData,
@@ -233,11 +234,11 @@ function byggMinder(
   seasonStart: string | null,
 ): Minde[] {
   if (!seasonStart) return []
-  const MILEPAELE: Array<{ type: string; titel: string }> = [
-    { type: 'harvest', titel: 'Første høst' },
-    { type: 'germination', titel: 'Første spire' },
-    { type: 'planting_out', titel: 'Første udplantning' },
-    { type: 'sowing', titel: 'Sæsonens første såning' },
+  const MILEPAELE: Array<{ type: string; titel: string; kind: MindeKind }> = [
+    { type: 'harvest', titel: 'Første høst', kind: 'hoest' },
+    { type: 'germination', titel: 'Første spire', kind: 'spire' },
+    { type: 'planting_out', titel: 'Første udplantning', kind: 'udplantning' },
+    { type: 'sowing', titel: 'Sæsonens første såning', kind: 'saaning' },
   ]
 
   const out: Array<Minde & { _date: string }> = []
@@ -254,15 +255,28 @@ function byggMinder(
     const navn = plant.variety ? `${plant.name} ${plant.variety}` : plant.name
     out.push({
       titel: m.titel,
-      detalje: foerste.note ? `${navn} — ${foerste.note}` : navn,
+      detalje: navn,
       dato: formatDagMaaned(foerste.date),
+      kind: m.kind,
+      // Thumbnail: logbilledet hvis der er ét, ellers plantens primærfoto.
+      imageUrl: foerste.image_urls?.[0] ?? plant.primary_image_url ?? null,
+      // Kort meta-chip fra notens første sætning (holdes stram).
+      meta: kortMeta(foerste.note),
       _date: foerste.date,
     })
   }
   return out
     .sort((a, b) => b._date.localeCompare(a._date))
     .slice(0, 4)
-    .map(m => ({ titel: m.titel, detalje: m.detalje, dato: m.dato }))
+    .map(({ _date, ...m }) => m)
+}
+
+/** Trim en note til en kort chip (første sætning, maks ~24 tegn). */
+function kortMeta(note: string | null): string | undefined {
+  if (!note) return undefined
+  const foerste = note.split(/[.—–\n]/)[0].trim()
+  if (!foerste) return undefined
+  return foerste.length > 26 ? undefined : foerste
 }
 
 /**
