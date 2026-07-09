@@ -33,7 +33,10 @@ import type {
   Vendepunkt,
   Minde,
   DagensOpslag,
+  InspirerForslag,
 } from '@/data/havebog-demo'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
 
 export interface HavebogData {
   heroStats: HeroStats
@@ -44,6 +47,8 @@ export interface HavebogData {
   iDinHave: IDinHaveTal
   /** Ildstedet (V16): dagens side — hovedhistorie + støtte-takter */
   dagensOpslag: DagensOpslag
+  /** Prøv næste år (Fase C): ét fremadrettet forslag. Null = skjul rummet. */
+  inspirerForslag: InspirerForslag | null
   /** Kapitel 3: sæsonens vendepunkter — begivenheder, ikke måneder */
   vendepunkter: Vendepunkt[]
   /** Kapitel 4: kuraterede højdepunkter — sæsonens førster */
@@ -857,6 +862,43 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       dagNr,
     })
 
+    // ── Prøv næste år (Fase C) ────────────────────────────────
+    // Fremadblik: sammenlign brugerens sorter/arter + høst med guide-
+    // kataloget → ét konkret forslag til næste sæson. Kun ægte data;
+    // null skjuler rummet for indloggede. Se lib/havebog-proev-naeste-aar.
+    const proevKatalog = IMPORTED_GUIDES
+      .filter(g => g.guideLevel === 'variety' && g.variety)
+      .map(g => ({
+        art: g.plantName,
+        variety: g.variety as string,
+        tags: g.tags ?? [],
+        harvestMonths: g.quickFacts?.harvestMonths ?? [],
+        difficulty: g.difficulty ?? null,
+        billede: null,
+      }))
+    const proevDyrkede = [
+      ...inventoryItems.map(i => ({ art: i.name, variety: i.variety })),
+      ...plants.filter(p => !p.is_archived).map(p => ({ art: p.name, variety: p.variety })),
+    ]
+    const hoestPrArt: Record<string, number> = {}
+    for (const l of logs) {
+      if (l.type !== 'harvest') continue
+      if (seasonStart !== null && l.date < seasonStart) continue
+      const p = plantById.get(l.plant_id)
+      if (!p) continue
+      hoestPrArt[p.name] = (hoestPrArt[p.name] ?? 0) + 1
+    }
+    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt })
+    const inspirerForslag: InspirerForslag | null = proev
+      ? {
+          kicker: proev.kicker,
+          navn: proev.navn,
+          begrundelse: proev.begrundelse,
+          billede: proev.billede ?? undefined,
+          sekundaer: proev.sekundaer,
+        }
+      : null
+
     // ── Kapitel 3: Sæsonens vendepunkter (V8) ─────────────────
     // Begivenheder, ikke måneder: årets første af hver fase,
     // fortalt kronologisk. Linjerne kan senere skrives af AI;
@@ -878,6 +920,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       fornavn,
       iDinHave,
       dagensOpslag,
+      inspirerForslag,
       vendepunkter,
       minder,
       naturenLigeNu,

@@ -139,6 +139,7 @@ export default async function HavebogPage() {
         historienFortsaetter: archivedPlants.length > 0,
       }
     : {
+        inspirerMig: data.inspirerForslag !== null,
         paaDenneDag: onThisDay.length > 0,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
@@ -147,7 +148,7 @@ export default async function HavebogPage() {
   const valgteRum = kurater({ maaned: aktuelMaaned(), harData, maks: 3 })
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
-    inspirerMig: <InspirerMig forslag={DEMO_INSPIRER} />,
+    inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
     dyrkerstatus: <Dyrkerstatus status={DEMO_DYRKERSTATUS} />,
     dyrkerkompetencer: <Dyrkerkompetencer omraader={DEMO_KOMPETENCER} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
