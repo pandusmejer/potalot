@@ -4,37 +4,41 @@ import type { Minde, MindeKind } from '@/data/havebog-demo'
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
+/** Lodret afstand mellem minder — også det stykke stregen bygger bro over. */
+const ITEM_GAP = 52
+const LINE = '#D8D2BC'
+
 interface Props {
   minder: Minde[]
 }
 
-/** Markørfarve + ikon pr. milepæl-type — sanselige nedslag, ikke pynt. */
-const KIND: Record<MindeKind, { farve: string; felt: string; ikon: typeof Leaf }> = {
-  knop: { farve: '#C1899A', felt: '#EBD9DD', ikon: Flower2 },   // støvet rosa
-  blomst: { farve: '#C1899A', felt: '#EBD9DD', ikon: Flower2 },
-  hoest: { farve: '#7C8560', felt: '#DCE0CD', ikon: Leaf },      // salvie
-  spire: { farve: '#7C8560', felt: '#DCE0CD', ikon: Sprout },
-  saaning: { farve: '#C0994E', felt: '#EBDFC1', ikon: Sprout },  // varm sand / hø
-  udplantning: { farve: '#8B9774', felt: '#DDE1D0', ikon: Shovel },
+/** Markør + farvefelt + ikon pr. milepæl-type. */
+const KIND: Record<MindeKind, { circle: string; felt: string; feltIkon: string; ikon: typeof Leaf }> = {
+  knop: { circle: '#C88396', felt: '#D8B2B8', feltIkon: '#8A5D66', ikon: Flower2 },
+  blomst: { circle: '#C88396', felt: '#D8B2B8', feltIkon: '#8A5D66', ikon: Flower2 },
+  hoest: { circle: '#6F7758', felt: '#DCE2D0', feltIkon: '#6D7757', ikon: Leaf },
+  spire: { circle: '#6F7758', felt: '#DCE2D0', feltIkon: '#6D7757', ikon: Sprout },
+  saaning: { circle: '#C79A36', felt: '#E8DEBE', feltIkon: '#B98F34', ikon: Sprout },
+  udplantning: { circle: '#8B9774', felt: '#DDE1D0', feltIkon: '#6D7757', ikon: Shovel },
 }
-const NEUTRAL = { farve: '#8F9484', felt: '#E4E0D0', ikon: Leaf }
+const NEUTRAL = { circle: '#8F9484', felt: '#E4E0D0', feltIkon: '#8F9484', ikon: Leaf }
 
-/** Chip-ikon — høst måles i kurven, såning i bakken. */
+/** Chip-ikon — høst måles i kurven, alt andet i bakken. */
 function chipIkon(kind?: MindeKind) {
-  if (kind === 'hoest') return ShoppingBasket
-  return Sprout
+  return kind === 'hoest' ? ShoppingBasket : Sprout
 }
 
 /**
- * Kapitel 4: "Minder" — sæsonens levende tidslinje (V9, havebog.md).
+ * Kapitel 4: "Minder" — sæsonens levende tidslinje (V10, havebog.md).
  *
- * Ikke længere en poetisk tekstliste på creme, men en tidslinje med små
- * sanselige nedslag: farvet markør pr. milepæl-type, thumbnail (eller
- * farvefelt+ikon), dato/titel/sort og en lille meta-chip. Skal føles
- * levende — i modsætning til "Historien fortsætter", der er arkiv.
+ * Små sanselige nedslag: farvet markør pr. milepæl-type, 96×96 foto (eller
+ * farvefelt+ikon), stramt teksthierarki. Bevidst ANDERLEDES end "Historien
+ * fortsætter" (arkiv). Kurateret: kun sæsonens førster, max 3.
  *
- * Kurateret: kun sæsonens førster (høst, knop, såning, udplantning).
- * Ingen minder endnu → kapitlet udelades helt.
+ * Stregen HØRER TIL de tre minder, ikke til hele sektionen: den starter
+ * præcis ved toppen af øverste foto og slutter ved bunden af det nederste.
+ * Løst med absolut positionering pr. item (ingen margin-gætteri), så den
+ * flugter uanset hvor mange linjer teksten fylder.
  */
 export function Minder({ minder }: Props) {
   if (minder.length === 0) return null
@@ -43,81 +47,85 @@ export function Minder({ minder }: Props) {
     <section>
       <p
         className="uppercase"
-        style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, letterSpacing: '0.24em', color: 'rgba(36,48,31,0.50)', margin: 0 }}
+        style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: '0 0 8px' }}
       >
         Minder
       </p>
       <p
-        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 3.9vw, 20px)', color: 'rgba(36,48,31,0.55)', margin: '4px 0 22px' }}
+        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 22, lineHeight: 1.15, color: '#7A8170', margin: '0 0 54px' }}
       >
         Sæsonens små vendepunkter
       </p>
 
-      <div style={{ position: 'relative' }}>
-        {/* Tynd lodret tidslinje bag markørerne */}
-        <div
-          aria-hidden
-          style={{ position: 'absolute', left: 16, top: 14, bottom: 14, width: 1, background: 'rgba(36,48,31,0.14)' }}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {minder.map((m, i) => (
-            <MindeRaekke key={`${m.titel}-${m.dato}`} minde={m} foerst={i === 0} />
-          ))}
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: ITEM_GAP }}>
+        {minder.map((m, i) => (
+          <MindeRaekke key={`${m.titel}-${m.dato}`} minde={m} foerst={i === 0} sidst={i === minder.length - 1} />
+        ))}
       </div>
     </section>
   )
 }
 
-function MindeRaekke({ minde, foerst }: { minde: Minde; foerst: boolean }) {
+function MindeRaekke({ minde, foerst, sidst }: { minde: Minde; foerst: boolean; sidst: boolean }) {
   const k = minde.kind ? KIND[minde.kind] : NEUTRAL
   const Ikon = k.ikon
   const ChipIkon = chipIkon(minde.kind)
 
   return (
-    <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-      {/* Markør på tidslinjen */}
-      <div style={{ position: 'relative', zIndex: 1, flexShrink: 0, marginTop: 28 }}>
+    <div style={{ display: 'flex', alignItems: 'stretch' }}>
+      {/* Ikon-/tidslinje-kolonne (48px). Stregen ligger i center af cirklen. */}
+      <div style={{ position: 'relative', width: 48, flexShrink: 0, marginRight: 14 }}>
+        {/* Streg: fra fotoets top; bygger bro over gap'et til næste item.
+            Sidste item stopper præcis ved fotoets bund (96px). */}
         <div
-          style={{ width: 33, height: 33, borderRadius: 999, background: k.farve, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 4px #F4EFE1' }}
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: 23,
+            top: 0,
+            width: 1,
+            background: LINE,
+            zIndex: 0,
+            ...(sidst ? { height: 96 } : { bottom: -ITEM_GAP }),
+          }}
+        />
+        {/* Cirkel — center flugter med fotoets lodrette midte (96/2 = 48). */}
+        <div
+          style={{ position: 'absolute', top: 26, left: 2, zIndex: 2, width: 44, height: 44, borderRadius: 999, background: k.circle, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
-          <Ikon className="h-4 w-4" style={{ color: '#FBF7EA' }} aria-hidden strokeWidth={1.9} />
+          <Ikon style={{ width: 21, height: 21, color: '#F7F1DF' }} aria-hidden strokeWidth={1.8} />
         </div>
       </div>
 
-      {/* Thumbnail — foto eller farvefelt+ikon (200×177 @2x ≈ 100×89) */}
+      {/* Foto/farvefelt (96×96) */}
       <div
-        style={{ flexShrink: 0, width: 100, height: 89, borderRadius: 16, overflow: 'hidden', background: k.felt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        style={{ flexShrink: 0, alignSelf: 'flex-start', width: 96, height: 96, borderRadius: 18, overflow: 'hidden', marginRight: 24, background: k.felt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         {minde.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={minde.imageUrl} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
         ) : (
-          <Ikon className="h-8 w-8" style={{ color: k.farve }} aria-hidden strokeWidth={1.5} />
+          <Ikon style={{ width: 38, height: 38, color: k.feltIkon }} aria-hidden strokeWidth={1.6} />
         )}
       </div>
 
-      {/* Tekst */}
-      <div style={{ minWidth: 0, paddingTop: 2 }}>
-        <p className="uppercase" style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.2em', color: '#8F9484', margin: 0 }}>
+      {/* Tekst — optisk lidt højere end fotoets midte */}
+      <div style={{ minWidth: 0, flex: 1, paddingTop: 10 }}>
+        <p className="uppercase" style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', lineHeight: 1, margin: '0 0 12px' }}>
           {minde.dato}
         </p>
-        <p
-          style={{ fontFamily: serif, fontWeight: 500, fontSize: foerst ? 'clamp(26px, 6vw, 32px)' : 'clamp(22px, 5vw, 28px)', lineHeight: 1.08, letterSpacing: '-0.01em', color: '#1F2D1D', margin: '3px 0 0' }}
-        >
+        <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 32, lineHeight: 1.02, color: '#1F2D1D', margin: '0 0 4px' }}>
           {minde.titel}
         </p>
-        <p
-          style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 4vw, 21px)', lineHeight: 1.25, color: '#687060', margin: '2px 0 0' }}
-        >
+        <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 22, lineHeight: 1.1, color: '#6F7666', margin: '2px 0 0' }}>
           {minde.detalje}
         </p>
         {minde.meta && (
           <span
             className="inline-flex items-center"
-            style={{ gap: 6, marginTop: 9, fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#5E6658', background: 'rgba(94,102,88,0.10)', borderRadius: 999, padding: '4px 11px' }}
+            style={{ marginTop: 14, height: 28, padding: '0 12px', borderRadius: 999, background: '#E8E1CF', color: '#6D7466', fontFamily: sans, fontSize: 13, fontWeight: 600, gap: 6 }}
           >
-            <ChipIkon className="h-3.5 w-3.5" style={{ color: 'rgba(94,102,88,0.7)' }} aria-hidden strokeWidth={1.8} />
+            <ChipIkon style={{ width: 14, height: 14, color: 'rgba(109,116,102,0.75)' }} aria-hidden strokeWidth={1.8} />
             {minde.meta}
           </span>
         )}
