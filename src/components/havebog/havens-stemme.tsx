@@ -34,7 +34,9 @@ export function HavensStemme({ opslag }: Props) {
   return (
     <section
       style={{
-        paddingBlock: '0 clamp(16px, 6vw, 40px)',
+        // Ekstra bund-padding, så sidste støtte-takt ikke lander for tæt
+        // på den fixed bundnav.
+        paddingBlock: '0 clamp(48px, 13vw, 80px)',
         // Samlet side-padding ~28-32px (main har 16px → +12-16px her).
         paddingInline: 'clamp(12px, 3.5vw, 16px)',
       }}
@@ -80,21 +82,29 @@ export function HavensStemme({ opslag }: Props) {
         </p>
       )}
 
-      {/* Støtte-takter — hver med sin rubrik, stepped down */}
+      {/* Støtte-takter — sekundære og mere kompakte, så sektionen ikke
+          føles som én lang serif-blok. Første takt får ekstra luft, så
+          den tydeligt skiller sig fra hovedhistorien. */}
       {opslag.beats.map((b, i) => (
-        <div key={i} style={{ marginTop: 'clamp(34px, 9vw, 56px)' }}>
+        <div
+          key={i}
+          style={{
+            marginTop:
+              i === 0 ? 'clamp(52px, 14vw, 76px)' : 'clamp(28px, 7.5vw, 42px)',
+          }}
+        >
           <p style={{ ...kickerStyle, fontSize: 10.5 }}>{b.kicker}</p>
           <p
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: 'clamp(22px, 5.2vw, 31px)',
-              lineHeight: 1.26,
+              fontSize: 'clamp(19px, 4.6vw, 26px)',
+              lineHeight: 1.32,
               letterSpacing: '-0.01em',
-              color: 'rgba(36,48,31,0.8)',
+              color: 'rgba(36,48,31,0.68)',
               margin: 0,
-              marginTop: 10,
-              maxWidth: '24ch',
+              marginTop: 9,
+              maxWidth: '26ch',
             }}
           >
             {b.tekst}
