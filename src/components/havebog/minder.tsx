@@ -76,7 +76,7 @@ function MindeRaekke({ minde, sidst }: { minde: Minde; sidst: boolean }) {
   return (
     <div style={{ display: 'flex', gap: 14, alignItems: 'stretch' }}>
       {/* Markør-kolonne — stregen ligger i center af cirklen og flugter
-          med fotoets top (foerst) hhv. bund (sidst). */}
+          med fotoets top (første item) hhv. bund (sidste item). */}
       <div style={{ position: 'relative', width: 33, flexShrink: 0 }}>
         <div
           aria-hidden

@@ -264,7 +264,7 @@ export function TalOptager() {
                   maxWidth: '22ch',
                 }}
               >
-                Fortæl hvad du ser. Potalot hjælper dig med at gemme det rigtigt.
+                Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
               </p>
               <button
                 type="button"

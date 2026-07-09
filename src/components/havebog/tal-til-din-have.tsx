@@ -136,7 +136,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           maxWidth: '22ch',
         }}
       >
-        Fortæl hvad du ser. Potalot hjælper dig med at gemme det rigtigt.
+        Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
       </p>
 
       {/* Seneste optagelser — beviset på at stemmen bliver til noget */}
