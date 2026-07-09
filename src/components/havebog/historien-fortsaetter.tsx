@@ -31,12 +31,12 @@ interface Props {
  */
 export function HistorienFortsaetter({ plants }: Props) {
   return (
-    <section className="space-y-5">
+    <section>
       <p
         className="uppercase"
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 12.5,
           fontWeight: 700,
           letterSpacing: '0.24em',
           color: 'rgba(36,48,31,0.50)',
@@ -46,7 +46,13 @@ export function HistorienFortsaetter({ plants }: Props) {
         Historien fortsætter
       </p>
 
-      {plants.length === 0 ? <FoersteSaesonSlutning /> : <Arkiv plants={plants} />}
+      {plants.length === 0 ? (
+        <div style={{ marginTop: 20 }}>
+          <FoersteSaesonSlutning />
+        </div>
+      ) : (
+        <Arkiv plants={plants} />
+      )}
     </section>
   )
 }
@@ -65,16 +71,17 @@ export function HistorienFortsaetter({ plants }: Props) {
 function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
   const vist = plants.slice(0, 3)
   return (
-    <div className="space-y-5">
+    <div>
+      {/* Undertekst — samme størrelse/linjeafstand som Minders undertitel */}
       <p
         style={{
           fontFamily: serif,
           fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(15px, 4.1vw, 24px)',
-          lineHeight: 1.35,
-          color: 'rgba(36,48,31,0.72)',
-          margin: 0,
+          fontSize: 'clamp(17px, 3.9vw, 20px)',
+          lineHeight: 'normal',
+          color: 'rgba(36,48,31,0.55)',
+          margin: '4px 0 22px',
           whiteSpace: 'nowrap',
         }}
       >
