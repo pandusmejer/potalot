@@ -75,11 +75,22 @@ export function selectForvandlingAssets(
 
   // Kun fotos eksplicit tagget til forvandlings-brug (ikke generiske makroer).
   const forvandlingsFotos = FORVANDLING_ASSETS.filter(a => a.useCases.includes('forvandling'))
+  // Generiske (ikke-bundne) forvandlings-fotos til sort/afgrøde-trinnene —
+  // bundne fotos hører KUN til deres egen forvandling (trin 0).
+  const generiske = forvandlingsFotos.filter(a => !a.forvandlingId)
+
+  // 0. Forvandling-specifikt asset (fx et resultatfoto bundet til netop denne
+  //    forvandling) — vinder over crop-match, så en sauce-krukke ikke lander
+  //    på gazpacho.
+  const bundet = forvandlingsFotos
+    .filter(a => a.forvandlingId === f.id && passerSaeson(a.seasons, season))
+    .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))[0]
+  if (bundet) return { slag: 'foto', path: bundet.path, kilde: 'afgroede' }
 
   // 1. Sortspecifikt asset.
   if (opts?.variety) {
     const vk = cropKey(opts.variety)
-    const sort = forvandlingsFotos
+    const sort = generiske
       .filter(a => cropKey(a.crop) === vk && passerSaeson(a.seasons, season))
       .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))[0]
     if (sort) return { slag: 'foto', path: sort.path, kilde: 'sort' }
@@ -87,7 +98,7 @@ export function selectForvandlingAssets(
 
   // 2. Afgrøde/art-asset (én af forvandlingens afgrøder).
   const crops = new Set(f.crops.map(cropKey))
-  const afgroede = forvandlingsFotos
+  const afgroede = generiske
     .filter(a => crops.has(cropKey(a.crop)) && passerSaeson(a.seasons, season))
     .sort((a, b) => ROLLE_RANG[b.role] - ROLLE_RANG[a.role] || (b.priority ?? 0) - (a.priority ?? 0))[0]
   if (afgroede) return { slag: 'foto', path: afgroede.path, kilde: 'afgroede' }

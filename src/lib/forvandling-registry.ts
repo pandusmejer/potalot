@@ -37,6 +37,9 @@ export interface SpisekammerAsset {
   mood?: Mood
   seasons?: Saeson[]
   useCases: UseCase[]
+  /** Binder et foto til ÉN bestemt forvandling (fx et resultatfoto). Vinder
+   *  over crop-match, så fx en tomatsauce-krukke ikke lander på gazpacho. */
+  forvandlingId?: string
   /** Højere = foretrækkes. */
   priority?: number
 }
@@ -61,8 +64,12 @@ const STANDARD_FARVE = '#8B9774'
  * Rigtige spisekammer-fotos tilføjes her efterhånden som de produceres.
  */
 export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
-  // tomat
-  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 90 },
+  // tomat — rigtige forvandlinger-fotos (pakke 1)
+  { crop: 'tomat', cropLabel: 'Tomater', path: '/assets/forvandlinger/crops/tomat/tomat-koekken-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 95 },
+  { crop: 'tomat', cropLabel: 'Tomater', path: '/assets/forvandlinger/crops/tomat/tomat-plante-01.jpg', role: 'plant', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 62 },
+  { crop: 'tomat', cropLabel: 'Tomatsauce på glas', path: '/assets/forvandlinger/crops/tomat/tomat-sauce-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'tomatsauce', priority: 90 },
+  // tomat — makro-fallback (bevaret, lavere prioritet)
+  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
   // agurk
   { crop: 'agurk', cropLabel: 'Agurker', path: '/images/makro/agurk/frugt.jpg', role: 'fruit', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 88 },

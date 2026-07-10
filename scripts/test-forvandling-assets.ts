@@ -59,6 +59,23 @@ const mynteTe = findForvandling('mynte-te')!   // crops: mynte · bryg
   FORVANDLING_KATEGORI_ASSETS.pop()
 }
 
+// forvandlingId: bundet resultatfoto vinder på egen forvandling, men lander
+// IKKE på en anden forvandling med samme afgrøde.
+{
+  const tomatsauce = findForvandling('tomatsauce')!
+  FORVANDLING_ASSETS.push({ crop: 'tomat', cropLabel: 'Sauce', path: '/test/sauce.jpg', role: 'kitchen', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'tomatsauce', priority: 999 })
+  const paaSauce = selectForvandlingAssets(tomatsauce, { season: 'summer' })
+  tjek('Bundet foto vises på egen forvandling', paaSauce.slag === 'foto' && paaSauce.path === '/test/sauce.jpg')
+  const paaGazpacho = selectForvandlingAssets(gazpacho, { season: 'summer' })
+  tjek('Bundet foto lander IKKE på anden tomat-forvandling', paaGazpacho.slag === 'farve')
+  FORVANDLING_ASSETS.pop()
+}
+
+// De 3 rigtige pakke-1-fotos er registreret som forventet.
+tjek('tomat-koekken-01 er cropTile', FORVANDLING_ASSETS.some(a => a.path.includes('tomat-koekken-01') && a.useCases.includes('cropTile')))
+tjek('tomat-sauce-01 bundet til tomatsauce', FORVANDLING_ASSETS.some(a => a.path.includes('tomat-sauce-01') && a.forvandlingId === 'tomatsauce'))
+tjek('tomatsauce-tile viser sauce-fotoet', (() => { const v = selectForvandlingAssets(findForvandling('tomatsauce')!, { season: 'summer' }); return v.slag === 'foto' && v.path.includes('tomat-sauce-01') })())
+
 // Fallback intakt efter alle pushes/pops.
 tjek('Registret ryddet igen → farve', selectForvandlingAssets(gazpacho).slag === 'farve')
 
