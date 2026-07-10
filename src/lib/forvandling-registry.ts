@@ -57,6 +57,7 @@ export const CROP_FARVE: Record<string, string> = {
   ribs: '#9D3F46',
   kartoffel: '#B99A6B',
   lavendel: '#7E6480',
+  dahlia: '#C87F94',
 }
 const STANDARD_FARVE = '#8B9774'
 
@@ -77,6 +78,13 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'lavendel', cropLabel: 'Duftpose', path: '/assets/forvandlinger/crops/lavendel/lavendel-duftpose-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'duftpose', priority: 90 },
   // kamille — urte-te-flat-lay (kamille-hero), bundet til kamille-te
   { crop: 'kamille', cropLabel: 'Kamille-te', path: '/assets/forvandlinger/crops/kamille/kamille-te-01.jpg', role: 'kitchen', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'kamille-te', priority: 90 },
+  // jordbær — pakke 2 (vises i demo-mosaikken)
+  { crop: 'jordbaer', cropLabel: 'Jordbær', path: '/assets/forvandlinger/crops/jordbaer/jordbaer-koekken-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  { crop: 'jordbaer', cropLabel: 'Jordbærtærte', path: '/assets/forvandlinger/crops/jordbaer/jordbaer-taerte-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['forvandling'], forvandlingId: 'jordbaertaerte', priority: 90 },
+  // chili — rigtigt crop-foto (erstatter makro)
+  { crop: 'chili', cropLabel: 'Chili', path: '/assets/forvandlinger/crops/chili/chili-plante-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  // dahlia — enkelt bloms, bundet til dahlia-vase
+  { crop: 'dahlia', cropLabel: 'Dahlia i vase', path: '/assets/forvandlinger/crops/dahlia/dahlia-plante-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'dahlia-vase', priority: 90 },
   // tomat — makro-fallback (bevaret, lavere prioritet)
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
