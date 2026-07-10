@@ -75,6 +75,8 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'lavendel', cropLabel: 'Lavendel', path: '/assets/forvandlinger/crops/lavendel/lavendel-toer-01.jpg', role: 'plant', mood: 'quiet', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 60 },
   { crop: 'lavendel', cropLabel: 'Lavendelbundter', path: '/assets/forvandlinger/crops/lavendel/lavendel-bundt-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'lavendelbundter', priority: 90 },
   { crop: 'lavendel', cropLabel: 'Duftpose', path: '/assets/forvandlinger/crops/lavendel/lavendel-duftpose-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'duftpose', priority: 90 },
+  // kamille — urte-te-flat-lay (kamille-hero), bundet til kamille-te
+  { crop: 'kamille', cropLabel: 'Kamille-te', path: '/assets/forvandlinger/crops/kamille/kamille-te-01.jpg', role: 'kitchen', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'kamille-te', priority: 90 },
   // tomat — makro-fallback (bevaret, lavere prioritet)
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
