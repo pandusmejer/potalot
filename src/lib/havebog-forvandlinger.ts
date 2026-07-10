@@ -42,7 +42,7 @@ export const KATEGORI_FARVE: Record<ForvandlingKategori, string> = {
   'saa-igen': '#5E7052', // frøgrøn
 }
 
-const KOSMETISK_NOTE = 'Kun til sanselig, kosmetisk brug — ingen medicinske løfter.'
+const KOSMETISK_NOTE = 'Kun til kosmetisk brug — ingen medicinske løfter. Test altid på et lille hudområde først.'
 
 export const FORVANDLINGER: HavebogForvandling[] = [
   // ── Spis ──

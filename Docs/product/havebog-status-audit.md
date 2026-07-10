@@ -30,6 +30,7 @@ Statustilstande skelnes knivskarpt:
 | Prøv næste år (Inspirér mig) | `src/lib/havebog-proev-naeste-aar.ts` (7 tests) | Sorter/arter × guidekatalog → ét forslag; gated `inspirerForslag !== null` |
 | Spisekammer-motor | `src/lib/havebog-spisekammer.ts` (7 tests) | Grupperer sæsonens høstlogs; **antal = antal logs, ikke mængde** (ingen mængdefelt i DB) |
 | Forvandlinger — koncept/ruter/kategorier/detaljer | `src/lib/havebog-forvandlinger.ts` + `/havebog/forvandlinger[/[id]]` | 8 kategorier, ~23 forvandlinger, `vaelgForvandlinger` (tests), sikkerheds-note på plej/olie. Idé-tiles er crop-drevne for indloggede |
+| Forvandlinger "Find og gem" — ekstern søgning | `src/lib/forvandling-soegning.ts` (13 tests) | "Næste handling" + "Find opskrift/vejledning" åbner browser-søgning (ingen scraping); søgefraser genereret pr. kategori/afgrøde; plej styret mod kosmetisk brug |
 | Minder | `byggMinder` (havebog.ts) | Timeline m. kind/thumbnail/meta; gated `minder.length > 0` |
 | Vendepunkter / På denne dag | `byggVendepunkter`, `onThisDay` | Gated på data |
 | Historien fortsætter | `archivedPlants` (is_archived-query) | Arkivstak-redesign; gated `archivedPlants.length > 0` |
@@ -65,13 +66,15 @@ deriver/kilde lander.
 
 - **Tal til din have (demo-variant)** — `TalTilDinHave`: eksempler + afspilning, ren visning
 - **"Se tidligere sæsoner"-indgang** (Historien fortsætter) — bevidst **ikke-navigerende** placeholder; peger på et sæsonarkiv der ikke findes endnu
-- **Forvandlinger foto-assets** — mapperne findes (`public/assets/spisekammer/…`, tomme + `.gitkeep`), registret seeder kun eksisterende makroer; **ingen dedikeret `selectForvandlingAssets()`** (mosaikken genbruger `selectSpisekammerAssets`). Detaljesidernes CTA'er ("Gem i Havebogen"/"Føj til log") er styled placeholders
+- **Forvandlinger foto-assets** — mapperne findes (`public/assets/spisekammer/…`, tomme + `.gitkeep`); nu med dedikeret `selectForvandlingAssets()` + fallback (sort→afgrøde→kategori/mood→farve). Registret har endnu ingen `'forvandling'`-taggede fotos → alt falder til farve-tiles (godkendt udseende)
+- **Forvandlinger "Gem et link"** — detaljesidens gem-link er styled placeholder (kræver migration, se nedenfor). "Find opskrift/vejledning" + foreslåede søgninger er derimod **operationelle** (ekstern browser-søgning)
 
 ---
 
 ## Kræver DB/migration
 
 - **Diktafon-indbakke** — migration 00053 (`voice_notes`) + evt. lydfil-lagring
+- **Forvandlinger "Gem et link" + "Gem erfaring"** — ny tabel `forvandling_links` (typing klar: `SavedForvandlingLink` i `forvandling-links.ts`) + server action. Community-aggregering ("17 dyrkere brugte Polka…") = senere, kun anonymt og ved nok datapunkter
 - **Spisekammer reel mængde** — nyt mængdefelt på høstlogs (i dag = antal logs)
 - **Sæson-resume/rollover** — model for afsluttet sæson
 - **Sæsonarkiv** — udvid `beregnSaeson` til at enumerere alle sæsongrænser
