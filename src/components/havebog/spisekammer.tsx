@@ -4,7 +4,7 @@ import {
   selectSpisekammerAssets,
   saesonForMaaned,
   type SpisekammerAssetRole,
-} from '@/lib/spisekammer-assets'
+} from '@/lib/forvandling-registry'
 import {
   vaelgForvandlinger,
   KATEGORI_FARVE,

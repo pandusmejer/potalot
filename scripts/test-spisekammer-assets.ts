@@ -1,9 +1,9 @@
 /**
- * Node-test for Spisekammer asset-valg (lib/spisekammer-assets.ts).
+ * Node-test for Spisekammer asset-valg (lib/forvandling-registry.ts).
  * Kør:  npx tsx scripts/test-spisekammer-assets.ts
  */
 
-import { selectSpisekammerAssets, farveForCrop } from '@/lib/spisekammer-assets'
+import { selectSpisekammerAssets, farveForCrop } from '@/lib/forvandling-registry'
 
 let ok = 0, fejl = 0
 function tjek(navn: string, cond: boolean, extra = '') {

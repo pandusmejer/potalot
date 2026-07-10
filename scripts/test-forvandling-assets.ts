@@ -6,7 +6,7 @@
 
 import { selectForvandlingAssets, FORVANDLING_KATEGORI_ASSETS } from '@/lib/forvandling-assets'
 import { findForvandling, KATEGORI_FARVE } from '@/lib/havebog-forvandlinger'
-import { SPISEKAMMER_ASSETS } from '@/lib/spisekammer-assets'
+import { FORVANDLING_ASSETS } from '@/lib/forvandling-registry'
 
 let ok = 0, fejl = 0
 function tjek(navn: string, cond: boolean, extra = '') {
@@ -28,23 +28,23 @@ const mynteTe = findForvandling('mynte-te')!   // crops: mynte · bryg
 
 // 2. Afgrøde-asset tagget 'forvandling' → foto (kilde: afgroede).
 {
-  SPISEKAMMER_ASSETS.push({ crop: 'tomat', cropLabel: 'Tomater', path: '/test/tomat-forv.jpg', role: 'fruit', seasons: ['summer'], useCases: ['forvandling'], priority: 50 })
+  FORVANDLING_ASSETS.push({ crop: 'tomat', cropLabel: 'Tomater', path: '/test/tomat-forv.jpg', role: 'fruit', seasons: ['summer'], useCases: ['forvandling'], priority: 50 })
   const v = selectForvandlingAssets(gazpacho, { season: 'summer' })
   tjek('Afgrøde-foto → foto', v.slag === 'foto')
   tjek('Kilde = afgroede', v.slag === 'foto' && v.kilde === 'afgroede')
   tjek('Path = det taggede foto', v.slag === 'foto' && v.path === '/test/tomat-forv.jpg')
   // Generisk makro (uden 'forvandling') må IKKE vælges — mynte har ingen.
   tjek('Mynte-te stadig farve (ingen forvandlings-foto)', selectForvandlingAssets(mynteTe).slag === 'farve')
-  SPISEKAMMER_ASSETS.pop()
+  FORVANDLING_ASSETS.pop()
 }
 
 // 1. Sortspecifikt vinder over afgrøde.
 {
-  SPISEKAMMER_ASSETS.push({ crop: 'tomat', cropLabel: 'Tomater', path: '/test/tomat-afgrode.jpg', role: 'fruit', useCases: ['forvandling'], priority: 50 })
-  SPISEKAMMER_ASSETS.push({ crop: 'san-marzano', cropLabel: 'San Marzano', path: '/test/sort.jpg', role: 'fruit', useCases: ['forvandling'], priority: 40 })
+  FORVANDLING_ASSETS.push({ crop: 'tomat', cropLabel: 'Tomater', path: '/test/tomat-afgrode.jpg', role: 'fruit', useCases: ['forvandling'], priority: 50 })
+  FORVANDLING_ASSETS.push({ crop: 'san-marzano', cropLabel: 'San Marzano', path: '/test/sort.jpg', role: 'fruit', useCases: ['forvandling'], priority: 40 })
   const v = selectForvandlingAssets(gazpacho, { variety: 'San Marzano' })
   tjek('Sort vinder over afgrøde', v.slag === 'foto' && v.kilde === 'sort' && v.path === '/test/sort.jpg')
-  SPISEKAMMER_ASSETS.pop(); SPISEKAMMER_ASSETS.pop()
+  FORVANDLING_ASSETS.pop(); FORVANDLING_ASSETS.pop()
 }
 
 // 3. Kategori/mood-asset når intet afgrøde-foto findes.
@@ -53,9 +53,9 @@ const mynteTe = findForvandling('mynte-te')!   // crops: mynte · bryg
   const v = selectForvandlingAssets(mynteTe)
   tjek('Kategori-mood → foto (kilde kategori)', v.slag === 'foto' && v.kilde === 'kategori')
   // Afgrøde-foto skal stadig vinde over kategori.
-  SPISEKAMMER_ASSETS.push({ crop: 'mynte', cropLabel: 'Mynte', path: '/test/mynte.jpg', role: 'plant', useCases: ['forvandling'], priority: 30 })
+  FORVANDLING_ASSETS.push({ crop: 'mynte', cropLabel: 'Mynte', path: '/test/mynte.jpg', role: 'plant', useCases: ['forvandling'], priority: 30 })
   tjek('Afgrøde vinder over kategori', selectForvandlingAssets(mynteTe).slag === 'foto' && (selectForvandlingAssets(mynteTe) as { kilde: string }).kilde === 'afgroede')
-  SPISEKAMMER_ASSETS.pop()
+  FORVANDLING_ASSETS.pop()
   FORVANDLING_KATEGORI_ASSETS.pop()
 }
 

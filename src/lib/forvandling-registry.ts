@@ -11,7 +11,7 @@
  *
  * Registret seeder de EKSISTERENDE botaniske makroer (/images/makro/…) så
  * systemet virker i dag; læg rigtige spisekammer-fotos i
- * public/assets/spisekammer/ og tilføj en linje i SPISEKAMMER_ASSETS.
+ * public/assets/forvandlinger/ og tilføj en linje i FORVANDLING_ASSETS.
  */
 
 export type SpisekammerAssetRole = 'fruit' | 'plant' | 'leaf' | 'flower' | 'kitchen' | 'mood' | 'texture'
@@ -60,7 +60,7 @@ const STANDARD_FARVE = '#8B9774'
  * Registret. Seedet med eksisterende makroer (rolle = hvad billedet viser).
  * Rigtige spisekammer-fotos tilføjes her efterhånden som de produceres.
  */
-export const SPISEKAMMER_ASSETS: SpisekammerAsset[] = [
+export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   // tomat
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 90 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
@@ -81,7 +81,7 @@ export function cropKey(navn: string): string {
   const k = norm(navn).split(/[\s-]/)[0]
   // Robust mod flertal ("Agurker"→agurk, "Tomater"→tomat).
   for (const kandidat of [k, k.replace(/er$/, ''), k.replace(/e$/, ''), k.replace(/r$/, '')]) {
-    if (CROP_FARVE[kandidat] || SPISEKAMMER_ASSETS.some(a => a.crop === kandidat)) return kandidat
+    if (CROP_FARVE[kandidat] || FORVANDLING_ASSETS.some(a => a.crop === kandidat)) return kandidat
   }
   return k
 }
@@ -138,13 +138,13 @@ export function selectSpisekammerAssets(input: {
     const key = cropKey(h.navn)
     if (brugteCrops.has(key) && !kunEn) continue
     // 2. afgrøde/art-asset (frugt/plante foretrukket til cropTile).
-    const kandidater = SPISEKAMMER_ASSETS
+    const kandidater = FORVANDLING_ASSETS
       .filter(a => a.crop === key && a.useCases.some(u => u === 'mosaic' || u === 'cropTile'))
       .sort((a, b) => ROLLE_RANG[b.role] - ROLLE_RANG[a.role] || (b.priority ?? 0) - (a.priority ?? 0))
     let valgt = kandidater[0]
     // 3. mood-asset hvis intet afgrøde-foto.
     if (!valgt) {
-      valgt = SPISEKAMMER_ASSETS
+      valgt = FORVANDLING_ASSETS
         .filter(a => a.role === 'mood' && (a.seasons ?? []).includes(season))
         .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))[0]
     }

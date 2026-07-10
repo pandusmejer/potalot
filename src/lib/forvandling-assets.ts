@@ -5,7 +5,7 @@
  * i mosaikken — eller en typografisk farve-tile hvis intet foto findes.
  * Ren funktion: samme input → samme output. Ingen DB, upload eller CMS.
  *
- * Genbruger det eksisterende SPISEKAMMER_ASSETS-registry (afgrøde-fotos) plus
+ * Genbruger det eksisterende FORVANDLING_ASSETS-registry (afgrøde-fotos) plus
  * et forvandlings-specifikt kategori/mood-registry. Mosaikken KNÆKKER ALDRIG
  * på et manglende billede — den falder til farve-tilen.
  *
@@ -16,18 +16,18 @@
  *   4. typografisk farve-tile (KATEGORI_FARVE)
  *
  * Navngivning klar til rigtige fotos (intet ekstra kodearbejde):
- *   - afgrøde-foto: læg i public/assets/spisekammer/crops/{afgrøde}/ og tilføj
- *     en linje i SPISEKAMMER_ASSETS med useCases: ['forvandling', …].
- *   - kategori/mood-foto: læg i public/assets/spisekammer/mood/ som
+ *   - afgrøde-foto: læg i public/assets/forvandlinger/crops/{afgrøde}/ og tilføj
+ *     en linje i FORVANDLING_ASSETS med useCases: ['forvandling', …].
+ *   - kategori/mood-foto: læg i public/assets/forvandlinger/mood/ som
  *     {kategori}-stemning-01.jpg og tilføj en linje i FORVANDLING_KATEGORI_ASSETS.
  */
 
 import {
-  SPISEKAMMER_ASSETS,
+  FORVANDLING_ASSETS,
   cropKey,
   type Saeson,
   type SpisekammerAssetRole,
-} from './spisekammer-assets'
+} from './forvandling-registry'
 import {
   KATEGORI_FARVE,
   type HavebogForvandling,
@@ -43,7 +43,7 @@ export type ForvandlingAssetValg =
 /**
  * Kategori-/mood-fotos til forvandlings-tiles. Tomt indtil rigtige fotos
  * produceres — indtil da rammer fallback farve-tilen. Navngivning:
- * public/assets/spisekammer/mood/{kategori}-stemning-01.jpg
+ * public/assets/forvandlinger/mood/{kategori}-stemning-01.jpg
  */
 export interface ForvandlingKategoriAsset {
   kategori: ForvandlingKategori
@@ -51,7 +51,7 @@ export interface ForvandlingKategoriAsset {
   season?: Saeson
 }
 export const FORVANDLING_KATEGORI_ASSETS: ForvandlingKategoriAsset[] = [
-  // fx { kategori: 'bryg', path: '/assets/spisekammer/mood/bryg-stemning-01.jpg', season: 'summer' },
+  // fx { kategori: 'bryg', path: '/assets/forvandlinger/mood/bryg-stemning-01.jpg', season: 'summer' },
 ]
 
 // Frugt/køkken/plante-roller egner sig bedst til et forvandlings-foto.
@@ -74,7 +74,7 @@ export function selectForvandlingAssets(
   const season = opts?.season
 
   // Kun fotos eksplicit tagget til forvandlings-brug (ikke generiske makroer).
-  const forvandlingsFotos = SPISEKAMMER_ASSETS.filter(a => a.useCases.includes('forvandling'))
+  const forvandlingsFotos = FORVANDLING_ASSETS.filter(a => a.useCases.includes('forvandling'))
 
   // 1. Sortspecifikt asset.
   if (opts?.variety) {

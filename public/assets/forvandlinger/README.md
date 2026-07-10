@@ -1,13 +1,13 @@
-# Spisekammer-billedbibliotek
+# Forvandlinger-billedbibliotek
 
-Asset-system til Spisekammer-mosaikken i Havebog. **Ikke** en løs billedmappe:
-registret (`src/lib/spisekammer-assets.ts`) beskriver hvert billedes rolle, så
+Asset-system til Forvandlinger-mosaikken i Havebog. **Ikke** en løs billedmappe:
+registret (`src/lib/forvandlinger-assets.ts`) beskriver hvert billedes rolle, så
 mosaikken kan vælge smart og falde pænt tilbage.
 
 ## Mappestruktur
 
 ```
-public/assets/spisekammer/
+public/assets/forvandlinger/
   crops/        afgrøde-fotos (frugt, plante, blad, blomst, køkken)
     tomat/  agurk/  jordbaer/  salat/  chili/  basilikum/  squash/  aerter/  ribs/  kartoffel/
   mood/         stemning/detalje (sommerlys, køkkenbord, dug, hånd-med-høst)
@@ -30,9 +30,9 @@ Pr. afgrøde: 1 frugt/afgrøde · 1 plante · 1 detalje · 1 køkken.
 
 ## Registrér nye billeder
 
-Læg filen i den rette mappe og tilføj én linje i `SPISEKAMMER_ASSETS`
-(`src/lib/spisekammer-assets.ts`) med `crop`, `role`, `path`, `useCases`.
-Ingen komponent-ændring nødvendig — helper'en `selectSpisekammerAssets` opdager
+Læg filen i den rette mappe og tilføj én linje i `FORVANDLING_ASSETS`
+(`src/lib/forvandlinger-assets.ts`) med `crop`, `role`, `path`, `useCases`.
+Ingen komponent-ændring nødvendig — helper'en `selectForvandlingerAssets` opdager
 det automatisk.
 
 ## Fallback (mosaikken knækker aldrig)
@@ -40,7 +40,7 @@ det automatisk.
 1. sortspecifikt billede → 2. afgrøde/art-billede → 3. stemnings-/mood-billede →
 4. farve-/typografi-tile (CROP_FARVE).
 
-Indtil rigtige spisekammer-fotos produceres, seeder registret de eksisterende
+Indtil rigtige forvandlinger-fotos produceres, seeder registret de eksisterende
 botaniske makroer (`/images/makro/…`), så systemet virker i dag uden dead-images.
 
 ## Forvandlinger-tiles ("Det kan haven blive til")
@@ -53,7 +53,7 @@ For at et foto må bruges på en forvandlings-tile (og ikke bare på de generisk
 crop-foto-tiles) skal det **eksplicit tagges**:
 
 - **Afgrøde-/sort-foto:** læg i `crops/{afgrøde}/` og registrér i
-  `SPISEKAMMER_ASSETS` med `useCases: ['forvandling', …]`.
+  `FORVANDLING_ASSETS` med `useCases: ['forvandling', …]`.
 - **Kategori/mood-foto:** læg i `mood/` som `{kategori}-stemning-01.jpg` og
   tilføj en linje i `FORVANDLING_KATEGORI_ASSETS` (`forvandling-assets.ts`).
 
