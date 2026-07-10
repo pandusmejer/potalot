@@ -71,10 +71,14 @@ const mynteTe = findForvandling('mynte-te')!   // crops: mynte · bryg
   FORVANDLING_ASSETS.pop()
 }
 
-// De 3 rigtige pakke-1-fotos er registreret som forventet.
+// Pakke-1-fotos registreret + bundet som forventet.
 tjek('tomat-koekken-01 er cropTile', FORVANDLING_ASSETS.some(a => a.path.includes('tomat-koekken-01') && a.useCases.includes('cropTile')))
-tjek('tomat-sauce-01 bundet til tomatsauce', FORVANDLING_ASSETS.some(a => a.path.includes('tomat-sauce-01') && a.forvandlingId === 'tomatsauce'))
 tjek('tomatsauce-tile viser sauce-fotoet', (() => { const v = selectForvandlingAssets(findForvandling('tomatsauce')!, { season: 'summer' }); return v.slag === 'foto' && v.path.includes('tomat-sauce-01') })())
+tjek('gem-tomatfrø viser froe-fotoet', (() => { const v = selectForvandlingAssets(findForvandling('gem-tomatfroe')!, { season: 'autumn' }); return v.slag === 'foto' && v.path.includes('tomat-froe-01') })())
+tjek('lavendelbundter viser bundt-fotoet', (() => { const v = selectForvandlingAssets(findForvandling('lavendelbundter')!, { season: 'summer' }); return v.slag === 'foto' && v.path.includes('lavendel-bundt-01') })())
+tjek('duftpose viser duftpose-fotoet', (() => { const v = selectForvandlingAssets(findForvandling('duftpose')!, { season: 'summer' }); return v.slag === 'foto' && v.path.includes('lavendel-duftpose-01') })())
+// Bundne lavendel-fotos lander ikke på en anden lavendel-forvandling (fx olie).
+tjek('lavendelolie forbliver farve (intet plej-foto)', selectForvandlingAssets(findForvandling('lavendelolie')!, { season: 'summer' }).slag === 'farve')
 
 // Fallback intakt efter alle pushes/pops.
 tjek('Registret ryddet igen → farve', selectForvandlingAssets(gazpacho).slag === 'farve')

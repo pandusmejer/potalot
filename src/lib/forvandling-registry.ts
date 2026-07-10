@@ -56,6 +56,7 @@ export const CROP_FARVE: Record<string, string> = {
   aerter: '#8FAF72',
   ribs: '#9D3F46',
   kartoffel: '#B99A6B',
+  lavendel: '#7E6480',
 }
 const STANDARD_FARVE = '#8B9774'
 
@@ -68,6 +69,12 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'tomat', cropLabel: 'Tomater', path: '/assets/forvandlinger/crops/tomat/tomat-koekken-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 95 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/assets/forvandlinger/crops/tomat/tomat-plante-01.jpg', role: 'plant', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 62 },
   { crop: 'tomat', cropLabel: 'Tomatsauce på glas', path: '/assets/forvandlinger/crops/tomat/tomat-sauce-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'tomatsauce', priority: 90 },
+  { crop: 'tomat', cropLabel: 'Gem tomatfrø', path: '/assets/forvandlinger/crops/tomat/tomat-froe-01.jpg', role: 'texture', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'gem-tomatfroe', priority: 90 },
+  // lavendel — pakke 1 (vises for lavendel-dyrkere; ikke i demo-mosaikken)
+  { crop: 'lavendel', cropLabel: 'Lavendel', path: '/assets/forvandlinger/crops/lavendel/lavendel-plante-01.jpg', role: 'flower', mood: 'quiet', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  { crop: 'lavendel', cropLabel: 'Lavendel', path: '/assets/forvandlinger/crops/lavendel/lavendel-toer-01.jpg', role: 'plant', mood: 'quiet', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 60 },
+  { crop: 'lavendel', cropLabel: 'Lavendelbundter', path: '/assets/forvandlinger/crops/lavendel/lavendel-bundt-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'lavendelbundter', priority: 90 },
+  { crop: 'lavendel', cropLabel: 'Duftpose', path: '/assets/forvandlinger/crops/lavendel/lavendel-duftpose-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'duftpose', priority: 90 },
   // tomat — makro-fallback (bevaret, lavere prioritet)
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
