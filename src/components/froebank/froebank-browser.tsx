@@ -215,8 +215,9 @@ export function FroebankBrowser({ inventory }: Props) {
     ]
   }, [inventory])
 
-  // Underkategori-chips til hero: kun dem med count > 0 inden for den aktive
-  // hovedkategori. "Blomster" tæller begge model-underkategorier (aggregeret).
+  // Underkategori-valg lever nu i filter-bottom-sheet (ikke som hero-chips).
+  // Vi viser kun de underkategorier der FAKTISK findes i den aktive hovedkategori
+  // (count > 0) — ingen døde valg. "Blomster" tæller begge model-underkategorier.
   const subcategoryChips = useMemo(() => {
     const base =
       activeCategory === 'favoritter'
@@ -229,6 +230,12 @@ export function FroebankBrowser({ inventory }: Props) {
       count: base.filter((i) => i.subcategoryId != null && h.match.includes(i.subcategoryId)).length,
     })).filter((c) => c.count > 0)
   }, [inventory, activeCategory])
+
+  // Label til den aktive underkategori-token i mappen (kun når ét er valgt).
+  const activeSubcategoryLabel =
+    subcat !== 'alle'
+      ? HERO_SUBCATEGORIES.find((h) => h.id === subcat)?.label ?? subcat
+      : undefined
 
   const totalSeeds = inventory.reduce((sum, item) => {
     const remaining = item.seedsRemaining ?? item.seedCount ?? 0
@@ -310,9 +317,8 @@ export function FroebankBrowser({ inventory }: Props) {
         recentItemTimeLabel={latestItemTimeLabel}
         activeCategory={activeCategory}
         categories={categoryCounts}
-        subcategories={subcategoryChips}
-        activeSubcategory={subcat}
-        onSubcategoryChange={(id) => setSubcat((prev) => (prev === id ? 'alle' : id))}
+        activeSubcategoryLabel={activeSubcategoryLabel}
+        onClearSubcategory={() => setSubcat('alle')}
         activeFilter={activeFolderFilter}
         searchValue={search}
         onSearchChange={setSearch}
@@ -341,6 +347,9 @@ export function FroebankBrowser({ inventory }: Props) {
         category={activeCategory}
         smartFilters={smartFilters}
         sortOrder={sortOrder}
+        subcategoryOptions={subcategoryChips}
+        activeSubcategory={subcat}
+        onSelectSubcategory={(id) => setSubcat(id)}
         onSelectCategory={(id) => {
           setActiveCategory(id)
           setSubcat('alle')

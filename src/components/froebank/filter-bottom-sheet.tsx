@@ -54,6 +54,10 @@ interface Props {
   category: PrimaryCategoryId
   smartFilters: Set<SmartFilter>
   sortOrder: SortOrder
+  /** Underkategorier der findes i den aktive hovedkategori (count > 0). */
+  subcategoryOptions?: { id: string; label: string; count: number }[]
+  activeSubcategory?: string
+  onSelectSubcategory?: (id: string) => void
   onSelectCategory: (id: PrimaryCategoryId) => void
   onToggleSmart: (id: SmartFilter) => void
   onClearSmart: () => void
@@ -67,6 +71,9 @@ export function FilterBottomSheet({
   category,
   smartFilters,
   sortOrder,
+  subcategoryOptions,
+  activeSubcategory,
+  onSelectSubcategory,
   onSelectCategory,
   onToggleSmart,
   onClearSmart,
@@ -171,6 +178,29 @@ export function FilterBottomSheet({
             />
           ))}
         </Section>
+
+        {/* Indhold = underkategori (Grøntsager, Blomster …). Lever KUN her i
+            filteret — ikke som hero-chip på niveau med Frø/Løg. Vises kun når den
+            aktive hovedkategori faktisk indeholder underkategoriserede sorter. */}
+        {subcategoryOptions && subcategoryOptions.length > 0 && (
+          <Section label="Indhold">
+            <SheetChip
+              label="Alle"
+              active={!activeSubcategory || activeSubcategory === 'alle'}
+              onClick={() => onSelectSubcategory?.('alle')}
+            />
+            {subcategoryOptions.map(o => (
+              <SheetChip
+                key={o.id}
+                label={o.label}
+                active={activeSubcategory === o.id}
+                onClick={() =>
+                  onSelectSubcategory?.(activeSubcategory === o.id ? 'alle' : o.id)
+                }
+              />
+            ))}
+          </Section>
+        )}
 
         <Section label="Sortér efter">
           {SORT_OPTIONS.map(o => (

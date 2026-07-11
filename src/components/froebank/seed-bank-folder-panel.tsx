@@ -51,9 +51,11 @@ export interface SeedBankFolderPanelProps {
   recentItemTimeLabel?: string
   activeCategory?: CategoryId
   categories?: SeedBankFolderCategory[]
-  subcategories?: { id: string; label: string; count: number; iconSrc?: string }[]
-  activeSubcategory?: string
-  onSubcategoryChange?: (id: string) => void
+  /** Aktiv underkategori vises som en lille, rolig filter-TOKEN i mappen (ikke som
+   *  kategori-chip på niveau med Frø/Løg). Selve VALGET af underkategori sker nu i
+   *  filter-bottom-sheet — ikke her. Panelet skal kun bruge label + ryd-handler. */
+  activeSubcategoryLabel?: string
+  onClearSubcategory?: () => void
   activeFilter?: FilterId
   filters?: SeedBankFolderFilter[]
   searchValue?: string
@@ -117,9 +119,8 @@ export function SeedBankFolderPanel({
   recentItemTimeLabel = '2 dage siden',
   activeCategory = 'fro',
   categories = DEFAULT_CATEGORIES,
-  subcategories,
-  activeSubcategory,
-  onSubcategoryChange,
+  activeSubcategoryLabel,
+  onClearSubcategory,
   activeFilter = 'alle',
   filters = DEFAULT_FILTERS,
   searchValue,
@@ -137,7 +138,8 @@ export function SeedBankFolderPanel({
   // Når aktive avancerede chips vises, optager de plads i mappen. For at folderen
   // bevarer ~samme samlede højde (og dermed clip-k + skulder-form), klemmes CTA-
   // margin + bund-padding tilsvarende ind. Mål: uændret skulder/topform med/uden chips.
-  const hasActiveChips = (activeFilterChips?.length ?? 0) > 0
+  const hasActiveChips =
+    (activeFilterChips?.length ?? 0) > 0 || Boolean(activeSubcategoryLabel)
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
     const next = event.target.value
@@ -397,21 +399,10 @@ export function SeedBankFolderPanel({
               />
             </div>
 
-            {/* Dynamisk underkategori-række — vises KUN når der findes chips med
-                count>0 i den aktive hovedkategori. Bevidst SEKUNDÆR (lavere, roligere,
-                ingen tung aktiv-state): et indholdsfilter, ikke hovednavigation. */}
-            {subcategories && subcategories.length > 0 && (
-              <div className="mt-[12px] flex flex-wrap gap-[8px]">
-                {subcategories.map(sub => (
-                  <SubcategoryChip
-                    key={sub.id}
-                    sub={sub}
-                    active={sub.id === activeSubcategory}
-                    onClick={() => onSubcategoryChange?.(sub.id)}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Underkategori-rækken er FJERNET fra hero (Anna 29/6): "Grøntsager"
+                opførte sig visuelt som en kategori på niveau med Frø/Løg/Knolde og
+                brød taksonomien. Underkategorier ER indholdsfilter — de vælges nu i
+                filter-bottom-sheet og vises kun her som en lille token når ét er aktivt. */}
 
             <div className="mt-[16px] flex flex-wrap gap-[10px]">
               {filters.map(filter => (
@@ -423,6 +414,33 @@ export function SeedBankFolderPanel({
                 />
               ))}
             </div>
+
+            {/* Aktiv underkategori = lille, rolig filter-token UNDER sorterings-chippene
+                (Anna-spec). Bevidst neutral/dæmpet — ikke en kategori-chip, ikke den
+                grønne avancerede-filter-chip. × rydder filteret. */}
+            {activeSubcategoryLabel && (
+              <div className="mt-[10px] flex flex-wrap gap-[8px]">
+                <button
+                  type="button"
+                  onClick={onClearSubcategory}
+                  aria-label={`Fjern indholdsfilter: ${activeSubcategoryLabel}`}
+                  className="inline-flex items-center gap-[6px] font-sans transition active:translate-y-px"
+                  style={{
+                    height: 30,
+                    paddingInline: 12,
+                    borderRadius: 999,
+                    background: 'rgba(238,232,218,0.72)',
+                    border: '1px solid rgba(92,84,62,0.10)',
+                    color: '#626B58',
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  <span>{activeSubcategoryLabel}</span>
+                  <X className="h-[13px] w-[13px]" strokeWidth={2.4} />
+                </button>
+              </div>
+            )}
 
             {/* Aktive avancerede filtre (valgt i bottom sheet) — små grønne
                 chips med × til at fjerne det enkelte filter. Vises kun når der
@@ -601,41 +619,6 @@ function FilterChip({
       }
     >
       <span>{filter.label}</span>
-    </button>
-  )
-}
-
-// Underkategori-chip — SEKUNDÆR (rolig, lav, lille ikon): et indholdsfilter,
-// ikke hovednavigation. Billed-ikon hvis det findes, ellers neutralt blad.
-function SubcategoryChip({
-  sub,
-  active,
-  onClick,
-}: {
-  sub: { id: string; label: string; count: number; iconSrc?: string }
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className="inline-flex h-[36px] shrink-0 items-center gap-[8px] rounded-full px-3 font-sans text-[13px] font-semibold transition active:translate-y-px"
-      style={
-        active
-          ? { background: '#DDE4CF', border: '1px solid rgba(83,111,54,0.22)', color: '#425530' }
-          : { background: 'rgba(238,232,218,0.72)', border: '1px solid rgba(92,84,62,0.10)', color: '#626B58' }
-      }
-    >
-      {sub.iconSrc ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={sub.iconSrc} alt="" aria-hidden className="h-[16px] w-[16px] shrink-0" style={{ objectFit: 'contain' }} />
-      ) : (
-        <Leaf className="h-[14px] w-[14px] shrink-0" strokeWidth={1.9} style={{ opacity: 0.7 }} />
-      )}
-      <span>{sub.label}</span>
-      <span style={{ opacity: 0.72, marginLeft: 4 }}>{sub.count}</span>
     </button>
   )
 }
