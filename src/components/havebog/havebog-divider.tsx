@@ -13,10 +13,10 @@ export function HavebogDivider() {
     <div
       aria-hidden
       style={{
-        marginTop: 'clamp(56px, 15vw, 72px)',
+        marginTop: 'clamp(56px, 15cqw, 72px)',
         marginBottom: 64,
         // Samme side-akse som teksten (main px-4 = 16 + samme paddingInline).
-        paddingInline: 'clamp(12px, 3.5vw, 16px)',
+        paddingInline: 'clamp(12px, 3.5cqw, 16px)',
       }}
     >
       <div

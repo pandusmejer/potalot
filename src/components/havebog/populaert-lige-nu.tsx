@@ -41,7 +41,7 @@ export function PopulaertLigeNu({ emner }: Props) {
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: 'clamp(24px, 5.4vw, 33px)',
+              fontSize: 'clamp(24px, 5.4cqw, 33px)',
               lineHeight: 1.16,
               color: '#24301F',
               margin: 0,

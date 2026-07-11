@@ -40,7 +40,7 @@ export function VejretIHaven({ vejr }: Props) {
         style={{
           fontFamily: sans,
           fontWeight: 700,
-          fontSize: 'clamp(48px, 14vw, 76px)',
+          fontSize: 'clamp(48px, 14cqw, 76px)',
           lineHeight: 0.95,
           letterSpacing: '-0.02em',
           color: '#24301F',
@@ -66,7 +66,7 @@ export function VejretIHaven({ vejr }: Props) {
           fontFamily: serif,
           fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(19px, 4.4vw, 25px)',
+          fontSize: 'clamp(19px, 4.4cqw, 25px)',
           lineHeight: 1.3,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,

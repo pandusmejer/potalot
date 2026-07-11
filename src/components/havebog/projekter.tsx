@@ -39,7 +39,7 @@ export function Projekter({ projekt }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(30px, 7vw, 44px)',
+          fontSize: 'clamp(30px, 7cqw, 44px)',
           lineHeight: 1.1,
           letterSpacing: '-0.02em',
           color: '#24301F',

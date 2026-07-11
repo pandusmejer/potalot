@@ -47,7 +47,7 @@ export function Bedrifter({ bedrifter }: Props) {
               style={{
                 fontFamily: serif,
                 fontWeight: 500,
-                fontSize: 'clamp(24px, 5.4vw, 32px)',
+                fontSize: 'clamp(24px, 5.4cqw, 32px)',
                 lineHeight: 1.1,
                 color: '#24301F',
                 margin: 0,

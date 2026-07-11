@@ -40,7 +40,7 @@ export function Dyrkerstatus({ status }: Props) {
         style={{
           fontFamily: sans,
           fontWeight: 800,
-          fontSize: 'clamp(30px, 7.6vw, 46px)',
+          fontSize: 'clamp(30px, 7.6cqw, 46px)',
           letterSpacing: '0.04em',
           lineHeight: 1,
           color: '#24301F',
@@ -57,7 +57,7 @@ export function Dyrkerstatus({ status }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 400,
-          fontSize: 'clamp(19px, 4.2vw, 24px)',
+          fontSize: 'clamp(19px, 4.2cqw, 24px)',
           lineHeight: 1.32,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,

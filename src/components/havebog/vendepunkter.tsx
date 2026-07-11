@@ -91,8 +91,8 @@ export function Vendepunkter({ vendepunkter }: Props) {
                   fontFamily: serif,
                   fontWeight: 400,
                   fontSize: erNyeste
-                    ? 'clamp(23px, 4.8vw, 30px)'
-                    : 'clamp(19px, 3.9vw, 24px)',
+                    ? 'clamp(23px, 4.8cqw, 30px)'
+                    : 'clamp(19px, 3.9cqw, 24px)',
                   lineHeight: 1.28,
                   color: erNyeste ? '#24301F' : 'rgba(36,48,31,0.66)',
                   margin: '8px auto 0',

@@ -58,7 +58,7 @@ export function InspirerMig({ forslag }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(30px, 7vw, 44px)',
+          fontSize: 'clamp(30px, 7cqw, 44px)',
           lineHeight: 1.08,
           letterSpacing: '-0.02em',
           color: '#24301F',
@@ -71,7 +71,7 @@ export function InspirerMig({ forslag }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 400,
-          fontSize: 'clamp(19px, 4.4vw, 25px)',
+          fontSize: 'clamp(19px, 4.4cqw, 25px)',
           lineHeight: 1.3,
           color: 'rgba(36,48,31,0.7)',
           margin: 0,
@@ -133,7 +133,7 @@ export function InspirerMig({ forslag }: Props) {
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: 'clamp(22px, 5vw, 28px)',
+              fontSize: 'clamp(22px, 5cqw, 28px)',
               lineHeight: 1.12,
               color: '#24301F',
               margin: 0,
@@ -145,7 +145,7 @@ export function InspirerMig({ forslag }: Props) {
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: 'clamp(16px, 3.6vw, 19px)',
+              fontSize: 'clamp(16px, 3.6cqw, 19px)',
               lineHeight: 1.35,
               color: 'rgba(36,48,31,0.66)',
               margin: 0,

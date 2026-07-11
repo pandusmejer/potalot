@@ -62,7 +62,7 @@ export function IDinHave({
           style={{
             fontFamily: serif,
             fontWeight: 500,
-            fontSize: 'clamp(64px, 16vw, 88px)',
+            fontSize: 'clamp(64px, 16cqw, 88px)',
             lineHeight: 0.82,
             letterSpacing: '-0.025em',
             color: '#24301F',
@@ -92,7 +92,7 @@ export function IDinHave({
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: 'clamp(44px, 11vw, 60px)',
+              fontSize: 'clamp(44px, 11cqw, 60px)',
               lineHeight: 0.82,
               letterSpacing: '-0.02em',
               color: '#24301F',
@@ -120,7 +120,7 @@ export function IDinHave({
             style={{
               fontFamily: serif,
               fontWeight: 500,
-              fontSize: 'clamp(38px, 9.5vw, 52px)',
+              fontSize: 'clamp(38px, 9.5cqw, 52px)',
               lineHeight: 0.82,
               letterSpacing: '-0.02em',
               color: '#24301F',

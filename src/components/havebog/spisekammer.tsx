@@ -111,7 +111,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
       </span>
     )
     const titel = (
-      <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(30px, 8.4vw, 38px)' : 'clamp(21px, 5.6vw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
+      <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: lead ? 'clamp(30px, 8.4cqw, 38px)' : 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
         {tile.title}
       </span>
     )
@@ -163,7 +163,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     return (
       <div style={{ background: '#EAE1CB', borderRadius: 20, padding: '24px 18px' }}>
         <div aria-hidden style={{ width: 26, height: 2, background: 'rgba(95,102,88,0.45)', marginBottom: 14 }} />
-        <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(24px, 6.5vw, 30px)', lineHeight: 1.1, color: '#5F6658', margin: 0 }}>
+        <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(24px, 6.5cqw, 30px)', lineHeight: 1.1, color: '#5F6658', margin: 0 }}>
           {tile.linjer.map((l, i) => (
             <span key={i} style={{ display: 'block' }}>{l}</span>
           ))}

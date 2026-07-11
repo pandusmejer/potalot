@@ -54,7 +54,7 @@ export function Minder({ minder }: Props) {
         Minder
       </p>
       <p
-        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 3.9vw, 20px)', color: 'rgba(36,48,31,0.55)', margin: '4px 0 22px' }}
+        style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 3.9cqw, 20px)', color: 'rgba(36,48,31,0.55)', margin: '4px 0 22px' }}
       >
         Sæsonens små vendepunkter
       </p>
@@ -116,12 +116,12 @@ function MindeRaekke({ minde, sidst }: { minde: Minde; sidst: boolean }) {
           {minde.dato}
         </p>
         <p
-          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(19px, 4.4vw, 23px)', lineHeight: 1.08, letterSpacing: '-0.01em', color: '#1F2D1D', margin: '5px 0 0' }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(19px, 4.4cqw, 23px)', lineHeight: 1.08, letterSpacing: '-0.01em', color: '#1F2D1D', margin: '5px 0 0' }}
         >
           {minde.titel}
         </p>
         <p
-          style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(15px, 3.6vw, 19px)', lineHeight: 1.25, color: '#687060', margin: '2px 0 0' }}
+          style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(15px, 3.6cqw, 19px)', lineHeight: 1.25, color: '#687060', margin: '2px 0 0' }}
         >
           {minde.detalje}
         </p>
