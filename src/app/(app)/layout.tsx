@@ -34,7 +34,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             {children}
           </div>
         </main>
-        <BottomNav heroHref={nav.heroHref} criticalTaskCount={nav.criticalTaskCount} />
+        <BottomNav criticalTaskCount={nav.criticalTaskCount} />
       </div>
     </div>
   )

@@ -35,7 +35,7 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
+            <Button asChild variant="ghost" size="sm" className="font-medium text-foreground">
               <Link href="/login">Log ind</Link>
             </Button>
             {/* Dæmpet oliven CTA (Annas spec) — mindre farvemættet end den
