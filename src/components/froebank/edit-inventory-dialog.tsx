@@ -374,8 +374,22 @@ export function EditInventoryDialog({ item }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Pencil className="h-3.5 w-3.5" />
+        <Button
+          variant="outline"
+          className="h-auto border-0"
+          style={{
+            height: 44,
+            paddingInline: 20,
+            borderRadius: 999,
+            fontSize: 14,
+            fontWeight: 600,
+            background: 'rgba(255,255,255,0.28)',
+            border: '1px solid rgba(117,101,62,0.18)',
+            color: '#263321',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.32)',
+          }}
+        >
+          <Pencil className="h-4 w-4" strokeWidth={1.9} />
           Rediger
         </Button>
       </DialogTrigger>

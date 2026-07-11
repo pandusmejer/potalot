@@ -27,8 +27,12 @@ export function DeleteInventoryButton({ id, name }: { id: string; name: string }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-destructive">
-          <Trash2 className="h-3.5 w-3.5" />
+        <Button
+          variant="ghost"
+          className="h-auto hover:bg-transparent"
+          style={{ height: 44, paddingInline: 14, background: 'transparent', border: 'none', boxShadow: 'none', fontSize: 14, fontWeight: 600, color: '#B85D34' }}
+        >
+          <Trash2 className="h-4 w-4" strokeWidth={1.9} />
           Slet
         </Button>
       </DialogTrigger>
