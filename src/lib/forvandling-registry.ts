@@ -85,6 +85,10 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'chili', cropLabel: 'Chili', path: '/assets/forvandlinger/crops/chili/chili-plante-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
   // dahlia — enkelt bloms, bundet til dahlia-vase
   { crop: 'dahlia', cropLabel: 'Dahlia i vase', path: '/assets/forvandlinger/crops/dahlia/dahlia-plante-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'dahlia-vase', priority: 90 },
+  // agurk — pakke 2 (crop-tile vises i demo; syltede-agurker bundet, vises i demo)
+  { crop: 'agurk', cropLabel: 'Agurker', path: '/assets/forvandlinger/crops/agurk/agurk-koekken-01.jpg', role: 'fruit', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 92 },
+  { crop: 'agurk', cropLabel: 'Syltede agurker', path: '/assets/forvandlinger/crops/agurk/agurk-sylt-01.jpg', role: 'kitchen', mood: 'green', useCases: ['forvandling'], forvandlingId: 'syltede-agurker', priority: 90 },
+  { crop: 'agurk', cropLabel: 'Agurkesalat', path: '/assets/forvandlinger/crops/agurk/agurk-salat-01.jpg', role: 'kitchen', mood: 'green', useCases: ['forvandling'], forvandlingId: 'agurkesalat', priority: 90 },
   // tomat — makro-fallback (bevaret, lavere prioritet)
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
   { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
