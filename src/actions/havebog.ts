@@ -36,10 +36,14 @@ import type {
   DagensOpslag,
   InspirerForslag,
   SpisekammerData,
+  Dyrkerstatus,
+  Kompetenceomraade,
 } from '@/data/havebog-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
 import { byggSpisekammer } from '@/lib/havebog-spisekammer'
+import { byggKompetencer } from '@/lib/havebog-kompetencer'
+import { byggDyrkerstatus } from '@/lib/havebog-dyrkerstatus'
 
 export interface HavebogData {
   heroStats: HeroStats
@@ -64,6 +68,10 @@ export interface HavebogData {
   history: HistoryYear[]
   denneSaeson: DenneSaesonFacts
   archivedPlants: ArchivedPlant[]
+  /** Dyrkerstatus (V13): afledte identiteter, prioriteret. Tom = skjul rummet. */
+  dyrkerstatus: Dyrkerstatus[]
+  /** Kompetencer (V13): afledt af log-handlinger pr. art. Gated: vis ved >= 2 færdigheder. */
+  dyrkerkompetencer: Kompetenceomraade[]
 }
 
 /**
@@ -574,6 +582,7 @@ interface PlantRow {
   archived_year: number | null
   archived_at: string | null
   primary_image_url: string | null
+  location: string | null
 }
 
 const MONTH_NAMES_DA = [
@@ -599,13 +608,15 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .order('date', { ascending: false }),
       supabase
         .from('plants_v2')
-        .select('id, name, variety, status, is_archived, archived_year, archived_at, primary_image_url')
+        .select('id, name, variety, status, is_archived, archived_year, archived_at, primary_image_url, location')
         .eq('user_id', me.id),
       supabase
         // V12: hent navn+sort (ikke kun count) — inspirations-motoren
-        // skal kunne sige noget om brugerens egne sorter.
+        // skal kunne sige noget om brugerens egne sorter. V13: + subcategory_id
+        // til Dyrkerstatus (blomster/krydderurter). Ingen migration — felterne
+        // findes (00016/00017).
         .from('inventory_items')
-        .select('name, variety')
+        .select('name, variety, subcategory_id')
         .eq('user_id', me.id),
       supabase
         .from('profiles')
@@ -616,7 +627,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
 
     const logs = (logsRes.data ?? []) as PlantLogRow[]
     const plants = (plantsRes.data ?? []) as PlantRow[]
-    const inventoryItems = (inventoryRes.data ?? []) as Array<{ name: string; variety: string | null }>
+    const inventoryItems = (inventoryRes.data ?? []) as Array<{ name: string; variety: string | null; subcategory_id: string | null }>
     const inventoryCount = inventoryItems.length
     // V9 (personlig hilsen): fornavn = første ord af display_name
     const fornavn =
@@ -935,6 +946,16 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     // I haven lige nu — ÉN fakta per aktuel måned
     const naturenLigeNu = NATUREN_LIGE_NU_BY_MONTH[today.getMonth()]
 
+    // Dyrkerstatus + Kompetencer (V13): rene derivere af eksisterende data.
+    const dyrkerkompetencer = byggKompetencer(logs, plantById)
+    const dyrkerstatus = byggDyrkerstatus({
+      logs,
+      plantById,
+      seasonStart,
+      plants,
+      inventory: inventoryItems,
+    })
+
     return {
       heroStats,
       tidslinje,
@@ -952,6 +973,8 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       history,
       denneSaeson,
       archivedPlants,
+      dyrkerstatus,
+      dyrkerkompetencer,
     }
   } catch {
     return null

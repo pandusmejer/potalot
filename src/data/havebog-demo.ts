@@ -622,42 +622,24 @@ export const DEMO_INSPIRER: InspirerForslag = {
   },
 }
 
-// 5 · Dyrkerstatus
+// 5 · Dyrkerstatus — identitet, ikke gamification (ingen niveau/afMax)
 export interface Dyrkerstatus {
   titel: string
-  niveau: number
-  afMax: number
   beskrivelse: string
 }
 export const DEMO_DYRKERSTATUS: Dyrkerstatus = {
   titel: 'Selvforsyner',
-  niveau: 4,
-  afMax: 7,
-  beskrivelse:
-    'Du producerer allerede en betydelig del af sommerens grøntsager selv.',
+  beskrivelse: 'Du har høstet fra flere afgrøder denne sæson.',
 }
 
-// 6 · Dyrkerkompetencer
+// 6 · Dyrkerkompetencer — editorial ord, ingen opnået-badges
 export interface Kompetenceomraade {
   omraade: string
-  faerdigheder: { navn: string; opnaaet: boolean }[]
+  faerdigheder: string[]
 }
 export const DEMO_KOMPETENCER: Kompetenceomraade[] = [
-  {
-    omraade: 'Tomatdyrkning',
-    faerdigheder: [
-      { navn: 'Beskæring', opnaaet: true },
-      { navn: 'Opbinding', opnaaet: true },
-      { navn: 'Frøavl', opnaaet: false },
-    ],
-  },
-  {
-    omraade: 'Kompost',
-    faerdigheder: [
-      { navn: 'Køkkenaffald', opnaaet: true },
-      { navn: 'Varm kompost', opnaaet: false },
-    ],
-  },
+  { omraade: 'Tomatdyrkning', faerdigheder: ['Beskæring', 'Høst'] },
+  { omraade: 'Agurkdyrkning', faerdigheder: ['Såning', 'Udplantning', 'Høst'] },
 ]
 
 // 10 · Spisekammer

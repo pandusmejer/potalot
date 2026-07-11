@@ -19,6 +19,7 @@ import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
 import { kurater, type RumId } from '@/lib/havebog-kurator'
+import { kompetenceAntal } from '@/lib/havebog-kompetencer'
 import { aktuelMaaned } from '@/lib/datetime'
 import {
   DEMO_HERO_STATS,
@@ -149,13 +150,16 @@ export default async function HavebogPage() {
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
         historienFortsaetter: archivedPlants.length > 0,
+        // V13: afledte rum — gated på ægte data (ærligheds-reglen).
+        dyrkerstatus: data.dyrkerstatus.length > 0,
+        dyrkerkompetencer: kompetenceAntal(data.dyrkerkompetencer) >= 2,
       }
   const valgteRum = kurater({ maaned: aktuelMaaned(), harData, maks: 3 })
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
     inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
-    dyrkerstatus: <Dyrkerstatus status={DEMO_DYRKERSTATUS} />,
-    dyrkerkompetencer: <Dyrkerkompetencer omraader={DEMO_KOMPETENCER} />,
+    dyrkerstatus: <Dyrkerstatus status={isDemo ? DEMO_DYRKERSTATUS : (data?.dyrkerstatus[0] ?? DEMO_DYRKERSTATUS)} />,
+    dyrkerkompetencer: <Dyrkerkompetencer omraader={isDemo ? DEMO_KOMPETENCER : (data?.dyrkerkompetencer ?? DEMO_KOMPETENCER)} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
     minder: <Minder minder={minder} />,
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
