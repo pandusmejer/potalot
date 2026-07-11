@@ -32,6 +32,8 @@ Statustilstande skelnes knivskarpt:
 | Forvandlinger — koncept/ruter/kategorier/detaljer | `src/lib/havebog-forvandlinger.ts` + `/havebog/forvandlinger[/[id]]` | 8 kategorier, ~23 forvandlinger, `vaelgForvandlinger` (tests), sikkerheds-note på plej/olie. Idé-tiles er crop-drevne for indloggede |
 | Forvandlinger "Find og gem" — ekstern søgning | `src/lib/forvandling-soegning.ts` (13 tests) | "Næste handling" + "Find opskrift/vejledning" åbner browser-søgning (ingen scraping); søgefraser genereret pr. kategori/afgrøde; plej styret mod kosmetisk brug |
 | Minder | `byggMinder` (havebog.ts) | Timeline m. kind/thumbnail/meta; gated `minder.length > 0` |
+| Dyrkerstatus | `havebog-dyrkerstatus.ts` (8 tests) | Afledte identiteter (Selvforsyner osv.) fra høst-logs/frøbank/drivhus; gated `>0`; ingen gamification |
+| Kompetencer | `havebog-kompetencer.ts` (7 tests) | Færdigheder pr. art fra faktiske log-typer; gated `>=2`. Opbinding/frøavl/tørring/overvintring udeladt (ingen log-typer) |
 | Vendepunkter / På denne dag | `byggVendepunkter`, `onThisDay` | Gated på data |
 | Historien fortsætter | `archivedPlants` (is_archived-query) | Arkivstak-redesign; gated `archivedPlants.length > 0` |
 | Demo-trim + kurator | `src/lib/havebog-kurator.ts` | Demo = kurateret form (fast top + maks 3 rum); hele huset flyttet til `/admin/qa/havebog` |
@@ -53,8 +55,6 @@ Dette er **ikke** "bare lige en knap" — det er et rigtigt backend-sprint (migr
 Renderer hardcoded `DEMO_`-konstanter; kan aldrig ramme en rigtig bruger før deres
 deriver/kilde lander.
 
-- **Dyrkerstatus** — ingen afledningsmotor (identitet, ikke gamification; besluttet retning)
-- **Kompetencer** — ingen afledningsmotor (kobling til logs/guides mangler)
 - **Vejret i haven** — ingen motor (skal være redaktionel betydning, ikke udsigt nr. 2)
 - **Projekter**
 - **Bedrifter**
