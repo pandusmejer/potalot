@@ -1,4 +1,6 @@
-import type { Optagelse } from '@/data/havebog-demo'
+import Link from 'next/link'
+import { OptagelseStatusIkon } from '@/components/havebog/optagelse-status-ikon'
+import type { Optagelse, OptagelseStatus } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -6,6 +8,16 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 interface Props {
   eksempler: string[]
   optagelser?: Optagelse[]
+}
+
+// Diktafon = indbakke til haven: hver optagelse har en status (hvad den
+// er blevet til). Menneskelige etiketter til det lille status-chip.
+const STATUS_LABEL: Record<OptagelseStatus, string> = {
+  unprocessed: 'Ikke behandlet',
+  log: 'Føjet til log',
+  opgave: 'Opgave oprettet',
+  minde: 'Minde gemt',
+  observation: 'Observation gemt',
 }
 
 /**
@@ -24,6 +36,23 @@ interface Props {
 export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
   return (
     <section className="flex flex-col items-center" style={{ textAlign: 'center' }}>
+      {/* Idle "vejrtrækning": knappen lever, men roligt — ikke en alarm.
+          Respekterer prefers-reduced-motion. */}
+      <style>{`
+        @keyframes tal-breath {
+          0%, 100% { transform: scale(1); box-shadow: 0 12px 30px rgba(31,45,29,0.18); }
+          50%      { transform: scale(1.035); box-shadow: 0 18px 42px rgba(31,45,29,0.22); }
+        }
+        @keyframes tal-halo {
+          0%, 100% { transform: scale(0.92); opacity: 0; }
+          50%      { transform: scale(1.18); opacity: 0.16; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .tal-breath, .tal-halo { animation: none !important; }
+        }
+      `}</style>
+
+      {/* Overskrift forklarer selv handlingen (to linjer). */}
       <p
         className="uppercase"
         style={{
@@ -31,38 +60,47 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           fontSize: 11,
           fontWeight: 700,
           letterSpacing: '0.26em',
+          lineHeight: 1.5,
           color: 'rgba(36,48,31,0.5)',
           margin: 0,
-          marginBottom: 28,
+          marginBottom: 46,
         }}
       >
-        Tal til din have
+        Tryk og tal
+        <br />
+        til din have
       </p>
 
-      {/* Mikrofonen med glød-halo */}
+      {/* Mikrofonen med glød-halo. Snæver container (haloen pulser frit
+          udenfor via absolut position) — så den reserverer minimal luft. */}
       <div
         style={{
           position: 'relative',
-          width: 168,
-          height: 168,
+          width: 104,
+          height: 104,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
+        {/* Pulserende halo bag knappen */}
         <div
           aria-hidden
+          className="tal-halo"
           style={{
             position: 'absolute',
-            inset: 0,
+            width: 132,
+            height: 132,
             borderRadius: '50%',
             background:
-              'radial-gradient(circle, rgba(59,74,47,0.16) 0%, rgba(59,74,47,0.06) 45%, rgba(59,74,47,0) 70%)',
+              'radial-gradient(circle, rgba(55,76,45,0.55) 0%, rgba(55,76,45,0.22) 45%, rgba(55,76,45,0) 72%)',
+            animation: 'tal-halo 4.4s ease-in-out infinite',
           }}
         />
         <button
           type="button"
-          aria-label="Tal til din have"
+          aria-label="Tryk og tal til din have"
+          className="tal-breath"
           style={{
             position: 'relative',
             width: 92,
@@ -73,8 +111,9 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 12px 30px rgba(36,48,31,0.24)',
+            boxShadow: '0 12px 30px rgba(31,45,29,0.18)',
             cursor: 'pointer',
+            animation: 'tal-breath 4.4s ease-in-out infinite',
           }}
         >
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -84,58 +123,60 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
         </button>
       </div>
 
+      {/* Kort, rolig hjælpetekst (overskriften bærer handlingen). */}
       <p
         style={{
           fontFamily: serif,
-          fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(20px, 4.6vw, 26px)',
-          lineHeight: 1.3,
-          color: '#24301F',
+          fontSize: 'clamp(18px, 4.2vw, 22px)',
+          lineHeight: 1.32,
+          color: 'rgba(36,48,31,0.72)',
           margin: 0,
-          marginTop: 22,
-          maxWidth: '20ch',
+          marginTop: 28,
+          maxWidth: '22ch',
         }}
       >
-        Fortæl din have, hvad du ser, husker eller drømmer om…
-      </p>
-      <p
-        style={{
-          fontFamily: sans,
-          fontSize: 13,
-          fontWeight: 600,
-          color: 'rgba(36,48,31,0.5)',
-          margin: 0,
-          marginTop: 10,
-        }}
-      >
-        Tryk for at tale
+        Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
       </p>
 
       {/* Seneste optagelser — beviset på at stemmen bliver til noget */}
       {optagelser.length > 0 && (
-        <div style={{ width: '100%', marginTop: 34, textAlign: 'left' }}>
-          <p
-            className="uppercase"
-            style={{
-              fontFamily: sans,
-              fontSize: 10.5,
-              fontWeight: 700,
-              letterSpacing: '0.22em',
-              color: 'rgba(36,48,31,0.42)',
-              margin: 0,
-              marginBottom: 14,
-            }}
-          >
-            Seneste optagelser
-          </p>
+        <div style={{ width: '100%', marginTop: 68, textAlign: 'left' }}>
+          <div className="flex items-baseline justify-between" style={{ marginBottom: 14 }}>
+            <p
+              className="uppercase"
+              style={{
+                fontFamily: sans,
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: '0.22em',
+                color: 'rgba(36,48,31,0.42)',
+                margin: 0,
+              }}
+            >
+              Seneste optagelser
+            </p>
+            {/* Se alle → optagelsesarkivet. */}
+            <Link
+              href="/havebog/optagelser"
+              className="uppercase no-underline"
+              style={{
+                fontFamily: sans,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.22em',
+                color: '#6A7554',
+                margin: 0,
+              }}
+            >
+              Se alle
+            </Link>
+          </div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0 }} className="divide-y divide-border/50">
             {optagelser.map((o, i) => (
               <li key={i} className="flex items-center" style={{ gap: 12, paddingBlock: 12 }}>
-                <span aria-hidden style={{ flexShrink: 0, color: '#3B4A2F' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M12 20c0-5 0-9 5-12-4 0-7 2-8 6-1-3-3-4-6-4 3 2 4 5 4 10" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-                  </svg>
+                <span aria-hidden style={{ flexShrink: 0 }}>
+                  <OptagelseStatusIkon status={o.status} />
                 </span>
                 <span style={{ flex: 1, minWidth: 0 }}>
                   <span
@@ -150,34 +191,54 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
                   >
                     {o.tekst}
                   </span>
-                  <span
-                    style={{
-                      fontFamily: sans,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: 'rgba(36,48,31,0.45)',
-                    }}
-                  >
-                    {o.tid}
+                  <span className="flex items-center" style={{ gap: 8, marginTop: 2 }}>
+                    <span
+                      style={{
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 500,
+                        color: 'rgba(36,48,31,0.45)',
+                      }}
+                    >
+                      {o.tid}
+                    </span>
+                    {o.status && (
+                      <span
+                        style={{
+                          fontFamily: sans,
+                          fontSize: 10.5,
+                          fontWeight: 600,
+                          letterSpacing: '0.02em',
+                          color: o.status === 'unprocessed' ? 'rgba(36,48,31,0.4)' : '#5F6B47',
+                          background: o.status === 'unprocessed' ? 'rgba(36,48,31,0.06)' : 'rgba(106,117,84,0.12)',
+                          padding: '1px 8px',
+                          borderRadius: 999,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {STATUS_LABEL[o.status]}
+                      </span>
+                    )}
                   </span>
                 </span>
-                <span
-                  aria-hidden
+                <button
+                  type="button"
+                  aria-label="Afspil optagelse"
+                  className="flex items-center justify-center flex-shrink-0 transition-colors hover:border-[#3B4A2F] hover:bg-[rgba(59,74,47,0.08)]"
                   style={{
-                    flexShrink: 0,
                     width: 32,
                     height: 32,
                     borderRadius: '50%',
                     border: '1.5px solid rgba(36,48,31,0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    background: 'transparent',
+                    color: '#24301F',
+                    cursor: 'pointer',
                   }}
                 >
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="#24301F" aria-hidden>
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
                     <path d="M2 1.5v9l8-4.5z" />
                   </svg>
-                </span>
+                </button>
               </li>
             ))}
           </ul>

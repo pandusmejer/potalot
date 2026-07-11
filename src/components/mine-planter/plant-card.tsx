@@ -5,10 +5,11 @@ import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import type { Plant, PlantStatus, CalendarTask } from '@/lib/types'
 import { estimateNextTask } from '@/lib/next-plant-task'
-import { Sprout, Calendar, Scissors, BookOpen, Heart, Ruler } from 'lucide-react'
+import { Sprout, Calendar, Scissors, BookOpen, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Fragment, type ComponentType, type SVGProps } from 'react'
+import { Fragment, type ComponentType, type SVGProps, type ReactNode } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { GlyphStatusFase, GlyphAlder, GlyphHojde, GlyphSundhed, type GlyphProps } from '@/components/icons/potalot-glyphs'
 import type { DetailMaal } from '@/data/plant-detail'
 
 /**
@@ -115,15 +116,24 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   const varietySlug = plant.variety
     ? slugify(`${plant.name}-${plant.variety}`)
     : null
-  const { src: heroImage } = resolvePotalotImage({
+  const { src: heroImage, source } = resolvePotalotImage({
     guideId: plant.guideId,
     varietySlug,
     role: 'plant-card',
     preferredSrc: plant.primaryImageId,
   })
+  // Intet ægte foto (kun placeholder) → rolig botanisk Potalot-state
+  // i stedet for foto + scrim. Påvirker baggrund, teksfarve og højde.
+  const hasPhoto = source !== 'fallback'
   const statusMeta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
-  const color = statusColor(plant.status)
+
+  // Titel-størrelse skalerer med navnelængden. Korte arts-navne (Tomat,
+  // Agurk) fylder stort; lange étords-navne (Stangbønne, Peberfrugt) kan
+  // ikke ombrydes, så de skrumper i stedet for at løbe ud over kortet.
+  const nameLen = plant.name.length
+  const titleSize =
+    nameLen <= 6 ? 56 : nameLen <= 8 ? 46 : nameLen <= 9 ? 40 : nameLen <= 10 ? 36 : 32
 
   // Origin-heuristik: hvis sowDate findes blev planten sået fra frø,
   // ellers er den plantet (købt potteplante, knold, stikling osv.).
@@ -163,36 +173,43 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
   ]
 
   const className = cn(
-    'group relative block aspect-[4/5] w-full overflow-hidden rounded-[32px] transition-all duration-200 ease-out',
+    'group relative block w-full overflow-hidden rounded-[32px] transition-all duration-200 ease-out',
+    // No-photo-kort er strammere (lavere højde) så minimal-data ikke
+    // efterlader en stor tom flade — men højt nok til at det botaniske
+    // emblem kan stå frit under titlen.
+    hasPhoto ? 'aspect-[4/5]' : 'aspect-[1/1]',
     'hover:-translate-y-0.5'
   )
   const style = { boxShadow: '0 20px 44px rgba(26,34,22,0.18)' } as const
 
-  return (
-    <Link href={`/mine-planter/${plant.id}`} className={className} style={style}>
+  const inner = (
+    <>
       {/* FOTO — fylder kortet, bærer al atmosfære. translateY(-11%)
           ligesom frøkort så motivet sidder højere; bund-gabet skjules
-          af det varme papirpanel. */}
-      {heroImage ? (
-        <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={heroImage}
-            alt=""
-            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+          af det varme papirpanel. Uden ægte foto vises en rolig
+          botanisk Potalot-state i stedet (ikke et nød-/debug-banner). */}
+      {hasPhoto ? (
+        <>
+          <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroImage}
+              alt=""
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+            />
+          </div>
+          {/* Læsbarheds-scrim — en tand stærkere end frøkort fordi
+              plantefotos ofte har tæt tekstur og lav kontrast i toppen.
+              Kun på foto; den botaniske flade er allerede lys. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-[52%]"
+            style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.46) 0%, rgba(18,14,10,0.14) 60%, transparent 100%)' }}
           />
-        </div>
+        </>
       ) : (
-        <div aria-hidden className="absolute inset-0" style={{ background: color }} />
+        <NoPhotoBotanical name={plant.name} />
       )}
-
-      {/* Læsbarheds-scrim — en tand stærkere end frøkort fordi
-          plantefotos ofte har tæt tekstur og lav kontrast i toppen. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[52%]"
-        style={{ background: 'linear-gradient(180deg, rgba(18,14,10,0.46) 0%, rgba(18,14,10,0.14) 60%, transparent 100%)' }}
-      />
 
       {/* TOP-VENSTRE — fast eyebrow + stor titel + sort.
           Eyebrow er ALTID "MIN HAVE · PLANTE" (ikke status-baseret) —
@@ -200,20 +217,20 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
       <div className="absolute left-0 top-0 z-10 max-w-[74%] p-[22px]">
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.92)', textShadow: '0 1px 5px rgba(20,14,8,0.5)' }}
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', color: hasPhoto ? 'rgba(255,255,255,0.92)' : 'rgba(36,48,31,0.5)', textShadow: hasPhoto ? '0 1px 5px rgba(20,14,8,0.5)' : 'none' }}
         >
           MIN HAVE · PLANTE
         </p>
         <h3
           className="mt-3.5"
-          style={{ fontFamily: sans, fontSize: 56, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: '#FFFFFF', textShadow: '0 3px 22px rgba(20,14,8,0.6)' }}
+          style={{ fontFamily: sans, fontSize: titleSize, fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.028em', color: hasPhoto ? '#FFFFFF' : '#24301F', textShadow: hasPhoto ? '0 3px 22px rgba(20,14,8,0.6)' : 'none' }}
         >
           {plant.name}
         </h3>
         {plant.variety && (
           <p
             className="mt-2.5"
-            style={{ fontFamily: sans, fontSize: 27, fontWeight: 600, lineHeight: 1.06, letterSpacing: '-0.015em', color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 12px rgba(20,14,8,0.5)' }}
+            style={{ fontFamily: sans, fontSize: 27, fontWeight: 600, lineHeight: 1.06, letterSpacing: '-0.015em', color: hasPhoto ? 'rgba(255,255,255,0.9)' : 'rgba(36,48,31,0.62)', textShadow: hasPhoto ? '0 2px 12px rgba(20,14,8,0.5)' : 'none' }}
           >
             {plant.variety}
           </p>
@@ -322,78 +339,139 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
           </>
         )}
       </div>
+    </>
+  )
+
+  // Detail-heroen (maal sat) er IKKE et selvlink — så CTA-ankeret i
+  // bundpanelet ikke bliver et ugyldigt <a> inde i et <a>.
+  if (maal) {
+    return (
+      <div className={className} style={style}>
+        {inner}
+      </div>
+    )
+  }
+  return (
+    <Link href={`/mine-planter/${plant.id}`} className={className} style={style}>
+      {inner}
     </Link>
+  )
+}
+
+/**
+ * No-photo plante-state — en bevidst, rolig botanisk Potalot-flade i
+ * stedet for et nød-/debug-banner. Dæmpet sage-gradient, artens initial
+ * som sart monogram-watermark (bleeder mod hjørnet) + en enkel spire-
+ * silhuet og arts-navnet som sekundær label. Honest om at fotoet
+ * mangler — uden at råbe om det.
+ */
+function NoPhotoBotanical({ name }: { name: string }) {
+  return (
+    <div aria-hidden className="absolute inset-0">
+      {/* Dæmpet botanisk gradient */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #DCE2CF 52%, #C9D3B5 100%)' }}
+      />
+      {/* Rolig emblem — artens initial som sart monogram med en enkel
+          spire-silhuet foran. Centreret i den frie flade under titlen
+          (paddingBottom løfter det op over Mål-panelet). */}
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ paddingTop: 40, paddingBottom: 92 }}
+      >
+        <div className="relative flex items-center justify-center">
+          <span
+            className="select-none"
+            style={{
+              fontFamily: sans,
+              fontSize: 132,
+              fontWeight: 800,
+              lineHeight: 1,
+              letterSpacing: '-0.04em',
+              color: 'rgba(36,48,31,0.07)',
+            }}
+          >
+            {name.charAt(0)}
+          </span>
+          <Sprout
+            className="absolute"
+            width={46}
+            height={46}
+            strokeWidth={1.5}
+            style={{ color: 'rgba(36,48,31,0.30)' }}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 
 /**
  * MÅL-RÆKKE — Plantekortets bundpanel på plante-detaljen.
  *
- * Anna (14. juni 2026): Mål-strimlen (Status·Alder·Højde·Sundhed) skal
- * ligge ovenpå heroen, i stedet for vækstbjælke + fakta. Fire rolige
- * kolonner på det varme papirpanel; grøn prik på Status, hjerte på
- * Sundhed, sarte grå ikoner på Alder/Højde.
+ * Anna (16. juni 2026): ikonet ligger nu ØVERST og CENTRERET i hvert af
+ * de fire afsnit (Status·Alder·Højde·Sundhed), med Potalot Soft Glyphs i
+ * stedet for Lucide. Resten af afsnittet (label · værdi · note) er
+ * centreret under ikonet. Første skridt i statusbar-redesignet.
  */
 function MaalRow({ maal }: { maal: DetailMaal }) {
   const felter: {
     label: string
     value: string
     note: string
-    dot?: string
-    heart?: boolean
-    Icon: ComponentType<SVGProps<SVGSVGElement>> | null
+    Comp: (p: GlyphProps) => ReactNode
   }[] = [
-    { label: 'Status', value: maal.statusValue, note: maal.statusNote, dot: '#617345', Icon: null },
-    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Icon: Sprout },
-    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Icon: Ruler },
-    { label: 'Sundhed', value: maal.sundhedValue, note: maal.sundhedNote, heart: true, Icon: Heart },
+    { label: 'Status', value: maal.statusValue, note: maal.statusNote, Comp: GlyphStatusFase },
+    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Comp: GlyphAlder },
+    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Comp: GlyphHojde },
+    { label: 'Trivsel', value: maal.sundhedValue, note: maal.sundhedNote, Comp: GlyphSundhed },
   ]
   return (
-    <div className="flex items-stretch">
-      {felter.map((f, i) => {
-        const Icon = f.Icon
-        return (
-          <Fragment key={f.label}>
-            {i > 0 && (
-              <div
-                aria-hidden
-                className="shrink-0"
-                style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
-              />
-            )}
-            <div className="flex min-w-0 flex-1 flex-col px-0.5">
-              <span
-                className="flex items-center gap-1 uppercase"
-                style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1 }}
-              >
-                {Icon && <Icon width={12} height={12} strokeWidth={1.75} aria-hidden />}
-                {f.label}
-              </span>
-              <span className="mt-1.5 flex items-center" style={{ gap: 5 }}>
-                {f.dot && (
-                  <span aria-hidden className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: f.dot }} />
-                )}
-                {f.heart && (
-                  <Heart width={14} height={14} strokeWidth={2} style={{ color: '#617345' }} aria-hidden className="shrink-0" />
-                )}
+    <>
+      <div className="flex items-stretch">
+        {felter.map((f, i) => {
+          const G = f.Comp
+          return (
+            <Fragment key={f.label}>
+              {i > 0 && (
+                <div
+                  aria-hidden
+                  className="shrink-0"
+                  style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
+                />
+              )}
+              <div className="flex min-w-0 flex-1 flex-col items-center px-0.5 text-center">
+                <G size={20} aria-hidden />
+                <span
+                  className="uppercase"
+                  style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1, marginTop: 7 }}
+                >
+                  {f.label}
+                </span>
                 <span
                   className="whitespace-nowrap"
-                  style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1 }}
+                  style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1, marginTop: 4, textTransform: 'lowercase' }}
                 >
                   {f.value}
                 </span>
-              </span>
-              <span
-                className="mt-1 whitespace-nowrap"
-                style={{ fontFamily: sans, fontSize: 11, fontWeight: 400, color: 'rgba(36,48,31,0.5)', lineHeight: 1 }}
-              >
-                {f.note}
-              </span>
-            </div>
-          </Fragment>
-        )
-      })}
-    </div>
+              </div>
+            </Fragment>
+          )
+        })}
+      </div>
+
+      {/* CTA — gør strimlen aktiv: invitér til at logge. In-page-anker til
+          dagbogen (#dagbog) frem for en død forklarings-linje pr. felt. */}
+      <a
+        href="#dagbog"
+        className="mt-3.5 flex items-center justify-center gap-1.5"
+        style={{ borderTop: '1px solid rgba(36,48,31,0.08)', paddingTop: 12, fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#5E7D4F', letterSpacing: '0.01em' }}
+      >
+        Log nyt på planten
+        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />
+      </a>
+    </>
   )
 }
 

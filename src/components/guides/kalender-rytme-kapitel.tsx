@@ -1,5 +1,7 @@
+// Rytme i kalenderen — mobil editorial timeline (arts + sort deler modul).
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
-const serif = 'var(--font-cormorant), Georgia, serif'
+// Videnskabelig guidefont til titler; Cormorant er ude af kalenderen.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 interface KalenderRytmeChapter {
   title: string
@@ -35,6 +37,16 @@ export const sanMarzanoKalenderRytme: KalenderRytmeChapter[] = [
   },
 ]
 
+// Aksens vandrette position — let mod venstre, så højre side får lidt mere
+// plads til den længste fase (APR-JUN).
+const AXIS = '44%'
+
+/**
+ * "Rytme i kalenderen" — mobil-first editorial timeline (samme modul på arts-
+ * OG sortguides). Ikke et kort: en meget svag grønlig toneflade uden border/
+ * skygge, en tynd lodret akse, og 3 faser der veksler venstre/højre om aksen.
+ * Aksen + dots bærer identiteten. Copy er uændret.
+ */
 export function KalenderRytmeKapitel({
   eyebrow = 'RYTME I KALENDEREN',
   title = 'Fra forspiring til høst',
@@ -46,147 +58,145 @@ export function KalenderRytmeKapitel({
 
   return (
     <section
-      className="relative overflow-hidden rounded-[28px] px-6 py-8"
       style={{
-        background: '#F4F0E5',
-        border: '1px solid rgba(36,48,31,0.10)',
+        // Neutral VARM creme-whisper (ikke grøn) — svag toneflade uden at blive
+        // et kort (ingen border/skygge). Tidslinjen bærer identiteten.
+        background: 'rgba(255,251,240,0.5)',
+        borderRadius: 22,
+        padding: '30px 24px 32px',
       }}
     >
-      <header className="mb-8 max-w-[330px]">
+      <header style={{ marginBottom: 28 }}>
         <p
           className="m-0 uppercase"
           style={{
             fontFamily: sans,
             fontSize: 11,
-            fontWeight: 800,
-            letterSpacing: '0.18em',
-            lineHeight: 1.25,
-            color: 'rgba(36,48,31,0.56)',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            lineHeight: 1.2,
+            color: 'rgb(153,137,117)',
           }}
         >
           {eyebrow}
         </p>
         <h2
-          className="mt-3"
           style={{
-            fontFamily: serif,
-            fontSize: 'clamp(34px, 10vw, 46px)',
-            fontWeight: 500,
-            lineHeight: 0.98,
-            letterSpacing: 0,
+            fontFamily: plex,
+            fontSize: 'clamp(23px, 6vw, 27px)',
+            fontWeight: 600,
+            lineHeight: 1.08,
+            letterSpacing: '-0.015em',
             color: '#2D2A24',
-            marginBottom: 0,
+            margin: '10px 0 0',
           }}
         >
           {title}
         </h2>
       </header>
 
-      <ol className="relative m-0 list-none space-y-8 p-0">
-        <span
-          aria-hidden
-          className="absolute left-[5px] top-2 h-[calc(100%-18px)] w-px"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(127,143,106,0.24), rgba(127,143,106,0.42) 45%, rgba(127,143,106,0.16))',
-          }}
-        />
-
-        {chapters.map((chapter, index) => (
-          <li key={`${chapter.monthRange}-${chapter.title}`} className="relative pl-8">
-            <span
-              aria-hidden
-              className="absolute left-0 top-[7px] h-[11px] w-[11px] rounded-full"
-              style={{
-                background: '#F4F0E5',
-                border: '1px solid rgba(127,143,106,0.70)',
-              }}
-            />
-
-            <article>
-              <p
-                className="m-0 uppercase"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  lineHeight: 1.25,
-                  color: '#7F8F6A',
-                }}
-              >
-                {chapter.monthRange}
-              </p>
-
-              <h3
-                className="mt-1"
-                style={{
-                  fontFamily: serif,
-                  fontSize: 'clamp(25px, 7vw, 32px)',
-                  fontWeight: 500,
-                  lineHeight: 1,
-                  letterSpacing: 0,
-                  color: '#2D2A24',
-                  marginBottom: 0,
-                }}
-              >
-                {chapter.title}
-              </h3>
-
-              {chapter.description && (
-                <p
-                  className="mt-3 max-w-[29rem]"
+      {/* Tidslinje: 3 faser der veksler venstre/højre. Aksen tegnes som
+          segmenter MELLEM dots (fra hver dot til den næste) — så linjen stopper
+          ved det nederste punkt og fortsætter ikke ned. */}
+      <div className="relative">
+        {chapters.map((chapter, index) => {
+          const onLeft = index % 2 === 0
+          const isLast = index === chapters.length - 1
+          return (
+            <div
+              key={`${chapter.monthRange}-${chapter.title}`}
+              className="relative"
+              style={{ marginTop: index === 0 ? 0 : 22 }}
+            >
+              {/* Linjesegment fra denne dot ned til næste dot (ikke på sidste). */}
+              {!isLast && (
+                <span
+                  aria-hidden
+                  className="absolute"
                   style={{
-                    fontFamily: serif,
-                    fontSize: 18,
-                    fontStyle: 'italic',
-                    lineHeight: 1.45,
-                    color: 'rgba(45,42,36,0.72)',
-                    marginBottom: 0,
+                    left: AXIS,
+                    top: 5,
+                    bottom: -27,
+                    width: 1.5,
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(153,137,117,0.5)',
                   }}
-                >
-                  {chapter.description}
-                </p>
+                />
               )}
-
-              <ul className="mt-4 m-0 list-none space-y-2 p-0">
-                {chapter.actions.slice(0, 3).map((action) => (
-                  <li key={action} className="flex items-baseline gap-3">
-                    <span
-                      aria-hidden
-                      className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ background: 'rgba(127,143,106,0.62)', transform: 'translateY(-2px)' }}
-                    />
-                    <p
-                      className="m-0"
-                      style={{
-                        fontFamily: sans,
-                        fontSize: 14,
-                        fontWeight: 550,
-                        lineHeight: 1.45,
-                        color: 'rgba(45,42,36,0.82)',
-                      }}
-                    >
-                      {action}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </article>
-
-            {index < chapters.length - 1 && (
               <span
                 aria-hidden
-                className="mt-7 block h-px w-20"
+                className="absolute rounded-full"
                 style={{
-                  background:
-                    'linear-gradient(to right, rgba(127,143,106,0.32), rgba(127,143,106,0))',
+                  left: AXIS,
+                  top: 5,
+                  transform: 'translateX(-50%)',
+                  height: 10,
+                  width: 10,
+                  background: 'rgb(153,137,117)',
                 }}
               />
-            )}
-          </li>
-        ))}
-      </ol>
+              <div
+                style={{
+                  width: onLeft ? '44%' : '56%',
+                  marginLeft: onLeft ? 0 : '44%',
+                  paddingRight: onLeft ? 20 : 0,
+                  paddingLeft: onLeft ? 0 : 20,
+                  textAlign: onLeft ? 'right' : 'left',
+                }}
+              >
+                <p
+                  className="m-0 uppercase"
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: '0.15em',
+                    lineHeight: 1.2,
+                    color: 'rgb(153,137,117)',
+                  }}
+                >
+                  {chapter.monthRange}
+                </p>
+                <h3
+                  className="m-0"
+                  style={{
+                    fontFamily: plex,
+                    fontSize: 'clamp(17px, 4.8vw, 19px)',
+                    fontWeight: 600,
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.01em',
+                    color: '#2D2A24',
+                    marginTop: 4,
+                  }}
+                >
+                  {chapter.title}
+                </h3>
+                {chapter.actions.length > 0 && (
+                  <p
+                    className="m-0"
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 13,
+                      fontWeight: 400,
+                      lineHeight: 1.45,
+                      color: 'rgba(45,42,36,0.7)',
+                      marginTop: 6,
+                    }}
+                  >
+                    {/* Hvert punkt på sin egen linje (linjeskift markerer dem —
+                        ingen "·"-separatorer). */}
+                    {chapter.actions.slice(0, 3).map((action, i) => (
+                      <span key={i} style={{ display: 'block' }}>
+                        {action}
+                      </span>
+                    ))}
+                  </p>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </section>
   )
 }

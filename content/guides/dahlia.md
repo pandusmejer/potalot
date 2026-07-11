@@ -22,6 +22,8 @@ tags:
   - selvforsyning
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "2 °C"
   preCultivation: true
   sowingMonths: [3, 4]
   plantingOutMonths: [5, 6]

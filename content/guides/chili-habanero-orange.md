@@ -18,6 +18,8 @@ tags:
   - drivhus
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "14-28 dage"
   growthType: busket
   height: "60-100 cm"

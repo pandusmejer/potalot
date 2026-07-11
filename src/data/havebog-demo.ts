@@ -283,6 +283,8 @@ export interface Takt {
   /** Rubrik-etiket — "Dagens historie", "Fra haven", ... */
   kicker: string
   tekst: string
+  /** Undertekst — kun på lead'en: "aha"-laget under hovedhistorien. */
+  underrubrik?: string
 }
 
 export interface DagensOpslag {
@@ -295,7 +297,8 @@ export interface DagensOpslag {
 export const DEMO_DAGENS_OPSLAG: DagensOpslag = {
   lead: {
     kicker: 'Dagens historie',
-    tekst: 'Chilierne spirede på 9 dage — guiden regner med 10-21.',
+    tekst: 'Chilierne spirede på 9 dage',
+    underrubrik: 'Guiden regner normalt med 10–21. I år var de hurtigere end forventet.',
   },
   beats: [
     { kicker: 'Lige nu i haven', tekst: 'Jorden er nu varm nok til tomater og chili.' },
@@ -336,17 +339,23 @@ export const DEMO_VENDEPUNKTER: Vendepunkt[] = [
  * Ikke alle billeder, ikke alle logs — kun sæsonens førster og
  * største øjeblikke. Emotionelt indhold, Potalot vælger.
  */
+/** Milepæl-type — styrer markørfarve + ikon i tidslinjen. */
+export type MindeKind = 'knop' | 'blomst' | 'hoest' | 'saaning' | 'udplantning' | 'spire'
+
 export interface Minde {
   titel: string          // "Første knop", "Første høst"
-  detalje: string        // "Dahlia Café au Lait"
+  detalje: string        // sorten, fx "Dahlia Café au Lait"
   dato: string           // "4. juni"
+  kind?: MindeKind       // markør + ikon; udeladt → neutral
+  imageUrl?: string | null // lille thumbnail; mangler → farvefelt + ikon
+  meta?: string          // lille chip, fx "knapt 90 gram", "seks frø i bakke"
 }
 
 export const DEMO_MINDER: Minde[] = [
   // Nyeste først — samme rækkefølge som byggMinder i actions/havebog.ts.
-  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni' },
-  { titel: 'Første høst', detalje: 'Salat Crispy Mint — knapt 90 gram, perfekt sprød', dato: '18. maj' },
-  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano — seks frø i bakke med varme under', dato: '18. marts' },
+  { titel: 'Første knop', detalje: 'Dahlia Café au Lait', dato: '4. juni', kind: 'knop', imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg' },
+  { titel: 'Første høst', detalje: 'Salat Crispy Mint', dato: '18. maj', kind: 'hoest', meta: 'knapt 90 gram' },
+  { titel: 'Sæsonens første såning', detalje: 'Tomat San Marzano', dato: '18. marts', kind: 'saaning', meta: 'seks frø i bakke' },
 ]
 
 export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
@@ -573,14 +582,22 @@ export const DEMO_TAL_EKSEMPLER: string[] = [
   '"Jeg så bladlus på roserne i dag."',
 ]
 // V18: seneste optagelser — viser at stemmen bliver til noter/minder
+export type OptagelseStatus =
+  | 'unprocessed'
+  | 'log'
+  | 'opgave'
+  | 'minde'
+  | 'observation'
 export interface Optagelse {
   tekst: string
   tid: string
+  /** Hvad optagelsen er blevet til (diktafon = indbakke, ikke lydarkiv). */
+  status?: OptagelseStatus
 }
 export const DEMO_OPTAGELSER: Optagelse[] = [
-  { tekst: 'Tomaterne ser trætte ud efter regnen.', tid: 'I dag, 17.42' },
-  { tekst: 'Husk at så mere salat til efteråret.', tid: 'I går, 10.31' },
-  { tekst: 'Første tomat er ved at få farve!', tid: '8. juni, 18.09' },
+  { tekst: 'Tomaterne ser trætte ud efter regnen.', tid: 'I dag, 17.42', status: 'unprocessed' },
+  { tekst: 'Husk at så mere salat til efteråret.', tid: 'I går, 10.31', status: 'opgave' },
+  { tekst: 'Første tomat er ved at få farve!', tid: '8. juni, 18.09', status: 'minde' },
 ]
 
 // 4 · Inspirér mig (som selvstændigt rum)
@@ -605,48 +622,36 @@ export const DEMO_INSPIRER: InspirerForslag = {
   },
 }
 
-// 5 · Dyrkerstatus
+// 5 · Dyrkerstatus — identitet, ikke gamification (ingen niveau/afMax)
 export interface Dyrkerstatus {
   titel: string
-  niveau: number
-  afMax: number
   beskrivelse: string
 }
 export const DEMO_DYRKERSTATUS: Dyrkerstatus = {
   titel: 'Selvforsyner',
-  niveau: 4,
-  afMax: 7,
-  beskrivelse:
-    'Du producerer allerede en betydelig del af sommerens grøntsager selv.',
+  beskrivelse: 'Du har høstet fra flere afgrøder denne sæson.',
 }
 
-// 6 · Dyrkerkompetencer
+// 6 · Dyrkerkompetencer — editorial ord, ingen opnået-badges
 export interface Kompetenceomraade {
   omraade: string
-  faerdigheder: { navn: string; opnaaet: boolean }[]
+  faerdigheder: string[]
 }
 export const DEMO_KOMPETENCER: Kompetenceomraade[] = [
-  {
-    omraade: 'Tomatdyrkning',
-    faerdigheder: [
-      { navn: 'Beskæring', opnaaet: true },
-      { navn: 'Opbinding', opnaaet: true },
-      { navn: 'Frøavl', opnaaet: false },
-    ],
-  },
-  {
-    omraade: 'Kompost',
-    faerdigheder: [
-      { navn: 'Køkkenaffald', opnaaet: true },
-      { navn: 'Varm kompost', opnaaet: false },
-    ],
-  },
+  { omraade: 'Tomatdyrkning', faerdigheder: ['Beskæring', 'Høst'] },
+  { omraade: 'Agurkdyrkning', faerdigheder: ['Såning', 'Udplantning', 'Høst'] },
 ]
 
 // 10 · Spisekammer
 export interface SpisekammerData {
   hoest: { navn: string; antal: string }[]
   opskrifter: string[]
+  /**
+   * Er `antal` høst-REGISTRERINGER (ægte data) frem for faktiske mængder?
+   * Så må UI ikke skrive "18 jordbær" (misvisende) — vis kun afgrødenavne.
+   * Demo = false (kuraterede tal). Udfyldes true af den ægte motor.
+   */
+  antalErHoester?: boolean
 }
 export const DEMO_SPISEKAMMER: SpisekammerData = {
   hoest: [

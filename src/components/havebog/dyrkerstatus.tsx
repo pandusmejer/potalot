@@ -50,33 +50,9 @@ export function Dyrkerstatus({ status }: Props) {
         {status.titel}
       </h2>
 
-      {/* Niveau-rejsen — diskrete prikker, ikke en progress-bar */}
-      <div className="flex items-center" style={{ gap: 7, marginTop: 18 }}>
-        {Array.from({ length: status.afMax }).map((_, i) => (
-          <span
-            key={i}
-            aria-hidden
-            style={{
-              width: i < status.niveau ? 9 : 7,
-              height: i < status.niveau ? 9 : 7,
-              borderRadius: '50%',
-              background: i < status.niveau ? '#3B4A2F' : 'rgba(36,48,31,0.18)',
-            }}
-          />
-        ))}
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 600,
-            color: 'rgba(36,48,31,0.5)',
-            marginLeft: 8,
-          }}
-        >
-          Niveau {status.niveau} af {status.afMax}
-        </span>
-      </div>
-
+      {/* Ingen niveau-prikker / "X af Y" — det er identitet, ikke
+          gamification. Brugeren skal føle sig SET, ikke vurderet. Titlen
+          + den rolige beskrivelse bærer status alene. */}
       <p
         style={{
           fontFamily: serif,
@@ -85,7 +61,7 @@ export function Dyrkerstatus({ status }: Props) {
           lineHeight: 1.32,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,
-          marginTop: 18,
+          marginTop: 20,
           maxWidth: '26ch',
         }}
       >

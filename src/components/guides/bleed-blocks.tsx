@@ -79,7 +79,7 @@ function BleedImage({ imageSrc, alt }: Pick<BleedBlockProps, 'imageSrc' | 'alt'>
 export function BleedFromLeft({ imageSrc, alt, label, description }: BleedBlockProps) {
   return (
     <figure
-      className="relative my-5 mx-6 h-[220px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
+      className="relative my-5 mx-6 h-[176px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
       style={{ backgroundColor: pageBackground }}
     >
       <BleedImage imageSrc={imageSrc} alt={alt} />
@@ -103,7 +103,7 @@ export function BleedFromLeft({ imageSrc, alt, label, description }: BleedBlockP
 export function BleedFromRight({ imageSrc, alt, label, description }: BleedBlockProps) {
   return (
     <figure
-      className="relative my-5 mx-6 h-[220px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
+      className="relative my-5 mx-6 h-[176px] w-[calc(100vw-48px)] overflow-hidden rounded-[28px]"
       style={{ backgroundColor: pageBackground }}
     >
       <BleedImage imageSrc={imageSrc} alt={alt} />
@@ -135,9 +135,9 @@ export function BleedBand({
   return (
     <figure
       className={[
-        'relative my-6 h-[300px] overflow-hidden rounded-[28px]',
+        'relative my-6 h-[236px] overflow-hidden rounded-[28px]',
         contained
-          ? 'mx-6 h-[260px] w-[calc(100vw-48px)]'
+          ? 'mx-6 h-[208px] w-[calc(100vw-48px)]'
           : 'left-1/2 w-screen -translate-x-1/2',
       ].join(' ')}
       style={{ backgroundColor: pageBackground }}
@@ -164,6 +164,121 @@ export function BleedBand({
         description={description}
         className="bottom-16 left-8 max-w-[190px]"
       />
+    </figure>
+  )
+}
+
+/**
+ * GuideEvidenceImage — inline makro-BEVIS inde i et guideafsnit.
+ *
+ * Afløser de fade-tunge Bleed*-blokke i den levende artikel. Makrofotoet skal
+ * være et konkret plantebevis (blad, stængel, frugt, fugt, struktur), ikke en
+ * stemningspause mellem kapitler:
+ *   - INTET top/bund-fade der æder teksturen — kun blød radius + hårfin border.
+ *   - Kompakt højde (16:9) så det sparer scroll på mobil.
+ *   - Sidder tæt under afsnittet det dokumenterer (wrappes sammen med kapitlet
+ *     i saadan-dyrker-du, så sektions-rytmen kun adskiller kapitler).
+ *
+ * (Bleed*-komponenterne beholdes til QA/demo-sider.)
+ */
+export type EvidenceVariant = 'wide' | 'square' | 'tall'
+
+/**
+ * Formvalg pr. afsnit bryder den lineære "tekst → fuldbredde-billede"-rytme:
+ *   - wide   = fuld bredde 16:9 (default, roligt bånd)
+ *   - square = ~78% bredde 1:1, forskudt til en side (inline editorial insert)
+ *   - tall   = ~62% bredde 3:4, forskudt (viser vækstform/plantearkitektur)
+ * Forskydningen (align) veksler pr. billede, så to på hinanden følgende
+ * bevisbilleder ikke lander ens.
+ */
+export function GuideEvidenceImage({
+  imageSrc,
+  alt,
+  caption,
+  variant = 'wide',
+  align = 'right',
+  float,
+}: {
+  imageSrc: string
+  alt: string
+  caption?: string
+  variant?: EvidenceVariant
+  align?: 'left' | 'right'
+  /** Når sat: figuren flyder, og brødteksten ombrydes omkring den. */
+  float?: 'left' | 'right'
+}) {
+  const aspect =
+    variant === 'square' ? '1 / 1' : variant === 'tall' ? '3 / 4' : '16 / 9'
+
+  // Float-tilstand: ægte tekst-ombrydning. Figuren tages ud af flow og
+  // brødteksten løber rundt om den (som et magasin-opslag). Bruges til de
+  // smalle former (kvadratisk/høj); brede billeder står som fuldbredde-blok.
+  if (float) {
+    const width = variant === 'tall' ? '44%' : '48%'
+    // Minimal luft mod den ombrydende tekst (tekst-siden) OG under billedet, så
+    // den første fuldbredde-linje rykker helt op mod billedets bund.
+    const margin =
+      float === 'right' ? '2px 0 1px 11px' : '2px 11px 1px 0'
+    return (
+      <figure
+        className="overflow-hidden rounded-[16px]"
+        style={{
+          float,
+          width,
+          margin,
+          aspectRatio: aspect,
+          border: '1px solid rgba(45,42,36,0.10)',
+          backgroundColor: pageBackground,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} alt={alt} className="h-full w-full object-cover" />
+      </figure>
+    )
+  }
+
+  const shape: CSSProperties =
+    variant === 'square'
+      ? { aspectRatio: '1 / 1', width: '78%' }
+      : variant === 'tall'
+        ? { aspectRatio: '3 / 4', width: '62%' }
+        : { aspectRatio: '16 / 9', width: '100%' }
+  // Forskyd smalle former til en side; fuld bredde står naturligt.
+  const offset: CSSProperties =
+    variant === 'wide'
+      ? {}
+      : align === 'left'
+        ? { marginRight: 'auto' }
+        : { marginLeft: 'auto' }
+
+  return (
+    <figure style={{ margin: '10px 0 0' }}>
+      <div
+        className="overflow-hidden rounded-[18px]"
+        style={{
+          ...shape,
+          ...offset,
+          border: '1px solid rgba(45,42,36,0.10)',
+          backgroundColor: pageBackground,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} alt={alt} className="h-full w-full object-cover" />
+      </div>
+      {caption && (
+        <figcaption
+          style={{
+            fontFamily: sans,
+            fontSize: 12,
+            fontWeight: 500,
+            color: 'rgba(36,48,31,0.5)',
+            margin: '6px 0 0',
+            textAlign: variant !== 'wide' && align === 'right' ? 'right' : 'left',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
     </figure>
   )
 }

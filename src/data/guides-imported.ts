@@ -11,6 +11,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk",
     "plantName": "Agurk",
+    "pluralName": null,
     "variety": null,
     "latinName": "Cucumis sativus",
     "guideLevel": "species",
@@ -47,6 +48,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænet og fugtighedsbevarende jord med højt indhold af organisk materiale.",
@@ -213,6 +216,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili",
     "plantName": "Chili",
+    "pluralName": null,
     "variety": null,
     "latinName": "Capsicum",
     "guideLevel": "species",
@@ -249,6 +253,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
@@ -456,6 +462,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia",
     "plantName": "Dahlia",
+    "pluralName": null,
     "variety": null,
     "latinName": "Dahlia",
     "guideLevel": "species",
@@ -491,6 +498,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "2 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænet jord med jævn fugt og højt indhold af organisk materiale."
@@ -727,6 +736,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": null,
     "latinName": "Capsicum annuum",
     "guideLevel": "species",
@@ -760,6 +770,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         10
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende jord med jævn fugt og god varme.",
@@ -942,6 +954,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat",
     "plantName": "Tomat",
+    "pluralName": "tomater",
     "variety": null,
     "latinName": "Solanum lycopersicum",
     "guideLevel": "species",
@@ -973,6 +986,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9
       ],
       "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "light": "full_sun",
       "water": "regular",
       "soil": "Næringsrig, veldrænende muldjord med jævn fugt.",
@@ -1028,28 +1043,28 @@ export const IMPORTED_GUIDES: Guide[] = [
       },
       {
         "kind": "fact",
-        "key": "fact-tomater-findes-som-to-typer-vaekstformer",
-        "title": "Tomater findes som to typer vækstformer",
+        "key": "fact-ranke-eller-busk",
+        "title": "Ranke eller busk?",
         "variant": "comparison",
         "columns": [
           {
-            "heading": "Ranketomat",
+            "heading": "Vælg ranketomat hvis",
             "items": [
-              "Vokser i højden hele sæsonen",
-              "Skal opbindes",
-              "Sideskud skal knibes"
+              "du har plads i højden",
+              "du vil høste længe",
+              "du kan binde op og knibe sideskud"
             ]
           },
           {
-            "heading": "Busktomat",
+            "heading": "Vælg busktomat hvis",
             "items": [
-              "Lavtvoksende og kompakt",
-              "Velegnet til krukker",
-              "Kræver sjældent opbinding",
-              "Sideskud skal ikke knibes"
+              "du dyrker i krukke",
+              "du vil have en kompakt plante",
+              "du vil slippe for knibning"
             ]
           }
-        ]
+        ],
+        "intro": "Tomater vokser enten opad som ranker eller mere kompakt som buske. Det afgør, hvor meget plads og pasning planten kræver."
       },
       {
         "key": "forskellige-typer-tomater",
@@ -1190,6 +1205,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-marketmore",
     "plantName": "Agurk",
+    "pluralName": null,
     "variety": "Marketmore",
     "latinName": "Cucumis sativus 'Marketmore'",
     "guideLevel": "variety",
@@ -1216,6 +1232,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         8,
         9
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "5-8 dage",
       "growthType": "slyngplante",
       "height": "150-250 cm",
@@ -1270,6 +1288,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili-habanero-orange",
     "plantName": "Chili",
+    "pluralName": null,
     "variety": "Habanero Orange",
     "latinName": "Capsicum chinense 'Habanero Orange'",
     "guideLevel": "variety",
@@ -1296,6 +1315,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "14-28 dage",
       "growthType": "busket",
       "height": "60-100 cm",
@@ -1386,6 +1407,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia-cafe-au-lait",
     "plantName": "Dahlia",
+    "pluralName": null,
     "variety": "Café au Lait",
     "latinName": "Dahlia 'Café au Lait'",
     "guideLevel": "variety",
@@ -1414,6 +1436,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "2 °C",
       "growthType": "opret",
       "height": "100-140 cm",
       "maturityDays": "90-120 dage",
@@ -1515,6 +1539,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt-california-wonder",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": "California Wonder",
     "latinName": "Capsicum annuum 'California Wonder'",
     "guideLevel": "variety",
@@ -1544,6 +1569,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "60-90 cm",
@@ -1641,6 +1668,7 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt-corno-di-toro-rosso",
     "plantName": "Peberfrugt",
+    "pluralName": null,
     "variety": "Corno di Toro Rosso",
     "latinName": "Capsicum annuum 'Corno di Toro Rosso'",
     "guideLevel": "variety",
@@ -1670,6 +1698,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "10-21 dage",
       "growthType": "busket",
       "height": "70-120 cm",
@@ -1767,13 +1797,14 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-san-marzano",
     "plantName": "Tomat",
+    "pluralName": null,
     "variety": "San Marzano",
     "latinName": "Solanum lycopersicum 'San Marzano'",
     "guideLevel": "variety",
     "parentGuideId": "tomat",
     "primaryCategoryId": "fro",
     "subcategoryId": null,
-    "summary": "Klassisk italiensk pastatomat med fast frugtkød og lavt vandindhold. Velegnet til sauce, konservering og lang lagring.",
+    "summary": "Kødfuld italiensk pastatomat til sauce og konservering.",
     "difficulty": "medium",
     "tags": [
       "italiensk",
@@ -1792,6 +1823,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         9,
         10
       ],
+      "frostSensitive": true,
+      "minimumTemperature": "10 °C",
       "germinationDays": "6-10 dage",
       "growthType": "ranketomat",
       "height": "180-220 cm",
@@ -1811,24 +1844,24 @@ export const IMPORTED_GUIDES: Guide[] = [
         "variant": "comparison",
         "columns": [
           {
-            "heading": "San Marzano",
+            "heading": "Vælg San Marzano hvis",
             "items": [
-              "Fast frugtkød",
-              "Få kerner",
-              "Lavt vandindhold",
-              "Velegnet til sauce"
+              "du vil lave sauce",
+              "du vil have fast frugtkød",
+              "du vil have få kerner"
             ]
           },
           {
-            "heading": "Salattomat",
+            "heading": "Vælg salattomat hvis",
             "items": [
-              "Mere saftig",
-              "Flere kerner",
-              "Højere vandindhold",
-              "Frisk og snackklar fra planten"
+              "du vil spise den frisk",
+              "du vil have mere saft",
+              "du vil snacke direkte fra planten"
             ]
           }
-        ]
+        ],
+        "intro": "Det handler mest om, hvordan du vil bruge tomaten.",
+        "conclusion": "San Marzano er bedst i gryden. Salattomater er bedst friske."
       },
       {
         "key": "sortsspecifikke-detaljer",
@@ -1850,14 +1883,14 @@ export const IMPORTED_GUIDES: Guide[] = [
         "key": "guide-opbinding-af-tomater",
         "title": "Sådan opbinder du tomater",
         "slug": "opbinding-af-tomater",
-        "description": "Høje tomatplanter kan hurtigt blive tunge af blade og frugter. Med den rette opbinding vokser planten sundere og bliver lettere at høste fra."
+        "description": "Høje tomatplanter bliver hurtigt tunge. Lær at støtte dem, så planten står stærkt og bliver lettere at høste fra."
       },
       {
         "kind": "guide",
         "key": "guide-knibning-af-tomater",
         "title": "Sådan kniber du tomater",
         "slug": "knibning-af-tomater",
-        "description": "Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten."
+        "description": "Ranketomater danner sideskud løbende. Lær at fjerne dem, så planten bruger kræfterne på vækst og frugt."
       },
       {
         "key": "potalot-note",

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { CompleteTaskDialog } from '@/components/havekalender/complete-task-dialog'
 import { TaskActions } from '@/components/havekalender/task-actions'
 import { TASK_TYPE_META, TASK_PRIORITY_META } from '@/lib/constants'
+import { SourceChip, taskSourceLabel } from '@/components/havekalender/source-chip'
 import { formatDatoKort, venligDato, erForsinket } from '@/lib/datetime'
 import { completeTask, uncompleteTask } from '@/actions/havekalender'
 import type { CalendarTask, PlantLogType } from '@/lib/types'
@@ -19,7 +20,7 @@ import type { ComponentType, SVGProps } from 'react'
  * Én opgave vist som række. Checkbox markerer udført.
  * Hvis opgaven er linket til en plante: prompts om at føje til log.
  */
-export function TaskRow({ task, compact = false }: { task: CalendarTask; compact?: boolean }) {
+export function TaskRow({ task, compact = false, showSource = false }: { task: CalendarTask; compact?: boolean; showSource?: boolean }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [logPrompt, setLogPrompt] = useState<{
@@ -115,6 +116,9 @@ export function TaskRow({ task, compact = false }: { task: CalendarTask; compact
             <span className={cn(forsinket && !completed && 'text-destructive font-medium')}>
               {forsinket && !completed ? venligDato(task.date) : formatDatoKort(task.date)}
             </span>
+            {showSource && taskSourceLabel(task.source) && (
+              <SourceChip label={taskSourceLabel(task.source)!} />
+            )}
           </div>
         </div>
         {!completed && (

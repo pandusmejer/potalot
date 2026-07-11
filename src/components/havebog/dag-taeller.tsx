@@ -10,6 +10,8 @@ interface Props {
   dag: number
   /** Undertekst — "af din første sæson" */
   etiket: string
+  /** Render lys-på-foto (når tælleren ligger oven på hero-billedet). */
+  onImage?: boolean
 }
 
 /**
@@ -27,7 +29,7 @@ interface Props {
  * SSR: initialværdien (dag-2) er identisk på server og klient;
  * animationen starter i useEffect → ingen hydration-mismatch.
  */
-export function DagTaeller({ dag, etiket }: Props) {
+export function DagTaeller({ dag, etiket, onImage = false }: Props) {
   const [vist, setVist] = useState(() => Math.max(1, dag - 2))
 
   useEffect(() => {
@@ -42,10 +44,21 @@ export function DagTaeller({ dag, etiket }: Props) {
 
   const cifre = String(vist).padStart(3, '0').split('')
 
+  // Farver: dæmpet mørk på creme-bunden — eller lys når tælleren ligger
+  // oven på hero-fotoet. Læsbarheds-skyggen lægges som drop-shadow FILTER
+  // på hele sektionen (følger tallenes form) — ikke text-shadow på ciffer-
+  // boksen, som overflow:hidden ellers ville klippe til en firkant.
+  const glow = onImage
+    ? 'drop-shadow(0 1px 3px rgba(0,0,0,0.55)) drop-shadow(0 3px 16px rgba(0,0,0,0.42))'
+    : undefined
+  const labelColor = onImage ? 'rgba(255,255,255,0.75)' : 'rgba(36,48,31,0.45)'
+  const cifferColor = onImage ? '#FFFFFF' : '#24301F'
+  const etiketColor = onImage ? 'rgba(255,255,255,0.92)' : 'rgba(36,48,31,0.62)'
+
   return (
     <section
       className="flex flex-col items-center"
-      style={{ textAlign: 'center', paddingBlock: '8px 4px' }}
+      style={{ textAlign: 'center', paddingBlock: onImage ? 0 : '8px 4px', filter: glow }}
     >
       <style>{`
         @keyframes dagtaeller-tick {
@@ -61,7 +74,7 @@ export function DagTaeller({ dag, etiket }: Props) {
           fontWeight: 700,
           letterSpacing: '0.34em',
           textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.45)',
+          color: labelColor,
           margin: 0,
           marginBottom: 10,
         }}
@@ -80,7 +93,7 @@ export function DagTaeller({ dag, etiket }: Props) {
           lineHeight: 0.9,
           letterSpacing: '0.04em',
           fontVariantNumeric: 'tabular-nums',
-          color: '#24301F',
+          color: cifferColor,
         }}
       >
         {cifre.map((c, i) => (
@@ -106,7 +119,7 @@ export function DagTaeller({ dag, etiket }: Props) {
           fontWeight: 400,
           fontSize: 'clamp(18px, 3.8vw, 22px)',
           lineHeight: 1.3,
-          color: 'rgba(36,48,31,0.62)',
+          color: etiketColor,
           margin: 0,
           marginTop: 14,
         }}

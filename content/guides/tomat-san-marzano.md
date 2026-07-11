@@ -6,10 +6,12 @@ plantName: Tomat
 variety: San Marzano
 latinName: Solanum lycopersicum 'San Marzano'
 primaryCategoryId: fro
-summary: "Klassisk italiensk pastatomat med fast frugtkød og lavt vandindhold. Velegnet til sauce, konservering og lang lagring."
+summary: "Kødfuld italiensk pastatomat til sauce og konservering."
 difficulty: medium
 tags: [italiensk, pasta, kødfuld, lagringsdygtig, pastatomat, arvesort]
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "6-10 dage"
   growthType: ranketomat
   height: "180-220 cm"
@@ -28,19 +30,21 @@ Det er tomaten bag nogle af de mest elskede italienske retter som pizza, ragù, 
 
 :::fact{variant="comparison" title="San Marzano eller salattomat?"}
 
-### San Marzano
+Det handler mest om, hvordan du vil bruge tomaten.
 
-- Fast frugtkød
-- Få kerner
-- Lavt vandindhold
-- Velegnet til sauce
+### Vælg San Marzano hvis
 
-### Salattomat
+- du vil lave sauce
+- du vil have fast frugtkød
+- du vil have få kerner
 
-- Mere saftig
-- Flere kerner
-- Højere vandindhold
-- Frisk og snackklar fra planten
+### Vælg salattomat hvis
+
+- du vil spise den frisk
+- du vil have mere saft
+- du vil snacke direkte fra planten
+
+San Marzano er bedst i gryden. Salattomater er bedst friske.
 
 :::
 
@@ -65,14 +69,14 @@ San Marzano er en ranketomat med kraftig vækst, og den kræver opbinding fra st
 :::guide
 slug: opbinding-af-tomater
 title: Sådan opbinder du tomater
-description: Høje tomatplanter kan hurtigt blive tunge af blade og frugter. Med den rette opbinding vokser planten sundere og bliver lettere at høste fra.
+description: Høje tomatplanter bliver hurtigt tunge. Lær at støtte dem, så planten står stærkt og bliver lettere at høste fra.
 :::
 
 :::guide
 
 slug: knibning-af-tomater
 title: Sådan kniber du tomater
-description: Ranketomater som San Marzano danner løbende sideskud. Lær hvordan du styrer væksten og får mest muligt ud af planten.
+description: Ranketomater danner sideskud løbende. Lær at fjerne dem, så planten bruger kræfterne på vækst og frugt.
 
 :::
 

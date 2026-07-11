@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
-import { DagTaeller } from '@/components/havebog/dag-taeller'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
+import { HavebogDateline } from '@/components/havebog/havebog-dateline'
+import { HavebogDivider } from '@/components/havebog/havebog-divider'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
@@ -18,6 +19,7 @@ import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
 import { kurater, type RumId } from '@/lib/havebog-kurator'
+import { kompetenceAntal } from '@/lib/havebog-kompetencer'
 import { aktuelMaaned } from '@/lib/datetime'
 import {
   DEMO_HERO_STATS,
@@ -42,26 +44,25 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const MAANED_DA = [
-  'januar', 'februar', 'marts', 'april', 'maj', 'juni',
-  'juli', 'august', 'september', 'oktober', 'november', 'december',
-]
-
 /**
- * 📖 HAVEBOG.
+ * 📖 HAVEBOG — den offentlige forside.
  *
- * V1.0 (13. juni 2026 — Annas "byg hele huset"): for at kunne afgøre
- * hierarkiet (hovedrum? for stort? overflødigt? flyt til Guides/
- * Planter/Kalender?) bygges ALLE 15 rum som første-versioner, uden at
- * optimere rækkefølgen endnu. Det fulde hus vises i DEMO — den flade
- * der evalueres. Rum der kræver eksterne/fællesskabs-kilder (Vejret,
- * Populært) er prototyper og vises KUN i demo, til en ægte kilde
- * lander (ærligheds-reglen: ingen opfundne tal til rigtige brugere).
+ * Havebog er en redaktionel havejournal, ikke et dashboard eller en
+ * opgaveliste. Både demo og indlogget bruger kører nu SAMME kurator
+ * (V17 + Annas trim, 7. juli): fast top + få kuraterede rum. Demoen
+ * skal vise den RIGTIGE oplevelse en ny bruger møder — ikke hele huset.
  *
- * Logget-ind brugere ser fortsat det kuraterede to-lags-layout (V10):
- * forside → ildsted → sæsonens 1-2 moduler → arkiv. De nye prototype-
- * rum kobles til ægte data rum for rum, efterhånden som hierarkiet og
- * datakilderne afgøres.
+ * Det faste lag (altid, i denne rækkefølge):
+ *   1. Hero  2. Dagtæller  3. Dagens historie (ildsted)  4. Tal til din have
+ * Derefter højst 3 kuraterede rum (kurater maks:3, så i alt maks 7).
+ *
+ * Hele-huset-visningen (alle 15 rum til design-review) er flyttet til
+ * den interne rute /admin/qa/havebog — værkstedet, ikke stuen.
+ *
+ * Prototype-rum uden ægte kilde (Inspirér, Status, Kompetencer,
+ * Spisekammer, Projekter, Bedrifter, Vejret, Populært) kører på demo-
+ * data og er derfor gated false for indloggede — de tændes ét ad
+ * gangen når deres deriver/kilde lander (ærligheds-reglen).
  */
 export default async function HavebogPage() {
   const data = await getHavebogData()
@@ -76,10 +77,7 @@ export default async function HavebogPage() {
   const minder = isDemo ? DEMO_MINDER : data.minder
   const archivedPlants = isDemo ? DEMO_ARCHIVED_PLANTS : data.archivedPlants
 
-  const nu = new Date()
-  const idag = `${nu.getDate()}. ${MAANED_DA[nu.getMonth()]}`
-
-  // Det faste lag — forsiden + ildstedet (vises i begge tilstande).
+  // Det faste lag — forsiden + ildstedet + Tal til din have.
   const forside = (
     <>
       <HavebogHero
@@ -88,65 +86,94 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
-      {heroNarrative.saesonDag !== null && heroNarrative.saesonEtiket && (
-        <DagTaeller dag={heroNarrative.saesonDag} etiket={heroNarrative.saesonEtiket} />
-      )}
-      <HavensStemme dato={idag} opslag={dagensOpslag} />
+      {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
+          ~12 mm under bølgens højeste punkt. Den negative margin overskriver
+          space-y-fugen og løfter resten af siden med op. */}
+      <div
+        style={{
+          marginTop: -141,
+          position: 'relative',
+          zIndex: 20,
+          // Venstrestillet, samme venstre-akse som Dagens historie
+          // (main px-4 = 16 + samme paddingInline som Ildstedet).
+          paddingLeft: 'clamp(12px, 3.5vw, 16px)',
+        }}
+      >
+        <HavebogDateline />
+      </div>
+      {/* Ildstedet: ~100 px luft mellem dato og "Dagens historie", så
+          hovedopslaget føles som en ny magasin-side (overskriver space-y). */}
+      <div style={{ marginTop: -12 }}>
+        <HavensStemme opslag={dagensOpslag} />
+      </div>
+      {/* Ornament — lukker Dagens historie-opslaget før Tal til din have.
+          marginTop:0 dræber space-y-fugen, så divider-bundmarginen (64) ejer
+          afstanden divider→diktafon. */}
+      <HavebogDivider />
+      {/* Tal til din have = fast 4. rum. Demo: eksempler + afspilning.
+          Indlogget: den ægte råstof-motor (tal/skriv → Claude → gem),
+          det eneste rum der SKABER indhold til alle de andre. */}
+      <div style={{ marginTop: 0 }}>
+        {isDemo ? (
+          <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />
+        ) : (
+          <TalOptager />
+        )}
+      </div>
     </>
   )
 
-  // ── DEMO: HELE HUSET (V1.0) — alle 15 rum i Annas rækkefølge ──
-  // Uden hierarki-optimering. Formålet er at kunne stå i huset og se
-  // det hele, før det afgøres hvad der er centrum og hvad der flyttes.
-  if (isDemo) {
-    return (
-      <div className="space-y-20 sm:space-y-28 pb-16">
-        {forside /* 1 + 2 */}
-        <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} /> {/* 3 */}
-        <InspirerMig forslag={DEMO_INSPIRER} /> {/* 4 */}
-        <Dyrkerstatus status={DEMO_DYRKERSTATUS} /> {/* 5 */}
-        <Dyrkerkompetencer omraader={DEMO_KOMPETENCER} /> {/* 6 */}
-        <PaaDenneDag entries={onThisDay} /> {/* 7 */}
-        <Minder minder={minder} /> {/* 8 */}
-        <Vendepunkter vendepunkter={vendepunkter} /> {/* 9 */}
-        <Spisekammer data={DEMO_SPISEKAMMER} /> {/* 10 */}
-        <PopulaertLigeNu emner={DEMO_POPULAERT} /> {/* 11 — prototype */}
-        <VejretIHaven vejr={DEMO_VEJR} /> {/* 12 — prototype */}
-        <Projekter projekt={DEMO_PROJEKT} /> {/* 13 */}
-        <Bedrifter bedrifter={DEMO_BEDRIFTER} /> {/* 14 */}
-        <HistorienFortsaetter plants={archivedPlants} /> {/* 15 */}
-      </div>
-    )
-  }
-
-  // ── LOGGET IND: kuratoren (V17) — højst 7 rum ──
-  // De 3 faste (forside) + højst 4 kuraterede. Kun rum med ÆGTE data
-  // kommer i betragtning; prototype-rum uden kilde (Tal, Inspirér,
-  // Status, Kompetencer, Spisekammer, Projekter, Bedrifter, Vejret,
-  // Populært) er gated false og vises derfor ikke endnu — de tændes
-  // ét ad gangen, efterhånden som deres deriver/kilde lander.
-  const harData: Partial<Record<RumId, boolean>> = {
-    paaDenneDag: onThisDay.length > 0,
-    minder: minder.length > 0,
-    vendepunkter: vendepunkter.length > 0,
-    historienFortsaetter: archivedPlants.length > 0,
-  }
-  const valgteRum = kurater({ maaned: aktuelMaaned(), harData })
+  // ── Kuratoren (V17) — samme logik i demo og indlogget ──
+  // Tal er nu et fast 4. rum, så vi capper de kuraterede til 3 (maks 7
+  // i alt). Kun rum med ÆGTE data kommer i betragtning. I demo har alle
+  // rum demo-data (undtagen talTilDinHave, der rendres fast ovenfor);
+  // for indloggede er kun de fire deriver-rum tændt endnu.
+  const harData: Partial<Record<RumId, boolean>> = isDemo
+    ? {
+        inspirerMig: true,
+        dyrkerstatus: true,
+        dyrkerkompetencer: true,
+        paaDenneDag: onThisDay.length > 0,
+        minder: minder.length > 0,
+        vendepunkter: vendepunkter.length > 0,
+        spisekammer: true,
+        projekter: true,
+        bedrifter: true,
+        vejret: true,
+        populaert: true,
+        historienFortsaetter: archivedPlants.length > 0,
+      }
+    : {
+        inspirerMig: data.inspirerForslag !== null,
+        spisekammer: data.spisekammer !== null,
+        paaDenneDag: onThisDay.length > 0,
+        minder: minder.length > 0,
+        vendepunkter: vendepunkter.length > 0,
+        historienFortsaetter: archivedPlants.length > 0,
+        // V13: afledte rum — gated på ægte data (ærligheds-reglen).
+        dyrkerstatus: data.dyrkerstatus.length > 0,
+        dyrkerkompetencer: kompetenceAntal(data.dyrkerkompetencer) >= 2,
+      }
+  const valgteRum = kurater({ maaned: aktuelMaaned(), harData, maks: 3 })
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
+    inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
+    dyrkerstatus: <Dyrkerstatus status={isDemo ? DEMO_DYRKERSTATUS : (data?.dyrkerstatus[0] ?? DEMO_DYRKERSTATUS)} />,
+    dyrkerkompetencer: <Dyrkerkompetencer omraader={isDemo ? DEMO_KOMPETENCER : (data?.dyrkerkompetencer ?? DEMO_KOMPETENCER)} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
     minder: <Minder minder={minder} />,
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
+    spisekammer: <Spisekammer data={isDemo ? DEMO_SPISEKAMMER : data?.spisekammer ?? DEMO_SPISEKAMMER} />,
+    projekter: <Projekter projekt={DEMO_PROJEKT} />,
+    bedrifter: <Bedrifter bedrifter={DEMO_BEDRIFTER} />,
+    vejret: <VejretIHaven vejr={DEMO_VEJR} />,
+    populaert: <PopulaertLigeNu emner={DEMO_POPULAERT} />,
     historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
   }
 
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
-      {/* Råstof-motoren — altid til stede for indloggede. Den ægte
-          "Tal til din have": tal/skriv → Claude-forslag → gem. Det
-          eneste rum der SKABER indhold til alle de andre. */}
-      <TalOptager />
       {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
   )

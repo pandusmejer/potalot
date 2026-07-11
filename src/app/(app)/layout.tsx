@@ -13,16 +13,23 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const nav = await getNavState()
 
-  // Kompromisløst mobile-first: én centreret telefon-kolonne.
-  // Desktop er blot en elegant udvidelse (samme kolonne, centreret).
+  // Kompromisløst mobile-first: HELE appen låst til én centreret telefon-
+  // ramme. På mobil fylder rammen skærmen (uændret); på desktop står den som
+  // en telefon på en rolig sage-flade — også Topbar og BottomNav holder sig
+  // inden for kolonnen (ingen fuld-bredde-barer).
   return (
-    <div className="min-h-screen app-canvas">
-      <Topbar profile={profile} />
-      {!profile && <DemoBanner />}
-      <main className="mx-auto w-full max-w-[480px] px-4 py-6 pb-28">
-        {children}
-      </main>
-      <BottomNav heroHref={nav.heroHref} criticalTaskCount={nav.criticalTaskCount} />
+    <div
+      className="min-h-screen w-full"
+      style={{ background: 'color-mix(in oklab, var(--primary) 12%, var(--background))' }}
+    >
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[390px] flex-col overflow-x-clip app-canvas shadow-[0_0_50px_rgba(42,51,32,0.10)]">
+        <Topbar profile={profile} />
+        {!profile && <DemoBanner />}
+        <main className="w-full px-4 py-6 pb-28">
+          {children}
+        </main>
+        <BottomNav heroHref={nav.heroHref} criticalTaskCount={nav.criticalTaskCount} />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { saeson } from '@/lib/datetime'
-import { Leaf, Sprout, Flower, Bug, Droplets, Scissors, Carrot } from 'lucide-react'
+import { Leaf, Sprout, Flower2, Bug, Droplets, Scissors, Carrot } from 'lucide-react'
 import type { ComponentType, SVGProps } from 'react'
 
 /** Drivhus-ikon (lucide har ingen) — i samme streg-stil som resten. */
@@ -170,7 +170,7 @@ function ikonFor(kategori: string): ComponentType<SVGProps<SVGSVGElement>> {
   if (/halloween|gr(æ|ae)skar/.test(c)) return IconGraeskar
   if (/jordforbedr|regnorm|kompost/.test(c)) return IconRegnorm
   if (/udplant|s(å|aa)ning|forkultiv|spir/.test(c)) return Sprout
-  if (/blomst|staud/.test(c)) return Flower
+  if (/blomst|staud/.test(c)) return Flower2
   if (/biodivers|bi(er)?|insekt|sommerfugl/.test(c)) return Bug
   if (/vand/.test(c)) return Droplets
   if (/besk(æ|ae)r/.test(c)) return Scissors
@@ -301,13 +301,13 @@ export function MaanedsHero({
             >
               Månedens fokus
             </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
+            <div className="mt-4 flex flex-wrap gap-2">
               {focusTags.map(tag => {
                 const PIcon = ikonFor(tag)
                 return (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-xs capitalize"
+                    className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[11px] capitalize"
                     style={{
                       fontFamily: sans,
                       fontWeight: 600,
@@ -318,7 +318,7 @@ export function MaanedsHero({
                       border: '1px solid rgba(255,255,255,0.22)',
                     }}
                   >
-                    <PIcon className="h-3.5 w-3.5 opacity-80" strokeWidth={1.75} />
+                    <PIcon className="h-3 w-3 opacity-80" strokeWidth={1.75} />
                     {tag}
                   </span>
                 )

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { ArrowLeft, Lightbulb, Users, MessageCircle, MessagesSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Trophy } from 'lucide-react'
+import { ArrowLeft, Lightbulb, Users, MessageSquare, Gift, ListChecks, Sprout, BookOpen, Image as ImageIcon, Trophy } from 'lucide-react'
 import { getGroup, getGroupMembers } from '@/actions/groups'
 import { getChatMessages } from '@/actions/group-chat'
 import { getPendingJoinRequests } from '@/actions/group-invitations'
@@ -318,7 +318,7 @@ export default async function GroupDetailPage({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessagesSquare className="h-4 w-4" />
+                  <MessageSquare className="h-4 w-4" />
                   Tidslinje
                 </CardTitle>
               </CardHeader>
@@ -341,7 +341,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <CardHeader>
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <CardTitle className="flex items-center gap-2">
-                    <MessagesSquare className="h-4 w-4" />
+                    <MessageSquare className="h-4 w-4" />
                     Forum ({forumPosts.length})
                   </CardTitle>
                   <CreateForumPostDialog groupId={group.id} />
@@ -359,7 +359,7 @@ export default async function GroupDetailPage({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4" />
+                  <MessageSquare className="h-4 w-4" />
                   Chat
                 </CardTitle>
               </CardHeader>

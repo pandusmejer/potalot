@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react'
 import type { Guide } from '@/lib/types'
 import { Search } from 'lucide-react'
 import { GuideCardEditorial } from './guide-card-editorial'
-import { LayeredFactBlock, layeredGuideSampleData } from './layered-guide'
-import { EditorialBleedCard } from './editorial-bleed-card'
-import { TrustBadge, guideKindFor } from './trust-badge'
+import { SpoergGartneren } from './spoerg-gartneren'
+import { layeredGuideSampleData } from './layered-guide'
+import { KortForklaret } from './kort-forklaret'
+import { Dyrkningsforloeb } from './dyrkningsforloeb'
+import { guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
   type PopulaertEmne,
@@ -14,8 +16,22 @@ import {
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Display-font på Guides = IBM Plex Sans Condensed (feltmanual/dyrkningsarkiv,
+// ikke romantisk herbarium). Kun store overskrifter + arts-/kort-titler.
+const plex = 'var(--font-plex-condensed), sans-serif'
 
-type Filter = 'alle' | 'potalot' | 'egen' | 'ai-udkast'
+// Biblioteket viser kun det redaktionelle 'potalot'-lag, så en "Potalot"-chip
+// ville vise præcis det samme som "Alle" (pynt forklædt som funktion). Den ægte,
+// meningsfulde dimension her er guideLevel: art vs. sort.
+type Filter = 'alle' | 'species' | 'variety'
+
+/**
+ * Arts- vs sortsguide — samme regel som kortenes egen type-chip (guideLevel med
+ * variety-navn som fallback), så filtre og kort-mærkater altid er enige.
+ */
+function levelOf(g: Guide): 'species' | 'variety' {
+  return g.guideLevel === 'variety' || g.variety ? 'variety' : 'species'
+}
 
 interface Props {
   guides: Guide[]
@@ -37,11 +53,17 @@ export function GuidesBibliotek({
   aiGuideIds,
   iFroebankIds,
   bridgeMacroSrc,
-  bridgeMacroAlt,
 }: Props) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('alle')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
+
+  // Delt af BÅDE quick-search (øverst) og biblioteks-søgning (nederst), så de
+  // to inputs styrer præcis samme query. At skrive rydder et aktivt emne-filter.
+  function handleSearch(v: string) {
+    setSearch(v)
+    setAktivtEmne(null)
+  }
 
   function vaelgEmne(e: PopulaertEmne) {
     setAktivtEmne(curr => (curr?.matchPlantName === e.matchPlantName ? null : e))
@@ -68,7 +90,19 @@ export function GuidesBibliotek({
   const filtered = useMemo(() => {
     const q = effectiveSearch.trim().toLowerCase()
     return withKind
-      .filter(({ kind }) => filter === 'alle' || kind === filter)
+      // Aktiv filterakse = guideLevel (art vs. sort). Biblioteket viser i dag
+      // KUN Potalot-laget, så en kind-chip ville aldrig ændre resultatet.
+      //
+      // FUTURE:
+      // When /guides-bibliotek starts rendering user-owned guides or AI drafts,
+      // reintroduce a separate kind-filter axis here:
+      //   kind: potalot | egen | ai-udkast   (afsender/tillid)
+      // Keep it SEPARATE from guideLevel:
+      //   guideLevel: art | sort             (indholdsniveau)
+      // Do not combine both axes in one single-select chip row (brugeren skal
+      // ikke vælge mellem "hvem skrev den?" og "hvad handler den om?" i samme
+      // klik). Maskineriet står klar: guideKindFor() + `kind` på hvert element.
+      .filter(({ guide: g }) => filter === 'alle' || levelOf(g) === filter)
       .filter(({ guide: g }) => {
         if (!q) return true
         return (
@@ -90,7 +124,13 @@ export function GuidesBibliotek({
   const potalot = filtered.filter(x => x.kind === 'potalot')
 
   return (
-    <div className="space-y-10 sm:space-y-12">
+    <div className="space-y-8 sm:space-y-10">
+      {/* Hurtig quick-search øverst: brugeren der VED hvad de leder efter kan
+          søge med det samme uden at scrolle forbi hele udstillingen. Kun input,
+          ingen chips/tællere/filtre — det fulde bibliotek ligger nederst. Deler
+          samme search-state som biblioteks-søgningen. */}
+      <QuickSearch value={search} onChange={handleSearch} />
+
       {/* Layered section: topic papers overlap the hero's atmospheric photo field. */}
       <PopulaereEmner
         emner={POPULAERE_EMNER}
@@ -98,48 +138,35 @@ export function GuidesBibliotek({
         onVaelg={vaelgEmne}
       />
 
-      {/* Layered section: paper fact sheet sits over a faded macro image, compact on mobile. */}
-      <LayeredFactBlock
-        {...layeredGuideSampleData.fact}
-        className="-mt-3 sm:-mt-1"
-      />
+      {/* Lavmælt hjælpe-modul lige efter "Begynd her" — brugeren er stadig i
+          "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
+      <SpoergGartneren />
 
       {/*
-       * Editorial bro: én EditorialBleedCard variant="band" der knytter
-       * "Begynd her"-laget til "Guides i felten"-listen. Per Annas spec:
-       * maks 1 pr. side, atmospheric makrofoto, ctaHref scroller til
-       * sektionen nedenunder. Skjules hvis ingen makro kunne resolves
-       * (ingen død blok uden billede).
+       * Dyrkningsforløb-bro: kompakt feltguide-sektion der forklarer at Guides
+       * følger planten gennem sæsonen (sortvalg → høst) og knytter inspirations-
+       * delen til "Guides i felten"-kortene. Atmosfærisk bladfoto som baggrund.
+       * Skjules hvis ingen makro kunne resolves (ingen død blok uden billede).
        */}
       {bridgeMacroSrc && (
-        <EditorialBleedCard
-          variant="band"
-          eyebrow="Dyrkningsguides"
-          title="Fra første frø til sidste høst"
-          description="Brug guides som en rolig vej gennem sæsonen — fra valg af sort til såning, udplantning, pleje og høst."
-          ctaLabel="Se alle guides"
-          ctaHref="#guides-i-felten"
-          imageSrc={bridgeMacroSrc}
-          imageAlt={bridgeMacroAlt ?? 'Atmosfærisk makro fra Potalots billedkatalog'}
-          objectPosition="50% 45%"
-          imageScale={1.08}
-        />
+        // Ren tekst-bro (bladfoto fjernet). -mt strammer fugen til "Spørg
+        // gartneren", så zonen hænger sammen.
+        <div className="-mt-[11px]">
+          <Dyrkningsforloeb />
+        </div>
       )}
 
       {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
-      <section id="guides-i-felten" className="relative pt-2">
+      {/* Guides i felten = fortsættelsen af Dyrkningsforløb-introen, ikke en ny
+          tung sektion. -mt trækker den tættere på intro-kortet. POTALOT-GUIDE-
+          pillen ligger på sin EGEN linje (brækker ikke) over eyebrow-teksten;
+          den præcise type (arts/sort) ligger som metadata på selve kortene. */}
+      {/* Ingen separat "Guides i felten"-overskrift: introen ovenfor forklarer
+          guidesystemet og leder direkte ned i kortene. Én intro → kort, ikke to
+          sektioner. id bevaret som scroll-anker fra "Begynd her". */}
+      <section id="guides-i-felten" className="relative -mt-1 pt-0 scroll-mt-24">
         <AtmosphericGuideField />
-        <div className="relative z-10 space-y-4">
-          <div className="max-w-[360px]">
-            <SektionEyebrow>
-              <TrustBadge kind="potalot" size="sm" />
-              <span>Kvalitetssikrede dyrkningsnoter</span>
-            </SektionEyebrow>
-            <SektionTitel>
-              {aktivtEmne ? `${aktivtEmne.navn} i felten` : 'Guides i felten'}
-            </SektionTitel>
-          </div>
-
+        <div className="relative z-10">
           {potalot.length === 0 ? (
             <EmptyNote text={
               aktivtEmne || effectiveSearch
@@ -162,22 +189,38 @@ export function GuidesBibliotek({
         </div>
       </section>
 
-      {/* Editorial transition: search stays functional, but behaves like a quiet field index. */}
+      {/* Det praktiske værktøj kommer FØRST efter guidekortene: brugeren er på
+          Guides for at finde en konkret plante. Søgning + filtre, rolig felt-
+          index-stil. */}
       <SoegBar
         search={search}
-        onSearch={(v) => {
-          setSearch(v)
-          setAktivtEmne(null)
-        }}
+        onSearch={handleSearch}
         filter={filter}
         onFilter={setFilter}
         antal={{
-          alle: withKind.length,
-          potalot: withKind.filter(x => x.kind === 'potalot').length,
-          egen: withKind.filter(x => x.kind === 'egen').length,
-          'ai-udkast': withKind.filter(x => x.kind === 'ai-udkast').length,
+          // Tællere over det viste 'potalot'-lag, ikke alle kinds — ellers
+          // ville tallene love guides der aldrig vises i biblioteket.
+          alle: withKind.filter(x => x.kind === 'potalot').length,
+          species: withKind.filter(
+            x => x.kind === 'potalot' && levelOf(x.guide) === 'species',
+          ).length,
+          variety: withKind.filter(
+            x => x.kind === 'potalot' && levelOf(x.guide) === 'variety',
+          ).length,
         }}
       />
+
+      {/* Sekundært lær-mere-lag NEDERST — ekstra læring efter find-en-guide-
+          værktøjet, ikke en stopklods før søgningen. Bevidst nedtonet så den
+          ikke konkurrerer med søgningen. Ekstra bundluft så bottom-nav ikke
+          klemmer noten. */}
+      <div className="pb-10">
+        <KortForklaret
+          title="Chili eller peberfrugt?"
+          teaser="To planter fra samme familie, men chili indeholder capsaicin."
+          columns={layeredGuideSampleData.fact.columns}
+        />
+      </div>
 
       {/* Biblioteket viser kun det redaktionelle 'potalot'-lag. Egne
           guider og AI-udkast åbnes fra frø/plante/notifikation, ikke her. */}
@@ -202,13 +245,13 @@ function PopulaereEmner({
             fontFamily: sans,
             fontSize: 11,
             fontWeight: 700,
-            letterSpacing: '0.22em',
+            letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.55)',
+            color: 'rgba(36,48,31,0.72)',
             margin: 0,
           }}
         >
-          Begynd her
+          Et godt sted at starte
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -249,13 +292,13 @@ function PopulaereEmner({
               <div className="absolute inset-x-0 bottom-0 p-3.5">
                 <h3
                   style={{
-                    fontFamily: serif,
-                    fontWeight: 500,
-                    fontSize: 'clamp(23px, 7vw, 31px)',
-                    lineHeight: 0.95,
+                    fontFamily: plex,
+                    fontWeight: 600,
+                    fontSize: 'clamp(24px, 7.4vw, 33px)',
+                    lineHeight: 0.94,
                     color: '#FFFFFF',
                     margin: 0,
-                    letterSpacing: 0,
+                    letterSpacing: '-0.01em',
                     textShadow: '0 2px 12px rgba(20,14,8,0.50)',
                   }}
                 >
@@ -319,7 +362,7 @@ function AtmosphericGuideField() {
           backgroundImage: 'url(/images/makro/agurk/blad.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.18,
+          opacity: 0.08,
           mixBlendMode: 'multiply',
           transform: 'rotate(-7deg)',
           maskImage:
@@ -335,7 +378,7 @@ function AtmosphericGuideField() {
           backgroundImage: 'url(/images/makro/tomat-san-marzano/dug.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.2,
+          opacity: 0.09,
           mixBlendMode: 'multiply',
           transform: 'rotate(5deg)',
           maskImage:
@@ -345,6 +388,89 @@ function AtmosphericGuideField() {
         }}
       />
     </>
+  )
+}
+
+/**
+ * Delt søge-input — samme rolige felt-index-stil for både quick-search (øverst)
+ * og biblioteks-søgningen (nederst), så de to inputs ser ens ud og deler query.
+ */
+function SearchField({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+}) {
+  return (
+    <div
+      className="relative"
+      style={{
+        borderRadius: 18,
+        background: 'rgba(244,240,229,0.68)',
+        border: '1px solid rgba(36,48,31,0.10)',
+        padding: '3px 5px',
+      }}
+    >
+      <Search
+        aria-hidden
+        className="absolute left-4 top-1/2 -translate-y-1/2"
+        style={{ width: 15, height: 15, color: 'rgba(36,48,31,0.42)' }}
+      />
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: '100%',
+          border: 'none',
+          outline: 'none',
+          background: 'transparent',
+          fontFamily: sans,
+          fontSize: 14,
+          fontWeight: 500,
+          color: '#24301F',
+          padding: '11px 10px 11px 32px',
+        }}
+      />
+    </div>
+  )
+}
+
+/**
+ * QuickSearch — hurtig indgang øverst (efter hero, før "Et godt sted at starte").
+ * Bevidst let: lille sans-label + input. INGEN chips/tællere/filtre — det fulde
+ * bibliotek med filtrering ligger nederst. Distinkt fra bibliotekets serif-intro.
+ */
+function QuickSearch({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <section className="relative -mt-2">
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'rgba(36,48,31,0.62)',
+          margin: '0 0 8px',
+        }}
+      >
+        Find en guide til
+      </p>
+      <SearchField
+        value={value}
+        onChange={onChange}
+        placeholder="plante, sort eller problem"
+      />
+    </section>
   )
 }
 
@@ -363,14 +489,31 @@ function SoegBar({
 }) {
   const filterChips: { id: Filter; label: string }[] = [
     { id: 'alle', label: 'Alle' },
-    { id: 'potalot', label: 'Potalot' },
+    { id: 'species', label: 'Artsguides' },
+    { id: 'variety', label: 'Sortsguides' },
   ]
   return (
-    <section className="relative pt-2">
+    <section className="relative pt-6">
       <div
         aria-hidden
         className="absolute left-10 right-10 top-0 h-px bg-[#2D2A24]/10"
       />
+      {/* Nederste søgning = det fulde bibliotek: egen sektionstitel + filtrering.
+          Adskiller sig fra quick-searchen øverst (der kun er label + input). */}
+      <p
+        className="text-center"
+        style={{
+          fontFamily: sans,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.55)',
+          margin: '0 0 6px',
+        }}
+      >
+        Alle guides
+      </p>
       <p
         className="mb-3 text-center"
         style={{
@@ -383,38 +526,11 @@ function SoegBar({
       >
         Find den plante, du står med.
       </p>
-      <div
-        className="relative"
-        style={{
-          borderRadius: 18,
-          background: 'rgba(244,240,229,0.68)',
-          border: '1px solid rgba(36,48,31,0.10)',
-          padding: '3px 5px',
-        }}
-      >
-        <Search
-          aria-hidden
-          className="absolute left-4 top-1/2 -translate-y-1/2"
-          style={{ width: 15, height: 15, color: 'rgba(36,48,31,0.42)' }}
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={e => onSearch(e.target.value)}
-          placeholder="Søg plante, sort eller latin"
-          style={{
-            width: '100%',
-            border: 'none',
-            outline: 'none',
-            background: 'transparent',
-            fontFamily: sans,
-            fontSize: 14,
-            fontWeight: 500,
-            color: '#24301F',
-            padding: '11px 10px 11px 32px',
-          }}
-        />
-      </div>
+      <SearchField
+        value={search}
+        onChange={onSearch}
+        placeholder="Søg plante, sort eller problem"
+      />
       <div className="mt-2 flex flex-wrap gap-1.5">
         {filterChips.map(c => {
           const active = filter === c.id
@@ -443,39 +559,6 @@ function SoegBar({
         })}
       </div>
     </section>
-  )
-}
-
-function SektionEyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase"
-      style={{
-        fontFamily: sans,
-        letterSpacing: '0.18em',
-        color: 'rgba(36,48,31,0.55)',
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SektionTitel({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontFamily: serif,
-        fontWeight: 500,
-        fontSize: 'clamp(31px, 8vw, 40px)',
-        lineHeight: 0.96,
-        letterSpacing: 0,
-        color: '#2D2A24',
-        margin: 0,
-      }}
-    >
-      {children}
-    </h2>
   )
 }
 

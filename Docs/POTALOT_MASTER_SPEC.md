@@ -87,6 +87,40 @@ Niveau 4:
 - Høst
 - Tips
 
+### 5.1 Billedstrategi for sortguides (beslutning)
+Tidligere oplæg var 12 billeder pr. sort (1 frøkort + 1 plantekort + 5 makro + 5 bleed).
+Det er overkill: 100 sorter = 1.200 billeder, 500 sorter = 6.000. Produktionsbyrden
+står ikke mål med læringsværdien, og brugere ser sjældent længere end billede 1-3.
+
+**Beslutning: 3 masterbilleder pr. sort + 1 hero pr. art.**
+
+Pr. art (univers):
+- 1 hero-foto
+
+Pr. sort:
+- 1 frøkortfoto — identitet / katalog / frøbank
+- 1 plantekortfoto — planten i vækst
+- 1 makrofoto — stemning, læring, detalje, tekstur
+
+Alt øvrigt visuelt (sortguide-hero, baggrunde til infobokse, "på denne dag",
+thumbnails, bleed-sektioner) **genereres som crops af masterbillederne** — ikke
+som selvstændige fotos.
+
+**Regler:**
+- **Bleed som selvstændig fotokategori slettes helt.** Høj produktionsomkostning,
+  leverer kun stemning — og stemning skabes bedre via crop + blur af makrofotoet.
+- **Crop-tricket har begrænset rækkevidde.** Øjet genkender kildebilledet. Det
+  holder usynligt til blur/overlay-baggrunde og thumbnails, men to *skarpe* crops
+  fra samme master side om side (fx hero + detalje på samme skærm) afslører sig selv.
+- **Default: 1 makro pr. sort.** Tillad et 2. makro (én "frugt/blomst" + én
+  "detalje/struktur") **kun** for de ~15-20% af sorterne hvor ét billede ærligt
+  talt ikke kan bære guiden. Giver ~3,2 billeder pr. sort i snit.
+- Makrofotoet skal skydes stort nok og med safe zones, så det kan beskæres til
+  fuld visning, 16:9 hero, 4:5 vertikal, ultra-tæt tekstur og blur-baggrund.
+
+**Princip:** Et komplet bibliotek slår et perfekt bibliotek der aldrig bliver færdigt.
+Færre assets, hver gennemtænkt og genbrugt mange steder.
+
 ## 6. Kalender / To-do
 - To-do-liste skal kunne genereres ud fra frøbankens måneder
 - Completion-dato skal registreres automatisk

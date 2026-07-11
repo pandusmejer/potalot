@@ -290,6 +290,28 @@ export function resolveSeedCard(input: {
 }
 
 /**
+ * resolvePlantCard — bekvem indgang for aktive planter (plant-card-rolle).
+ * Bygger varietySlug fra navn+sort som resolveSeedCard. Returnerer hele
+ * PotalotImageOutput, så kaldere kan tjekke `source` (fx springe fallback over).
+ */
+export function resolvePlantCard(input: {
+  guideId?: string | null
+  name: string
+  variety?: string | null
+  preferredSrc?: string | null
+}): PotalotImageOutput {
+  const varietySlug = input.variety
+    ? slugify(`${input.name}-${input.variety}`)
+    : null
+  return resolvePotalotImage({
+    guideId: input.guideId ?? undefined,
+    varietySlug,
+    role: 'plant-card',
+    preferredSrc: input.preferredSrc ?? undefined,
+  })
+}
+
+/**
  * harKurateretFroekort — findes der et FÆRDIGT, kurateret frøkort
  * (seed-card) for dette frø, uafhængigt af brugerens eget upload?
  *

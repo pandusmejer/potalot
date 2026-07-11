@@ -877,7 +877,19 @@ export const ALL_DEMO_GUIDES: Guide[] = [
  * og denne konstant erstattes af IMPORTED_GUIDES direkte.
  */
 export const ALL_GUIDES: Guide[] = (() => {
+  // Dedup på plante+sort (ikke kun id): demo-guiderne har LEGACY-id'er
+  // (`demo-guide-agurk-arts`), mens importen har rene slugs (`agurk`) — samme
+  // plante, forskelligt id. Id-dedup alene lod dem vises DOBBELT i biblioteket.
+  const keyOf = (g: Guide) => `${g.plantName}|${g.variety ?? ''}`.toLowerCase().trim()
   const importedIds = new Set(IMPORTED_GUIDES.map((g) => g.id))
-  const demoFallback = ALL_DEMO_GUIDES.filter((g) => !importedIds.has(g.id))
+  const importedKeys = new Set(IMPORTED_GUIDES.map(keyOf))
+  const demoFallback = ALL_DEMO_GUIDES.filter((g) => {
+    if (importedIds.has(g.id)) return false
+    // Demo-POTALOT-guides som importen allerede dækker (samme plante+sort)
+    // droppes → ingen dubletter. Egne guider + AI-udkast beholdes (eget lag,
+    // vises ikke i biblioteket) selvom sorten også findes i importen.
+    if (DEMO_POTALOT_GUIDES.includes(g) && importedKeys.has(keyOf(g))) return false
+    return true
+  })
   return [...IMPORTED_GUIDES, ...demoFallback]
 })()

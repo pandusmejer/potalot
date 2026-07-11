@@ -1,13 +1,29 @@
 'use client'
 
 import Link from 'next/link'
+import { ChevronRight, Sprout, CalendarDays } from 'lucide-react'
 import type { Plant, PlantStatus } from '@/lib/types'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { statusColor } from '@/components/mine-planter/plant-card'
+import { GlyphSpire } from '@/components/icons/potalot-glyphs'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { afledtStatuslinje } from '@/lib/afledninger'
 
 const sans = 'var(--font-manrope)'
+const serif = 'var(--font-cormorant), Georgia, serif'
+// Gabarito = display-font til plantekort-overskrifter (Anna 17/6, design-DNA
+// "Planter = Gabarito"). Art-headerne forbliver serif; LIGE NU-kortet rører vi ikke.
+const gabarito = 'var(--font-gabarito), var(--font-manrope), sans-serif'
+
+// Danske korte måneder til "Sået D. mon". Parses direkte fra ISO-strengen
+// (ingen new Date → ingen timezone-skævhed/hydration-mismatch).
+const MND = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+function saaetLabel(iso?: string | null): string | null {
+  if (!iso) return null
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso)
+  if (!m) return null
+  return `Sået ${parseInt(m[3], 10)}. ${MND[parseInt(m[2], 10) - 1]}`
+}
 
 /**
  * 🌱 PLANTER V2 — "Aktive → Art → Sorter"-arkitekturen.
@@ -74,18 +90,18 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
   )
 
   return (
-    <section className="space-y-3">
-      {/* Art-header: navnet er sektionens anker. Stor, fed, Manrope —
-          system-typografi, ikke editorial. Summary-linjen til højre
-          giver bestandsoverblik uden at brugeren skal tælle kort. */}
-      <header className="flex items-baseline justify-between gap-3 px-0.5">
+    <section className="space-y-3.5">
+      {/* Art-header som ÉN enhed (Anna 16/6 aften): artsnavnet er ankeret,
+          og meta-linjen sidder direkte under det — ikke svævende i højre
+          side. Stor, fed, Manrope — system-typografi, ikke editorial. */}
+      <header className="px-0.5">
         <h2
-          className="uppercase"
           style={{
-            fontFamily: sans,
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: '0.04em',
+            fontFamily: serif,
+            fontSize: 27,
+            fontWeight: 600,
+            letterSpacing: '-0.005em',
+            lineHeight: 1.05,
             color: '#24301F',
             margin: 0,
           }}
@@ -93,13 +109,13 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
           {artName}
         </h2>
         <p
-          className="flex shrink-0 items-center gap-1.5"
+          className="flex items-center gap-1.5"
           style={{
             fontFamily: sans,
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: 600,
-            color: 'rgba(36,48,31,0.55)',
-            margin: 0,
+            color: 'rgba(36,48,31,0.5)',
+            margin: '5px 0 0',
           }}
         >
           {needsAttention && (
@@ -121,38 +137,31 @@ export function PlantArtRow({ artName, plants }: PlantArtRowProps) {
         </p>
       </header>
 
-      {/* Horisontal scroll-række. -mx-4/px-4 lader kortene løbe helt
-          til skærmkanten (peek-effekt: næste kort anes), samme mønster
-          som din-dyrkning i Kalender. scrollbar-hide + snap. */}
-      <div className="-mx-4 overflow-x-auto px-4 scrollbar-hide">
-        <div className="flex snap-x snap-mandatory gap-3" style={{ width: 'max-content' }}>
-          {sorted.map(plant => (
-            <VarietyCard key={plant.id} plant={plant} />
-          ))}
-        </div>
+      {/* 2-op grid (Anna 17/6): plantegrupper skal kunne aflæses uden at
+          swipe gennem en grøntsagsskuffe. 2 sorter = 2 side om side; 3+
+          ombryder til flere rækker. Vandret scroll er reserveret til
+          steder/gallerier, ikke samlingens hovedrækker. */}
+      <div className="grid grid-cols-2 gap-3">
+        {sorted.map(plant => (
+          <VarietyCard key={plant.id} plant={plant} />
+        ))}
       </div>
     </section>
   )
 }
 
 /**
- * Kompakt sort-kort til horisontal scroll.
+ * Sort-kort i 2-op grid (Anna 17/6, reference-restyling). Større + editorial:
+ * foto + firkantet ×-badge, serif-navn, ÆGTE statuslinje + en ægte meta-række
+ * (antal planter + sådato). INGEN opfundet trivsel, ingen falsk præcision.
  *
- * Bevidst MINDRE end det store PlantCard (som lever videre på
- * detail-siden). Det her kort skal besvare tre ting på ét blik:
- *   1. Hvilken sort? (navn)
- *   2. Hvordan har den det? (status-dot + label)
- *   3. Hvor mange? (antal-pille)
- * Alt andet hører til på detail-siden.
- *
- * Foto-fallback: hvis ingen foto findes, vises en flad status-farvet
- * blok med sortens forbogstav. "Forkert billede er værre end intet
- * billede" — vi gætter aldrig på et foto fra en anden sort.
+ * Foto-fallback: rolig botanisk flade + spire-glyph — aldrig et gættet foto
+ * fra en anden sort ("forkert billede er værre end intet billede").
  */
 function VarietyCard({ plant }: { plant: Plant }) {
-  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId
-  // sendes separat og prøves først; men kurateret plantekort/asset-
-  // convention er nøglet på sorts-sluggen, så den skal også med.
+  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId sendes
+  // separat og prøves først; men kurateret plantekort/asset-convention er
+  // nøglet på sorts-sluggen, så den skal også med.
   const varietySlug = plant.variety
     ? slugify(`${plant.name}-${plant.variety}`)
     : null
@@ -166,130 +175,169 @@ function VarietyCard({ plant }: { plant: Plant }) {
   const color = statusColor(plant.status)
   const displayName = plant.variety ?? plant.name
 
-  // Sprint 1 (afledningsmotoren): vis en FREMADSKUENDE linje når
-  // den kan afledes — "Spiring om ~3 dage", "Høst fra ~august",
-  // "Sået for 17 dage siden — spiret?" — i stedet for den rå
-  // status-label. Falder tilbage til status-label hvis intet kan
-  // afledes (stilhed ved datahuller, aldrig advarsler).
+  // Afledningsmotoren: vis en FREMADSKUENDE linje når den kan afledes
+  // ("Høst fra ~august", "Sået for 17 dage siden — spiret?"), ellers den
+  // rå status-label. Stilhed ved datahuller, aldrig advarsler.
   const afledt = afledtStatuslinje(plant)
   const statusLabel = afledt?.text ?? PLANT_STATUS_META[plant.status].label
   const dotColor = afledt?.kind === 'attention' ? '#C89A35' : color
+  const saaet = saaetLabel(plant.sowDate)
 
   return (
     <Link
       href={`/mine-planter/${plant.id}`}
-      className="group relative block shrink-0 snap-start overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5"
+      className="group block overflow-hidden transition-transform duration-200 ease-out active:scale-[0.99]"
       style={{
-        width: 148,
-        height: 198,
         borderRadius: 18,
-        boxShadow: '0 1px 2px rgba(36,48,31,0.05), 0 8px 22px rgba(36,48,31,0.06)',
         background: '#F5F2EA',
+        border: '1px solid rgba(36,48,31,0.06)',
+        boxShadow: '0 1px 2px rgba(36,48,31,0.05), 0 8px 22px rgba(36,48,31,0.06)',
       }}
     >
-      {/* Foto-zone — øverste ~64% af kortet */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 overflow-hidden"
-        style={{ height: 126 }}
-      >
+      {/* Foto-zone */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: '4 / 3' }}>
         {!isPlaceholder ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={photo}
             alt=""
-            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           />
         ) : (
-          // Foto-løs tilstand: flad status-farvet blok med sortens
-          // forbogstav. Ærlig om manglende foto — aldrig et forkert.
           <div
-            className="flex h-full w-full items-center justify-center"
-            style={{ background: color }}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}
           >
-            <span
-              style={{
-                fontFamily: sans,
-                fontSize: 44,
-                fontWeight: 800,
-                color: 'rgba(255,255,255,0.85)',
-              }}
-            >
-              {displayName.charAt(0).toUpperCase()}
-            </span>
+            <GlyphSpire size={40} />
           </div>
         )}
-      </div>
-
-      {/* Antal-pille top-højre */}
-      <span
-        className="absolute right-2 top-2 z-10"
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          color: '#FFFFFF',
-          background: 'rgba(24,30,20,0.55)',
-          backdropFilter: 'blur(2px)',
-          WebkitBackdropFilter: 'blur(2px)',
-          paddingInline: 7,
-          paddingBlock: 2,
-          borderRadius: 999,
-        }}
-      >
-        ×{plant.quantity}
-      </span>
-
-      {/* Bund-panel: sortnavn + status. Varmt papir, samme
-          materialsprog som det store PlantCard. */}
-      <div
-        className="absolute inset-x-0 bottom-0 flex flex-col justify-center"
-        style={{
-          height: 72,
-          background: 'rgba(245,242,234,0.97)',
-          borderTop: '1px solid rgba(36,48,31,0.05)',
-          paddingInline: 12,
-        }}
-      >
-        <p
-          className="truncate"
+        {/* Firkantet, kompakt ×-badge. */}
+        <span
+          className="absolute right-2 top-2"
           style={{
             fontFamily: sans,
-            fontSize: 14,
+            fontSize: 11,
             fontWeight: 700,
+            color: '#FFFFFF',
+            background: 'rgba(30,38,24,0.62)',
+            backdropFilter: 'blur(2px)',
+            WebkitBackdropFilter: 'blur(2px)',
+            paddingInline: 7,
+            paddingBlock: 2.5,
+            borderRadius: 8,
+          }}
+        >
+          ×{plant.quantity}
+        </span>
+      </div>
+
+      {/* Panel: serif-navn → ægte status → ægte meta. */}
+      <div style={{ padding: '12px 14px 14px' }}>
+        <p
+          className="line-clamp-2"
+          style={{
+            fontFamily: gabarito,
+            fontSize: 18,
+            fontWeight: 500,
             letterSpacing: '-0.01em',
+            lineHeight: 1.12,
             color: '#24301F',
             margin: 0,
-            lineHeight: 1.2,
           }}
         >
           {displayName}
         </p>
+
         <p
-          className="mt-1 flex items-center gap-1.5"
-          style={{
-            fontFamily: sans,
-            fontSize: 11,
-            fontWeight: 600,
-            color: 'rgba(36,48,31,0.55)',
-            margin: 0,
-            marginTop: 4,
-          }}
+          className="flex items-center gap-1.5"
+          style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.7)', margin: '8px 0 0' }}
         >
           <span
             aria-hidden
-            style={{
-              display: 'inline-block',
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              background: dotColor,
-              flexShrink: 0,
-            }}
+            className="inline-block shrink-0 rounded-full"
+            style={{ width: 7, height: 7, background: dotColor }}
           />
           <span className="truncate">{statusLabel}</span>
         </p>
+
+        <p
+          className="flex flex-wrap items-center gap-x-2 gap-y-1"
+          style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', margin: '7px 0 0' }}
+        >
+          <span className="flex items-center gap-1">
+            <Sprout className="h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.4)' }} aria-hidden />
+            {plant.quantity} {plant.quantity === 1 ? 'plante' : 'planter'}
+          </span>
+          {saaet && (
+            <>
+              <span aria-hidden style={{ color: 'rgba(36,48,31,0.3)' }}>·</span>
+              <span className="flex items-center gap-1">
+                <CalendarDays className="h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.4)' }} aria-hidden />
+                {saaet}
+              </span>
+            </>
+          )}
+        </p>
       </div>
+    </Link>
+  )
+}
+
+/**
+ * SINGLE-SORT-KORT — kompakt række for en art med KUN én sort.
+ *
+ * Anna (16. juni 2026): single-sort arter må ikke få samme ceremoni + luft
+ * som en fuld sektion ("museum for én salat"). I stedet ét tæt vandret kort:
+ * foto/placeholder til venstre, sort (helt) + art·antal + status til højre.
+ * Grupperes i én tæt blok i Mine arter, så siden ikke fragmenterer.
+ */
+export function SingleSortRow({ artName, plant }: { artName: string; plant: Plant }) {
+  const varietySlug = plant.variety ? slugify(`${plant.name}-${plant.variety}`) : null
+  const { src: photo, source } = resolvePotalotImage({
+    guideId: plant.guideId,
+    varietySlug,
+    role: 'plant-card',
+    preferredSrc: plant.primaryImageId,
+  })
+  const hasPhoto = source !== 'fallback'
+  const color = statusColor(plant.status)
+  const afledt = afledtStatuslinje(plant)
+  const statusLabel = afledt?.text ?? PLANT_STATUS_META[plant.status].label
+  const dotColor = afledt?.kind === 'attention' ? '#C89A35' : color
+  const displayName = plant.variety ?? plant.name
+  const count = plant.quantity
+
+  return (
+    <Link
+      href={`/mine-planter/${plant.id}`}
+      className="group flex items-center gap-3.5 transition-transform duration-200 ease-out active:scale-[0.99]"
+      style={{ background: '#F5F2EA', border: '1px solid rgba(36,48,31,0.06)', borderRadius: 18, padding: 10, boxShadow: '0 1px 2px rgba(36,48,31,0.05), 0 6px 16px rgba(36,48,31,0.05)' }}
+    >
+      <span className="relative shrink-0 overflow-hidden" style={{ width: 76, height: 76, borderRadius: 14 }}>
+        {hasPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}>
+            <GlyphSpire size={30} />
+          </span>
+        )}
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="block truncate" style={{ fontFamily: gabarito, fontSize: 15, fontWeight: 500, letterSpacing: '-0.01em', color: '#24301F', lineHeight: 1.15 }}>
+          {displayName}
+        </span>
+        <span className="block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', margin: '2px 0 0' }}>
+          {artName} · {count} {count === 1 ? 'plante' : 'planter'}
+        </span>
+        <span className="flex items-center gap-1.5" style={{ marginTop: 6 }}>
+          <span aria-hidden className="inline-block shrink-0 rounded-full" style={{ width: 7, height: 7, background: dotColor }} />
+          <span className="truncate" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.6)' }}>{statusLabel}</span>
+        </span>
+      </span>
+
+      <ChevronRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.3)' }} aria-hidden />
     </Link>
   )
 }

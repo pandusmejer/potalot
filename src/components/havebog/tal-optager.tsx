@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { fortolkTale, gemTaleForslag } from '@/actions/tale'
+import { useEffect, useRef, useState } from 'react'
+import { fortolkTale } from '@/actions/tale'
+import { gemOptagelse, behandlOptagelse } from '@/actions/optagelser'
 import type { TaleForslag, ForslagType } from '@/lib/tale-fortolk'
 
 const sans = 'var(--font-manrope)'
@@ -61,9 +62,20 @@ export function TalOptager() {
   const [forslag, setForslag] = useState<TaleForslag[]>([])
   const [valgte, setValgte] = useState<Set<string>>(new Set())
   const [resultat, setResultat] = useState<string>('')
+  // Optagelsen persisteres (indbakke) og dens id bruges når den behandles.
+  const [optagelseId, setOptagelseId] = useState<string | null>(null)
+  const [sekunder, setSekunder] = useState(0)
   const genkenderRef = useRef<TaleGenkender | null>(null)
 
   const harTale = typeof window !== 'undefined' && nyGenkender() !== null
+
+  // Optager-timer (kun mens vi lytter).
+  useEffect(() => {
+    if (fase !== 'lytter') { setSekunder(0); return }
+    const t = setInterval(() => setSekunder(s => s + 1), 1000)
+    return () => clearInterval(t)
+  }, [fase])
+  const mmss = `${String(Math.floor(sekunder / 60)).padStart(2, '0')}:${String(sekunder % 60).padStart(2, '0')}`
 
   function startLyt() {
     const r = nyGenkender()
@@ -94,6 +106,10 @@ export function TalOptager() {
       return
     }
     setFase('fortolker')
+    // Persistér optagelsen som det FØRSTE (indbakke): den findes i arkivet
+    // som 'unprocessed' uanset om brugeren behandler den nu eller senere.
+    const gem = await gemOptagelse(trimmet)
+    if ('id' in gem) setOptagelseId(gem.id)
     const res = await fortolkTale(trimmet)
     if ('error' in res || res.forslag.length === 0) {
       setResultat('error' in res ? res.error : 'Jeg fangede ikke noget brugbart — prøv igen.')
@@ -116,17 +132,16 @@ export function TalOptager() {
 
   async function gem() {
     const valgteForslag = forslag.filter(f => valgte.has(f.id))
-    if (valgteForslag.length === 0) return
+    if (valgteForslag.length === 0 || !optagelseId) return
     setFase('gemmer')
-    const res = await gemTaleForslag(valgteForslag)
+    // Behandl optagelsen: opret log/opgave på OPTAGELSENS dato + opdatér status.
+    const res = await behandlOptagelse(optagelseId, valgteForslag)
     if ('error' in res) {
       setResultat(res.error)
       setFase('fejl')
       return
     }
-    setResultat(
-      res.gemt === 1 ? 'Gemt i din havebog.' : `${res.gemt} ting gemt i din havebog.`,
-    )
+    setResultat('Gemt i din havebog.')
     setFase('gemt')
   }
 
@@ -135,11 +150,35 @@ export function TalOptager() {
     setForslag([])
     setValgte(new Set())
     setResultat('')
+    setOptagelseId(null)
     setFase('idle')
   }
 
+  const optager = fase === 'lytter'
   return (
     <section className="flex flex-col items-center" style={{ textAlign: 'center' }}>
+      <style>{`
+        @keyframes tal-breath {
+          0%, 100% { transform: scale(1); box-shadow: 0 12px 30px rgba(31,45,29,0.18); }
+          50%      { transform: scale(1.035); box-shadow: 0 18px 42px rgba(31,45,29,0.22); }
+        }
+        @keyframes tal-halo {
+          0%, 100% { transform: scale(0.92); opacity: 0; }
+          50%      { transform: scale(1.18); opacity: 0.16; }
+        }
+        @keyframes tal-rec {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.05); }
+        }
+        @keyframes tal-halo-rec {
+          0%, 100% { transform: scale(0.98); opacity: 0.1; }
+          50%      { transform: scale(1.3); opacity: 0.28; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .tal-breath, .tal-halo { animation: none !important; }
+        }
+      `}</style>
+
       <p
         className="uppercase"
         style={{
@@ -147,84 +186,105 @@ export function TalOptager() {
           fontSize: 11,
           fontWeight: 700,
           letterSpacing: '0.26em',
+          lineHeight: 1.5,
           color: 'rgba(36,48,31,0.5)',
           margin: 0,
-          marginBottom: 24,
+          marginBottom: 46,
         }}
       >
-        Tal til din have
+        Tryk og tal
+        <br />
+        til din have
       </p>
 
       {(fase === 'idle' || fase === 'lytter') && (
         <>
-          <div style={{ position: 'relative', width: 168, height: 168, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', width: 104, height: 104, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div
               aria-hidden
+              className="tal-halo"
               style={{
                 position: 'absolute',
-                inset: 0,
+                width: 132,
+                height: 132,
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(59,74,47,0.16) 0%, rgba(59,74,47,0.06) 45%, rgba(59,74,47,0) 70%)',
-                transform: fase === 'lytter' ? 'scale(1.12)' : 'scale(1)',
-                transition: 'transform 600ms ease',
+                background: 'radial-gradient(circle, rgba(55,76,45,0.55) 0%, rgba(55,76,45,0.22) 45%, rgba(55,76,45,0) 72%)',
+                animation: `${optager ? 'tal-halo-rec' : 'tal-halo'} ${optager ? '2.2s' : '4.4s'} ease-in-out infinite`,
               }}
             />
             <button
               type="button"
-              onClick={fase === 'lytter' ? stopLyt : startLyt}
-              aria-label={fase === 'lytter' ? 'Stop' : 'Tal til din have'}
+              onClick={optager ? stopLyt : startLyt}
+              aria-label={optager ? 'Stop optagelse' : 'Tryk og tal til din have'}
+              className={optager ? undefined : 'tal-breath'}
               style={{
                 position: 'relative',
                 width: 92,
                 height: 92,
                 borderRadius: '50%',
                 border: 'none',
-                background: fase === 'lytter' ? '#5A6F45' : '#3B4A2F',
+                background: optager ? '#2C3A22' : '#3B4A2F',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 12px 30px rgba(36,48,31,0.24)',
+                boxShadow: '0 12px 30px rgba(31,45,29,0.18)',
                 cursor: 'pointer',
+                animation: optager ? 'tal-rec 2.2s ease-in-out infinite' : 'tal-breath 4.4s ease-in-out infinite',
               }}
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <rect x="9" y="3" width="6" height="11" rx="3" fill="#F4EFDC" />
-                <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="#F4EFDC" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
+              {optager ? (
+                <span aria-hidden style={{ width: 22, height: 22, borderRadius: 5, background: '#F4EFDC' }} />
+              ) : (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <rect x="9" y="3" width="6" height="11" rx="3" fill="#F4EFDC" />
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="#F4EFDC" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              )}
             </button>
           </div>
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: 'italic',
-              fontWeight: 400,
-              fontSize: 'clamp(20px, 4.6vw, 26px)',
-              lineHeight: 1.3,
-              color: '#24301F',
-              margin: 0,
-              marginTop: 22,
-              maxWidth: '20ch',
-            }}
-          >
-            {fase === 'lytter' ? 'Jeg lytter…' : 'Fortæl din have, hvad du ser, husker eller drømmer om…'}
-          </p>
-          <button
-            type="button"
-            onClick={() => setFase('skriver')}
-            style={{
-              fontFamily: sans,
-              fontSize: 13,
-              fontWeight: 600,
-              color: 'rgba(36,48,31,0.5)',
-              background: 'none',
-              border: 'none',
-              marginTop: 12,
-              cursor: 'pointer',
-              textDecoration: 'underline',
-            }}
-          >
-            {harTale ? 'Skriv i stedet' : 'Skriv hvad der skete'}
-          </button>
+
+          {optager ? (
+            <p
+              className="uppercase"
+              style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', color: '#5A6F45', margin: 0, marginTop: 28 }}
+            >
+              Optager… {mmss}
+            </p>
+          ) : (
+            <>
+              <p
+                style={{
+                  fontFamily: serif,
+                  fontWeight: 400,
+                  fontSize: 'clamp(18px, 4.2vw, 22px)',
+                  lineHeight: 1.32,
+                  color: 'rgba(36,48,31,0.72)',
+                  margin: 0,
+                  marginTop: 28,
+                  maxWidth: '22ch',
+                }}
+              >
+                Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
+              </p>
+              <button
+                type="button"
+                onClick={() => setFase('skriver')}
+                style={{
+                  fontFamily: sans,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.5)',
+                  background: 'none',
+                  border: 'none',
+                  marginTop: 12,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                {harTale ? 'Skriv i stedet' : 'Skriv hvad der skete'}
+              </button>
+            </>
+          )}
         </>
       )}
 

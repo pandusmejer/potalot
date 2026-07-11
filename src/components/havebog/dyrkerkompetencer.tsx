@@ -15,8 +15,9 @@ interface Props {
  * skridt. Mennesker vil ikke føle sig som spillere — de vil føle sig
  * dygtigere.
  *
- * PROTOTYPE: færdighederne er demo. Afledning fra guider/aktiviteter/
- * noter/sæsonhistorik er en senere sprint.
+ * Afledt af faktiske log-handlinger (byggKompetencer): område pr. art +
+ * korte færdighedsord. Ingen "X af Y", ingen opnået-badges — bare hvad
+ * brugeren har gjort, læst som en rolig linje.
  */
 export function Dyrkerkompetencer({ omraader }: Props) {
   return (
@@ -47,31 +48,23 @@ export function Dyrkerkompetencer({ omraader }: Props) {
                 lineHeight: 1.1,
                 color: '#24301F',
                 margin: 0,
-                marginBottom: 10,
+                marginBottom: 6,
               }}
             >
               {o.omraade}
             </p>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }} className="space-y-1.5">
-              {o.faerdigheder.map(f => (
-                <li
-                  key={f.navn}
-                  className="flex items-center"
-                  style={{
-                    gap: 10,
-                    fontFamily: sans,
-                    fontSize: 15.5,
-                    fontWeight: 500,
-                    color: f.opnaaet ? '#24301F' : 'rgba(36,48,31,0.45)',
-                  }}
-                >
-                  <span aria-hidden style={{ fontSize: 14, color: f.opnaaet ? '#3B4A2F' : 'rgba(36,48,31,0.3)' }}>
-                    {f.opnaaet ? '✓' : '○'}
-                  </span>
-                  {f.navn}
-                </li>
-              ))}
-            </ul>
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 15,
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                color: 'rgba(36,48,31,0.62)',
+                margin: 0,
+              }}
+            >
+              {o.faerdigheder.join(' · ')}
+            </p>
           </div>
         ))}
       </div>

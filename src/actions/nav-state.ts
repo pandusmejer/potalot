@@ -13,7 +13,9 @@ export interface NavState {
 export async function getNavState(): Promise<NavState> {
   const user = await getCurrentUser()
   if (!user) {
-    return { heroHref: '/froebank', criticalTaskCount: 0 }
+    // Demo viser en etableret have (mock-planter) → Planter er den primære
+    // destination, så Frøbank ikke fejlagtigt dominerer bundnavet.
+    return { heroHref: '/mine-planter', criticalTaskCount: 0 }
   }
   const userId = user.id
   const supabase = await createClient()

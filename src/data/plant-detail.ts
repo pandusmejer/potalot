@@ -16,7 +16,7 @@
  * formen (felterne nedenfor) er sat her.
  */
 
-/** Ét punkt på den vandrette livshistorie-tidslinje. */
+/** Ét punkt på den lodrette livshistorie-tidslinje. */
 export interface DetailMilestone {
   /** Stadie-navn, fx "Sået", "Spiret", "Pottet om". */
   label: string
@@ -24,8 +24,8 @@ export interface DetailMilestone {
   dato: string | null
   /** Ikon-nøgle — afgør hvilken glyph der tegnes. */
   ikon: 'fro' | 'spire' | 'blad' | 'plante' | 'frugt'
-  /** Ekstra note under en fremtidig milepæl, fx "est. 22. juli". */
-  note?: string
+  /** Den narrative linje — historie, ikke proces. Hovedteksten. */
+  historie: string
 }
 
 /** De fire rolige instrument-tal i toppen (Status · Alder · Højde · Sundhed). */
@@ -40,30 +40,33 @@ export interface DetailMaal {
   sundhedNote: string
 }
 
-/** "Det næste, der sker" — sidens vigtigste sektion (hvad gør jeg nu?). */
+/** "Lige nu" + "Denne uge" — to kort: magasin-historie + plejeliste. */
 export interface DetailNaeste {
-  /** Hovedforventningen, fx "Første blomster forventes om 8–14 dage." */
-  forventning: string
-  /** "Hold øje med"-listen — konkrete plejehandlinger. */
-  holdOjeMed: string[]
-  /** Lille foto der viser hvad der er på vej (knop/blomst). */
+  /** Begivenheden lige nu, fx "Første blomster". */
+  overskrift: string
+  /** Timing, fx "forventes om 8–14 dage". */
+  timing: string
+  /** Hvad der sker, i prosa, fx "San Marzano går nu fra vegetativ vækst …". */
+  beskrivelse: string
+  /** "Se guide"-destination. */
+  guideHref: string
+  /** Ugens pleje-tjekliste (kort 2, DENNE UGE). Korte handlinger. */
+  denneUge: string[]
+  /** Foto af det der er på vej (knop/blomst) til kort 1. Foretrækker et
+   *  makro-close-up; tom streng = ingen foto → kortet viser botanisk fyld. */
   fotoSrc: string
   fotoAlt: string
+  /** object-position fra makroens focalPoint, så off-center close-ups
+   *  rammer rigtigt i den klippede ramme. Udeladt = browser-default. */
+  fotoObjectPosition?: string
 }
 
-/** Sammenligningslaget — perspektiv, ikke score. */
+/** Sammenligningslaget — historie, ikke score (Annas dom: ingen Strava). */
 export interface DetailSammenligning {
-  /** Dommen, fx "Du er foran". */
-  verdict: string
-  /** Forklaringen, fx "Din plante er 6 dage foran gennemsnittet …". */
-  forklaring: string
-  dinValue: string
-  /** 0..1 — hvor langt din plante er på vej (kortere = længere fremme). */
-  dinProgress: number
-  typiskValue: string
-  typiskProgress: number
-  /** Hvad sammenlignes — vises som lille label over begge søjler. */
-  maaling: string
+  /** Rolig serif-dom, fx "Din plante er lidt foran". */
+  overskrift: string
+  /** Havebog-forklaring: den typiske rytme vs. din plante, i prosa. */
+  broedtekst: string
 }
 
 export interface DetailBillede {
@@ -87,38 +90,48 @@ export interface PlantDetail {
 
 const MAKRO_SM = '/images/makro/tomat-san-marzano'
 
-export const PLANT_DETAIL: Record<string, PlantDetail> = {
+/**
+ * Redaktionelt OVERRIDE/berigelses-lag.
+ *
+ * Annas arkitektur (2026-06-15): dette styrer IKKE længere om en plante
+ * får editorial-layout — det gør alle planter nu (buildPlantDetail).
+ * Override beriger kun siden med håndskrevet tekst/billeder for vigtige
+ * sorter. Felterne er valgfrie; det angivne vinder over det data-afledte.
+ *
+ * VIGTIGT: læg ikke hårde tal (alder/højde/status) her — de skal forblive
+ * data-drevne, så vi aldrig viser falske statiske tal.
+ */
+export interface PlantDetailOverride {
+  /** Poetisk "Lige nu" — kun de angivne felter overskriver det afledte. */
+  naeste?: Partial<DetailNaeste>
+  /** Narrativ pr. tidslinje-fase: fase-label → historie. Beriger milepælene. */
+  tidslinjeNoter?: Record<string, string>
+  /** Kurateret galleri (makrofotos). Uden override skjules galleriet. */
+  billeder?: DetailBillede[]
+  /** Håndskrevet sammenligning. Uden override skjules sektionen (V1). */
+  sammenligning?: DetailSammenligning
+}
+
+/**
+ * Overrides pr. guideId. San Marzano er REFERENCE-implementeringen —
+ * ikke undtagelsen. Alle andre sorter får den rene data-drevne side.
+ */
+export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
   'tomat-san-marzano': {
-    heroFoto: '/images/plantekort/tomat-san-marzano.jpg',
-    heroFotoAlt: 'Modne San Marzano-tomater på planten',
-    maal: {
-      statusValue: 'Aktiv',
-      statusNote: 'i vækst',
-      alderValue: '62 dage',
-      alderNote: 'siden såning',
-      hoejdeValue: '38 cm',
-      hoejdeNote: 'sidst målt',
-      sundhedValue: 'God',
-      sundhedNote: 'stabil vækst',
-    },
     naeste: {
-      forventning: 'Første blomster forventes om 8–14 dage.',
-      holdOjeMed: [
-        'Sideskud – fjern jævnligt',
-        'Opbinding – planten vokser hurtigt',
-        'Vanding – hold jævnt fugtigt',
-        'Gødning – fortsæt hver 7.–10. dag',
-      ],
+      overskrift: 'Første blomster',
+      timing: 'forventes om 8–14 dage',
+      beskrivelse: 'San Marzano går nu fra vegetativ vækst til blomstring.',
+      denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7–10 dag'],
       fotoSrc: `${MAKRO_SM}/frugtknop.jpg`,
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },
-    tidslinje: [
-      { label: 'Sået', dato: '18. marts', ikon: 'fro' },
-      { label: 'Spiret', dato: '24. marts', ikon: 'spire' },
-      { label: 'Pottet om', dato: '14. april', ikon: 'blad' },
-      { label: 'Udplantet', dato: '4. juni', ikon: 'plante' },
-      { label: 'Første høst', dato: null, ikon: 'frugt', note: 'est. 22. juli' },
-    ],
+    tidslinjeNoter: {
+      Sået: 'Seks frø lagt i bakke på varmemåtte.',
+      Spiret: 'Alle seks spirer kom op — stærke og lige.',
+      Udplantet: 'Sat ud i drivhusets lune sydhjørne.',
+      Høst: 'De første klaser sætter allerede — høst nærmer sig.',
+    },
     billeder: [
       { src: `${MAKRO_SM}/y-led.jpg`, alt: 'Kraftigt Y-led på stænglen' },
       { src: `${MAKRO_SM}/blad-dug.jpg`, alt: 'Morgendug på bladene' },
@@ -127,19 +140,15 @@ export const PLANT_DETAIL: Record<string, PlantDetail> = {
       { src: `${MAKRO_SM}/umodne.jpg`, alt: 'Umodne grønne San Marzano' },
     ],
     sammenligning: {
-      verdict: 'Du er foran',
-      forklaring: 'Din plante er 6 dage foran gennemsnittet for San Marzano.',
-      maaling: 'Første blomster',
-      dinValue: 'om 8–14 dage',
-      dinProgress: 0.66,
-      typiskValue: 'om 14–20 dage',
-      typiskProgress: 0.4,
+      overskrift: 'Din plante er lidt foran',
+      broedtekst:
+        'De fleste San Marzano får først blomster om 14–20 dage. Dine forventes tidligere — et tegn på en god, varm start.',
     },
   },
 }
 
-/** Slå detalje-indhold op via guideId. Null hvis sorten ikke er bygget endnu. */
-export function detailFor(guideId?: string | null): PlantDetail | null {
+/** Slå override op via guideId. Null = ren data-drevet side (ingen berigelse). */
+export function overrideFor(guideId?: string | null): PlantDetailOverride | null {
   if (!guideId) return null
-  return PLANT_DETAIL[guideId] ?? null
+  return PLANT_DETAIL_OVERRIDES[guideId] ?? null
 }

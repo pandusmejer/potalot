@@ -32,6 +32,19 @@ import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+const plex = 'var(--font-plex-condensed), sans-serif'
+
+// Card-specifikke, dyrkningsnære preview-summaries (fallback på guide.id).
+// Holdes LOKALT i kortet, så den globale guide-data ikke ændres og
+// "siver rundt" andre steder i appen. Ukendte guides falder tilbage på
+// guide.summary.
+const CARD_SUMMARIES: Record<string, string> = {
+  agurk: 'Sås varmt, vokser hurtigt og skal bindes op tidligt.',
+  tomat: 'Trives med varme, lys og jævn vanding gennem sæsonen.',
+  chili: 'Forspires tidligt, plantes ud sent og høstes over lang tid.',
+  dahlia: 'Forkultivér knolde, støt stænglerne og klip løbende blomster.',
+  peberfrugt: 'Elsker varme og lys og modner langsomt fra grøn til fuld farve.',
+}
 
 interface Props {
   guide: Guide
@@ -70,7 +83,7 @@ export function GuideCardEditorial({
   })
 
   const title = guide.variety ?? guide.plantName
-  const subtitleName = guide.variety ? guide.plantName : null
+  const cardSummary = CARD_SUMMARIES[guide.id] ?? guide.summary
 
   const showBadge = kind !== 'potalot'
 
@@ -89,8 +102,8 @@ export function GuideCardEditorial({
           <div
             className={cn(
               'relative overflow-hidden bg-[#EAE6D8]',
-              isVariety ? 'ml-8 h-[190px] rounded-[22px]' : 'h-[255px] rounded-[28px]',
-              isCompact && (isVariety ? 'h-[164px]' : 'h-[210px]'),
+              isVariety ? 'ml-8 h-[160px] rounded-[22px]' : 'h-[214px] rounded-[28px]',
+              isCompact && (isVariety ? 'h-[138px]' : 'h-[178px]'),
             )}
             style={{
               border: '1px solid rgba(45,42,36,0.08)',
@@ -113,17 +126,41 @@ export function GuideCardEditorial({
                   'linear-gradient(180deg, rgba(20,14,8,0) 0%, rgba(20,14,8,0.28) 100%)',
               }}
             />
+            {/* Guide-type som lille diskret billed-chip (øverst venstre) — letter
+                overlay-panelet. Kun typen (arts/sort); "Potalot" udelades her, da
+                alle guider i sektionen er Potalot-guider. */}
+            <span
+              className="absolute left-3 top-3 inline-flex items-center rounded-full"
+              style={{
+                fontFamily: sans,
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                padding: '5px 12px',
+                background: 'rgba(250,247,237,0.78)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(86,111,60,0.14)',
+                color: '#4E6138',
+              }}
+            >
+              {isVariety ? 'Sortsguide' : 'Artsguide'}
+            </span>
             {iFroebank && (
               <span
-                className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full"
+                className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full"
                 style={{
                   fontFamily: sans,
-                  fontSize: 10,
+                  fontSize: 10.5,
                   fontWeight: 700,
                   letterSpacing: '0.10em',
                   textTransform: 'uppercase',
-                  padding: '5px 10px',
-                  background: 'rgba(244,240,229,0.92)',
+                  padding: '5px 12px',
+                  background: 'rgba(250,247,237,0.78)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(86,111,60,0.14)',
                   color: '#7F8F6A',
                 }}
                 title="Sorten findes i din frøbank"
@@ -138,8 +175,8 @@ export function GuideCardEditorial({
           className={cn(
             'relative z-10 flex items-start gap-3',
             isVariety
-              ? '-mt-12 mr-5 rounded-[22px] border px-4 pb-4 pt-4'
-              : '-mt-8 ml-4 mr-3 rounded-[24px] border px-4 pb-4 pt-5',
+              ? '-mt-12 mr-5 rounded-[22px] border px-5 pb-4 pt-[8px]'
+              : '-mt-12 ml-4 mr-4 rounded-[26px] border px-6 pb-4 pt-[11px]',
           )}
           style={{
             background: 'rgba(244,240,229,0.96)',
@@ -153,31 +190,18 @@ export function GuideCardEditorial({
             </div>
           )}
 
-          {isVariety && (
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: '#7F8F6A', // Salvie
-                margin: 0,
-                marginBottom: 4,
-              }}
-            >
-              {subtitleName ?? guide.primaryCategoryId}
-            </p>
-          )}
-
+          {/* Metadata-linjen er flyttet op på billedet (type-chip) → overlayet
+              rummer nu kun titel, latin, summary og pil = lettere tekstblok. */}
           <h3
             style={{
-              fontFamily: serif,
-              fontWeight: 500,
-              fontSize: isCompact ? 25 : isVariety ? 31 : 36,
-              lineHeight: 1.0,
-              letterSpacing: 0,
-              color: '#2D2A24',
+              fontFamily: plex,
+              fontWeight: 600,
+              // ~10% ned + strammere tracking, så lange sortnavne (fx
+              // "Marketmore") lander pænt uden at dominere overlaypanelet.
+              fontSize: isCompact ? 22 : isVariety ? 26 : 31,
+              lineHeight: 0.95,
+              letterSpacing: '-0.02em',
+              color: '#242019',
               margin: 0,
             }}
           >
@@ -217,20 +241,20 @@ export function GuideCardEditorial({
             </p>
           )}
 
-          {guide.summary && (
+          {cardSummary && (
             <p
               className="line-clamp-2"
               style={{
-                fontFamily: isVariety ? sans : serif,
-                fontSize: isCompact ? 14 : isVariety ? 14.5 : 16,
-                fontWeight: isVariety ? 500 : 400,
-                lineHeight: isVariety ? 1.45 : 1.48,
+                fontFamily: sans,
+                fontSize: isCompact ? 13.5 : 14.5,
+                fontWeight: 500,
+                lineHeight: 1.42,
                 color: '#6A665C',
                 margin: 0,
-                marginTop: isVariety ? 9 : 11,
+                marginTop: isVariety ? 9 : 10,
               }}
             >
-              {guide.summary}
+              {cardSummary}
             </p>
           )}
 

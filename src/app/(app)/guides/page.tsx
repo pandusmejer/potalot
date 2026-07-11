@@ -81,26 +81,28 @@ export default async function GuidesPage() {
   })
 
   return (
-    <div className="relative -mx-4 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
+    <div className="relative -mx-4 -mt-6 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
       {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-[-42%] right-[-42%] top-[150px] h-[360px]"
+        className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[820px]"
         style={{
-          backgroundImage: 'url(/images/makro/chili-habanero-orange/frugter.jpg)',
+          backgroundImage: 'url(/images/makro/guides-hero-baggrund.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.18,
+          opacity: 0.13,
           mixBlendMode: 'multiply',
-          transform: 'rotate(-2deg)',
+          // Ingen rotation → ingen skæv diagonal-kant i toppen. Masken er
+          // trukket højt op (center 30%) så den grønne tint når helt op til
+          // banneren og ikke efterlader en lys creme-stribe.
           maskImage:
-            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+            'radial-gradient(ellipse 94% 64% at 50% 34%, black 24%, rgba(0,0,0,0.6) 58%, transparent 90%)',
           WebkitMaskImage:
-            'radial-gradient(ellipse 70% 54% at 50% 42%, black 16%, rgba(0,0,0,0.72) 45%, transparent 86%)',
+            'radial-gradient(ellipse 94% 64% at 50% 34%, black 24%, rgba(0,0,0,0.6) 58%, transparent 90%)',
         }}
       />
-      <div className="relative z-10 space-y-10 sm:space-y-12">
+      <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">
         <GuidesHero />
         <GuidesBibliotek
           guides={visibleGuides}

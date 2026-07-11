@@ -19,6 +19,8 @@ tags:
   - frugtgroentsag
 
 quickFacts:
+  frostSensitive: true
+  minimumTemperature: "10 °C"
   germinationDays: "10-21 dage"
   preCultivation: true
   sowingMonths: [2, 3, 4]

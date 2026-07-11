@@ -3,39 +3,58 @@ import { Badge } from '@/components/ui/badge'
 import { LIGHT_META, WATER_META, DIFFICULTY_META, MONTHS_DA } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
 import {
-  Sun, Droplets, Snowflake, Ruler, ArrowDown, Calendar,
-  ThermometerSun, Sprout, TreePine, Wheat,
+  Sun, Droplets, Calendar, Sprout, TreePine, Wheat, ChevronDown,
 } from 'lucide-react'
 
 interface Props {
   guide: Guide
   /** Hvilke felter er arvet fra parent (vises diskret) */
   inheritedFields?: Set<string>
+  /**
+   * Artsguide: åbent, kompakt arts-snapshot (2×4 grid, INGEN "Flere detaljer"-
+   * fold-ud). På arts er der kun få generelle artsdata, så fold-ud giver kun
+   * et unødigt klik. Sortguide beholder fold-ud-strukturen.
+   */
+  species?: boolean
 }
 
 /**
  * "Hurtigt overblik" — quick card til toppen af guide-detail.
  * Én skærm, scanbar, alt det vigtigste.
  */
-export function QuickFactsCard({ guide, inheritedFields }: Props) {
+export function QuickFactsCard({ guide, inheritedFields, species = false }: Props) {
   const qf = guide.quickFacts
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
+
+  if (species) {
+    return <SpeciesQuickFacts guide={guide} />
+  }
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle>Hurtigt overblik</CardTitle>
+          <CardTitle
+            style={{
+              fontFamily: 'var(--font-plex-condensed), sans-serif',
+              fontWeight: 600,
+              fontSize: 20,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Hurtigt overblik
+          </CardTitle>
           {guide.difficulty && (
-            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${difficultyMeta.chipClass}`}>
+            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
               {difficultyMeta.label}
             </span>
           )}
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-foreground mb-4 leading-relaxed">{guide.summary}</p>
-
+        {/* Summary er flyttet op i guide-toppen som sort-dom (ingen dublet her). */}
+        {/* Primære nøglefakta — de beslutningskritiske, altid synlige. Kortet
+            fylder mindre vertikalt; resten ligger i "Flere detaljer". */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {qf.growthType && (
             <Fact label="Vækstform" value={qf.growthType} />
@@ -52,20 +71,6 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
               label="Såning"
               value={formatMonths(qf.sowingMonths)}
               icon={<Calendar className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.directSowingMonths.length > 0 && (
-            <Fact
-              label="Direkte såning"
-              value={formatMonths(qf.directSowingMonths)}
-              icon={<Calendar className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.sowingDepthMm !== undefined && (
-            <Fact
-              label="Sådybde"
-              value={qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`}
-              icon={<ArrowDown className="h-3.5 w-3.5" />}
             />
           )}
           {qf.plantingOutMonths.length > 0 && (
@@ -103,41 +108,96 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
               icon={<Droplets className="h-3.5 w-3.5" />}
             />
           )}
-          {qf.soil && <Fact label="Jord" value={qf.soil} />}
-          {qf.germinationTemperature && (
-            <Fact
-              label="Spiretemp"
-              value={qf.germinationTemperature}
-              icon={<ThermometerSun className="h-3.5 w-3.5" />}
-            />
-          )}
-          {qf.germinationDays && (
-            <Fact label="Spiretid" value={`${qf.germinationDays} dage`} />
-          )}
-          {qf.plantSpacing && (
-            <Fact label="Afstand" value={qf.plantSpacing} icon={<Ruler className="h-3.5 w-3.5" />} />
-          )}
-          {qf.rowSpacing && <Fact label="Rækkeafstand" value={qf.rowSpacing} />}
-          {qf.height && (
-            <Fact label="Højde" value={qf.height} icon={<Ruler className="h-3.5 w-3.5" />} />
-          )}
-          {qf.frostSensitive && (
-            <Fact
-              label="Frost"
-              value="Følsom"
-              icon={<Snowflake className="h-3.5 w-3.5 text-blue-600" />}
-            />
-          )}
-          {qf.minimumTemperature && (
-            <Fact label="Min. temp" value={qf.minimumTemperature} />
-          )}
-          {qf.primaryUse && (
-            <Fact label="Anvendelse" value={qf.primaryUse} />
-          )}
         </div>
 
+        {/* Sekundære detaljer — foldet væk som editorial undersektion, ikke endnu
+            et tæt ikon-grid. Grupperet i Dyrkning/Forhold/Planten med rolige
+            tekst-eyebrows; INGEN ikon pr. felt (labels bærer betydningen). Én
+            soft glyph som markør ved "Flere detaljer" (option B — vi har kun
+            plante.png; 3 gruppe-glyffer venter på sprout/leaf/fruit-uploads).
+            Native <details>, ingen JS i denne server-component. */}
+        {hasSecondary(qf) && (() => {
+          const grupper = [
+            {
+              titel: 'Dyrkning',
+              felter: [
+                qf.germinationDays && {
+                  label: 'Spiretid',
+                  value: /dage/i.test(qf.germinationDays) ? qf.germinationDays : `${qf.germinationDays} dage`,
+                },
+                qf.germinationTemperature && { label: 'Spiretemp', value: qf.germinationTemperature },
+                qf.directSowingMonths.length > 0 && { label: 'Direkte såning', value: formatMonths(qf.directSowingMonths) },
+                qf.sowingDepthMm !== undefined && {
+                  label: 'Sådybde',
+                  value: qf.sowingDepthMm === 0 ? '0 mm (overflade)' : `${qf.sowingDepthMm} mm`,
+                },
+              ],
+            },
+            {
+              titel: 'Forhold',
+              felter: [
+                // Jord er ofte den længste værdi — får fuld bredde (egen linje),
+                // så den ikke bliver en høj, dominerende venstre-kolonne-mur.
+                qf.soil && { label: 'Jord', value: qf.soil, wide: true },
+                // Frost følger kortets oliven-univers via label (ingen blå snefnug).
+                qf.frostSensitive && { label: 'Frost', value: 'Følsom' },
+                qf.minimumTemperature && { label: 'Min. temp', value: qf.minimumTemperature },
+              ],
+            },
+            {
+              titel: 'Planten',
+              felter: [
+                qf.height && { label: 'Højde', value: qf.height },
+                qf.primaryUse && { label: 'Anvendelse', value: qf.primaryUse },
+                qf.plantSpacing && { label: 'Afstand', value: qf.plantSpacing },
+                qf.rowSpacing && { label: 'Rækkeafstand', value: qf.rowSpacing },
+              ],
+            },
+          ]
+            .map(g => ({
+              titel: g.titel,
+              felter: g.felter.filter(
+                (f): f is { label: string; value: string; wide?: boolean } => Boolean(f),
+              ),
+            }))
+            .filter(g => g.felter.length > 0)
+
+          return (
+            <details className="group mt-3 border-t border-border pt-3">
+              <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
+                {/* Soft glyph = næsten vandmærke; pilen er den primære markør. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 16, width: 'auto', opacity: 0.22 }} />
+                Flere detaljer
+                <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+              </summary>
+              <div className="mt-3 space-y-3.5">
+                {grupper.map(g => (
+                  <div key={g.titel}>
+                    {/* Gruppetitler guider, men skal ikke ligne nye kapitler:
+                        mindre, lettere vægt, dæmpet salvie. */}
+                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(127,143,106,0.72)]" style={{ fontFamily: 'var(--font-manrope)' }}>
+                      {g.titel}
+                    </p>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3">
+                      {g.felter.map(f => (
+                        <Fact
+                          key={f.label}
+                          label={f.label}
+                          value={f.value}
+                          className={f.wide ? 'col-span-full' : undefined}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )
+        })()}
+
         {guide.tags.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap mt-4 pt-3 border-t border-border">
+          <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pb-1 pt-3">
             {guide.tags.map(t => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
           </div>
         )}
@@ -152,15 +212,123 @@ export function QuickFactsCard({ guide, inheritedFields }: Props) {
   )
 }
 
-function Fact({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+/**
+ * Artsguide-overblik: åbent, kompakt 2×4-snapshot. Ingen fold-ud, ingen
+ * gruppeoverskrifter — alt vigtigt ses med det samme. Max 3 tags.
+ */
+function SpeciesQuickFacts({ guide }: { guide: Guide }) {
+  const qf = guide.quickFacts
+  const difficultyMeta = DIFFICULTY_META[guide.difficulty]
+
+  const facts = [
+    qf.preCultivation !== undefined && {
+      label: 'Forspiring',
+      value: qf.preCultivation ? 'Ja' : 'Nej',
+      icon: <Sprout className="h-3.5 w-3.5" />,
+    },
+    qf.sowingMonths.length > 0 && {
+      label: 'Såning',
+      value: formatMonths(qf.sowingMonths),
+      icon: <Calendar className="h-3.5 w-3.5" />,
+    },
+    qf.plantingOutMonths.length > 0 && {
+      label: 'Plant ud',
+      value: formatMonths(qf.plantingOutMonths),
+      icon: <TreePine className="h-3.5 w-3.5" />,
+    },
+    qf.harvestMonths.length > 0 && {
+      label: 'Høst',
+      value: formatMonths(qf.harvestMonths),
+      icon: <Wheat className="h-3.5 w-3.5" />,
+    },
+    qf.light && {
+      label: 'Lys',
+      value: LIGHT_META[qf.light].label,
+      icon: <Sun className="h-3.5 w-3.5" />,
+    },
+    qf.water && {
+      label: 'Vand',
+      value: WATER_META[qf.water].label,
+      icon: <Droplets className="h-3.5 w-3.5" />,
+    },
+    qf.soil && { label: 'Jord', value: qf.soil },
+    qf.frostSensitive && { label: 'Frost', value: 'Følsom' },
+  ].filter(Boolean) as {
+    label: string
+    value: string
+    icon?: React.ReactNode
+  }[]
+
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle
+            style={{
+              fontFamily: 'var(--font-plex-condensed), sans-serif',
+              fontWeight: 600,
+              fontSize: 20,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Hurtigt overblik
+          </CardTitle>
+          {guide.difficulty && (
+            <span className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full border ${difficultyMeta.chipClass}`}>
+              {difficultyMeta.label}
+            </span>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        {/* 2 kolonner (ikke 3 — dansk tekst bliver klemt i 3). Kompakte rækker. */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+          {facts.map(f => (
+            <Fact key={f.label} label={f.label} value={f.value} icon={f.icon} />
+          ))}
+        </div>
+        {/* Ingen tags på artsguide-overblik — de er mere nyttige på sortsguides. */}
+      </CardContent>
+    </Card>
+  )
+}
+
+function Fact({
+  label,
+  value,
+  icon,
+  className,
+}: {
+  label: string
+  value: string
+  icon?: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={`flex flex-col gap-0.5 ${className ?? ''}`}>
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1" style={{ fontFamily: 'var(--font-manrope)' }}>
         {icon}
         {label}
       </span>
-      <span className="text-sm text-foreground font-medium">{value}</span>
+      <span className="text-sm text-foreground font-medium" style={{ fontFamily: 'var(--font-manrope)' }}>{value}</span>
     </div>
+  )
+}
+
+/** Er der overhovedet sekundære felter at folde ud? Ellers skjules folden. */
+function hasSecondary(qf: Guide['quickFacts']): boolean {
+  return Boolean(
+    qf.soil ||
+      qf.germinationDays ||
+      qf.primaryUse ||
+      qf.height ||
+      qf.directSowingMonths.length > 0 ||
+      qf.sowingDepthMm !== undefined ||
+      qf.germinationTemperature ||
+      qf.plantSpacing ||
+      qf.rowSpacing ||
+      qf.frostSensitive ||
+      qf.minimumTemperature,
   )
 }
 
