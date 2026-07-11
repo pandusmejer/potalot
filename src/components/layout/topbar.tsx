@@ -38,7 +38,14 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
             <Button asChild variant="ghost" size="sm">
               <Link href="/login">Log ind</Link>
             </Button>
-            <Button asChild size="sm">
+            {/* Dæmpet oliven CTA (Annas spec) — mindre farvemættet end den
+                tidligere mørkegrønne, matcher Havebog-creme-universet. */}
+            <Button
+              asChild
+              size="sm"
+              className="rounded-full px-5 text-[#F7F4EA] hover:opacity-90"
+              style={{ background: '#6D7752' }}
+            >
               <Link href="/opret">Opret bruger</Link>
             </Button>
           </div>
