@@ -81,8 +81,12 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   // jordbær — pakke 2 (vises i demo-mosaikken)
   { crop: 'jordbaer', cropLabel: 'Jordbær', path: '/assets/forvandlinger/crops/jordbaer/jordbaer-koekken-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
   { crop: 'jordbaer', cropLabel: 'Jordbærtærte', path: '/assets/forvandlinger/crops/jordbaer/jordbaer-taerte-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['forvandling'], forvandlingId: 'jordbaertaerte', priority: 90 },
-  // chili — rigtigt crop-foto (erstatter makro)
+  // chili — rigtigt crop-foto (erstatter makro) + chiliflager
   { crop: 'chili', cropLabel: 'Chili', path: '/assets/forvandlinger/crops/chili/chili-plante-01.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  { crop: 'chili', cropLabel: 'Tørrede chilier', path: '/assets/forvandlinger/crops/chili/chili-flakes-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['forvandling'], forvandlingId: 'toerrede-chilier', priority: 90 },
+  // basilikum — rigtige fotos (erstatter makro)
+  { crop: 'basilikum', cropLabel: 'Basilikum', path: '/assets/forvandlinger/crops/basilikum/basilikum-plante-01.jpg', role: 'plant', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  { crop: 'basilikum', cropLabel: 'Basilikumpesto', path: '/assets/forvandlinger/crops/basilikum/basilikum-pesto-01.jpg', role: 'kitchen', mood: 'green', useCases: ['forvandling'], forvandlingId: 'basilikumpesto', priority: 90 },
   // dahlia — enkelt bloms, bundet til dahlia-vase
   { crop: 'dahlia', cropLabel: 'Dahlia i vase', path: '/assets/forvandlinger/crops/dahlia/dahlia-plante-01.jpg', role: 'flower', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'dahlia-vase', priority: 90 },
   // agurk — pakke 2 (crop-tile vises i demo; syltede-agurker bundet, vises i demo)
