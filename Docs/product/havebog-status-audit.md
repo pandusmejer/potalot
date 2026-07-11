@@ -44,7 +44,7 @@ Statustilstande skelnes knivskarpt:
 
 | Del | Hvad findes | Hvorfor ikke i drift |
 |---|---|---|
-| **Diktafon-indbakke (`TalOptager`)** | UI + fase-maskine (idle→lytter→skriver→fortolker→forslag→gemt), `src/actions/optagelser.ts` (gemOptagelse/listOptagelser/behandlOptagelse mod `voice_notes`), Web Speech-transskription (browser da-DK), migrationsfil `supabase/migrations/00053_voice_notes.sql` | **Migration 00053 er ikke kørt mod live DB** → indlogget-flowet fejler. Desuden: ingen lydfil-lagring (kun Web Speech, ingen blob), AI-fortolknings-endpoint skal verificeres |
+| **Diktafon-indbakke (`TalOptager`)** | UI + fase-maskine, `optagelser.ts` (mod `voice_notes`), `tale.ts` fortolkTale (ægte Claude via byggForslag), Web Speech-transskription, migration 00053 **KØRT+verificeret mod live DB (11/7)** | Koden er komplet + tabellen findes. Mangler kun: (a) merge feature/havebog→main så koden deployes, (b) Anna live-tester optag→gem→arkiv→behandl med mic+login. Ingen lydfil-lagring (bevidst — kun Web Speech) |
 
 Dette er **ikke** "bare lige en knap" — det er et rigtigt backend-sprint (migration + drift + evt. lydlagring + AI-verifikation), der skal køres rent, ikke klemmes ind.
 

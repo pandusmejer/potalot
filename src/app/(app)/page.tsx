@@ -96,7 +96,7 @@ export default async function HavebogPage() {
           zIndex: 20,
           // Venstrestillet, samme venstre-akse som Dagens historie
           // (main px-4 = 16 + samme paddingInline som Ildstedet).
-          paddingLeft: 'clamp(12px, 3.5vw, 16px)',
+          paddingLeft: 'clamp(12px, 3.5cqw, 16px)',
         }}
       >
         <HavebogDateline />

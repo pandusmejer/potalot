@@ -256,7 +256,7 @@ export function TalOptager() {
                 style={{
                   fontFamily: serif,
                   fontWeight: 400,
-                  fontSize: 'clamp(18px, 4.2vw, 22px)',
+                  fontSize: 'clamp(18px, 4.2cqw, 22px)',
                   lineHeight: 1.32,
                   color: 'rgba(36,48,31,0.72)',
                   margin: 0,
@@ -337,7 +337,7 @@ export function TalOptager() {
 
       {fase === 'forslag' && (
         <div style={{ width: '100%', textAlign: 'left' }}>
-          <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 'clamp(18px,4vw,22px)', color: 'rgba(36,48,31,0.7)', margin: '0 0 18px' }}>
+          <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 'clamp(18px,4cqw,22px)', color: 'rgba(36,48,31,0.7)', margin: '0 0 18px' }}>
             Skal jeg gemme det her?
           </p>
           <div className="space-y-3">
@@ -385,7 +385,7 @@ export function TalOptager() {
                       {f.plantNavn ? ` · ${f.plantNavn}` : ''}
                       {f.dato ? ` · ${f.dato}` : ''}
                     </span>
-                    <span style={{ display: 'block', fontFamily: serif, fontSize: 'clamp(19px,4.4vw,24px)', fontWeight: 500, color: '#24301F', lineHeight: 1.2, marginTop: 3 }}>
+                    <span style={{ display: 'block', fontFamily: serif, fontSize: 'clamp(19px,4.4cqw,24px)', fontWeight: 500, color: '#24301F', lineHeight: 1.2, marginTop: 3 }}>
                       {f.titel}
                     </span>
                   </span>
@@ -425,7 +425,7 @@ export function TalOptager() {
 
       {(fase === 'gemmer' || fase === 'gemt' || fase === 'fejl') && (
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: serif, fontStyle: fase === 'fejl' ? 'normal' : 'italic', fontSize: 'clamp(20px,4.6vw,26px)', color: '#24301F', margin: '8px 0 0' }}>
+          <p style={{ fontFamily: serif, fontStyle: fase === 'fejl' ? 'normal' : 'italic', fontSize: 'clamp(20px,4.6cqw,26px)', color: '#24301F', margin: '8px 0 0' }}>
             {fase === 'gemmer' ? 'Gemmer…' : resultat}
           </p>
           {fase !== 'gemmer' && (

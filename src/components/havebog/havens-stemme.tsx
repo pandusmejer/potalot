@@ -36,9 +36,9 @@ export function HavensStemme({ opslag }: Props) {
       style={{
         // Lille bund-luft; den egentlige adskillelse til næste opslag
         // klares af HavebogDivider (ornamentet) efter sektionen.
-        paddingBlock: '0 clamp(8px, 2vw, 16px)',
+        paddingBlock: '0 clamp(8px, 2cqw, 16px)',
         // Samlet side-padding ~28-32px (main har 16px → +12-16px her).
-        paddingInline: 'clamp(12px, 3.5vw, 16px)',
+        paddingInline: 'clamp(12px, 3.5cqw, 16px)',
       }}
     >
       {/* Datolinjen er fjernet — adressen (HavebogDateline) under hero-
@@ -54,7 +54,7 @@ export function HavensStemme({ opslag }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 500,
-          fontSize: 'clamp(44px, 12.8vw, 56px)',
+          fontSize: 'clamp(44px, 12.8cqw, 56px)',
           lineHeight: 1.02,
           letterSpacing: '-0.02em',
           color: '#1F2D1D',
@@ -70,7 +70,7 @@ export function HavensStemme({ opslag }: Props) {
           style={{
             fontFamily: serif,
             fontWeight: 500,
-            fontSize: 'clamp(24px, 6.4vw, 30px)',
+            fontSize: 'clamp(24px, 6.4cqw, 30px)',
             lineHeight: 1.22,
             color: '#5F6658',
             margin: 0,
@@ -90,7 +90,7 @@ export function HavensStemme({ opslag }: Props) {
           key={i}
           style={{
             marginTop:
-              i === 0 ? 'clamp(52px, 14vw, 76px)' : 'clamp(28px, 7.5vw, 42px)',
+              i === 0 ? 'clamp(52px, 14cqw, 76px)' : 'clamp(28px, 7.5cqw, 42px)',
           }}
         >
           <p style={{ ...kickerStyle, fontSize: 10.5, color: '#8F9484' }}>{b.kicker}</p>
@@ -98,7 +98,7 @@ export function HavensStemme({ opslag }: Props) {
             style={{
               fontFamily: serif,
               fontWeight: 400,
-              fontSize: 'clamp(17px, 4.2vw, 22px)',
+              fontSize: 'clamp(17px, 4.2cqw, 22px)',
               lineHeight: 1.24,
               letterSpacing: '-0.01em',
               color: '#596151',

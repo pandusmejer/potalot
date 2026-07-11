@@ -78,7 +78,7 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
           fontFamily: serif,
           fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(17px, 3.9vw, 20px)',
+          fontSize: 'clamp(17px, 3.9cqw, 20px)',
           lineHeight: 'normal',
           color: 'rgba(36,48,31,0.55)',
           margin: '4px 0 22px',
@@ -133,7 +133,7 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
       {/* Tekst — art + sort på samme linje, år og resultat vandret nedenunder */}
       <div style={{ minWidth: 0, flex: 1 }}>
         <p
-          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(17px, 4.2vw, 20px)', lineHeight: 1.1, color: '#24301F', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(17px, 4.2cqw, 20px)', lineHeight: 1.1, color: '#24301F', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {p.name}
           {p.variety && (
@@ -211,7 +211,7 @@ function FoersteSaesonSlutning() {
             fontFamily: serif,
             fontStyle: 'italic',
             fontWeight: 400,
-            fontSize: 'clamp(18px, 3.6vw, 24px)',
+            fontSize: 'clamp(18px, 3.6cqw, 24px)',
             lineHeight: 1.3,
             color: 'rgba(244,239,220,0.95)',
             textShadow: '0 1px 14px rgba(12,18,8,0.55)',
@@ -224,7 +224,7 @@ function FoersteSaesonSlutning() {
           style={{
             fontFamily: serif,
             fontWeight: 400,
-            fontSize: 'clamp(14px, 2.7vw, 17px)',
+            fontSize: 'clamp(14px, 2.7cqw, 17px)',
             lineHeight: 1.45,
             color: 'rgba(244,239,220,0.76)',
             textShadow: '0 1px 12px rgba(12,18,8,0.55)',

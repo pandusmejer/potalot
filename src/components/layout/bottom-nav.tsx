@@ -35,7 +35,7 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 z-40 w-full max-w-[480px] -translate-x-1/2 border-t border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md safe-area-pb"
+      className="fixed bottom-0 left-1/2 z-40 w-full max-w-[390px] -translate-x-1/2 border-t border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md safe-area-pb"
       style={{ background: 'color-mix(in oklab, var(--card) 86%, var(--primary))' }}
     >
       <div
@@ -43,7 +43,7 @@ export function BottomNav({ heroHref, criticalTaskCount }: Props) {
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, var(--deco-gold), transparent)' }}
       />
-      <div className="mx-auto flex w-full max-w-[480px] items-stretch justify-around h-16 relative">
+      <div className="mx-auto flex w-full max-w-[390px] items-stretch justify-around h-16 relative">
         {BASE_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon

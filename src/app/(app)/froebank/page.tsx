@@ -2,7 +2,6 @@ import { getAllInventoryItems, getCustomSubcategories } from '@/actions/froebank
 import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { FroebankBrowser } from '@/components/froebank/froebank-browser'
-import { FroebankHero } from '@/components/froebank/froebank-hero'
 import { pickGardenNote } from '@/lib/garden-notes'
 import { aktuelMaaned } from '@/lib/datetime'
 
@@ -17,9 +16,16 @@ export default async function FroebankPage() {
   // Hvis brugeren ikke er logget ind eller endnu ikke har tilføjet
   // egne frø, vis hele demo-puljen så designet kan ses i drift —
   // første frø bliver hero-kortet, resten sidder inde i mappestakken.
-  // Skifter automatisk til brugerens rigtige inventory ved første
-  // tilføjelse. Når brugeren har < 12 frø, fader resten af mappestakken
-  // ud som tomme mapper.
+  // Skifter automatisk til brugerens rigtige inventory ved første tilføjelse.
+  //
+  // Stak-model (LÅST — se Docs/product/froebank-stack-handoff.md):
+  //   /froebank henter inventory → FroebankBrowser filtrerer/sorterer →
+  //   InventoryArchiveStack renderer FØRST én mappe pr. rigtigt frøkort og
+  //   DEREFTER et fast sæt dekorative tail folders (tomme afslutningsmapper).
+  //   Tail folders er KULISSE, ikke slots: de er ikke data, fyldes aldrig op
+  //   med kommende frøkort, og antallet af frøkort ændrer dem ikke — de ligger
+  //   altid sidst, og stakken kan vokse uendeligt. (IKKE den gamle "fyld op til
+  //   12 slots"-model.)
   const inventory = realInventory.length === 0 ? DEMO_INVENTORY : realInventory
 
   // Lille sensorisk note — kontekst-aware (måned, tid på dagen).
@@ -33,33 +39,8 @@ export default async function FroebankPage() {
 
   return (
     <div className="space-y-6">
-      {/* Stats til hero-row — beregnes fra den faktiske inventory.
-          • antal sorter = antal items
-          • antal frø = sum af seedsRemaining eller seedCount
-          • udløber snart = items ældre end 2 år (frø-pose-heuristik) */}
-      <FroebankHero
-        title="Frøbank"
-        tagline={'Din samling af frø,\nløg, knolde og stauder.'}
-        stats={(() => {
-          const sorterCount = inventory.length
-          const seedTotal = inventory.reduce((sum, i) => {
-            const r = i.seedsRemaining ?? i.seedCount ?? 0
-            return sum + r
-          }, 0)
-          const nowYear = new Date().getFullYear()
-          const udloeberSnart = inventory.filter(
-            i => i.purchaseYear != null && nowYear - i.purchaseYear >= 2,
-          ).length
-          const parts: string[] = []
-          if (sorterCount > 0) parts.push(`${sorterCount} ${sorterCount === 1 ? 'sort' : 'sorter'}`)
-          if (seedTotal > 0) parts.push(`${seedTotal} frø`)
-          if (udloeberSnart > 0) parts.push(`${udloeberSnart} udløber snart`)
-          return parts
-        })()}
-      />
-
-      {/* Filtrerings/sorterings-modul + det komplette arkivsystem.
-          Filtrene styrer hvilke frø der vises i hero + stack. */}
+      {/* Frøbankens øverste arkivmappe + det komplette arkivsystem.
+          Mappens søgning, kategori og filterchips styrer stacken. */}
       <FroebankBrowser inventory={inventory} customSubcategories={customSubcategories} />
 
       {/* Svævende sansenote efter samlingen — som en stille åndepause

@@ -44,7 +44,7 @@ export function Dyrkerkompetencer({ omraader }: Props) {
               style={{
                 fontFamily: serif,
                 fontWeight: 500,
-                fontSize: 'clamp(23px, 5vw, 30px)',
+                fontSize: 'clamp(23px, 5cqw, 30px)',
                 lineHeight: 1.1,
                 color: '#24301F',
                 margin: 0,

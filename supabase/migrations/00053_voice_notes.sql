@@ -17,7 +17,8 @@
 -- aktivitets-sæsonmodellen (src/lib/havebog-saeson.ts) ved optagelse —
 -- brugeren vælger aldrig dato/tid/sæson.
 --
--- IKKE ANVENDT mod live DB endnu; køres verificeret som eget trin.
+-- ANVENDT mod live DB 11/7-2026 (Potalot whtyexhqcpcgpludvkon), verificeret:
+-- tabel + 3 indexes + RLS + policy + FK ON DELETE SET NULL + status-CHECK.
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS public.voice_notes (

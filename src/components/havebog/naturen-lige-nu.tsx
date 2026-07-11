@@ -61,13 +61,13 @@ export function NaturenLigeNu({
         </p>
 
         {/* Det store tal — V3.7 (Annas præcise spec).
-            font-size: clamp(72px, 20vw, 124px) — fra max 112px → 124px.
+            font-size: clamp(72px, 20cqw, 124px) — fra max 112px → 124px.
             line-height: 0.82 — strammere så tallet "vejer" mere visuelt. */}
         <p
           style={{
             fontFamily: serif,
             fontWeight: 500,
-            fontSize: 'clamp(72px, 20vw, 124px)',
+            fontSize: 'clamp(72px, 20cqw, 124px)',
             lineHeight: 0.82,
             letterSpacing: '-0.03em',
             color: '#24301F',
@@ -84,7 +84,7 @@ export function NaturenLigeNu({
           style={{
             fontFamily: serif,
             fontWeight: 400,
-            fontSize: 'clamp(18px, 3.4vw, 24px)',
+            fontSize: 'clamp(18px, 3.4cqw, 24px)',
             lineHeight: 1.2,
             color: 'rgba(36,48,31,0.72)',
             margin: 0,

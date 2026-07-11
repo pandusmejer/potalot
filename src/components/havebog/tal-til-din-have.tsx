@@ -128,7 +128,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
         style={{
           fontFamily: serif,
           fontWeight: 400,
-          fontSize: 'clamp(18px, 4.2vw, 22px)',
+          fontSize: 'clamp(18px, 4.2cqw, 22px)',
           lineHeight: 1.32,
           color: 'rgba(36,48,31,0.72)',
           margin: 0,
@@ -269,7 +269,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
                 fontFamily: serif,
                 fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(15px, 3vw, 18px)',
+                fontSize: 'clamp(15px, 3cqw, 18px)',
                 lineHeight: 1.4,
                 color: 'rgba(36,48,31,0.6)',
                 margin: 0,
