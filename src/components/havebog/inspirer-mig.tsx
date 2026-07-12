@@ -36,7 +36,7 @@ export function InspirerMig({ forslag }: Props) {
         {/* Top: tekst-venstre / foto-højre split. Pillen er bund-justeret,
             så dens underkant flugter med fotoets underkant. */}
         <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 210 }}>
-          <div style={{ flex: '0 0 53%', padding: '14px 16px 0 22px', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
             <div>
               <p
                 className="uppercase"
@@ -59,7 +59,7 @@ export function InspirerMig({ forslag }: Props) {
             <button
               type="button"
               className="inline-flex items-center self-start"
-              style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 34, padding: '0 15px', borderRadius: 999, border: 'none', background: '#314829', color: '#F7F1DF', fontFamily: sans, fontSize: 13, fontWeight: 650, cursor: 'pointer' }}
+              style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 31, padding: '0 14px', borderRadius: 999, border: 'none', background: '#314829', color: '#F7F1DF', fontFamily: sans, fontSize: 12.5, fontWeight: 650, cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#F7F1DF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -69,7 +69,7 @@ export function InspirerMig({ forslag }: Props) {
           </div>
 
           {forslag.billede && (
-            <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 5, borderBottomLeftRadius: 5, overflow: 'hidden' }}>
+            <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 3, borderBottomLeftRadius: 3, overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={forslag.billede}
