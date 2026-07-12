@@ -59,7 +59,7 @@ export function InspirerMig({ forslag }: Props) {
             <button
               type="button"
               className="inline-flex items-center self-start"
-              style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 31, padding: '0 14px', borderRadius: 999, border: 'none', background: '#314829', color: '#F7F1DF', fontFamily: sans, fontSize: 12.5, fontWeight: 650, cursor: 'pointer' }}
+              style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 31, padding: '0 14px', borderRadius: 999, border: 'none', background: 'rgba(49,72,41,0.85)', color: '#F7F1DF', fontFamily: sans, fontSize: 12.5, fontWeight: 650, cursor: 'pointer' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#F7F1DF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
