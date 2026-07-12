@@ -103,11 +103,12 @@ export function InspirerMig({ forslag }: Props) {
               ))}
             </div>
 
-            {/* Flere forslag — yderst til højre, må gerne bryde til to linjer */}
+            {/* Flere forslag — firkantet boks yderst til højre, samme
+                42×42-format som forslags-billederne, med let grøn teint. */}
             <Link
               href="/froebank"
               className="no-underline"
-              style={{ marginLeft: 'auto', flexShrink: 0, maxWidth: 56, textAlign: 'right', fontFamily: sans, fontSize: 11.5, fontWeight: 650, lineHeight: 1.25, color: '#314829' }}
+              style={{ marginLeft: 'auto', flexShrink: 0, width: 42, height: 42, borderRadius: 10, background: '#DCE4D0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 2, fontFamily: sans, fontSize: 9.5, fontWeight: 700, lineHeight: 1.18, letterSpacing: '0.01em', color: '#3B4A2F' }}
             >
               Flere forslag <span aria-hidden>→</span>
             </Link>
