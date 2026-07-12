@@ -100,9 +100,11 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
 - **Manglende motorer (prototyper):** kort 4 (projekt-intention fra idéboard/
   kalender/forvandling/diktafon), kort 5 (sæson-kuratering), kort 8 (milepæls-
   deriver: beviselige "førster" fra logs).
-- **Preview-rute — FØR merge til main:** flyt `/havebog-preview` til
-  `/admin/qa/havebog-preview` ELLER gate bag admin/auth. Ikke offentlig i prod.
-  (Beholdt offentlig nu, mens vi designer.)
+- **Preview-rute — GJORT 12/7 (option A):** flyttet fra offentlig
+  `/havebog-preview` til `/admin/qa/havebog-preview`, som arver
+  `admin/qa/layout.tsx`-gatingen (`isCurrentUserAdmin()` → notFound/login).
+  Offentlig rute → 404; admin-versionen kræver admin-login. Komponenterne
+  bevaret (kan genbruges).
 - **Drivhus soft glyph (kort 8):** BESLUTNING = A (malet PNG i soft glyph-
   familien). IKKE mono-SVG, IKKE skift hele sættet. Nuværende `drivhus.png` er
   accepteret midlertidig; endelig version skal være SIMPLERE: enkel drivhus-
