@@ -13,12 +13,18 @@ interface Props {
 /**
  * RUM · "Måske du også vil prøve" (V19 — Annas 390px kort-spec, sektion 2).
  *
- * Handlingsnært hint, bevidst ANDERLEDES end "Prøv næste år": intet hårdt
- * split-panel, men et foto der bløder ind fra højre under en creme-gradient
- * — roligere, mere editorial. Destination: Forvandlinger/guide ("Se hvordan").
+ * ⚠️ ANNA-LÅST (12/7). Layout + alle mål godkendt, rør ikke uden ny retning:
+ * kort radius 14 + marginInline -11, FULDT foto (inset:0, ingen gradient) hvor
+ * billedets egen rolige creme-venstreside bærer teksten; eyebrow 11/700/0.22em
+ * på én linje (matcher kort 1), overskrift Cormorant 700 clamp(24,7.2cqw,30),
+ * brødtekst 13 m. faste linjeskift, kompakt ChevronRight-CTA. Foto:
+ * /images/havebog/maaske-du-ogsaa-froeavl.jpg.
+ *
+ * Handlingsnært hint, bevidst ANDERLEDES end "Prøv næste år"s hårde split.
+ * "Se hvordan" → /havebog/forvandlinger (ægte rute).
  *
  * PROTOTYPE: demo-only rum (samme forslags-motor som Inspirér mig mangler).
- * Gated false for indloggede. "Se hvordan" er visuel indtil ruten findes.
+ * Gated false for indloggede indtil forslags-motoren lander.
  */
 export function MaaskeDuOgsaa({ forslag, billede }: Props) {
   return (
