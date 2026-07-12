@@ -18,21 +18,24 @@ når deres kilde/motor findes. Design låses nu; wiring nedenfor er næste fase.
 
 ## Pr. kort — hvad mangler at blive levende
 
-### 1 · Prøv næste år (inspirer-mig.tsx) — LÅST design
-- **"Vis et nyt forslag"** = `<button>` uden handler. → Byg **forslags-rotation**
-  (skift til næste kuraterede forslag; kræver en forslags-motor der trækker på
-  frøbank/planter/sæson/historik).
-- **Basilikum / Peberfrugt** (de små forslag) = rene `<div>`, ikke klikbare.
-  → Beslut: skal hvert forslag linke til sortens **frøkort/guide** (fx
-  `/froebank/[id]` eller guide-detalje)? Kræver at forslaget bærer et mål-id.
-- **"Flere forslag"** → `/froebank` (VIRKER allerede).
-- Data: `InspirerForslag` er demo. → Ægte **deriver** (hvad skal brugeren prøve
-  næste år, ud fra hvad de dyrkede i år).
+### 1 · Prøv næste år (inspirer-mig.tsx) — LÅST · MOTOR BYGGET + WIRED
+**Rettelse 12/7:** motoren FINDES og er wired (var fejlagtigt "prototype").
+- Motor: **byggProevNaesteAar** (`src/lib/havebog-proev-naeste-aar.ts`), testet
+  (`scripts/test-proev-naeste-aar.ts`, 7/7). Prioritet: forlæng>hul>frøavl>
+  robusthed>køkken>fallback. Wired i `getHavebogData` → `inspirerForslag` →
+  kortet (indlogget bruger `data.inspirerForslag`, gated på non-null).
+- **UDESTÅENDE (demo-only endnu):** de små foto-forslag (Basilikum/Peberfrugt)
+  produceres IKKE af motoren → vises kun i demo; motorens output mangler et
+  `forslag[]`-felt (+ mål-id hvis de skal linke til frøkort/guide). Og
+  **"Vis et nyt forslag"**-rotation er stadig en død knap (ikke wired).
+- **"Flere forslag"** → `/froebank` (virker).
 
-### 2 · Måske du også vil prøve (maaske-du-ogsaa.tsx) — LÅST design
-- **"Se hvordan"** → `/havebog/forvandlinger` (VIRKER allerede).
-- Data: bruger `InspirerForslag.sekundaer` (demo). → Ægte deriver (næste skridt
-  ud fra afgrøder, fx "du dyrker tomater → gem frø").
+### 2 · Måske du også vil prøve (maaske-du-ogsaa.tsx) — LÅST · MOTOR-BACKED
+**Rettelse 12/7:** motor-backed (var fejlagtigt "prototype").
+- Bruger `inspirerForslag.sekundaer` fra **samme byggProevNaesteAar**-motor
+  ("Hul"-reglen producerer et sekundært forslag). Wired + gated på sekundaer
+  non-null for indloggede. NB: fotoet er et fast havebog-asset, ikke fra motoren.
+- **"Se hvordan"** → `/havebog/forvandlinger` (virker).
 
 ### 3 · På denne dag (paa-denne-dag.tsx) — overlay + destination LÅST
 **Produktregel:** "På denne dag" er ALTID et tilbageblik MED kilde — aldrig et
