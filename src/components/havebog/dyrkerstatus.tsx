@@ -26,9 +26,9 @@ export function Dyrkerstatus({ status }: Props) {
           overflow: 'hidden',
           marginInline: -11,
           borderRadius: 14,
-          background: '#F5EEDC',
-          border: '1px solid rgba(143,148,132,0.18)',
-          boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
+          background: '#DDD7DE',
+          border: '1px solid rgba(80,72,86,0.16)',
+          boxShadow: '0 10px 28px rgba(40,35,42,0.07)',
           padding: '10px 22px 11px',
         }}
       >
@@ -38,7 +38,7 @@ export function Dyrkerstatus({ status }: Props) {
           viewBox="0 0 120 160"
           style={{ position: 'absolute', right: -8, bottom: -10, width: 170, height: 'auto', opacity: 0.14 }}
         >
-          <g fill="none" stroke="#8F9484" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <g fill="none" stroke="#8B8391" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M60 156 C58 120 58 96 62 64 C64 44 70 26 84 12" />
             <path d="M62 112 C50 108 40 98 36 84 M62 112 C74 104 82 92 84 78" />
             <path d="M64 84 C52 82 44 74 40 62 M64 84 C76 78 82 68 84 56" />
@@ -48,24 +48,24 @@ export function Dyrkerstatus({ status }: Props) {
 
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 12 }}
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(47,43,49,0.5)', margin: 0, marginBottom: 12 }}
         >
           Din status som dyrker
         </p>
         <p
-          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(34px, 10cqw, 42px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 10 }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(34px, 10cqw, 42px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#2F2B31', margin: 0, marginBottom: 10 }}
         >
           {status.titel}
         </p>
         <p
-          style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 400, lineHeight: 1.32, color: '#45503F', margin: 0, whiteSpace: 'pre-line' }}
+          style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 400, lineHeight: 1.32, color: 'rgba(47,43,49,0.8)', margin: 0, whiteSpace: 'pre-line' }}
         >
           {status.beskrivelse}
         </p>
         <Link
           href="/profil"
           className="no-underline flex items-center"
-          style={{ gap: 4, marginTop: 12, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
+          style={{ gap: 4, marginTop: 12, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#4A3D57', position: 'relative' }}
         >
           Se hele din profil
           <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
