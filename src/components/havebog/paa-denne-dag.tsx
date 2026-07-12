@@ -139,30 +139,25 @@ function FotoMedHistorie({
             'linear-gradient(180deg, rgba(12,18,8,0) 38%, rgba(12,18,8,0.18) 62%, rgba(12,18,8,0.62) 100%)',
         }}
       />
-      <div
-        className="absolute inset-x-0 bottom-0 z-10"
-        style={{ padding: '0 24px 24px' }}
-      >
+      {/* Label øverste venstre hjørne — PÅ DENNE DAG + kicker, samme vægt/str. */}
+      <div className="absolute left-0 top-0 z-10" style={{ padding: '22px 24px 0' }}>
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(244,239,220,0.92)', margin: 0, marginBottom: 6 }}
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(244,239,220,0.9)', textShadow: '0 1px 10px rgba(12,18,8,0.5)', margin: 0 }}
         >
           På denne dag
         </p>
         <p
-          style={{
-            fontFamily: sans,
-            fontSize: 10.5,
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(244,239,220,0.68)',
-            margin: 0,
-            marginBottom: 8,
-          }}
+          className="uppercase"
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(244,239,220,0.9)', textShadow: '0 1px 10px rgba(12,18,8,0.5)', margin: 0, marginTop: 4 }}
         >
           {kicker}
         </p>
+      </div>
+      <div
+        className="absolute inset-x-0 bottom-0 z-10"
+        style={{ padding: '0 24px 24px' }}
+      >
         <p
           style={{
             fontFamily: serif,
