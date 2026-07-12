@@ -11,10 +11,17 @@ interface Props {
 /**
  * RUM · "Prøv næste år" (V19 — Annas 390px kort-spec).
  *
+ * ⚠️ ANNA-LÅST (12/7). Layout + alle mål er godkendt og må IKKE ændres
+ * uden ny retning fra Anna: kort radius 14 + marginInline -11 (~3mm
+ * bredere/side), overskrift Cormorant 600 clamp(26,7.8cqw,33), billedets
+ * venstre hjørner 3px, "Vis et nyt forslag"-pille (h31, rgba(49,72,41,.85),
+ * luft under), foto-bånd pakket venstre (padding-venstre 9), og "Flere
+ * forslag" i firkantet 57×42-boks (rgba(199,209,174,.85), ingen pil).
+ *
  * Ét stærkt forslag + få sekundære, som et taktilt anbefalingskort:
- * tekst-venstre / foto-højre split med "Vis et nyt forslag"-pillen bund-
- * justeret med fotoets underkant, en lav foto-række med små forslag, og
- * "Flere forslag →" placeret UDEN for boksen nedenunder.
+ * tekst-venstre / foto-højre split, en lav foto-række med små forslag
+ * (to linjer: art/sort bold + sort/kvalitet), og "Flere forslag"-boks
+ * yderst til højre i båndet.
  *
  * PROTOTYPE: "Vis et nyt forslag" er visuel (rotation ikke wired endnu).
  * "Flere forslag" fører til frøbanken (ægte rute). Demo-only rum; gated
