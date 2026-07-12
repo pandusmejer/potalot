@@ -16,14 +16,16 @@ const TONE: Record<PopulaertEmne['tone'], string> = {
 }
 
 /**
- * RUM · "Mange læser om nu" (V19 — Annas 390px kort-spec, sektion 5).
+ * RUM · "Sæsonens spørgsmål" (V19 — Annas 390px kort-spec, sektion 5).
  *
- * Fællesskabs-preview: hvad andre dyrkere læser om — som 3 små tonede
- * emne-kort. Ingen læsertal, ingen "trending", ingen social feed-vibe.
+ * Rolige, sæson-relevante temaer som 3 små tonede guide-indgange — IKKE
+ * social proof. Ingen læsertal, ingen "trending", intet "andre klikker".
+ * Overskriften siger "det her er relevant i haven lige nu", ikke "mange
+ * læser om det". Emne-kort fører til guides (ægte rute).
  *
- * ⚠️ HÅRDT GATED: kræver ægte community-data (ærligheds-reglen). Lever kun
- * som prototype i demo; vises ALDRIG til rigtige brugere før reel data
- * findes. Emne-kort fører til guides (ægte rute).
+ * PROTOTYPE: emnerne er demo (hardcodet). Ægte sæson-kuratering (hvilke
+ * spørgsmål der er aktuelle i denne måned) er en senere kilde; indtil da
+ * gated for indloggede.
  */
 export function PopulaertLigeNu({ emner }: Props) {
   return (
@@ -41,7 +43,7 @@ export function PopulaertLigeNu({ emner }: Props) {
           className="uppercase"
           style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 16 }}
         >
-          Mange læser om nu
+          Sæsonens spørgsmål
         </p>
 
         <div style={{ display: 'flex', gap: 8 }}>

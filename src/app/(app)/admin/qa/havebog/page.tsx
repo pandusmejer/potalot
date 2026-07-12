@@ -143,7 +143,7 @@ export default function HavebogDesignLabPage() {
       <Vendepunkter vendepunkter={DEMO_VENDEPUNKTER} />
       <Sep label="11 · Spisekammer" />
       <Spisekammer data={DEMO_SPISEKAMMER} />
-      <Sep label="12 · Populært lige nu (prototype)" />
+      <Sep label="12 · Sæsonens spørgsmål (prototype)" />
       <PopulaertLigeNu emner={DEMO_POPULAERT} />
       <Sep label="13 · Vejret i haven (prototype)" />
       <VejretIHaven vejr={DEMO_VEJR} />

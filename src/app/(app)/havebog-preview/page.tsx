@@ -33,7 +33,7 @@ export default function HavebogPreviewPage() {
       <div><Lbl>2 · Måske du også vil prøve</Lbl><MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" /></div>
       <div><Lbl>3 · På denne dag</Lbl><PaaDenneDag entries={DEMO_ON_THIS_DAY} /></div>
       <div><Lbl>4 · Næste projekt</Lbl><Projekter projekt={DEMO_PROJEKT} /></div>
-      <div><Lbl>5 · Mange læser om nu</Lbl><PopulaertLigeNu emner={DEMO_POPULAERT} /></div>
+      <div><Lbl>5 · Sæsonens spørgsmål</Lbl><PopulaertLigeNu emner={DEMO_POPULAERT} /></div>
       <div><Lbl>6 · Din status som dyrker</Lbl><Dyrkerstatus status={DEMO_DYRKERSTATUS} /></div>
       <div><Lbl>7 · Dine kompetencer</Lbl><Dyrkerkompetencer omraader={DEMO_KOMPETENCER} /></div>
       <div><Lbl>8 · Første gange</Lbl><Bedrifter bedrifter={DEMO_BEDRIFTER} /></div>
