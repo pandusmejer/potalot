@@ -607,8 +607,13 @@ export interface InspirerForslag {
   begrundelse: string
   /** V18: illustration/foto — bruger eksisterende frøkort indtil videre */
   billede?: string
-  /** V19: små sekundære forslag (thumbnail-række under CTA) */
-  forslag?: { navn: string; note: string; glyph?: string }[]
+  /**
+   * V19: små sekundære forslag (foto-række under CTA). To linjer:
+   *  top  = ART eller SORT (bold), hvis sorten er fortæller nok i sig selv
+   *  bund = SORT (ikke bold, en tand mindre) ELLER en særlig kvalitet
+   *         (spiselig, sen blomstring, egnet til tørring)
+   */
+  forslag?: { top: string; bund: string; foto: string }[]
   /** V18: sekundært "måske du også vil prøve" (bliver egen sektion) */
   sekundaer?: { kicker: string; titel: string; tekst: string }
 }
@@ -618,8 +623,8 @@ export const DEMO_INSPIRER: InspirerForslag = {
   begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
   billede: '/images/frokort/jordbaer-korona.png',
   forslag: [
-    { navn: "Lavendel 'Hidcote'", note: 'Smuk og hårdfør', glyph: '/images/glyphs/blomster.png' },
-    { navn: 'Rosenbønne', note: 'Pryd og spiselig', glyph: '/images/glyphs/groentsager.png' },
+    { top: 'Basilikum', bund: 'Egnet til tørring', foto: '/images/makro/basilikum/bundt.jpg' },
+    { top: 'Peberfrugt', bund: 'Corno di Toro', foto: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg' },
   ],
   sekundaer: {
     kicker: 'Måske du også vil prøve',

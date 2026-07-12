@@ -28,7 +28,8 @@ export function InspirerMig({ forslag }: Props) {
     <section>
       <div
         style={{
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           overflow: 'hidden',
           background: '#F5EEDC',
           border: '1px solid rgba(143,148,132,0.18)',
@@ -45,7 +46,7 @@ export function InspirerMig({ forslag }: Props) {
               {forslag.kicker}
             </p>
             <p
-              style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(30px, 9cqw, 38px)', lineHeight: 0.98, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 16 }}
+              style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(28px, 8.4cqw, 36px)', lineHeight: 0.98, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 16 }}
             >
               {forslag.navn}
             </p>
@@ -57,7 +58,7 @@ export function InspirerMig({ forslag }: Props) {
           </div>
 
           {forslag.billede && (
-            <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A' }}>
+            <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 5, borderBottomLeftRadius: 5, overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={forslag.billede}
@@ -90,25 +91,23 @@ export function InspirerMig({ forslag }: Props) {
           </Link>
         </div>
 
-        {/* Sekundære små forslag — lav thumbnail-række */}
+        {/* Sekundære små forslag — foto-række, to linjer, ingen ikoner */}
         {forslag.forslag && forslag.forslag.length > 0 && (
           <div
             style={{ marginTop: 18, padding: '14px 22px 18px', borderTop: '1px solid rgba(143,148,132,0.16)', display: 'flex', gap: 12 }}
           >
             {forslag.forslag.slice(0, 2).map((f) => (
-              <div key={f.navn} className="flex items-center" style={{ gap: 10, flex: 1, minWidth: 0 }}>
-                <div style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 9, background: '#E7E0CB', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                  {f.glyph && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={f.glyph} alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-                  )}
+              <div key={f.top} className="flex items-center" style={{ gap: 11, flex: 1, minWidth: 0 }}>
+                <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 650, color: '#2C3826', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {f.navn}
+                  <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: '#24301F', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {f.top}
                   </p>
                   <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: '#7A8069', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {f.note}
+                    {f.bund}
                   </p>
                 </div>
               </div>
