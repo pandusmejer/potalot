@@ -24,11 +24,12 @@ export function Dyrkerstatus({ status }: Props) {
         style={{
           position: 'relative',
           overflow: 'hidden',
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           background: '#F5EEDC',
           border: '1px solid rgba(143,148,132,0.18)',
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
-          padding: 22,
+          padding: '10px 22px 11px',
         }}
       >
         {/* Botanisk streg-pynt — må ikke konkurrere med teksten */}
@@ -47,24 +48,24 @@ export function Dyrkerstatus({ status }: Props) {
 
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 18 }}
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 12 }}
         >
           Din status som dyrker
         </p>
         <p
-          style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(34px, 10cqw, 42px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 16 }}
+          style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(34px, 10cqw, 42px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 10 }}
         >
           {status.titel}
         </p>
         <p
-          style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: '#45503F', margin: 0, maxWidth: '25ch' }}
+          style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 400, lineHeight: 1.32, color: '#45503F', margin: 0, whiteSpace: 'pre-line' }}
         >
           {status.beskrivelse}
         </p>
         <Link
           href="/profil"
           className="no-underline flex items-center"
-          style={{ gap: 4, marginTop: 20, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
+          style={{ gap: 4, marginTop: 12, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
         >
           Se hele din profil
           <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />

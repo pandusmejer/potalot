@@ -648,7 +648,8 @@ export interface Dyrkerstatus {
 }
 export const DEMO_DYRKERSTATUS: Dyrkerstatus = {
   titel: 'Selvforsyner',
-  beskrivelse: 'Du har høstet fra flere afgrøder denne sæson.',
+  // Bevidste linjeskift (renderes via pre-line).
+  beskrivelse: 'Du har høstet fra flere afgrøder\ndenne sæson og begynder at\nfylde sommeren med din egen mad.',
 }
 
 // 6 · Dyrkerkompetencer — editorial ord, ingen opnået-badges
