@@ -32,19 +32,30 @@ export function Dyrkerstatus({ status }: Props) {
           padding: '10px 22px 11px',
         }}
       >
-        {/* Botanisk streg-pynt — må ikke konkurrere med teksten */}
-        <svg
+        {/* Botanisk vandmærke — tone-i-tone med lavendel-baggrunden, meget
+            nedtonet via maske (linjerne får plum-farve, ikke sort). Må ikke
+            larme; skal aldrig konkurrere med teksten. */}
+        <div
           aria-hidden
-          viewBox="0 0 120 160"
-          style={{ position: 'absolute', right: -8, bottom: -10, width: 170, height: 'auto', opacity: 0.14 }}
-        >
-          <g fill="none" stroke="#8B8391" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M60 156 C58 120 58 96 62 64 C64 44 70 26 84 12" />
-            <path d="M62 112 C50 108 40 98 36 84 M62 112 C74 104 82 92 84 78" />
-            <path d="M64 84 C52 82 44 74 40 62 M64 84 C76 78 82 68 84 56" />
-            <path d="M68 58 C58 56 51 50 47 40 M68 58 C78 52 83 44 85 34" />
-          </g>
-        </svg>
+          style={{
+            position: 'absolute',
+            right: -18,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 220,
+            height: 198,
+            background: '#4A3D57',
+            opacity: 0.12,
+            WebkitMaskImage: 'url(/images/havebog/selvforsyner-vandmaerke.png)',
+            maskImage: 'url(/images/havebog/selvforsyner-vandmaerke.png)',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+          }}
+        />
 
         <p
           className="uppercase"
