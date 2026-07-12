@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import type { Dyrkerstatus as DyrkerstatusData } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -63,10 +64,10 @@ export function Dyrkerstatus({ status }: Props) {
         <Link
           href="/profil"
           className="no-underline flex items-center"
-          style={{ gap: 6, marginTop: 20, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
+          style={{ gap: 4, marginTop: 20, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
         >
           Se hele din profil
-          <span aria-hidden>→</span>
+          <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
         </Link>
       </div>
     </section>

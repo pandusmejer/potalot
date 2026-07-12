@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import type { PopulaertEmne } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -62,7 +62,7 @@ export function PopulaertLigeNu({ emner }: Props) {
                 aria-hidden
                 style={{ position: 'absolute', right: 10, bottom: 10, width: 24, height: 24, borderRadius: 999, background: 'rgba(31,45,29,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <ArrowRight style={{ width: 13, height: 13, color: '#2C3826' }} strokeWidth={2} />
+                <ChevronRight style={{ width: 14, height: 14, color: '#2C3826' }} strokeWidth={2.4} />
               </span>
             </Link>
           ))}

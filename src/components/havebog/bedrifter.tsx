@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Apple, Home, Flower2, Sprout } from 'lucide-react'
+import { Apple, Home, Flower2, Sprout, ChevronRight } from 'lucide-react'
 import type { Bedrift } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -72,10 +72,10 @@ export function Bedrifter({ bedrifter }: Props) {
         <Link
           href="/profil"
           className="no-underline flex items-center"
-          style={{ gap: 6, marginTop: 22, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
+          style={{ gap: 4, marginTop: 22, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
         >
           Se alle milepæle
-          <span aria-hidden>→</span>
+          <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
         </Link>
       </div>
     </section>

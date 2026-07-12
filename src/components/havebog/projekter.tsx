@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Hammer } from 'lucide-react'
+import { Hammer, ChevronRight } from 'lucide-react'
 import type { ProjektForslag } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -58,10 +58,10 @@ export function Projekter({ projekt }: Props) {
           <Link
             href="/kalender"
             className="no-underline flex items-center"
-            style={{ gap: 6, marginTop: 16, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
+            style={{ gap: 4, marginTop: 16, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
           >
             Åbn projekt
-            <span aria-hidden>→</span>
+            <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
           </Link>
         </div>
 

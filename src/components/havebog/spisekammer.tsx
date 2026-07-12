@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import type { SpisekammerData } from '@/data/havebog-demo'
 import {
   selectSpisekammerAssets,
@@ -192,9 +193,9 @@ function MosaikTile({ tile }: { tile: Tile }) {
   // cta → oversigten over forvandlinger
   return (
     <Link href="/havebog/forvandlinger" className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
-      <span className="flex items-center" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
+      <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
         {tile.tekst}
-        <span aria-hidden>→</span>
+        <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
       </span>
     </Link>
   )

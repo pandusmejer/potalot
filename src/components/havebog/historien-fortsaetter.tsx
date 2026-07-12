@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen } from 'lucide-react'
+import { ChevronRight, BookOpen } from 'lucide-react'
 import type { ArchivedPlant } from '@/data/havebog-demo'
 import { laantErfaring } from '@/lib/havevisdom'
 import { aktuelMaaned } from '@/lib/datetime'
@@ -109,7 +109,7 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
         <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.7)' }}>
           Se tidligere sæsoner
         </span>
-        <ArrowRight className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto', flexShrink: 0 }} aria-hidden strokeWidth={1.7} />
+        <ChevronRight className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto', flexShrink: 0 }} aria-hidden strokeWidth={2.2} />
       </div>
     </div>
   )
@@ -159,7 +159,7 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
         aria-hidden
         style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 999, border: '1px solid rgba(36,48,31,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <ArrowRight className="h-4 w-4" style={{ color: 'rgba(36,48,31,0.55)' }} strokeWidth={1.8} />
+        <ChevronRight className="h-4 w-4" style={{ color: 'rgba(36,48,31,0.55)' }} strokeWidth={2.2} />
       </div>
     </div>
   )
