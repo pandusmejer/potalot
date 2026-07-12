@@ -119,8 +119,9 @@ function FotoMedHistorie({
     <div
       className="relative overflow-hidden"
       style={{
-        marginInline: -16,
-        aspectRatio: '5 / 6',
+        marginInline: -11,
+        height: 290,
+        borderRadius: 14,
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
