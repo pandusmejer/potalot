@@ -25,7 +25,8 @@ export function MaaskeDuOgsaa({ forslag, billede }: Props) {
       <div
         style={{
           position: 'relative',
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           overflow: 'hidden',
           minHeight: 200,
           background: '#F4EEDC',
@@ -56,7 +57,7 @@ export function MaaskeDuOgsaa({ forslag, billede }: Props) {
             {forslag.kicker}
           </p>
           <p
-            style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(30px, 9cqw, 38px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 14 }}
+            style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(26px, 7.8cqw, 33px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 14 }}
           >
             {forslag.titel}
           </p>
