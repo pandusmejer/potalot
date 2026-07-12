@@ -710,12 +710,14 @@ export interface ProjektForslag {
   kicker: string
   titel: string
   kontekst?: string
+  foto?: string
 }
 export const DEMO_PROJEKT: ProjektForslag = {
   kicker: 'Næste projekt',
   titel: 'Byg et insekthotel',
   // Bevidste linjeskift (renderes via pre-line i Projekter).
   kontekst: 'Du gemte idéen i juni.\nNu er det et godt\ntidspunkt at gå i gang.',
+  foto: '/images/havebog/naeste-projekt-insekthotel.jpg',
 }
 
 // 14 · Bedrifter / Første gange — kun BEVISELIGE milepæle (log-typer der

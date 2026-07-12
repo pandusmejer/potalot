@@ -38,7 +38,34 @@ export function Projekter({ projekt }: Props) {
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        <div style={{ flex: '1 1 60%', padding: 22, minWidth: 0 }}>
+        {/* Foto højre m. rund vignet — fader blødt ud i creme-boksen. Uden
+            foto: tonet panel + line-ikon (ingen stock-fyld). */}
+        {projekt.foto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={projekt.foto}
+            alt=""
+            aria-hidden
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '54%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              WebkitMaskImage: 'radial-gradient(125% 135% at 90% 50%, #000 38%, rgba(0,0,0,0) 80%)',
+              maskImage: 'radial-gradient(125% 135% at 90% 50%, #000 38%, rgba(0,0,0,0) 80%)',
+            }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '34%', background: '#E6DBBE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Hammer style={{ width: 40, height: 40, color: '#9A906F', opacity: 0.7 }} strokeWidth={1.4} aria-hidden />
+          </div>
+        )}
+
+        <div style={{ position: 'relative', zIndex: 1, padding: 22, maxWidth: '62%' }}>
           <p
             className="uppercase"
             style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 16 }}
@@ -63,11 +90,6 @@ export function Projekter({ projekt }: Props) {
             Åbn projekt
             <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
           </Link>
-        </div>
-
-        {/* Tonet panel — pladsholder til insekthotel-foto */}
-        <div style={{ flex: '0 0 34%', position: 'relative', background: '#E6DBBE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Hammer style={{ width: 40, height: 40, color: '#9A906F', opacity: 0.7 }} strokeWidth={1.4} aria-hidden />
         </div>
       </div>
     </section>
