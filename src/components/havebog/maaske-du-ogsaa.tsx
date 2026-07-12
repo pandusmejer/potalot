@@ -52,7 +52,7 @@ export function MaaskeDuOgsaa({ forslag, billede }: Props) {
         <div style={{ position: 'relative', padding: 22, maxWidth: '62%' }}>
           <p
             className="uppercase"
-            style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: '#8F9484', margin: 0, marginBottom: 13, whiteSpace: 'nowrap' }}
+            style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 13, whiteSpace: 'nowrap' }}
           >
             {forslag.kicker}
           </p>
