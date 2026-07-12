@@ -9,11 +9,11 @@ interface Props {
   emner: PopulaertEmne[]
 }
 
-// Bløde, pudrede, let desaturerede toner — matte plader, ikke larmende.
+// Naturlige, jordnære toner — mindre pastel, mere have (mos, ler, hvede).
 const TONE: Record<PopulaertEmne['tone'], string> = {
-  sage: '#E3E7D6',
-  rose: '#E7DAD6',
-  sand: '#EDE5CE',
+  sage: '#CBD4B4',
+  rose: '#D8C1B6',
+  sand: '#E0D2AA',
 }
 
 /**
@@ -33,41 +33,42 @@ export function PopulaertLigeNu({ emner }: Props) {
     <section>
       <div
         style={{
+          marginInline: -11,
           borderRadius: 18,
           background: '#F7F1E3',
           border: '1px solid rgba(143,148,132,0.18)',
-          padding: '18px 16px 16px',
+          padding: '18px 6px 14px',
         }}
       >
         <p
           className="uppercase"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 16 }}
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 15, marginLeft: 6 }}
         >
           Sæsonens spørgsmål
         </p>
 
-        <div style={{ display: 'flex', gap: 11, alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {emner.slice(0, 3).map(e => (
             <Link
               key={e.emne}
               href="/guides"
               className="no-underline"
-              style={{ position: 'relative', flex: 1, minWidth: 0, borderRadius: 16, padding: '14px 12px 44px', background: TONE[e.tone], overflow: 'hidden' }}
+              style={{ position: 'relative', flex: '0 0 120px', width: 120, height: 95, borderRadius: 16, padding: '11px 11px 0', background: TONE[e.tone], overflow: 'hidden' }}
             >
-              <p lang="da" style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(18px, 5.2cqw, 21px)', lineHeight: 1.0, color: '#223022', margin: 0, marginBottom: 8, hyphens: 'auto', overflowWrap: 'break-word' }}>
+              <p lang="da" style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(15px, 4.4cqw, 18px)', lineHeight: 1.0, color: '#223022', margin: 0, marginBottom: 5, hyphens: 'auto', overflowWrap: 'break-word' }}>
                 {e.emne}
               </p>
               <p
                 lang="da"
-                style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 400, lineHeight: 1.45, color: '#55604F', margin: 0, hyphens: 'auto', overflowWrap: 'break-word', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, lineHeight: 1.4, color: '#55604F', margin: 0, hyphens: 'auto', overflowWrap: 'break-word', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
               >
                 {e.beskrivelse}
               </p>
               <span
                 aria-hidden
-                style={{ position: 'absolute', right: 11, bottom: 11, width: 34, height: 34, borderRadius: 999, border: '1px solid rgba(60,70,50,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ position: 'absolute', right: 9, bottom: 9, width: 30, height: 30, borderRadius: 999, border: '1px solid rgba(60,70,50,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <ChevronRight style={{ width: 15, height: 15, color: '#3E4A39' }} strokeWidth={2.2} />
+                <ChevronRight style={{ width: 14, height: 14, color: '#3E4A39' }} strokeWidth={2.2} />
               </span>
             </Link>
           ))}
