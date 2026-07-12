@@ -629,7 +629,8 @@ export const DEMO_INSPIRER: InspirerForslag = {
   sekundaer: {
     kicker: 'Måske du også vil prøve',
     titel: 'Prøv frøavl',
-    tekst: 'Du dyrker tomater — måske er det tid til at gemme dine egne frø.',
+    // Linjeskift bevidst (renderes via pre-line i MaaskeDuOgsaa).
+    tekst: 'Du dyrker tomater.\nMåske er det tid til at\ngemme dine egne frø.',
   },
 }
 
