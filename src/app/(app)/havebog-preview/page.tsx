@@ -30,7 +30,7 @@ export default function HavebogPreviewPage() {
   return (
     <div className="space-y-14 py-6">
       <div><Lbl>1 · Prøv næste år</Lbl><InspirerMig forslag={DEMO_INSPIRER} /></div>
-      <div><Lbl>2 · Måske du også vil prøve</Lbl><MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/assets/forvandlinger/crops/tomat/tomat-froe-01.jpg" /></div>
+      <div><Lbl>2 · Måske du også vil prøve</Lbl><MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" /></div>
       <div><Lbl>3 · På denne dag</Lbl><PaaDenneDag entries={DEMO_ON_THIS_DAY} /></div>
       <div><Lbl>4 · Næste projekt</Lbl><Projekter projekt={DEMO_PROJEKT} /></div>
       <div><Lbl>5 · Mange læser om nu</Lbl><PopulaertLigeNu emner={DEMO_POPULAERT} /></div>

@@ -130,7 +130,7 @@ export default function HavebogDesignLabPage() {
       <Sep label="5 · Prøv næste år (Inspirér mig)" />
       <InspirerMig forslag={DEMO_INSPIRER} />
       <Sep label="5b · Måske du også vil prøve" />
-      <MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/assets/forvandlinger/crops/tomat/tomat-froe-01.jpg" />
+      <MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" />
       <Sep label="6 · Dyrkerstatus" />
       <Dyrkerstatus status={DEMO_DYRKERSTATUS} />
       <Sep label="7 · Kompetencer" />

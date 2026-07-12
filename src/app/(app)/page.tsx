@@ -161,7 +161,7 @@ export default async function HavebogPage() {
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
     inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
-    maaskeDuOgsaa: <MaaskeDuOgsaa forslag={(isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER).sekundaer ?? DEMO_INSPIRER.sekundaer!} billede="/assets/forvandlinger/crops/tomat/tomat-froe-01.jpg" />,
+    maaskeDuOgsaa: <MaaskeDuOgsaa forslag={(isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER).sekundaer ?? DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" />,
     dyrkerstatus: <Dyrkerstatus status={isDemo ? DEMO_DYRKERSTATUS : (data?.dyrkerstatus[0] ?? DEMO_DYRKERSTATUS)} />,
     dyrkerkompetencer: <Dyrkerkompetencer omraader={isDemo ? DEMO_KOMPETENCER : (data?.dyrkerkompetencer ?? DEMO_KOMPETENCER)} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
