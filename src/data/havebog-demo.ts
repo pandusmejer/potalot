@@ -714,7 +714,8 @@ export interface ProjektForslag {
 export const DEMO_PROJEKT: ProjektForslag = {
   kicker: 'Næste projekt',
   titel: 'Byg et insekthotel',
-  kontekst: 'Du gemte idéen i juni. Nu er det et godt tidspunkt at gå i gang.',
+  // Bevidste linjeskift (renderes via pre-line i Projekter).
+  kontekst: 'Du gemte idéen i juni.\nNu er det et godt\ntidspunkt at gå i gang.',
 }
 
 // 14 · Bedrifter / Første gange — kun BEVISELIGE milepæle (log-typer der

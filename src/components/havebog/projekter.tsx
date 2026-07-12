@@ -51,7 +51,7 @@ export function Projekter({ projekt }: Props) {
             {projekt.titel}
           </p>
           {projekt.kontekst && (
-            <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.5, color: '#45503F', margin: 0 }}>
+            <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.5, color: '#45503F', margin: 0, whiteSpace: 'pre-line' }}>
               {projekt.kontekst}
             </p>
           )}
