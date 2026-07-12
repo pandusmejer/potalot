@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Leaf, Flower2, ChevronRight } from 'lucide-react'
+import { Leaf, Flower2, Apple, Sprout, Bug, ChevronRight } from 'lucide-react'
 import type { Kompetenceomraade } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -9,9 +9,18 @@ interface Props {
   omraader: Kompetenceomraade[]
 }
 
-/** Sekundært line-ikon pr. område — blomster får Flower2, resten Leaf. */
-function omraadeIkon(omraade: string) {
-  return /blomst|dahlia|staude|prydn/i.test(omraade) ? Flower2 : Leaf
+/**
+ * Diskret GRUPPE-anker pr. kompetenceområde — lucide-ikon + kategori-farve,
+ * ALDRIG custom soft glyphs eller ikon pr. enkelt-kompetence. Ét ikon pr.
+ * gruppe; lavmælt markør, ikke badge. V1-mapping (udvides senere i Profil).
+ */
+function kompetenceMarkoer(omraade: string): { Ikon: typeof Leaf; farve: string } {
+  const o = omraade.toLowerCase()
+  if (/tomat/.test(o)) return { Ikon: Apple, farve: '#B85A3D' }
+  if (/blomst|dahlia|staude|pryd/.test(o)) return { Ikon: Flower2, farve: '#C36F7C' }
+  if (/skadedyr|sygdom/.test(o)) return { Ikon: Bug, farve: '#8F9484' }
+  if (/salat|blad|agurk|squash|kål|bønne|ært|krydderurt|basilikum|dild/.test(o)) return { Ikon: Leaf, farve: '#6F7E55' }
+  return { Ikon: Sprout, farve: '#8F9484' }
 }
 
 /**
@@ -43,7 +52,7 @@ export function Dyrkerkompetencer({ omraader }: Props) {
         </p>
 
         {vist.map((o, i) => {
-          const Ikon = omraadeIkon(o.omraade)
+          const { Ikon, farve } = kompetenceMarkoer(o.omraade)
           return (
             <div key={o.omraade}>
               {i > 0 && <div aria-hidden style={{ height: 1, background: 'rgba(143,148,132,0.20)', margin: '18px 0' }} />}
@@ -56,7 +65,8 @@ export function Dyrkerkompetencer({ omraader }: Props) {
                     {o.faerdigheder.join(' · ')}
                   </p>
                 </div>
-                <Ikon style={{ width: 30, height: 30, color: '#8F9484', opacity: 0.75, flexShrink: 0 }} strokeWidth={1.6} aria-hidden />
+                {/* Lavmælt gruppe-anker — aldrig konkurrere med teksten */}
+                <Ikon style={{ width: 36, height: 36, color: farve, opacity: 0.72, flexShrink: 0 }} strokeWidth={1.65} aria-hidden />
               </div>
             </div>
           )
