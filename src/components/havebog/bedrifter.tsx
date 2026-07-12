@@ -9,17 +9,19 @@ interface Props {
   bedrifter: Bedrift[]
 }
 
-/** Soft glyph pr. milepæl-TYPE (ikke pr. afgrøde) — Potalots egne glyffer.
- *  NB: ingen drivhus-glyf findes endnu → 'plante' som stand-in (flag). */
+/** Soft glyph pr. milepæl-TYPE (ikke pr. afgrøde) — Potalots egne glyffer. */
 const KIND_GLYPH: Record<Bedrift['kind'], string> = {
   hoest: '/images/glyphs/hoestkurv.png',
-  drivhus: '/images/glyphs/plante.png',
+  drivhus: '/images/glyphs/drivhus.png',
   blomst: '/images/glyphs/blomster.png',
   saaning: '/images/glyphs/saaning.png',
 }
 
 /**
  * RUM · "Første gange" (V19 — Annas 390px kort-spec, sektion 8).
+ *
+ * ⚠️ ANNA-LÅST 12/7 — timeline + soft glyphs pr. milepælstype godkendt; rør
+ * ikke uden ny retning. (Motor/deriver mangler stadig — se backlog.)
  *
  * Milepæle som mærker i en botanisk bog — ikke badges, ikke achievements,
  * ikke XP. Timeline-PREVIEW: max 4 beviselige førster (titel + årstal +
