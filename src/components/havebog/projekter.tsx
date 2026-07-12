@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { Hammer } from 'lucide-react'
 import type { ProjektForslag } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -8,47 +10,66 @@ interface Props {
 }
 
 /**
- * RUM 13 (V1.0-prototype) · Projekter.
+ * RUM · "Næste projekt" (V19 — Annas 390px kort-spec, sektion 4).
  *
- * Større ambitioner — det der løfter haven ud over den daglige
- * pasning: nye højbede, skærehave, drivhus, insekthotel. ÉT forslag
- * ad gangen, roligt, som en invitation frem for en opgave.
+ * Større ambition som en rolig invitation, ikke en opgave. Kort med
+ * tekst-venstre + tonet panel-højre.
  *
- * PROTOTYPE: forslaget er demo. Afledning fra haven (plads, sorter,
- * sæson) + en projekt-bank er en senere sprint.
+ * ⚠️ GATED: vises kun når en ægte projekt-INTENTION findes (idéboard/
+ * kalender/gemt forvandling/diktafon→projekt). Ingen generiske projekter
+ * til rigtige brugere. Demo-prototype indtil intentions-kilden findes.
+ *
+ * NB: mangler et roligt insekthotel-FOTO til højre-panelet; indtil da
+ * står et tonet panel med et diskret line-ikon (ingen stock-fyld).
  */
 export function Projekter({ projekt }: Props) {
   return (
     <section>
-      <p
-        className="uppercase"
+      <div
         style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.26em',
-          color: 'rgba(36,48,31,0.5)',
-          margin: 0,
-          marginBottom: 18,
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'stretch',
+          minHeight: 190,
+          borderRadius: 20,
+          overflow: 'hidden',
+          background: '#F1E9D2',
+          border: '1px solid rgba(143,148,132,0.18)',
+          boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        {projekt.kicker}
-      </p>
+        <div style={{ flex: '1 1 60%', padding: 22, minWidth: 0 }}>
+          <p
+            className="uppercase"
+            style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 16 }}
+          >
+            {projekt.kicker}
+          </p>
+          <p
+            style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(30px, 9cqw, 40px)', lineHeight: 0.98, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 14, maxWidth: '10ch' }}
+          >
+            {projekt.titel}
+          </p>
+          {projekt.kontekst && (
+            <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.5, color: '#45503F', margin: 0 }}>
+              {projekt.kontekst}
+            </p>
+          )}
+          <Link
+            href="/kalender"
+            className="no-underline flex items-center"
+            style={{ gap: 6, marginTop: 16, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
+          >
+            Åbn projekt
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
 
-      <p
-        style={{
-          fontFamily: serif,
-          fontWeight: 500,
-          fontSize: 'clamp(30px, 7cqw, 44px)',
-          lineHeight: 1.1,
-          letterSpacing: '-0.02em',
-          color: '#24301F',
-          margin: 0,
-          maxWidth: '16ch',
-        }}
-      >
-        {projekt.titel}
-      </p>
+        {/* Tonet panel — pladsholder til insekthotel-foto */}
+        <div style={{ flex: '0 0 34%', position: 'relative', background: '#E6DBBE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Hammer style={{ width: 40, height: 40, color: '#9A906F', opacity: 0.7 }} strokeWidth={1.4} aria-hidden />
+        </div>
+      </div>
     </section>
   )
 }

@@ -7,6 +7,7 @@ import { HavebogDivider } from '@/components/havebog/havebog-divider'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
+import { MaaskeDuOgsaa } from '@/components/havebog/maaske-du-ogsaa'
 import { Dyrkerstatus } from '@/components/havebog/dyrkerstatus'
 import { Dyrkerkompetencer } from '@/components/havebog/dyrkerkompetencer'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
@@ -131,6 +132,7 @@ export default async function HavebogPage() {
   const harData: Partial<Record<RumId, boolean>> = isDemo
     ? {
         inspirerMig: true,
+        maaskeDuOgsaa: true,
         dyrkerstatus: true,
         dyrkerkompetencer: true,
         paaDenneDag: onThisDay.length > 0,
@@ -145,6 +147,7 @@ export default async function HavebogPage() {
       }
     : {
         inspirerMig: data.inspirerForslag !== null,
+        maaskeDuOgsaa: (data.inspirerForslag?.sekundaer ?? null) !== null,
         spisekammer: data.spisekammer !== null,
         paaDenneDag: onThisDay.length > 0,
         minder: minder.length > 0,
@@ -158,6 +161,7 @@ export default async function HavebogPage() {
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
     inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
+    maaskeDuOgsaa: <MaaskeDuOgsaa forslag={(isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER).sekundaer ?? DEMO_INSPIRER.sekundaer!} billede="/images/makro/tomat-san-marzano/klase.jpg" />,
     dyrkerstatus: <Dyrkerstatus status={isDemo ? DEMO_DYRKERSTATUS : (data?.dyrkerstatus[0] ?? DEMO_DYRKERSTATUS)} />,
     dyrkerkompetencer: <Dyrkerkompetencer omraader={isDemo ? DEMO_KOMPETENCER : (data?.dyrkerkompetencer ?? DEMO_KOMPETENCER)} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,

@@ -669,7 +669,16 @@ export const DEMO_SPISEKAMMER: SpisekammerData = {
 }
 
 // 11 · Populært lige nu — KRÆVER ægte fællesskabsdata. Prototype.
-export const DEMO_POPULAERT: string[] = ['Kompost', 'Dræbersnegle', 'Efterafgrøder']
+export interface PopulaertEmne {
+  emne: string
+  beskrivelse: string
+  tone: 'sage' | 'rose' | 'sand'
+}
+export const DEMO_POPULAERT: PopulaertEmne[] = [
+  { emne: 'Kompost', beskrivelse: 'Sådan får du jordliv og næringsstoffer', tone: 'sage' },
+  { emne: 'Dræbersnegle', beskrivelse: 'Naturlige metoder der virker nu', tone: 'rose' },
+  { emne: 'Efterafgrøder', beskrivelse: 'Beskyt jorden og giv livet en pause', tone: 'sand' },
+]
 
 // 12 · Vejret i haven — KRÆVER vejr-kilde. Prototype.
 export interface VejrData {
@@ -687,19 +696,24 @@ export const DEMO_VEJR: VejrData = {
 export interface ProjektForslag {
   kicker: string
   titel: string
+  kontekst?: string
 }
 export const DEMO_PROJEKT: ProjektForslag = {
   kicker: 'Næste projekt',
-  titel: 'Byg et insekthotel.',
+  titel: 'Byg et insekthotel',
+  kontekst: 'Du gemte idéen i juni. Nu er det et godt tidspunkt at gå i gang.',
 }
 
-// 14 · Bedrifter
+// 14 · Bedrifter / Første gange — kun BEVISELIGE milepæle (log-typer der
+// findes). Ikke "første overvintring/frøavl" (ingen log-type endnu).
 export interface Bedrift {
   titel: string
   aar: string
+  kind: 'hoest' | 'drivhus' | 'blomst' | 'saaning'
 }
 export const DEMO_BEDRIFTER: Bedrift[] = [
-  { titel: 'Første tomathøst', aar: '2025' },
-  { titel: 'Første overvintring', aar: '2025' },
-  { titel: 'Første frøavl', aar: '2024' },
+  { titel: 'Første tomathøst', aar: '2025', kind: 'hoest' },
+  { titel: 'Første drivhussæson', aar: '2025', kind: 'drivhus' },
+  { titel: 'Første dahlia', aar: '2025', kind: 'blomst' },
+  { titel: 'Første såning indendørs', aar: '2024', kind: 'saaning' },
 ]

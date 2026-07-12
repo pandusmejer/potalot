@@ -2,6 +2,7 @@ import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
+import { MaaskeDuOgsaa } from '@/components/havebog/maaske-du-ogsaa'
 import { Dyrkerstatus } from '@/components/havebog/dyrkerstatus'
 import { Dyrkerkompetencer } from '@/components/havebog/dyrkerkompetencer'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
@@ -126,8 +127,10 @@ export default function HavebogDesignLabPage() {
 
       <Sep label="4 · Tal til din have" />
       <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />
-      <Sep label="5 · Inspirér mig" />
+      <Sep label="5 · Prøv næste år (Inspirér mig)" />
       <InspirerMig forslag={DEMO_INSPIRER} />
+      <Sep label="5b · Måske du også vil prøve" />
+      <MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/images/makro/tomat-san-marzano/klase.jpg" />
       <Sep label="6 · Dyrkerstatus" />
       <Dyrkerstatus status={DEMO_DYRKERSTATUS} />
       <Sep label="7 · Kompetencer" />

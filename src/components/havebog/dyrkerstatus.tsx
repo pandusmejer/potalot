@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Dyrkerstatus as DyrkerstatusData } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -8,65 +9,66 @@ interface Props {
 }
 
 /**
- * RUM 5 (V1.0-prototype) · Dyrkerstatus.
+ * RUM · "Din status som dyrker" (V19 — Annas 390px kort-spec, sektion 6).
  *
- * Identitet, IKKE gamification. Ingen XP, ingen points, ingen
- * Bronze-Tomat. Tænk luksusur, mesterlære, laug — en titel man har
- * gjort sig fortjent til. Stor typografi, stor stolthed, lav støj.
- *
- * PROTOTYPE: titlen er demo. Afledning fra logs/sæsoner/guider er en
- * senere sprint. Niveau-prikkerne markerer rejsen, ikke "score".
+ * Identitet, IKKE gamification: ingen niveau, ingen prikker, ingen badge,
+ * ingen XP. Et roligt Profil-PREVIEW — botanisk streg-pynt nederst-højre,
+ * Cormorant-titel (IKKE all-caps, IKKE bold sans), rolig beskrivelse, og
+ * "Se hele din profil →". Primært hjemme i Profil; her kun som preview.
  */
 export function Dyrkerstatus({ status }: Props) {
   return (
     <section>
-      <p
-        className="uppercase"
+      <div
         style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.26em',
-          color: 'rgba(36,48,31,0.5)',
-          margin: 0,
-          marginBottom: 14,
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 20,
+          background: '#F5EEDC',
+          border: '1px solid rgba(143,148,132,0.18)',
+          boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
+          padding: 22,
         }}
       >
-        Din status som dyrker
-      </p>
+        {/* Botanisk streg-pynt — må ikke konkurrere med teksten */}
+        <svg
+          aria-hidden
+          viewBox="0 0 120 160"
+          style={{ position: 'absolute', right: -8, bottom: -10, width: 170, height: 'auto', opacity: 0.14 }}
+        >
+          <g fill="none" stroke="#8F9484" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M60 156 C58 120 58 96 62 64 C64 44 70 26 84 12" />
+            <path d="M62 112 C50 108 40 98 36 84 M62 112 C74 104 82 92 84 78" />
+            <path d="M64 84 C52 82 44 74 40 62 M64 84 C76 78 82 68 84 56" />
+            <path d="M68 58 C58 56 51 50 47 40 M68 58 C78 52 83 44 85 34" />
+          </g>
+        </svg>
 
-      <h2
-        className="uppercase"
-        style={{
-          fontFamily: sans,
-          fontWeight: 800,
-          fontSize: 'clamp(30px, 7.6cqw, 46px)',
-          letterSpacing: '0.04em',
-          lineHeight: 1,
-          color: '#24301F',
-          margin: 0,
-        }}
-      >
-        {status.titel}
-      </h2>
-
-      {/* Ingen niveau-prikker / "X af Y" — det er identitet, ikke
-          gamification. Brugeren skal føle sig SET, ikke vurderet. Titlen
-          + den rolige beskrivelse bærer status alene. */}
-      <p
-        style={{
-          fontFamily: serif,
-          fontWeight: 400,
-          fontSize: 'clamp(19px, 4.2cqw, 24px)',
-          lineHeight: 1.32,
-          color: 'rgba(36,48,31,0.72)',
-          margin: 0,
-          marginTop: 20,
-          maxWidth: '26ch',
-        }}
-      >
-        {status.beskrivelse}
-      </p>
+        <p
+          className="uppercase"
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 18 }}
+        >
+          Din status som dyrker
+        </p>
+        <p
+          style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(34px, 10cqw, 42px)', lineHeight: 1, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 16 }}
+        >
+          {status.titel}
+        </p>
+        <p
+          style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: '#45503F', margin: 0, maxWidth: '25ch' }}
+        >
+          {status.beskrivelse}
+        </p>
+        <Link
+          href="/profil"
+          className="no-underline flex items-center"
+          style={{ gap: 6, marginTop: 20, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829', position: 'relative' }}
+        >
+          Se hele din profil
+          <span aria-hidden>→</span>
+        </Link>
+      </div>
     </section>
   )
 }

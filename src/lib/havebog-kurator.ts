@@ -24,6 +24,7 @@
 export type RumId =
   | 'talTilDinHave'
   | 'inspirerMig'
+  | 'maaskeDuOgsaa'
   | 'dyrkerstatus'
   | 'dyrkerkompetencer'
   | 'paaDenneDag'
@@ -52,6 +53,7 @@ const RUM: RumDef[] = [
   { id: 'minder',            tier: 'roterende', vaegt: { foraar: 1, sommer: 3, efteraar: 2, vinter: 2 } },
   { id: 'vendepunkter',      tier: 'roterende', vaegt: { foraar: 2, sommer: 2, efteraar: 3, vinter: 1 } },
   { id: 'inspirerMig',       tier: 'roterende', vaegt: { foraar: 3, sommer: 1, efteraar: 1, vinter: 3 } },
+  { id: 'maaskeDuOgsaa',     tier: 'roterende', vaegt: { foraar: 2, sommer: 2, efteraar: 2, vinter: 2 } },
   { id: 'dyrkerkompetencer', tier: 'roterende', vaegt: { foraar: 2, sommer: 0, efteraar: 1, vinter: 3 } },
   { id: 'projekter',         tier: 'roterende', vaegt: { foraar: 2, sommer: 1, efteraar: 2, vinter: 3 } },
   { id: 'paaDenneDag',       tier: 'roterende', vaegt: { foraar: 2, sommer: 1, efteraar: 2, vinter: 3 } },
