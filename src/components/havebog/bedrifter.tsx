@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Apple, Home, Flower2, Sprout, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import type { Bedrift } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -9,12 +9,13 @@ interface Props {
   bedrifter: Bedrift[]
 }
 
-/** Ikon + farve pr. milepæl-type — kun beviselige typer findes her. */
-const KIND: Record<Bedrift['kind'], { ikon: typeof Apple; farve: string }> = {
-  hoest: { ikon: Apple, farve: '#B85A3D' },
-  drivhus: { ikon: Home, farve: '#6F7758' },
-  blomst: { ikon: Flower2, farve: '#C36F7C' },
-  saaning: { ikon: Sprout, farve: '#9A8D55' },
+/** Soft glyph pr. milepæl-TYPE (ikke pr. afgrøde) — Potalots egne glyffer.
+ *  NB: ingen drivhus-glyf findes endnu → 'plante' som stand-in (flag). */
+const KIND_GLYPH: Record<Bedrift['kind'], string> = {
+  hoest: '/images/glyphs/hoestkurv.png',
+  drivhus: '/images/glyphs/plante.png',
+  blomst: '/images/glyphs/blomster.png',
+  saaning: '/images/glyphs/saaning.png',
 }
 
 /**
@@ -31,7 +32,8 @@ export function Bedrifter({ bedrifter }: Props) {
     <section>
       <div
         style={{
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           background: '#F5EEDC',
           border: '1px solid rgba(143,148,132,0.18)',
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
@@ -49,13 +51,11 @@ export function Bedrifter({ bedrifter }: Props) {
           {/* Lodret streg fra første til sidste ikon-center (16px = 32/2). */}
           <div aria-hidden style={{ position: 'absolute', left: 16, top: 16, bottom: 16, width: 1, background: 'rgba(143,148,132,0.28)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {vist.map((b, i) => {
-              const k = KIND[b.kind]
-              const Ikon = k.ikon
-              return (
+            {vist.map((b, i) => (
                 <div key={i} className="flex items-center" style={{ gap: 14, position: 'relative' }}>
                   <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 999, background: '#F5EEDC', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
-                    <Ikon style={{ width: 22, height: 22, color: k.farve }} strokeWidth={1.6} aria-hidden />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={KIND_GLYPH[b.kind]} alt="" style={{ width: 27, height: 27, objectFit: 'contain' }} />
                   </div>
                   <p style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(21px, 5.6cqw, 25px)', lineHeight: 1.05, color: '#1F2D1D', margin: 0, flex: 1, minWidth: 0 }}>
                     {b.titel}
@@ -64,8 +64,7 @@ export function Bedrifter({ bedrifter }: Props) {
                     {b.aar}
                   </span>
                 </div>
-              )
-            })}
+              ))}
           </div>
         </div>
 

@@ -37,7 +37,8 @@ export function Dyrkerkompetencer({ omraader }: Props) {
     <section>
       <div
         style={{
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           background: '#F5EEDC',
           border: '1px solid rgba(143,148,132,0.18)',
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
