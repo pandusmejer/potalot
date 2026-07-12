@@ -31,7 +31,8 @@ export function Projekter({ projekt }: Props) {
           display: 'flex',
           alignItems: 'stretch',
           minHeight: 190,
-          borderRadius: 20,
+          marginInline: -11,
+          borderRadius: 14,
           overflow: 'hidden',
           background: '#F1E9D2',
           border: '1px solid rgba(143,148,132,0.18)',
@@ -51,12 +52,12 @@ export function Projekter({ projekt }: Props) {
               top: 0,
               right: 0,
               bottom: 0,
-              width: '54%',
+              width: '60%',
               height: '100%',
               objectFit: 'cover',
               objectPosition: 'center',
-              WebkitMaskImage: 'radial-gradient(125% 135% at 90% 50%, #000 38%, rgba(0,0,0,0) 80%)',
-              maskImage: 'radial-gradient(125% 135% at 90% 50%, #000 38%, rgba(0,0,0,0) 80%)',
+              WebkitMaskImage: 'radial-gradient(155% 165% at 108% 50%, #000 18%, rgba(0,0,0,0) 96%)',
+              maskImage: 'radial-gradient(155% 165% at 108% 50%, #000 18%, rgba(0,0,0,0) 96%)',
             }}
           />
         ) : (
