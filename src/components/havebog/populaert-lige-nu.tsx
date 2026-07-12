@@ -9,10 +9,11 @@ interface Props {
   emner: PopulaertEmne[]
 }
 
+// Bløde, pudrede, let desaturerede toner — matte plader, ikke larmende.
 const TONE: Record<PopulaertEmne['tone'], string> = {
-  sage: '#E4E8D5',
-  rose: '#E8D4D2',
-  sand: '#EEE3CA',
+  sage: '#E3E7D6',
+  rose: '#E7DAD6',
+  sand: '#EDE5CE',
 }
 
 /**
@@ -32,10 +33,9 @@ export function PopulaertLigeNu({ emner }: Props) {
     <section>
       <div
         style={{
-          borderRadius: 20,
-          background: '#F5EEDC',
+          borderRadius: 18,
+          background: '#F7F1E3',
           border: '1px solid rgba(143,148,132,0.18)',
-          boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
           padding: '18px 16px 16px',
         }}
       >
@@ -46,25 +46,28 @@ export function PopulaertLigeNu({ emner }: Props) {
           Sæsonens spørgsmål
         </p>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 11, alignItems: 'stretch' }}>
           {emner.slice(0, 3).map(e => (
             <Link
               key={e.emne}
               href="/guides"
               className="no-underline"
-              style={{ position: 'relative', flex: 1, minWidth: 0, borderRadius: 14, padding: '12px 11px 34px', background: TONE[e.tone], overflow: 'hidden' }}
+              style={{ position: 'relative', flex: 1, minWidth: 0, borderRadius: 16, padding: '14px 12px 44px', background: TONE[e.tone], overflow: 'hidden' }}
             >
-              <p lang="da" style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(16px, 4.6cqw, 20px)', lineHeight: 1.06, color: '#1F2D1D', margin: 0, marginBottom: 7, hyphens: 'auto', overflowWrap: 'break-word' }}>
+              <p lang="da" style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(18px, 5.2cqw, 21px)', lineHeight: 1.0, color: '#223022', margin: 0, marginBottom: 8, hyphens: 'auto', overflowWrap: 'break-word' }}>
                 {e.emne}
               </p>
-              <p style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 400, lineHeight: 1.35, color: '#45503F', margin: 0 }}>
+              <p
+                lang="da"
+                style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 400, lineHeight: 1.45, color: '#55604F', margin: 0, hyphens: 'auto', overflowWrap: 'break-word', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+              >
                 {e.beskrivelse}
               </p>
               <span
                 aria-hidden
-                style={{ position: 'absolute', right: 10, bottom: 10, width: 24, height: 24, borderRadius: 999, background: 'rgba(31,45,29,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ position: 'absolute', right: 11, bottom: 11, width: 34, height: 34, borderRadius: 999, border: '1px solid rgba(60,70,50,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <ChevronRight style={{ width: 14, height: 14, color: '#2C3826' }} strokeWidth={2.4} />
+                <ChevronRight style={{ width: 15, height: 15, color: '#3E4A39' }} strokeWidth={2.2} />
               </span>
             </Link>
           ))}
