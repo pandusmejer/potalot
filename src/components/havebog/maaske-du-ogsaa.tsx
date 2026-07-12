@@ -36,18 +36,14 @@ export function MaaskeDuOgsaa({ forslag, billede }: Props) {
         }}
       >
         {billede && (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={billede}
-              alt=""
-              style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '62%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-            />
-            <div
-              aria-hidden
-              style={{ position: 'absolute', inset: 0, background: 'linear-gradient(74deg, #F4EEDC 0%, rgba(244,238,220,0.9) 30%, rgba(244,238,220,0.5) 55%, rgba(244,238,220,0.12) 80%, rgba(244,238,220,0) 100%)' }}
-            />
-          </>
+          // Fuldt foto — fylder hele boksen. Billedets egen rolige creme-
+          // venstreside bærer teksten, så ingen gradient er nødvendig.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={billede}
+            alt=""
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+          />
         )}
 
         <div style={{ position: 'relative', padding: 22, maxWidth: '62%' }}>
