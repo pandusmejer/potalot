@@ -87,23 +87,25 @@ export function Projekter({ projekt }: Props) {
           </>
         )}
 
-        {/* B · soft-illustration — diskret kategori-line-ikon i højre-bund */}
+        {/* B · soft-illustration — diskret kategori-line-ikon som baggrunds-
+            atmosfære, trukket mod højre/ned så teksten får ro. */}
         {mode === 'soft-illustration' && (
           <Ikon
             aria-hidden
-            style={{ position: 'absolute', right: 18, bottom: 10, width: 150, height: 150, color: '#8F9484', opacity: 0.16 }}
+            style={{ position: 'absolute', right: -8, bottom: 2, width: 130, height: 130, color: '#8F9484', opacity: 0.12 }}
             strokeWidth={1.1}
           />
         )}
 
-        {/* C · color-field — blød dekorativ form + lav-opacitet Sprout */}
+        {/* C · color-field — bevidst grafisk fallback: blødt tonalt felt +
+            en rolig Sprout (ikke tom, ikke "manglende billede"). */}
         {mode === 'color-field' && (
           <>
             <div
               aria-hidden
-              style={{ position: 'absolute', right: -46, top: '50%', transform: 'translateY(-50%)', width: 210, height: 168, borderRadius: '50%', background: 'rgba(143,148,132,0.14)', filter: 'blur(6px)' }}
+              style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 82% 58%, rgba(143,148,132,0.18) 0%, rgba(143,148,132,0.10) 32%, rgba(143,148,132,0.04) 58%, rgba(143,148,132,0) 76%)' }}
             />
-            <Sprout aria-hidden style={{ position: 'absolute', right: 26, bottom: 20, width: 40, height: 40, color: '#8F9484', opacity: 0.35 }} strokeWidth={1.3} />
+            <Sprout aria-hidden style={{ position: 'absolute', right: 42, bottom: 34, width: 48, height: 48, color: '#8F9484', opacity: 0.20 }} strokeWidth={1.7} />
           </>
         )}
 
