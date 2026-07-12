@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { Hammer, ChevronRight } from 'lucide-react'
-import type { ProjektForslag } from '@/data/havebog-demo'
+import { ChevronRight, Sprout, Bug, Leaf, ShoppingBasket, Home, CalendarDays } from 'lucide-react'
+import type { ProjektForslag, ProjektKilde, ProjektKategori } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -9,41 +9,69 @@ interface Props {
   projekt: ProjektForslag
 }
 
+/** Kategori → diskret line-ikon til soft-illustration-mode. */
+const KATEGORI_IKON: Record<ProjektKategori, typeof Sprout> = {
+  biodiversitet: Bug,
+  toerring: Leaf,
+  froe: Sprout,
+  mad: ShoppingBasket,
+  byggeri: Home,
+  kalender: CalendarDays,
+}
+
+/** CTA-verbum pr. kilde — normaliseret til roligt "Åbn projekt" undtagen
+ *  hvor et andet verbum er tydeligt mere præcist (opgave/optagelse). */
+function ctaLabel(kilde?: ProjektKilde): string {
+  switch (kilde) {
+    case 'calendarTask': return 'Åbn opgave'
+    case 'voiceNote': return 'Se optagelse'
+    default: return 'Åbn projekt'
+  }
+}
+
 /**
- * RUM · "Næste projekt" (V19 — Annas 390px kort-spec, sektion 4).
+ * RUM · "Næste projekt" (V20 — systemisk, ikke foto-afhængigt).
  *
- * Større ambition som en rolig invitation, ikke en opgave. Kort med
- * tekst-venstre + tonet panel-højre.
+ * Havebog er den pæne side og må ALDRIG afhænge af et perfekt brugerfoto.
+ * Kortet har derfor tre ligeværdige visual states — teksten bærer altid:
+ *   A. photo             — kun hvis fotoet er EGNET (kurateret/vurderet).
+ *   B. soft-illustration — DEFAULT når intet/uegnet foto: kategori-line-ikon.
+ *   C. color-field       — fallback uden foto/kategori: blød dekorativ form.
+ * Ingen "manglende billede"-placeholder, intet gråt felt, intet kamera-ikon.
  *
- * ⚠️ GATED: vises kun når en ægte projekt-INTENTION findes (idéboard/
- * kalender/gemt forvandling/diktafon→projekt). Ingen generiske projekter
- * til rigtige brugere. Demo-prototype indtil intentions-kilden findes.
- *
- * NB: mangler et roligt insekthotel-FOTO til højre-panelet; indtil da
- * står et tonet panel med et diskret line-ikon (ingen stock-fyld).
+ * ⚠️ GATED: vises kun ved ægte, bruger-initieret projekt-INTENTION (idéboard/
+ * kalender/gemt forvandling/diktafon→projekt/manuelt). Findes ingen kilde →
+ * modulet skjules helt. Kilde bestemmer kontekst-copy + CTA-verbum.
  */
 export function Projekter({ projekt }: Props) {
+  const mode: 'photo' | 'soft-illustration' | 'color-field' =
+    projekt.foto ? 'photo' : projekt.kategori ? 'soft-illustration' : 'color-field'
+
+  const background =
+    mode === 'soft-illustration'
+      ? 'linear-gradient(135deg, #F5EEDC 0%, #EFE6D2 100%)'
+      : mode === 'color-field'
+        ? '#F2EAD8'
+        : '#F1E9D2'
+
+  const Ikon = projekt.kategori ? KATEGORI_IKON[projekt.kategori] : Sprout
+
   return (
     <section>
       <div
         style={{
           position: 'relative',
-          display: 'flex',
-          alignItems: 'stretch',
           minHeight: 190,
           marginInline: -11,
           borderRadius: 14,
           overflow: 'hidden',
-          background: '#F1E9D2',
+          background,
           border: '1px solid rgba(143,148,132,0.18)',
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        {/* Fotoet lever inde i HELE kortet (fuld-cover). Ovenpå ligger en
-            creme-gradient (opaque → transparent) der opløser billedets
-            venstre side blødt under tekstfladen — ét samlet kort, ingen
-            synlig lodret split. Uden foto: tonet panel + line-ikon. */}
-        {projekt.foto ? (
+        {/* A · photo — foto bag hele kortet + bred creme-dissolve (ingen split) */}
+        {mode === 'photo' && projekt.foto && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -57,12 +85,29 @@ export function Projekter({ projekt }: Props) {
               style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #F1E9D2 0%, #F1E9D2 30%, rgba(241,233,210,0.72) 50%, rgba(241,233,210,0.28) 66%, rgba(241,233,210,0) 82%)' }}
             />
           </>
-        ) : (
-          <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '34%', background: '#E6DBBE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Hammer style={{ width: 40, height: 40, color: '#9A906F', opacity: 0.7 }} strokeWidth={1.4} aria-hidden />
-          </div>
         )}
 
+        {/* B · soft-illustration — diskret kategori-line-ikon i højre-bund */}
+        {mode === 'soft-illustration' && (
+          <Ikon
+            aria-hidden
+            style={{ position: 'absolute', right: 18, bottom: 10, width: 150, height: 150, color: '#8F9484', opacity: 0.16 }}
+            strokeWidth={1.1}
+          />
+        )}
+
+        {/* C · color-field — blød dekorativ form + lav-opacitet Sprout */}
+        {mode === 'color-field' && (
+          <>
+            <div
+              aria-hidden
+              style={{ position: 'absolute', right: -46, top: '50%', transform: 'translateY(-50%)', width: 210, height: 168, borderRadius: '50%', background: 'rgba(143,148,132,0.14)', filter: 'blur(6px)' }}
+            />
+            <Sprout aria-hidden style={{ position: 'absolute', right: 26, bottom: 20, width: 40, height: 40, color: '#8F9484', opacity: 0.35 }} strokeWidth={1.3} />
+          </>
+        )}
+
+        {/* Tekst bærer altid kortet — samme struktur i alle tre states */}
         <div style={{ position: 'relative', zIndex: 1, padding: 22, maxWidth: '62%' }}>
           <p
             className="uppercase"
@@ -76,7 +121,7 @@ export function Projekter({ projekt }: Props) {
             {projekt.titel}
           </p>
           {projekt.kontekst && (
-            <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.5, color: '#45503F', margin: 0, whiteSpace: 'pre-line' }}>
+            <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.48, color: '#45503F', margin: 0, whiteSpace: 'pre-line' }}>
               {projekt.kontekst}
             </p>
           )}
@@ -85,7 +130,7 @@ export function Projekter({ projekt }: Props) {
             className="no-underline flex items-center"
             style={{ gap: 4, marginTop: 16, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
           >
-            Åbn projekt
+            {ctaLabel(projekt.kilde)}
             <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
           </Link>
         </div>

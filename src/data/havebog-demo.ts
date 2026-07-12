@@ -706,18 +706,43 @@ export const DEMO_VEJR: VejrData = {
 }
 
 // 13 · Projekter
+export type ProjektKilde = 'ideaBoard' | 'calendarTask' | 'transformation' | 'voiceNote' | 'manualProject'
+export type ProjektKategori = 'biodiversitet' | 'toerring' | 'froe' | 'mad' | 'byggeri' | 'kalender'
 export interface ProjektForslag {
   kicker: string
   titel: string
   kontekst?: string
+  /** Kun hvis fotoet er EGNET (kurateret/vurderet). Ellers soft-illustration. */
   foto?: string
+  /** Til soft-illustration-mode når der ikke er egnet foto. */
+  kategori?: ProjektKategori
+  /** Bestemmer kontekst-copy + CTA-verbum. */
+  kilde?: ProjektKilde
 }
+// A · photo — kurateret foto (demo er altid pæn)
 export const DEMO_PROJEKT: ProjektForslag = {
   kicker: 'Næste projekt',
   titel: 'Byg et insekthotel',
   // Bevidste linjeskift (renderes via pre-line i Projekter).
   kontekst: 'Du gemte idéen i juni.\nNu er det et godt\ntidspunkt at gå i gang.',
   foto: '/images/havebog/naeste-projekt-insekthotel.jpg',
+  kategori: 'byggeri',
+  kilde: 'ideaBoard',
+}
+// B · soft-illustration — DEFAULT for rigtige projekter (intet/uegnet foto)
+export const DEMO_PROJEKT_ILLUSTRATION: ProjektForslag = {
+  kicker: 'Næste projekt',
+  titel: 'Lav lavendelposer',
+  kontekst: 'Du gemte idéen fra Forvandlinger.',
+  kategori: 'toerring',
+  kilde: 'transformation',
+}
+// C · color-field — fallback (hverken foto eller kategori)
+export const DEMO_PROJEKT_COLORFIELD: ProjektForslag = {
+  kicker: 'Næste projekt',
+  titel: 'Byg et højbed',
+  kontekst: 'Du oprettede projektet i juni.',
+  kilde: 'manualProject',
 }
 
 // 14 · Bedrifter / Første gange — kun BEVISELIGE milepæle (log-typer der
