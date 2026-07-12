@@ -56,12 +56,20 @@ analyse. `overlayStrength="strong"` findes til for lyse fotos.
 CTA "Se minde" + hele kortet klikbart (ægte `<Link>`, aria-label) = LÅST.
 Mangler: minde-/arkiv-ruter (B/C) + evt. `?log=[logId]` på plante-href.
 
-### 4 · Næste projekt (projekter.tsx)
-- **"Åbn projekt"** → `/kalender` (midlertidigt). → Skal pege på et ægte
-  **projekt/idé-system** (idéboard/gemt forvandling/diktafon→projekt).
-- **Insekthotel-FOTO mangler** (hammer-pladsholder nu) → læg foto i
-  `public/images/havebog/naeste-projekt-*.jpg`.
-- Gating: vis KUN ved ægte projekt-intention.
+### 4 · Næste projekt (projekter.tsx) — 3 visual states LÅST
+Systemisk: kortet afhænger ALDRIG af et perfekt brugerfoto. Tre states
+(teksten bærer altid): **photo** (kun ved EGNET/kurateret foto), **soft-
+illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
+- **Konservativ foto-regel (deriver-TODO):** brugerupload med ukendt kvalitet
+  må IKKE bruges som stort baggrundsfoto i Havebog → vis soft-illustration;
+  foto kun på projektets egen detaljeside. Deriveren sætter kun `foto` når
+  det er vurderet egnet (aspect/crop/ikke-screenshot/ikke-for-lille).
+- **Kilde → copy + CTA:** ideaBoard/calendarTask/transformation/voiceNote/
+  manualProject bestemmer kontekst-linjen; CTA normaliseret (opgave/optagelse/
+  projekt). Deriveren skal sætte `kilde` + `kategori` + `kontekst`.
+- **"Åbn projekt"** → `/kalender` (midlertidigt). → ægte projekt/idé-system
+  (idéboard/kalender/gemt forvandling/diktafon→projekt/manuelt).
+- Gating: vis KUN ved ægte, bruger-initieret projekt-intention; ellers skjul.
 
 ### 5 · Mange læser om nu (populaert-lige-nu.tsx)
 - Emne-kort → `/guides` (virker). → HÅRDT gated: kræver ægte **community-data**
