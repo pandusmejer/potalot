@@ -80,39 +80,40 @@ export function InspirerMig({ forslag }: Props) {
           )}
         </div>
 
-        {/* Sekundære små forslag — foto-række, to linjer, ingen ikoner.
-            Rykket op: ligger direkte under splittet. */}
+        {/* Sekundære små forslag — foto-række pakket til venstre, med
+            "Flere forslag →" yderst til højre i samme bånd. */}
         {forslag.forslag && forslag.forslag.length > 0 && (
-          <div style={{ padding: '13px 22px 15px', borderTop: '1px solid rgba(143,148,132,0.16)', display: 'flex', gap: 12 }}>
-            {forslag.forslag.slice(0, 2).map((f) => (
-              <div key={f.top} className="flex items-center" style={{ gap: 11, flex: 1, minWidth: 0 }}>
-                <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ padding: '13px 18px 15px 9px', borderTop: '1px solid rgba(143,148,132,0.16)', display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 14, minWidth: 0 }}>
+              {forslag.forslag.slice(0, 2).map((f) => (
+                <div key={f.top} className="flex items-center" style={{ gap: 11 }}>
+                  <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: '#24301F', margin: 0, whiteSpace: 'nowrap' }}>
+                      {f.top}
+                    </p>
+                    <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: '#7A8069', margin: 0, whiteSpace: 'nowrap' }}>
+                      {f.bund}
+                    </p>
+                  </div>
                 </div>
-                <div style={{ minWidth: 0 }}>
-                  <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: '#24301F', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {f.top}
-                  </p>
-                  <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: '#7A8069', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {f.bund}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Flere forslag — yderst til højre, må gerne bryde til to linjer */}
+            <Link
+              href="/froebank"
+              className="no-underline"
+              style={{ marginLeft: 'auto', flexShrink: 0, maxWidth: 56, textAlign: 'right', fontFamily: sans, fontSize: 11.5, fontWeight: 650, lineHeight: 1.25, color: '#314829' }}
+            >
+              Flere forslag <span aria-hidden>→</span>
+            </Link>
           </div>
         )}
       </div>
-
-      {/* Flere forslag — uden for boksen, justeret med kortets tekst-venstre */}
-      <Link
-        href="/froebank"
-        className="no-underline flex items-center"
-        style={{ gap: 6, marginTop: 14, marginLeft: 11, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
-      >
-        Flere forslag
-        <span aria-hidden>→</span>
-      </Link>
     </section>
   )
 }
