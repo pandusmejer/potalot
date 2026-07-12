@@ -108,7 +108,7 @@ export function InspirerMig({ forslag }: Props) {
             <Link
               href="/froebank"
               className="no-underline"
-              style={{ marginLeft: 'auto', flexShrink: 0, width: 57, height: 42, borderRadius: 10, background: '#C7D1AE', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2px 6px', fontFamily: sans, fontSize: 10, fontWeight: 700, lineHeight: 1.2, letterSpacing: '0.01em', color: '#3B4A2F' }}
+              style={{ marginLeft: 'auto', flexShrink: 0, width: 57, height: 42, borderRadius: 10, background: 'rgba(199,209,174,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2px 6px', fontFamily: sans, fontSize: 10, fontWeight: 700, lineHeight: 1.2, letterSpacing: '0.01em', color: '#3B4A2F' }}
             >
               Flere forslag
             </Link>
