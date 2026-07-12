@@ -29,21 +29,7 @@ export function PaaDenneDag({ entries }: Props) {
   const entry = entries.find(e => e.imageUrl) ?? entries[0] ?? null
 
   return (
-    <section className="space-y-4">
-      <h2
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.24em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.50)',
-          margin: 0,
-        }}
-      >
-        På denne dag
-      </h2>
-
+    <section>
       {entry === null ? (
         <FotoMedHistorie
           src="/images/makro/dahlia-cafe-au-lait/hoved.jpg"
@@ -62,13 +48,19 @@ export function PaaDenneDag({ entries }: Props) {
         // at vi IKKE henter et tilfældigt foto bare for at fylde.
         <blockquote style={{ margin: 0, paddingBlock: '8px 4px' }}>
           <p
+            className="uppercase"
+            style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(36,48,31,0.5)', margin: 0, marginBottom: 6 }}
+          >
+            På denne dag
+          </p>
+          <p
             style={{
               fontFamily: sans,
               fontSize: 10.5,
               fontWeight: 700,
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
-              color: 'rgba(36,48,31,0.50)',
+              color: 'rgba(36,48,31,0.42)',
               margin: 0,
               marginBottom: 12,
             }}
@@ -152,13 +144,19 @@ function FotoMedHistorie({
         style={{ padding: '0 24px 24px' }}
       >
         <p
+          className="uppercase"
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: 'rgba(244,239,220,0.92)', margin: 0, marginBottom: 6 }}
+        >
+          På denne dag
+        </p>
+        <p
           style={{
             fontFamily: sans,
             fontSize: 10.5,
             fontWeight: 700,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: 'rgba(244,239,220,0.78)',
+            color: 'rgba(244,239,220,0.68)',
             margin: 0,
             marginBottom: 8,
           }}
