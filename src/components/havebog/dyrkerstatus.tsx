@@ -73,14 +73,16 @@ export function Dyrkerstatus({ status }: Props) {
         >
           {status.beskrivelse}
         </p>
-        <Link
-          href="/profil"
-          className="no-underline flex items-center"
-          style={{ gap: 4, marginTop: 12, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#4A3D57', position: 'relative' }}
-        >
-          Se hele din profil
-          <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
-        </Link>
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+          <Link
+            href="/profil"
+            className="no-underline flex items-center"
+            style={{ gap: 4, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#4A3D57' }}
+          >
+            Se hele din profil
+            <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
+          </Link>
+        </div>
       </div>
     </section>
   )
