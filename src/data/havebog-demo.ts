@@ -364,7 +364,7 @@ export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
     plantName: 'Dahlia',
     variety: 'Café au Lait',
     text: 'Du plantede dine første dahliaer i havens sydbed. De voksede sig store og bar over 30 blomster den sommer.',
-    imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+    imageUrl: '/images/havebog/paa-denne-dag.jpg',
   },
   {
     yearsAgo: 2,

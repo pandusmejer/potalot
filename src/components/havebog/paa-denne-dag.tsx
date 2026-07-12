@@ -32,7 +32,7 @@ export function PaaDenneDag({ entries }: Props) {
     <section>
       {entry === null ? (
         <FotoMedHistorie
-          src="/images/makro/dahlia-cafe-au-lait/hoved.jpg"
+          src="/images/havebog/paa-denne-dag.jpg"
           kicker="Fra fællesskabet"
           historie={laantErfaring(aktuelMaaned()).paaDenneDag}
           sekundaer="Dine egne minder samles her, efterhånden som sæsonen skrider frem."
