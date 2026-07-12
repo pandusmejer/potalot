@@ -39,27 +39,24 @@ export function Projekter({ projekt }: Props) {
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        {/* Foto højre m. rund vignet — fader blødt ud i creme-boksen. Uden
-            foto: tonet panel + line-ikon (ingen stock-fyld). */}
+        {/* Fotoet lever inde i HELE kortet (fuld-cover). Ovenpå ligger en
+            creme-gradient (opaque → transparent) der opløser billedets
+            venstre side blødt under tekstfladen — ét samlet kort, ingen
+            synlig lodret split. Uden foto: tonet panel + line-ikon. */}
         {projekt.foto ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={projekt.foto}
-            alt=""
-            aria-hidden
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: '60%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              WebkitMaskImage: 'radial-gradient(155% 165% at 108% 50%, #000 18%, rgba(0,0,0,0) 96%)',
-              maskImage: 'radial-gradient(155% 165% at 108% 50%, #000 18%, rgba(0,0,0,0) 96%)',
-            }}
-          />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={projekt.foto}
+              alt=""
+              aria-hidden
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
+            />
+            <div
+              aria-hidden
+              style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #F1E9D2 0%, #F1E9D2 30%, rgba(241,233,210,0.72) 50%, rgba(241,233,210,0.28) 66%, rgba(241,233,210,0) 82%)' }}
+            />
+          </>
         ) : (
           <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '34%', background: '#E6DBBE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Hammer style={{ width: 40, height: 40, color: '#9A906F', opacity: 0.7 }} strokeWidth={1.4} aria-hidden />
