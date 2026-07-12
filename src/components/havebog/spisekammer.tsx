@@ -30,12 +30,22 @@ type Tile =
   | { slag: 'cta'; tekst: string }
 
 /**
- * RUM 10 · "Det kan haven blive til" — havens OUTPUT-univers som mosaik.
+ * RUM · "Det kan haven blive til" — Havebogs ENESTE Forvandlinger-preview.
  *
- * Ikke en opskriftssektion: forvandlinger på tværs af 8 kategorier (spis,
- * gem, tør, bryg, duft, plej, pynt, så igen) valgt ud fra brugerens afgrøder.
- * Tiles linker ind i /havebog/forvandlinger. Veksler mellem forvandlings-
- * typografi på kategori-farvefelter, afgrøde-fotos, note og høst-status.
+ * PRODUKTREGEL (Annas beslutning 12/7): Spisekammer er IKKE længere en separat
+ * Havebog-sektion. Havebog viser præcis ÉT modul ("Det kan haven blive til"),
+ * som er en kurateret PREVIEW af Forvandlinger-systemet — ikke en selvstændig
+ * motor. Hierarki:
+ *   Forvandlinger = det brede system (spis · gem · tør · bryg · duft · plej ·
+ *                   pynt · så igen)
+ *   Spisekammer   = en vinkel/filter INDE i Forvandlinger (spis + gem + tør +
+ *                   bryg) — bor på /havebog/forvandlinger, ikke som eget rum.
+ *
+ * 4-6 kuraterede tiles valgt ud fra brugerens afgrøder/høst/frøbank/sæson; må
+ * blande spiselige og ikke-spiselige forvandlinger. Hver tile → /havebog/
+ * forvandlinger/[id]. CTA → "Se alle forvandlinger". Ingen pyntetal (høst vises
+ * kun som navne når `antalErHoester`). "Sæsonens spisekammer" som historik hører
+ * til sæsonarkiv/Profil senere (kræver mængder + gemte forvandlinger).
  */
 export function Spisekammer({ data }: Props) {
   const maaned = new Date().getMonth() + 1
@@ -73,7 +83,7 @@ export function Spisekammer({ data }: Props) {
   if (valg.hoest.length > 0) {
     tiles.push({ slag: 'status', poster: valg.hoest.map(h => ({ antal: h.antal, navn: h.navn.toLowerCase() })), kunNavne: valg.antalErHoester })
   }
-  tiles.push({ slag: 'cta', tekst: 'Flere idéer' })
+  tiles.push({ slag: 'cta', tekst: 'Se alle forvandlinger' })
 
   const venstre: Tile[] = []
   const hoejre: Tile[] = []
