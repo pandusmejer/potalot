@@ -94,6 +94,18 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
 
 ## Tværgående
 - **Profil-siden** skal kunne rumme det fulde overblik som kort 6/7/8 linker til.
-- **Forslags-motoren** (kort 1+2) er den største fælles blocker.
-- Fjern preview-ruten **`/havebog-preview`** før produktion.
-- Klikbare enkelt-forslag (kort 1) kræver et mål-id på hvert forslag i data.
+- **Forslags-motoren (kort 1+2) ER bygget + wired** (byggProevNaesteAar). Rest:
+  giv motorens output et `forslag[]`-felt (de små foto-forslag i kort 1) + wire
+  "Vis et nyt forslag"-rotationen. Klikbare enkelt-forslag kræver et mål-id.
+- **Manglende motorer (prototyper):** kort 4 (projekt-intention fra idéboard/
+  kalender/forvandling/diktafon), kort 5 (sæson-kuratering), kort 8 (milepæls-
+  deriver: beviselige "førster" fra logs).
+- **Preview-rute — FØR merge til main:** flyt `/havebog-preview` til
+  `/admin/qa/havebog-preview` ELLER gate bag admin/auth. Ikke offentlig i prod.
+  (Beholdt offentlig nu, mens vi designer.)
+- **Drivhus soft glyph (kort 8):** BESLUTNING = A (malet PNG i soft glyph-
+  familien). IKKE mono-SVG, IKKE skift hele sættet. Nuværende `drivhus.png` er
+  accepteret midlertidig; endelig version skal være SIMPLERE: enkel drivhus-
+  silhuet (1 tagform, 2 sidefelter, evt. 1 central åbning), 1-2 små spirer, få/
+  ingen ruder, ingen dør-knop/potter, blød akvarel i støvet oliven/creme,
+  transparent, læsbar ved 28-40px. Drop ind som `drivhus.png` → auto-opdateres.
