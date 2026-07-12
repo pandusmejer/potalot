@@ -19,6 +19,9 @@ const TONE: Record<PopulaertEmne['tone'], string> = {
 /**
  * RUM · "Sæsonens spørgsmål" (V19 — Annas 390px kort-spec, sektion 5).
  *
+ * ⚠️ ANNA-LÅST 12/7 — 117×95-plader, naturtoner, faste linjeskift godkendt;
+ * rør ikke uden ny retning.
+ *
  * Rolige, sæson-relevante temaer som 3 små tonede guide-indgange — IKKE
  * social proof. Ingen læsertal, ingen "trending", intet "andre klikker".
  * Overskriften siger "det her er relevant i haven lige nu", ikke "mange

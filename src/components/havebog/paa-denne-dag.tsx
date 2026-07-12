@@ -14,6 +14,9 @@ interface Props {
 /**
  * Kapitel 2: "På denne dag" — sæsonhukommelsen (V7 + overlay/destination-regel).
  *
+ * ⚠️ ANNA-LÅST 12/7 — layout/mål/overlay/destination godkendt; rør ikke uden
+ * ny retning.
+ *
  * FOTO DOMINERER: ét billede, én historie, aldrig et galleri.
  *
  * LÆSBARHEDS-REGEL: overlay-teksten må ALDRIG afhænge af, at fotoet tilfældigt

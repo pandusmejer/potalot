@@ -26,6 +26,9 @@ function kompetenceMarkoer(omraade: string): { Ikon: typeof Leaf; farve: string 
 /**
  * RUM · "Dine kompetencer" (V19 — Annas 390px kort-spec, sektion 7).
  *
+ * ⚠️ ANNA-LÅST 12/7 — lucide gruppe-ankre m. kategori-farve godkendt; rør ikke
+ * uden ny retning.
+ *
  * Udvikling, ikke "X af Y skills": kompetenceområder afledt af faktiske
  * log-handlinger, læst som en rolig linje. Ingen flueben, ingen tomme
  * cirkler, ingen locked/unlocked. Kort-PREVIEW: max 2 grupper med divider

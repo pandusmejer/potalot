@@ -12,6 +12,9 @@ interface Props {
 /**
  * RUM · "Din status som dyrker" (V19 — Annas 390px kort-spec, sektion 6).
  *
+ * ⚠️ ANNA-LÅST 12/7 — lavendel-grå palet, vandmærke, CTA bund-højre godkendt;
+ * rør ikke uden ny retning.
+ *
  * Identitet, IKKE gamification: ingen niveau, ingen prikker, ingen badge,
  * ingen XP. Et roligt Profil-PREVIEW — botanisk streg-pynt nederst-højre,
  * Cormorant-titel (IKKE all-caps, IKKE bold sans), rolig beskrivelse, og

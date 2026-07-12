@@ -32,6 +32,9 @@ function ctaLabel(kilde?: ProjektKilde): string {
 /**
  * RUM · "Næste projekt" (V20 — systemisk, ikke foto-afhængigt).
  *
+ * ⚠️ ANNA-LÅST 12/7 — 3 visual states + kilde-copy/CTA godkendt; rør ikke
+ * uden ny retning.
+ *
  * Havebog er den pæne side og må ALDRIG afhænge af et perfekt brugerfoto.
  * Kortet har derfor tre ligeværdige visual states — teksten bærer altid:
  *   A. photo             — kun hvis fotoet er EGNET (kurateret/vurderet).
