@@ -687,10 +687,11 @@ export interface PopulaertEmne {
   beskrivelse: string
   tone: 'sage' | 'rose' | 'sand'
 }
+// Bevidste linjeskift pr. emne (renderes via pre-line).
 export const DEMO_POPULAERT: PopulaertEmne[] = [
-  { emne: 'Kompost', beskrivelse: 'Sådan får du jordliv og næringsstoffer', tone: 'sage' },
-  { emne: 'Dræbersnegle', beskrivelse: 'Naturlige metoder der virker nu', tone: 'rose' },
-  { emne: 'Efterafgrøder', beskrivelse: 'Beskyt jorden og giv livet en pause', tone: 'sand' },
+  { emne: 'Kompost', beskrivelse: 'Sådan får du\njordliv og\nnæringsstoffer', tone: 'sage' },
+  { emne: 'Dræbersnegle', beskrivelse: 'Naturlige\nmetoder der\nvirker nu', tone: 'rose' },
+  { emne: 'Efterafgrøder', beskrivelse: 'Beskyt jorden\nog giv livet\nen pause', tone: 'sand' },
 ]
 
 // 12 · Vejret i haven — KRÆVER vejr-kilde. Prototype.

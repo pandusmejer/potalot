@@ -53,22 +53,21 @@ export function PopulaertLigeNu({ emner }: Props) {
               key={e.emne}
               href="/guides"
               className="no-underline"
-              style={{ position: 'relative', flex: '0 0 120px', width: 120, height: 95, borderRadius: 16, padding: '11px 11px 0', background: TONE[e.tone], overflow: 'hidden' }}
+              style={{ position: 'relative', flex: '0 0 117px', width: 117, height: 95, borderRadius: 16, padding: '11px 11px 0', background: TONE[e.tone], overflow: 'hidden' }}
             >
-              <p lang="da" style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(15px, 4.4cqw, 18px)', lineHeight: 1.0, color: '#223022', margin: 0, marginBottom: 5, hyphens: 'auto', overflowWrap: 'break-word' }}>
+              <p lang="da" style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(14px, 4.2cqw, 17px)', lineHeight: 1.0, color: '#223022', margin: 0, marginBottom: 5, hyphens: 'auto', overflowWrap: 'break-word' }}>
                 {e.emne}
               </p>
               <p
-                lang="da"
-                style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, lineHeight: 1.4, color: '#55604F', margin: 0, hyphens: 'auto', overflowWrap: 'break-word', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                style={{ fontFamily: sans, fontSize: 10, fontWeight: 400, lineHeight: 1.35, color: '#55604F', margin: 0, whiteSpace: 'pre-line' }}
               >
                 {e.beskrivelse}
               </p>
               <span
                 aria-hidden
-                style={{ position: 'absolute', right: 9, bottom: 9, width: 30, height: 30, borderRadius: 999, border: '1px solid rgba(60,70,50,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ position: 'absolute', right: 9, bottom: 9, width: 21, height: 21, borderRadius: 999, border: '1px solid rgba(60,70,50,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <ChevronRight style={{ width: 14, height: 14, color: '#3E4A39' }} strokeWidth={2.2} />
+                <ChevronRight style={{ width: 10, height: 10, color: '#3E4A39' }} strokeWidth={2.2} />
               </span>
             </Link>
           ))}
