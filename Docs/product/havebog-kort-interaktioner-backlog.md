@@ -34,9 +34,27 @@ når deres kilde/motor findes. Design låses nu; wiring nedenfor er næste fase.
 - Data: bruger `InspirerForslag.sekundaer` (demo). → Ægte deriver (næste skridt
   ud fra afgrøder, fx "du dyrker tomater → gem frø").
 
-### 3 · På denne dag (paa-denne-dag.tsx)
-- Bruger ægte `onThisDay` når det findes; ellers lånt fællesskabs-erfaring.
-  → Verificér mod rigtige bruger-minder når data findes. Ingen CTA at wire.
+### 3 · På denne dag (paa-denne-dag.tsx) — overlay + destination LÅST
+**Produktregel:** "På denne dag" er ALTID et tilbageblik MED kilde — aldrig et
+generisk stemningskort. Kræver: sourceType, sourceId, date, title, text, image,
+href. Uden href/kilde skjules modulet for rigtige brugere (kuratoren gater på
+`onThisDay[0].href`); demo bruger mock-href.
+
+**Læsbarhed (LÅST):** fast overlay-system ovenpå fotoet (mørk bund- + venstre-
+gradient + let global scrim) — tekst læsbar uanset brugerens foto, ingen pixel-
+analyse. `overlayStrength="strong"` findes til for lyse fotos.
+
+**Destination pr. sourceType:**
+- A. plante-log → `/mine-planter/[plantId]` (plantens timeline) — **WIRET NU**
+  (deriveren sætter href fra `plant_id`).
+- B. Havebog-minde → `/havebog/minder/[id]` eller `/havebog/arkiv?minde=[id]`
+  — **rute findes ikke endnu**.
+- C. arkiveret plante/sæson → `/havebog/arkiv/[id]` — **rute findes ikke endnu**.
+- D. ingen ægte destination → CTA "Se minde" fører til nærmeste eksisterende
+  log-/arkivvisning; ingen død CTA.
+
+CTA "Se minde" + hele kortet klikbart (ægte `<Link>`, aria-label) = LÅST.
+Mangler: minde-/arkiv-ruter (B/C) + evt. `?log=[logId]` på plante-href.
 
 ### 4 · Næste projekt (projekter.tsx)
 - **"Åbn projekt"** → `/kalender` (midlertidigt). → Skal pege på et ægte

@@ -715,6 +715,11 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         variety: plantVariety(l.plant_id),
         text: l.note ?? l.title ?? '',
         imageUrl: l.image_urls?.[0] ?? null,
+        // Destination: plantens timeline. Uden plante-kilde → ingen href
+        // (modulet skjules af kuratoren, jf. produktreglen).
+        href: l.plant_id ? `/mine-planter/${l.plant_id}` : null,
+        sourceType: 'plant' as const,
+        sourceId: l.plant_id ?? null,
       }))
 
     // ── Seneste noter (5) ────────────────────────────────────

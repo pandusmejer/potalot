@@ -27,6 +27,11 @@ export interface OnThisDayEntry {
   variety?: string
   text: string
   imageUrl?: string | null
+  /** Kilde + destination — "På denne dag" skal ALTID kunne åbne mindet.
+   *  Uden href/kilde skjules modulet for rigtige brugere (produktregel). */
+  href?: string | null
+  sourceType?: 'plant' | 'memory' | 'archive'
+  sourceId?: string | null
 }
 
 export interface RecentNote {
@@ -365,6 +370,8 @@ export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
     variety: 'Café au Lait',
     text: 'Du plantede dine første dahliaer i havens sydbed. De voksede sig store og bar over 30 blomster den sommer.',
     imageUrl: '/images/havebog/paa-denne-dag.jpg',
+    href: '/mine-planter', // mock-destination til preview (nærmeste eksisterende)
+    sourceType: 'plant',
   },
   {
     yearsAgo: 2,

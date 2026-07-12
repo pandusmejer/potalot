@@ -149,7 +149,9 @@ export default async function HavebogPage() {
         inspirerMig: data.inspirerForslag !== null,
         maaskeDuOgsaa: (data.inspirerForslag?.sekundaer ?? null) !== null,
         spisekammer: data.spisekammer !== null,
-        paaDenneDag: onThisDay.length > 0,
+        // Produktregel: "På denne dag" skal have en kilde/destination —
+        // skjul modulet hvis det viste minde ikke kan åbnes (ingen href).
+        paaDenneDag: (onThisDay[0]?.href ?? null) !== null,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
         historienFortsaetter: archivedPlants.length > 0,
