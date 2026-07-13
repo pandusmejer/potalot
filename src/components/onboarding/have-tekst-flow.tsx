@@ -154,7 +154,8 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Jeg forstod dette. Ret, fjern eller vælg fra — intet gemmes, før du siger til.
+            Jeg forstod dette. Ret, fjern eller vælg fra og tryk <span className="text-foreground font-medium">Gem</span>.
+            Forslag, du ikke gemmer, huskes ikke, hvis du forlader siden.
           </p>
         </div>
 

@@ -56,10 +56,13 @@ valgte (n)". Afsluttes med et overblik over hvad der blev tilføjet.
   `TilfoejFlow` fører nu "tilbage"/"færdig" tilbage til `/onboarding` (ny
   `returnTo`-prop; default for normal-flowet uændret). De tilføjede frø ligger i
   frøbanken → overblikket opdateres ved retur.
-- **In-flight AI-forslag** (endnu ikke godkendt): bevidst IKKE persisteret — det
-  er et arbejds-udkast (re-derivbart ved at fortolke teksten igen), ikke
-  committed progress. Et browser-refresh nulstiller review-listen. Kan tilføjes
-  senere hvis ønsket; ikke gjort for at holde scope stramt.
+- **In-flight AI-forslag** (endnu ikke godkendt): **V1-BEGRÆNSNING (Anna-låst
+  13/7, se `launch-scope-laast.md`)** — draft-persistering er UDE af launch. Et
+  ikke-godkendt review lever kun i client state og huskes IKKE ved refresh eller
+  ny session. Committede planter/frø bevares naturligvis (DB). Review-headeren
+  siger det nu eksplicit ("Forslag, du ikke gemmer, huskes ikke, hvis du forlader
+  siden"), så "fortsæt senere" ikke lover mere end den holder. Draft-persistering
+  bygges IKKE i V1.
 
 ## QA-status
 Rigtig end-to-end-QA (dev-server genstartet for at rydde stale Turbopack-cache,
