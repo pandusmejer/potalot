@@ -38,12 +38,14 @@ import type {
   SpisekammerData,
   Dyrkerstatus,
   Kompetenceomraade,
+  Bedrift,
 } from '@/data/havebog-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
 import { byggSpisekammer } from '@/lib/havebog-spisekammer'
 import { byggKompetencer } from '@/lib/havebog-kompetencer'
 import { byggDyrkerstatus } from '@/lib/havebog-dyrkerstatus'
+import { byggFoersteGange, foersteGangePreview } from '@/lib/havebog-foerste-gange'
 
 export interface HavebogData {
   heroStats: HeroStats
@@ -70,6 +72,7 @@ export interface HavebogData {
   archivedPlants: ArchivedPlant[]
   /** Dyrkerstatus (V13): afledte identiteter, prioriteret. Tom = skjul rummet. */
   dyrkerstatus: Dyrkerstatus[]
+  bedrifter: Bedrift[]
   /** Kompetencer (V13): afledt af log-handlinger pr. art. Gated: vis ved >= 2 færdigheder. */
   dyrkerkompetencer: Kompetenceomraade[]
 }
@@ -961,6 +964,10 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       inventory: inventoryItems,
     })
 
+    // Første gange (V1) — beviselige milepæle af logs/plantefelter. Havebog-
+    // preview: nyeste først, max 4. Deriveren selv returnerer kronologisk.
+    const bedrifter = foersteGangePreview(byggFoersteGange(logs, plantById), 4)
+
     return {
       heroStats,
       tidslinje,
@@ -980,6 +987,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       archivedPlants,
       dyrkerstatus,
       dyrkerkompetencer,
+      bedrifter,
     }
   } catch {
     return null

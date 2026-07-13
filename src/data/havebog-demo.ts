@@ -752,7 +752,16 @@ export const DEMO_PROJEKT_COLORFIELD: ProjektForslag = {
 export interface Bedrift {
   titel: string
   aar: string
-  kind: 'hoest' | 'drivhus' | 'blomst' | 'saaning'
+  kind:
+    | 'saaning'
+    | 'spiring'
+    | 'udplantning'
+    | 'hoest'
+    | 'beskaering'
+    | 'skadedyr'
+    | 'afsluttet'
+    | 'drivhus'
+    | 'blomst' // kun demo — blomstring afledes ikke i V1 (ingen logtype)
 }
 export const DEMO_BEDRIFTER: Bedrift[] = [
   { titel: 'Første tomathøst', aar: '2025', kind: 'hoest' },

@@ -11,10 +11,15 @@ interface Props {
 
 /** Soft glyph pr. milepæl-TYPE (ikke pr. afgrøde) — Potalots egne glyffer. */
 const KIND_GLYPH: Record<Bedrift['kind'], string> = {
+  saaning: '/images/glyphs/saaning.png',
+  spiring: '/images/glyphs/plante.png',
+  udplantning: '/images/glyphs/udplantning.png',
   hoest: '/images/glyphs/hoestkurv.png',
+  beskaering: '/images/glyphs/beskarersaks.png',
+  skadedyr: '/images/glyphs/bille.png',
+  afsluttet: '/images/glyphs/havebog.png',
   drivhus: '/images/glyphs/drivhus.png',
   blomst: '/images/glyphs/blomster.png',
-  saaning: '/images/glyphs/saaning.png',
 }
 
 /**

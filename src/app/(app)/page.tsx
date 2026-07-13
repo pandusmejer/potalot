@@ -158,6 +158,8 @@ export default async function HavebogPage() {
         // V13: afledte rum — gated på ægte data (ærligheds-reglen).
         dyrkerstatus: data.dyrkerstatus.length > 0,
         dyrkerkompetencer: kompetenceAntal(data.dyrkerkompetencer) >= 2,
+        // Første gange (V1): vis ved mindst én beviselig milepæl.
+        bedrifter: data.bedrifter.length > 0,
       }
   const valgteRum = kurater({ maaned: aktuelMaaned(), harData, maks: 3 })
 
@@ -171,7 +173,7 @@ export default async function HavebogPage() {
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
     spisekammer: <Spisekammer data={isDemo ? DEMO_SPISEKAMMER : data?.spisekammer ?? DEMO_SPISEKAMMER} />,
     projekter: <Projekter projekt={DEMO_PROJEKT} />,
-    bedrifter: <Bedrifter bedrifter={DEMO_BEDRIFTER} />,
+    bedrifter: <Bedrifter bedrifter={isDemo ? DEMO_BEDRIFTER : data?.bedrifter ?? DEMO_BEDRIFTER} />,
     vejret: <VejretIHaven vejr={DEMO_VEJR} />,
     populaert: <PopulaertLigeNu emner={DEMO_POPULAERT} />,
     historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
