@@ -42,6 +42,7 @@ import type {
 } from '@/data/havebog-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
+import { resolvePlantCard, resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { byggSpisekammer } from '@/lib/havebog-spisekammer'
 import { byggKompetencer } from '@/lib/havebog-kompetencer'
 import { byggDyrkerstatus } from '@/lib/havebog-dyrkerstatus'
@@ -918,6 +919,21 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       ...inventoryItems.map(i => ({ art: i.name, variety: i.variety })),
       ...plants.filter(p => !p.is_archived).map(p => ({ art: p.name, variety: p.variety })),
     ]
+    // A: forankr frøavl/køkken i brugerens egne sorter med ÆGTE foto —
+    // upload/kurateret frøkort/plantekort for den præcise sort (aldrig
+    // cross-sort; source==='fallback' = placeholder → tæller som intet foto).
+    const egneSorter = [
+      ...plants
+        .filter(p => !p.is_archived)
+        .map(p => {
+          const img = resolvePlantCard({ name: p.name, variety: p.variety, preferredSrc: p.primary_image_url })
+          return { art: p.name, billede: img.source !== 'fallback' ? img.src : null }
+        }),
+      ...inventoryItems.map(i => {
+        const img = resolveSeedCard({ name: i.name, variety: i.variety })
+        return { art: i.name, billede: img.source !== 'fallback' ? img.src : null }
+      }),
+    ]
     const hoestPrArt: Record<string, number> = {}
     const hoestEntries: { art: string; date: string }[] = []
     for (const l of logs) {
@@ -930,7 +946,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     }
     // ── Spisekammer (Fase E) — sæsonens høst grupperet pr. afgrøde ──
     const spisekammer = byggSpisekammer(hoestEntries)
-    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt })
+    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt, egneSorter })
     const inspirerForslag: InspirerForslag | null = proev
       ? {
           kicker: proev.kicker,

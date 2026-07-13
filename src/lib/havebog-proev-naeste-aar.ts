@@ -33,6 +33,12 @@ export interface ProevInput {
   katalog: KatalogSort[]
   /** Antal høst-logs pr. art i sæsonen. */
   hoestPrArt: Record<string, number>
+  /**
+   * Brugerens egne sorter med ægte foto (upload/kurateret frøkort/plantekort,
+   * ALDRIG cross-sort). Bruges til at forankre frøavl-forslaget i den konkrete
+   * plante — så "Prøv frøavl" bliver et foto-kort, ikke en tom tekstflade.
+   */
+  egneSorter?: Array<{ art: string; billede: string | null }>
 }
 
 /**
@@ -124,11 +130,36 @@ function capitalize(s: string): string {
 }
 
 /**
+ * Foto til et handlings-/tema-forslag (frøavl, køkken): forankr det i den
+ * art, forslaget er afledt af — ikke et generisk ikon. Prioritet:
+ *   1 brugerens egen sort m. ægte foto (upload/kurateret kort, ingen cross-sort)
+ *   2 brugerens egen guide-sort af arten (m. foto)
+ *   3 enhver katalog-sort af arten (m. foto). Slug følger fotoets sort.
+ * Intet foto → { null, null } (forslaget er da ikke lead-egnet; kort 1 gates).
+ */
+function artFoto(
+  art: string,
+  egneSorter: NonNullable<ProevInput['egneSorter']>,
+  egne: KatalogSort[],
+  katalog: KatalogSort[],
+): { billede: string | null; slug: string | null } {
+  const k = artKey(art)
+  const eget = egneSorter.find(s => artKey(s.art) === k && s.billede)
+  if (eget) return { billede: eget.billede!, slug: null } // eget foto → frøbank-href
+  const egen = egne.find(s => artKey(s.art) === k && s.billede)
+  if (egen) return { billede: egen.billede!, slug: egen.id ?? null }
+  const enhver = katalog.find(s => artKey(s.art) === k && s.billede)
+  if (enhver) return { billede: enhver.billede!, slug: enhver.id ?? null }
+  return { billede: null, slug: null }
+}
+
+/**
  * Kør reglerne og saml alle forslag der har ægte grundlag, i prioriteret
  * rækkefølge (dedup på art+regel). Første = lead; andet distinkte = sekundært.
  */
 function samlForslag(input: ProevInput): ProevForslag[] {
   const { dyrkede, katalog, hoestPrArt } = input
+  const egneSorter = input.egneSorter ?? []
   const dyrkedeArter = new Set(dyrkede.map(d => artKey(d.art)))
   const dyrkedeSortKeys = new Set(
     dyrkede.filter(d => d.variety).map(d => `${artKey(d.art)}|${norm(d.variety!)}`),
@@ -199,13 +230,17 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       ? artKey(egneKatalog.find(k => har(k.tags, FROEAVL_TAGS))!.art)
       : undefined)
   if (froeArt) {
+    // Vis brugerens egne ord for arten (ikke ascii-normaliseret "stangboenne").
+    const artNavn = dyrkede.find(d => artKey(d.art) === froeArt)?.art ?? froeArt
+    const foto = artFoto(froeArt, egneSorter, egneKatalog, katalog) // A: forankr i planten
     push(`froeavl|${froeArt}`, {
       navn: 'Prøv frøavl',
-      begrundelse: `Du dyrker ${froeArt} — måske er det tid til at gemme dine egne frø til næste sæson.`,
+      begrundelse: `Du dyrker ${artNavn.toLowerCase()} — måske er det tid til at gemme dine egne frø til næste sæson.`,
+      billede: foto.billede,
       reason: `frøavl: ${froeArt}`,
-      titel: capitalize(froeArt),
+      titel: capitalize(artNavn),
       undertitel: 'Gem egne frø',
-      slug: null,
+      slug: foto.slug,
       type: 'froeavl',
     })
   }
@@ -236,13 +271,15 @@ function samlForslag(input: ProevInput): ProevForslag[] {
     .sort((x, y) => y[1] - x[1])[0]
   if (topArt) {
     const makker = KOEKKEN_MAKKER[topArt[0]]
+    const foto = artFoto(makker, egneSorter, egneKatalog, katalog) // A: foto af makker-arten
     push(`koekken|${topArt[0]}`, {
       navn: capitalize(makker),
       begrundelse: `Du høster meget ${topArt[0]}. ${capitalize(makker)} passer godt til og gør bedet mere brugbart i køkkenet.`,
+      billede: foto.billede,
       reason: `køkken: ${topArt[1]}× ${topArt[0]} → ${makker}`,
       titel: capitalize(makker),
       undertitel: 'God makker',
-      slug: null,
+      slug: foto.slug,
       type: 'koekken',
     })
   }
@@ -263,14 +300,14 @@ export function byggProevNaesteAar(input: ProevInput): ProevForslag | null {
   // Lead-egnede kandidater = dem med foto (kortet viser foto-højre-split).
   // Klienten roterer gennem dem ét ad gangen; de øvrige bliver små forslag.
   // Href → sortens guide, ellers frøbank. Ingen døde links.
-  const seenSort = new Set<string>()
+  const seenFoto = new Set<string>()
   const kandidater: LeadKandidat[] = alle
     .filter(harLeadForm)
     .filter(k => {
-      // To regler kan pege på samme sort — vis den kun én gang i rotationen.
-      const n = `${k.titel}|${k.billede}`
-      if (seenSort.has(n)) return false
-      seenSort.add(n)
+      // To regler kan låne samme foto (fx frøavl + robusthed fra samme art) —
+      // vis hvert foto kun én gang i rotationen (højeste prioritet vinder).
+      if (seenFoto.has(k.billede!)) return false
+      seenFoto.add(k.billede!)
       return true
     })
     .map(k => ({
@@ -282,15 +319,18 @@ export function byggProevNaesteAar(input: ProevInput): ProevForslag | null {
       href: k.slug ? `/guides/${k.slug}` : '/froebank',
     }))
 
-  // Top-level lead = første lead-egnede (foto), ellers første kandidat
-  // (tekst-only fallback hvis intet forslag har foto).
-  const lead = alle.find(harLeadForm) ?? alle[0]
+  // B: intet foto-bærende lead-forslag → skjul kort 1 (ingen stor tekst-only
+  // fallback, ingen tom højreside).
+  if (kandidater.length === 0) return null
+
+  // Lead = første lead-egnede (= kandidater[0]s kilde).
+  const lead = alle.find(harLeadForm)!
   // Sekundært (kort 2) = første kandidat der IKKE er lead → ingen dublet.
   const sek = alle.find(k => k !== lead)
 
   return {
     ...lead,
-    kandidater: kandidater.length > 0 ? kandidater : undefined,
+    kandidater,
     sekundaer: sek
       ? { kicker: 'Måske du også vil prøve', titel: sek.navn, tekst: sek.begrundelse }
       : undefined,

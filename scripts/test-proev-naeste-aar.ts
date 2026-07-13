@@ -110,12 +110,43 @@ function tjek(navn: string, cond: boolean, extra = '') {
 
 // Én kandidat → knappen skal skjules (kun 1 lead-egnet sort).
 {
-  // Dyrker kun San Marzano: forlæng+hul peger begge på Stupice (dedup→1),
-  // frøavl har intet foto. Resultat: præcis 1 lead-egnet kandidat.
-  const r = byggProevNaesteAar(base({ dyrkede: [{ art: 'Tomat', variety: 'San Marzano' }] }))
+  // Dyrker Stupice+Sungold (begge tidlige, to typer): forlæng/hul/robusthed
+  // fyrer ikke; kun frøavl (m. foto fra egen tomat). Resultat: præcis 1.
+  const r = byggProevNaesteAar(base({ dyrkede: [{ art: 'Tomat', variety: 'Stupice' }, { art: 'Tomat', variety: 'Sungold' }] }))
   const k = r?.kandidater ?? []
   tjek('Én kandidat → knap-skjul (kandidater.length === 1)', k.length === 1, JSON.stringify(k.map(x => x.titel)))
-  tjek('Kandidat-liste er aldrig tom-array (undefined når 0)', r === null || r.kandidater === undefined || r.kandidater.length > 0, JSON.stringify(r?.kandidater))
+  tjek('Kandidat-liste er aldrig tom-array (undefined/null når 0)', r === null || r.kandidater === undefined || r.kandidater.length > 0, JSON.stringify(r?.kandidater))
+}
+
+// A: frøavl-lead må ALDRIG være foto-løst — forankres i brugerens plante.
+{
+  const r = byggProevNaesteAar(base({ dyrkede: [{ art: 'Tomat', variety: 'Stupice' }, { art: 'Tomat', variety: 'Sungold' }] }))
+  const froeavl = r?.kandidater?.find(x => /Tomat/i.test(x.titel))
+  tjek('A: frøavl-forslag har foto (forankret i egen sort)', !!froeavl?.billede && KAT.some(s => s.billede === froeavl.billede), JSON.stringify(froeavl))
+}
+
+// A via egneSorter: frøavl forankres i brugerens EGET foto, selv uden guide.
+{
+  // Stangbønne findes ikke i guide-kataloget, MEN brugeren har et ægte
+  // plantekort/upload for sin sort → frøavl bliver et foto-kort (ikke gated).
+  const r = byggProevNaesteAar(base({
+    dyrkede: [{ art: 'Stangbønne', variety: 'Neckargold' }],
+    egneSorter: [{ art: 'Stangbønne', billede: '/images/plantekort/stangboenne-cobra.jpg' }],
+  }))
+  const k = r?.kandidater ?? []
+  tjek('A(egneSorter): frøavl uden guide får eget foto → foto-kort', k.length === 1 && k[0].billede === '/images/plantekort/stangboenne-cobra.jpg', JSON.stringify(k))
+  tjek('A(egneSorter): lead er "Prøv frøavl" med brugerens ord', r?.navn === 'Prøv frøavl' && /stangbønne/.test(r?.begrundelse ?? ''), JSON.stringify({navn:r?.navn, begr:r?.begrundelse}))
+}
+
+// B: intet foto-bærende lead → kort 1 gates væk (null), ingen tekst-only kort.
+{
+  // Frøavls-egnet art UDEN foto nogen steder (ingen guide, intet egneSorter-
+  // foto) → frøavl kan ikke beriges, ingen anden kandidat → skjul kort 1.
+  const r = byggProevNaesteAar(base({
+    dyrkede: [{ art: 'Stangbønne', variety: 'Neckargold' }],
+    egneSorter: [{ art: 'Stangbønne', billede: null }],
+  }))
+  tjek('B: frøavls-art uden foto → kort 1 gates (null)', r === null, JSON.stringify(r))
 }
 
 console.log(`\n${ok} bestået, ${fejl} fejlet.`)
