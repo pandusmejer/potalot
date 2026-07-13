@@ -180,7 +180,7 @@ export default async function HavebogPage() {
   }
 
   return (
-    <div className="space-y-20 sm:space-y-28 pb-16">
+    <div className="space-y-12 sm:space-y-16 pb-16">
       {forside}
       {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
