@@ -4,14 +4,17 @@ import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
 import { TrykOgTalKnap } from '@/components/havebog/tryk-og-tal-knap'
-import { getUnreadCount } from '@/actions/notifications'
+import { getUnreadCount, syncTaskReminders } from '@/actions/notifications'
 import { getGardenWeather } from '@/actions/weather'
 import type { Profile } from '@/lib/types'
 
 export async function Topbar({ profile }: { profile: Profile | null }) {
-  const [unreadCount, weather] = profile
-    ? await Promise.all([getUnreadCount(), getGardenWeather()])
-    : [0, null]
+  // syncTaskReminders genererer FÅ, plante-knyttede opgave-påmindelser (idempotent
+  // via dedup) og kører samtidig med tælleren — nye påmindelser tælles fra næste
+  // load. best-effort: må aldrig vælte topbaren.
+  const [, unreadCount, weather] = profile
+    ? await Promise.all([syncTaskReminders(), getUnreadCount(), getGardenWeather()])
+    : [undefined, 0, null]
 
   // Vejret er KONTEKST, ikke en handling (Annas retning 13/7): ingen chip,
   // ingen baggrund, ingen ikon — en diskret redaktionel statuslinje under
