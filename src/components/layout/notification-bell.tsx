@@ -97,9 +97,12 @@ export function NotificationBell({ initialUnreadCount }: Props) {
         aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} ulæste)` : ''}`}
         className="relative"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-[22px] w-[22px]" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 min-w-[16px] h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-medium flex items-center justify-center px-1">
+          <span
+            className="absolute top-0.5 right-0.5 min-w-[16px] h-4 rounded-full text-[9px] font-semibold flex items-center justify-center px-1"
+            style={{ background: 'var(--accent-copper)', color: '#F7F4EA' }}
+          >
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
