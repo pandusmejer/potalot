@@ -3,6 +3,7 @@ import { Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
+import { TrykOgTalKnap } from '@/components/havebog/tryk-og-tal-knap'
 import { getUnreadCount } from '@/actions/notifications'
 import { getGardenWeather } from '@/actions/weather'
 import type { Profile } from '@/lib/types'
@@ -39,6 +40,7 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
           </Link>
           {profile ? (
             <div className="flex items-center gap-1.5">
+              <TrykOgTalKnap />
               <NotificationBell initialUnreadCount={unreadCount} />
               <ProfileMenu profile={profile} />
             </div>
