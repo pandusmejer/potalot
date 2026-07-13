@@ -66,7 +66,7 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
           <Link
             href="/indstillinger"
             title={weather!.summary}
-            className="mt-1 block w-fit text-[12.5px] leading-none text-muted-foreground tabular-nums hover:text-foreground transition-colors"
+            className="mt-1 block max-w-full truncate text-[12.5px] leading-none text-muted-foreground tabular-nums hover:text-foreground transition-colors"
           >
             {vejrLinje}
           </Link>

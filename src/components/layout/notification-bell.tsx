@@ -104,7 +104,7 @@ export function NotificationBell({ initialUnreadCount }: Props) {
         {unreadCount > 0 && (
           <span
             className="absolute top-0.5 right-0.5 min-w-[16px] h-4 rounded-full text-[9px] font-semibold flex items-center justify-center px-1"
-            style={{ background: '#B47A3C', color: '#FFF8EE' }}
+            style={{ background: '#B5602F', color: '#FFF8EE' }}
           >
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
