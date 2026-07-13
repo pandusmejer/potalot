@@ -70,13 +70,13 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 700,
           letterSpacing: '0.34em',
           textTransform: 'uppercase',
           color: labelColor,
           margin: 0,
-          marginBottom: 11,
+          marginBottom: 10,
         }}
       >
         Dag
@@ -88,7 +88,7 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
           display: 'inline-flex',
           overflow: 'hidden',
           fontFamily: sans,
-          fontSize: 'clamp(79px, 24.2cqw, 123px)',
+          fontSize: 'clamp(72px, 22cqw, 112px)',
           fontWeight: 700,
           lineHeight: 0.9,
           letterSpacing: '0.04em',
@@ -117,7 +117,7 @@ export function DagTaeller({ dag, etiket, onImage = false }: Props) {
           fontFamily: serif,
           fontStyle: 'italic',
           fontWeight: 400,
-          fontSize: 'clamp(20px, 4.2cqw, 24px)',
+          fontSize: 'clamp(18px, 3.8cqw, 22px)',
           lineHeight: 1.3,
           color: etiketColor,
           margin: 0,
