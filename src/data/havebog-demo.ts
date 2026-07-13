@@ -163,12 +163,18 @@ export interface HeroNarrative {
   userState: 'new' | 'active' | 'year2plus'
   /**
    * V9 (dagtælleren): sæsondagen som tal + etiket, struktureret så
-   * heroen kan rendre den taktile flip-tæller. Null når intet er
-   * sået endnu — ærlighed over poesi: ingen såning, ingen sæsondag.
+   * heroen kan rendre den taktile flip-tæller. Null når sæsonen ikke kan
+   * dateres (ingen sowing/germination/planting_out) — ærlighed over poesi.
    */
   saesonDag: number | null
   /** "af din første sæson" / "af din tredje sæson" */
   saesonEtiket: string | null
+  /**
+   * V10 (13/7): hvilken logtype markerede sæson-start (sowing → germination →
+   * planting_out). Kun til data/debug + evt. fremtidig nuanceret copy — UI'et
+   * viser samme etiket uanset kilde. Null når sæsonen ikke kunne dateres.
+   */
+  seasonStartSource?: 'sowing' | 'germination' | 'planting_out' | null
 }
 
 // ════════════════════════════════════════════════════════════════

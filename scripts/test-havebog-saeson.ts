@@ -8,7 +8,7 @@
  * såning i et senere år.
  */
 
-import { beregnSaeson, saesonEtiket } from '@/lib/havebog-saeson'
+import { beregnSaeson, saesonEtiket, vaelgSaesonKilde } from '@/lib/havebog-saeson'
 
 function daysBetween(from: string, to: string): number {
   const a = new Date(from + 'T00:00:00').getTime()
@@ -51,6 +51,62 @@ tjek('Sprunget år er ikke en sæson → nummer 2 (ikke 3)', s3.nummer, 2)
 // Tomt / ingen såning
 const tom = beregnSaeson([])
 tjek('Ingen såning → start null, nummer 0', { start: tom.start, nummer: tom.nummer }, { start: null, nummer: 0 })
+
+// Sæson-start-kilde (V10, 13/7) — prioritet sowing → germination →
+// planting_out. Mimér havebog.ts: rå logs → filtreret pr. type.
+function saesonStartFraLogs(logs: { type: string; date: string }[]) {
+  const k = vaelgSaesonKilde({
+    sowing: logs.filter(l => l.type === 'sowing').map(l => l.date),
+    germination: logs.filter(l => l.type === 'germination').map(l => l.date),
+    planting_out: logs.filter(l => l.type === 'planting_out').map(l => l.date),
+  })
+  return { start: beregnSaeson(k.datoer).start, kilde: k.kilde }
+}
+
+// 1 · sowing → sæson starter ved første sowing.
+tjek('Kilde 1: sowing → første sowing',
+  saesonStartFraLogs([
+    { type: 'germination', date: '2026-04-01' },
+    { type: 'sowing', date: '2026-03-10' },
+    { type: 'sowing', date: '2026-03-25' },
+  ]),
+  { start: '2026-03-10', kilde: 'sowing' })
+
+// 2 · ingen sowing, men germination → første germination.
+tjek('Kilde 2: kun germination → første germination',
+  saesonStartFraLogs([
+    { type: 'germination', date: '2026-04-05' },
+    { type: 'germination', date: '2026-03-18' },
+    { type: 'planting_out', date: '2026-05-01' },
+  ]),
+  { start: '2026-03-18', kilde: 'germination' })
+
+// 3 · ingen sowing/germination, men planting_out → første planting_out.
+tjek('Kilde 3: kun planting_out → første planting_out',
+  saesonStartFraLogs([
+    { type: 'planting_out', date: '2026-05-20' },
+    { type: 'planting_out', date: '2026-05-02' },
+    { type: 'harvest', date: '2026-08-01' },
+  ]),
+  { start: '2026-05-02', kilde: 'planting_out' })
+
+// 4 · kun harvest → ingen sæsontæller.
+tjek('Kilde 4: kun harvest → ingen start',
+  saesonStartFraLogs([{ type: 'harvest', date: '2026-08-01' }, { type: 'harvest', date: '2026-08-10' }]),
+  { start: null, kilde: null })
+
+// 5 · kun pest_disease/pruning → ingen sæsontæller.
+tjek('Kilde 5: kun pest/pruning → ingen start',
+  saesonStartFraLogs([{ type: 'pruning', date: '2026-07-01' }, { type: 'pest_disease', date: '2026-07-10' }]),
+  { start: null, kilde: null })
+
+// 6 · sowing SENERE end germination → sowing vinder stadig (tidligste sowing).
+tjek('Kilde 6: sowing senere end germination → sowing prioriteres',
+  saesonStartFraLogs([
+    { type: 'germination', date: '2026-03-01' },
+    { type: 'sowing', date: '2026-04-15' },
+  ]),
+  { start: '2026-04-15', kilde: 'sowing' })
 
 // Etiketter
 tjek('Etiket sæson 1', saesonEtiket(1), 'af din første sæson')

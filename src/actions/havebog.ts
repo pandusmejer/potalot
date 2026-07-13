@@ -16,7 +16,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
 import { byggDagensHistorie, type Opdagelse } from '@/lib/havebog-dagens-historie'
-import { beregnSaeson, saesonEtiket, type SaesonInfo } from '@/lib/havebog-saeson'
+import { beregnSaeson, vaelgSaesonKilde, saesonEtiket, type SaesonInfo, type SaesonStartKilde } from '@/lib/havebog-saeson'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -465,6 +465,8 @@ function buildHeroNarrative(
   today: Date,
   /** Aktivitets-sæson (fra beregnSaeson) — driver dag-tæller + sæsonnummer. */
   saeson: SaesonInfo,
+  /** Hvilken logtype daterede sæson-start (sowing/germination/planting_out). */
+  seasonStartSource: SaesonStartKilde | null,
 ): HeroNarrative {
   const month = MAANED_FULD_LOWER[today.getMonth()]
   const currentYear = today.getFullYear()
@@ -489,6 +491,7 @@ function buildHeroNarrative(
   const taeller = {
     saesonDag: harSaesonDag ? saesonDag : null,
     saesonEtiket: etiket,
+    seasonStartSource: harSaesonDag ? seasonStartSource : null,
   }
 
   // ── År 1+: brugeren har tidligere sæsoner ────────────────
@@ -650,9 +653,15 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     // første såning til næste års første såning (se lib/havebog-saeson.ts).
     // seasonStart bruges som "denne sæson"-vindue [seasonStart, nu] i
     // alle deriveringer nedenfor — så intet nulstilles 1. januar.
-    const saeson = beregnSaeson(
-      logs.filter(l => l.type === 'sowing').map(l => l.date),
-    )
+    // Sæson-start efter prioritet (Anna 13/7): sowing → germination →
+    // planting_out. Så en dyrker der starter fra købte spirer/stiklinger eller
+    // først logger spiring/udplantning stadig får dagtælleren. Aldrig harvest.
+    const { datoer: saesonDatoer, kilde: seasonStartSource } = vaelgSaesonKilde({
+      sowing: logs.filter(l => l.type === 'sowing').map(l => l.date),
+      germination: logs.filter(l => l.type === 'germination').map(l => l.date),
+      planting_out: logs.filter(l => l.type === 'planting_out').map(l => l.date),
+    })
+    const saeson = beregnSaeson(saesonDatoer)
     const seasonStart = saeson.start
 
     // ── Hero stats ───────────────────────────────────────────
@@ -823,7 +832,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       }))
 
     const heroNarrative = buildHeroNarrative(
-      heroStats, tidslinje, history, onThisDay, today, saeson,
+      heroStats, tidslinje, history, onThisDay, today, saeson, seasonStartSource,
     )
 
     // "I DIN HAVE" — åbningstallene (V4-mockup). Stilhed ved huller:
