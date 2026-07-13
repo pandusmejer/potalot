@@ -946,7 +946,16 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     }
     // ── Spisekammer (Fase E) — sæsonens høst grupperet pr. afgrøde ──
     const spisekammer = byggSpisekammer(hoestEntries)
-    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt, egneSorter })
+    // Href-kilder til frøavl-leadet (læringshandling → guide, ikke frøbank).
+    // artGuide = species/arts-guides (id = artKey, fx "tomat"). froeavlGuide =
+    // dedikerede frøavls-guides — findes ikke endnu (→ backlog), så tom map.
+    const artKeyOf = (s: string) => s.toLowerCase().replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa').trim().split(/[\s-]/)[0]
+    const artGuide: Record<string, string> = {}
+    for (const g of IMPORTED_GUIDES) {
+      if (g.guideLevel === 'species' && g.id) artGuide[artKeyOf(g.plantName)] = g.id
+    }
+    const froeavlGuide: Record<string, string> = {}
+    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt, egneSorter, artGuide, froeavlGuide })
     const inspirerForslag: InspirerForslag | null = proev
       ? {
           kicker: proev.kicker,

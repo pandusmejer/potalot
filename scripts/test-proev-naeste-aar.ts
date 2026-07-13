@@ -21,6 +21,9 @@ const KAT: KatalogSort[] = [
   { art: 'Jordbær', variety: 'Malwina', tags: ['sen'], harvestMonths: [7, 8], difficulty: 'medium', billede: '/img/malwina.png' },
   { art: 'Chili', variety: 'Habanero', tags: ['stærk'], harvestMonths: [9, 10], difficulty: 'hard', billede: null },
   { art: 'Chili', variety: 'Jalapeño', tags: ['robust', 'mild'], harvestMonths: [8, 9], difficulty: 'easy', billede: '/img/jalapeno.png' },
+  // Sort MED guide-id (til frøavl-href sort-guide-niveauet). Ingen søskende →
+  // kun frøavl fyrer, isoleret til href-prioritetstests.
+  { art: 'Agurk', variety: 'Marketmore', tags: ['tidlig'], harvestMonths: [7, 8], difficulty: 'easy', billede: '/img/agurk.png', id: 'agurk-marketmore' },
 ]
 
 function base(over: Partial<ProevInput> = {}): ProevInput {
@@ -136,6 +139,34 @@ function tjek(navn: string, cond: boolean, extra = '') {
   const k = r?.kandidater ?? []
   tjek('A(egneSorter): frøavl uden guide får eget foto → foto-kort', k.length === 1 && k[0].billede === '/images/plantekort/stangboenne-cobra.jpg', JSON.stringify(k))
   tjek('A(egneSorter): lead er "Prøv frøavl" med brugerens ord', r?.navn === 'Prøv frøavl' && /stangbønne/.test(r?.begrundelse ?? ''), JSON.stringify({navn:r?.navn, begr:r?.begrundelse}))
+}
+
+// Frøavl-href-prioritet: frøavls-guide → sort-guide → artsguide → frøbank.
+{
+  const froeavlHref = (over: Partial<ProevInput>) => {
+    const r = byggProevNaesteAar(base({ dyrkede: [{ art: 'Agurk', variety: 'Marketmore' }], ...over }))
+    return r?.kandidater?.find(k => /Agurk/i.test(k.titel))?.href
+  }
+  // 4 · fallback → frøbank når ingen guide OG sort uden id (Stupice/Sungold).
+  const h4 = byggProevNaesteAar(base({
+    dyrkede: [{ art: 'Tomat', variety: 'Stupice' }, { art: 'Tomat', variety: 'Sungold' }],
+  }))?.kandidater?.find(k => /Tomat/i.test(k.titel))?.href
+  tjek('Frøavl-href #4: ingen guide + sort uden id → /froebank', h4 === '/froebank', h4)
+  // 3 · artsguide når hverken frøavls- eller sort-guide findes (sort uden id).
+  const r3 = byggProevNaesteAar(base({
+    dyrkede: [{ art: 'Tomat', variety: 'Stupice' }, { art: 'Tomat', variety: 'Sungold' }],
+    artGuide: { tomat: 'tomat' },
+  }))
+  const h3 = r3?.kandidater?.find(k => /Tomat/i.test(k.titel))?.href
+  tjek('Frøavl-href #3: artsguide når sort mangler guide', h3 === '/guides/tomat', h3)
+  // 2 · sort-guide vinder over artsguide (Marketmore har id).
+  tjek('Frøavl-href #2: sort-guide vinder over artsguide',
+    froeavlHref({ artGuide: { agurk: 'agurk' } }) === '/guides/agurk-marketmore',
+    froeavlHref({ artGuide: { agurk: 'agurk' } }))
+  // 1 · frøavls-guide vinder over alt.
+  tjek('Frøavl-href #1: frøavls-guide vinder over sort/arts',
+    froeavlHref({ froeavlGuide: { agurk: 'froeavl-agurk' }, artGuide: { agurk: 'agurk' } }) === '/guides/froeavl-agurk',
+    froeavlHref({ froeavlGuide: { agurk: 'froeavl-agurk' } }))
 }
 
 // B: intet foto-bærende lead → kort 1 gates væk (null), ingen tekst-only kort.

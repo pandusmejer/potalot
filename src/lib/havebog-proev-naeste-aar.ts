@@ -39,6 +39,15 @@ export interface ProevInput {
    * plante — så "Prøv frøavl" bliver et foto-kort, ikke en tom tekstflade.
    */
   egneSorter?: Array<{ art: string; billede: string | null }>
+  /**
+   * artKey → frøavls-guide-id. Frøavl er en LÆRINGShandling ("hvordan gemmer
+   * jeg frø fra denne plante?"), så leadet skal føre til en frøavls-guide før
+   * en sort/arts-guide. Tom indtil frøavls-guides skrives (så falder den til
+   * sort→arts→frøbank). Se backlog.
+   */
+  froeavlGuide?: Record<string, string>
+  /** artKey → arts-/species-guide-id (fx "tomat"), fallback-niveau for href. */
+  artGuide?: Record<string, string>
 }
 
 /**
@@ -160,6 +169,8 @@ function artFoto(
 function samlForslag(input: ProevInput): ProevForslag[] {
   const { dyrkede, katalog, hoestPrArt } = input
   const egneSorter = input.egneSorter ?? []
+  const froeavlGuide = input.froeavlGuide ?? {}
+  const artGuide = input.artGuide ?? {}
   const dyrkedeArter = new Set(dyrkede.map(d => artKey(d.art)))
   const dyrkedeSortKeys = new Set(
     dyrkede.filter(d => d.variety).map(d => `${artKey(d.art)}|${norm(d.variety!)}`),
@@ -233,6 +244,11 @@ function samlForslag(input: ProevInput): ProevForslag[] {
     // Vis brugerens egne ord for arten (ikke ascii-normaliseret "stangboenne").
     const artNavn = dyrkede.find(d => artKey(d.art) === froeArt)?.art ?? froeArt
     const foto = artFoto(froeArt, egneSorter, egneKatalog, katalog) // A: forankr i planten
+    // Frøavl = læringshandling → href-prioritet: frøavls-guide → sort-guide →
+    // artsguide → frøbank (fallback). Brugeren skal lære at gemme frø, ikke
+    // bare sendes til samlingen.
+    const sortGuide = egneKatalog.find(k => artKey(k.art) === froeArt)?.id ?? null
+    const froeavlSlug = froeavlGuide[froeArt] ?? sortGuide ?? artGuide[froeArt] ?? null
     push(`froeavl|${froeArt}`, {
       navn: 'Prøv frøavl',
       begrundelse: `Du dyrker ${artNavn.toLowerCase()} — måske er det tid til at gemme dine egne frø til næste sæson.`,
@@ -240,7 +256,7 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       reason: `frøavl: ${froeArt}`,
       titel: capitalize(artNavn),
       undertitel: 'Gem egne frø',
-      slug: foto.slug,
+      slug: froeavlSlug,
       type: 'froeavl',
     })
   }
