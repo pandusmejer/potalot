@@ -136,14 +136,16 @@ export function InspirerMig({ forslag }: Props) {
               ))}
             </div>
 
-            {/* Flere forslag — firkantet boks yderst til højre, samme
-                42×42-format som forslags-billederne, med let grøn teint. */}
+            {/* "Flere idéer" — udforsk flere sorter/arter til næste år. Fører
+                til Frøbanken (udvalg/samling), IKKE en enkelt guide. Intention:
+                fremover /froebank?inspiration=naeste-aar (filtreret næste-år-
+                visning) — bruger rå /froebank indtil filteret findes. */}
             <Link
               href="/froebank"
               className="no-underline"
               style={{ marginLeft: 'auto', flexShrink: 0, width: 57, height: 42, borderRadius: 10, background: 'rgba(199,209,174,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2px 6px', fontFamily: sans, fontSize: 10, fontWeight: 700, lineHeight: 1.2, letterSpacing: '0.01em', color: '#3B4A2F' }}
             >
-              Flere forslag
+              Flere idéer
             </Link>
           </div>
         )}
