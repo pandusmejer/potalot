@@ -13,9 +13,14 @@ import { updateProfile, checkUsernameAvailable } from '@/actions/profil'
 
 interface Props {
   email: string
+  /**
+   * Hvis sat: profilen gemmes UDEN at sætte onboarded (så et efterfølgende
+   * trin kan afslutte), og onComplete kaldes i stedet for at navigere til /.
+   */
+  onComplete?: () => void
 }
 
-export function OnboardingForm({ email }: Props) {
+export function OnboardingForm({ email, onComplete }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [username, setUsername] = useState('')
@@ -50,14 +55,19 @@ export function OnboardingForm({ email }: Props) {
         username,
         displayName: username,
         avatarUrl,
-        onboarded: true,
+        // Afslut først onboarding efter have-opsætnings-trinnet.
+        onboarded: onComplete ? false : true,
       })
       if ('error' in res) {
         setError(res.error)
         return
       }
-      router.push('/')
-      router.refresh()
+      if (onComplete) {
+        onComplete()
+      } else {
+        router.push('/')
+        router.refresh()
+      }
     })
   }
 
@@ -118,7 +128,7 @@ export function OnboardingForm({ email }: Props) {
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <Button type="submit" disabled={pending || usernameStatus !== 'ok'} className="w-full">
-            {pending ? 'Opretter…' : 'Kom i gang'}
+            {pending ? 'Gemmer…' : onComplete ? 'Videre' : 'Kom i gang'}
           </Button>
         </form>
       </CardContent>

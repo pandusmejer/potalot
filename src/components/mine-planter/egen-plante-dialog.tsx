@@ -20,6 +20,11 @@ interface Props {
   gardenLocations: GardenLocation[]
   /** Custom trigger (default: en "Tilføj en plante du allerede har"-knap). */
   children?: React.ReactNode
+  /**
+   * Hvis sat: kaldes ved oprettelse i stedet for at navigere til plantesiden.
+   * Bruges i onboarding, hvor brugeren skal blive på opsætnings-fladen.
+   */
+  onCreated?: (id: string) => void
 }
 
 type DatoMode = 'exact' | 'approx' | 'unknown'
@@ -33,7 +38,7 @@ type DatoMode = 'exact' | 'approx' | 'unknown'
  * ingen falske placeholder-poster. Startdato kan være præcis, cirka (måned)
  * eller ukendt — vi opfinder ikke en dato.
  */
-export function EgenPlanteDialog({ gardenLocations, children }: Props) {
+export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -83,7 +88,11 @@ export function EgenPlanteDialog({ gardenLocations, children }: Props) {
       if ('error' in res) { setError(res.error); return }
       reset()
       setOpen(false)
-      router.push(`/mine-planter/${res.id}`)
+      if (onCreated) {
+        onCreated(res.id)
+      } else {
+        router.push(`/mine-planter/${res.id}`)
+      }
       router.refresh()
     })
   }
