@@ -27,7 +27,7 @@ export function HavebogDateline({ date = new Date() }: { date?: Date }) {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 14,
+          fontSize: 15.4,
           fontWeight: 700,
           letterSpacing: '0.24em',
           textTransform: 'uppercase',
@@ -39,7 +39,7 @@ export function HavebogDateline({ date = new Date() }: { date?: Date }) {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 16,
+          fontSize: 17.6,
           fontWeight: 600,
           letterSpacing: '0.22em',
           margin: '6px 0 0',

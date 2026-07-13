@@ -91,7 +91,7 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
             hardcoded creme ville stikke af fra canvas når sæsonen
             skifter tone (sommer er #F6F0DF, ikke #EAE6D8). */}
         <path
-          d="M0,26 C70,0 145,8 215,40 C275,66 330,70 375,60 L375,96 L0,96 Z"
+          d="M0,22 C60,0 128,6 200,40 C272,74 332,90 375,90 L375,96 L0,96 Z"
           style={{ fill: 'var(--background)' }}
         />
       </svg>
