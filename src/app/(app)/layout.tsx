@@ -4,12 +4,18 @@ import { DemoBanner } from '@/components/layout/demo-banner'
 import { getProfile } from '@/actions/profil'
 import { getNavState } from '@/actions/nav-state'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile()
   // Anonyme brugere må gerne se appen. Kun logged-in brugere uden onboarding
-  // skal til /onboarding.
-  if (profile && !profile.onboarded) redirect('/onboarding')
+  // skal til /onboarding — MEN frøbank-tilføj-flowet (scan/import) skal virke
+  // MIDT i onboarding, hvor onboarded stadig er false. Ellers bouncer scan/Excel
+  // fra onboarding-shellen tilbage til /onboarding ("der sker ingenting").
+  const pathname = (await headers()).get('x-pathname') ?? ''
+  if (profile && !profile.onboarded && !pathname.startsWith('/froebank')) {
+    redirect('/onboarding')
+  }
 
   const nav = await getNavState()
 
