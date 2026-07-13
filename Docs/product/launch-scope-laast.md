@@ -54,6 +54,10 @@ men ingen samlet produkttest før trin 6.
   knyttede påmindelser fra forfaldne opgaver; kaldt on-load fra topbaren; dedup
   pr. opgave/dag. Verificeret på DB-laget (3 korrekte påmindelser fra rigtige
   opgaver, dedup, self-scoping). Testdata ryddet.
+  - ✅ **Hærdning (00056):** DB-sikker dedup (partielt unikt indeks + ON CONFLICT
+    → én pr. opgave/dag også ved samtidige loads); trigger fjerner ulæste
+    påmindelser når opgaven markeres completed/skipped (kun ulæste, historik
+    bevaret). Alle test-cases verificeret; sociale notifikationer upåvirkede.
 - Teknisk QA: `tsc` grøn på alle tre; `next build` kørt.
 
 **Kræver din VISUELLE sign-off (trin 6 / lille review):** placeringen af "tryk og
