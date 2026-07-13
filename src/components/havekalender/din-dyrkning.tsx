@@ -197,6 +197,8 @@ function getPlantAction(plant: Plant): Aktion | null {
 
 interface Props {
   plants: Plant[]
+  /** Indlogget → aldrig demo-data. Kun anonyme ser DEMO_PLANTS. */
+  isLoggedIn: boolean
 }
 
 /**
@@ -211,11 +213,11 @@ interface Props {
  *   • Har planter, men ingen kræver handling → blød "alt er i ro"-note.
  *   • Ingen planter endnu → invitation til at komme i gang.
  */
-export function DinDyrkning({ plants }: Props) {
-  // Brug brugerens egne planter hvis de har nogen; ellers demo-data så
-  // designet kan vises for nye/anonyme brugere.
+export function DinDyrkning({ plants, isLoggedIn }: Props) {
+  // Brug brugerens egne planter hvis de har nogen; demo-data er KUN for anonyme
+  // (så designet kan vises uden konto). Indlogget + 0 planter → tom-tilstand.
   const userPlanter = plants.filter(p => !p.isArchived)
-  const isDemo = userPlanter.length === 0
+  const isDemo = !isLoggedIn && userPlanter.length === 0
   const kilde = isDemo ? DEMO_PLANTS : userPlanter
 
   const handlinger = kilde

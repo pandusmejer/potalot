@@ -237,7 +237,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
       {VIS_DIN_DYRKNING && (
         <section className="space-y-2">
           <Eyebrow>Din dyrkning</Eyebrow>
-          <DinDyrkning plants={plants} />
+          <DinDyrkning plants={plants} isLoggedIn={isLoggedIn} />
         </section>
       )}
 

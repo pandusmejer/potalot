@@ -103,7 +103,10 @@ interface Props {
 }
 
 export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations, isLoggedIn }: Props) {
-  const isDemo = realPlants.length === 0
+  // Demo/mock-data er KUN for anonyme besøgende (så designvisionen er synlig
+  // uden konto). En indlogget bruger med 0 planter er IKKE demo — de skal se en
+  // tom-tilstand + "Tilføj plante", ikke opdigtede planter (San Marzano osv.).
+  const isDemo = !isLoggedIn && realPlants.length === 0
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
   const { aktive, planlagte, klarTilArkiv } = useMemo(() => {
