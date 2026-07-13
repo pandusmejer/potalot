@@ -40,6 +40,9 @@ export function InspirerMig({ forslag }: Props) {
   const navn = lead?.navn ?? forslag.navn
   const begrundelse = lead?.begrundelse ?? forslag.begrundelse
   const billede = lead?.billede ?? forslag.billede
+  // Hovedforslaget (foto + titel-blok) skal føre videre til sortens
+  // guide/frøbank — ellers er kortets mest prominente flade død.
+  const leadHref = lead?.href ?? '/froebank'
 
   // Små forslag = de øvrige kandidater (aldrig den aktuelle), max 2.
   const smaa = kandidater
@@ -64,7 +67,7 @@ export function InspirerMig({ forslag }: Props) {
             (kun én kandidat) centreres teksten, så der ikke opstår tomrum. */}
         <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 200 }}>
           <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: kanRotere ? 'flex-start' : 'center' }}>
-            <div>
+            <Link href={leadHref} className="no-underline" style={{ display: 'block', color: 'inherit' }}>
               <p
                 className="uppercase"
                 style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 14 }}
@@ -81,7 +84,7 @@ export function InspirerMig({ forslag }: Props) {
               >
                 {begrundelse}
               </p>
-            </div>
+            </Link>
 
             {kanRotere && (
               <button
@@ -99,14 +102,14 @@ export function InspirerMig({ forslag }: Props) {
           </div>
 
           {billede && (
-            <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 3, borderBottomLeftRadius: 3, overflow: 'hidden' }}>
+            <Link href={leadHref} className="no-underline" style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 3, borderBottomLeftRadius: 3, overflow: 'hidden', display: 'block' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={billede}
                 alt=""
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
               />
-            </div>
+            </Link>
           )}
         </div>
 
