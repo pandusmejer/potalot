@@ -35,11 +35,22 @@ export interface ProevInput {
   hoestPrArt: Record<string, number>
 }
 
-/** Lille klikbart forslag (top=sort/art, bund=regel-baseret kvalitet). */
-export interface SmaaForslag {
-  top: string
-  bund: string
-  foto: string
+/**
+ * Lead-egnet kandidat (har foto → kan vises som hovedforslag på kort 1 ELLER
+ * som lille klikbart forslag). Klienten roterer deterministisk gennem listen.
+ */
+export interface LeadKandidat {
+  /** Lang titel (Cormorant) når kandidaten er hovedforslag. */
+  navn: string
+  /** Brødtekst når kandidaten er hovedforslag. */
+  begrundelse: string
+  /** Foto (påkrævet — derfor "lead-egnet"). */
+  billede: string
+  /** Kort toplinje når kandidaten er lille forslag. */
+  titel: string
+  /** Regel-baseret kort kvalitet (bundlinje, 2-4 ord). */
+  undertitel: string
+  /** Sortens guide (/guides/[id]) ELLER frøbank som fallback. */
   href: string
 }
 
@@ -52,7 +63,7 @@ export interface ProevForslag {
   sekundaer?: { kicker: string; titel: string; tekst: string }
   /** intern — hvilken regel valgte forslaget. ALDRIG i UI. */
   reason: string
-  // ── Små-format-felter pr. kandidat (til de klikbare små forslag) ──
+  // ── Små-format-felter pr. kandidat ──
   /** Sort/art-navn (toplinje). */
   titel?: string
   /** Regel-baseret kort kvalitet (bundlinje, 2-4 ord). */
@@ -62,8 +73,8 @@ export interface ProevForslag {
   /** Regel-nøgle (forlaeng/hul/froeavl/robusthed/koekken). */
   type?: string
   // ── Kun på det komponerede resultat ──
-  /** Max 2 ægte små forslag (kun kandidater der har foto). */
-  forslag?: SmaaForslag[]
+  /** Lead-egnede kandidater (foto) — klienten roterer gennem dem. */
+  kandidater?: LeadKandidat[]
 }
 
 // ── Ordforråd (tags) ──────────────────────────────────────────
@@ -244,29 +255,44 @@ function samlForslag(input: ProevInput): ProevForslag[] {
  * Returnerer null hvis der ikke er ægte grundlag (skjul sektionen).
  */
 export function byggProevNaesteAar(input: ProevInput): ProevForslag | null {
-  const kandidater = samlForslag(input)
-  if (kandidater.length === 0) return null
-  const lead = kandidater[0]
-  const sek = kandidater[1]
+  const alle = samlForslag(input)
+  if (alle.length === 0) return null
 
-  // Små forslag = lavere-prioritets-kandidater MED foto (det låste kort viser
-  // thumbnails). Max 2. Href → sortens guide, ellers frøbank. Ingen døde links.
-  const smaa: SmaaForslag[] = kandidater
-    .slice(2)
-    .filter(k => k.billede && k.titel && k.undertitel)
-    .slice(0, 2)
+  const harLeadForm = (k: ProevForslag) => !!(k.billede && k.titel && k.undertitel)
+
+  // Lead-egnede kandidater = dem med foto (kortet viser foto-højre-split).
+  // Klienten roterer gennem dem ét ad gangen; de øvrige bliver små forslag.
+  // Href → sortens guide, ellers frøbank. Ingen døde links.
+  const seenSort = new Set<string>()
+  const kandidater: LeadKandidat[] = alle
+    .filter(harLeadForm)
+    .filter(k => {
+      // To regler kan pege på samme sort — vis den kun én gang i rotationen.
+      const n = `${k.titel}|${k.billede}`
+      if (seenSort.has(n)) return false
+      seenSort.add(n)
+      return true
+    })
     .map(k => ({
-      top: k.titel!,
-      bund: k.undertitel!,
-      foto: k.billede!,
+      navn: k.navn,
+      begrundelse: k.begrundelse,
+      billede: k.billede!,
+      titel: k.titel!,
+      undertitel: k.undertitel!,
       href: k.slug ? `/guides/${k.slug}` : '/froebank',
     }))
 
+  // Top-level lead = første lead-egnede (foto), ellers første kandidat
+  // (tekst-only fallback hvis intet forslag har foto).
+  const lead = alle.find(harLeadForm) ?? alle[0]
+  // Sekundært (kort 2) = første kandidat der IKKE er lead → ingen dublet.
+  const sek = alle.find(k => k !== lead)
+
   return {
     ...lead,
+    kandidater: kandidater.length > 0 ? kandidater : undefined,
     sekundaer: sek
       ? { kicker: 'Måske du også vil prøve', titel: sek.navn, tekst: sek.begrundelse }
       : undefined,
-    forslag: smaa.length > 0 ? smaa : undefined,
   }
 }

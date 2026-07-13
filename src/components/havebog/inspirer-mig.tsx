@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import type { InspirerForslag } from '@/data/havebog-demo'
 
@@ -9,25 +12,41 @@ interface Props {
 }
 
 /**
- * RUM · "Prøv næste år" (V19 — Annas 390px kort-spec).
+ * RUM · "Prøv næste år" (V20 — Annas 390px kort-spec + ægte rotation).
  *
  * ⚠️ ANNA-LÅST (12/7). Layout + alle mål er godkendt og må IKKE ændres
  * uden ny retning fra Anna: kort radius 14 + marginInline -11 (~3mm
  * bredere/side), overskrift Cormorant 600 clamp(26,7.8cqw,33), billedets
- * venstre hjørner 3px, "Vis et nyt forslag"-pille (h31, rgba(49,72,41,.85),
- * luft under), foto-bånd pakket venstre (padding-venstre 9), og "Flere
- * forslag" i firkantet 57×42-boks (rgba(199,209,174,.85), ingen pil).
+ * venstre hjørner 3px, "Vis noget andet"-pille (h31, rgba(49,72,41,.85),
+ * bund-justeret, luft under), foto-bånd pakket venstre (padding-venstre 9),
+ * og "Flere forslag" i firkantet 57×42-boks (rgba(199,209,174,.85), ingen pil).
  *
- * Ét stærkt forslag + få sekundære, som et taktilt anbefalingskort:
- * tekst-venstre / foto-højre split, en lav foto-række med små forslag
- * (to linjer: art/sort bold + sort/kvalitet), og "Flere forslag"-boks
- * yderst til højre i båndet.
- *
- * PROTOTYPE: "Vis et nyt forslag" er visuel (rotation ikke wired endnu).
- * "Flere forslag" fører til frøbanken (ægte rute). Demo-only rum; gated
- * false for indloggede indtil forslags-motoren lander. Ingen døde links.
+ * ROTATION (ægte, deterministisk — ingen random/AI/ny motor): motoren giver
+ * en liste af lead-egnede kandidater (dem med foto). Kandidat 0 vises som
+ * hovedforslag; "Vis noget andet" cykler til næste og looper. De øvrige
+ * kandidater bliver de klikbare små forslag (max 2, aldrig en dublet af det
+ * aktuelle hovedforslag). Knappen vises kun ved ≥2 kandidater. "Flere forslag"
+ * fører til frøbanken. Ingen døde links, ingen carousel-hylde — ét forslag
+ * ad gangen.
  */
 export function InspirerMig({ forslag }: Props) {
+  const kandidater = forslag.kandidater ?? []
+  const [aktiv, setAktiv] = useState(0)
+  const kanRotere = kandidater.length >= 2
+
+  // Aktuelt hovedforslag: den valgte kandidat, ellers tekst-only fallback.
+  const index = kandidater.length > 0 ? aktiv % kandidater.length : -1
+  const lead = index >= 0 ? kandidater[index] : null
+  const navn = lead?.navn ?? forslag.navn
+  const begrundelse = lead?.begrundelse ?? forslag.begrundelse
+  const billede = lead?.billede ?? forslag.billede
+
+  // Små forslag = de øvrige kandidater (aldrig den aktuelle), max 2.
+  const smaa = kandidater
+    .filter((_, i) => i !== index)
+    .slice(0, 2)
+    .map(k => ({ top: k.titel, bund: k.undertitel, foto: k.billede, href: k.href }))
+
   return (
     <section>
       <div
@@ -40,10 +59,11 @@ export function InspirerMig({ forslag }: Props) {
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        {/* Top: tekst-venstre / foto-højre split. Teksten er lodret centreret
-            (rotationsknappen er fjernet — motoren har ikke wired rotation). */}
+        {/* Top: tekst-venstre / foto-højre split. Knappen er bund-justeret,
+            så dens underkant flugter med fotoets underkant. Uden knap
+            (kun én kandidat) centreres teksten, så der ikke opstår tomrum. */}
         <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 200 }}>
-          <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: kanRotere ? 'flex-start' : 'center' }}>
             <div>
               <p
                 className="uppercase"
@@ -54,21 +74,35 @@ export function InspirerMig({ forslag }: Props) {
               <p
                 style={{ fontFamily: serif, fontWeight: 600, fontSize: 'clamp(26px, 7.8cqw, 33px)', lineHeight: 0.98, letterSpacing: '-0.01em', color: '#1F2D1D', margin: 0, marginBottom: 8 }}
               >
-                {forslag.navn}
+                {navn}
               </p>
               <p
                 style={{ fontFamily: sans, fontSize: 13, fontWeight: 400, lineHeight: 1.5, color: '#45503F', margin: 0 }}
               >
-                {forslag.begrundelse}
+                {begrundelse}
               </p>
             </div>
+
+            {kanRotere && (
+              <button
+                type="button"
+                onClick={() => setAktiv(i => (i + 1) % kandidater.length)}
+                className="inline-flex items-center self-start"
+                style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 31, padding: '0 14px', borderRadius: 999, border: 'none', background: 'rgba(49,72,41,0.85)', color: '#F7F1DF', fontFamily: sans, fontSize: 12.5, fontWeight: 650, cursor: 'pointer' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#F7F1DF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Vis noget andet
+              </button>
+            )}
           </div>
 
-          {forslag.billede && (
+          {billede && (
             <div style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 3, borderBottomLeftRadius: 3, overflow: 'hidden' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={forslag.billede}
+                src={billede}
                 alt=""
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
               />
@@ -78,10 +112,10 @@ export function InspirerMig({ forslag }: Props) {
 
         {/* Sekundære små forslag — foto-række pakket til venstre, med
             "Flere forslag →" yderst til højre i samme bånd. */}
-        {forslag.forslag && forslag.forslag.length > 0 && (
+        {smaa.length > 0 && (
           <div style={{ padding: '13px 18px 15px 9px', borderTop: '1px solid rgba(143,148,132,0.16)', display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: 14, minWidth: 0 }}>
-              {forslag.forslag.slice(0, 2).map((f) => (
+              {smaa.map((f) => (
                 <Link key={f.top} href={f.href} className="no-underline flex items-center" style={{ gap: 11 }}>
                   <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}

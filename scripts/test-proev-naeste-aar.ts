@@ -94,5 +94,29 @@ function tjek(navn: string, cond: boolean, extra = '') {
   tjek('Billede peger på en ægte katalog-sort', !r?.billede || KAT.some(k => k.billede === r?.billede), r?.billede ?? '')
 }
 
+// Rotation — ≥2 lead-egnede (foto) kandidater → knappen kan vises.
+{
+  const r = byggProevNaesteAar(base({
+    dyrkede: [{ art: 'Tomat', variety: 'San Marzano' }, { art: 'Chili', variety: 'Habanero' }],
+  }))
+  const k = r?.kandidater ?? []
+  tjek('Rotation: mindst 2 lead-egnede kandidater', k.length >= 2, JSON.stringify(k.map(x => x.titel)))
+  tjek('Rotation: alle kandidater har foto', k.every(x => !!x.billede), JSON.stringify(k))
+  tjek('Rotation: ingen dublet-sort', new Set(k.map(x => `${x.titel}|${x.billede}`)).size === k.length, JSON.stringify(k.map(x => x.titel)))
+  tjek('Rotation: href er ægte rute (guide eller frøbank)',
+    k.every(x => x.href.startsWith('/guides/') || x.href === '/froebank'), JSON.stringify(k.map(x => x.href)))
+  console.log(`     kandidater: ${k.map(x => x.titel).join(' · ')}`)
+}
+
+// Én kandidat → knappen skal skjules (kun 1 lead-egnet sort).
+{
+  // Dyrker kun San Marzano: forlæng+hul peger begge på Stupice (dedup→1),
+  // frøavl har intet foto. Resultat: præcis 1 lead-egnet kandidat.
+  const r = byggProevNaesteAar(base({ dyrkede: [{ art: 'Tomat', variety: 'San Marzano' }] }))
+  const k = r?.kandidater ?? []
+  tjek('Én kandidat → knap-skjul (kandidater.length === 1)', k.length === 1, JSON.stringify(k.map(x => x.titel)))
+  tjek('Kandidat-liste er aldrig tom-array (undefined når 0)', r === null || r.kandidater === undefined || r.kandidater.length > 0, JSON.stringify(r?.kandidater))
+}
+
 console.log(`\n${ok} bestået, ${fejl} fejlet.`)
 if (fejl > 0) process.exit(1)

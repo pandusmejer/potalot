@@ -615,11 +615,19 @@ export interface InspirerForslag {
   /** V18: illustration/foto — bruger eksisterende frøkort indtil videre */
   billede?: string
   /**
-   * V19: små sekundære forslag (klikbar foto-række under lead). To linjer:
-   *  top  = sort/art-navn (bold) · bund = regel-baseret kvalitet (2-4 ord)
-   *  href = sortens guide (/guides/[id]) ELLER frøbank som fallback
+   * V20: lead-egnede kandidater (dem med foto). Kort 1 roterer deterministisk
+   * gennem dem ét ad gangen ("Vis noget andet"); den aktuelle vises som
+   * hovedforslag (navn/begrundelse/billede), resten som små forslag
+   * (titel/undertitel/billede). href = sortens guide ELLER frøbank.
    */
-  forslag?: { top: string; bund: string; foto: string; href: string }[]
+  kandidater?: {
+    navn: string
+    begrundelse: string
+    billede: string
+    titel: string
+    undertitel: string
+    href: string
+  }[]
   /** V18: sekundært "måske du også vil prøve" (bliver egen sektion) */
   sekundaer?: { kicker: string; titel: string; tekst: string }
 }
@@ -628,9 +636,25 @@ export const DEMO_INSPIRER: InspirerForslag = {
   navn: 'Malwina jordbær',
   begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
   billede: '/images/frokort/jordbaer-korona.png',
-  forslag: [
-    { top: 'Basilikum', bund: 'God makker', foto: '/images/makro/basilikum/bundt.jpg', href: '/froebank' },
-    { top: 'Peberfrugt', bund: 'Anden type', foto: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg', href: '/froebank' },
+  kandidater: [
+    {
+      navn: 'Malwina jordbær',
+      begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+      billede: '/images/frokort/jordbaer-korona.png',
+      titel: 'Malwina', undertitel: 'Senere sort', href: '/froebank',
+    },
+    {
+      navn: 'Basilikum',
+      begrundelse: 'En klassisk makker til dine tomater — og god at tørre til vinteren.',
+      billede: '/images/makro/basilikum/bundt.jpg',
+      titel: 'Basilikum', undertitel: 'God makker', href: '/froebank',
+    },
+    {
+      navn: 'Corno di Toro',
+      begrundelse: 'En sød snackpeber med en anden smag end dine nuværende sorter.',
+      billede: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg',
+      titel: 'Peberfrugt', undertitel: 'Anden type', href: '/froebank',
+    },
   ],
   sekundaer: {
     kicker: 'Måske du også vil prøve',

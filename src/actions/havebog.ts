@@ -938,7 +938,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           begrundelse: proev.begrundelse,
           billede: proev.billede ?? undefined,
           sekundaer: proev.sekundaer,
-          forslag: proev.forslag, // ægte små forslag (klikbare, kun m. foto)
+          kandidater: proev.kandidater, // lead-egnede (foto) — klienten roterer
         }
       : null
 
