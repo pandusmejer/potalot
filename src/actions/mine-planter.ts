@@ -352,6 +352,107 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   }
 }
 
+// ============================================
+// Standalone plante-oprettelse (V1A — launch onboarding/data-rescue)
+// ============================================
+
+export interface EgenPlanteInput {
+  /** Art (påkrævet), fx "Tomat". */
+  name: string
+  /** Sort ELLER type (fx "San Marzano" / "Cherrytomat"). null = ukendt sort. */
+  variety?: string | null
+  /** Antal planter i haven (mindst 1). */
+  quantity?: number
+  /** Dyrkningssted (bliver til en GardenLocation via resolver). */
+  location?: string
+  /** Startdato (ISO). Cirka-dato sendes som en konkret dato (fx 1. i måneden). */
+  sowDate?: string | null
+  /** Plantens nuværende stadie. Default: i_vaekst (den står allerede i haven). */
+  status?: PlantStatus
+  /** Valgfrit bruger-uploadet billede (URL). */
+  imageUrl?: string | null
+  /** Valgfri kort observation → gemmes som note-log. */
+  observation?: string
+}
+
+/**
+ * Opret en plante brugeren ALLEREDE har i haven — uden at gå gennem frøbanken.
+ *
+ * Fjerner launch-barrieren: `plants_v2.source_inventory_id` er allerede nullable,
+ * så en manuelt oprettet plante repræsenteres eksplicit (feltet = null), ingen
+ * falske placeholder-poster, ingen parallel model. Genbruger nøjagtig samme
+ * felt-mapping og garden-location-resolver som `saaFroeFraInventory`; quantity
+ * sættes direkte (ingen sowing_events, da der ikke er sået fra et frøbank-element).
+ */
+export async function opretEgenPlante(
+  input: EgenPlanteInput,
+): Promise<{ id: string } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const name = input.name.trim()
+  if (!name) return { error: 'Angiv mindst en art.' }
+
+  const variety = input.variety?.trim() || null
+  const quantity = Math.max(1, Math.floor(input.quantity ?? 1))
+  const sowDate = input.sowDate || null
+  const growingYear = sowDate ? parseInt(sowDate.split('-')[0], 10) : new Date().getFullYear()
+  const status: PlantStatus = input.status ?? 'i_vaekst'
+  const imageUrl = input.imageUrl?.trim() || null
+
+  const gardenLocationId = input.location
+    ? await resolveOrCreateGardenLocation(input.location)
+    : null
+
+  const { data: plant, error } = await supabase
+    .from('plants_v2')
+    .insert({
+      user_id: userId,
+      source_inventory_id: null, // standalone — eksplicit, ingen placeholder
+      name,
+      variety,
+      status,
+      location: input.location || null,
+      garden_location_id: gardenLocationId,
+      sow_date: sowDate,
+      quantity,
+      growing_year: growingYear,
+      guide_id: null,
+      primary_image_url: imageUrl,
+      // image_source udeladt bevidst: kolonnen (migration 00049) er ikke i
+      // live-DB'ens PostgREST schema-cache (PGRST204) — samme fejl rammer den
+      // eksisterende saaFroeFraInventory. Flagget som separat DB-opgave.
+      is_archived: false,
+    })
+    .select('id')
+    .single()
+
+  if (error || !plant) {
+    return { error: error?.message ?? 'Kunne ikke oprette plante.' }
+  }
+  const plantId = (plant as { id: string }).id
+
+  // Valgfri kort observation → note-log (dateret til startdato, ellers i dag).
+  const obs = input.observation?.trim()
+  if (obs) {
+    await createPlantLog({
+      plantId,
+      date: sowDate ?? new Date().toISOString().slice(0, 10),
+      type: 'note',
+      note: obs,
+    })
+  }
+
+  maybeAwardFirstSowing(userId).catch(() => {})
+
+  revalidatePath('/mine-planter')
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/kalender')
+  revalidatePath('/')
+
+  return { id: plantId }
+}
+
 /**
  * Map en log-type til det stadie planten BØR være i efter eventet.
  * Returnerer null hvis loggen ikke afspejler en stadie-overgang.

@@ -2,6 +2,7 @@ import { MinePlanterClient } from '@/components/mine-planter/mine-planter-client
 import { getAllPlants } from '@/actions/mine-planter'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getGardenLocations } from '@/actions/garden-locations'
+import { getCurrentUser } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,10 +22,11 @@ export const dynamic = 'force-dynamic'
  */
 export default async function MinePlanterPage() {
   const today = new Date().toISOString().slice(0, 10)
-  const [plants, doneTaskKeys, gardenLocations] = await Promise.all([
+  const [plants, doneTaskKeys, gardenLocations, user] = await Promise.all([
     getAllPlants(),
     getTaskCompletionsForDate(today),
     getGardenLocations(),
+    getCurrentUser(),
   ])
   return (
     <MinePlanterClient
@@ -32,6 +34,7 @@ export default async function MinePlanterPage() {
       today={today}
       doneTaskKeys={doneTaskKeys}
       gardenLocations={gardenLocations}
+      isLoggedIn={!!user}
     />
   )
 }

@@ -11,6 +11,7 @@ import { SaesonensVaekst } from '@/components/mine-planter/saesonens-vaekst'
 import { MineSteder } from '@/components/mine-planter/mine-steder'
 import { SamlingPodium } from '@/components/mine-planter/samling-podium'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
+import { EgenPlanteDialog } from '@/components/mine-planter/egen-plante-dialog'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { overrideFor } from '@/data/plant-detail'
 import { afledtStatuslinje } from '@/lib/afledninger'
@@ -97,9 +98,11 @@ interface Props {
   doneTaskKeys: string[]
   /** Brugerens oprettede dyrkningssteder (tomt i demo). */
   gardenLocations: GardenLocation[]
+  /** Er brugeren logget ind? Styrer om "tilføj plante"-indgangen vises. */
+  isLoggedIn: boolean
 }
 
-export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations }: Props) {
+export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations, isLoggedIn }: Props) {
   const isDemo = realPlants.length === 0
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
@@ -223,6 +226,14 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-8">
       <ForsideHero greeting={greeting} story={heroStory} storyNote={heroNote} />
+
+      {/* Tilføj en plante du ALLEREDE har (V1A) — fjerner frøbank-omvejen for
+          midt-sæson-brugere. Kun for indloggede (anonym demo har ingen konto). */}
+      {isLoggedIn && (
+        <div className="px-0.5">
+          <EgenPlanteDialog gardenLocations={gardenLocations} />
+        </div>
+      )}
 
       {/* LIGE NU — hovedpersonen (sidens centrum). */}
       {hovedperson && (
