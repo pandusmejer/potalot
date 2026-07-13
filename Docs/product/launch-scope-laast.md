@@ -44,3 +44,18 @@ drevet KUN af sociale/gruppe-triggers. Der udledes INGEN påmindelser fra opgave
 
 Små designreviews undervejs er fine, når en skærm kræver en visuel beslutning —
 men ingen samlet produkttest før trin 6.
+
+## Byggestatus (13/7)
+- ✅ **Onboarding lukket** — ingen draft-persistens; review-header gjort ærlig.
+- ✅ **Diktafon** — global "tryk og tal"-mic i topbaren (indlogget) åbner den
+  eksisterende kæde i en dialog; iOS tekst-fallback bevaret; død legacy fjernet.
+  Verificeret: dialog åbner + viser kæden @390px.
+- ✅ **Notifikationer** — `sync_task_reminders()` (00055) afleder få, plante-
+  knyttede påmindelser fra forfaldne opgaver; kaldt on-load fra topbaren; dedup
+  pr. opgave/dag. Verificeret på DB-laget (3 korrekte påmindelser fra rigtige
+  opgaver, dedup, self-scoping). Testdata ryddet.
+- Teknisk QA: `tsc` grøn på alle tre; `next build` kørt.
+
+**Kræver din VISUELLE sign-off (trin 6 / lille review):** placeringen af "tryk og
+tal"-mic-ikonet i den låste topbar (venstre for klokken, kun indlogget). Kunne
+ikke renderes indlogget her (auth-gated dev-server), men dialogen er verificeret.
