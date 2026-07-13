@@ -74,6 +74,9 @@ export function EgenPlanteDialog({ gardenLocations, children }: Props) {
         quantity: Math.max(1, parseInt(quantity, 10) || 1),
         location: location.trim() || undefined,
         sowDate: sowDateFromMode(),
+        // Bevar præcisionen: 'approx' markerer at dagen i sowDate er udfyldning,
+        // 'unknown' at brugeren ikke ved det (sowDate = null). Ingen falsk præcision.
+        sowDatePrecision: datoMode,
         imageUrl: primary,
         observation: observation.trim() || undefined,
       })

@@ -365,8 +365,16 @@ export interface EgenPlanteInput {
   quantity?: number
   /** Dyrkningssted (bliver til en GardenLocation via resolver). */
   location?: string
-  /** Startdato (ISO). Cirka-dato sendes som en konkret dato (fx 1. i måneden). */
+  /** Startdato (ISO). Cirka-dato sendes som måned-01 (dagen er udfyldning). */
   sowDate?: string | null
+  /**
+   * Præcisionen af sowDate — så en omtrentlig måned aldrig fremstår præcis:
+   *   'exact'   = brugeren angav en præcis dato
+   *   'approx'  = måned-niveau (dagen i sowDate er udfyldning)
+   *   'unknown' = brugeren ved det ikke (sowDate er null)
+   * Persisteres i plants_v2.sow_date_precision (migration 00054).
+   */
+  sowDatePrecision?: 'exact' | 'approx' | 'unknown' | null
   /** Plantens nuværende stadie. Default: i_vaekst (den står allerede i haven). */
   status?: PlantStatus
   /** Valgfrit bruger-uploadet billede (URL). */
@@ -419,9 +427,7 @@ export async function opretEgenPlante(
       growing_year: growingYear,
       guide_id: null,
       primary_image_url: imageUrl,
-      // image_source udeladt bevidst: kolonnen (migration 00049) er ikke i
-      // live-DB'ens PostgREST schema-cache (PGRST204) — samme fejl rammer den
-      // eksisterende saaFroeFraInventory. Flagget som separat DB-opgave.
+      image_source: imageUrl ? 'user_upload' : null,
       is_archived: false,
     })
     .select('id')
@@ -431,6 +437,22 @@ export async function opretEgenPlante(
     return { error: error?.message ?? 'Kunne ikke oprette plante.' }
   }
   const plantId = (plant as { id: string }).id
+
+  // Persistér dato-præcisionen (migration 00054). Bevidst som separat, best-effort
+  // UPDATE frem for i insertet: så snart 00054 er anvendt, begynder feltet at
+  // persistere — men indtil da vælter en manglende kolonne (42703/PGRST204) IKKE
+  // oprettelsen. Ingen stille udeladelse: migrationen ligger i repo + er chippet,
+  // og en uventet fejl logges. 'unknown' gemmes eksplicit (bruger sagde "ved ikke")
+  // så det kan skelnes fra en gammel række uden registreret proveniens.
+  if (input.sowDatePrecision) {
+    const { error: precErr } = await supabase
+      .from('plants_v2')
+      .update({ sow_date_precision: input.sowDatePrecision })
+      .eq('id', plantId)
+    if (precErr && !/sow_date_precision/i.test(precErr.message)) {
+      console.warn('[opretEgenPlante] uventet fejl ved sow_date_precision:', precErr.message)
+    }
+  }
 
   // Valgfri kort observation → note-log (dateret til startdato, ellers i dag).
   const obs = input.observation?.trim()
