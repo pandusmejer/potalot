@@ -1,4 +1,5 @@
 import { getAllInventoryItems, getCustomSubcategories } from '@/actions/froebank'
+import { getCurrentUser } from '@/lib/auth'
 import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { FroebankBrowser } from '@/components/froebank/froebank-browser'
@@ -8,9 +9,10 @@ import { aktuelMaaned } from '@/lib/datetime'
 export const dynamic = 'force-dynamic'
 
 export default async function FroebankPage() {
-  const [realInventory, customSubcategories] = await Promise.all([
+  const [realInventory, customSubcategories, user] = await Promise.all([
     getAllInventoryItems(),
     getCustomSubcategories(),
+    getCurrentUser(),
   ])
 
   // Hvis brugeren ikke er logget ind eller endnu ikke har tilføjet
@@ -26,7 +28,9 @@ export default async function FroebankPage() {
   //   med kommende frøkort, og antallet af frøkort ændrer dem ikke — de ligger
   //   altid sidst, og stakken kan vokse uendeligt. (IKKE den gamle "fyld op til
   //   12 slots"-model.)
-  const inventory = realInventory.length === 0 ? DEMO_INVENTORY : realInventory
+  // Demo-puljen er KUN for anonyme besøgende (design synligt uden konto). En
+  // indlogget bruger med 0 frø ser sin egen tomme frøbank, ikke opdigtede frø.
+  const inventory = (!user && realInventory.length === 0) ? DEMO_INVENTORY : realInventory
 
   // Lille sensorisk note — kontekst-aware (måned, tid på dagen).
   // Varierer pr. dag, men skal ALDRIG ramme samme tekst som kalender-
