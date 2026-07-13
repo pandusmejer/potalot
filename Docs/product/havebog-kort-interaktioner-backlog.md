@@ -126,3 +126,9 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
   `getHavebogData` (artKey → guide-id) — så opgraderer href automatisk.
   Fallback-kæden er ærlig indtil da (fx stangbønne → /froebank, da hverken
   bønne-frøavls-, sort- eller artsguide findes).
+- **"Flere idéer"-destination (kort 1):** boksen fører til Frøbanken (udforsk
+  flere sorter/arter til næste år — udvalg/samling, ikke guide-dybde). Bruger
+  rå `/froebank` nu. ØNSKET fremtidig destination: `/froebank?inspiration=
+  naeste-aar` — en filtreret næste-år-visning med forslag baseret på brugerens
+  planter/frøbank/sæson. Bygges når frøbank-filter/query findes; opdatér href i
+  inspirer-mig.tsx (kommentar markerer stedet).
