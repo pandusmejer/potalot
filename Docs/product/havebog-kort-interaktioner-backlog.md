@@ -116,3 +116,13 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
   silhuet (1 tagform, 2 sidefelter, evt. 1 central åbning), 1-2 små spirer, få/
   ingen ruder, ingen dør-knop/potter, blød akvarel i støvet oliven/creme,
   transparent, læsbar ved 28-40px. Drop ind som `drivhus.png` → auto-opdateres.
+- **Frøavls-guide-destinationer (kort 1, frøavl-lead):** frøavl-leadets href
+  følger nu prioriteten frøavls-guide → sort-guide → artsguide → /froebank
+  (commit 5d59603). Niveau 1 (dedikeret **frøavls-guide pr. art/kategori**)
+  findes ikke endnu — der er kun frø-omtale inde i enkelte guides (tomat F1/
+  arvesort, dahlia frøformering). MANGLER: rigtige "Gem frø fra X"-guides
+  (bønner, ærter, tomat, salat, agurk, græskar …) så leadet fører til læring
+  frem for frøbank-fallback. Når de skrives: fyld `froeavlGuide`-mappen i
+  `getHavebogData` (artKey → guide-id) — så opgraderer href automatisk.
+  Fallback-kæden er ærlig indtil da (fx stangbønne → /froebank, da hverken
+  bønne-frøavls-, sort- eller artsguide findes).
