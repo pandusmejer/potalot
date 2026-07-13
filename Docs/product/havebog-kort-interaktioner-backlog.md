@@ -86,9 +86,15 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
 - **"Se alle kompetencer"** → `/profil` (virker). → Ægte deriver
   (`byggKompetencer`); Profil-siden skal have det fulde overblik at linke til.
 
-### 8 · Første gange (bedrifter.tsx)
-- **"Se alle milepæle"** → `/profil` (virker). → Mangler **deriver** for
-  beviselige førster (første høst/drivhus/dahlia/såning) fra logs. Demo indtil da.
+### 8 · Første gange (bedrifter.tsx) — MOTOR BYGGET 12/7
+- Motor: **byggFoersteGange** (`src/lib/havebog-foerste-gange.ts`, testet 9/9).
+  Beviselige førster fra logs (sowing/germination/planting_out/pruning/
+  pest_disease/harvest + archive/arkiveret) + drivhus KUN ved tydelig location.
+  Blomstring UDELADT (ingen beviselig logtype). Wired i getHavebogData →
+  `bedrifter` (nyeste først, max 4); gated på >= 1 milepæl for indloggede.
+- **"Se alle milepæle"** → `/profil` (virker). Rest: fuld milepæls-side i Profil
+  (kronologisk/grupperet), soft glyph for `spiring` er `plante` (stand-in — en
+  dedikeret spire-glyf kan laves senere).
 
 ---
 
@@ -98,8 +104,7 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
   giv motorens output et `forslag[]`-felt (de små foto-forslag i kort 1) + wire
   "Vis et nyt forslag"-rotationen. Klikbare enkelt-forslag kræver et mål-id.
 - **Manglende motorer (prototyper):** kort 4 (projekt-intention fra idéboard/
-  kalender/forvandling/diktafon), kort 5 (sæson-kuratering), kort 8 (milepæls-
-  deriver: beviselige "førster" fra logs).
+  kalender/forvandling/diktafon), kort 5 (sæson-kuratering). (Kort 8 BYGGET 12/7.)
 - **Preview-rute — GJORT 12/7 (option A):** flyttet fra offentlig
   `/havebog-preview` til `/admin/qa/havebog-preview`, som arver
   `admin/qa/layout.tsx`-gatingen (`isCurrentUserAdmin()` → notFound/login).
