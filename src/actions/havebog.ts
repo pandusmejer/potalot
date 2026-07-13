@@ -911,7 +911,8 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         tags: g.tags ?? [],
         harvestMonths: g.quickFacts?.harvestMonths ?? [],
         difficulty: g.difficulty ?? null,
-        billede: null,
+        billede: g.primaryImageId ?? null,
+        id: g.id ?? null,
       }))
     const proevDyrkede = [
       ...inventoryItems.map(i => ({ art: i.name, variety: i.variety })),
@@ -937,6 +938,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           begrundelse: proev.begrundelse,
           billede: proev.billede ?? undefined,
           sekundaer: proev.sekundaer,
+          forslag: proev.forslag, // ægte små forslag (klikbare, kun m. foto)
         }
       : null
 

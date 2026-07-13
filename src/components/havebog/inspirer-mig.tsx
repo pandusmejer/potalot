@@ -40,10 +40,10 @@ export function InspirerMig({ forslag }: Props) {
           boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
         }}
       >
-        {/* Top: tekst-venstre / foto-højre split. Pillen er bund-justeret,
-            så dens underkant flugter med fotoets underkant. */}
-        <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 210 }}>
-          <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+        {/* Top: tekst-venstre / foto-højre split. Teksten er lodret centreret
+            (rotationsknappen er fjernet — motoren har ikke wired rotation). */}
+        <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 200 }}>
+          <div style={{ flex: '0 0 53%', padding: '14px 16px 16px 22px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div>
               <p
                 className="uppercase"
@@ -62,17 +62,6 @@ export function InspirerMig({ forslag }: Props) {
                 {forslag.begrundelse}
               </p>
             </div>
-
-            <button
-              type="button"
-              className="inline-flex items-center self-start"
-              style={{ gap: 7, marginTop: 'auto', marginBottom: 0, height: 31, padding: '0 14px', borderRadius: 999, border: 'none', background: 'rgba(49,72,41,0.85)', color: '#F7F1DF', fontFamily: sans, fontSize: 12.5, fontWeight: 650, cursor: 'pointer' }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#F7F1DF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Vis et nyt forslag
-            </button>
           </div>
 
           {forslag.billede && (
@@ -93,7 +82,7 @@ export function InspirerMig({ forslag }: Props) {
           <div style={{ padding: '13px 18px 15px 9px', borderTop: '1px solid rgba(143,148,132,0.16)', display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: 14, minWidth: 0 }}>
               {forslag.forslag.slice(0, 2).map((f) => (
-                <div key={f.top} className="flex items-center" style={{ gap: 11 }}>
+                <Link key={f.top} href={f.href} className="no-underline flex items-center" style={{ gap: 11 }}>
                   <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -106,7 +95,7 @@ export function InspirerMig({ forslag }: Props) {
                       {f.bund}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 

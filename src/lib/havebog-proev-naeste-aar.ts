@@ -22,6 +22,8 @@ export interface KatalogSort {
   harvestMonths: number[]
   difficulty?: string | null
   billede?: string | null
+  /** Guide-id (→ /guides/[id]) for det klikbare små-forslag. */
+  id?: string | null
 }
 
 export interface ProevInput {
@@ -33,6 +35,14 @@ export interface ProevInput {
   hoestPrArt: Record<string, number>
 }
 
+/** Lille klikbart forslag (top=sort/art, bund=regel-baseret kvalitet). */
+export interface SmaaForslag {
+  top: string
+  bund: string
+  foto: string
+  href: string
+}
+
 /** InspirerForslag-formen motoren fylder (uden at importere UI-typen). */
 export interface ProevForslag {
   kicker: string
@@ -42,6 +52,18 @@ export interface ProevForslag {
   sekundaer?: { kicker: string; titel: string; tekst: string }
   /** intern — hvilken regel valgte forslaget. ALDRIG i UI. */
   reason: string
+  // ── Små-format-felter pr. kandidat (til de klikbare små forslag) ──
+  /** Sort/art-navn (toplinje). */
+  titel?: string
+  /** Regel-baseret kort kvalitet (bundlinje, 2-4 ord). */
+  undertitel?: string
+  /** Guide-id → href; null → frøbank. */
+  slug?: string | null
+  /** Regel-nøgle (forlaeng/hul/froeavl/robusthed/koekken). */
+  type?: string
+  // ── Kun på det komponerede resultat ──
+  /** Max 2 ægte små forslag (kun kandidater der har foto). */
+  forslag?: SmaaForslag[]
 }
 
 // ── Ordforråd (tags) ──────────────────────────────────────────
@@ -128,6 +150,10 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       begrundelse: `Du dyrker flere sene sorter. ${capitalize(tidligSoesk.variety)} modner tidligere og kan give dig høst før august.`,
       billede: tidligSoesk.billede ?? null,
       reason: `forlæng: sen ${egen.variety} → tidlig ${tidligSoesk.variety}`,
+      titel: capitalize(tidligSoesk.variety),
+      undertitel: 'Tidligere sort',
+      slug: tidligSoesk.id ?? null,
+      type: 'forlaeng',
     })
     break
   }
@@ -148,6 +174,10 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       begrundelse: `Du dyrker mest én slags ${art}. ${capitalize(andenType.variety)} giver ${art} med en anden smag og brug i køkkenet.`,
       billede: andenType.billede ?? null,
       reason: `hul: kun ${[...typer]} → ${nyType} (${andenType.variety})`,
+      titel: capitalize(andenType.variety),
+      undertitel: 'Anden type',
+      slug: andenType.id ?? null,
+      type: 'hul',
     })
     break
   }
@@ -162,6 +192,10 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       navn: 'Prøv frøavl',
       begrundelse: `Du dyrker ${froeArt} — måske er det tid til at gemme dine egne frø til næste sæson.`,
       reason: `frøavl: ${froeArt}`,
+      titel: capitalize(froeArt),
+      undertitel: 'Gem egne frø',
+      slug: null,
+      type: 'froeavl',
     })
   }
 
@@ -176,6 +210,10 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       begrundelse: `${capitalize(robust.variety)} er mere nøjsom og kan stå ved siden af dine favoritter med mindre pasning.`,
       billede: robust.billede ?? null,
       reason: `robusthed: ${egen.variety} (hard) → ${robust.variety}`,
+      titel: capitalize(robust.variety),
+      undertitel: 'Mere hårdfør',
+      slug: robust.id ?? null,
+      type: 'robusthed',
     })
     break
   }
@@ -191,6 +229,10 @@ function samlForslag(input: ProevInput): ProevForslag[] {
       navn: capitalize(makker),
       begrundelse: `Du høster meget ${topArt[0]}. ${capitalize(makker)} passer godt til og gør bedet mere brugbart i køkkenet.`,
       reason: `køkken: ${topArt[1]}× ${topArt[0]} → ${makker}`,
+      titel: capitalize(makker),
+      undertitel: 'God makker',
+      slug: null,
+      type: 'koekken',
     })
   }
 
@@ -202,14 +244,29 @@ function samlForslag(input: ProevInput): ProevForslag[] {
  * Returnerer null hvis der ikke er ægte grundlag (skjul sektionen).
  */
 export function byggProevNaesteAar(input: ProevInput): ProevForslag | null {
-  const forslag = samlForslag(input)
-  if (forslag.length === 0) return null
-  const lead = forslag[0]
-  const sek = forslag[1]
+  const kandidater = samlForslag(input)
+  if (kandidater.length === 0) return null
+  const lead = kandidater[0]
+  const sek = kandidater[1]
+
+  // Små forslag = lavere-prioritets-kandidater MED foto (det låste kort viser
+  // thumbnails). Max 2. Href → sortens guide, ellers frøbank. Ingen døde links.
+  const smaa: SmaaForslag[] = kandidater
+    .slice(2)
+    .filter(k => k.billede && k.titel && k.undertitel)
+    .slice(0, 2)
+    .map(k => ({
+      top: k.titel!,
+      bund: k.undertitel!,
+      foto: k.billede!,
+      href: k.slug ? `/guides/${k.slug}` : '/froebank',
+    }))
+
   return {
     ...lead,
     sekundaer: sek
       ? { kicker: 'Måske du også vil prøve', titel: sek.navn, tekst: sek.begrundelse }
       : undefined,
+    forslag: smaa.length > 0 ? smaa : undefined,
   }
 }

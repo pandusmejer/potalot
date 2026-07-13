@@ -615,12 +615,11 @@ export interface InspirerForslag {
   /** V18: illustration/foto — bruger eksisterende frøkort indtil videre */
   billede?: string
   /**
-   * V19: små sekundære forslag (foto-række under CTA). To linjer:
-   *  top  = ART eller SORT (bold), hvis sorten er fortæller nok i sig selv
-   *  bund = SORT (ikke bold, en tand mindre) ELLER en særlig kvalitet
-   *         (spiselig, sen blomstring, egnet til tørring)
+   * V19: små sekundære forslag (klikbar foto-række under lead). To linjer:
+   *  top  = sort/art-navn (bold) · bund = regel-baseret kvalitet (2-4 ord)
+   *  href = sortens guide (/guides/[id]) ELLER frøbank som fallback
    */
-  forslag?: { top: string; bund: string; foto: string }[]
+  forslag?: { top: string; bund: string; foto: string; href: string }[]
   /** V18: sekundært "måske du også vil prøve" (bliver egen sektion) */
   sekundaer?: { kicker: string; titel: string; tekst: string }
 }
@@ -630,8 +629,8 @@ export const DEMO_INSPIRER: InspirerForslag = {
   begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
   billede: '/images/frokort/jordbaer-korona.png',
   forslag: [
-    { top: 'Basilikum', bund: 'Egnet til tørring', foto: '/images/makro/basilikum/bundt.jpg' },
-    { top: 'Peberfrugt', bund: 'Corno di Toro', foto: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg' },
+    { top: 'Basilikum', bund: 'God makker', foto: '/images/makro/basilikum/bundt.jpg', href: '/froebank' },
+    { top: 'Peberfrugt', bund: 'Anden type', foto: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg', href: '/froebank' },
   ],
   sekundaer: {
     kicker: 'Måske du også vil prøve',
