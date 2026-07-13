@@ -82,8 +82,8 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
           preserveAspectRatio="none" strækker den til fuld bredde. */}
       <svg
         aria-hidden
-        className="absolute inset-x-0 bottom-0 z-10 w-full"
-        style={{ height: 96, display: 'block' }}
+        className="absolute inset-x-0 z-10 w-full"
+        style={{ height: 96, bottom: -1, display: 'block' }}
         viewBox="0 0 375 96"
         preserveAspectRatio="none"
       >

@@ -87,12 +87,13 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
-      {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
-          ~12 mm under bølgens højeste punkt. Den negative margin overskriver
+      {/* Dateline ("adressen") sat lige under bølgens creme-kant, så den står
+          FULDT på creme og ikke overlapper fotoet (bølgens venstre-dyk gjorde
+          "MANDAG" utydelig oven på billedet). Den negative margin overskriver
           space-y-fugen og løfter resten af siden med op. */}
       <div
         style={{
-          marginTop: -141,
+          marginTop: -122,
           position: 'relative',
           zIndex: 20,
           // Venstrestillet, samme venstre-akse som Dagens historie
