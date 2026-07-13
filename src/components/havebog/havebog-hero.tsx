@@ -15,6 +15,12 @@ interface Props {
 }
 
 /**
+ * ⚠️ ANNA-LÅST 13/7 (tag: havebog-hero-laast-13-07). Matcher deployed
+ * potalot.netlify.app 1:1. RØR IKKE uden ny retning fra Anna: bølge-path,
+ * SVG bottom-0/height 96, gradienten (…0.14 100%), foto-flade, dagtæller-
+ * placering. Alle mine session-eksperimenter (bølge-reshape, +10/+15%,
+ * gradient-nul, overskyd, dato-flyt) var afvigelser og er revertet.
+ *
  * Havebog-hero V5 (V9: havens stue) — den daglige åbning.
  *
  * Heroen er ikke en overskrift; den er brugerens daglige velkomst

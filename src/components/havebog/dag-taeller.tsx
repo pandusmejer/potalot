@@ -15,6 +15,10 @@ interface Props {
 }
 
 /**
+ * ⚠️ ANNA-LÅST 13/7 (tag: havebog-hero-laast-13-07). Størrelser matcher
+ * deployed 1:1 — RØR IKKE: DAG 11px, tal clamp(72px,22vw,112px), etiket
+ * clamp(18px,3.8vw,22px). Ingen +10/+15%.
+ *
  * Dagtælleren (V13: premium magasin) — sin EGEN sektion efter heroen,
  * ikke oven på den. Stor, taktil, mekanisk: som et gammelt
  * kilometertællerhjul. Tre store cifre i midten på creme-bunden,

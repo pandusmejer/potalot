@@ -87,9 +87,10 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
-      {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
-          ~12 mm under bølgens højeste punkt. Den negative margin overskriver
-          space-y-fugen og løfter resten af siden med op. */}
+      {/* ⚠️ ANNA-LÅST 13/7 (tag: havebog-hero-laast-13-07): marginTop -141
+          matcher deployed 1:1 — RØR IKKE. Dateline ("adressen") trukket op
+          under hero-bølgen, ~12 mm under bølgens højeste punkt. Den negative
+          margin overskriver space-y-fugen og løfter resten af siden med op. */}
       <div
         style={{
           marginTop: -141,
@@ -179,6 +180,8 @@ export default async function HavebogPage() {
     historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
   }
 
+  // ⚠️ ANNA-LÅST 13/7: forside-rytme space-y-20 sm:space-y-28 (original,
+  // matcher deployed). RØR IKKE — 48px-stramning var afvigelse, revertet.
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
