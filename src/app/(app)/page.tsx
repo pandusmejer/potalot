@@ -93,7 +93,7 @@ export default async function HavebogPage() {
           space-y-fugen og løfter resten af siden med op. */}
       <div
         style={{
-          marginTop: -122,
+          marginTop: -111,
           position: 'relative',
           zIndex: 20,
           // Venstrestillet, samme venstre-akse som Dagens historie

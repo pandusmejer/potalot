@@ -60,8 +60,11 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
         aria-hidden
         className="absolute inset-0"
         style={{
+          // Bund-mørkningen fjernet (var 0.14) — den gjorde fotoets nederste
+          // kant mørk, så den læste som en streg mod creme. Tælleren har sin
+          // egen drop-shadow, så bunden behøver ikke mørknes.
           background:
-            'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.14) 100%)',
+            'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.0) 100%)',
         }}
       />
 
@@ -83,7 +86,7 @@ export function HavebogHero({ narrative, photoOverride }: Props) {
       <svg
         aria-hidden
         className="absolute inset-x-0 z-10 w-full"
-        style={{ height: 96, bottom: -1, display: 'block' }}
+        style={{ height: 96, bottom: -2, display: 'block' }}
         viewBox="0 0 375 96"
         preserveAspectRatio="none"
       >
