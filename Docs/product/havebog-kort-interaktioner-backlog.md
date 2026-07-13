@@ -132,3 +132,23 @@ illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
   naeste-aar` — en filtreret næste-år-visning med forslag baseret på brugerens
   planter/frøbank/sæson. Bygges når frøbank-filter/query findes; opdatér href i
   inspirer-mig.tsx (kommentar markerer stedet).
+
+## Parkerede prototyper (13/7) — 6 motor-kort live-klare, 2 parkeret
+
+**Kort 5 "Sæsonens spørgsmål" (`populaert`) — PARKERET, motor udskudt.**
+- Beslutning (Anna 13/7): bygges IKKE som motor nu. Forbliver prototype/demo-only.
+- Status i kode: allerede gated — `populaert` er IKKE i den indloggede `harData`-gren
+  (page.tsx), kun i demo-grenen. Vises aldrig for indloggede. Komponent + demo-data
+  beholdes til QA/admin-preview.
+- Hvorfor udskudt: kort 5 er ikke "vis tre guides" — det kræver en reel sæson-/
+  relevansmotor der kan svare "hvorfor er dette relevant for MIG lige nu?" baseret på
+  brugerens planter, logs, kalender/sæson, guide-katalog, gentagne problemer og
+  (senere) community-/brugsdata. Uden live-data bliver det en fast redaktionel trio
+  (Kompost/Dræbersnegle/Efterafgrøder) — pænt, men ikke intelligent. Bygges efter
+  appen har haft nogle nøglemåneder med rigtige data.
+
+**Kort 4 "Næste projekt" (`projekter`) — PARKERET (som hidtil).**
+- Også gated (ikke i indlogget `harData`). Venter på ægte projekt-intentioner fra
+  Idéboard/Kalender/Forvandlinger/Diktafon. Bygges når de kilder findes.
+
+Ærlig status: **6 motor-kort (1,2,3,6,7,8) live-klare · 2 prototyper (4,5) parkeret.**
