@@ -96,7 +96,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         </EgenPlanteDialog>
 
         {/* 2 — scan frøpose */}
-        <Link href="/froebank/tilfoej?mode=camera" className="block">
+        <Link href="/froebank/tilfoej?mode=camera&from=onboarding" className="block">
           <MetodeKort
             icon={<Camera className="h-5 w-5" />}
             title="Scan en frøpose"
@@ -105,7 +105,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         </Link>
 
         {/* 3 — import */}
-        <Link href="/froebank/tilfoej?mode=excel" className="block">
+        <Link href="/froebank/tilfoej?mode=excel&from=onboarding" className="block">
           <MetodeKort
             icon={<FileSpreadsheet className="h-5 w-5" />}
             title="Importér fra Excel eller CSV"

@@ -46,23 +46,52 @@ valgte (n)". Afsluttes med et overblik over hvad der blev tilføjet.
 - `src/components/auth/onboarding-form.tsx` — `onComplete`-hook (udskyder onboarded).
 - `src/components/mine-planter/egen-plante-dialog.tsx` — `onCreated`-hook.
 
-## QA-status
-- `npx tsc --noEmit` ✓
-- `npx next build` ✓ ("Compiled successfully"), både `/onboarding` og
-  `/admin/qa/onboarding-preview` i route-tabellen (RSC-grænser + bundling OK).
+## Fremskridt-bevaring (verificeret ved kode-audit)
+- **Committede elementer** (planter/frø) → gemt i DB. Det er den durable
+  progress; "fortsæt senere" holder dem, fordi de IKKE ligger i client state.
+- **Profil-fase** → `profiles.username` persisteres; wizard genoptager på
+  have-fasen (`startPhase='have'`) ved retur.
+- **onboarded** sættes først ved afslutning → retur til `/onboarding` genoptager.
+- **Eksterne flows** (scan/excel): startet fra onboarding med `?from=onboarding`;
+  `TilfoejFlow` fører nu "tilbage"/"færdig" tilbage til `/onboarding` (ny
+  `returnTo`-prop; default for normal-flowet uændret). De tilføjede frø ligger i
+  frøbanken → overblikket opdateres ved retur.
+- **In-flight AI-forslag** (endnu ikke godkendt): bevidst IKKE persisteret — det
+  er et arbejds-udkast (re-derivbart ved at fortolke teksten igen), ikke
+  committed progress. Et browser-refresh nulstiller review-listen. Kan tilføjes
+  senere hvis ønsket; ikke gjort for at holde scope stramt.
 
-### Blokeret QA (ekstern)
-Live browser-screenshots @ 390px kunne IKKE tages: dev-serveren er auth-gated
-(ikke demo-mode) og krævede login, og Supabase-auth var samtidig rate-limited
-(429). Jeg kan/må ikke logge ind. Den gated rute `/admin/qa/onboarding-preview`
-er klar til at Anna kan gennemse den indlogget. Et 390px-mock af de to nye
-flader blev leveret i tråden som visuel reference.
+## QA-status
+Rigtig end-to-end-QA (dev-server genstartet for at rydde stale Turbopack-cache,
+der blokerede hydrering; offentlig temp-preview brugt til at omgå auth-gaten).
+
+**Browser @ 375px (rigtige interaktioner):**
+- Shell (tom + med-indhold), metode-kort, overblik, spring-over/færdig/fortsæt-senere ✓
+- Review-liste default-valg: dublet (Tomat) + usikker (Gulerod) fravalgt, sikker
+  frø (Spinat) valgt → "Gem valgte (1)" ✓
+- Toggle til/fra ✓, fjern forslag (kort fjernet, count→2) ✓, kilde/usikkerheds-chips ✓
+- Kind-toggle (plante/frø), edit-felter, sted skjult for frø ✓
+- Plante-dialog: alle felter; dato-segment Cirka (måned-vælger) / Ved ikke
+  ("Vi opfinder ikke en dato — planten oprettes uden startdato") ✓
+- Ingen horisontal overflow; ingen konsol-fejl fra onboarding-koden ✓
+
+**AI-audit `fortolkHaveTekst` (rigtige Haiku-kald, `scratchpad/qa-fortolk.mjs`):**
+- Ingen hallucination: vagt/tomt/ikke-havehold input → `[]` (opfinder aldrig arter)
+- Ingen fabrikerede datoer på planter (plante-output bærer aldrig dato)
+- Usikkerhed: "måske/tror" → `lav` (fravalgt default); eksplicit → `hoej`/`mellem`
+- Splitter sammensatte udsagn; valid JSON; normaliser validerer + afviser skidt
+- Inputgrænser (3-4000 tegn), try/catch på fejl; timeout via SDK-default (ingen custom)
+- Intet gemmes uden review; dublet-markering client-side (exact navnematch)
+
+**Teknisk:** `tsc` + `next build` grøn; alle ruter i tabellen.
+
+### Stadig browser-auth-blokeret (verificeret på anden vis)
+- Fuldt indlogget COMMIT-klik (opretEgenPlante/createInventoryItem fra browseren)
+  kræver session — verificeret på DB-laget (kontrollerede REGTEST-inserts, ryddet)
+  + AI-laget (script) i stedet.
+- Scan/excel egentligt round-trip verificeret via kode + tilfoej-siden, ikke live-klik.
 
 ### Åbent / bevidst udeladt
-- Visuel finpudsning mod låst PotAlot-æstetik (Cormorant/serif, salviegrøn) bør
-  ske når Anna kan se ruten live — nuværende styling bruger app-primitiverne.
-- Indgang 2/3 linker UD til `/froebank/tilfoej` (egne reviews); returnerer man
-  til `/onboarding` opdateres overblikket. Ingen embedded scan/excel-review i
-  selve shellen (bevidst — undgår at genbygge gennemtestede flows).
-- Migration 00054 (sow_date_precision) er stadig chippet, ikke anvendt (påvirker
-  ikke onboarding-flowet; planter oprettet her bruger `sowDatePrecision='unknown'`).
+- Visuel finpudsning mod låst PotAlot-æstetik (Cormorant/serif, salviegrøn) — venter
+  på Annas live-gennemsyn; nuværende styling bruger app-primitiverne.
+- Persistering af in-flight AI-udkast (se ovenfor) — bevidst udeladt.

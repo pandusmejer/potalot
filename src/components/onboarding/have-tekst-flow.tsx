@@ -17,6 +17,8 @@ interface Props {
   onCommitted?: (n: number) => void
   /** Tilbage til metode-valget. */
   onBack?: () => void
+  /** Kun til QA-preview: start direkte i review-listen med seedede forslag (intet AI-kald). */
+  demoForslag?: HaveForslag[]
 }
 
 /** Redigerbar udgave af et forslag + om det skal med. */
@@ -38,15 +40,19 @@ const USIKKERHED_LABEL: Record<Usikkerhed, string> = {
  * create-actions. Intet gemmes uden brugerens godkendelse. Hvert forslag
  * viser kilde ("fortolket fra tekst") + usikkerhed.
  */
-export function HaveTekstFlow({ existingNames = [], onCommitted, onBack }: Props) {
-  const [step, setStep] = useState<'input' | 'review' | 'done'>('input')
+export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoForslag }: Props) {
+  const existingLower = new Set(existingNames.map(n => n.toLowerCase().trim()))
+  const seed = (fs: HaveForslag[]): Rad[] => fs.map(f => {
+    const muligDublet = existingLower.has(f.name.toLowerCase().trim())
+    return { ...f, include: f.usikkerhed !== 'lav' && !muligDublet, muligDublet }
+  })
+
+  const [step, setStep] = useState<'input' | 'review' | 'done'>(demoForslag?.length ? 'review' : 'input')
   const [text, setText] = useState('')
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [rader, setRader] = useState<Rad[]>([])
+  const [rader, setRader] = useState<Rad[]>(demoForslag?.length ? seed(demoForslag) : [])
   const [gemtAntal, setGemtAntal] = useState(0)
-
-  const existingLower = new Set(existingNames.map(n => n.toLowerCase().trim()))
 
   function fortolk() {
     setError(null)

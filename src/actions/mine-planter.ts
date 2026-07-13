@@ -428,6 +428,7 @@ export async function opretEgenPlante(
       guide_id: null,
       primary_image_url: imageUrl,
       image_source: imageUrl ? 'user_upload' : null,
+      sow_date_precision: input.sowDatePrecision ?? null,
       is_archived: false,
     })
     .select('id')
@@ -437,22 +438,6 @@ export async function opretEgenPlante(
     return { error: error?.message ?? 'Kunne ikke oprette plante.' }
   }
   const plantId = (plant as { id: string }).id
-
-  // Persistér dato-præcisionen (migration 00054). Bevidst som separat, best-effort
-  // UPDATE frem for i insertet: så snart 00054 er anvendt, begynder feltet at
-  // persistere — men indtil da vælter en manglende kolonne (42703/PGRST204) IKKE
-  // oprettelsen. Ingen stille udeladelse: migrationen ligger i repo + er chippet,
-  // og en uventet fejl logges. 'unknown' gemmes eksplicit (bruger sagde "ved ikke")
-  // så det kan skelnes fra en gammel række uden registreret proveniens.
-  if (input.sowDatePrecision) {
-    const { error: precErr } = await supabase
-      .from('plants_v2')
-      .update({ sow_date_precision: input.sowDatePrecision })
-      .eq('id', plantId)
-    if (precErr && !/sow_date_precision/i.test(precErr.message)) {
-      console.warn('[opretEgenPlante] uventet fejl ved sow_date_precision:', precErr.message)
-    }
-  }
 
   // Valgfri kort observation → note-log (dateret til startdato, ellers i dag).
   const obs = input.observation?.trim()

@@ -26,9 +26,13 @@ type Mode = 'select' | 'camera' | 'library' | 'link' | 'excel' | 'manuel' | 'oen
 
 interface Props {
   initialMode: Mode
+  /** Hvor "tilbage"/"færdig" fører hen. Default frøbank; onboarding overrider. */
+  returnTo?: string
+  /** Menneske-læsbar etiket for returmålet (fx "frøbank" / "opsætning"). */
+  returnLabel?: string
 }
 
-export function TilfoejFlow({ initialMode }: Props) {
+export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel = 'frøbank' }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(initialMode)
   const [pending, startTransition] = useTransition()
@@ -251,7 +255,7 @@ export function TilfoejFlow({ initialMode }: Props) {
       <div className="flex items-center gap-3">
         {mode === 'select' ? (
           <Button asChild variant="ghost" size="icon">
-            <Link href="/froebank" aria-label="Tilbage">
+            <Link href={returnTo} aria-label="Tilbage">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
@@ -369,6 +373,11 @@ export function TilfoejFlow({ initialMode }: Props) {
                   }}>
                     Scan en til
                   </Button>
+                  {returnTo !== '/froebank' && (
+                    <Button asChild variant="ghost">
+                      <Link href={returnTo}>Færdig — tilbage til {returnLabel}</Link>
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
@@ -562,7 +571,7 @@ export function TilfoejFlow({ initialMode }: Props) {
                 <p className="text-sm text-muted-foreground">
                   {excelResult.imported} rækker importeret{excelResult.skipped > 0 && `, ${excelResult.skipped} sprunget over`}.
                 </p>
-                <Button asChild><Link href="/froebank">Tilbage til frøbank</Link></Button>
+                <Button asChild><Link href={returnTo}>Tilbage til {returnLabel}</Link></Button>
               </div>
             )}
           </CardContent>

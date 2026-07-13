@@ -56,15 +56,17 @@ Semantik:
 - `unknown` — brugeren ved det ikke; `sow_date` er NULL (ingen opdigtet dato).
 - `NULL` — gammel række / proveniens ikke registreret.
 
-**Status:** migration 00054 er **ikke** anvendt på live — en nyskrevet
-migration mod produktion kræver Annas normale fresh-thread-migrationsflow
-(auto-mode blokerede den korrekt jf. den stående regel). Filen ligger i repo
-og er **chippet**. Koden er forward-kompatibel: `opretEgenPlante` skriver
-præcisionen som et separat best-effort `UPDATE`, så V1A fortsat virker på
-nuværende live-DB, og præcisionen begynder at persistere i samme øjeblik
-00054 køres. `unknown` giver allerede korrekt `sow_date = NULL` uanset.
+**Status (opdateret):** migration 00054 er nu **anvendt** på live via det
+trackede flow (Anna autoriserede eksplicit kørslen). Best-effort-workaroundet er
+**fjernet** — `opretEgenPlante` skriver nu `sow_date_precision` direkte i insertet.
 
-### Udestående (chippet, kør i frisk tråd)
-`supabase/migrations/00054_sow_date_precision.sql` skal anvendes via det
-normale flow. Derefter kan plante-detaljesiden vise "cirka [måned]" i stedet
-for en tilsyneladende præcis dato (læsesti + `buildPlantDetail`).
+**Verificeret (transaktionelt, ingen efterladt data):**
+- `exact`  → sow_date bevaret, precision `exact`
+- `approx` → sow_date = måned-01, precision `approx`
+- `unknown`→ sow_date `NULL`, precision `unknown` (ingen opdigtet dato)
+- legacy (uden værdi) → precision `NULL`, ingen fejl
+- CHECK afviser ugyldig værdi (fx `garbage`)
+
+### Udestående (design, ikke funktion)
+Plante-detaljesiden kan nu vise "cirka [måned]" i stedet for en tilsyneladende
+præcis dato (læsesti + `buildPlantDetail`) — venter på visuel gennemgang.

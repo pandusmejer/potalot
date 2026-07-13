@@ -3,13 +3,22 @@ import { TilfoejFlow } from '@/components/froebank/tilfoej-flow'
 export const dynamic = 'force-dynamic'
 
 interface Props {
-  searchParams: Promise<{ mode?: string }>
+  searchParams: Promise<{ mode?: string; from?: string }>
 }
 
 export default async function TilfoejPage({ searchParams }: Props) {
-  const { mode } = await searchParams
+  const { mode, from } = await searchParams
   const initialMode = (mode === 'camera' || mode === 'library' || mode === 'link' || mode === 'manuel' || mode === 'oenskeliste' || mode === 'excel')
     ? mode
     : 'select'
-  return <TilfoejFlow initialMode={initialMode} />
+  // Startet fra onboarding? Så fører tilbage-/færdig-links tilbage til opsætningen
+  // (fremskridt bevaret: de tilføjede frø ligger allerede i frøbanken).
+  const fromOnboarding = from === 'onboarding'
+  return (
+    <TilfoejFlow
+      initialMode={initialMode}
+      returnTo={fromOnboarding ? '/onboarding' : '/froebank'}
+      returnLabel={fromOnboarding ? 'opsætning' : 'frøbank'}
+    />
+  )
 }
