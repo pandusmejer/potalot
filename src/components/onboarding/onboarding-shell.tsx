@@ -66,10 +66,11 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <Leaf className="h-5 w-5 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl font-serif text-foreground">Sådan kommer du i gang</h1>
+        <h1 className="text-2xl font-serif text-foreground">Start hvor du er</h1>
         <p className="text-sm text-muted-foreground px-2">
-          Uanset om du starter fra nul, er midt i sæsonen eller har dyrket i
-          årevis, kan du begynde på den måde, der passer dig.
+          Du behøver ikke have styr på det hele. Start med det, du har — en
+          frøpose, et par noter, en liste eller bare én plante. Du kan blande
+          metoderne og tilføje mere senere.
         </p>
       </div>
 
@@ -85,9 +86,14 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             </span>
           </>
         ) : (
-          'Du kan begynde uden at tilføje noget endnu'
+          'Du kan begynde med lidt. Resten kan komme senere.'
         )}
       </div>
+
+      {/* Kombinér-frit + genåbnelighed i én rolig linje. */}
+      <p className="text-center text-xs text-muted-foreground -mt-2">
+        Brug én metode nu, og kom tilbage til de andre senere.
+      </p>
 
       <div className="space-y-2.5">
         {/* 1 — allerede dyrker */}
@@ -99,7 +105,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <MetodeKort
               icon={<Sprout className="h-5 w-5" />}
               title="Tilføj det, du dyrker"
-              desc="Skriv art og sort — du bestemmer, hvor meget du udfylder."
+              desc="Skriv én plante eller hele bedet — du bestemmer, hvor meget du udfylder."
             />
           </button>
         </EgenPlanteDialog>
@@ -109,7 +115,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<Camera className="h-5 w-5" />}
             title="Scan en frøpose"
-            desc="Tag et billede — PotAlot læser sort og så-info fra posen."
+            desc="Tag et billede af en pose — Potalot henter det, den kan læse."
           />
         </Link>
 
@@ -118,7 +124,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<FileSpreadsheet className="h-5 w-5" />}
             title="Importér en liste"
-            desc="Upload Excel eller CSV og gennemse alt, før det gemmes."
+            desc="Upload Excel eller CSV — også selvom listen ikke er perfekt."
           />
         </Link>
 
@@ -127,7 +133,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<MessageSquareText className="h-5 w-5" />}
             title="Skriv frit om haven"
-            desc="Fortæl hvad du dyrker — Potalot foreslår, og du godkender."
+            desc="Skriv løst: noter, sorter, steder eller det du husker. Potalot foreslår, og du godkender."
           />
         </button>
       </div>
@@ -148,14 +154,9 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             </button>
           </>
         ) : (
-          <>
-            <Button variant="ghost" className="w-full text-muted-foreground" onClick={afslut} disabled={pending}>
-              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Begynd uden at tilføje planter <ArrowRight className="h-4 w-4 ml-1" /></>}
-            </Button>
-            <button type="button" onClick={afslut} disabled={pending} className="text-sm text-muted-foreground hover:underline">
-              Fortsæt senere
-            </button>
-          </>
+          <Button variant="ghost" className="w-full text-muted-foreground" onClick={afslut} disabled={pending}>
+            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Begynd uden at tilføje noget <ArrowRight className="h-4 w-4 ml-1" /></>}
+          </Button>
         )}
       </div>
 
