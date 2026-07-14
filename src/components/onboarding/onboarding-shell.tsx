@@ -35,10 +35,12 @@ interface Props {
 export function OnboardingShell({ gardenLocations, existingNames, plantCount, seedCount }: Props) {
   const router = useRouter()
   const [tekstOpen, setTekstOpen] = useState(false)
-  const [added, setAdded] = useState(0)
   const [pending, startTransition] = useTransition()
 
-  const iAlt = plantCount + seedCount + added
+  // Vis altid de RIGTIGE server-tal (opdateres via router.refresh efter hver
+  // tilføjelse). Ingen session-delta: den dobbelttalte OG talte tekst-oprettede
+  // frø med som planter → "4 planter" der pludselig blev "6 frø, 0 planter".
+  const iAlt = plantCount + seedCount
 
   function afslut() {
     startTransition(async () => {
@@ -46,12 +48,6 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
       router.push('/')
       router.refresh()
     })
-  }
-
-  function fortsaetSenere() {
-    // Lad onboarded stå false — brugeren kan vende tilbage til /onboarding.
-    router.push('/')
-    router.refresh()
   }
 
   return (
@@ -73,8 +69,8 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         <div className="rounded-xl bg-secondary/50 px-4 py-2.5 text-center text-sm text-secondary-foreground">
           Din have indtil videre:{' '}
           <span className="font-medium">
-            {plantCount + added > 0 && `${plantCount + added} plante${plantCount + added === 1 ? '' : 'r'}`}
-            {(plantCount + added > 0) && seedCount > 0 && ' · '}
+            {plantCount > 0 && `${plantCount} plante${plantCount === 1 ? '' : 'r'}`}
+            {plantCount > 0 && seedCount > 0 && ' · '}
             {seedCount > 0 && `${seedCount} frø`}
           </span>
         </div>
@@ -84,7 +80,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         {/* 1 — allerede dyrker */}
         <EgenPlanteDialog
           gardenLocations={gardenLocations}
-          onCreated={() => { setAdded(a => a + 1); router.refresh() }}
+          onCreated={() => router.refresh()}
         >
           <button className="w-full text-left">
             <MetodeKort
@@ -143,16 +139,6 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             Jeg er færdig — vis min have
           </button>
         )}
-        <div>
-          <button
-            type="button"
-            onClick={fortsaetSenere}
-            disabled={pending}
-            className="text-xs text-muted-foreground hover:underline"
-          >
-            Fortsæt senere
-          </button>
-        </div>
       </div>
 
       {/* Tekst-flow i dialog */}
@@ -167,7 +153,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           </DialogDescription>
           <HaveTekstFlow
             existingNames={existingNames}
-            onCommitted={(n) => { setAdded(a => a + n); router.refresh() }}
+            onCommitted={() => router.refresh()}
             onBack={() => setTekstOpen(false)}
           />
         </DialogContent>
