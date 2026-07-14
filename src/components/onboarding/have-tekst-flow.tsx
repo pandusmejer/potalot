@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Sparkles, X, Check, Loader2, ArrowLeft, Sprout, Package } from 'lucide-react'
+import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import { fortolkHaveTekst, type HaveForslag, type Usikkerhed } from '@/actions/have-tekst'
 import { opretEgenPlante } from '@/actions/mine-planter'
 import { createInventoryItem } from '@/actions/froebank'
@@ -53,14 +54,19 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
   const [error, setError] = useState<string | null>(null)
   const [rader, setRader] = useState<Rad[]>(demoForslag?.length ? seed(demoForslag) : [])
   const [gemtAntal, setGemtAntal] = useState(0)
+  // Valgfrit foto af håndskrevne noter — læses sammen med teksten.
+  const [noteImages, setNoteImages] = useState<string[]>([])
+  const [notePrimary, setNotePrimary] = useState<string | null>(null)
 
   function fortolk() {
     setError(null)
     startTransition(async () => {
-      const res = await fortolkHaveTekst(text)
+      const res = await fortolkHaveTekst(text, notePrimary)
       if ('error' in res) { setError(res.error); return }
       if (res.forslag.length === 0) {
-        setError('Jeg fandt ingen planter eller frø i teksten. Prøv at nævne dem mere direkte.')
+        setError(notePrimary
+          ? 'Jeg kunne ikke læse noget brugbart — prøv et skarpere foto, eller skriv et par ord ved siden af.'
+          : 'Jeg fandt ingen planter eller frø i teksten. Prøv at nævne dem mere direkte.')
         return
       }
       setRader(res.forslag.map(f => {
@@ -281,7 +287,25 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
           className="mt-1.5"
         />
         <p className="text-[11px] text-muted-foreground mt-1.5">
-          Skriv løst — jeg foreslår, hvad haven indeholder, og du godkender bagefter.
+          Du kan skrive frit, tilføje et foto af håndskrevne noter — eller begge dele.
+        </p>
+      </div>
+
+      {/* Foto af noter — læses sammen med teksten. Foto = råinput, aldrig facit:
+          alt bliver til forslag du godkender. */}
+      <div>
+        <Label className="text-sm">
+          Tilføj foto af noter <span className="text-muted-foreground font-normal">(valgfri)</span>
+        </Label>
+        <div className="mt-1.5">
+          <MultiImageUpload
+            value={noteImages} primary={notePrimary}
+            onChange={(imgs, prim) => { setNoteImages(imgs); setNotePrimary(prim) }}
+            folder="idetavle" maxImages={1} label="Tag eller vælg et billede"
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Det kan være en så-liste, en skitse, en huskeseddel eller en side fra notesbogen.
         </p>
       </div>
 
@@ -293,7 +317,7 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
             <ArrowLeft className="h-4 w-4 mr-1" /> Tilbage
           </Button>
         )}
-        <Button onClick={fortolk} disabled={pending || text.trim().length < 3} className="ml-auto">
+        <Button onClick={fortolk} disabled={pending || (text.trim().length < 3 && !notePrimary)} className="ml-auto">
           {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Læser…</> : <><Sparkles className="h-4 w-4 mr-1" /> Fortolk</>}
         </Button>
       </div>

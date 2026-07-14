@@ -62,25 +62,47 @@ Regler:
 - certainty: "hoej" hvis eksplicit nævnt, "mellem" hvis rimeligt underforstået, "lav" hvis gæt.
 
 VIGTIGT: Opfind ALDRIG planter/frø der ikke er nævnt. Er teksten tom for havehold,
-returnér {"items":[]}. Del sammensatte udsagn op (fx "tomater og agurker" → to items).`
+returnér {"items":[]}. Del sammensatte udsagn op (fx "tomater og agurker" → to items).
+
+Får du et FOTO af håndskrevne noter, lister eller skitser: læs det du kan, og udled
+arter, sorter, antal, steder og status. Er håndskriften svær, så gæt forsigtigt og
+sæt certainty="lav" — hellere et usikkert forslag brugeren kan rette end opfundet
+sikkerhed. Kan du slet ikke læse noget, så udelad det.`
 
 export async function fortolkHaveTekst(
   text: string,
+  imageUrl?: string | null,
 ): Promise<{ forslag: HaveForslag[] } | { error: string }> {
   await requireUser()
 
   const trimmed = text.trim()
-  if (trimmed.length < 3) return { error: 'Skriv lidt mere om haven først.' }
+  // Foto af håndskrevne noter er lige så gyldigt input som tekst — genbruger
+  // Claude-vision (samme mønster som frøpose-scan). https-URL kræves.
+  const harFoto = !!imageUrl && /^https:\/\//.test(imageUrl)
+  if (!harFoto && trimmed.length < 3) {
+    return { error: 'Skriv lidt om haven eller tilføj et foto af dine noter først.' }
+  }
   if (trimmed.length > 4000) return { error: 'Teksten er for lang — hold den under 4000 tegn.' }
 
   const anthropic = getAnthropicClient()
+
+  // Besked-indhold: foto (hvis der er et) + fri tekst. Begge, én af delene, virker.
+  const content: Array<
+    | { type: 'image'; source: { type: 'url'; url: string } }
+    | { type: 'text'; text: string }
+  > = []
+  if (harFoto) content.push({ type: 'image', source: { type: 'url', url: imageUrl! } })
+  if (trimmed) content.push({ type: 'text', text: trimmed })
+  if (harFoto && !trimmed) {
+    content.push({ type: 'text', text: 'Læs mine håndskrevne have-noter på billedet og udled hvad du kan.' })
+  }
 
   try {
     const response = await anthropic.messages.create({
       model: CLAUDE_HAIKU,
       max_tokens: 1500,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: trimmed }],
+      messages: [{ role: 'user', content }],
     })
 
     const textBlock = response.content.find(b => b.type === 'text')

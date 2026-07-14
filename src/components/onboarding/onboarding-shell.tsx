@@ -133,7 +133,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<MessageSquareText className="h-5 w-5" />}
             title="Skriv frit om haven"
-            desc="Skriv løst: noter, sorter, steder eller det du husker. Potalot foreslår, og du godkender."
+            desc="Skriv løst eller tilføj et foto af dine noter — Potalot foreslår, og du godkender."
           />
         </button>
       </div>
