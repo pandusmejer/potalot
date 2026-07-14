@@ -1,17 +1,17 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 import {
   FORVANDLINGER,
   KATEGORI_LABEL,
   KATEGORI_FARVE,
   type ForvandlingKategori,
 } from '@/lib/havebog-forvandlinger'
+import { ForvandlingTilbageLink } from '@/components/havebog/forvandling-tilbage-link'
 
 export const dynamic = 'force-static'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
-const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen']
+const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen', 'natur']
 
 /**
  * "Det kan haven blive til" — oversigt over forvandlinger grupperet efter
@@ -21,10 +21,9 @@ const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft',
 export default function ForvandlingerPage() {
   return (
     <div className="w-full" style={{ paddingBottom: 40 }}>
-      <Link href="/" className="inline-flex items-center no-underline" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(36,48,31,0.55)', marginBottom: 20 }}>
-        <ArrowLeft className="h-4 w-4" aria-hidden />
-        Havebog
-      </Link>
+      {/* Kom brugeren via "Se alle forvandlinger" fra Havebog-mosaikken
+          (?from=havebog), fører tilbage til mosaik-ankeret; ellers til Havebog. */}
+      <ForvandlingTilbageLink fallbackHref="/" fallbackLabel="Havebog" />
 
       <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.24em', color: '#8F9484', margin: 0, marginBottom: 8 }}>
         Forvandlinger

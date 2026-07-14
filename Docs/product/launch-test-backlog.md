@@ -106,11 +106,11 @@ tilstande (`strong`/`blivetil`). `blivetil` render­er `BASIS_MOSAIK` = 8 faste
 generiske forvandlinger (Mad 3 · Gem/tør/så igen 3 · Duft/pynt/natur 2), aldrig
 demo/falsk høst. Data i `src/lib/havebog-forvandlinger.ts` (`BASIS_MOSAIK`).
 Tilføjet katalog-poster `jordbaersorbet` + `lavendelposer` (rigtige detail-sider).
-**ÅBEN — insekthotel detail-side mangler:** `insekthotel` er crop-løst `natur`-
-projekt; kernens `ForvandlingKategori` er afgrøde-centreret, så href falder p.t.
-til oversigten `/havebog/forvandlinger`. TODO hvis ønsket: gør detail-`Brug`-blok
-betinget (crops.length>0), tilføj `natur` til kernetype (KATEGORI_LABEL/FARVE +
-`naesteHandling`-switch) og opret en insekthotel-post → egen detail-side.
+**LØST 14/7 — insekthotel har nu egen detail-side:** `natur` er promoveret til
+fuldgyldig `ForvandlingKategori` (KATEGORI_LABEL/FARVE + `naesteHandling`-switch
++ KAT_ORDEN); insekthotel er en crop-løs katalog-post, og detail-`Brug`-blokken
+er gjort betinget (crops.length>0). Mosaik-tile + oversigt linker nu til
+`/havebog/forvandlinger/insekthotel`, og tilbage fører til mosaik-ankeret.
 **ÅBEN — medium-tilstand (punkt 3) ikke bygget:** planter/frøbank UDEN høst får
 i dag BASIS (`blivetil`), ikke en fremadskuende personlig mosaik. Kun to modes i
 koden: `strong` (har høst-logs) + `blivetil` (basis). `byggSpisekammer()` → null

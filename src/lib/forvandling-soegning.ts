@@ -39,6 +39,7 @@ export function naesteHandling(kat: ForvandlingKategori): string {
     case 'plej': return 'Find en kosmetisk vejledning.'
     case 'pynt': return 'Find en enkel vejledning.'
     case 'saa-igen': return 'Find en vejledning til frøavl.'
+    case 'natur': return 'Find en enkel vejledning til projektet.'
   }
 }
 

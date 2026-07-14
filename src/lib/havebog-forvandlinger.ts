@@ -10,7 +10,7 @@
  */
 
 export type ForvandlingKategori =
-  | 'spis' | 'gem' | 'toer' | 'bryg' | 'duft' | 'plej' | 'pynt' | 'saa-igen'
+  | 'spis' | 'gem' | 'toer' | 'bryg' | 'duft' | 'plej' | 'pynt' | 'saa-igen' | 'natur'
 
 export interface HavebogForvandling {
   id: string
@@ -28,6 +28,7 @@ export interface HavebogForvandling {
 export const KATEGORI_LABEL: Record<ForvandlingKategori, string> = {
   spis: 'Spis', gem: 'Gem', toer: 'Tør', bryg: 'Bryg',
   duft: 'Duft', plej: 'Plej', pynt: 'Pynt', 'saa-igen': 'Så igen',
+  natur: 'Natur',
 }
 
 // Hver kategori sin accent — giver mosaikken variation OG signalerer type.
@@ -40,6 +41,7 @@ export const KATEGORI_FARVE: Record<ForvandlingKategori, string> = {
   plej: '#6F7E55',      // urtegrøn
   pynt: '#C36F7C',      // blomsterrosa
   'saa-igen': '#5E7052', // frøgrøn
+  natur: '#6F5D42',      // varmt træ/bambus (haven som levende sted)
 }
 
 const KOSMETISK_NOTE = 'Kun til kosmetisk brug — ingen medicinske løfter. Test altid på et lille hudområde først.'
@@ -78,6 +80,8 @@ export const FORVANDLINGER: HavebogForvandling[] = [
   // ── Så igen ──
   { id: 'gem-tomatfroe', title: 'Gem tomatfrø', category: 'saa-igen', crops: ['tomat'], body: 'De bedste tomater giver frø til næste sæson.', steps: ['Skrab frø og gelé ud i et glas.', 'Lad gære et par dage og skyl rent.', 'Tør frøene og gem dem mørkt.'], season: 'autumn' },
   { id: 'gem-aertefroe', title: 'Gem ærtefrø', category: 'saa-igen', crops: ['aert'], body: 'Lad nogle bælge modne helt på planten.', steps: ['Lad bælgene tørre på planten.', 'Bælg ærterne, når de rasler.', 'Gem tørt og mørkt til foråret.'], season: 'autumn' },
+  // ── Natur ── (haven som levende sted — crop-løse haveprojekter)
+  { id: 'insekthotel', title: 'Byg et insekthotel', category: 'natur', crops: [], body: 'Et lille insekthotel giver skjul og overvintring til havens nyttige smådyr.', steps: ['Saml naturlige materialer: hule stængler, bambusrør, kviste og bark.', 'Pak dem tæt i en lille kasse, krukke eller dåse.', 'Stil den lunt og tørt, gerne i læ og med åbningen mod syd.'] },
 ]
 
 function norm(s: string): string {
@@ -108,26 +112,22 @@ export function findForvandling(id: string): HavebogForvandling | undefined {
 // Balance (bevidst — Potalot er ikke en kogebog): Mad 3 · Gem/tør/så igen 3 ·
 // Duft/pynt/natur 2.
 
-/** 'natur' er KUN en basis-kategori (haven som levende sted), ikke en afgrøde-
- *  forvandling. Egen farve/label, så kernens ForvandlingKategori-typer og de
- *  udtømmende Records/switches ikke skal ændres. */
-export type BasisKategori = ForvandlingKategori | 'natur'
+// 'natur' (haven som levende sted) er nu en fuldgyldig ForvandlingKategori med
+// egen detail-side, så basis-elementer bruger kernens KATEGORI_FARVE/LABEL
+// direkte — ingen særtilfælde længere.
 export type BasisKind = 'recipe_idea' | 'guide' | 'project' | 'seed_saving'
 
-export const BASIS_NATUR_FARVE = '#6F5D42' // varmt træ/bambus
-const BASIS_NATUR_LABEL = 'Natur'
-
-export function basisKategoriFarve(k: BasisKategori): string {
-  return k === 'natur' ? BASIS_NATUR_FARVE : KATEGORI_FARVE[k]
+export function basisKategoriFarve(k: ForvandlingKategori): string {
+  return KATEGORI_FARVE[k]
 }
-export function basisKategoriLabel(k: BasisKategori): string {
-  return k === 'natur' ? BASIS_NATUR_LABEL : KATEGORI_LABEL[k]
+export function basisKategoriLabel(k: ForvandlingKategori): string {
+  return KATEGORI_LABEL[k]
 }
 
 export interface BasisMosaikElement {
   id: string
   title: string
-  category: BasisKategori
+  category: ForvandlingKategori
   kind: BasisKind
   /** Kort "kan blive til"-copy (aldrig "er blevet"). Vises på detail-siden. */
   description: string
@@ -147,9 +147,7 @@ export const BASIS_MOSAIK: BasisMosaikElement[] = [
   { id: 'jordbaersorbet', title: 'Jordbærsorbet', category: 'spis', kind: 'recipe_idea', description: 'De bløde bær kan blive til noget koldt, sødt og ret kortlivet.', cta: 'Se idé', href: '/havebog/forvandlinger/jordbaersorbet', forvandlingId: 'jordbaersorbet', basis: true },
   { id: 'agurkesalat', title: 'Agurkesalat', category: 'spis', kind: 'recipe_idea', description: 'Når agurkerne kommer hurtigt, må glassene gerne følge med.', cta: 'Se idé', href: '/havebog/forvandlinger/agurkesalat', forvandlingId: 'agurkesalat', basis: true },
   { id: 'spiselige-blomster', title: 'Spiselige blomster', category: 'pynt', kind: 'guide', description: 'Nogle blomster kan både stå i bedet og ende på tallerkenen.', cta: 'Læs mere', href: '/havebog/forvandlinger/spiselige-blomster', forvandlingId: 'spiselige-blomster', basis: true },
-  // Crop-løst haveprojekt uden detail-side endnu → href falder til oversigten
-  // (Anna-regel). Backlog: Docs/product/launch-test-backlog.md (insekthotel).
-  { id: 'insekthotel', title: 'Byg et insekthotel', category: 'natur', kind: 'project', description: 'Nogle af havens bedste gæster skal bare have et sted at bo.', cta: 'Se projekt', href: '/havebog/forvandlinger', basis: true },
+  { id: 'insekthotel', title: 'Byg et insekthotel', category: 'natur', kind: 'project', description: 'Nogle af havens bedste gæster skal bare have et sted at bo.', cta: 'Se projekt', href: '/havebog/forvandlinger/insekthotel', forvandlingId: 'insekthotel', basis: true },
 ]
 
 const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen']

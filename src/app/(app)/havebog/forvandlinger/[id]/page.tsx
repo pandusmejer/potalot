@@ -39,7 +39,7 @@ export default async function ForvandlingPage({ params }: { params: Promise<{ id
 
   return (
     <div className="w-full" style={{ paddingBottom: 48, maxWidth: 620 }}>
-      <ForvandlingTilbageLink />
+      <ForvandlingTilbageLink fallbackHref="/havebog/forvandlinger" fallbackLabel="Forvandlinger" />
 
       {/* Kategori-chip */}
       <span className="flex w-fit items-center uppercase" style={{ gap: 7, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: farve, marginBottom: 12 }}>
@@ -51,11 +51,13 @@ export default async function ForvandlingPage({ params }: { params: Promise<{ id
         {f.title}
       </h1>
 
-      <Blok label="Brug">
-        <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.3, color: '#3B4A2F', margin: 0 }}>
-          {f.crops.map(capitalize).join(' · ')}
-        </p>
-      </Blok>
+      {f.crops.length > 0 && (
+        <Blok label="Brug">
+          <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.3, color: '#3B4A2F', margin: 0 }}>
+            {f.crops.map(capitalize).join(' · ')}
+          </p>
+        </Blok>
+      )}
 
       <Blok label="Hvorfor nu">
         <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.34, color: 'rgba(36,48,31,0.78)', margin: 0, maxWidth: '30ch' }}>

@@ -223,7 +223,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
   }
   // cta → oversigten over forvandlinger
   return (
-    <Link href="/havebog/forvandlinger" className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
+    <Link href={medFra('/havebog/forvandlinger')} className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
       <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
         {tile.tekst}
         <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
@@ -297,7 +297,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
   if (tile.slag === 'cta') {
     return (
       <Link
-        href="/havebog/forvandlinger"
+        href={medFra('/havebog/forvandlinger')}
         className="no-underline block"
         style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}
       >
