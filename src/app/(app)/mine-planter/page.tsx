@@ -3,6 +3,8 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getGardenLocations } from '@/actions/garden-locations'
 import { getCurrentUser } from '@/lib/auth'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { Sprout } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,12 +31,23 @@ export default async function MinePlanterPage() {
     getCurrentUser(),
   ])
   return (
-    <MinePlanterClient
-      plants={plants}
-      today={today}
-      doneTaskKeys={doneTaskKeys}
-      gardenLocations={gardenLocations}
-      isLoggedIn={!!user}
-    />
+    <>
+      <div className="mb-5">
+        <PageIntroNote
+          id="planter"
+          icon={<Sprout className="h-4 w-4" />}
+          title="Tilføj det, du dyrker nu"
+          body="Så kan Potalot følge med i spiring, udplantning, høst og alt det, haven finder på undervejs."
+          hideWhen={plants.length >= 3}
+        />
+      </div>
+      <MinePlanterClient
+        plants={plants}
+        today={today}
+        doneTaskKeys={doneTaskKeys}
+        gardenLocations={gardenLocations}
+        isLoggedIn={!!user}
+      />
+    </>
   )
 }

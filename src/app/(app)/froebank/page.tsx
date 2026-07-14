@@ -3,6 +3,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { FroebankBrowser } from '@/components/froebank/froebank-browser'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { Package } from 'lucide-react'
 import { pickGardenNote } from '@/lib/garden-notes'
 import { aktuelMaaned } from '@/lib/datetime'
 
@@ -43,6 +45,14 @@ export default async function FroebankPage() {
 
   return (
     <div className="space-y-6">
+      <PageIntroNote
+        id="froebank"
+        icon={<Package className="h-4 w-4" />}
+        title="Saml dine frø her"
+        body="Potalot kan huske sorter, såtid og forslag til næste sæson for dig."
+        hideWhen={realInventory.length >= 5}
+      />
+
       {/* Frøbankens øverste arkivmappe + det komplette arkivsystem.
           Mappens søgning, kategori og filterchips styrer stacken. */}
       <FroebankBrowser inventory={inventory} customSubcategories={customSubcategories} />
