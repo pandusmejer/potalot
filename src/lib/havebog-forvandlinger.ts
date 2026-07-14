@@ -50,6 +50,7 @@ export const FORVANDLINGER: HavebogForvandling[] = [
   { id: 'tomatsalat', title: 'Tomatsalat', category: 'spis', crops: ['tomat', 'basilikum'], body: 'Modne tomater smager bedst lige plukket.', steps: ['Skær tomater i både.', 'Riv basilikum over.', 'Dryp med god olie og lidt salt.'], season: 'summer' },
   { id: 'jordbaertaerte', title: 'Jordbærtærte', category: 'spis', crops: ['jordbaer'], body: 'Jordbærrene er søde og fylder i kurven nu.', steps: ['Bag en sprød bund.', 'Fyld med creme og friske jordbær.', 'Køl af før servering.'], season: 'summer' },
   { id: 'agurkesalat', title: 'Agurkesalat', category: 'spis', crops: ['agurk'], body: 'Frisk agurk er kølig og sprød i sommervarmen.', steps: ['Skær agurk i tynde skiver.', 'Vend med eddike, sukker og salt.', 'Lad trække en halv time.'], season: 'summer' },
+  { id: 'jordbaersorbet', title: 'Jordbærsorbet', category: 'spis', crops: ['jordbaer'], body: 'De bløde bær kan blive til noget koldt, sødt og ret kortlivet.', steps: ['Blend jordbær med lidt sukker og citron.', 'Frys massen, og rør rundt et par gange undervejs.', 'Spis den, mens den stadig er blød.'], season: 'summer' },
   { id: 'basilikumpesto', title: 'Basilikumpesto', category: 'spis', crops: ['basilikum'], body: 'Klip basilikum før planten går i blomst.', steps: ['Blend basilikum, nødder, ost og olie.', 'Smag til med salt og citron.', 'Brug straks eller frys i portioner.'] },
   // ── Gem ──
   { id: 'syltede-agurker', title: 'Syltede agurker', category: 'gem', crops: ['agurk'], body: 'Har du flere agurker, end du kan spise nu?', steps: ['Skær agurk i skiver.', 'Kog en lage af eddike, sukker og krydderier.', 'Hæld over og lad trække på køl.'], season: 'summer' },
@@ -67,6 +68,7 @@ export const FORVANDLINGER: HavebogForvandling[] = [
   // ── Duft ──
   { id: 'lavendelpotpourri', title: 'Lavendelpotpourri', category: 'duft', crops: ['lavendel'], body: 'Klip blomsterne, når de dufter mest.', steps: ['Bind små bundter.', 'Hæng dem mørkt og luftigt.', 'Brug de tørrede blomster i en skål eller lille pose.'], season: 'summer' },
   { id: 'duftpose', title: 'Duftpose til skuffen', category: 'duft', crops: ['lavendel'], body: 'Tørret lavendel holder tøjet friskt længe.', steps: ['Tør lavendelblomster helt.', 'Fyld en lille stofpose.', 'Læg den i skuffen eller skabet.'] },
+  { id: 'lavendelposer', title: 'Lavendelposer', category: 'duft', crops: ['lavendel'], body: 'Blomsterne kan få et stille liv i skuffer, skabe og sengetøj.', steps: ['Tør lavendelblomsterne helt.', 'Fyld dem i små stofposer.', 'Læg poserne i skuffer, skabe eller sengetøj.'], season: 'summer' },
   // ── Plej ──
   { id: 'lavendelolie', title: 'Lavendelolie', category: 'plej', crops: ['lavendel'], body: 'En blid, duftende olie til huden.', steps: ['Fyld et glas med tørrede lavendelblomster.', 'Dæk med en mild olie.', 'Lad trække lyst i et par uger, og si fra.'], safetyNote: KOSMETISK_NOTE },
   { id: 'morgenfrue-salve', title: 'Morgenfruesalve', category: 'plej', crops: ['morgenfrue'], body: 'Morgenfruens kronblade giver en blød salve.', steps: ['Træk kronblade i olie.', 'Si fra og varm forsigtigt med lidt bivoks.', 'Hæld i små glas og lad stivne.'], safetyNote: KOSMETISK_NOTE },
@@ -94,6 +96,61 @@ export function forvandlingCropKey(navn: string): string {
 export function findForvandling(id: string): HavebogForvandling | undefined {
   return FORVANDLINGER.find(f => f.id === id)
 }
+
+// ── Basis-mosaik: havens output-univers for den NYE bruger ──────────────────
+//
+// Anna 14/7: en fast mosaik med 8 generiske forvandlinger, der ALDRIG påstår
+// noget om brugerens egen have. Model:
+//   Basis-mosaik      = generiske Forvandlinger (denne liste, altid synlig)
+//   Personlig mosaik  = brugerens planter, høst, frøbank og gemte idéer (senere)
+// Når brugerdata findes, prioriteres personlige forslag; basis fylder resten.
+//
+// Balance (bevidst — Potalot er ikke en kogebog): Mad 3 · Gem/tør/så igen 3 ·
+// Duft/pynt/natur 2.
+
+/** 'natur' er KUN en basis-kategori (haven som levende sted), ikke en afgrøde-
+ *  forvandling. Egen farve/label, så kernens ForvandlingKategori-typer og de
+ *  udtømmende Records/switches ikke skal ændres. */
+export type BasisKategori = ForvandlingKategori | 'natur'
+export type BasisKind = 'recipe_idea' | 'guide' | 'project' | 'seed_saving'
+
+export const BASIS_NATUR_FARVE = '#6F5D42' // varmt træ/bambus
+const BASIS_NATUR_LABEL = 'Natur'
+
+export function basisKategoriFarve(k: BasisKategori): string {
+  return k === 'natur' ? BASIS_NATUR_FARVE : KATEGORI_FARVE[k]
+}
+export function basisKategoriLabel(k: BasisKategori): string {
+  return k === 'natur' ? BASIS_NATUR_LABEL : KATEGORI_LABEL[k]
+}
+
+export interface BasisMosaikElement {
+  id: string
+  title: string
+  category: BasisKategori
+  kind: BasisKind
+  /** Kort "kan blive til"-copy (aldrig "er blevet"). Vises på detail-siden. */
+  description: string
+  cta: string
+  href: string
+  /** id på en FORVANDLINGER-post, hvis fotoet skal resolves derfra (via
+   *  selectForvandlingAssets). Uden = farve-tile (fx crop-løse projekter). */
+  forvandlingId?: string
+  basis: true
+}
+
+export const BASIS_MOSAIK: BasisMosaikElement[] = [
+  { id: 'tomatsauce', title: 'Tomatsauce på glas', category: 'gem', kind: 'recipe_idea', description: 'Når tomaterne vælter ind, kan de blive til sauce, suppe eller vinterglas.', cta: 'Se idé', href: '/havebog/forvandlinger/tomatsauce', forvandlingId: 'tomatsauce', basis: true },
+  { id: 'gem-tomatfroe', title: 'Gem tomatfrø', category: 'saa-igen', kind: 'seed_saving', description: 'Én moden tomat kan blive starten på næste sæson.', cta: 'Se hvordan', href: '/havebog/forvandlinger/gem-tomatfroe', forvandlingId: 'gem-tomatfroe', basis: true },
+  { id: 'toer-basilikum', title: 'Tør basilikum', category: 'toer', kind: 'guide', description: 'Gem duften af sommeren, før planten bliver træt.', cta: 'Se idé', href: '/havebog/forvandlinger/toer-basilikum', forvandlingId: 'toer-basilikum', basis: true },
+  { id: 'lavendelposer', title: 'Lav lavendelposer', category: 'duft', kind: 'project', description: 'Blomsterne kan få et stille liv i skuffer, skabe og sengetøj.', cta: 'Se idé', href: '/havebog/forvandlinger/lavendelposer', forvandlingId: 'lavendelposer', basis: true },
+  { id: 'jordbaersorbet', title: 'Jordbærsorbet', category: 'spis', kind: 'recipe_idea', description: 'De bløde bær kan blive til noget koldt, sødt og ret kortlivet.', cta: 'Se idé', href: '/havebog/forvandlinger/jordbaersorbet', forvandlingId: 'jordbaersorbet', basis: true },
+  { id: 'agurkesalat', title: 'Agurkesalat', category: 'spis', kind: 'recipe_idea', description: 'Når agurkerne kommer hurtigt, må glassene gerne følge med.', cta: 'Se idé', href: '/havebog/forvandlinger/agurkesalat', forvandlingId: 'agurkesalat', basis: true },
+  { id: 'spiselige-blomster', title: 'Spiselige blomster', category: 'pynt', kind: 'guide', description: 'Nogle blomster kan både stå i bedet og ende på tallerkenen.', cta: 'Læs mere', href: '/havebog/forvandlinger/spiselige-blomster', forvandlingId: 'spiselige-blomster', basis: true },
+  // Crop-løst haveprojekt uden detail-side endnu → href falder til oversigten
+  // (Anna-regel). Backlog: Docs/product/launch-test-backlog.md (insekthotel).
+  { id: 'insekthotel', title: 'Byg et insekthotel', category: 'natur', kind: 'project', description: 'Nogle af havens bedste gæster skal bare have et sted at bo.', cta: 'Se projekt', href: '/havebog/forvandlinger', basis: true },
+]
 
 const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen']
 

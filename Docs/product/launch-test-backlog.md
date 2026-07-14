@@ -101,6 +101,21 @@ farvefelter, ingen tal uden data, ingen grå tom-states, ingen admin-copy.
   små forvandlinger.") + 3-4 faste kategori-tiles m. farvefelter/glyphs. Må IKKE
   føles tom.
 
+**BYGGET 14/7 (mode `blivetil` = basis-mosaik):** Fast `Spisekammer`-modul med to
+tilstande (`strong`/`blivetil`). `blivetil` render­er `BASIS_MOSAIK` = 8 faste
+generiske forvandlinger (Mad 3 · Gem/tør/så igen 3 · Duft/pynt/natur 2), aldrig
+demo/falsk høst. Data i `src/lib/havebog-forvandlinger.ts` (`BASIS_MOSAIK`).
+Tilføjet katalog-poster `jordbaersorbet` + `lavendelposer` (rigtige detail-sider).
+**ÅBEN — insekthotel detail-side mangler:** `insekthotel` er crop-løst `natur`-
+projekt; kernens `ForvandlingKategori` er afgrøde-centreret, så href falder p.t.
+til oversigten `/havebog/forvandlinger`. TODO hvis ønsket: gør detail-`Brug`-blok
+betinget (crops.length>0), tilføj `natur` til kernetype (KATEGORI_LABEL/FARVE +
+`naesteHandling`-switch) og opret en insekthotel-post → egen detail-side.
+**ÅBEN — flere fototiles:** basilikum/lavendel/jordbær render­er som farve-tiles,
+fordi deres crop-fotos ikke er tagget `useCases:['forvandling']` (kun `mosaic`/
+`cropTile`). Quick win: tag/producer forvandlings-fotos for dem hvis flere
+billeder ønskes i basis-mosaikken.
+
 ### F6. PageIntroNote — bløde intro-noter på hovedsider (Anna 14/7)
 Let system, IKKE popups/modals/tooltips. Én komponent `PageIntroNote` (id, title,
 body, maxViews=7, dismissible, hideWhen). Forklarer VÆRDIEN af siden ("hvorfor
