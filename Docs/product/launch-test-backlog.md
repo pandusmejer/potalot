@@ -101,6 +101,19 @@ farvefelter, ingen tal uden data, ingen grå tom-states, ingen admin-copy.
   små forvandlinger.") + 3-4 faste kategori-tiles m. farvefelter/glyphs. Må IKKE
   føles tom.
 
+### F6. PageIntroNote — bløde intro-noter på hovedsider (Anna 14/7)
+Let system, IKKE popups/modals/tooltips. Én komponent `PageIntroNote` (id, title,
+body, maxViews=7, dismissible, hideWhen). Forklarer VÆRDIEN af siden ("hvorfor
+fylde den med data"), instruerer ikke ("klik her"-sprog forbudt). Øverst på siden,
+creme/sage, lille ikon, luk-kryds, ingen stor CTA, må ikke ligne fejl/reklame.
+State: helst pr. bruger (intro_id, view_count, dismissed_at, last_seen_at); V1-
+fallback localStorage. V1-sider: Frøbank · Planter · Havebog · Kalender · Guides.
+Skjul-regler: Frøbank ≥5 frø/dismiss · Planter ≥3 planter/dismiss · Havebog 7
+visn./dismiss · Kalender 7 visn./første opgave · Guides 7 visn./dismiss.
+Tekster (Anna): Frøbank "Saml dine frø her" · Planter "Tilføj det, du dyrker nu"
+· Havebog "Din sæson får sin egen historie" · Kalender "Se hvad der giver mening
+nu" · Guides "Forstå det, du dyrker" (fuld body i chat 14/7).
+
 ## ⏸ UDSKUDT (efter ovenstående / foto-roadmap)
 - Plantekort-/artsfoto-produktion (roadmap 13-16) → løser billed-visning + fallback-ikoner.
 - Cross-role billed-fallback (plante→frøkort) = eksplicit designbeslutning, ikke rørt.
