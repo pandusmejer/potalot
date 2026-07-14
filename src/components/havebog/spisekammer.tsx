@@ -20,7 +20,15 @@ const CREME = '#F7F1DF'
 
 interface Props {
   data: SpisekammerData
+  /**
+   * 'strong'   = brugeren har høst → konkrete forvandlinger fra afgrøderne.
+   * 'blivetil' = ingen høst endnu → generiske kategori-tiles ("kan blive"),
+   *              ALDRIG falsk høst eller demo-data. Modulet er altid synligt.
+   */
+  mode?: 'strong' | 'blivetil'
 }
+
+const ALLE_KATEGORIER: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen']
 
 type Tile =
   | { slag: 'forvandling'; id: string; title: string; kategori: ForvandlingKategori; farve: string; foto?: string; lead: boolean }
@@ -47,7 +55,9 @@ type Tile =
  * kun som navne når `antalErHoester`). "Sæsonens spisekammer" som historik hører
  * til sæsonarkiv/Profil senere (kræver mængder + gemte forvandlinger).
  */
-export function Spisekammer({ data }: Props) {
+export function Spisekammer({ data, mode = 'strong' }: Props) {
+  if (mode === 'blivetil') return <SpisekammerBliveTil />
+
   const maaned = new Date().getMonth() + 1
   const crops = data.hoest.map(h => h.navn)
   const valg = selectSpisekammerAssets({
@@ -208,5 +218,57 @@ function MosaikTile({ tile }: { tile: Tile }) {
         <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
       </span>
     </Link>
+  )
+}
+
+/**
+ * "Blive til"-tilstand: brugeren har endnu ingen høst. Vi lover IKKE noget
+ * (ingen falsk høst, ingen demo), men holder modulet levende med havens brede
+ * veje — de generiske Forvandlinger-kategorier. Copy siger "kan blive", ikke
+ * "er blevet".
+ */
+function SpisekammerBliveTil() {
+  const venstre = ALLE_KATEGORIER.filter((_, i) => i % 2 === 0)
+  const hoejre = ALLE_KATEGORIER.filter((_, i) => i % 2 === 1)
+  return (
+    <section>
+      <p
+        className="uppercase"
+        style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.26em', color: 'rgba(36,48,31,0.5)', margin: 0, marginBottom: 12 }}
+      >
+        Det kan haven blive til
+      </p>
+      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.14, color: '#5F6658', margin: '0 0 18px' }}>
+        Når du dyrker, begynder haven at åbne flere veje.
+      </p>
+      <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
+        {[venstre, hoejre].map((soejle, si) => (
+          <div key={si} style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 11 }}>
+            {soejle.map(k => (
+              <Link
+                key={k}
+                href="/havebog/forvandlinger"
+                className="no-underline block"
+                style={{ background: KATEGORI_FARVE[k], borderRadius: 20, padding: '26px 18px 30px' }}
+              >
+                <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: 'clamp(22px, 5.8cqw, 28px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
+                  {KATEGORI_LABEL[k]}
+                </span>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
+      <Link
+        href="/havebog/forvandlinger"
+        className="no-underline block"
+        style={{ marginTop: 11, borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}
+      >
+        <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
+          Se alle forvandlinger
+          <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
+        </span>
+      </Link>
+    </section>
   )
 }

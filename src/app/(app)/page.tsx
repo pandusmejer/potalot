@@ -19,6 +19,8 @@ import { VejretIHaven } from '@/components/havebog/vejret-i-haven'
 import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { BookHeart } from 'lucide-react'
 import { kurater, type RumId } from '@/lib/havebog-kurator'
 import { kompetenceAntal } from '@/lib/havebog-kompetencer'
 import { aktuelMaaned } from '@/lib/datetime'
@@ -139,7 +141,6 @@ export default async function HavebogPage() {
         paaDenneDag: onThisDay.length > 0,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
-        spisekammer: true,
         projekter: true,
         bedrifter: true,
         vejret: true,
@@ -149,7 +150,6 @@ export default async function HavebogPage() {
     : {
         inspirerMig: data.inspirerForslag !== null,
         maaskeDuOgsaa: (data.inspirerForslag?.sekundaer ?? null) !== null,
-        spisekammer: data.spisekammer !== null,
         // Produktregel: "På denne dag" skal have en kilde/destination —
         // skjul modulet hvis det viste minde ikke kan åbnes (ingen href).
         paaDenneDag: (onThisDay[0]?.href ?? null) !== null,
@@ -172,7 +172,6 @@ export default async function HavebogPage() {
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
     minder: <Minder minder={minder} />,
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
-    spisekammer: <Spisekammer data={isDemo ? DEMO_SPISEKAMMER : data?.spisekammer ?? DEMO_SPISEKAMMER} />,
     projekter: <Projekter projekt={DEMO_PROJEKT} />,
     bedrifter: <Bedrifter bedrifter={isDemo ? DEMO_BEDRIFTER : data?.bedrifter ?? DEMO_BEDRIFTER} />,
     vejret: <VejretIHaven vejr={DEMO_VEJR} />,
@@ -180,11 +179,35 @@ export default async function HavebogPage() {
     historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
   }
 
+  // ── Mosaikken "Det kan haven blive til" — FAST modul (F4) ──
+  // Anna-låst regel: mosaikken må ALDRIG gates væk fra Havebog — kun skifte
+  // DATATILSTAND. Har brugeren høst → 'strong' (konkrete forvandlinger fra
+  // afgrøderne). Ingen høst endnu → 'blivetil' (havens brede veje, aldrig
+  // falsk høst eller demo-data for en indlogget bruger). Placering: efter det
+  // faste lag (Hero · Dagens historie · Diktafon), FØR de roterende rum.
+  const harHoest = (data?.spisekammer?.hoest.length ?? 0) > 0
+  const spisekammerMode = isDemo || harHoest ? 'strong' : 'blivetil'
+  const spisekammerData = isDemo ? DEMO_SPISEKAMMER : (data?.spisekammer ?? DEMO_SPISEKAMMER)
+
   // ⚠️ ANNA-LÅST 13/7: forside-rytme space-y-20 sm:space-y-28 (original,
   // matcher deployed). RØR IKKE — 48px-stramning var afvigelse, revertet.
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
+      <div>
+        <Spisekammer data={spisekammerData} mode={spisekammerMode} />
+      </div>
+      {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det
+          faste top-lag (hero/dato/Dagens historie). Kun for indloggede;
+          demoen fortæller allerede historien via sit fyldte indhold. */}
+      {!isDemo && (
+        <PageIntroNote
+          id="havebog"
+          icon={<BookHeart className="h-4 w-4" />}
+          title="Din sæson får sin egen historie"
+          body="Jo mere du dyrker, høster og observerer, jo mere personlig bliver Havebogen."
+        />
+      )}
       {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
   )
