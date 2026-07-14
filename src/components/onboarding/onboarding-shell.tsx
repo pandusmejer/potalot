@@ -20,6 +20,12 @@ interface Props {
   /** Server-talte udgangstal (opdateres ved retur fra scan/excel). */
   plantCount: number
   seedCount: number
+  /**
+   * true = genbesøg fra en ALLEREDE onboardet bruger ("Få din have ind" fra
+   * Profil/tom-tilstande, F2). Så sætter vi ikke onboarded igen, og bund-copy
+   * er "tilbage til min have" frem for begynd/spring-over.
+   */
+  isRevisit?: boolean
 }
 
 /**
@@ -32,7 +38,7 @@ interface Props {
  * Fremskridt bevares: alt oprettet ligger allerede i databasen, så et retur til
  * /onboarding (onboarded sættes først ved "færdig") viser haven indtil videre.
  */
-export function OnboardingShell({ gardenLocations, existingNames, plantCount, seedCount }: Props) {
+export function OnboardingShell({ gardenLocations, existingNames, plantCount, seedCount, isRevisit = false }: Props) {
   const router = useRouter()
   const [tekstOpen, setTekstOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -42,7 +48,9 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
   // frø med som planter → "4 planter" der pludselig blev "6 frø, 0 planter".
   const iAlt = plantCount + seedCount
 
+  // Onboarding: markér onboarded + gå til haven. Genbesøg (F2): bare tilbage.
   function afslut() {
+    if (isRevisit) { router.push('/'); router.refresh(); return }
     startTransition(async () => {
       await updateProfile({ onboarded: true })
       router.push('/')
@@ -58,23 +66,28 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <Leaf className="h-5 w-5 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl font-serif text-foreground">Start med det, du allerede dyrker</h1>
+        <h1 className="text-2xl font-serif text-foreground">Sådan kommer du i gang</h1>
         <p className="text-sm text-muted-foreground px-2">
-          Du behøver ikke starte fra bunden. Tilføj lidt ad gangen — med tekst,
-          foto eller en liste. Midt i sæsonen er helt fint.
+          Uanset om du starter fra nul, er midt i sæsonen eller har dyrket i
+          årevis, kan du begynde på den måde, der passer dig.
         </p>
       </div>
 
-      {iAlt > 0 && (
-        <div className="rounded-xl bg-secondary/50 px-4 py-2.5 text-center text-sm text-secondary-foreground">
-          Din have indtil videre:{' '}
-          <span className="font-medium">
-            {plantCount > 0 && `${plantCount} plante${plantCount === 1 ? '' : 'r'}`}
-            {plantCount > 0 && seedCount > 0 && ' · '}
-            {seedCount > 0 && `${seedCount} frø`}
-          </span>
-        </div>
-      )}
+      {/* Status-chip: sande server-tal, ellers en blød nudge til nul-brugeren. */}
+      <div className="rounded-xl bg-secondary/50 px-4 py-2.5 text-center text-sm text-secondary-foreground">
+        {iAlt > 0 ? (
+          <>
+            Din have indtil videre:{' '}
+            <span className="font-medium">
+              {seedCount > 0 && `${seedCount} frø`}
+              {seedCount > 0 && plantCount > 0 && ' · '}
+              {plantCount > 0 && `${plantCount} plante${plantCount === 1 ? '' : 'r'}`}
+            </span>
+          </>
+        ) : (
+          'Du kan begynde uden at tilføje noget endnu'
+        )}
+      </div>
 
       <div className="space-y-2.5">
         {/* 1 — allerede dyrker */}
@@ -85,7 +98,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <button className="w-full text-left">
             <MetodeKort
               icon={<Sprout className="h-5 w-5" />}
-              title="Tilføj planter"
+              title="Tilføj det, du dyrker"
               desc="Skriv art og sort — du bestemmer, hvor meget du udfylder."
             />
           </button>
@@ -104,8 +117,8 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         <Link href="/froebank/tilfoej?mode=excel&from=onboarding" className="block">
           <MetodeKort
             icon={<FileSpreadsheet className="h-5 w-5" />}
-            title="Importér fra Excel eller CSV"
-            desc="Upload en liste og gennemse den, før den gemmes."
+            title="Importér en liste"
+            desc="Upload Excel eller CSV og gennemse alt, før det gemmes."
           />
         </Link>
 
@@ -119,25 +132,30 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         </button>
       </div>
 
-      {/* 5 — spring over + fortsæt senere */}
+      {/* Bund — afhænger af data-tilstand (Anna 14/7). Genbesøg = bare tilbage. */}
       <div className="pt-1 space-y-2 text-center">
-        <Button
-          variant="ghost"
-          className="w-full text-muted-foreground"
-          onClick={afslut}
-          disabled={pending}
-        >
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Begynd uden at tilføje planter <ArrowRight className="h-4 w-4 ml-1" /></>}
-        </Button>
-        {iAlt > 0 && (
-          <button
-            type="button"
-            onClick={afslut}
-            disabled={pending}
-            className="text-sm text-primary hover:underline"
-          >
-            Jeg er færdig — vis min have
-          </button>
+        {isRevisit ? (
+          <Button className="w-full" onClick={afslut} disabled={pending}>
+            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Tilbage til min have <ArrowRight className="h-4 w-4 ml-1" /></>}
+          </Button>
+        ) : iAlt > 0 ? (
+          <>
+            <Button className="w-full" onClick={afslut} disabled={pending}>
+              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Vis min have <ArrowRight className="h-4 w-4 ml-1" /></>}
+            </Button>
+            <button type="button" onClick={afslut} disabled={pending} className="text-sm text-muted-foreground hover:underline">
+              Tilføj mere senere
+            </button>
+          </>
+        ) : (
+          <>
+            <Button variant="ghost" className="w-full text-muted-foreground" onClick={afslut} disabled={pending}>
+              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Begynd uden at tilføje planter <ArrowRight className="h-4 w-4 ml-1" /></>}
+            </Button>
+            <button type="button" onClick={afslut} disabled={pending} className="text-sm text-muted-foreground hover:underline">
+              Fortsæt senere
+            </button>
+          </>
         )}
       </div>
 

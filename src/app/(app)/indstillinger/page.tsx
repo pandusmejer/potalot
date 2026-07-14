@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { LocationSetting } from '@/components/profil/location-setting'
 import type { NotificationPreference } from '@/lib/types'
-import { ChevronRight, User, Bell, Sparkles, Globe, Lock } from 'lucide-react'
+import { ChevronRight, User, Bell, Sparkles, Globe, Lock, Sprout } from 'lucide-react'
 
 const DEFAULT_PREFS: NotificationPreference = {
   userId: '',
@@ -44,6 +44,20 @@ export default function IndstillingerPage() {
           <div className="flex-1">
             <p className="font-medium text-foreground">Min profil</p>
             <p className="text-xs text-muted-foreground">Navn, e-mail, brugertype</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      </Card>
+
+      {/* Få din have ind — genåbnelig import/tilføj (F2) */}
+      <Card>
+        <Link href="/onboarding/have" className="flex items-center gap-3 p-4 hover:bg-accent/30 transition-colors rounded-2xl">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <Sprout className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground">Få din have ind</p>
+            <p className="text-xs text-muted-foreground">Tilføj planter, scan frøposer eller importér en liste</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>

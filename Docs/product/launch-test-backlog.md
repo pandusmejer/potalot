@@ -30,11 +30,33 @@ garden_type, location, growing_areas, grower_profile, season_status. Wiring:
 dyrkerprofil→notifikations-mængde, lokation→vejr. Prioritet: lokation, profil,
 midt-sæson først. **Landings-copy allerede opdateret** (subsumeres i V2).
 
-### F2. Genåbnelig onboarding ("Få din have ind" efter signup)
-Produktregel: brugeren skal ALTID kunne vende tilbage til import-landingssiden.
-Adgang fra Profil/Indstillinger + tom-tilstande i Planter/Frøbank. Rute:
-`/profil/fa-din-have-ind` ELLER genbrug onboarding-ruten gjort tilgængelig efter
-signup. UI-navn: "Få din have ind" / "Tilføj det, du dyrker" (ikke "onboarding").
+### F2. Genåbnelig "Få din have ind" (Anna-låst 14/7 — NÆSTE build, FØR V2)
+Brugeren skal ALTID kunne vende tilbage til import-/tilføj-universet (tilføj
+planter · scan · Excel/CSV · skriv frit). Ikke kun engangs-onboarding.
+**Placering:** 1) Profil/Indstillinger (label "Få din have ind"), 2) tom-state i
+Planter (CTA "Tilføj planter"), 3) tom-state i Frøbank (CTA "Tilføj frø"),
+4) evt. Havebog senere. **Rute:** `/onboarding/have` (auth-gated, uden for
+(app)-gruppen så onboarding-vagten ikke rammer), tilgængelig for ALLEREDE
+onboardede. Genbruger OnboardingShell.
+**Krav:** må ikke sende bruger tilbage i signup-onboarding · ikke trigge
+onboarding-vagten · virke for onboardede · samme flows · SANDE server-tal (ingen
+session-tæller) · ingen bouncende "Fortsæt senere".
+
+**Landings-copy (Anna 14/7 — favner 3 brugertyper: nul / midt-sæson / erfaren):**
+- Headline: **"Sådan kommer du i gang"**
+- Body: *"Uanset om du starter fra nul, er midt i sæsonen eller har dyrket i
+  årevis, kan du begynde på den måde, der passer dig."*
+- 4 kort: **"Tilføj det, du dyrker"** (Skriv art og sort — du bestemmer, hvor
+  meget du udfylder.) · **"Scan en frøpose"** (Tag et billede — Potalot læser
+  sort og så-info fra posen.) · **"Importér en liste"** (Upload Excel eller CSV
+  og gennemse alt, før det gemmes.) · **"Skriv frit om haven"** (Fortæl hvad du
+  dyrker — Potalot foreslår, og du godkender.)
+- Status-chip: har data → "Din have indtil videre: [x] frø · [y] planter";
+  ingen data → "Du kan begynde uden at tilføje noget endnu".
+- Bund: ingen data → primær "Begynd uden at tilføje planter" + sekundær "Fortsæt
+  senere"; har data → primær "Vis min have" + sekundær "Tilføj mere senere".
+  Fjern dobbelte/forvirrende exit-links. "Fortsæt senere" må kun findes NÅR der
+  er en reel vej tilbage (dvs. når F2 findes) — ellers falsk trøst.
 
 ### F3. Slet konto (LAUNCH/GDPR-krav)
 Profil/Indstillinger → Konto → Slet konto. Tydelig bekræftelse ("Dette sletter din
@@ -62,10 +84,13 @@ farvefelter, ingen tal uden data, ingen grå tom-states, ingen admin-copy.
 - Plantekort-/artsfoto-produktion (roadmap 13-16) → løser billed-visning + fallback-ikoner.
 - Cross-role billed-fallback (plante→frøkort) = eksplicit designbeslutning, ikke rørt.
 
-## Anbefalet rækkefølge
-1. (gjort) onboarding-tilbage-bug + landings-copy.
-2. **F1 Onboarding V2** — det Anna skal bruge for at teste hele flowet. Stor front.
-3. **F3 Slet konto** — GDPR/launch-krav, afgrænset.
-4. **F2 Genåbnelig onboarding** — afgrænset (indgange + rute).
+## Rækkefølge (Anna-LÅST 14/7 — F2 FØR V2)
+Begrundelse: F2 gør eksisterende onboarding brugbar efter 1. session
+(launch-nødvendigt); V2 ændrer strukturen (forbedring). Byg ikke V2 oven på et
+"senere" der ikke findes endnu.
+1. (gjort, skal push/testes) onboarding-tilbage-bug + copy + tæller + fjern-fortsæt-senere.
+2. **F2 Genåbnelig "Få din have ind"** + ny landings-copy (afgrænset).
+3. **F3 Slet konto** — GDPR/launch-krav.
+4. **F1 Onboarding V2** — fuld preference-onboarding (stor front, egen fase).
 5. **F4 Havebog-mosaik** — egen Havebog-front.
-6. Scan fil-input-bug (cross-platform, fiddly) + billed-/ikon-polering (foto-roadmap).
+6. Scan fil-input-bug (cross-platform) + billed-/ikon-polering (foto-roadmap).

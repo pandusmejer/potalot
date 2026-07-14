@@ -13,18 +13,18 @@ export function PlantEmptyState() {
         <div className="min-w-0">
           <h2 className="font-serif text-2xl leading-tight">Ingen aktive planter endnu</h2>
           <p className="mt-2 text-sm leading-6 text-white/76">
-            Start med at tilføje en plante fra din frøbank, når du sår, forspirer eller planter ud.
+            Tilføj det, du allerede dyrker — skriv en plante, scan en frøpose eller importér en liste.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button asChild variant="secondary" size="sm" className="bg-white/90 text-primary hover:bg-white">
-              <Link href="/froebank">
-                Tilføj fra frøbank
+              <Link href="/onboarding/have">
+                <Plus className="h-4 w-4" />
+                Tilføj planter
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="border-white/28 bg-white/10 text-white hover:bg-white/16 hover:text-white">
               <Link href="/froebank">
-                <Plus className="h-4 w-4" />
-                Opret ny plante
+                Se frøbanken
               </Link>
             </Button>
           </div>
