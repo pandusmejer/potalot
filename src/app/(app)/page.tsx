@@ -194,7 +194,10 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
-      <div>
+      {/* Anker-id: tilbage-link fra en Forvandlings-detail (åbnet via en
+          mosaik-tile med ?from=havebog) lander HER ved mosaikken, ikke i
+          hero-toppen. scroll-mt rydder den sticky header. */}
+      <div id="det-kan-haven-blive-til" className="scroll-mt-24">
         <Spisekammer data={spisekammerData} mode={spisekammerMode} />
       </div>
       {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det

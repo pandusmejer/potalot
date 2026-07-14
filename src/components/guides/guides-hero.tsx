@@ -20,7 +20,11 @@ export function GuidesHero() {
         style={{
           fontFamily: plex,
           fontWeight: 600,
-          fontSize: 'clamp(36px, 10.3vw, 61px)',
+          // cqw (ikke vw): app-indholdet bor i en fast max-w-[390px]-kolonne med
+          // containerType:inline-size. Med vw voksede titlen med VIEWPORTEN, så
+          // på skærme >592px ramte den 61px-cap og blev klippet af kolonnens
+          // overflow-x-clip. cqw binder den til kolonnen → altid ~40px, fitter.
+          fontSize: 'clamp(36px, 10.3cqw, 61px)',
           lineHeight: 0.92,
           letterSpacing: '-0.02em',
           color: '#242019',
@@ -33,7 +37,7 @@ export function GuidesHero() {
       <p
         style={{
           fontFamily: sans,
-          fontSize: 'clamp(13.5px, 3.5vw, 16px)',
+          fontSize: 'clamp(13.5px, 3.5cqw, 16px)',
           fontWeight: 400,
           lineHeight: 1.42,
           color: '#55524A',

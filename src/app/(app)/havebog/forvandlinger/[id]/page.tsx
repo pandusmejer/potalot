@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Search, Link2 } from 'lucide-react'
+import { Search, Link2 } from 'lucide-react'
+import { ForvandlingTilbageLink } from '@/components/havebog/forvandling-tilbage-link'
 import {
   findForvandling,
   FORVANDLINGER,
@@ -39,10 +39,7 @@ export default async function ForvandlingPage({ params }: { params: Promise<{ id
 
   return (
     <div className="w-full" style={{ paddingBottom: 48, maxWidth: 620 }}>
-      <Link href="/havebog/forvandlinger" className="flex w-fit items-center no-underline" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(36,48,31,0.55)', marginBottom: 22 }}>
-        <ArrowLeft className="h-4 w-4" aria-hidden />
-        Forvandlinger
-      </Link>
+      <ForvandlingTilbageLink />
 
       {/* Kategori-chip */}
       <span className="flex w-fit items-center uppercase" style={{ gap: 7, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: farve, marginBottom: 12 }}>

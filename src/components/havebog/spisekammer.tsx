@@ -23,6 +23,14 @@ const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 const CREME = '#F7F1DF'
 
+/** Markér at et tile-klik kom fra Havebog-mosaikken, så detailsidens tilbage-
+ *  link kan føre tilbage TIL mosaikken (#det-kan-haven-blive-til) i stedet for
+ *  Forvandlinger-oversigten. Se forvandling-tilbage-link.tsx. */
+const HAVEBOG_ANKER_ID = 'det-kan-haven-blive-til'
+function medFra(href: string): string {
+  return href + (href.includes('?') ? '&' : '?') + 'from=havebog'
+}
+
 interface Props {
   data: SpisekammerData
   /**
@@ -143,7 +151,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     if (tile.foto) {
       return (
         <Link
-          href={`/havebog/forvandlinger/${tile.id}`}
+          href={medFra(`/havebog/forvandlinger/${tile.id}`)}
           className="no-underline block"
           style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: lead ? '3 / 4' : '1 / 1', background: tile.farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
         >
@@ -159,7 +167,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     }
     return (
       <Link
-        href={`/havebog/forvandlinger/${tile.id}`}
+        href={medFra(`/havebog/forvandlinger/${tile.id}`)}
         className="no-underline block"
         style={{ background: tile.farve, borderRadius: 20, padding: lead ? '34px 18px 40px' : '20px 18px 24px', overflow: 'hidden' }}
       >
@@ -233,7 +241,6 @@ function MosaikTile({ tile }: { tile: Tile }) {
  */
 type BasisTile =
   | { slag: 'element'; el: BasisMosaikElement; foto?: string; farve: string; stor: boolean }
-  | { slag: 'note'; linjer: string[] }
   | { slag: 'cta' }
 
 function SpisekammerBliveTil() {
@@ -255,8 +262,6 @@ function SpisekammerBliveTil() {
       farve: basisKategoriFarve(el.category),
       stor: i === 0, // Tomatsauce = lead-tile (større, sætter tonen).
     })
-    // Editorial åndepause midt i mosaikken — bredden af universet i ord.
-    if (i === 3) tiles.push({ slag: 'note', linjer: ['Mad, frø, duft,', 'pynt og små projekter.'] })
   })
   tiles.push({ slag: 'cta' })
 
@@ -272,8 +277,8 @@ function SpisekammerBliveTil() {
       >
         Det kan haven blive til
       </p>
-      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.14, color: '#5F6658', margin: '0 0 18px', maxWidth: '24ch' }}>
-        Når noget vokser, kan det få et næste liv.
+      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.18, color: '#5F6658', margin: '0 0 18px', maxWidth: '28ch' }}>
+        Tomater kan blive sauce. Blomster kan blive duft. Frø kan blive næste sæson.
       </p>
       <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
         {[venstre, hoejre].map((soejle, si) => (
@@ -289,18 +294,6 @@ function SpisekammerBliveTil() {
 }
 
 function BasisMosaikTile({ tile }: { tile: BasisTile }) {
-  if (tile.slag === 'note') {
-    return (
-      <div style={{ background: '#EAE1CB', borderRadius: 20, padding: '24px 18px' }}>
-        <div aria-hidden style={{ width: 26, height: 2, background: 'rgba(95,102,88,0.45)', marginBottom: 14 }} />
-        <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(23px, 6.2cqw, 28px)', lineHeight: 1.12, color: '#5F6658', margin: 0 }}>
-          {tile.linjer.map((l, i) => (
-            <span key={i} style={{ display: 'block' }}>{l}</span>
-          ))}
-        </p>
-      </div>
-    )
-  }
   if (tile.slag === 'cta') {
     return (
       <Link
@@ -332,7 +325,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
   if (foto) {
     return (
       <Link
-        href={el.href}
+        href={medFra(el.href)}
         className="no-underline block"
         style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: stor ? '3 / 4' : '1 / 1', background: farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
       >
@@ -350,7 +343,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
   // Farve-tile (intet foto — fx crop-løse projekter). Rent typografisk felt.
   return (
     <Link
-      href={el.href}
+      href={medFra(el.href)}
       className="no-underline block"
       style={{ background: farve, borderRadius: 20, padding: stor ? '34px 18px 40px' : '24px 18px 28px', overflow: 'hidden' }}
     >
