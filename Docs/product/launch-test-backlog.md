@@ -111,6 +111,13 @@ projekt; kernens `ForvandlingKategori` er afgrøde-centreret, så href falder p.
 til oversigten `/havebog/forvandlinger`. TODO hvis ønsket: gør detail-`Brug`-blok
 betinget (crops.length>0), tilføj `natur` til kernetype (KATEGORI_LABEL/FARVE +
 `naesteHandling`-switch) og opret en insekthotel-post → egen detail-side.
+**ÅBEN — medium-tilstand (punkt 3) ikke bygget:** planter/frøbank UDEN høst får
+i dag BASIS (`blivetil`), ikke en fremadskuende personlig mosaik. Kun to modes i
+koden: `strong` (har høst-logs) + `blivetil` (basis). `byggSpisekammer()` → null
+uden `type='harvest'`-logs. Medium kræver ny datakilde (brugerens afgrøder fra
+planter/frøbank → `vaelgForvandlinger` → "kan blive"-copy) = nyt indhold, ikke
+wiring. Wiring-reglen (altid synlig, ikke kurator-valgbar) ER opfyldt. Anna 14/7:
+F4 færdig som launch-scope; medium = afgrænset opfølgning.
 **ÅBEN — flere fototiles:** basilikum/lavendel/jordbær render­er som farve-tiles,
 fordi deres crop-fotos ikke er tagget `useCases:['forvandling']` (kun `mosaic`/
 `cropTile`). Quick win: tag/producer forvandlings-fotos for dem hvis flere
