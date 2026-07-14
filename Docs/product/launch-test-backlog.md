@@ -58,10 +58,31 @@ session-tæller) · ingen bouncende "Fortsæt senere".
   Fjern dobbelte/forvirrende exit-links. "Fortsæt senere" må kun findes NÅR der
   er en reel vej tilbage (dvs. når F2 findes) — ellers falsk trøst.
 
-### F3. Slet konto (LAUNCH/GDPR-krav)
+### F3. Slet konto (LAUNCH/GDPR-krav) — NÆSTE build, byg OMHYGGELIGT
 Profil/Indstillinger → Konto → Slet konto. Tydelig bekræftelse ("Dette sletter din
 konto og dine data. Kan ikke fortrydes."), aktiv bekræftelse (skriv "SLET"). Ikke
-gemt bag "kontakt support". Evt. deletion-delay-tekst hvis teknisk nødvendigt.
+gemt bag "kontakt support".
+**Teknisk (verificeret 14/7):** service-role-nøgle findes (`SUPABASE_SERVICE_ROLE_KEY`).
+**39 tabeller** har `user_id` — men KUN `notes` + `notifications` cascader ved
+sletning af auth.users. Resten (plants_v2, inventory_items, calendar_tasks,
+plant_logs_v2, voice_notes, garden_locations, guides, seeds, plants, tasks,
+placeringer, community_*, forum_*, group_*, ideas, seed_swap_listings, m.fl.)
+ville blive FORÆLDRELØSE. → Slet EKSPLICIT fra alle brugerens tabeller (i FK-rigtig
+rækkefølge, admin-klient) FØR `auth.admin.deleteUser`. Uigenkaldelig → test på
+engangskonto, aldrig på rigtige konti. Byg som dedikeret sletnings-funktion, ikke
+ad-hoc. Deletion-delay-tekst hvis teknisk nødvendigt.
+
+### F5. Note-foto i "Skriv frit om haven" (Anna 14/7 — efter F3)
+IKKE en ny OCR-motor: genbruger den EKSISTERENDE Claude-vision (extractSeedPacketFields-
+mønster) på et billede af håndskrevne noter. Hører INDE i "Skriv frit", ikke som
+separat spor. Flow: skriv tekst OG/ELLER tilføj foto af noter → Claude læser begge
+→ forslag (arter/sorter/antal/steder/status, usikre markeret) → godkend/redigér →
+gem. Foto = råinput, ALDRIG facit: intet auto-oprettes uden review; copy må være
+usikker ("Jeg tror, der står…", "Tjek om dette ser rigtigt ud"). Landings-kort:
+"Skriv løst eller tilføj et foto af dine noter — Potalot foreslår, og du godkender."
+Inde i flow: tekstfelt + sekundær "Tilføj foto af noter" + hjælpetekst "Du kan
+skrive frit, tilføje et foto af håndskrevne noter — eller begge dele." Undgå:
+dokumentscanner-look, løfte om perfekt håndskrift-aflæsning, separat stort spor.
 
 ### F4. Havebog-mosaik ALTID synlig — "DET KAN HAVEN BLIVE TIL" (Anna-låst regel)
 Mosaikken (Forvandlinger-preview) må ALDRIG gates væk fra Havebog — den er sidens
@@ -88,9 +109,9 @@ farvefelter, ingen tal uden data, ingen grå tom-states, ingen admin-copy.
 Begrundelse: F2 gør eksisterende onboarding brugbar efter 1. session
 (launch-nødvendigt); V2 ændrer strukturen (forbedring). Byg ikke V2 oven på et
 "senere" der ikke findes endnu.
-1. (gjort, skal push/testes) onboarding-tilbage-bug + copy + tæller + fjern-fortsæt-senere.
-2. **F2 Genåbnelig "Få din have ind"** + ny landings-copy (afgrænset).
-3. **F3 Slet konto** — GDPR/launch-krav.
+1. ✅ onboarding-fixes + copy ("Start hvor du er") + ✅ **F2** (skal push/testes).
+2. **F3 Slet konto** — GDPR/launch-krav (byg OMHYGGELIGT, uigenkaldelig).
+3. **F5 Note-foto i "Skriv frit"** — genbruger vision (afgrænset).
 4. **F1 Onboarding V2** — fuld preference-onboarding (stor front, egen fase).
 5. **F4 Havebog-mosaik** — egen Havebog-front.
 6. Scan fil-input-bug (cross-platform) + billed-/ikon-polering (foto-roadmap).
