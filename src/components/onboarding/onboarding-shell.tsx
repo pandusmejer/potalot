@@ -62,10 +62,10 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <Leaf className="h-5 w-5 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl font-serif text-foreground">Få din have ind</h1>
+        <h1 className="text-2xl font-serif text-foreground">Start med det, du allerede dyrker</h1>
         <p className="text-sm text-muted-foreground px-2">
-          Du behøver ikke starte forfra. Vælg én eller flere måder at få det, du
-          allerede dyrker, med — midt i sæsonen er helt fint.
+          Du behøver ikke starte fra bunden. Tilføj lidt ad gangen — med tekst,
+          foto eller en liste. Midt i sæsonen er helt fint.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <button className="w-full text-left">
             <MetodeKort
               icon={<Sprout className="h-5 w-5" />}
-              title="Tilføj planter jeg allerede dyrker"
+              title="Tilføj planter"
               desc="Skriv art og sort — du bestemmer, hvor meget du udfylder."
             />
           </button>
@@ -109,7 +109,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<FileSpreadsheet className="h-5 w-5" />}
             title="Importér fra Excel eller CSV"
-            desc="Har du en liste? Upload den og gennemse før den gemmes."
+            desc="Upload en liste og gennemse den, før den gemmes."
           />
         </Link>
 
@@ -117,8 +117,8 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
         <button className="w-full text-left" onClick={() => setTekstOpen(true)}>
           <MetodeKort
             icon={<MessageSquareText className="h-5 w-5" />}
-            title="Fortæl om haven med tekst"
-            desc="Skriv løst hvad du har — jeg foreslår, og du godkender."
+            title="Skriv frit om haven"
+            desc="Fortæl hvad du dyrker — Potalot foreslår, og du godkender."
           />
         </button>
       </div>
@@ -131,7 +131,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           onClick={afslut}
           disabled={pending}
         >
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Spring over og begynd enkelt <ArrowRight className="h-4 w-4 ml-1" /></>}
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Begynd uden at tilføje planter <ArrowRight className="h-4 w-4 ml-1" /></>}
         </Button>
         {iAlt > 0 && (
           <button

@@ -260,7 +260,16 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
             </Link>
           </Button>
         ) : (
-          <Button variant="ghost" size="icon" onClick={() => setMode('select')} aria-label="Tilbage">
+          <Button
+            variant="ghost" size="icon" aria-label="Tilbage"
+            onClick={() => {
+              // Fra onboarding kom man DIREKTE til et mode (scan/excel) uden at
+              // se select-menuen → tilbage skal føre helt tilbage til onboarding,
+              // ikke lande i frøbank-tilføj-menuen. Normalt flow: tilbage til select.
+              if (returnTo !== '/froebank') router.push(returnTo)
+              else setMode('select')
+            }}
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
         )}
