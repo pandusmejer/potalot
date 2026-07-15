@@ -7,15 +7,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OnboardingForm } from '@/components/auth/onboarding-form'
 import { OnboardingShell } from '@/components/onboarding/onboarding-shell'
-import { saveOnboardingPreferences, type GrowerProfile, type SeasonStatus } from '@/actions/profil'
+import {
+  saveOnboardingPreferences,
+  type GrowerProfile, type NotificationProfile, type SeasonStatus,
+} from '@/actions/profil'
 import { lookupPostnummer } from '@/actions/weather'
 import type { GardenLocation } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface Props {
   email: string
-  /** 'have' hvis profilen (brugernavn) allerede er udfyldt (fortsæt-retur). */
+  /** 'have' hvis brugernavn allerede er udfyldt (fortsæt-retur). */
   startPhase: 'profil' | 'have'
+  /** Sat af page.tsx når preferencer allerede er gemt (season='igang') men
+   *  onboarding ikke er afsluttet → genoptag på import-trinnet. */
+  resumeImport?: boolean
   gardenLocations: GardenLocation[]
   existingNames: string[]
   plantCount: number
@@ -24,7 +30,7 @@ interface Props {
 
 type Step =
   | 'identitet' | 'velkommen' | 'havetype' | 'lokation'
-  | 'omraader' | 'profil' | 'saeson' | 'import' | 'klar'
+  | 'omraader' | 'grower' | 'notifikation' | 'saeson' | 'import'
 
 const HAVETYPER = [
   { id: 'parcelhus', label: 'Parcelhushave' },
@@ -47,50 +53,60 @@ const OMRAADER = [
   { id: 'lidt_af_hvert', label: 'Lidt af det hele' },
 ]
 
-const PROFILER: { id: GrowerProfile; emoji: string; title: string; tagline: string; desc: string }[] = [
-  { id: 'mindful', emoji: '🌿', title: 'Mindful', tagline: 'Jeg vil dyrke have, ikke administrere den.', desc: 'Kun det vigtigste. Få påmindelser, ingen unødig støj.' },
-  { id: 'hjaelper', emoji: '🌱', title: 'Hjælperen', tagline: 'Jeg vil gerne have lidt hjælp.', desc: 'Balanceret. Relevante påmindelser og vejrbaserede råd undervejs.' },
-  { id: 'entusiast', emoji: '🌾', title: 'Haveentusiasten', tagline: 'Jeg elsker detaljer og vil lære mest muligt.', desc: 'Mere indsigt, flere forslag og mere statistik.' },
-  { id: 'froesamler', emoji: '🌻', title: 'Frøsamleren', tagline: 'Jeg dyrker næsten lige så meget frø som planter.', desc: 'Frøbanken i centrum: sortshistorik og frøhøst.' },
+// Dyrker-IDENTITET (interesse) — påvirker IKKE notifikations-mængden.
+const GROWERS: { id: GrowerProfile; emoji: string; label: string }[] = [
+  { id: 'ny', emoji: '🌱', label: 'Ny dyrker' },
+  { id: 'koekkenhave', emoji: '🥕', label: 'Køkkenhavedyrker' },
+  { id: 'blomster', emoji: '🌸', label: 'Blomsterdyrker' },
+  { id: 'froesamler', emoji: '🌻', label: 'Frøsamler' },
+  { id: 'selvforsyner', emoji: '🥗', label: 'Selvforsyner' },
+  { id: 'drivhus', emoji: '🪴', label: 'Drivhusdyrker' },
 ]
 
-// Rækkefølge for progress-tælleren (de fem preference-trin; bookends tælles ikke).
-const PREF_STEPS: Step[] = ['havetype', 'lokation', 'omraader', 'profil', 'saeson']
+// NOTIFIKATIONSPROFIL (forstyrrelse) — uafhængig af dyrker-identiteten.
+const NOTIFS: { id: NotificationProfile; emoji: string; title: string; desc: string }[] = [
+  { id: 'mindful', emoji: '🌿', title: 'Mindful', desc: 'Ingen påmindelser. Jeg åbner selv Potalot, når jeg har lyst.' },
+  { id: 'rolig', emoji: '🍃', title: 'Rolig', desc: 'Kun det vigtigste — få påmindelser.' },
+  { id: 'aktiv', emoji: '🔔', title: 'Aktiv', desc: 'Hold mig opdateret med relevante påmindelser undervejs.' },
+]
+
+// De trin progress-tælleren dækker (bookends tælles ikke).
+const PREF_STEPS: Step[] = ['havetype', 'lokation', 'omraader', 'grower', 'notifikation', 'saeson']
 
 /**
- * Onboarding V2 — fuld preference-onboarding (spec: Docs/product/onboarding-v2-spec.md).
+ * Onboarding V2 — fuld preference-onboarding (Docs/product/onboarding-v2-spec.md).
  *
- * Samler de tre ting Potalot skal vide fra dag ét: hvor / hvordan / hvor meget
- * forstyrres. Ingen draft-persistens (launch-scope): alt holdes i client-state
- * og gemmes samlet — dog gemmes preferencerne FØR import-grenen, fordi dens
- * indgange navigerer væk. `onboarded` sættes først til allersidst.
+ * Samler hvor / hvordan / hvor meget forstyrres. Dyrker-identitet
+ * (grower_profile) og notifikations-mængde (notification_profile) er TO
+ * uafhængige dimensioner. Ingen draft-persistens (launch-scope): client-state
+ * gemmes samlet — dog gemmes preferencerne FØR import-grenen, fordi dens
+ * indgange navigerer væk. Afsluttes altid på /onboarding/faerdig.
  */
 export function OnboardingWizard({
-  email, startPhase, gardenLocations, existingNames, plantCount, seedCount,
+  email, startPhase, resumeImport = false, gardenLocations, existingNames, plantCount, seedCount,
 }: Props) {
   const router = useRouter()
-  // Har brugeren allerede brugernavn (retur), springes identitet over.
-  const [step, setStep] = useState<Step>(startPhase === 'have' ? 'velkommen' : 'identitet')
+  const [step, setStep] = useState<Step>(
+    resumeImport ? 'import' : startPhase === 'have' ? 'velkommen' : 'identitet',
+  )
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  // Preference-state (client-side indtil samlet gem).
   const [gardenType, setGardenType] = useState<string | null>(null)
   const [growingAreas, setGrowingAreas] = useState<string[]>([])
   const [growerProfile, setGrowerProfile] = useState<GrowerProfile | null>(null)
+  const [notificationProfile, setNotificationProfile] = useState<NotificationProfile | null>(null)
   const [seasonStatus, setSeasonStatus] = useState<SeasonStatus>('starter')
   const [loc, setLoc] = useState<{ latitude: number; longitude: number; locationName: string | null } | null>(null)
 
-  // Lokations-input
   const [postnr, setPostnr] = useState('')
-  const [locStatus, setLocStatus] = useState<'idle' | 'looking' | 'error'>('idle')
+  const [locStatus, setLocStatus] = useState<'idle' | 'looking'>('idle')
+  const [locError, setLocError] = useState<string | null>(null)
 
-  function prefsPayload(seasonStatus: SeasonStatus, onboarded: boolean) {
+  function prefsPayload(season: SeasonStatus, onboarded: boolean) {
     return {
-      gardenType,
-      growingAreas,
-      growerProfile,
-      seasonStatus,
+      gardenType, growingAreas, growerProfile, notificationProfile,
+      seasonStatus: season,
       latitude: loc?.latitude ?? null,
       longitude: loc?.longitude ?? null,
       locationName: loc?.locationName ?? null,
@@ -98,50 +114,62 @@ export function OnboardingWizard({
     }
   }
 
-  // Endelig afslutning (fra Klar-skærmen): gem alt + onboarded, gå til haven.
+  // "Starter nu" / "flere måneder": gem alt + onboarded → varm Klar-skærm.
   function afslutFinal() {
     setError(null)
     startTransition(async () => {
       const res = await saveOnboardingPreferences(prefsPayload(seasonStatus, true))
-      if ('error' in res) { setError(res.error); return }
-      router.push('/')
+      if ('error' in res) { setError('Kunne ikke gemme dine valg: ' + res.error); return }
+      router.push('/onboarding/faerdig')
       router.refresh()
     })
   }
 
-  // "Godt i gang": gem preferences (uden onboarded) FØR import-shellen, hvis
-  // indgange navigerer væk. Shellen sætter selv onboarded ved sin afslutning.
+  // "Godt i gang": gem preferences (uden onboarded) FØR import-shellen, fordi
+  // dens indgange navigerer væk. Shellen fører selv videre til Klar-skærmen.
   function tilImport() {
     setError(null)
     startTransition(async () => {
       const res = await saveOnboardingPreferences(prefsPayload('igang', false))
-      if ('error' in res) { setError(res.error); return }
+      if ('error' in res) { setError('Kunne ikke gemme dine valg: ' + res.error); return }
       setStep('import')
     })
   }
 
   function brugPlacering() {
-    if (!('geolocation' in navigator)) { setLocStatus('error'); return }
+    setLocError(null)
+    if (!('geolocation' in navigator)) { setLocError('Din browser deler ikke placering. Brug postnummer i stedet.'); return }
     setLocStatus('looking')
     navigator.geolocation.getCurrentPosition(
       pos => {
+        // Kun grove koordinater til lokalt vejr — aldrig en adresse.
         setLoc({ latitude: pos.coords.latitude, longitude: pos.coords.longitude, locationName: null })
         setLocStatus('idle')
         setStep('omraader')
       },
-      () => setLocStatus('error'),
-      { enableHighAccuracy: false, timeout: 8000 },
+      err => {
+        setLocStatus('idle')
+        setLocError(
+          err.code === err.PERMISSION_DENIED
+            ? 'Du sagde nej til placering — helt fint. Indtast et postnummer i stedet.'
+            : err.code === err.TIMEOUT
+              ? 'Det tog for lang tid at finde din placering. Prøv et postnummer.'
+              : 'Kunne ikke finde din placering. Prøv et postnummer.',
+        )
+      },
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 },
     )
   }
 
   function slaaPostnrOp() {
-    if (!/^\d{4}$/.test(postnr.trim())) { setLocStatus('error'); return }
+    setLocError(null)
+    if (!/^\d{4}$/.test(postnr.trim())) { setLocError('Indtast et gyldigt dansk postnummer (4 cifre).'); return }
     setLocStatus('looking')
     startTransition(async () => {
       const hit = await lookupPostnummer(postnr.trim())
-      if (!hit) { setLocStatus('error'); return }
-      setLoc({ latitude: hit.latitude, longitude: hit.longitude, locationName: hit.name })
       setLocStatus('idle')
+      if (!hit) { setLocError('Kunne ikke finde det postnummer. Tjek det, eller spring over.'); return }
+      setLoc({ latitude: hit.latitude, longitude: hit.longitude, locationName: hit.name })
       setStep('omraader')
     })
   }
@@ -153,7 +181,6 @@ export function OnboardingWizard({
   const prefIndex = PREF_STEPS.indexOf(step)
   const showProgress = prefIndex >= 0
 
-  // ── Trin: identitet (brugernavn) ──
   if (step === 'identitet') {
     return (
       <div className="w-full max-w-md space-y-6">
@@ -163,7 +190,6 @@ export function OnboardingWizard({
     )
   }
 
-  // ── Trin: velkommen (kun ved retur uden preference-data) ──
   if (step === 'velkommen') {
     return (
       <div className="w-full max-w-md space-y-6 text-center">
@@ -176,24 +202,22 @@ export function OnboardingWizard({
   return (
     <div className="w-full max-w-md space-y-6">
       {showProgress && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            {prefIndex > 0 && (
-              <button type="button" onClick={() => setStep(PREF_STEPS[prefIndex - 1])} className="text-muted-foreground hover:text-foreground" aria-label="Tilbage">
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-            )}
-            <div className="flex-1 flex gap-1.5">
-              {PREF_STEPS.map((s, i) => (
-                <div key={s} className={cn('h-1 flex-1 rounded-full', i <= prefIndex ? 'bg-primary' : 'bg-muted')} />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground tabular-nums">{prefIndex + 1}/5</span>
+        <div className="flex items-center gap-2">
+          {prefIndex > 0 && (
+            <button type="button" onClick={() => setStep(PREF_STEPS[prefIndex - 1])} className="text-muted-foreground hover:text-foreground" aria-label="Tilbage">
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          )}
+          <div className="flex-1 flex gap-1.5">
+            {PREF_STEPS.map((s, i) => (
+              <div key={s} className={cn('h-1 flex-1 rounded-full', i <= prefIndex ? 'bg-primary' : 'bg-muted')} />
+            ))}
           </div>
+          <span className="text-xs text-muted-foreground tabular-nums">{prefIndex + 1}/{PREF_STEPS.length}</span>
         </div>
       )}
 
-      {/* 2 — HAVETYPE */}
+      {/* HAVETYPE */}
       {step === 'havetype' && (
         <StepBody title="Hvor dyrker du?" sub="Så kan vi tilpasse anbefalinger, guides og senere fællesskab.">
           <div className="grid grid-cols-2 gap-2.5">
@@ -205,9 +229,9 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* 3 — LOKATION */}
+      {/* LOKATION */}
       {step === 'lokation' && (
-        <StepBody title="Hvor er haven?" sub="Bruges til vejr, frostvarsler og lokale dyrkningsforhold i kalenderen. Kun postnummer-niveau — aldrig din adresse.">
+        <StepBody title="Hvor er haven?" sub="Bruges til vejr, frostvarsler og lokale dyrkningsforhold i kalenderen. Kun til lokalt vejr — vi gemmer aldrig din adresse, kun grove koordinater.">
           <div className="space-y-3">
             <button type="button" onClick={brugPlacering} disabled={locStatus === 'looking'}
               className="w-full flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-left hover:border-primary/50 transition-colors disabled:opacity-60">
@@ -224,16 +248,14 @@ export function OnboardingWizard({
               </div>
               <div className="flex gap-2">
                 <Input inputMode="numeric" maxLength={4} placeholder="F.eks. 8000" value={postnr}
-                  onChange={e => { setPostnr(e.target.value.replace(/\D/g, '')); setLocStatus('idle') }} />
+                  onChange={e => { setPostnr(e.target.value.replace(/\D/g, '')); setLocError(null) }} />
                 <Button onClick={slaaPostnrOp} disabled={pending || postnr.trim().length !== 4}>
                   {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Find'}
                 </Button>
               </div>
             </div>
 
-            {locStatus === 'error' && (
-              <p className="text-sm text-destructive">Kunne ikke finde placeringen. Prøv et postnummer, eller spring over.</p>
-            )}
+            {locError && <p className="text-sm text-destructive">{locError}</p>}
 
             <button type="button" onClick={() => setStep('omraader')} className="w-full text-sm text-muted-foreground hover:text-foreground py-1">
               Spring over — jeg tilføjer det senere
@@ -242,7 +264,7 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* 4 — DYRKNINGSOMRÅDER */}
+      {/* DYRKNINGSOMRÅDER */}
       {step === 'omraader' && (
         <StepBody title="Hvad dyrker du mest?" sub="Vælg gerne flere. Det hjælper Potalot med at foreslå det rigtige.">
           <div className="flex flex-wrap gap-2">
@@ -250,26 +272,42 @@ export function OnboardingWizard({
               <OptionPill key={o.id} label={o.label} selected={growingAreas.includes(o.id)} onClick={() => toggleArea(o.id)} />
             ))}
           </div>
-          <Button className="w-full mt-5" onClick={() => setStep('profil')}>
+          <Button className="w-full mt-5" onClick={() => setStep('grower')}>
             Fortsæt <ArrowRight className="h-4 w-4" />
           </Button>
         </StepBody>
       )}
 
-      {/* 5 — DYRKERPROFIL */}
-      {step === 'profil' && (
-        <StepBody title="Din dyrkerprofil" sub="Den styrer bl.a. hvor mange påmindelser du får. Du kan altid skifte den senere.">
+      {/* DYRKER-IDENTITET */}
+      {step === 'grower' && (
+        <StepBody title="Hvad slags dyrker er du?" sub="Bruges til at tilpasse indhold og forslag. Det ændrer ikke, hvor meget Potalot forstyrrer dig.">
+          <div className="grid grid-cols-2 gap-2.5">
+            {GROWERS.map(g => (
+              <button key={g.id} type="button"
+                onClick={() => { setGrowerProfile(g.id); setStep('notifikation') }}
+                className={cn('flex flex-col items-center gap-2 rounded-xl border px-3 py-4 text-center transition-colors',
+                  growerProfile === g.id ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-primary/50')}>
+                <span className="text-2xl leading-none" aria-hidden>{g.emoji}</span>
+                <span className="text-sm font-medium text-foreground">{g.label}</span>
+              </button>
+            ))}
+          </div>
+        </StepBody>
+      )}
+
+      {/* NOTIFIKATIONSPROFIL */}
+      {step === 'notifikation' && (
+        <StepBody title="Hvor meget må Potalot forstyrre?" sub="Uafhængigt af hvad du dyrker. Du kan altid skifte det senere.">
           <div className="space-y-2.5">
-            {PROFILER.map(p => (
-              <button key={p.id} type="button"
-                onClick={() => { setGrowerProfile(p.id); setStep('saeson') }}
+            {NOTIFS.map(n => (
+              <button key={n.id} type="button"
+                onClick={() => { setNotificationProfile(n.id); setStep('saeson') }}
                 className={cn('w-full flex items-start gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-colors',
-                  growerProfile === p.id ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-primary/50')}>
-                <span className="text-2xl leading-none mt-0.5" aria-hidden>{p.emoji}</span>
+                  notificationProfile === n.id ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-primary/50')}>
+                <span className="text-2xl leading-none mt-0.5" aria-hidden>{n.emoji}</span>
                 <div className="min-w-0">
-                  <p className="font-medium text-sm text-foreground">{p.title}</p>
-                  <p className="text-xs italic text-muted-foreground mt-0.5">“{p.tagline}”</p>
-                  <p className="text-xs text-muted-foreground mt-1">{p.desc}</p>
+                  <p className="font-medium text-sm text-foreground">{n.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{n.desc}</p>
                 </div>
               </button>
             ))}
@@ -277,19 +315,19 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* 6 — MIDT I SÆSONEN */}
+      {/* MIDT I SÆSONEN */}
       {step === 'saeson' && (
         <StepBody title="Hvor langt er du?" sub="Så møder Potalot dig, hvor du er lige nu.">
           <div className="space-y-2.5">
-            <OptionRow label="Jeg starter nu" desc="Blank tavle — vi bygger haven op sammen." onClick={() => { setSeasonStatus('starter'); setStep('klar') }} disabled={pending} />
+            <OptionRow label="Jeg starter nu" desc="Blank tavle — vi bygger haven op sammen." onClick={() => { setSeasonStatus('starter'); afslutFinal() }} disabled={pending} />
             <OptionRow label="Jeg er godt i gang" desc="Jeg har allerede planter, frø eller noter — hjælp mig med at få dem ind." onClick={() => { setSeasonStatus('igang'); tilImport() }} disabled={pending} />
-            <OptionRow label="Jeg er flere måneder inde" desc="Haven kører — jeg vil bare have overblik fremover." onClick={() => { setSeasonStatus('flere_maaneder'); setStep('klar') }} disabled={pending} />
+            <OptionRow label="Jeg er flere måneder inde" desc="Haven kører — jeg vil bare have overblik fremover." onClick={() => { setSeasonStatus('flere_maaneder'); afslutFinal() }} disabled={pending} />
           </div>
           {pending && <p className="text-sm text-muted-foreground mt-3 flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Gemmer dine valg…</p>}
         </StepBody>
       )}
 
-      {/* 6b — IMPORT (V1B-shell). Sætter selv onboarded ved sin afslutning. */}
+      {/* IMPORT (V1B-shell). Fører videre til Klar-skærmen ved afslutning. */}
       {step === 'import' && (
         <div className="-mt-2">
           <OnboardingShell
@@ -297,22 +335,8 @@ export function OnboardingWizard({
             existingNames={existingNames}
             plantCount={plantCount}
             seedCount={seedCount}
+            finishHref="/onboarding/faerdig"
           />
-        </div>
-      )}
-
-      {/* 7 — KLAR */}
-      {step === 'klar' && (
-        <div className="text-center space-y-5">
-          <div className="flex justify-center"><Sprout className="h-10 w-10 text-primary" /></div>
-          <h1 className="text-2xl font-serif text-foreground">Så er du klar</h1>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Jo mere du dyrker, observerer og høster, desto mere vokser Potalot med dig.
-            Nyt indhold og nye funktioner dukker op undervejs, når de bliver relevante for din have.
-          </p>
-          <Button className="w-full" onClick={afslutFinal} disabled={pending}>
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Gå til min have'}
-          </Button>
         </div>
       )}
 

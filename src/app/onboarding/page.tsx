@@ -12,15 +12,25 @@ export default async function OnboardingPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
-  // Hvis allerede onboarded, send ind
+  // Hvis allerede onboarded, send ind. season_status bruges til at genoptage
+  // "godt i gang"-brugeren på import-trinnet efter en import-navigation.
+  // Defensivt: hvis kolonnen ikke findes endnu (før 00058), falder vi tilbage.
   const supabase = await createClient()
-  const { data: profile } = await supabase
+  let profile: { onboarded: boolean | null; username: string | null; season_status: string | null } | null = null
+  const withSeason = await supabase
     .from('profiles')
-    .select('onboarded, username')
+    .select('onboarded, username, season_status')
     .eq('id', user.id)
     .maybeSingle()
+  if (withSeason.error) {
+    const base = await supabase.from('profiles').select('onboarded, username').eq('id', user.id).maybeSingle()
+    profile = base.data ? { ...base.data, season_status: null } : null
+  } else {
+    profile = withSeason.data
+  }
 
   if (profile?.onboarded) redirect('/')
+  const resumeImport = profile?.season_status === 'igang'
 
   // Data til have-fasen (fortsæt-senere viser haven indtil videre).
   const [plants, seeds, gardenLocations] = await Promise.all([
@@ -42,6 +52,7 @@ export default async function OnboardingPage() {
       <OnboardingWizard
         email={user.email ?? ''}
         startPhase={startPhase}
+        resumeImport={resumeImport}
         gardenLocations={gardenLocations}
         existingNames={existingNames}
         plantCount={plants.length}

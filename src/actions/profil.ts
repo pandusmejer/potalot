@@ -96,13 +96,19 @@ export async function checkUsernameAvailable(username: string): Promise<{ availa
 }
 
 // ── Onboarding V2 — preference-dimensioner ──────────────────────────────────
-export type GrowerProfile = 'mindful' | 'hjaelper' | 'entusiast' | 'froesamler'
+// To UAFHÆNGIGE dimensioner (må aldrig blandes, Anna 15/7):
+//   grower_profile       = identitet/interesse (hvem er du som dyrker)
+//   notification_profile = hvor meget må Potalot forstyrre (styrer notif-mængde)
+export type GrowerProfile =
+  | 'ny' | 'koekkenhave' | 'blomster' | 'froesamler' | 'selvforsyner' | 'drivhus'
+export type NotificationProfile = 'mindful' | 'rolig' | 'aktiv'
 export type SeasonStatus = 'starter' | 'igang' | 'flere_maaneder'
 
 export interface OnboardingPreferencesInput {
   gardenType?: string | null
   growingAreas?: string[]
   growerProfile?: GrowerProfile | null
+  notificationProfile?: NotificationProfile | null
   seasonStatus?: SeasonStatus | null
   latitude?: number | null
   longitude?: number | null
@@ -111,51 +117,31 @@ export interface OnboardingPreferencesInput {
 }
 
 /**
- * Gemmer Onboarding V2's preference-valg på profiles.
- *
- * Robusthed: lokation (latitude/longitude/location_name, findes fra 00048) og
- * onboarded er "core" og MÅ altid lykkes. De fire nye dimensioner
- * (garden_type/growing_areas/grower_profile/season_status) kræver migration
- * 00058 — findes de ikke endnu, gemmer vi core alene, så onboarding aldrig
- * bryder. `preferencesStored` fortæller om de fire dimensioner blev gemt.
+ * Gemmer Onboarding V2's preference-valg på profiles. ALT-eller-intet: en
+ * gemmefejl (fx hvis 00058 ikke er kørt) returneres tydeligt, så flowet ALDRIG
+ * kan foregive succes med tabte præferencer. Kræver migration 00058.
  */
 export async function saveOnboardingPreferences(
   input: OnboardingPreferencesInput,
-): Promise<{ ok: true; preferencesStored: boolean } | { error: string }> {
+): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
 
-  const core: Record<string, unknown> = { updated_at: new Date().toISOString() }
-  if (input.latitude !== undefined) core.latitude = input.latitude
-  if (input.longitude !== undefined) core.longitude = input.longitude
-  if (input.locationName !== undefined) core.location_name = input.locationName
-  if (input.onboarded !== undefined) core.onboarded = input.onboarded
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  if (input.latitude !== undefined) update.latitude = input.latitude
+  if (input.longitude !== undefined) update.longitude = input.longitude
+  if (input.locationName !== undefined) update.location_name = input.locationName
+  if (input.onboarded !== undefined) update.onboarded = input.onboarded
+  if (input.gardenType !== undefined) update.garden_type = input.gardenType
+  if (input.growingAreas !== undefined) update.growing_areas = input.growingAreas
+  if (input.growerProfile !== undefined) update.grower_profile = input.growerProfile
+  if (input.notificationProfile !== undefined) update.notification_profile = input.notificationProfile
+  if (input.seasonStatus !== undefined) update.season_status = input.seasonStatus
 
-  const prefs: Record<string, unknown> = {}
-  if (input.gardenType !== undefined) prefs.garden_type = input.gardenType
-  if (input.growingAreas !== undefined) prefs.growing_areas = input.growingAreas
-  if (input.growerProfile !== undefined) prefs.grower_profile = input.growerProfile
-  if (input.seasonStatus !== undefined) prefs.season_status = input.seasonStatus
+  const { error } = await supabase.from('profiles').update(update).eq('id', userId)
+  if (error) return { error: error.message }
 
-  const havePrefs = Object.keys(prefs).length > 0
-  const first = await supabase.from('profiles').update({ ...core, ...prefs }).eq('id', userId)
-  if (!first.error) {
-    revalidatePath('/profil')
-    revalidatePath('/', 'layout')
-    return { ok: true, preferencesStored: havePrefs }
-  }
-
-  // Preference-kolonnerne findes måske ikke endnu (før 00058) → gem core alene,
-  // så flowet fuldføres. En rigtig core-fejl surfacer derimod.
-  if (havePrefs) {
-    const second = await supabase.from('profiles').update(core).eq('id', userId)
-    if (!second.error) {
-      console.warn('[onboarding-v2] preference-kolonner ikke gemt (mangler 00058?):', first.error.message)
-      revalidatePath('/profil')
-      revalidatePath('/', 'layout')
-      return { ok: true, preferencesStored: false }
-    }
-    return { error: second.error.message }
-  }
-  return { error: first.error.message }
+  revalidatePath('/profil')
+  revalidatePath('/', 'layout')
+  return { ok: true }
 }

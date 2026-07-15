@@ -1,40 +1,46 @@
 -- ============================================================
 -- Onboarding V2 — preference-felter på profiles
 -- ============================================================
--- De tre ting Potalot skal vide for at opføre sig intelligent fra dag ét:
--- hvor / hvordan / hvor meget forstyrres. Lokation (latitude/longitude/
--- location_name) findes allerede fra 00048 og genbruges — her tilføjes de
--- resterende fire preference-dimensioner.
+-- To UAFHÆNGIGE dimensioner (Anna 15/7 — må ALDRIG blandes):
+--   grower_profile       = hvem er du som dyrker (identitet/interesse)
+--                          'ny' | 'koekkenhave' | 'blomster' | 'froesamler'
+--                          | 'selvforsyner' | 'drivhus'
+--   notification_profile = hvor meget må Potalot forstyrre dig
+--                          'mindful' (0) | 'rolig' (få) | 'aktiv' (launch-std.)
 --
---   garden_type    : 'parcelhus' | 'raekkehus' | 'kolonihave' | 'byhave'
---                    | 'altan' | 'sommerhus' | 'landsted' | 'andet'
---   growing_areas  : TEXT[] — 'koekkenhave' | 'drivhus' | 'hoejbede'
---                    | 'krukker' | 'blomster' | 'frugt_baer' | 'lidt_af_hvert'
---   grower_profile : 'mindful' | 'hjaelper' | 'entusiast' | 'froesamler'
---                    → styrer bl.a. antal opgave-påmindelser (se funktion nedenfor)
---   season_status  : 'starter' | 'igang' | 'flere_maaneder'
+-- En bruger kan sagtens være både Frøsamler OG Mindful. Notifikations-mængden
+-- afhænger UDELUKKENDE af notification_profile — aldrig af dyrker-identiteten.
 --
+-- Øvrige (findes ikke i forvejen):
+--   garden_type   : 'parcelhus'|'raekkehus'|'kolonihave'|'byhave'|'altan'
+--                   |'sommerhus'|'landsted'|'andet'
+--   growing_areas : TEXT[] — 'koekkenhave'|'drivhus'|'hoejbede'|'krukker'
+--                   |'blomster'|'frugt_baer'|'lidt_af_hvert'
+--   season_status : 'starter' | 'igang' | 'flere_maaneder'
+--
+-- Lokation (latitude/longitude/location_name) findes fra 00048 og genbruges.
 -- Alle nullable/additive — eksisterende rækker påvirkes ikke.
 -- ============================================================
 
 ALTER TABLE public.profiles
-  ADD COLUMN IF NOT EXISTS garden_type    TEXT,
-  ADD COLUMN IF NOT EXISTS growing_areas  TEXT[] DEFAULT '{}',
-  ADD COLUMN IF NOT EXISTS grower_profile TEXT,
-  ADD COLUMN IF NOT EXISTS season_status  TEXT;
+  ADD COLUMN IF NOT EXISTS garden_type          TEXT,
+  ADD COLUMN IF NOT EXISTS growing_areas        TEXT[] DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS grower_profile       TEXT,
+  ADD COLUMN IF NOT EXISTS notification_profile TEXT,
+  ADD COLUMN IF NOT EXISTS season_status        TEXT;
 
 -- ============================================================
--- Dyrkerprofil → antal opgave-påmindelser
+-- Notifikationsprofil → antal opgave-påmindelser
 -- ============================================================
 -- Uændret funktion fra 00055 PÅ NÆR at LIMIT nu afhænger af brugerens
--- grower_profile. COALESCE-fallbacken bevarer nøjagtig den nuværende adfærd
--- (3) for enhver bruger uden profil, så eksisterende brugere ikke ændres.
+-- notification_profile. COALESCE-fallbacken bevarer nøjagtig den nuværende
+-- adfærd (3) for enhver bruger uden profil.
 --
---   mindful    → 1  (kun det vigtigste; ingen unødig støj)
---   hjaelper   → 3  (balanceret — som i dag)
---   entusiast  → 6  (flere forslag, mere indsigt)
---   froesamler → 3  (frø-vægtning er indholds-emphasis, ikke flere opgaver)
---   NULL/ukendt→ 3  (nuværende default bevaret)
+--   mindful → 0  (INGEN opgave-påmindelser — klokke/push tavs; in-app-indhold
+--                 vises stadig, når brugeren selv åbner kalenderen)
+--   rolig   → 1  (få — kun det vigtigste)
+--   aktiv   → 3  (launch-standardens loft)
+--   NULL    → 3  (nuværende default bevaret)
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.sync_task_reminders()
@@ -53,16 +59,20 @@ DECLARE
 BEGIN
   IF v_user IS NULL THEN RETURN 0; END IF;
 
-  -- Påmindelses-loft ud fra dyrkerprofil (COALESCE bevarer nuværende adfærd).
-  SELECT CASE p.grower_profile
-           WHEN 'mindful'   THEN 1
-           WHEN 'entusiast' THEN 6
+  -- Loft ud fra notifikationsprofil (COALESCE bevarer nuværende adfærd).
+  SELECT CASE p.notification_profile
+           WHEN 'mindful' THEN 0
+           WHEN 'rolig'   THEN 1
+           WHEN 'aktiv'   THEN 3
            ELSE 3
          END
     INTO v_cap
     FROM public.profiles p
    WHERE p.id = v_user;
   v_cap := COALESCE(v_cap, 3);
+
+  -- Mindful: opret slet ingen opgave-påmindelser.
+  IF v_cap <= 0 THEN RETURN 0; END IF;
 
   FOR v_task IN
     SELECT ct.id,

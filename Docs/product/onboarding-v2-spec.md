@@ -77,9 +77,26 @@ visuelt (mobil 390px, midlertidig preview-rute, nu slettet).
 - **Lokation → vejr:** postnummer (DAWA `lookupPostnummer`) + browser-geolocation
   → gemmer latitude/longitude/location_name (findes fra 00048) → vejr/frost
   virker med det samme. Verificeret: postnr 8000 slog op korrekt.
-- **Dyrkerprofil → notifikations-mængde:** 00058 ændrer `sync_task_reminders`
-  så LIMIT afhænger af grower_profile (mindful 1 / hjaelper 3 / entusiast 6 /
-  froesamler 3; COALESCE→3 bevarer nuværende adfærd). Aktiveres når 00058 køres.
+- **Notifikationsprofil → notifikations-mængde:** 00058 ændrer `sync_task_reminders`
+  så LIMIT afhænger af `notification_profile` (mindful 0 / rolig 1 / aktiv 3;
+  COALESCE→3). Mindful = INGEN opgave-påmindelser (early-return). Aktiveres når
+  00058 køres.
+
+### RETTET 15/7 (Annas review — model-fejl)
+Dyrker-identitet og notifikations-mængde var fejlagtigt slået sammen i ét felt.
+Nu **to uafhængige dimensioner** (en bruger kan være både Frøsamler OG Mindful):
+- `grower_profile` = identitet (ny/koekkenhave/blomster/froesamler/selvforsyner/
+  drivhus) — påvirker IKKE notifikationer.
+- `notification_profile` = forstyrrelse (mindful 0 / rolig 1 / aktiv 3).
+Wizard har nu to separate trin (identitet + "Hvor meget må Potalot forstyrre?").
+- **Lydløs fallback fjernet:** `saveOnboardingPreferences` er alt-eller-intet; en
+  gemmefejl (fx før 00058) vises tydeligt og blokerer flowet — ingen falsk succes.
+- **Geolocation-robusthed:** afvist/timeout/ingen-support → tydelig besked +
+  postnummer-fallback. Kun grove koordinater gemmes, aldrig adresse.
+- **"Godt i gang" får Klar-afslutning:** ny rute `/onboarding/faerdig` (fælles
+  varm afslutning: hvad blev oprettet + hvad nu + Potalot vokser med). Import-
+  shellen fører hertil (finishHref); "godt i gang" genoptages på import-trinnet
+  efter navigation (page.tsx læser season_status='igang' defensivt).
 
 **KRÆVER FØR LIVE (Anna):**
 1. **Kør migration 00058** (normalt flow / frisk tråd — ikke ad-hoc). Uden den

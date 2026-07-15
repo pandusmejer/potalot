@@ -26,6 +26,9 @@ interface Props {
    * er "tilbage til min have" frem for begynd/spring-over.
    */
   isRevisit?: boolean
+  /** Hvor "færdig" fører hen efter onboarded sættes. Default '/'. V2 sender
+   *  '/onboarding/faerdig' så også "godt i gang"-brugeren får en Klar-skærm. */
+  finishHref?: string
 }
 
 /**
@@ -38,7 +41,7 @@ interface Props {
  * Fremskridt bevares: alt oprettet ligger allerede i databasen, så et retur til
  * /onboarding (onboarded sættes først ved "færdig") viser haven indtil videre.
  */
-export function OnboardingShell({ gardenLocations, existingNames, plantCount, seedCount, isRevisit = false }: Props) {
+export function OnboardingShell({ gardenLocations, existingNames, plantCount, seedCount, isRevisit = false, finishHref = '/' }: Props) {
   const router = useRouter()
   const [tekstOpen, setTekstOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -48,12 +51,12 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
   // frø med som planter → "4 planter" der pludselig blev "6 frø, 0 planter".
   const iAlt = plantCount + seedCount
 
-  // Onboarding: markér onboarded + gå til haven. Genbesøg (F2): bare tilbage.
+  // Onboarding: markér onboarded + videre (V2: Klar-skærm). Genbesøg (F2): tilbage.
   function afslut() {
     if (isRevisit) { router.push('/'); router.refresh(); return }
     startTransition(async () => {
       await updateProfile({ onboarded: true })
-      router.push('/')
+      router.push(finishHref)
       router.refresh()
     })
   }
