@@ -352,6 +352,114 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   }
 }
 
+// ============================================
+// Standalone plante-oprettelse (V1A — launch onboarding/data-rescue)
+// ============================================
+
+export interface EgenPlanteInput {
+  /** Art (påkrævet), fx "Tomat". */
+  name: string
+  /** Sort ELLER type (fx "San Marzano" / "Cherrytomat"). null = ukendt sort. */
+  variety?: string | null
+  /** Antal planter i haven (mindst 1). */
+  quantity?: number
+  /** Dyrkningssted (bliver til en GardenLocation via resolver). */
+  location?: string
+  /** Startdato (ISO). Cirka-dato sendes som måned-01 (dagen er udfyldning). */
+  sowDate?: string | null
+  /**
+   * Præcisionen af sowDate — så en omtrentlig måned aldrig fremstår præcis:
+   *   'exact'   = brugeren angav en præcis dato
+   *   'approx'  = måned-niveau (dagen i sowDate er udfyldning)
+   *   'unknown' = brugeren ved det ikke (sowDate er null)
+   * Persisteres i plants_v2.sow_date_precision (migration 00054).
+   */
+  sowDatePrecision?: 'exact' | 'approx' | 'unknown' | null
+  /** Plantens nuværende stadie. Default: i_vaekst (den står allerede i haven). */
+  status?: PlantStatus
+  /** Valgfrit bruger-uploadet billede (URL). */
+  imageUrl?: string | null
+  /** Valgfri kort observation → gemmes som note-log. */
+  observation?: string
+}
+
+/**
+ * Opret en plante brugeren ALLEREDE har i haven — uden at gå gennem frøbanken.
+ *
+ * Fjerner launch-barrieren: `plants_v2.source_inventory_id` er allerede nullable,
+ * så en manuelt oprettet plante repræsenteres eksplicit (feltet = null), ingen
+ * falske placeholder-poster, ingen parallel model. Genbruger nøjagtig samme
+ * felt-mapping og garden-location-resolver som `saaFroeFraInventory`; quantity
+ * sættes direkte (ingen sowing_events, da der ikke er sået fra et frøbank-element).
+ */
+export async function opretEgenPlante(
+  input: EgenPlanteInput,
+): Promise<{ id: string } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const name = input.name.trim()
+  if (!name) return { error: 'Angiv mindst en art.' }
+
+  const variety = input.variety?.trim() || null
+  const quantity = Math.max(1, Math.floor(input.quantity ?? 1))
+  const sowDate = input.sowDate || null
+  const growingYear = sowDate ? parseInt(sowDate.split('-')[0], 10) : new Date().getFullYear()
+  const status: PlantStatus = input.status ?? 'i_vaekst'
+  const imageUrl = input.imageUrl?.trim() || null
+
+  const gardenLocationId = input.location
+    ? await resolveOrCreateGardenLocation(input.location)
+    : null
+
+  const { data: plant, error } = await supabase
+    .from('plants_v2')
+    .insert({
+      user_id: userId,
+      source_inventory_id: null, // standalone — eksplicit, ingen placeholder
+      name,
+      variety,
+      status,
+      location: input.location || null,
+      garden_location_id: gardenLocationId,
+      sow_date: sowDate,
+      quantity,
+      growing_year: growingYear,
+      guide_id: null,
+      primary_image_url: imageUrl,
+      image_source: imageUrl ? 'user_upload' : null,
+      sow_date_precision: input.sowDatePrecision ?? null,
+      is_archived: false,
+    })
+    .select('id')
+    .single()
+
+  if (error || !plant) {
+    return { error: error?.message ?? 'Kunne ikke oprette plante.' }
+  }
+  const plantId = (plant as { id: string }).id
+
+  // Valgfri kort observation → note-log (dateret til startdato, ellers i dag).
+  const obs = input.observation?.trim()
+  if (obs) {
+    await createPlantLog({
+      plantId,
+      date: sowDate ?? new Date().toISOString().slice(0, 10),
+      type: 'note',
+      note: obs,
+    })
+  }
+
+  maybeAwardFirstSowing(userId).catch(() => {})
+
+  revalidatePath('/mine-planter')
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/kalender')
+  revalidatePath('/')
+
+  return { id: plantId }
+}
+
 /**
  * Map en log-type til det stadie planten BØR være i efter eventet.
  * Returnerer null hvis loggen ikke afspejler en stadie-overgang.
@@ -592,8 +700,87 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
   return { ok: true }
 }
 
+/**
+ * Fortryd arkivering — hent en plante tilbage til de aktive. Rydder arkiv-
+ * felterne og sætter status tilbage til 'i vækst', så den dukker op i haven igen.
+ */
+export async function restorePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      is_archived: false,
+      archived_at: null,
+      archived_year: null,
+      status: 'i_vaekst',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/mine-planter')
+  revalidatePath('/mine-planter/arkiv')
+  revalidatePath(`/mine-planter/${plantId}`)
+  return { ok: true }
+}
+
+export interface UpdatePlantInput {
+  name: string
+  variety: string | null
+  location: string | null
+}
+
+/**
+ * Redigér en plantes kerne-info: navn, sort og sted. (Statusskift håndteres af
+ * updatePlantStatus, log-events af updatePlantLog.) Anna 15/7: plante-siden er
+ * ikke længere kun til at læse — en bruger skal kunne rette en tastefejl.
+ */
+export async function updatePlant(
+  plantId: string,
+  input: UpdatePlantInput,
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const name = input.name.trim()
+  if (!name) return { error: 'Angiv mindst en art.' }
+  const variety = input.variety?.trim() || null
+  const location = input.location?.trim() || null
+  const gardenLocationId = location ? await resolveOrCreateGardenLocation(location) : null
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      name,
+      variety,
+      location,
+      garden_location_id: gardenLocationId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/mine-planter')
+  return { ok: true }
+}
+
+/**
+ * Slet en plante HELT (modsat arkivér). Rydder også relateret data, så en
+ * slettet plante ikke efterlader forældede log-events eller opgave-påmindelser.
+ */
 export async function deletePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  // Ryd afledt data først (scoped til ejeren).
+  await supabase.from('plant_logs_v2').delete().eq('plant_id', plantId).eq('user_id', userId)
+  await supabase.from('calendar_tasks').delete().eq('linked_plant_id', plantId).eq('user_id', userId)
+
   const { error } = await supabase
     .from('plants_v2')
     .delete()

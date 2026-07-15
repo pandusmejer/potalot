@@ -2,6 +2,7 @@ import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
+import { MaaskeDuOgsaa } from '@/components/havebog/maaske-du-ogsaa'
 import { Dyrkerstatus } from '@/components/havebog/dyrkerstatus'
 import { Dyrkerkompetencer } from '@/components/havebog/dyrkerkompetencer'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
@@ -126,8 +127,10 @@ export default function HavebogDesignLabPage() {
 
       <Sep label="4 · Tal til din have" />
       <TalTilDinHave eksempler={DEMO_TAL_EKSEMPLER} optagelser={DEMO_OPTAGELSER} />
-      <Sep label="5 · Inspirér mig" />
+      <Sep label="5 · Prøv næste år (Inspirér mig)" />
       <InspirerMig forslag={DEMO_INSPIRER} />
+      <Sep label="5b · Måske du også vil prøve" />
+      <MaaskeDuOgsaa forslag={DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" />
       <Sep label="6 · Dyrkerstatus" />
       <Dyrkerstatus status={DEMO_DYRKERSTATUS} />
       <Sep label="7 · Kompetencer" />
@@ -140,7 +143,7 @@ export default function HavebogDesignLabPage() {
       <Vendepunkter vendepunkter={DEMO_VENDEPUNKTER} />
       <Sep label="11 · Spisekammer" />
       <Spisekammer data={DEMO_SPISEKAMMER} />
-      <Sep label="12 · Populært lige nu (prototype)" />
+      <Sep label="12 · Sæsonens spørgsmål (prototype)" />
       <PopulaertLigeNu emner={DEMO_POPULAERT} />
       <Sep label="13 · Vejret i haven (prototype)" />
       <VejretIHaven vejr={DEMO_VEJR} />

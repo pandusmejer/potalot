@@ -16,7 +16,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
 import { byggDagensHistorie, type Opdagelse } from '@/lib/havebog-dagens-historie'
-import { beregnSaeson, saesonEtiket, type SaesonInfo } from '@/lib/havebog-saeson'
+import { beregnSaeson, vaelgSaesonKilde, saesonEtiket, type SaesonInfo, type SaesonStartKilde } from '@/lib/havebog-saeson'
 import { parseGerminationDays, quickFactsForNavn } from '@/lib/afledninger'
 import type {
   HeroStats,
@@ -38,12 +38,15 @@ import type {
   SpisekammerData,
   Dyrkerstatus,
   Kompetenceomraade,
+  Bedrift,
 } from '@/data/havebog-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { byggProevNaesteAar } from '@/lib/havebog-proev-naeste-aar'
+import { resolvePlantCard, resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { byggSpisekammer } from '@/lib/havebog-spisekammer'
 import { byggKompetencer } from '@/lib/havebog-kompetencer'
 import { byggDyrkerstatus } from '@/lib/havebog-dyrkerstatus'
+import { byggFoersteGange, foersteGangePreview } from '@/lib/havebog-foerste-gange'
 
 export interface HavebogData {
   heroStats: HeroStats
@@ -70,6 +73,7 @@ export interface HavebogData {
   archivedPlants: ArchivedPlant[]
   /** Dyrkerstatus (V13): afledte identiteter, prioriteret. Tom = skjul rummet. */
   dyrkerstatus: Dyrkerstatus[]
+  bedrifter: Bedrift[]
   /** Kompetencer (V13): afledt af log-handlinger pr. art. Gated: vis ved >= 2 færdigheder. */
   dyrkerkompetencer: Kompetenceomraade[]
 }
@@ -461,6 +465,8 @@ function buildHeroNarrative(
   today: Date,
   /** Aktivitets-sæson (fra beregnSaeson) — driver dag-tæller + sæsonnummer. */
   saeson: SaesonInfo,
+  /** Hvilken logtype daterede sæson-start (sowing/germination/planting_out). */
+  seasonStartSource: SaesonStartKilde | null,
 ): HeroNarrative {
   const month = MAANED_FULD_LOWER[today.getMonth()]
   const currentYear = today.getFullYear()
@@ -485,6 +491,7 @@ function buildHeroNarrative(
   const taeller = {
     saesonDag: harSaesonDag ? saesonDag : null,
     saesonEtiket: etiket,
+    seasonStartSource: harSaesonDag ? seasonStartSource : null,
   }
 
   // ── År 1+: brugeren har tidligere sæsoner ────────────────
@@ -646,9 +653,15 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     // første såning til næste års første såning (se lib/havebog-saeson.ts).
     // seasonStart bruges som "denne sæson"-vindue [seasonStart, nu] i
     // alle deriveringer nedenfor — så intet nulstilles 1. januar.
-    const saeson = beregnSaeson(
-      logs.filter(l => l.type === 'sowing').map(l => l.date),
-    )
+    // Sæson-start efter prioritet (Anna 13/7): sowing → germination →
+    // planting_out. Så en dyrker der starter fra købte spirer/stiklinger eller
+    // først logger spiring/udplantning stadig får dagtælleren. Aldrig harvest.
+    const { datoer: saesonDatoer, kilde: seasonStartSource } = vaelgSaesonKilde({
+      sowing: logs.filter(l => l.type === 'sowing').map(l => l.date),
+      germination: logs.filter(l => l.type === 'germination').map(l => l.date),
+      planting_out: logs.filter(l => l.type === 'planting_out').map(l => l.date),
+    })
+    const saeson = beregnSaeson(saesonDatoer)
     const seasonStart = saeson.start
 
     // ── Hero stats ───────────────────────────────────────────
@@ -715,6 +728,11 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         variety: plantVariety(l.plant_id),
         text: l.note ?? l.title ?? '',
         imageUrl: l.image_urls?.[0] ?? null,
+        // Destination: plantens timeline. Uden plante-kilde → ingen href
+        // (modulet skjules af kuratoren, jf. produktreglen).
+        href: l.plant_id ? `/mine-planter/${l.plant_id}` : null,
+        sourceType: 'plant' as const,
+        sourceId: l.plant_id ?? null,
       }))
 
     // ── Seneste noter (5) ────────────────────────────────────
@@ -814,7 +832,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       }))
 
     const heroNarrative = buildHeroNarrative(
-      heroStats, tidslinje, history, onThisDay, today, saeson,
+      heroStats, tidslinje, history, onThisDay, today, saeson, seasonStartSource,
     )
 
     // "I DIN HAVE" — åbningstallene (V4-mockup). Stilhed ved huller:
@@ -903,11 +921,27 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         tags: g.tags ?? [],
         harvestMonths: g.quickFacts?.harvestMonths ?? [],
         difficulty: g.difficulty ?? null,
-        billede: null,
+        billede: g.primaryImageId ?? null,
+        id: g.id ?? null,
       }))
     const proevDyrkede = [
       ...inventoryItems.map(i => ({ art: i.name, variety: i.variety })),
       ...plants.filter(p => !p.is_archived).map(p => ({ art: p.name, variety: p.variety })),
+    ]
+    // A: forankr frøavl/køkken i brugerens egne sorter med ÆGTE foto —
+    // upload/kurateret frøkort/plantekort for den præcise sort (aldrig
+    // cross-sort; source==='fallback' = placeholder → tæller som intet foto).
+    const egneSorter = [
+      ...plants
+        .filter(p => !p.is_archived)
+        .map(p => {
+          const img = resolvePlantCard({ name: p.name, variety: p.variety, preferredSrc: p.primary_image_url })
+          return { art: p.name, billede: img.source !== 'fallback' ? img.src : null }
+        }),
+      ...inventoryItems.map(i => {
+        const img = resolveSeedCard({ name: i.name, variety: i.variety })
+        return { art: i.name, billede: img.source !== 'fallback' ? img.src : null }
+      }),
     ]
     const hoestPrArt: Record<string, number> = {}
     const hoestEntries: { art: string; date: string }[] = []
@@ -921,7 +955,16 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     }
     // ── Spisekammer (Fase E) — sæsonens høst grupperet pr. afgrøde ──
     const spisekammer = byggSpisekammer(hoestEntries)
-    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt })
+    // Href-kilder til frøavl-leadet (læringshandling → guide, ikke frøbank).
+    // artGuide = species/arts-guides (id = artKey, fx "tomat"). froeavlGuide =
+    // dedikerede frøavls-guides — findes ikke endnu (→ backlog), så tom map.
+    const artKeyOf = (s: string) => s.toLowerCase().replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa').trim().split(/[\s-]/)[0]
+    const artGuide: Record<string, string> = {}
+    for (const g of IMPORTED_GUIDES) {
+      if (g.guideLevel === 'species' && g.id) artGuide[artKeyOf(g.plantName)] = g.id
+    }
+    const froeavlGuide: Record<string, string> = {}
+    const proev = byggProevNaesteAar({ dyrkede: proevDyrkede, katalog: proevKatalog, hoestPrArt, egneSorter, artGuide, froeavlGuide })
     const inspirerForslag: InspirerForslag | null = proev
       ? {
           kicker: proev.kicker,
@@ -929,6 +972,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
           begrundelse: proev.begrundelse,
           billede: proev.billede ?? undefined,
           sekundaer: proev.sekundaer,
+          kandidater: proev.kandidater, // lead-egnede (foto) — klienten roterer
         }
       : null
 
@@ -956,6 +1000,10 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       inventory: inventoryItems,
     })
 
+    // Første gange (V1) — beviselige milepæle af logs/plantefelter. Havebog-
+    // preview: nyeste først, max 4. Deriveren selv returnerer kronologisk.
+    const bedrifter = foersteGangePreview(byggFoersteGange(logs, plantById), 4)
+
     return {
       heroStats,
       tidslinje,
@@ -975,6 +1023,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
       archivedPlants,
       dyrkerstatus,
       dyrkerkompetencer,
+      bedrifter,
     }
   } catch {
     return null

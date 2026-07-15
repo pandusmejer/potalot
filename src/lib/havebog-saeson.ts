@@ -29,6 +29,31 @@ export interface SaesonInfo {
   forrigeStart: string | null
 }
 
+/**
+ * Hvilken logtype markerede sæsonens start. Prioritet (Annas regel, 13/7):
+ * sowing → germination → planting_out. Aldrig harvest/pruning/pest_disease/
+ * archive/note (høst er sandsynligvis en sen indtastning, ikke en sæsonstart).
+ */
+export type SaesonStartKilde = 'sowing' | 'germination' | 'planting_out'
+const SAESON_START_PRIORITET: SaesonStartKilde[] = ['sowing', 'germination', 'planting_out']
+
+/**
+ * Vælg sæson-start-datoer efter prioritet. GLOBAL regel: findes der `sowing`
+ * overhovedet, bruges sowing-datoerne (så tidligste sowing bliver dag 1, selv
+ * hvis en germination er logget tidligere). Kun når en type helt mangler,
+ * falder vi til næste. En dyrker der starter fra købte spirer/stiklinger, eller
+ * først logger spiring/udplantning, får dermed stadig sæsontælleren.
+ */
+export function vaelgSaesonKilde(
+  logsByType: Partial<Record<SaesonStartKilde, string[]>>,
+): { datoer: string[]; kilde: SaesonStartKilde | null } {
+  for (const k of SAESON_START_PRIORITET) {
+    const d = (logsByType[k] ?? []).filter(Boolean)
+    if (d.length > 0) return { datoer: d, kilde: k }
+  }
+  return { datoer: [], kilde: null }
+}
+
 function aar(iso: string): number {
   return parseInt(iso.slice(0, 4), 10)
 }

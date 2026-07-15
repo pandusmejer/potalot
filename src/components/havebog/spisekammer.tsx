@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import type { SpisekammerData } from '@/data/havebog-demo'
 import {
   selectSpisekammerAssets,
@@ -7,9 +8,14 @@ import {
 } from '@/lib/forvandling-registry'
 import {
   vaelgForvandlinger,
+  findForvandling,
   KATEGORI_FARVE,
   KATEGORI_LABEL,
+  BASIS_MOSAIK,
+  basisKategoriFarve,
+  basisKategoriLabel,
   type ForvandlingKategori,
+  type BasisMosaikElement,
 } from '@/lib/havebog-forvandlinger'
 import { selectForvandlingAssets } from '@/lib/forvandling-assets'
 
@@ -17,8 +23,22 @@ const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 const CREME = '#F7F1DF'
 
+/** Markér at et tile-klik kom fra Havebog-mosaikken, så detailsidens tilbage-
+ *  link kan føre tilbage TIL mosaikken (#det-kan-haven-blive-til) i stedet for
+ *  Forvandlinger-oversigten. Se forvandling-tilbage-link.tsx. */
+const HAVEBOG_ANKER_ID = 'det-kan-haven-blive-til'
+function medFra(href: string): string {
+  return href + (href.includes('?') ? '&' : '?') + 'from=havebog'
+}
+
 interface Props {
   data: SpisekammerData
+  /**
+   * 'strong'   = brugeren har høst → konkrete forvandlinger fra afgrøderne.
+   * 'blivetil' = ingen høst endnu → BASIS-mosaik (8 generiske forvandlinger),
+   *              ALDRIG falsk høst eller demo-data. Modulet er altid synligt.
+   */
+  mode?: 'strong' | 'blivetil'
 }
 
 type Tile =
@@ -29,14 +49,26 @@ type Tile =
   | { slag: 'cta'; tekst: string }
 
 /**
- * RUM 10 · "Det kan haven blive til" — havens OUTPUT-univers som mosaik.
+ * RUM · "Det kan haven blive til" — Havebogs ENESTE Forvandlinger-preview.
  *
- * Ikke en opskriftssektion: forvandlinger på tværs af 8 kategorier (spis,
- * gem, tør, bryg, duft, plej, pynt, så igen) valgt ud fra brugerens afgrøder.
- * Tiles linker ind i /havebog/forvandlinger. Veksler mellem forvandlings-
- * typografi på kategori-farvefelter, afgrøde-fotos, note og høst-status.
+ * PRODUKTREGEL (Annas beslutning 12/7): Spisekammer er IKKE længere en separat
+ * Havebog-sektion. Havebog viser præcis ÉT modul ("Det kan haven blive til"),
+ * som er en kurateret PREVIEW af Forvandlinger-systemet — ikke en selvstændig
+ * motor. Hierarki:
+ *   Forvandlinger = det brede system (spis · gem · tør · bryg · duft · plej ·
+ *                   pynt · så igen)
+ *   Spisekammer   = en vinkel/filter INDE i Forvandlinger (spis + gem + tør +
+ *                   bryg) — bor på /havebog/forvandlinger, ikke som eget rum.
+ *
+ * 4-6 kuraterede tiles valgt ud fra brugerens afgrøder/høst/frøbank/sæson; må
+ * blande spiselige og ikke-spiselige forvandlinger. Hver tile → /havebog/
+ * forvandlinger/[id]. CTA → "Se alle forvandlinger". Ingen pyntetal (høst vises
+ * kun som navne når `antalErHoester`). "Sæsonens spisekammer" som historik hører
+ * til sæsonarkiv/Profil senere (kræver mængder + gemte forvandlinger).
  */
-export function Spisekammer({ data }: Props) {
+export function Spisekammer({ data, mode = 'strong' }: Props) {
+  if (mode === 'blivetil') return <SpisekammerBliveTil />
+
   const maaned = new Date().getMonth() + 1
   const crops = data.hoest.map(h => h.navn)
   const valg = selectSpisekammerAssets({
@@ -72,7 +104,7 @@ export function Spisekammer({ data }: Props) {
   if (valg.hoest.length > 0) {
     tiles.push({ slag: 'status', poster: valg.hoest.map(h => ({ antal: h.antal, navn: h.navn.toLowerCase() })), kunNavne: valg.antalErHoester })
   }
-  tiles.push({ slag: 'cta', tekst: 'Flere idéer' })
+  tiles.push({ slag: 'cta', tekst: 'Se alle forvandlinger' })
 
   const venstre: Tile[] = []
   const hoejre: Tile[] = []
@@ -119,7 +151,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     if (tile.foto) {
       return (
         <Link
-          href={`/havebog/forvandlinger/${tile.id}`}
+          href={medFra(`/havebog/forvandlinger/${tile.id}`)}
           className="no-underline block"
           style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: lead ? '3 / 4' : '1 / 1', background: tile.farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
         >
@@ -135,7 +167,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     }
     return (
       <Link
-        href={`/havebog/forvandlinger/${tile.id}`}
+        href={medFra(`/havebog/forvandlinger/${tile.id}`)}
         className="no-underline block"
         style={{ background: tile.farve, borderRadius: 20, padding: lead ? '34px 18px 40px' : '20px 18px 24px', overflow: 'hidden' }}
       >
@@ -191,11 +223,132 @@ function MosaikTile({ tile }: { tile: Tile }) {
   }
   // cta → oversigten over forvandlinger
   return (
-    <Link href="/havebog/forvandlinger" className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
-      <span className="flex items-center" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
+    <Link href={medFra('/havebog/forvandlinger')} className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
+      <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
         {tile.tekst}
-        <span aria-hidden>→</span>
+        <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
       </span>
+    </Link>
+  )
+}
+
+/**
+ * "Blive til"-tilstand: brugeren har endnu ingen høst. Vi lover IKKE noget
+ * om DENNE haves resultater — men holder modulet levende med havens brede
+ * output-univers: den faste BASIS_MOSAIK (8 generiske forvandlinger på tværs
+ * af mad, gem, duft, pynt og natur). En teaser til universet, ikke en tom-
+ * state og ikke demo-data. Copy siger "kan blive", ikke "er blevet".
+ */
+type BasisTile =
+  | { slag: 'element'; el: BasisMosaikElement; foto?: string; farve: string; stor: boolean }
+  | { slag: 'cta' }
+
+function SpisekammerBliveTil() {
+  const maaned = new Date().getMonth() + 1
+  const saeson = saesonForMaaned(maaned)
+
+  // Byg tile-listen i Annas rækkefølge. Foto resolves gennem det eksisterende
+  // asset-system for de katalog-bundne elementer (crop-match → farve-fallback);
+  // crop-løse projekter (insekthotel) får bevidst en farve-tile. Mosaikken
+  // knækker aldrig på et manglende billede.
+  const tiles: BasisTile[] = []
+  BASIS_MOSAIK.forEach((el, i) => {
+    const f = el.forvandlingId ? findForvandling(el.forvandlingId) : undefined
+    const asset = f ? selectForvandlingAssets(f, { season: saeson }) : undefined
+    tiles.push({
+      slag: 'element',
+      el,
+      foto: asset?.slag === 'foto' ? asset.path : undefined,
+      farve: basisKategoriFarve(el.category),
+      stor: i === 0, // Tomatsauce = lead-tile (større, sætter tonen).
+    })
+  })
+  tiles.push({ slag: 'cta' })
+
+  const venstre: BasisTile[] = []
+  const hoejre: BasisTile[] = []
+  tiles.forEach((t, i) => (i % 2 === 0 ? venstre : hoejre).push(t))
+
+  return (
+    <section>
+      <p
+        className="uppercase"
+        style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.26em', color: 'rgba(36,48,31,0.5)', margin: 0, marginBottom: 12 }}
+      >
+        Det kan haven blive til
+      </p>
+      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.18, color: '#5F6658', margin: '0 0 18px', maxWidth: '28ch' }}>
+        Tomater kan blive sauce. Blomster kan blive duft. Frø kan blive næste sæson.
+      </p>
+      <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
+        {[venstre, hoejre].map((soejle, si) => (
+          <div key={si} style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 11 }}>
+            {soejle.map((t, i) => (
+              <BasisMosaikTile key={i} tile={t} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function BasisMosaikTile({ tile }: { tile: BasisTile }) {
+  if (tile.slag === 'cta') {
+    return (
+      <Link
+        href={medFra('/havebog/forvandlinger')}
+        className="no-underline block"
+        style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}
+      >
+        <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
+          Se alle forvandlinger
+          <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
+        </span>
+      </Link>
+    )
+  }
+
+  const { el, foto, farve, stor } = tile
+  const eyebrow = (
+    <span className="uppercase" style={{ display: 'block', fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: foto ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.68)', marginBottom: stor ? 12 : 8 }}>
+      {basisKategoriLabel(el.category)}
+    </span>
+  )
+  const titel = (
+    <span style={{ display: 'block', fontFamily: serif, fontWeight: 500, fontSize: stor ? 'clamp(30px, 8.4cqw, 38px)' : 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.04, letterSpacing: '-0.01em', color: CREME }}>
+      {el.title}
+    </span>
+  )
+
+  // Foto-tile (asset fundet) — foto i bund, kategori-tonet gradient over.
+  if (foto) {
+    return (
+      <Link
+        href={medFra(el.href)}
+        className="no-underline block"
+        style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: stor ? '3 / 4' : '1 / 1', background: farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div aria-hidden style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${farve}E6 0%, ${farve}66 38%, rgba(0,0,0,0) 72%)` }} />
+        <div style={{ position: 'relative', padding: stor ? '0 18px 22px' : '0 16px 18px' }}>
+          {eyebrow}
+          {titel}
+        </div>
+      </Link>
+    )
+  }
+
+  // Farve-tile (intet foto — fx crop-løse projekter). Rent typografisk felt.
+  return (
+    <Link
+      href={medFra(el.href)}
+      className="no-underline block"
+      style={{ background: farve, borderRadius: 20, padding: stor ? '34px 18px 40px' : '24px 18px 28px', overflow: 'hidden' }}
+    >
+      {eyebrow}
+      {titel}
     </Link>
   )
 }

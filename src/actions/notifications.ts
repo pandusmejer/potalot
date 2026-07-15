@@ -47,6 +47,24 @@ export async function getMyNotifications(): Promise<Notification[]> {
 }
 
 /**
+ * Generér deterministiske opgave-påmindelser (smal launch-notifikation).
+ * Kalder den self-scopede SECURITY DEFINER-funktion sync_task_reminders,
+ * som afleder FÅ, plante-knyttede påmindelser fra åbne forfaldne
+ * calendar_tasks og enqueue'er dem — idempotent (dedup pr. opgave/dag).
+ * Best-effort: fejl må aldrig vælte topbaren.
+ */
+export async function syncTaskReminders(): Promise<void> {
+  const me = await getCurrentUser()
+  if (!me) return
+  try {
+    const supabase = await createClient()
+    await supabase.rpc('sync_task_reminders')
+  } catch {
+    // Stille — påmindelser er sekundære til at siden loader.
+  }
+}
+
+/**
  * Antal ulæste — bruges til badge i topbar.
  */
 export async function getUnreadCount(): Promise<number> {

@@ -7,6 +7,7 @@ import { HavebogDivider } from '@/components/havebog/havebog-divider'
 import { TalTilDinHave } from '@/components/havebog/tal-til-din-have'
 import { TalOptager } from '@/components/havebog/tal-optager'
 import { InspirerMig } from '@/components/havebog/inspirer-mig'
+import { MaaskeDuOgsaa } from '@/components/havebog/maaske-du-ogsaa'
 import { Dyrkerstatus } from '@/components/havebog/dyrkerstatus'
 import { Dyrkerkompetencer } from '@/components/havebog/dyrkerkompetencer'
 import { PaaDenneDag } from '@/components/havebog/paa-denne-dag'
@@ -18,6 +19,8 @@ import { VejretIHaven } from '@/components/havebog/vejret-i-haven'
 import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { BookHeart } from 'lucide-react'
 import { kurater, type RumId } from '@/lib/havebog-kurator'
 import { kompetenceAntal } from '@/lib/havebog-kompetencer'
 import { aktuelMaaned } from '@/lib/datetime'
@@ -86,9 +89,10 @@ export default async function HavebogPage() {
         narrative={heroNarrative}
         fornavn={isDemo ? null : data.fornavn}
       />
-      {/* Dateline ("adressen") trukket op under hero-bølgen, så den står
-          ~12 mm under bølgens højeste punkt. Den negative margin overskriver
-          space-y-fugen og løfter resten af siden med op. */}
+      {/* ⚠️ ANNA-LÅST 13/7 (tag: havebog-hero-laast-13-07): marginTop -141
+          matcher deployed 1:1 — RØR IKKE. Dateline ("adressen") trukket op
+          under hero-bølgen, ~12 mm under bølgens højeste punkt. Den negative
+          margin overskriver space-y-fugen og løfter resten af siden med op. */}
       <div
         style={{
           marginTop: -141,
@@ -131,12 +135,12 @@ export default async function HavebogPage() {
   const harData: Partial<Record<RumId, boolean>> = isDemo
     ? {
         inspirerMig: true,
+        maaskeDuOgsaa: true,
         dyrkerstatus: true,
         dyrkerkompetencer: true,
         paaDenneDag: onThisDay.length > 0,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
-        spisekammer: true,
         projekter: true,
         bedrifter: true,
         vejret: true,
@@ -145,36 +149,75 @@ export default async function HavebogPage() {
       }
     : {
         inspirerMig: data.inspirerForslag !== null,
-        spisekammer: data.spisekammer !== null,
-        paaDenneDag: onThisDay.length > 0,
+        maaskeDuOgsaa: (data.inspirerForslag?.sekundaer ?? null) !== null,
+        // Produktregel: "På denne dag" skal have en kilde/destination —
+        // skjul modulet hvis det viste minde ikke kan åbnes (ingen href).
+        paaDenneDag: (onThisDay[0]?.href ?? null) !== null,
         minder: minder.length > 0,
         vendepunkter: vendepunkter.length > 0,
         historienFortsaetter: archivedPlants.length > 0,
         // V13: afledte rum — gated på ægte data (ærligheds-reglen).
         dyrkerstatus: data.dyrkerstatus.length > 0,
         dyrkerkompetencer: kompetenceAntal(data.dyrkerkompetencer) >= 2,
+        // Første gange (V1): vis ved mindst én beviselig milepæl.
+        bedrifter: data.bedrifter.length > 0,
       }
   const valgteRum = kurater({ maaned: aktuelMaaned(), harData, maks: 3 })
 
   const RUM_RENDER: Partial<Record<RumId, ReactNode>> = {
     inspirerMig: <InspirerMig forslag={isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER} />,
+    maaskeDuOgsaa: <MaaskeDuOgsaa forslag={(isDemo ? DEMO_INSPIRER : data?.inspirerForslag ?? DEMO_INSPIRER).sekundaer ?? DEMO_INSPIRER.sekundaer!} billede="/images/havebog/maaske-du-ogsaa-froeavl.jpg" />,
     dyrkerstatus: <Dyrkerstatus status={isDemo ? DEMO_DYRKERSTATUS : (data?.dyrkerstatus[0] ?? DEMO_DYRKERSTATUS)} />,
     dyrkerkompetencer: <Dyrkerkompetencer omraader={isDemo ? DEMO_KOMPETENCER : (data?.dyrkerkompetencer ?? DEMO_KOMPETENCER)} />,
     paaDenneDag: <PaaDenneDag entries={onThisDay} />,
     minder: <Minder minder={minder} />,
     vendepunkter: <Vendepunkter vendepunkter={vendepunkter} />,
-    spisekammer: <Spisekammer data={isDemo ? DEMO_SPISEKAMMER : data?.spisekammer ?? DEMO_SPISEKAMMER} />,
     projekter: <Projekter projekt={DEMO_PROJEKT} />,
-    bedrifter: <Bedrifter bedrifter={DEMO_BEDRIFTER} />,
+    bedrifter: <Bedrifter bedrifter={isDemo ? DEMO_BEDRIFTER : data?.bedrifter ?? DEMO_BEDRIFTER} />,
     vejret: <VejretIHaven vejr={DEMO_VEJR} />,
     populaert: <PopulaertLigeNu emner={DEMO_POPULAERT} />,
-    historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
+    historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} linkable={!isDemo} />,
   }
 
+  // ── Mosaikken "Det kan haven blive til" — FAST modul (F4) ──
+  // Anna-låst regel: mosaikken må ALDRIG gates væk fra Havebog — kun skifte
+  // DATATILSTAND. Har brugeren høst → 'strong' (konkrete forvandlinger fra
+  // afgrøderne). Ingen høst endnu → 'blivetil' (havens brede veje, aldrig
+  // falsk høst eller demo-data for en indlogget bruger). Placering: efter det
+  // faste lag (Hero · Dagens historie · Diktafon), FØR de roterende rum.
+  const harHoest = (data?.spisekammer?.hoest.length ?? 0) > 0
+  const spisekammerMode = isDemo || harHoest ? 'strong' : 'blivetil'
+  const spisekammerData = isDemo ? DEMO_SPISEKAMMER : (data?.spisekammer ?? DEMO_SPISEKAMMER)
+
+  // ⚠️ ANNA-LÅST 13/7: forside-rytme space-y-20 sm:space-y-28 (original,
+  // matcher deployed). RØR IKKE — 48px-stramning var afvigelse, revertet.
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
-      {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
+      {/* Mosaik + intronote + roterende rum har HALVERET indbyrdes afstand
+          (Anna 15/7): space-y-10/14 = præcis halvdelen af 20/28. Ligger som ÉT
+          barn af det ANNA-LÅSTE ydre space-y-20/28, så afstanden forside→mosaik
+          er urørt. RØR IKKE anden spacing på siden. */}
+      <div className="space-y-10 sm:space-y-14">
+        {/* Anker-id: tilbage-link fra en Forvandlings-detail (åbnet via en
+            mosaik-tile med ?from=havebog) lander HER ved mosaikken, ikke i
+            hero-toppen. scroll-mt rydder den sticky header. */}
+        <div id="det-kan-haven-blive-til" className="scroll-mt-24">
+          <Spisekammer data={spisekammerData} mode={spisekammerMode} />
+        </div>
+        {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det
+            faste top-lag (hero/dato/Dagens historie). Kun for indloggede;
+            demoen fortæller allerede historien via sit fyldte indhold. */}
+        {!isDemo && (
+          <PageIntroNote
+            id="havebog"
+            icon={<BookHeart className="h-4 w-4" />}
+            title="Din sæson får sin egen historie"
+            body="Jo mere du dyrker, høster og observerer, jo mere personlig bliver Havebogen."
+          />
+        )}
+        {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
+      </div>
     </div>
   )
 }

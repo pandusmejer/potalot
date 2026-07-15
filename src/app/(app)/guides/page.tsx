@@ -1,5 +1,7 @@
 import { GuidesHero } from '@/components/guides/guides-hero'
 import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { BookOpen } from 'lucide-react'
 import { getAllGuides } from '@/actions/guides'
 import { getAllInventoryItems } from '@/actions/froebank'
 import {
@@ -104,6 +106,12 @@ export default async function GuidesPage() {
       />
       <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">
         <GuidesHero />
+        <PageIntroNote
+          id="guides"
+          icon={<BookOpen className="h-4 w-4" />}
+          title="Forstå det, du dyrker"
+          body="Start med arten, dyk ned i sorter, og gem erfaringer undervejs."
+        />
         <GuidesBibliotek
           guides={visibleGuides}
           aiGuideIds={aiGuideIds}

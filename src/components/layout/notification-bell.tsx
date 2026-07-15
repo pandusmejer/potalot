@@ -95,11 +95,17 @@ export function NotificationBell({ initialUnreadCount }: Props) {
         size="icon"
         onClick={() => setOpen(o => !o)}
         aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} ulæste)` : ''}`}
-        className="relative"
+        // Neutralt interaktionselement, ikke en alarm (Annas retning 13/7):
+        // normal transparent + ikon #4F583F, hover salvie #E5E7D8 + ikon
+        // #465038, pressed lidt dybere. INGEN rød hover.
+        className="relative bg-transparent text-[#4F583F] hover:bg-[#E5E7D8] hover:text-[#465038] active:bg-[#D1D8C0] [&_svg]:size-[18px]"
       >
-        <Bell className="h-5 w-5" />
+        <Bell />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 min-w-[16px] h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-medium flex items-center justify-center px-1">
+          <span
+            className="absolute top-0.5 right-0.5 min-w-[16px] h-4 rounded-full text-[9px] font-semibold flex items-center justify-center px-1"
+            style={{ background: '#B5602F', color: '#FFF8EE' }}
+          >
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}

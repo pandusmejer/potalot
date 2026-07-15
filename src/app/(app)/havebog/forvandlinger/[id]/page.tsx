@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Search, Link2 } from 'lucide-react'
+import { Search } from 'lucide-react'
+import { ForvandlingTilbageLink } from '@/components/havebog/forvandling-tilbage-link'
 import {
   findForvandling,
   FORVANDLINGER,
@@ -39,10 +39,7 @@ export default async function ForvandlingPage({ params }: { params: Promise<{ id
 
   return (
     <div className="w-full" style={{ paddingBottom: 48, maxWidth: 620 }}>
-      <Link href="/havebog/forvandlinger" className="flex w-fit items-center no-underline" style={{ gap: 6, fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(36,48,31,0.55)', marginBottom: 22 }}>
-        <ArrowLeft className="h-4 w-4" aria-hidden />
-        Forvandlinger
-      </Link>
+      <ForvandlingTilbageLink fallbackHref="/havebog/forvandlinger" fallbackLabel="Forvandlinger" />
 
       {/* Kategori-chip */}
       <span className="flex w-fit items-center uppercase" style={{ gap: 7, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: farve, marginBottom: 12 }}>
@@ -54,11 +51,13 @@ export default async function ForvandlingPage({ params }: { params: Promise<{ id
         {f.title}
       </h1>
 
-      <Blok label="Brug">
-        <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.3, color: '#3B4A2F', margin: 0 }}>
-          {f.crops.map(capitalize).join(' · ')}
-        </p>
-      </Blok>
+      {f.crops.length > 0 && (
+        <Blok label="Brug">
+          <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.3, color: '#3B4A2F', margin: 0 }}>
+            {f.crops.map(capitalize).join(' · ')}
+          </p>
+        </Blok>
+      )}
 
       <Blok label="Hvorfor nu">
         <p style={{ fontFamily: serif, fontWeight: 400, fontSize: 'clamp(20px, 5vw, 24px)', lineHeight: 1.34, color: 'rgba(36,48,31,0.78)', margin: 0, maxWidth: '30ch' }}>
@@ -117,14 +116,6 @@ function NaesteHandling({ f, farve }: { f: NonNullable<ReturnType<typeof findFor
           <Search className="h-4 w-4" aria-hidden strokeWidth={2} />
           Find {ord}
         </a>
-        {/* Gem et link — design-intention; kræver migration (SavedForvandlingLink). */}
-        <span
-          className="inline-flex items-center"
-          style={{ gap: 8, fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#3B4A2F', background: 'transparent', border: '1px solid rgba(36,48,31,0.2)', borderRadius: 999, padding: '11px 20px' }}
-        >
-          <Link2 className="h-4 w-4" aria-hidden strokeWidth={2} />
-          Gem et link
-        </span>
       </div>
 
       <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.4)', margin: '0 0 10px' }}>

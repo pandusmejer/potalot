@@ -340,12 +340,18 @@ export function SeedBankFolderPanel({
               }}
             >
               <Leaf className="h-3 w-3 shrink-0 text-[#667456]" strokeWidth={1.65} />
-              <span className="truncate">
-                <span>Senest tilføjet:</span>{' '}
-                <span className="font-semibold text-[#566337]">{recentItemName}</span>
-                <span className="px-1.5 text-[#737b68]">·</span>
-                {recentItemTimeLabel}
-              </span>
+              {(totalVarieties ?? 0) === 0 ? (
+                // Tom frøbank (indlogget, endnu ingen frø) → blød kom-i-gang,
+                // ALDRIG et opdigtet "senest tilføjet".
+                <span>Din frøbank er tom — tilføj dit første frø, så samler vi dine sorter her.</span>
+              ) : (
+                <span className="truncate">
+                  <span>Senest tilføjet:</span>{' '}
+                  <span className="font-semibold text-[#566337]">{recentItemName}</span>
+                  <span className="px-1.5 text-[#737b68]">·</span>
+                  {recentItemTimeLabel}
+                </span>
+              )}
             </div>
 
             <div className="mt-[15px] flex gap-[12px]">

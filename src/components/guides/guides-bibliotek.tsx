@@ -294,7 +294,7 @@ function PopulaereEmner({
                   style={{
                     fontFamily: plex,
                     fontWeight: 600,
-                    fontSize: 'clamp(24px, 7.4vw, 33px)',
+                    fontSize: 'clamp(24px, 7.4cqw, 33px)',
                     lineHeight: 0.94,
                     color: '#FFFFFF',
                     margin: 0,

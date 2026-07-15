@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { Leaf, Flower2, Apple, Sprout, Bug, ChevronRight } from 'lucide-react'
 import type { Kompetenceomraade } from '@/data/havebog-demo'
 
 const sans = 'var(--font-manrope)'
@@ -8,65 +10,80 @@ interface Props {
 }
 
 /**
- * RUM 6 (V1.0-prototype) · Dyrkerkompetencer.
+ * Diskret GRUPPE-anker pr. kompetenceområde — lucide-ikon + kategori-farve,
+ * ALDRIG custom soft glyphs eller ikon pr. enkelt-kompetence. Ét ikon pr.
+ * gruppe; lavmælt markør, ikke badge. V1-mapping (udvides senere i Profil).
+ */
+function kompetenceMarkoer(omraade: string): { Ikon: typeof Leaf; farve: string } {
+  const o = omraade.toLowerCase()
+  if (/tomat/.test(o)) return { Ikon: Apple, farve: '#B85A3D' }
+  if (/blomst|dahlia|staude|pryd/.test(o)) return { Ikon: Flower2, farve: '#C36F7C' }
+  if (/skadedyr|sygdom/.test(o)) return { Ikon: Bug, farve: '#8F9484' }
+  if (/salat|blad|agurk|squash|kål|bønne|ært|krydderurt|basilikum|dild/.test(o)) return { Ikon: Leaf, farve: '#6F7E55' }
+  return { Ikon: Sprout, farve: '#8F9484' }
+}
+
+/**
+ * RUM · "Dine kompetencer" (V19 — Annas 390px kort-spec, sektion 7).
  *
- * Udvikling — det man bliver bedre til. Ikke "X af Y skills" (SaaS-
- * dashboard); kompetenceområder med opnåede færdigheder og næste
- * skridt. Mennesker vil ikke føle sig som spillere — de vil føle sig
- * dygtigere.
+ * ⚠️ ANNA-LÅST 12/7 — lucide gruppe-ankre m. kategori-farve godkendt; rør ikke
+ * uden ny retning.
  *
- * Afledt af faktiske log-handlinger (byggKompetencer): område pr. art +
- * korte færdighedsord. Ingen "X af Y", ingen opnået-badges — bare hvad
- * brugeren har gjort, læst som en rolig linje.
+ * Udvikling, ikke "X af Y skills": kompetenceområder afledt af faktiske
+ * log-handlinger, læst som en rolig linje. Ingen flueben, ingen tomme
+ * cirkler, ingen locked/unlocked. Kort-PREVIEW: max 2 grupper med divider
+ * + diskret line-ikon; flere findes i Profil ("Se alle kompetencer →").
  */
 export function Dyrkerkompetencer({ omraader }: Props) {
+  const vist = omraader.slice(0, 2)
   return (
     <section>
-      <p
-        className="uppercase"
+      <div
         style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.26em',
-          color: 'rgba(36,48,31,0.5)',
-          margin: 0,
-          marginBottom: 22,
+          marginInline: -11,
+          borderRadius: 14,
+          background: '#F5EEDC',
+          border: '1px solid rgba(143,148,132,0.18)',
+          boxShadow: '0 10px 28px rgba(31,45,29,0.06)',
+          padding: 22,
         }}
       >
-        Dine kompetencer
-      </p>
+        <p
+          className="uppercase"
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#8F9484', margin: 0, marginBottom: 20 }}
+        >
+          Dine kompetencer
+        </p>
 
-      <div className="space-y-8">
-        {omraader.map(o => (
-          <div key={o.omraade}>
-            <p
-              style={{
-                fontFamily: serif,
-                fontWeight: 500,
-                fontSize: 'clamp(23px, 5cqw, 30px)',
-                lineHeight: 1.1,
-                color: '#24301F',
-                margin: 0,
-                marginBottom: 6,
-              }}
-            >
-              {o.omraade}
-            </p>
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 15,
-                fontWeight: 500,
-                letterSpacing: '0.01em',
-                color: 'rgba(36,48,31,0.62)',
-                margin: 0,
-              }}
-            >
-              {o.faerdigheder.join(' · ')}
-            </p>
-          </div>
-        ))}
+        {vist.map((o, i) => {
+          const { Ikon, farve } = kompetenceMarkoer(o.omraade)
+          return (
+            <div key={o.omraade}>
+              {i > 0 && <div aria-hidden style={{ height: 1, background: 'rgba(143,148,132,0.20)', margin: '18px 0' }} />}
+              <div className="flex items-start" style={{ gap: 12 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <p style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(24px, 6.6cqw, 30px)', lineHeight: 1.05, color: '#1F2D1D', margin: 0, marginBottom: 8 }}>
+                    {o.omraade}
+                  </p>
+                  <p style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 400, lineHeight: 1.45, color: '#45503F', margin: 0 }}>
+                    {o.faerdigheder.join(' · ')}
+                  </p>
+                </div>
+                {/* Lavmælt gruppe-anker — aldrig konkurrere med teksten */}
+                <Ikon style={{ width: 36, height: 36, color: farve, opacity: 0.72, flexShrink: 0 }} strokeWidth={1.65} aria-hidden />
+              </div>
+            </div>
+          )
+        })}
+
+        <Link
+          href="/profil"
+          className="no-underline flex items-center"
+          style={{ gap: 4, marginTop: 18, fontFamily: sans, fontSize: 13.5, fontWeight: 650, color: '#314829' }}
+        >
+          Se alle kompetencer
+          <ChevronRight style={{ width: 17, height: 17 }} strokeWidth={2.4} aria-hidden />
+        </Link>
       </div>
     </section>
   )

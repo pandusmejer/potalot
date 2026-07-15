@@ -27,6 +27,11 @@ export interface OnThisDayEntry {
   variety?: string
   text: string
   imageUrl?: string | null
+  /** Kilde + destination — "På denne dag" skal ALTID kunne åbne mindet.
+   *  Uden href/kilde skjules modulet for rigtige brugere (produktregel). */
+  href?: string | null
+  sourceType?: 'plant' | 'memory' | 'archive'
+  sourceId?: string | null
 }
 
 export interface RecentNote {
@@ -158,12 +163,18 @@ export interface HeroNarrative {
   userState: 'new' | 'active' | 'year2plus'
   /**
    * V9 (dagtælleren): sæsondagen som tal + etiket, struktureret så
-   * heroen kan rendre den taktile flip-tæller. Null når intet er
-   * sået endnu — ærlighed over poesi: ingen såning, ingen sæsondag.
+   * heroen kan rendre den taktile flip-tæller. Null når sæsonen ikke kan
+   * dateres (ingen sowing/germination/planting_out) — ærlighed over poesi.
    */
   saesonDag: number | null
   /** "af din første sæson" / "af din tredje sæson" */
   saesonEtiket: string | null
+  /**
+   * V10 (13/7): hvilken logtype markerede sæson-start (sowing → germination →
+   * planting_out). Kun til data/debug + evt. fremtidig nuanceret copy — UI'et
+   * viser samme etiket uanset kilde. Null når sæsonen ikke kunne dateres.
+   */
+  seasonStartSource?: 'sowing' | 'germination' | 'planting_out' | null
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -364,7 +375,9 @@ export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
     plantName: 'Dahlia',
     variety: 'Café au Lait',
     text: 'Du plantede dine første dahliaer i havens sydbed. De voksede sig store og bar over 30 blomster den sommer.',
-    imageUrl: '/images/plantekort/dahlia-cafe-au-lait.jpg',
+    imageUrl: '/images/havebog/paa-denne-dag.jpg',
+    href: '/mine-planter', // mock-destination til preview (nærmeste eksisterende)
+    sourceType: 'plant',
   },
   {
     yearsAgo: 2,
@@ -607,7 +620,21 @@ export interface InspirerForslag {
   begrundelse: string
   /** V18: illustration/foto — bruger eksisterende frøkort indtil videre */
   billede?: string
-  /** V18: sekundært "måske du også vil prøve" */
+  /**
+   * V20: lead-egnede kandidater (dem med foto). Kort 1 roterer deterministisk
+   * gennem dem ét ad gangen ("Vis noget andet"); den aktuelle vises som
+   * hovedforslag (navn/begrundelse/billede), resten som små forslag
+   * (titel/undertitel/billede). href = sortens guide ELLER frøbank.
+   */
+  kandidater?: {
+    navn: string
+    begrundelse: string
+    billede: string
+    titel: string
+    undertitel: string
+    href: string
+  }[]
+  /** V18: sekundært "måske du også vil prøve" (bliver egen sektion) */
   sekundaer?: { kicker: string; titel: string; tekst: string }
 }
 export const DEMO_INSPIRER: InspirerForslag = {
@@ -615,10 +642,31 @@ export const DEMO_INSPIRER: InspirerForslag = {
   navn: 'Malwina jordbær',
   begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
   billede: '/images/frokort/jordbaer-korona.png',
+  kandidater: [
+    {
+      navn: 'Malwina jordbær',
+      begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+      billede: '/images/frokort/jordbaer-korona.png',
+      titel: 'Malwina', undertitel: 'Senere sort', href: '/froebank',
+    },
+    {
+      navn: 'Basilikum',
+      begrundelse: 'En klassisk makker til dine tomater — og god at tørre til vinteren.',
+      billede: '/images/makro/basilikum/bundt.jpg',
+      titel: 'Basilikum', undertitel: 'God makker', href: '/froebank',
+    },
+    {
+      navn: 'Corno di Toro',
+      begrundelse: 'En sød snackpeber med en anden smag end dine nuværende sorter.',
+      billede: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg',
+      titel: 'Peberfrugt', undertitel: 'Anden type', href: '/froebank',
+    },
+  ],
   sekundaer: {
     kicker: 'Måske du også vil prøve',
     titel: 'Prøv frøavl',
-    tekst: 'Du dyrker tomater — måske er det tid til at gemme dine egne frø.',
+    // Linjeskift bevidst (renderes via pre-line i MaaskeDuOgsaa).
+    tekst: 'Du dyrker tomater.\nMåske er det tid til at\ngemme dine egne frø.',
   },
 }
 
@@ -629,7 +677,8 @@ export interface Dyrkerstatus {
 }
 export const DEMO_DYRKERSTATUS: Dyrkerstatus = {
   titel: 'Selvforsyner',
-  beskrivelse: 'Du har høstet fra flere afgrøder denne sæson.',
+  // Bevidste linjeskift (renderes via pre-line).
+  beskrivelse: 'Du har høstet fra flere afgrøder\ndenne sæson og begynder at\nfylde sommeren med din egen mad.',
 }
 
 // 6 · Dyrkerkompetencer — editorial ord, ingen opnået-badges
@@ -663,7 +712,17 @@ export const DEMO_SPISEKAMMER: SpisekammerData = {
 }
 
 // 11 · Populært lige nu — KRÆVER ægte fællesskabsdata. Prototype.
-export const DEMO_POPULAERT: string[] = ['Kompost', 'Dræbersnegle', 'Efterafgrøder']
+export interface PopulaertEmne {
+  emne: string
+  beskrivelse: string
+  tone: 'sage' | 'rose' | 'sand'
+}
+// Bevidste linjeskift pr. emne (renderes via pre-line).
+export const DEMO_POPULAERT: PopulaertEmne[] = [
+  { emne: 'Kompost', beskrivelse: 'Sådan får du\njordliv og\nnæringsstoffer', tone: 'sage' },
+  { emne: 'Dræbersnegle', beskrivelse: 'Naturlige\nmetoder der\nvirker nu', tone: 'rose' },
+  { emne: 'Efterafgrøder', beskrivelse: 'Beskyt jorden\nog giv livet\nen pause', tone: 'sand' },
+]
 
 // 12 · Vejret i haven — KRÆVER vejr-kilde. Prototype.
 export interface VejrData {
@@ -678,22 +737,64 @@ export const DEMO_VEJR: VejrData = {
 }
 
 // 13 · Projekter
+export type ProjektKilde = 'ideaBoard' | 'calendarTask' | 'transformation' | 'voiceNote' | 'manualProject'
+export type ProjektKategori = 'biodiversitet' | 'toerring' | 'froe' | 'mad' | 'byggeri' | 'kalender'
 export interface ProjektForslag {
   kicker: string
   titel: string
+  kontekst?: string
+  /** Kun hvis fotoet er EGNET (kurateret/vurderet). Ellers soft-illustration. */
+  foto?: string
+  /** Til soft-illustration-mode når der ikke er egnet foto. */
+  kategori?: ProjektKategori
+  /** Bestemmer kontekst-copy + CTA-verbum. */
+  kilde?: ProjektKilde
 }
+// A · photo — kurateret foto (demo er altid pæn)
 export const DEMO_PROJEKT: ProjektForslag = {
   kicker: 'Næste projekt',
-  titel: 'Byg et insekthotel.',
+  titel: 'Byg et insekthotel',
+  // Bevidste linjeskift (renderes via pre-line i Projekter).
+  kontekst: 'Du gemte idéen i juni.\nNu er det et godt\ntidspunkt at gå i gang.',
+  foto: '/images/havebog/naeste-projekt-insekthotel.jpg',
+  kategori: 'byggeri',
+  kilde: 'ideaBoard',
+}
+// B · soft-illustration — DEFAULT for rigtige projekter (intet/uegnet foto)
+export const DEMO_PROJEKT_ILLUSTRATION: ProjektForslag = {
+  kicker: 'Næste projekt',
+  titel: 'Lav lavendelposer',
+  kontekst: 'Du gemte idéen fra Forvandlinger.',
+  kategori: 'toerring',
+  kilde: 'transformation',
+}
+// C · color-field — fallback (hverken foto eller kategori)
+export const DEMO_PROJEKT_COLORFIELD: ProjektForslag = {
+  kicker: 'Næste projekt',
+  titel: 'Byg et højbed',
+  kontekst: 'Du oprettede projektet i juni.',
+  kilde: 'manualProject',
 }
 
-// 14 · Bedrifter
+// 14 · Bedrifter / Første gange — kun BEVISELIGE milepæle (log-typer der
+// findes). Ikke "første overvintring/frøavl" (ingen log-type endnu).
 export interface Bedrift {
   titel: string
   aar: string
+  kind:
+    | 'saaning'
+    | 'spiring'
+    | 'udplantning'
+    | 'hoest'
+    | 'beskaering'
+    | 'skadedyr'
+    | 'afsluttet'
+    | 'drivhus'
+    | 'blomst' // kun demo — blomstring afledes ikke i V1 (ingen logtype)
 }
 export const DEMO_BEDRIFTER: Bedrift[] = [
-  { titel: 'Første tomathøst', aar: '2025' },
-  { titel: 'Første overvintring', aar: '2025' },
-  { titel: 'Første frøavl', aar: '2024' },
+  { titel: 'Første tomathøst', aar: '2025', kind: 'hoest' },
+  { titel: 'Første drivhussæson', aar: '2025', kind: 'drivhus' },
+  { titel: 'Første dahlia', aar: '2025', kind: 'blomst' },
+  { titel: 'Første såning indendørs', aar: '2024', kind: 'saaning' },
 ]

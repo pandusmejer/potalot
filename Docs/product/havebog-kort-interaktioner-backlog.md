@@ -1,0 +1,154 @@
+# Havebog — nederste kort: interaktions- & wiring-backlog
+
+**Status:** ARKIVERET / afventer. Tages FØRST når alle 8 nederste Havebog-kort
+er færdig-DESIGNET og låst. Dette er "gør kortene levende"-arbejdet — data,
+klik, motorer — adskilt fra det visuelle design med vilje.
+
+Se også: [havebog-status-audit.md](./havebog-status-audit.md) (ærlig status pr.
+rum) og memory `proev_naeste_aar_laast` / `havebog_sprint`.
+
+---
+
+## Princip
+De nederste kort er i dag **visuelle prototyper** på demo-data og **gated
+`false` for indloggede** (ærligheds-reglen) — en rigtig bruger møder dem først,
+når deres kilde/motor findes. Design låses nu; wiring nedenfor er næste fase.
+
+---
+
+## Pr. kort — hvad mangler at blive levende
+
+### 1 · Prøv næste år (inspirer-mig.tsx) — LÅST · MOTOR BYGGET + WIRED
+**Rettelse 12/7:** motoren FINDES og er wired (var fejlagtigt "prototype").
+- Motor: **byggProevNaesteAar** (`src/lib/havebog-proev-naeste-aar.ts`), testet
+  (`scripts/test-proev-naeste-aar.ts`, 7/7). Prioritet: forlæng>hul>frøavl>
+  robusthed>køkken>fallback. Wired i `getHavebogData` → `inspirerForslag` →
+  kortet (indlogget bruger `data.inspirerForslag`, gated på non-null).
+- **UDESTÅENDE (demo-only endnu):** de små foto-forslag (Basilikum/Peberfrugt)
+  produceres IKKE af motoren → vises kun i demo; motorens output mangler et
+  `forslag[]`-felt (+ mål-id hvis de skal linke til frøkort/guide). Og
+  **"Vis et nyt forslag"**-rotation er stadig en død knap (ikke wired).
+- **"Flere forslag"** → `/froebank` (virker).
+
+### 2 · Måske du også vil prøve (maaske-du-ogsaa.tsx) — LÅST · MOTOR-BACKED
+**Rettelse 12/7:** motor-backed (var fejlagtigt "prototype").
+- Bruger `inspirerForslag.sekundaer` fra **samme byggProevNaesteAar**-motor
+  ("Hul"-reglen producerer et sekundært forslag). Wired + gated på sekundaer
+  non-null for indloggede. NB: fotoet er et fast havebog-asset, ikke fra motoren.
+- **"Se hvordan"** → `/havebog/forvandlinger` (virker).
+
+### 3 · På denne dag (paa-denne-dag.tsx) — overlay + destination LÅST
+**Produktregel:** "På denne dag" er ALTID et tilbageblik MED kilde — aldrig et
+generisk stemningskort. Kræver: sourceType, sourceId, date, title, text, image,
+href. Uden href/kilde skjules modulet for rigtige brugere (kuratoren gater på
+`onThisDay[0].href`); demo bruger mock-href.
+
+**Læsbarhed (LÅST):** fast overlay-system ovenpå fotoet (mørk bund- + venstre-
+gradient + let global scrim) — tekst læsbar uanset brugerens foto, ingen pixel-
+analyse. `overlayStrength="strong"` findes til for lyse fotos.
+
+**Destination pr. sourceType:**
+- A. plante-log → `/mine-planter/[plantId]` (plantens timeline) — **WIRET NU**
+  (deriveren sætter href fra `plant_id`).
+- B. Havebog-minde → `/havebog/minder/[id]` eller `/havebog/arkiv?minde=[id]`
+  — **rute findes ikke endnu**.
+- C. arkiveret plante/sæson → `/havebog/arkiv/[id]` — **rute findes ikke endnu**.
+- D. ingen ægte destination → CTA "Se minde" fører til nærmeste eksisterende
+  log-/arkivvisning; ingen død CTA.
+
+CTA "Se minde" + hele kortet klikbart (ægte `<Link>`, aria-label) = LÅST.
+Mangler: minde-/arkiv-ruter (B/C) + evt. `?log=[logId]` på plante-href.
+
+### 4 · Næste projekt (projekter.tsx) — 3 visual states LÅST
+Systemisk: kortet afhænger ALDRIG af et perfekt brugerfoto. Tre states
+(teksten bærer altid): **photo** (kun ved EGNET/kurateret foto), **soft-
+illustration** (DEFAULT — kategori-line-ikon), **color-field** (fallback).
+- **Konservativ foto-regel (deriver-TODO):** brugerupload med ukendt kvalitet
+  må IKKE bruges som stort baggrundsfoto i Havebog → vis soft-illustration;
+  foto kun på projektets egen detaljeside. Deriveren sætter kun `foto` når
+  det er vurderet egnet (aspect/crop/ikke-screenshot/ikke-for-lille).
+- **Kilde → copy + CTA:** ideaBoard/calendarTask/transformation/voiceNote/
+  manualProject bestemmer kontekst-linjen; CTA normaliseret (opgave/optagelse/
+  projekt). Deriveren skal sætte `kilde` + `kategori` + `kontekst`.
+- **"Åbn projekt"** → `/kalender` (midlertidigt). → ægte projekt/idé-system
+  (idéboard/kalender/gemt forvandling/diktafon→projekt/manuelt).
+- Gating: vis KUN ved ægte, bruger-initieret projekt-intention; ellers skjul.
+
+### 5 · Mange læser om nu (populaert-lige-nu.tsx)
+- Emne-kort → `/guides` (virker). → HÅRDT gated: kræver ægte **community-data**
+  (ingen opfundne tal/trending). Lever kun som prototype indtil da.
+
+### 6 · Din status som dyrker (dyrkerstatus.tsx)
+- **"Se hele din profil"** → `/profil` (virker). → Bygger på ægte deriver
+  (`byggDyrkerstatus`); verificér gating for indloggede.
+
+### 7 · Dine kompetencer (dyrkerkompetencer.tsx)
+- **"Se alle kompetencer"** → `/profil` (virker). → Ægte deriver
+  (`byggKompetencer`); Profil-siden skal have det fulde overblik at linke til.
+
+### 8 · Første gange (bedrifter.tsx) — MOTOR BYGGET 12/7
+- Motor: **byggFoersteGange** (`src/lib/havebog-foerste-gange.ts`, testet 9/9).
+  Beviselige førster fra logs (sowing/germination/planting_out/pruning/
+  pest_disease/harvest + archive/arkiveret) + drivhus KUN ved tydelig location.
+  Blomstring UDELADT (ingen beviselig logtype). Wired i getHavebogData →
+  `bedrifter` (nyeste først, max 4); gated på >= 1 milepæl for indloggede.
+- **"Se alle milepæle"** → `/profil` (virker). Rest: fuld milepæls-side i Profil
+  (kronologisk/grupperet), soft glyph for `spiring` er `plante` (stand-in — en
+  dedikeret spire-glyf kan laves senere).
+
+---
+
+## Tværgående
+- **Profil-siden** skal kunne rumme det fulde overblik som kort 6/7/8 linker til.
+- **Forslags-motoren (kort 1+2) ER bygget + wired** (byggProevNaesteAar). Rest:
+  giv motorens output et `forslag[]`-felt (de små foto-forslag i kort 1) + wire
+  "Vis et nyt forslag"-rotationen. Klikbare enkelt-forslag kræver et mål-id.
+- **Manglende motorer (prototyper):** kort 4 (projekt-intention fra idéboard/
+  kalender/forvandling/diktafon), kort 5 (sæson-kuratering). (Kort 8 BYGGET 12/7.)
+- **Preview-rute — GJORT 12/7 (option A):** flyttet fra offentlig
+  `/havebog-preview` til `/admin/qa/havebog-preview`, som arver
+  `admin/qa/layout.tsx`-gatingen (`isCurrentUserAdmin()` → notFound/login).
+  Offentlig rute → 404; admin-versionen kræver admin-login. Komponenterne
+  bevaret (kan genbruges).
+- **Drivhus soft glyph (kort 8):** BESLUTNING = A (malet PNG i soft glyph-
+  familien). IKKE mono-SVG, IKKE skift hele sættet. Nuværende `drivhus.png` er
+  accepteret midlertidig; endelig version skal være SIMPLERE: enkel drivhus-
+  silhuet (1 tagform, 2 sidefelter, evt. 1 central åbning), 1-2 små spirer, få/
+  ingen ruder, ingen dør-knop/potter, blød akvarel i støvet oliven/creme,
+  transparent, læsbar ved 28-40px. Drop ind som `drivhus.png` → auto-opdateres.
+- **Frøavls-guide-destinationer (kort 1, frøavl-lead):** frøavl-leadets href
+  følger nu prioriteten frøavls-guide → sort-guide → artsguide → /froebank
+  (commit 5d59603). Niveau 1 (dedikeret **frøavls-guide pr. art/kategori**)
+  findes ikke endnu — der er kun frø-omtale inde i enkelte guides (tomat F1/
+  arvesort, dahlia frøformering). MANGLER: rigtige "Gem frø fra X"-guides
+  (bønner, ærter, tomat, salat, agurk, græskar …) så leadet fører til læring
+  frem for frøbank-fallback. Når de skrives: fyld `froeavlGuide`-mappen i
+  `getHavebogData` (artKey → guide-id) — så opgraderer href automatisk.
+  Fallback-kæden er ærlig indtil da (fx stangbønne → /froebank, da hverken
+  bønne-frøavls-, sort- eller artsguide findes).
+- **"Flere idéer"-destination (kort 1):** boksen fører til Frøbanken (udforsk
+  flere sorter/arter til næste år — udvalg/samling, ikke guide-dybde). Bruger
+  rå `/froebank` nu. ØNSKET fremtidig destination: `/froebank?inspiration=
+  naeste-aar` — en filtreret næste-år-visning med forslag baseret på brugerens
+  planter/frøbank/sæson. Bygges når frøbank-filter/query findes; opdatér href i
+  inspirer-mig.tsx (kommentar markerer stedet).
+
+## Parkerede prototyper (13/7) — 6 motor-kort live-klare, 2 parkeret
+
+**Kort 5 "Sæsonens spørgsmål" (`populaert`) — PARKERET, motor udskudt.**
+- Beslutning (Anna 13/7): bygges IKKE som motor nu. Forbliver prototype/demo-only.
+- Status i kode: allerede gated — `populaert` er IKKE i den indloggede `harData`-gren
+  (page.tsx), kun i demo-grenen. Vises aldrig for indloggede. Komponent + demo-data
+  beholdes til QA/admin-preview.
+- Hvorfor udskudt: kort 5 er ikke "vis tre guides" — det kræver en reel sæson-/
+  relevansmotor der kan svare "hvorfor er dette relevant for MIG lige nu?" baseret på
+  brugerens planter, logs, kalender/sæson, guide-katalog, gentagne problemer og
+  (senere) community-/brugsdata. Uden live-data bliver det en fast redaktionel trio
+  (Kompost/Dræbersnegle/Efterafgrøder) — pænt, men ikke intelligent. Bygges efter
+  appen har haft nogle nøglemåneder med rigtige data.
+
+**Kort 4 "Næste projekt" (`projekter`) — PARKERET (som hidtil).**
+- Også gated (ikke i indlogget `harData`). Venter på ægte projekt-intentioner fra
+  Idéboard/Kalender/Forvandlinger/Diktafon. Bygges når de kilder findes.
+
+Ærlig status: **6 motor-kort (1,2,3,6,7,8) live-klare · 2 prototyper (4,5) parkeret.**

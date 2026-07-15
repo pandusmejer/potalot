@@ -1,4 +1,5 @@
-import { ArrowRight, BookOpen } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronRight, BookOpen } from 'lucide-react'
 import type { ArchivedPlant } from '@/data/havebog-demo'
 import { laantErfaring } from '@/lib/havevisdom'
 import { aktuelMaaned } from '@/lib/datetime'
@@ -8,6 +9,8 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface Props {
   plants: ArchivedPlant[]
+  /** false i demo (opdigtede arkiv-id'er ruter ikke) → kort er ikke-klikbare. */
+  linkable?: boolean
 }
 
 /**
@@ -24,12 +27,13 @@ interface Props {
  * Uden arkiv (første sæson): ét bredt, lavt naturfoto med lånt
  * erfaring (V6 niveau 0) — bogen lukker stille med et kig fremad.
  *
- * ⚠️ Stadig rent read-only. INGEN <Link href="/mine-planter/...">.
+ * Kortene er nu navigerbare (Anna 15/7): hvert kort → plantens detalje-side,
+ * hvor den kan hentes tilbage eller slettes.
  * Planter-universet er bygget til AKTIV dyrkning; en arkiveret tomat
  * hører ikke hjemme dér. Dedikeret arkiv-detailside er en senere
  * opgave.
  */
-export function HistorienFortsaetter({ plants }: Props) {
+export function HistorienFortsaetter({ plants, linkable = true }: Props) {
   return (
     <section>
       <p
@@ -51,7 +55,7 @@ export function HistorienFortsaetter({ plants }: Props) {
           <FoersteSaesonSlutning />
         </div>
       ) : (
-        <Arkiv plants={plants} />
+        <Arkiv plants={plants} linkable={linkable} />
       )}
     </section>
   )
@@ -65,10 +69,9 @@ export function HistorienFortsaetter({ plants }: Props) {
  * er arkiv, ikke levende sæson.
  *
  * Max 3 forløb — nok til dybde, ikke nok til at blive kælderrum. "Se
- * tidligere sæsoner" er en visuel indgang; den peger på et sæsonarkiv
- * der bygges senere (ingen rute endnu — bevidst ikke-navigerende).
+ * tidligere sæsoner" fører til sæsonarkivet (/mine-planter/arkiv).
  */
-function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
+function Arkiv({ plants, linkable }: { plants: ArchivedPlant[]; linkable: boolean }) {
   const vist = plants.slice(0, 3)
   return (
     <div>
@@ -92,7 +95,7 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
       <div style={{ position: 'relative' }}>
         <div className="flex flex-col" style={{ gap: 11, position: 'relative', zIndex: 2 }}>
           {vist.map(p => (
-            <ArkivKort key={p.id} plant={p} />
+            <ArkivKort key={p.id} plant={p} linkable={linkable} />
           ))}
         </div>
         {/* To forskudte lag der peeker frem under stakken */}
@@ -100,28 +103,27 @@ function Arkiv({ plants }: { plants: ArchivedPlant[] }) {
         <div aria-hidden style={{ position: 'absolute', left: 20, right: 20, bottom: -13, height: 16, background: '#E7DECA', border: '1px solid #D5CCB3', borderRadius: 18, zIndex: 0 }} />
       </div>
 
-      {/* Indgang til sæsonarkivet — visuel intention, rute bygges senere */}
-      <div
-        className="flex items-center"
-        style={{ gap: 12, marginTop: 22 }}
+      {/* Indgang til sæsonarkivet — nu en ægte rute (Anna 15/7). */}
+      <Link
+        href="/mine-planter/arkiv"
+        className="flex items-center no-underline"
+        style={{ gap: 12, marginTop: 22, color: 'inherit' }}
       >
         <BookOpen className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.5)', flexShrink: 0 }} aria-hidden strokeWidth={1.7} />
         <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.7)' }}>
           Se tidligere sæsoner
         </span>
-        <ArrowRight className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto', flexShrink: 0 }} aria-hidden strokeWidth={1.7} />
-      </div>
+        <ChevronRight className="h-[18px] w-[18px]" style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto', flexShrink: 0 }} aria-hidden strokeWidth={2.2} />
+      </Link>
     </div>
   )
 }
 
 /** Ét arkivkort — taktilt havebogsblad. */
-function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
-  return (
-    <div
-      className="flex items-center"
-      style={{ gap: 12, background: '#EEE7D5', border: '1px solid #D8D0B9', borderRadius: 20, padding: '12px 14px' }}
-    >
+function ArkivKort({ plant: p, linkable }: { plant: ArchivedPlant; linkable: boolean }) {
+  const kortStyle = { gap: 12, background: '#EEE7D5', border: '1px solid #D8D0B9', borderRadius: 20, padding: '12px 14px' } as const
+  const inner = (
+    <>
       {/* Thumbnail eller farvefelt (136×140 @2x ≈ 68×70) */}
       <div style={{ flexShrink: 0, width: 68, height: 70, borderRadius: 14, overflow: 'hidden', background: '#E2D9C1' }}>
         {p.primaryImageId && (
@@ -159,9 +161,23 @@ function ArkivKort({ plant: p }: { plant: ArchivedPlant }) {
         aria-hidden
         style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 999, border: '1px solid rgba(36,48,31,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <ArrowRight className="h-4 w-4" style={{ color: 'rgba(36,48,31,0.55)' }} strokeWidth={1.8} />
+        <ChevronRight className="h-4 w-4" style={{ color: 'rgba(36,48,31,0.55)' }} strokeWidth={2.2} />
       </div>
-    </div>
+    </>
+  )
+
+  // Demo (anonym) har opdigtede arkiv-id'er der ikke ruter → ikke-klikbart kort.
+  // Rigtige, indloggede planter har ægte id'er → kort åbner detalje-siden.
+  return linkable ? (
+    <Link
+      href={`/mine-planter/${p.id}`}
+      className="flex items-center no-underline transition-transform active:scale-[0.995]"
+      style={{ ...kortStyle, color: 'inherit' }}
+    >
+      {inner}
+    </Link>
+  ) : (
+    <div className="flex items-center" style={kortStyle}>{inner}</div>
   )
 }
 

@@ -1,4 +1,6 @@
 import { KalenderClient } from '@/components/havekalender/kalender-client'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { CalendarDays } from 'lucide-react'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
@@ -66,17 +68,28 @@ export default async function KalenderPage() {
   // garden-notes kører fortsat på /froebank og /mine-planter.)
 
   return (
-    <KalenderClient
-      tasks={tasks}
-      plants={plants}
-      inventory={inventory}
-      generalTasks={generalTasks}
-      userTasks={userTasks}
-      guides={guides}
-      alerts={alerts}
-      isLoggedIn={me !== null}
-      dagensFokus={dagensFokus}
-      plantImages={plantImages}
-    />
+    <>
+      <div className="mb-5">
+        <PageIntroNote
+          id="kalender"
+          icon={<CalendarDays className="h-4 w-4" />}
+          title="Se hvad der giver mening nu"
+          body="Potalot bruger sæson, vejr og dine planter til at foreslå opgaver, når de er relevante."
+          hideWhen={userTasks.length > 0}
+        />
+      </div>
+      <KalenderClient
+        tasks={tasks}
+        plants={plants}
+        inventory={inventory}
+        generalTasks={generalTasks}
+        userTasks={userTasks}
+        guides={guides}
+        alerts={alerts}
+        isLoggedIn={me !== null}
+        dagensFokus={dagensFokus}
+        plantImages={plantImages}
+      />
+    </>
   )
 }

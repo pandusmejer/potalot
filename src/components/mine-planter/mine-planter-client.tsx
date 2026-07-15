@@ -11,6 +11,7 @@ import { SaesonensVaekst } from '@/components/mine-planter/saesonens-vaekst'
 import { MineSteder } from '@/components/mine-planter/mine-steder'
 import { SamlingPodium } from '@/components/mine-planter/samling-podium'
 import { PlantEmptyState } from '@/components/mine-planter/plant-empty-state'
+import { EgenPlanteDialog } from '@/components/mine-planter/egen-plante-dialog'
 import { mockPlants, type MockPlant } from '@/data/mock-plants'
 import { overrideFor } from '@/data/plant-detail'
 import { afledtStatuslinje } from '@/lib/afledninger'
@@ -97,10 +98,15 @@ interface Props {
   doneTaskKeys: string[]
   /** Brugerens oprettede dyrkningssteder (tomt i demo). */
   gardenLocations: GardenLocation[]
+  /** Er brugeren logget ind? Styrer om "tilføj plante"-indgangen vises. */
+  isLoggedIn: boolean
 }
 
-export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations }: Props) {
-  const isDemo = realPlants.length === 0
+export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gardenLocations, isLoggedIn }: Props) {
+  // Demo/mock-data er KUN for anonyme besøgende (så designvisionen er synlig
+  // uden konto). En indlogget bruger med 0 planter er IKKE demo — de skal se en
+  // tom-tilstand + "Tilføj plante", ikke opdigtede planter (San Marzano osv.).
+  const isDemo = !isLoggedIn && realPlants.length === 0
   const plants: Plant[] = isDemo ? mockPlants : realPlants
 
   const { aktive, planlagte, klarTilArkiv } = useMemo(() => {
@@ -223,6 +229,14 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-8">
       <ForsideHero greeting={greeting} story={heroStory} storyNote={heroNote} />
+
+      {/* Tilføj en plante du ALLEREDE har (V1A) — fjerner frøbank-omvejen for
+          midt-sæson-brugere. Kun for indloggede (anonym demo har ingen konto). */}
+      {isLoggedIn && (
+        <div className="px-0.5">
+          <EgenPlanteDialog gardenLocations={gardenLocations} />
+        </div>
+      )}
 
       {/* LIGE NU — hovedpersonen (sidens centrum). */}
       {hovedperson && (
@@ -391,9 +405,9 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
             </Link>
           ))}
 
-          {/* Indgang til tidligere sæsoner i Havebogen. */}
+          {/* Indgang til sæsonarkivet — de arkiverede planter, samlet. */}
           <Link
-            href="/"
+            href="/mine-planter/arkiv"
             className="group flex items-center gap-3 transition-colors active:bg-[rgba(36,48,31,0.04)]"
             style={{ padding: '14px 16px', borderTop: klarTilArkiv.length > 0 ? '1px solid rgba(36,48,31,0.07)' : 'none' }}
           >

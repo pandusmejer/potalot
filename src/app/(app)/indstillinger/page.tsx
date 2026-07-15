@@ -9,8 +9,10 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { LocationSetting } from '@/components/profil/location-setting'
+import { DeleteAccountSection } from '@/components/settings/delete-account'
 import type { NotificationPreference } from '@/lib/types'
-import { ChevronRight, User, Bell, Sparkles, Globe, Lock } from 'lucide-react'
+import { ChevronRight, User, Bell, Sparkles, Globe, Lock, Sprout, ShieldCheck, MessageCircle } from 'lucide-react'
+import { KONTAKT_EMAIL } from '@/lib/contact'
 
 const DEFAULT_PREFS: NotificationPreference = {
   userId: '',
@@ -44,6 +46,20 @@ export default function IndstillingerPage() {
           <div className="flex-1">
             <p className="font-medium text-foreground">Min profil</p>
             <p className="text-xs text-muted-foreground">Navn, e-mail, brugertype</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      </Card>
+
+      {/* Få din have ind — genåbnelig import/tilføj (F2) */}
+      <Card>
+        <Link href="/onboarding/have" className="flex items-center gap-3 p-4 hover:bg-accent/30 transition-colors rounded-2xl">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <Sprout className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground">Få din have ind</p>
+            <p className="text-xs text-muted-foreground">Tilføj planter, scan frøposer eller importér en liste</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
@@ -147,6 +163,36 @@ export default function IndstillingerPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Hjælp og privatliv */}
+      <Card>
+        <Link href="/privatliv" className="flex items-center gap-3 p-4 hover:bg-accent/30 transition-colors rounded-2xl">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <ShieldCheck className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground">Privatliv og data</p>
+            <p className="text-xs text-muted-foreground">Hvad vi gemmer, brug af AI, og dine rettigheder</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+        <a
+          href={`mailto:${KONTAKT_EMAIL}?subject=${encodeURIComponent('Feedback til Potalot')}`}
+          className="flex items-center gap-3 p-4 border-t border-border hover:bg-accent/30 transition-colors rounded-2xl no-underline"
+        >
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <MessageCircle className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground">Send feedback eller rapportér en fejl</p>
+            <p className="text-xs text-muted-foreground">Vi er tidligt i gang — al hjælp tæller</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </a>
+      </Card>
+
+      {/* Konto → Slet konto (F3, GDPR) */}
+      <DeleteAccountSection />
     </div>
   )
 }

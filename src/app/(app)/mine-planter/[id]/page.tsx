@@ -21,10 +21,9 @@ import {
 } from '@/data/mock-plants'
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { PlanteAdmin } from '@/components/mine-planter/plante-admin'
 import {
-  Archive,
   ArrowLeft,
-  ChevronDown,
   ChevronRight,
   History,
   Lightbulb,
@@ -181,7 +180,13 @@ function renderEditorial(
 
         <DagbogSektion plant={plant} log={log} />
 
-        <AdministrerPlante />
+        <PlanteAdmin
+          plantId={plant.id}
+          name={plant.name}
+          variety={plant.variety ?? null}
+          location={plant.location ?? null}
+          isArchived={plant.isArchived}
+        />
     </article>
   )
 }
@@ -425,31 +430,3 @@ function DagbogListe({ entry }: { entry: MockPlantLog }) {
   )
 }
 
-/**
- * ADMINISTRER PLANTE — stille bund-utility (Annas dom: "Arkivér" er en
- * systemhandling, ikke en del af plantens historie). Diskret, under en
- * tynd streg — ikke et selvstændigt rum.
- */
-function AdministrerPlante() {
-  return (
-    <details className="group mt-3 border-t pt-4" style={{ borderColor: 'rgba(36,48,31,0.10)' }}>
-      <summary
-        className="flex cursor-pointer list-none items-center gap-1.5 uppercase [&::-webkit-details-marker]:hidden"
-        style={{
-          fontFamily: 'var(--font-manrope)',
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.16em',
-          color: 'rgba(36,48,31,0.42)',
-        }}
-      >
-        <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
-        Planteindstillinger
-      </summary>
-      <Button variant="ghost" size="sm" className="-ml-2 mt-2 text-muted-foreground">
-        <Archive className="h-4 w-4" />
-        Arkivér plante
-      </Button>
-    </details>
-  )
-}

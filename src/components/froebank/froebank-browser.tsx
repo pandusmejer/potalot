@@ -187,7 +187,7 @@ export function FroebankBrowser({ inventory }: Props) {
     ? latestInventoryItem.variety
       ? `${latestInventoryItem.name} ${latestInventoryItem.variety}`
       : latestInventoryItem.name
-    : 'Salat Crispy Mint'
+    : undefined // tom frøbank → panelet viser en kom-i-gang-tekst, ikke et opdigtet navn
 
   const latestItemTimeLabel = latestInventoryItem?.createdAt
     ? (() => {

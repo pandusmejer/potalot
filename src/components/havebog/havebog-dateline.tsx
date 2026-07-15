@@ -1,4 +1,8 @@
 /**
+ * ⚠️ ANNA-LÅST 13/7 (tag: havebog-hero-laast-13-07). Matcher deployed 1:1 —
+ * RØR IKKE: ugedag 14px, dato 16px. Placering (marginTop -141) ligger i
+ * page.tsx og er også låst.
+ *
  * Havebog-dateline — bogens "adresse": ugedag + dato lige under hero-bølgen,
  * som datolinjen øverst i et brev eller et magasinopslag. Afløser den gamle
  * dato-kolofon der lå oven på fotoet.
