@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
+import { MONTHS_DA, PRIMARY_CATEGORIES, manglerOplysninger } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
 import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun, Hourglass } from 'lucide-react'
@@ -193,6 +193,14 @@ export function InventoryCard({
           >
             {item.name}
           </h3>
+          {manglerOplysninger(item) && (
+            <span
+              className="mt-2 inline-flex w-fit items-center rounded-full px-2.5 py-1"
+              style={{ background: 'rgba(20,14,8,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', color: '#FFFFFF' }}
+            >
+              Mangler oplysninger
+            </span>
+          )}
           {item.variety && (
             <p
               className="mt-1.5 truncate"

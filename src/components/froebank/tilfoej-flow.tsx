@@ -12,9 +12,9 @@ import { Badge } from '@/components/ui/badge'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import {
   Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles, Link2,
-  Plus, Loader2, ArrowLeft, Upload, Download, Check, Wand2,
+  Plus, Loader2, ArrowLeft, Upload, Download, Check, Wand2, AlertTriangle,
 } from 'lucide-react'
-import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES } from '@/lib/constants'
+import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES, FROEPOSE_UDEN_NAVN } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
@@ -58,10 +58,13 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const [scanName, setScanName] = useState('')
   const [scanImages, setScanImages] = useState<string[]>([])
   const [scanPrimary, setScanPrimary] = useState<string | null>(null)
-  const [scanStage, setScanStage] = useState<'idle' | 'reading' | 'creating' | 'done'>('idle')
+  const [scanStage, setScanStage] = useState<'idle' | 'reading' | 'review' | 'failed' | 'creating' | 'done'>('idle')
   const [scanExtracted, setScanExtracted] = useState<ExtractedSeedFields | null>(null)
   const [scanTarget, setScanTarget] = useState<'froebank' | 'oenskeliste'>('froebank')
   const [scanCreatedId, setScanCreatedId] = useState<string | null>(null)
+  const [scanError, setScanError] = useState<string | null>(null)
+  const [scanFailReason, setScanFailReason] = useState<'error' | 'empty'>('empty')
+  const [scanIncomplete, setScanIncomplete] = useState(false)
 
   // Link
   const [linkUrl, setLinkUrl] = useState('')
@@ -76,57 +79,89 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
 
-  async function runScanAndCreate(imgs: string[], primary: string | null, target: 'froebank' | 'oenskeliste') {
+  // ── FASE 1: LÆS posen. Opretter ALDRIG her — hverken ved API-fejl eller tom
+  //    udlæsning (spejler F5's ærlige adfærd). Fører til 'review' (navn aflæst)
+  //    eller 'failed' (fejl / ingen brugbar identifikation). ──────────────────
+  async function runScan(imgs: string[]) {
     setError(null)
+    setScanError(null)
     setScanStage('reading')
     const ext = await extractSeedPacketFields(imgs)
-    let fields: ExtractedSeedFields = {}
-    if ('fields' in ext) {
-      fields = ext.fields
-      setScanExtracted(fields)
+    if ('error' in ext) {
+      // Rigtig AI/API-fejl må ALDRIG sluges eller ende som "succes".
+      setScanError(ext.error)
+      setScanFailReason('error')
+      setScanStage('failed')
+      return
     }
-    setScanStage('creating')
-    const fallbackName = `Frøpose – ${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}`
-    const finalName = (fields.name?.trim() || scanName.trim() || fallbackName)
+    const fields = ext.fields
+    setScanExtracted(fields)
+    const aflaestNavn = fields.name?.trim() ?? ''
+    if (!aflaestNavn) {
+      // Gyldigt billede, men ingen brugbar identifikation → opret intet.
+      setScanFailReason('empty')
+      setScanStage('failed')
+      return
+    }
+    setScanName(aflaestNavn) // redigerbart i review-trinnet
+    setScanStage('review')
+  }
 
-    // Frøkort-reglen: posefotos er KILDEMATERIALE til specs, ikke
-    // hovedbillede. Findes der et kurateret frøkort for sorten, skal DET
-    // være forsidefotoet — posefotos (forside/bagside) gemmes som 2./3.
-    // billede. Brugeren kan aktivt stjernemarkere et posefoto som primært
-    // bagefter; så vinder det (resolverens lag 1).
+  // ── FASE 2: OPRET. Kun fra et EKSPLICIT brugervalg (review "Opret" eller
+  //    "Gem kun foto til senere"). incomplete=true → bevidst foto-kun-kladde
+  //    markeret "Mangler oplysninger". ─────────────────────────────────────
+  async function runScanCreate(opts: { incomplete: boolean }) {
+    const fields = scanExtracted ?? {}
+    setScanStage('creating')
+    const finalName = opts.incomplete ? FROEPOSE_UDEN_NAVN : (scanName.trim() || FROEPOSE_UDEN_NAVN)
+
+    // Frøkort-reglen: posefotos er KILDEMATERIALE til specs, ikke hovedbillede.
+    // Findes et kurateret frøkort for sorten, vinder DET som forsidefoto.
     const harFroekort = harKurateretFroekort({ name: finalName, variety: fields.variety })
+
+    // Foto-kun-kladde bærer INGEN opdigtede felter — kun billede + markør.
+    const specs = opts.incomplete
+      ? {
+          primaryCategoryId: scanTarget === 'oenskeliste' ? ('indkoebsliste' as PrimaryCategoryId) : ('fro' as PrimaryCategoryId),
+          notes: 'Gemt fra foto — kunne ikke aflæses automatisk. Åbn kortet og udfyld oplysningerne.',
+        }
+      : {
+          latinName: fields.latinName,
+          variety: fields.variety,
+          supplier: fields.supplier,
+          primaryCategoryId: scanTarget === 'oenskeliste' ? 'indkoebsliste' : (fields.primaryCategoryId ?? 'fro'),
+          seedCount: fields.seedCount,
+          sowingMonths: fields.sowingMonths,
+          sowingDepthMm: fields.sowingDepthMm,
+          preCultivation: fields.preCultivation,
+          plantingOutMonths: fields.plantingOutMonths,
+          harvestMonths: fields.harvestMonths,
+          light: fields.light,
+          water: fields.water,
+          germinationDays: fields.germinationDays,
+          germinationTemperature: fields.germinationTemperature,
+          plantSpacing: fields.plantSpacing,
+          rowSpacing: fields.rowSpacing,
+          notes: fields.notes,
+        }
 
     const res = await createInventoryItem({
       name: finalName,
-      latinName: fields.latinName,
-      variety: fields.variety,
-      supplier: fields.supplier,
-      primaryCategoryId: target === 'oenskeliste' ? 'indkoebsliste' : (fields.primaryCategoryId ?? 'fro'),
-      seedCount: fields.seedCount,
-      sowingMonths: fields.sowingMonths,
-      sowingDepthMm: fields.sowingDepthMm,
-      preCultivation: fields.preCultivation,
-      plantingOutMonths: fields.plantingOutMonths,
-      harvestMonths: fields.harvestMonths,
-      light: fields.light,
-      water: fields.water,
-      germinationDays: fields.germinationDays,
-      germinationTemperature: fields.germinationTemperature,
-      plantSpacing: fields.plantSpacing,
-      rowSpacing: fields.rowSpacing,
-      notes: fields.notes,
-      imageUrls: imgs,
-      primaryImageUrl: harFroekort ? undefined : (primary ?? undefined),
+      ...specs,
+      imageUrls: scanImages,
+      primaryImageUrl: harFroekort ? undefined : (scanPrimary ?? undefined),
     })
 
     if ('error' in res) {
-      setError(`Kunne ikke oprette: ${res.error}`)
-      setScanStage('idle')
+      setScanError(`Kunne ikke oprette: ${res.error}`)
+      setScanFailReason('error')
+      setScanStage('failed')
       return
     }
     setScanCreatedId(res.id)
-    setScanStage('done')
     setScanName(finalName)
+    setScanIncomplete(opts.incomplete)
+    setScanStage('done')
     router.refresh()
   }
 
@@ -137,7 +172,26 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
 
   function handleScanStart() {
     if (scanImages.length === 0) return
-    startTransition(() => runScanAndCreate(scanImages, scanPrimary, scanTarget))
+    startTransition(() => runScan(scanImages))
+  }
+
+  // Failed-trin-handlinger.
+  function resetScan(toMode?: 'camera' | 'library') {
+    setScanImages([]); setScanPrimary(null); setScanExtracted(null)
+    setScanError(null); setScanName(''); setScanStage('idle')
+    if (toMode) setMode(toMode)
+  }
+  function handleSkrivNavnSelv() {
+    // Ingen brugbar aflæsning → lad brugeren navngive selv (billeder bevares).
+    setScanName('')
+    setScanStage('review')
+  }
+  function handleReviewOpret() {
+    if (!scanName.trim()) return
+    startTransition(() => runScanCreate({ incomplete: false }))
+  }
+  function handleGemKunFoto() {
+    startTransition(() => runScanCreate({ incomplete: true }))
   }
 
   async function runLinkAndCreate(url: string, target: 'froebank' | 'oenskeliste') {
@@ -353,18 +407,92 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
               </div>
             )}
 
-            {scanStage === 'done' && scanCreatedId && (
-              <div className="bg-primary/5 border border-primary/30 rounded-lg p-4 space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Check className="h-5 w-5 text-primary" />
+            {/* REVIEW — navn aflæst (eller "skriv selv"): brugeren godkender/
+                retter FØR oprettelse. Intet er gemt endnu. */}
+            {scanStage === 'review' && (
+              <div className="space-y-4">
+                <div className="bg-secondary/30 rounded-lg p-4 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    {scanExtracted?.name
+                      ? 'PotAlot læste posen. Tjek navnet og ret det, hvis det er nødvendigt, før du opretter.'
+                      : 'Giv frøposen et navn, så du kan oprette den. Resten kan du udfylde på kortet bagefter.'}
+                  </p>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="scan-review-name">Navn</Label>
+                    <Input id="scan-review-name" value={scanName} onChange={e => setScanName(e.target.value)} placeholder="Fx Tomat, Gulerod…" autoFocus />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-serif text-lg text-foreground">Oprettet i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}</p>
-                    <p className="text-sm text-muted-foreground">{scanName}</p>
+                  {scanExtracted && (scanExtracted.latinName || scanExtracted.variety || scanExtracted.supplier || scanExtracted.seedCount != null) && (
+                    <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-border/60">
+                      {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
+                      {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
+                      {scanExtracted.supplier && <Field label="Leverandør" value={scanExtracted.supplier} />}
+                      {scanExtracted.seedCount != null && <Field label="Antal frø" value={String(scanExtracted.seedCount)} />}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <Button onClick={handleReviewOpret} disabled={pending || !scanName.trim()}>
+                    {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Opretter…</> : `Opret i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                  </Button>
+                  <Button variant="outline" onClick={() => resetScan()} disabled={pending}>Scan igen</Button>
+                </div>
+              </div>
+            )}
+
+            {/* FAILED — API-fejl ELLER ingen brugbar aflæsning. Intet oprettet.
+                Ærlig besked + valg (spejler F5). "Gem kun foto" er det ENESTE
+                der opretter noget — og da som en markeret kladde. */}
+            {scanStage === 'failed' && (
+              <div className="space-y-4">
+                <div className="bg-destructive/5 border border-destructive/25 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="h-9 w-9 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
+                    </div>
+                    <div>
+                      <p className="font-serif text-lg text-foreground">Vi kunne ikke læse frøposen</p>
+                      <p className="text-sm text-muted-foreground">
+                        Prøv med et skarpere billede i bedre lys, eller skriv plantens navn selv.
+                      </p>
+                      {scanFailReason === 'error' && scanError && (
+                        <p className="text-xs text-muted-foreground/80 mt-1">Teknisk: {scanError}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-                {scanExtracted && (
+                <div className="flex flex-col gap-2">
+                  <Button variant="outline" onClick={() => resetScan('camera')} disabled={pending}>
+                    <Camera className="h-4 w-4" /> Tag nyt billede
+                  </Button>
+                  <Button variant="outline" onClick={() => resetScan('library')} disabled={pending}>
+                    <ImageIcon className="h-4 w-4" /> Vælg et andet foto
+                  </Button>
+                  <Button variant="outline" onClick={handleSkrivNavnSelv} disabled={pending}>
+                    <FileText className="h-4 w-4" /> Skriv navn og udfyld selv
+                  </Button>
+                  <Button variant="ghost" onClick={handleGemKunFoto} disabled={pending}>
+                    {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Gemmer…</> : <><ImageIcon className="h-4 w-4" /> Gem kun foto til senere</>}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {scanStage === 'done' && scanCreatedId && (
+              <div className={cn('rounded-lg p-4 space-y-3 border', scanIncomplete ? 'bg-secondary/40 border-border' : 'bg-primary/5 border-primary/30')}>
+                <div className="flex items-start gap-3">
+                  <div className={cn('h-10 w-10 rounded-full flex items-center justify-center shrink-0', scanIncomplete ? 'bg-muted' : 'bg-primary/10')}>
+                    {scanIncomplete ? <ImageIcon className="h-5 w-5 text-muted-foreground" /> : <Check className="h-5 w-5 text-primary" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-serif text-lg text-foreground">
+                      {scanIncomplete ? 'Foto gemt som kladde' : `Oprettet i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {scanIncomplete ? 'Mangler oplysninger — åbn kortet og udfyld navn og detaljer.' : scanName}
+                    </p>
+                  </div>
+                </div>
+                {!scanIncomplete && scanExtracted && (
                   <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-primary/20">
                     {scanExtracted.latinName && <Field label="Latinsk" value={scanExtracted.latinName} />}
                     {scanExtracted.variety && <Field label="Sort" value={scanExtracted.variety} />}
@@ -374,11 +502,12 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 )}
                 <div className="flex gap-2 flex-wrap">
                   <Button asChild>
-                    <Link href={`/froebank/${scanCreatedId}`}>Se i frøbank</Link>
+                    <Link href={`/froebank/${scanCreatedId}`}>{scanIncomplete ? 'Åbn og udfyld' : 'Se i frøbank'}</Link>
                   </Button>
                   <Button variant="outline" onClick={() => {
                     setScanImages([]); setScanPrimary(null); setScanStage('idle')
                     setScanExtracted(null); setScanCreatedId(null); setScanName('')
+                    setScanError(null); setScanIncomplete(false)
                   }}>
                     Scan en til
                   </Button>

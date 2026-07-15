@@ -3,6 +3,20 @@
  * Kategorier, labels, ikoner — alt statisk der ikke kommer fra DB.
  */
 
+/**
+ * Sentinel-navn for et frøkort gemt fra et foto der IKKE kunne aflæses
+ * ("Gem kun foto til senere"). Bruges som markør uden ny DB-kolonne:
+ * kort med dette navn vises med badgen "Mangler oplysninger" og opfordres
+ * udfyldt. Så snart brugeren giver kortet et rigtigt navn, forsvinder
+ * markeringen. Se `manglerOplysninger()`.
+ */
+export const FROEPOSE_UDEN_NAVN = 'Frøpose uden navn'
+
+/** Sandt for et foto-kun-kort der endnu ikke er identificeret. */
+export function manglerOplysninger(item: { name: string }): boolean {
+  return item.name.trim() === FROEPOSE_UDEN_NAVN
+}
+
 import type {
   PrimaryCategory, PrimaryCategoryId, Subcategory, UserMode,
   PlantStatus, InventoryStatus, TaskType, TaskPriority,
