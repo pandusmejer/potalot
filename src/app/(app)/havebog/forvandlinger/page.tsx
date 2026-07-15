@@ -28,9 +28,14 @@ export default function ForvandlingerPage() {
       <p className="uppercase" style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: '0.24em', color: '#8F9484', margin: 0, marginBottom: 8 }}>
         Forvandlinger
       </p>
-      <h1 style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(34px, 9vw, 44px)', lineHeight: 1.03, letterSpacing: '-0.02em', color: '#1F2D1D', margin: '0 0 28px' }}>
+      <h1 style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(34px, 9vw, 44px)', lineHeight: 1.03, letterSpacing: '-0.02em', color: '#1F2D1D', margin: '0 0 12px' }}>
         Det kan haven blive til
       </h1>
+      {/* Redaktionel status: Forvandlinger er inspiration, ikke et færdigt
+          høst-/lagersystem — så vi lover ikke mere, end der er. */}
+      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(16px, 4vw, 18px)', lineHeight: 1.4, color: '#5F6658', margin: '0 0 28px', maxWidth: '32ch' }}>
+        Inspiration til det, haven kan blive til.
+      </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 30 }}>
         {KAT_ORDEN.map(kat => {

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { Search, Link2 } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { ForvandlingTilbageLink } from '@/components/havebog/forvandling-tilbage-link'
 import {
   findForvandling,
@@ -116,14 +116,6 @@ function NaesteHandling({ f, farve }: { f: NonNullable<ReturnType<typeof findFor
           <Search className="h-4 w-4" aria-hidden strokeWidth={2} />
           Find {ord}
         </a>
-        {/* Gem et link — design-intention; kræver migration (SavedForvandlingLink). */}
-        <span
-          className="inline-flex items-center"
-          style={{ gap: 8, fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#3B4A2F', background: 'transparent', border: '1px solid rgba(36,48,31,0.2)', borderRadius: 999, padding: '11px 20px' }}
-        >
-          <Link2 className="h-4 w-4" aria-hidden strokeWidth={2} />
-          Gem et link
-        </span>
       </div>
 
       <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', color: 'rgba(36,48,31,0.4)', margin: '0 0 10px' }}>
