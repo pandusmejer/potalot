@@ -176,7 +176,7 @@ export default async function HavebogPage() {
     bedrifter: <Bedrifter bedrifter={isDemo ? DEMO_BEDRIFTER : data?.bedrifter ?? DEMO_BEDRIFTER} />,
     vejret: <VejretIHaven vejr={DEMO_VEJR} />,
     populaert: <PopulaertLigeNu emner={DEMO_POPULAERT} />,
-    historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} />,
+    historienFortsaetter: <HistorienFortsaetter plants={archivedPlants} linkable={!isDemo} />,
   }
 
   // ── Mosaikken "Det kan haven blive til" — FAST modul (F4) ──

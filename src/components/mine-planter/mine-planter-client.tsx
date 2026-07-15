@@ -405,9 +405,9 @@ export function MinePlanterClient({ plants: realPlants, today, doneTaskKeys, gar
             </Link>
           ))}
 
-          {/* Indgang til tidligere sæsoner i Havebogen. */}
+          {/* Indgang til sæsonarkivet — de arkiverede planter, samlet. */}
           <Link
-            href="/"
+            href="/mine-planter/arkiv"
             className="group flex items-center gap-3 transition-colors active:bg-[rgba(36,48,31,0.04)]"
             style={{ padding: '14px 16px', borderTop: klarTilArkiv.length > 0 ? '1px solid rgba(36,48,31,0.07)' : 'none' }}
           >

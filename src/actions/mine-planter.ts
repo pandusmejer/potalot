@@ -700,6 +700,33 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
   return { ok: true }
 }
 
+/**
+ * Fortryd arkivering — hent en plante tilbage til de aktive. Rydder arkiv-
+ * felterne og sætter status tilbage til 'i vækst', så den dukker op i haven igen.
+ */
+export async function restorePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      is_archived: false,
+      archived_at: null,
+      archived_year: null,
+      status: 'i_vaekst',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/mine-planter')
+  revalidatePath('/mine-planter/arkiv')
+  revalidatePath(`/mine-planter/${plantId}`)
+  return { ok: true }
+}
+
 export interface UpdatePlantInput {
   name: string
   variety: string | null

@@ -8,8 +8,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Pencil, Archive, Trash2, ChevronDown, Loader2 } from 'lucide-react'
-import { updatePlant, deletePlant, archivePlant } from '@/actions/mine-planter'
+import { Pencil, Archive, ArchiveRestore, Trash2, ChevronDown, Loader2 } from 'lucide-react'
+import { updatePlant, deletePlant, archivePlant, restorePlant } from '@/actions/mine-planter'
 
 interface Props {
   plantId: string
@@ -57,6 +57,15 @@ export function PlanteAdmin({ plantId, name, variety, location, isArchived }: Pr
     })
   }
 
+  function gendan() {
+    setError(null)
+    startTransition(async () => {
+      const res = await restorePlant(plantId)
+      if ('error' in res) { setError(res.error); return }
+      router.refresh()
+    })
+  }
+
   function slet() {
     setError(null)
     startTransition(async () => {
@@ -81,7 +90,11 @@ export function PlanteAdmin({ plantId, name, variety, location, isArchived }: Pr
         <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={() => { setError(null); setEditOpen(true) }}>
           <Pencil className="h-4 w-4" /> Rediger plante
         </Button>
-        {!isArchived && (
+        {isArchived ? (
+          <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={gendan} disabled={pending}>
+            <ArchiveRestore className="h-4 w-4" /> Fjern fra arkiv
+          </Button>
+        ) : (
           <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={arkiver} disabled={pending}>
             <Archive className="h-4 w-4" /> Arkivér plante
           </Button>
