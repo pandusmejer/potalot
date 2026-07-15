@@ -59,6 +59,43 @@ forklaring på hvorfor nogle får få notifikationer og andre mange.
 `profiles`: garden_type, location (by/postnr + evt. lat/long), growing_areas[],
 grower_profile ('mindful'|'hjaelper'|'entusiast'|'froesamler'), season_status.
 
-## Status
-IKKE bygget. Specced 13/7. Bygges som eget front ("Onboarding V2") — se
-sekvens-beslutning i tråden (efter fejlpakken vs. nu).
+## Status — BYGGET 15/7 (afventer Annas review + migration)
+
+Bygget på feature/havebog. Alle 7 trin + hele preference-flowet verificeret
+visuelt (mobil 390px, midlertidig preview-rute, nu slettet).
+
+**Filer:**
+- `src/components/onboarding/onboarding-wizard.tsx` — helt omskrevet til V2-flowet
+  (Velkommen/identitet → Havetype → Lokation → Områder → Dyrkerprofil → Sæson →
+  Import(V1B-shell) / Klar). Client-state, ingen draft-persistens (launch-scope).
+- `src/actions/profil.ts` — ny `saveOnboardingPreferences` (+ typer GrowerProfile,
+  SeasonStatus). Robust: lokation+onboarded gemmes altid; de fire nye kolonner
+  er best-effort, så onboarding aldrig bryder før migrationen er kørt.
+- `supabase/migrations/00058_onboarding_v2.sql` — SKREVET, IKKE ANVENDT.
+
+**Wiret nu:**
+- **Lokation → vejr:** postnummer (DAWA `lookupPostnummer`) + browser-geolocation
+  → gemmer latitude/longitude/location_name (findes fra 00048) → vejr/frost
+  virker med det samme. Verificeret: postnr 8000 slog op korrekt.
+- **Dyrkerprofil → notifikations-mængde:** 00058 ændrer `sync_task_reminders`
+  så LIMIT afhænger af grower_profile (mindful 1 / hjaelper 3 / entusiast 6 /
+  froesamler 3; COALESCE→3 bevarer nuværende adfærd). Aktiveres når 00058 køres.
+
+**KRÆVER FØR LIVE (Anna):**
+1. **Kør migration 00058** (normalt flow / frisk tråd — ikke ad-hoc). Uden den
+   gemmes garden_type/growing_areas/grower_profile/season_status IKKE (onboarding
+   virker stadig; lokation + onboarded gemmes). SQL-funktionsændringen bør
+   verificeres på apply (jeg kunne ikke teste den live).
+2. Erstat den GAMLE onboarding? Nej — samme rute (`/onboarding`), samme
+   OnboardingWizard-eksport; page.tsx uændret.
+
+**Åbne spørgsmål til review:**
+- "Indtast by" fra specen er IKKE bygget (inten by→koordinat-opslag i backend;
+  kun postnr + geolocation). Postnr dækker samme behov. Ønsker du by-opslag?
+- Havetype/områder gemmes men bruges endnu ikke (anbefalinger/guides = senere,
+  som specen siger).
+- grower_profile styrer p.t. KUN notifikations-cap. Øvrige effekter (mere
+  statistik for entusiast, frø-vægtning for frøsamler) = senere.
+- Sæson "godt i gang" → V1B-import-shell (dens egen afslutning sætter onboarded);
+  "starter"/"flere måneder" → varm Klar-skærm. Bevidst: godt-i-gang ser ikke
+  Klar-skærmen (shellen ér afslutningen).
