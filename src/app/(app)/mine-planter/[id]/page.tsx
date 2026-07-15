@@ -22,6 +22,8 @@ import {
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import { PlanteAdmin } from '@/components/mine-planter/plante-admin'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import {
   ArrowLeft,
   ChevronRight,
@@ -137,6 +139,8 @@ function renderDetail(
   // siden — ellers bygges den helt af plantens egne data. plant-detail.ts
   // er ikke længere adgangsbillet til layoutet.
   const detail = buildPlantDetail({ plant, override: overrideFor(plant.guideId) })
+  // "Se guide" skal føre til DEN relevante guide (art/sort), ikke /guides-forsiden.
+  if (detail.naeste) detail.naeste.guideHref = resolvePlantGuideHref(plant, IMPORTED_GUIDES)
   return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
 }
 
