@@ -700,8 +700,60 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
   return { ok: true }
 }
 
+export interface UpdatePlantInput {
+  name: string
+  variety: string | null
+  location: string | null
+}
+
+/**
+ * Redigér en plantes kerne-info: navn, sort og sted. (Statusskift håndteres af
+ * updatePlantStatus, log-events af updatePlantLog.) Anna 15/7: plante-siden er
+ * ikke længere kun til at læse — en bruger skal kunne rette en tastefejl.
+ */
+export async function updatePlant(
+  plantId: string,
+  input: UpdatePlantInput,
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const name = input.name.trim()
+  if (!name) return { error: 'Angiv mindst en art.' }
+  const variety = input.variety?.trim() || null
+  const location = input.location?.trim() || null
+  const gardenLocationId = location ? await resolveOrCreateGardenLocation(location) : null
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      name,
+      variety,
+      location,
+      garden_location_id: gardenLocationId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/mine-planter')
+  return { ok: true }
+}
+
+/**
+ * Slet en plante HELT (modsat arkivér). Rydder også relateret data, så en
+ * slettet plante ikke efterlader forældede log-events eller opgave-påmindelser.
+ */
 export async function deletePlant(plantId: string): Promise<{ ok: true } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
+
+  // Ryd afledt data først (scoped til ejeren).
+  await supabase.from('plant_logs_v2').delete().eq('plant_id', plantId).eq('user_id', userId)
+  await supabase.from('calendar_tasks').delete().eq('linked_plant_id', plantId).eq('user_id', userId)
+
   const { error } = await supabase
     .from('plants_v2')
     .delete()
