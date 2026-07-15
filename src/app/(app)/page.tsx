@@ -194,24 +194,30 @@ export default async function HavebogPage() {
   return (
     <div className="space-y-20 sm:space-y-28 pb-16">
       {forside}
-      {/* Anker-id: tilbage-link fra en Forvandlings-detail (åbnet via en
-          mosaik-tile med ?from=havebog) lander HER ved mosaikken, ikke i
-          hero-toppen. scroll-mt rydder den sticky header. */}
-      <div id="det-kan-haven-blive-til" className="scroll-mt-24">
-        <Spisekammer data={spisekammerData} mode={spisekammerMode} />
+      {/* Mosaik + intronote + roterende rum har HALVERET indbyrdes afstand
+          (Anna 15/7): space-y-10/14 = præcis halvdelen af 20/28. Ligger som ÉT
+          barn af det ANNA-LÅSTE ydre space-y-20/28, så afstanden forside→mosaik
+          er urørt. RØR IKKE anden spacing på siden. */}
+      <div className="space-y-10 sm:space-y-14">
+        {/* Anker-id: tilbage-link fra en Forvandlings-detail (åbnet via en
+            mosaik-tile med ?from=havebog) lander HER ved mosaikken, ikke i
+            hero-toppen. scroll-mt rydder den sticky header. */}
+        <div id="det-kan-haven-blive-til" className="scroll-mt-24">
+          <Spisekammer data={spisekammerData} mode={spisekammerMode} />
+        </div>
+        {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det
+            faste top-lag (hero/dato/Dagens historie). Kun for indloggede;
+            demoen fortæller allerede historien via sit fyldte indhold. */}
+        {!isDemo && (
+          <PageIntroNote
+            id="havebog"
+            icon={<BookHeart className="h-4 w-4" />}
+            title="Din sæson får sin egen historie"
+            body="Jo mere du dyrker, høster og observerer, jo mere personlig bliver Havebogen."
+          />
+        )}
+        {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
       </div>
-      {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det
-          faste top-lag (hero/dato/Dagens historie). Kun for indloggede;
-          demoen fortæller allerede historien via sit fyldte indhold. */}
-      {!isDemo && (
-        <PageIntroNote
-          id="havebog"
-          icon={<BookHeart className="h-4 w-4" />}
-          title="Din sæson får sin egen historie"
-          body="Jo mere du dyrker, høster og observerer, jo mere personlig bliver Havebogen."
-        />
-      )}
-      {valgteRum.map(id => <div key={id}>{RUM_RENDER[id]}</div>)}
     </div>
   )
 }
