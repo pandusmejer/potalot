@@ -311,6 +311,7 @@ export default async function InventoryDetailPage({ params }: Props) {
                 <SowDialog
                   inventoryItemId={item.id}
                   suggestedLocations={item.growingLocations}
+                  itemLabel={item.variety ?? item.name}
                 >
                   <Button
                     className="h-auto w-full px-2 py-2 text-xs"
@@ -542,8 +543,12 @@ export default async function InventoryDetailPage({ params }: Props) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sprout className="h-4 w-4 text-primary" />
-              Aktive dyrkninger fra dette
+              Dyrkes herfra
             </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {linkedPlants.length} {linkedPlants.length === 1 ? 'plante' : 'planter'} i Mine planter er
+              oprettet fra denne frøpost. Frøbanken er kilden — Planter følger forløbet.
+            </p>
           </CardHeader>
           <CardContent className="space-y-2">
             {linkedPlants.map(p => (

@@ -29,10 +29,12 @@ import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import {
   Activity,
   ArrowLeft,
+  ArrowRight,
   ChevronRight,
   History,
   Lightbulb,
   NotebookText,
+  Package,
   Plus,
   Ruler,
 } from 'lucide-react'
@@ -188,6 +190,22 @@ function renderEditorial(
             Trivsel) — ligger ovenpå hero-fotoet (Annas valg 14. juni). */}
         <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} logPlantId={log.canLog ? plant.id : undefined} />
       </div>
+
+      {/* Kobling til frøbanken (planter→frøpost): planten kom fra et frø i
+          Frøbanken. Frøbanken beskriver kilden, Planter det levende forløb. */}
+      {log.canLog && plant.sourceElementId && (
+        <Link
+          href={`/froebank/${plant.sourceElementId}`}
+          className="flex items-center gap-2 rounded-xl no-underline transition-colors hover:bg-[rgba(36,48,31,0.04)]"
+          style={{ border: '1px solid rgba(36,48,31,0.10)', padding: '10px 13px', color: 'inherit' }}
+        >
+          <Package className="h-4 w-4 shrink-0" strokeWidth={1.9} style={{ color: '#5A7038' }} aria-hidden />
+          <span style={{ fontFamily: sansFont, fontSize: 13.5, fontWeight: 600, color: 'rgba(36,48,31,0.72)' }}>
+            Oprettet fra frøbanken · <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>Se frøposten</span>
+          </span>
+          <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto' }} aria-hidden />
+        </Link>
+      )}
 
       {/* Indhent historik ved tilbagevirkende oprettelse (frivilligt, skippbart). */}
       {visIndhent && (
