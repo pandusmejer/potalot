@@ -191,6 +191,19 @@ function renderEditorial(
         <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} logPlantId={log.canLog ? plant.id : undefined} />
       </div>
 
+      {/* Billeder ligger DIREKTE under plantekortet (Anna 16/7) — foto-tilføjelse
+          skal ikke skulle findes langt nede på siden. Logget-ind bruger får det
+          interaktive galleri; demo beholder det statiske kuraterede. */}
+      {log.canLog ? (
+        <PlantFotoManager
+          plantId={plant.id}
+          initialImages={plant.imageIds ?? []}
+          initialPrimary={plant.primaryImageId ?? null}
+        />
+      ) : (
+        detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />
+      )}
+
       {/* Kobling til frøbanken (planter→frøpost): planten kom fra et frø i
           Frøbanken. Frøbanken beskriver kilden, Planter det levende forløb. */}
       {log.canLog && plant.sourceElementId && (
@@ -216,18 +229,6 @@ function renderEditorial(
       {karakter && <PlantKarakter karakter={karakter} />}
       <PlantNaeste naeste={detail.naeste} />
       <PlantTidslinje milestones={detail.tidslinje} />
-      {/* Billeder: logget-ind bruger får det INTERAKTIVE galleri (kan tilføje
-          fotos til planten når som helst — også efter så-et-frø/onboarding).
-          Demo-browsing beholder det statiske, kuraterede galleri. */}
-      {log.canLog ? (
-        <PlantFotoManager
-          plantId={plant.id}
-          initialImages={plant.imageIds ?? []}
-          initialPrimary={plant.primaryImageId ?? null}
-        />
-      ) : (
-        detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />
-      )}
       {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
         <DagbogSektion plant={plant} log={log} />
