@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { revalidatePath } from 'next/cache'
+import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import type {
   Guide, GuideQuickFacts, GuideSection, GuideCalendarRule,
   PrimaryCategoryId, Difficulty, GuideStatus, GuideVisibility, GuideReviewStatus, GuideLevel,
@@ -365,6 +367,119 @@ export async function deleteGuide(
   revalidatePath('/froebank')
   revalidatePath('/mine-planter')
   return { ok: true, affectedUsers: affectedIds.length, relinked }
+}
+
+/**
+ * Sikrer at en PLANTE har en guide tilknyttet — søster til
+ * ensureGuideForInventoryItem, men for plants_v2:
+ *  1. Hvis allerede tilknyttet → ingen handling
+ *  2. Hvis en guide matcher plantens navn(+sort) → genbrug (master foretrækkes)
+ *  3. Ellers AI-generér ny guide og tilknyt + notificér om udkastet
+ *
+ * Tænkt brugt som baggrundsjob via Next.js after() efter opretEgenPlante
+ * (standalone + fritekst-onboarding), så "Se guide" på plantesiden fører til
+ * en ægte guide i stedet for /guides-forsiden — nøjagtig som i frøbanken.
+ */
+export async function ensureGuideForPlant(plantId: string): Promise<
+  { ok: true; guideId: string; reused: boolean; generated: boolean }
+  | { ok: true; alreadyAttached: true }
+  | { error: string }
+> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const { data: plant } = await supabase
+    .from('plants_v2')
+    .select('id, name, variety, guide_id')
+    .eq('id', plantId)
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (!plant) return { error: 'Plant not found' }
+  if (plant.guide_id) return { ok: true, alreadyAttached: true }
+
+  const plantName = (plant.name as string).trim()
+  const variety = (((plant.variety as string | null) ?? '').trim()) || null
+
+  // Editorial-first: findes der allerede en kurateret MD-guide (art/sort) der
+  // matcher plantens navn, foretrækker vi DEN frem for et AI-udkast. Plante-
+  // sidens resolver router til den via navn, så vi lader guide_id være null og
+  // genererer IKKE en overflødig guide. (Samme matchning som "Se guide"-linket.)
+  const editorialHref = resolvePlantGuideHref(
+    { guideId: null, name: plantName, variety },
+    IMPORTED_GUIDES,
+  )
+  if (editorialHref !== '/guides') {
+    return { ok: true, alreadyAttached: true }
+  }
+
+  // 1:1-match (vidensmodel): har planten en SORT → match navn+sort (sorts-
+  // guide); ellers navn + ingen sort (arts-guide). Master-guides (user_id =
+  // NULL) foretrækkes via nullsFirst.
+  let matchQuery = supabase.from('guides').select('id').ilike('plant_name', plantName)
+  matchQuery = variety ? matchQuery.ilike('variety', variety) : matchQuery.is('variety', null)
+  const { data: existing } = await matchQuery
+    .order('user_id', { ascending: true, nullsFirst: true })
+    .order('created_at', { ascending: true })
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    const guideId = existing[0].id as string
+    await supabase
+      .from('plants_v2')
+      .update({ guide_id: guideId, updated_at: new Date().toISOString() })
+      .eq('id', plantId)
+      .eq('user_id', userId)
+    revalidatePath(`/mine-planter/${plantId}`)
+    return { ok: true, guideId, reused: true, generated: false }
+  }
+
+  // Ingen match → generér. For en sort kobles guiden til en evt. MASTER
+  // arts-guide som forælder, så sorten hænger korrekt under sin art.
+  let parentGuideId: string | null = null
+  if (variety) {
+    const { data: parent } = await supabase
+      .from('guides')
+      .select('id')
+      .ilike('plant_name', plantName)
+      .is('variety', null)
+      .is('user_id', null)
+      .limit(1)
+    parentGuideId = parent && parent.length > 0 ? (parent[0].id as string) : null
+  }
+
+  const gen = await generateGuideWithAI({
+    plantName,
+    variety: variety ?? undefined,
+    parentGuideId,
+  })
+  if ('error' in gen) return { error: gen.error }
+
+  await supabase
+    .from('plants_v2')
+    .update({ guide_id: gen.id, updated_at: new Date().toISOString() })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+  revalidatePath(`/mine-planter/${plantId}`)
+
+  // Punkt 3 (vidensmodel): fortæl brugeren at der er lavet et privat udkast,
+  // så de kan gennemlæse og notere på det. actor = null (systemet).
+  const guideNavn = variety ? `${plantName} · ${variety}` : plantName
+  try {
+    await supabase.rpc('enqueue_notification', {
+      p_user_id: userId,
+      p_type: 'guide_draft',
+      p_actor_user_id: null,
+      p_title: 'Vi har lavet et udkast til din guide',
+      p_body: `Et udkast til "${guideNavn}" er klar — kig på den og tilføj dine egne noter.`,
+      p_link: `/guides/${gen.id}`,
+      p_group_id: null,
+      p_idea_id: null,
+      p_forum_post_id: null,
+      p_swap_listing_id: null,
+    })
+  } catch { /* notifikation er best-effort */ }
+
+  return { ok: true, guideId: gen.id, reused: false, generated: true }
 }
 
 export async function attachGuideToInventory(

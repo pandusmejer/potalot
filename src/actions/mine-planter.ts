@@ -3,10 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
 } from '@/lib/task-generation'
-import { getAllGuides } from '@/actions/guides'
+import { getAllGuides, ensureGuideForPlant } from '@/actions/guides'
 import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import {
   maybeAwardFirstSowing, maybeAwardFirstHarvest, maybeAwardSeasonFinisher,
@@ -451,6 +452,17 @@ export async function opretEgenPlante(
   }
 
   maybeAwardFirstSowing(userId).catch(() => {})
+
+  // Baggrund: giv planten en guide (genbrug eksisterende eller AI-generér),
+  // så "Se guide" på plantesiden fører til en ægte guide — som i frøbanken.
+  // Køres efter response, så brugeren ikke venter på AI-kaldet.
+  after(async () => {
+    try {
+      await ensureGuideForPlant(plantId)
+    } catch (e) {
+      console.error('[ensureGuideForPlant] fejl:', e)
+    }
+  })
 
   revalidatePath('/mine-planter')
   revalidatePath(`/mine-planter/${plantId}`)
