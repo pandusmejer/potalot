@@ -771,6 +771,52 @@ export async function updatePlant(
 }
 
 /**
+ * Tilføj/skift plantens EGNE billeder — efter oprettelsen.
+ *
+ * Fyldte hullet (Anna 16/7): kun manuelt oprettede planter havde et foto-felt
+ * ved oprettelsen. Planter oprettet via så-et-frø (frøbank) eller fritekst-
+ * onboarding kunne aldrig få et rigtigt plantefoto SENERE — plantesidens
+ * eneste virkende foto-indgang hang fotos på en log-hændelse, ikke på planten.
+ *
+ * Skriver til nøjagtig samme felter som `opretEgenPlante`/`saaFroeFraInventory`
+ * (image_urls + primary_image_url + image_source), så det primære foto slår
+ * igennem på plantekort-heroen. Tomt sæt → nulstil til afledt/guide-billede.
+ */
+export async function updatePlantPhotos(
+  plantId: string,
+  input: { imageUrls: string[]; primaryImageUrl: string | null },
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const urls = input.imageUrls.filter(Boolean)
+  const primary =
+    input.primaryImageUrl && urls.includes(input.primaryImageUrl)
+      ? input.primaryImageUrl
+      : (urls[0] ?? null)
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      image_urls: urls,
+      primary_image_url: primary,
+      // Egne fotos = 'user_upload'. Uden fotos falder heroen tilbage til det
+      // guide-/afledte billede (image_source null → resolver vælger).
+      image_source: primary ? 'user_upload' : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/mine-planter')
+  revalidatePath('/')
+  return { ok: true }
+}
+
+/**
  * Slet en plante HELT (modsat arkivér). Rydder også relateret data, så en
  * slettet plante ikke efterlader forældede log-events eller opgave-påmindelser.
  */

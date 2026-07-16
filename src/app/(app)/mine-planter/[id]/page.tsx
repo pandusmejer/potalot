@@ -6,6 +6,7 @@ import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
+import { PlantFotoManager } from '@/components/mine-planter/plant-foto-manager'
 import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
@@ -179,7 +180,18 @@ function renderEditorial(
       {karakter && <PlantKarakter karakter={karakter} />}
       <PlantNaeste naeste={detail.naeste} />
       <PlantTidslinje milestones={detail.tidslinje} />
-      {detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />}
+      {/* Billeder: logget-ind bruger får det INTERAKTIVE galleri (kan tilføje
+          fotos til planten når som helst — også efter så-et-frø/onboarding).
+          Demo-browsing beholder det statiske, kuraterede galleri. */}
+      {log.canLog ? (
+        <PlantFotoManager
+          plantId={plant.id}
+          initialImages={plant.imageIds ?? []}
+          initialPrimary={plant.primaryImageId ?? null}
+        />
+      ) : (
+        detail.billeder.length > 0 && <PlantGalleri billeder={detail.billeder} />
+      )}
       {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 
         <DagbogSektion plant={plant} log={log} />
