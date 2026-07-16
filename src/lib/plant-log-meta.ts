@@ -19,7 +19,7 @@ export const PLANT_LOG_LABEL: Record<PlantLogType, string> = {
   pruning: 'Beskåret',
   pest_disease: 'Skadedyr/sygdom',
   harvest: 'Høstet',
-  note: 'Observation',
+  note: 'Note',
   status_change: 'Stadieskift',
   archive: 'Arkiveret',
   health: 'Trivsel',
@@ -70,6 +70,7 @@ export function logHeading(log: {
     const h = heightLabel(log.valueNumeric)
     return h ? `Højde: ${h}` : 'Højde'
   }
-  // Brugerens egen titel vinder; ellers typens navn (ALDRIG bare "Note").
-  return (log.title && log.title.trim()) || PLANT_LOG_LABEL[log.type]
+  // Brugerens egen titel vinder; ellers typens navn (ALDRIG bare "Note",
+  // medmindre typen faktisk ER 'note'). Defensiv 'Log'-fallback for ukendte typer.
+  return (log.title && log.title.trim()) || PLANT_LOG_LABEL[log.type] || 'Log'
 }

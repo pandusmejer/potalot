@@ -15,20 +15,14 @@ import type { PlantLog, PlantLogType, HealthValue } from '@/lib/types'
 import { idag } from '@/lib/datetime'
 import { createPlantLog, updatePlantLog } from '@/actions/mine-planter'
 import { deleteImage } from '@/actions/storage'
-import { HEALTH_OPTIONS } from '@/lib/plant-log-meta'
+import { HEALTH_OPTIONS, PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
 
-const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
-  { value: 'note', label: 'Observation' },
-  { value: 'health', label: 'Trivsel' },
-  { value: 'height_measurement', label: 'Højde' },
-  { value: 'watering', label: 'Vandet' },
-  { value: 'fertilizing', label: 'Gødet' },
-  { value: 'pruning', label: 'Beskåret' },
-  { value: 'pest_disease', label: 'Skadedyr/sygdom' },
-  { value: 'harvest', label: 'Høstet' },
-  { value: 'germination', label: 'Spiret' },
-  { value: 'repotting', label: 'Pottet om' },
-  { value: 'planting_out', label: 'Udplantet' },
+// Rækkefølge i dropdownen. Labels kommer fra den DELTE PLANT_LOG_LABEL (samme
+// kilde som historikken bruger), så formular og tidslinje aldrig kan sige to
+// forskellige ord for samme type (Anna 16/7).
+const TYPE_ORDER: PlantLogType[] = [
+  'note', 'health', 'height_measurement', 'watering', 'fertilizing',
+  'pruning', 'pest_disease', 'harvest', 'germination', 'repotting', 'planting_out',
 ]
 
 interface Props {
@@ -170,8 +164,8 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
                 onChange={e => setType(e.target.value as PlantLogType)}
                 className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
               >
-                {TYPE_OPTIONS.map(o => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
+                {TYPE_ORDER.map(t => (
+                  <option key={t} value={t}>{PLANT_LOG_LABEL[t]}</option>
                 ))}
               </select>
             </div>
