@@ -43,9 +43,16 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
   })
 
   return (
-    <section
-      className="relative flex overflow-hidden rounded-[24px]"
+    // Hele kortet er ét klik-mål (Anna 16/7): på det vigtigste kort på siden
+    // skal man kunne trykke hvor som helst — ikke ramme den lille "Se planten"-
+    // pille. CTA'en nedenfor er nu en visuel affordance (span), ikke et nested
+    // <a> inde i dette <a>. Tydelig tryk-feedback + tastatur-fokus.
+    <Link
+      href={`/mine-planter/${plant.id}`}
+      aria-label={`Se ${plant.variety ?? plant.name}`}
+      className="group relative flex overflow-hidden rounded-[24px] no-underline transition-transform duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5A7038]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#EFEBDD]"
       style={{
+        color: 'inherit',
         border: '1px solid rgba(36,48,31,0.10)',
         minHeight: 168,
         boxShadow: '0 1px 2px rgba(36,48,31,0.04), 0 10px 26px -16px rgba(36,48,31,0.22)',
@@ -102,9 +109,9 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
           {forventning}
         </p>
 
-        <Link
-          href={`/mine-planter/${plant.id}`}
-          className="mt-3.5 inline-flex w-fit items-center gap-1.5 rounded-full transition-transform active:scale-95"
+        {/* Visuel CTA-affordance (ikke et nested link) — hele kortet er linket. */}
+        <span
+          className="mt-3.5 inline-flex w-fit items-center gap-1.5 rounded-full"
           style={{
             border: '1px solid rgba(36,48,31,0.18)',
             color: '#24301F',
@@ -115,8 +122,13 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
           }}
         >
           Se planten
-          <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} style={{ color: '#5A7038' }} aria-hidden />
-        </Link>
+          <ArrowRight
+            className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+            strokeWidth={2}
+            style={{ color: '#5A7038' }}
+            aria-hidden
+          />
+        </span>
       </div>
 
       {/* FOTO — højre, tydeligt beskåret makro. Ingen mælkehvid overgang;
@@ -124,7 +136,7 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
       <div className="relative" style={{ width: '42%' }}>
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+          <img src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
         ) : (
           <div
             className="absolute inset-0 flex items-center justify-center"
@@ -139,6 +151,6 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
           style={{ background: 'linear-gradient(90deg, rgba(20,26,16,0.16) 0%, rgba(20,26,16,0) 100%)' }}
         />
       </div>
-    </section>
+    </Link>
   )
 }
