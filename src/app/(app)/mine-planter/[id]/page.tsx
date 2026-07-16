@@ -23,15 +23,18 @@ import {
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import { PlanteAdmin } from '@/components/mine-planter/plante-admin'
+import { HistorikIndhent } from '@/components/mine-planter/historik-indhent'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import {
+  Activity,
   ArrowLeft,
   ChevronRight,
   History,
   Lightbulb,
   NotebookText,
   Plus,
+  Ruler,
 } from 'lucide-react'
 
 /** Logging-kontekst: brugerens rigtige logs + om de kan redigeres (logget ind). */
@@ -139,7 +142,7 @@ function renderDetail(
   // 2026-06-15). Override (hvis sorten har en, fx San Marzano) beriger
   // siden — ellers bygges den helt af plantens egne data. plant-detail.ts
   // er ikke længere adgangsbillet til layoutet.
-  const detail = buildPlantDetail({ plant, override: overrideFor(plant.guideId) })
+  const detail = buildPlantDetail({ plant, override: overrideFor(plant.guideId), logs: log.logs })
   // "Se guide" skal føre til DEN relevante guide (art/sort), ikke /guides-forsiden.
   if (detail.naeste) detail.naeste.guideHref = resolvePlantGuideHref(plant, IMPORTED_GUIDES)
   return renderEditorial(plant, detail, karakter, resolvedNextTask, log)
@@ -162,6 +165,16 @@ function renderEditorial(
   nextTask: import('@/lib/types').CalendarTask | null,
   log: LogContext,
 ) {
+  // Tilbagevirkende oprettelse: sådato ligger LANGT før planten blev registreret
+  // (created_at). Så forklarer vi hvorfor planten pludselig er "gammel" og
+  // inviterer til at indhente den aktuelle tilstand. Kun for logget-ind brugere.
+  const sowMs = plant.sowDate ? Date.parse(plant.sowDate) : null
+  const createdMs = Date.parse(plant.createdAt)
+  const backdatedDays = sowMs != null ? Math.round((createdMs - sowMs) / 86_400_000) : 0
+  const ageDays = sowMs != null ? Math.max(0, Math.round((Date.now() - sowMs) / 86_400_000)) : 0
+  const visIndhent = log.canLog && backdatedDays > 14
+  const harVurdering = log.logs.some(l => l.type === 'health' || l.type === 'height_measurement')
+
   return (
     <article className="space-y-5 pb-4">
       <div className="space-y-3">
@@ -172,9 +185,14 @@ function renderEditorial(
           </Link>
         </Button>
         {/* Mål-strimlen er Plantekortets bundpanel (Status·Alder·Højde·
-            Sundhed) — ligger ovenpå hero-fotoet (Annas valg 14. juni). */}
+            Trivsel) — ligger ovenpå hero-fotoet (Annas valg 14. juni). */}
         <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} />
       </div>
+
+      {/* Indhent historik ved tilbagevirkende oprettelse (frivilligt, skippbart). */}
+      {visIndhent && (
+        <HistorikIndhent plantId={plant.id} ageDays={ageDays} hasAssessment={harVurdering} />
+      )}
 
       {/* KARAKTER = sektion 2, lige efter hero (Annas valg). */}
       {karakter && <PlantKarakter karakter={karakter} />}
@@ -224,6 +242,21 @@ const sansFont = 'var(--font-manrope)'
 const serifFont = 'var(--font-cormorant), Georgia, serif'
 const GROEN = '#5A7038'
 const BLAEK = '#24301F'
+
+/** Lille pille-trigger til de hurtige logvalg (Trivsel/Højde). Native <button>
+ *  så Radix' asChild-clone virker på tværs af server/klient-grænsen. */
+function quickLogChip(icon: React.ReactNode, label: string) {
+  return (
+    <button
+      type="button"
+      className="inline-flex items-center gap-1.5 rounded-full transition-transform active:scale-[0.97]"
+      style={{ fontFamily: sansFont, fontSize: 12.5, fontWeight: 600, color: '#3D4A2C', background: '#E7ECDD', border: '1px solid rgba(61,74,44,0.14)', padding: '7px 13px' }}
+    >
+      {icon}
+      {label}
+    </button>
+  )
+}
 
 function dagbogDag(date: string): string {
   return String(new Date(date).getDate()).padStart(2, '0')
@@ -286,6 +319,15 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
           </Button>
         )}
       </div>
+
+      {/* Hurtige logvalg — de to måletyper der driver Mål-strimlen, ét tryk væk.
+          Resten af typerne ligger i "Tilføj"-formularens dropdown. */}
+      {canLog && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <LogForm plantId={plant.id} defaultType="health" trigger={quickLogChip(<Activity className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Trivsel')} />
+          <LogForm plantId={plant.id} defaultType="height_measurement" trigger={quickLogChip(<Ruler className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Højde')} />
+        </div>
+      )}
 
       {/* Ægte bruger → funktionel Timeline. Demo → redaktionelt opslag. */}
       {canLog ? (

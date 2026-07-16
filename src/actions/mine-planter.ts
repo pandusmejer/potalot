@@ -52,6 +52,8 @@ interface PlantLogRow {
   title: string | null
   note: string | null
   image_urls: string[]
+  value_numeric: number | null
+  value_text: string | null
   linked_task_id: string | null
   created_at: string
   updated_at: string
@@ -94,6 +96,8 @@ function rowToLog(row: PlantLogRow): PlantLog {
     title: row.title,
     note: row.note,
     imageIds: row.image_urls ?? [],
+    valueNumeric: row.value_numeric,
+    valueText: row.value_text,
     linkedTaskId: row.linked_task_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -505,6 +509,10 @@ export async function createPlantLog(input: {
   title?: string
   note?: string
   imageUrls?: string[]
+  /** Måleværdi (fx højde i cm) — kun for målings-typer. */
+  valueNumeric?: number | null
+  /** Enum-tilstand (fx trivsel 'good'|'okay'|'attention'). */
+  valueText?: string | null
 }): Promise<{ id: string; stageAdvancedTo?: PlantStatus } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
@@ -518,6 +526,8 @@ export async function createPlantLog(input: {
       title: input.title || null,
       note: input.note || null,
       image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+      value_numeric: input.valueNumeric ?? null,
+      value_text: input.valueText ?? null,
     })
     .select('id')
     .single()
@@ -573,6 +583,8 @@ export async function updatePlantLog(input: {
   title?: string
   note?: string
   imageUrls?: string[]
+  valueNumeric?: number | null
+  valueText?: string | null
 }): Promise<{ ok: true; plantId: string } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
@@ -584,6 +596,8 @@ export async function updatePlantLog(input: {
       title: input.title || null,
       note: input.note || null,
       image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+      value_numeric: input.valueNumeric ?? null,
+      value_text: input.valueText ?? null,
     })
     .eq('id', input.logId)
     .eq('user_id', userId)

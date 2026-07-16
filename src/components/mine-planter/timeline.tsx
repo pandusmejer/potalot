@@ -1,8 +1,9 @@
 import { formatDatoMedAar, venligDato } from '@/lib/datetime'
 import type { Plant, PlantLog } from '@/lib/types'
-import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug } from 'lucide-react'
+import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug, Activity, Ruler } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { LogActions } from '@/components/mine-planter/log-actions'
+import { logHeading } from '@/lib/plant-log-meta'
 import type { ComponentType, SVGProps } from 'react'
 
 /** Log-typer som brugeren har oprettet — kan redigeres/slettes.
@@ -10,6 +11,7 @@ import type { ComponentType, SVGProps } from 'react'
 const EDITABLE_TYPES = new Set<string>([
   'note', 'watering', 'fertilizing', 'pruning', 'pest_disease',
   'harvest', 'germination', 'repotting', 'planting_out', 'sowing',
+  'health', 'height_measurement',
 ])
 
 const LOG_ICON: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
@@ -25,6 +27,8 @@ const LOG_ICON: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   status_change: Flag,
   archive: Flag,
   note: FileText,
+  health: Activity,
+  height_measurement: Ruler,
 }
 
 const LOG_FARVE: Record<string, string> = {
@@ -40,6 +44,8 @@ const LOG_FARVE: Record<string, string> = {
   status_change: 'bg-muted border-border text-muted-foreground',
   archive:       'bg-muted border-border text-muted-foreground',
   note:          'bg-card border-border text-muted-foreground',
+  health:        'bg-teal-50 border-teal-200 text-teal-700',
+  height_measurement: 'bg-sky-50 border-sky-200 text-sky-700',
 }
 
 interface Props {
@@ -108,7 +114,7 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false 
               <div className="flex-1 pt-1 min-w-0">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <p className="text-sm font-medium text-foreground">
-                    {item.log.title ?? 'Note'}
+                    {logHeading(item.log)}
                   </p>
                   <span className="text-xs text-muted-foreground">{venligDato(item.log.date)}</span>
                 </div>

@@ -415,23 +415,59 @@ function NoPhotoBotanical({ name }: { name: string }) {
  * stedet for Lucide. Resten af afsnittet (label · værdi · note) er
  * centreret under ikonet. Første skridt i statusbar-redesignet.
  */
+/** Trivsel-farve efter tilstand (kun til den korte oversigtsværdi). */
+function trivselFarve(value: string): string {
+  const v = value.toLowerCase()
+  if (v.startsWith('god')) return '#5A7038'
+  if (v.startsWith('nogenlunde')) return '#B08419'
+  if (v.startsWith('kræver')) return '#B04E38'
+  return 'rgba(36,48,31,0.45)' // ikke vurderet
+}
+
 function MaalRow({ maal }: { maal: DetailMaal }) {
   const felter: {
     label: string
     value: string
-    note: string
+    source?: string
+    href?: string
+    color: string
+    wrap: boolean
     Comp: (p: GlyphProps) => ReactNode
   }[] = [
-    { label: 'Status', value: maal.statusValue, note: maal.statusNote, Comp: GlyphStatusFase },
-    { label: 'Alder', value: maal.alderValue, note: maal.alderNote, Comp: GlyphAlder },
-    { label: 'Højde', value: maal.hoejdeValue, note: maal.hoejdeNote, Comp: GlyphHojde },
-    { label: 'Trivsel', value: maal.sundhedValue, note: maal.sundhedNote, Comp: GlyphSundhed },
+    { label: 'Status', value: maal.statusValue, color: '#24301F', wrap: false, Comp: GlyphStatusFase },
+    { label: 'Alder', value: maal.alderValue, color: '#24301F', wrap: false, Comp: GlyphAlder },
+    // Trivsel + Højde er nu ægte logdata → klikbare (fører til dagbogen, hvor
+    // man logger en ny vurdering/måling) + viser kilde-dato. Aldrig auto-"God".
+    { label: 'Højde', value: maal.hoejdeValue, source: maal.hoejdeSource, href: '#dagbog', color: '#24301F', wrap: false, Comp: GlyphHojde },
+    { label: 'Trivsel', value: maal.sundhedValue, source: maal.sundhedSource, href: '#dagbog', color: trivselFarve(maal.sundhedValue), wrap: true, Comp: GlyphSundhed },
   ]
   return (
     <>
       <div className="flex items-stretch">
         {felter.map((f, i) => {
           const G = f.Comp
+          const inner = (
+            <>
+              <G size={20} aria-hidden />
+              <span
+                className="uppercase"
+                style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1, marginTop: 7 }}
+              >
+                {f.label}
+              </span>
+              <span
+                style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.015em', color: f.color, lineHeight: 1.1, marginTop: 4, textTransform: 'lowercase', whiteSpace: f.wrap ? 'normal' : 'nowrap' }}
+              >
+                {f.value}
+              </span>
+              {f.source && (
+                <span style={{ fontFamily: sans, fontSize: 9, fontWeight: 600, color: 'rgba(36,48,31,0.42)', lineHeight: 1, marginTop: 3 }}>
+                  {f.source}
+                </span>
+              )}
+            </>
+          )
+          const cls = 'flex min-w-0 flex-1 flex-col items-center px-0.5 text-center'
           return (
             <Fragment key={f.label}>
               {i > 0 && (
@@ -441,21 +477,13 @@ function MaalRow({ maal }: { maal: DetailMaal }) {
                   style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
                 />
               )}
-              <div className="flex min-w-0 flex-1 flex-col items-center px-0.5 text-center">
-                <G size={20} aria-hidden />
-                <span
-                  className="uppercase"
-                  style={{ fontFamily: sans, fontSize: 9.5, fontWeight: 600, letterSpacing: '0.1em', color: 'rgba(36,48,31,0.46)', lineHeight: 1, marginTop: 7 }}
-                >
-                  {f.label}
-                </span>
-                <span
-                  className="whitespace-nowrap"
-                  style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, letterSpacing: '-0.015em', color: '#24301F', lineHeight: 1.1, marginTop: 4, textTransform: 'lowercase' }}
-                >
-                  {f.value}
-                </span>
-              </div>
+              {f.href ? (
+                <a href={f.href} className={`${cls} no-underline transition-opacity active:opacity-60`} style={{ color: 'inherit' }} aria-label={`${f.label}: ${f.value} — log ny`}>
+                  {inner}
+                </a>
+              ) : (
+                <div className={cls}>{inner}</div>
+              )}
             </Fragment>
           )
         })}

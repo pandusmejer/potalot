@@ -11,20 +11,23 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import { Plus, Pencil } from 'lucide-react'
-import type { PlantLog, PlantLogType } from '@/lib/types'
+import type { PlantLog, PlantLogType, HealthValue } from '@/lib/types'
 import { idag } from '@/lib/datetime'
 import { createPlantLog, updatePlantLog } from '@/actions/mine-planter'
 import { deleteImage } from '@/actions/storage'
+import { HEALTH_OPTIONS } from '@/lib/plant-log-meta'
 
 const TYPE_OPTIONS: { value: PlantLogType; label: string }[] = [
-  { value: 'note', label: 'Note' },
+  { value: 'note', label: 'Observation' },
+  { value: 'health', label: 'Trivsel' },
+  { value: 'height_measurement', label: 'Højde' },
   { value: 'watering', label: 'Vandet' },
   { value: 'fertilizing', label: 'Gødet' },
   { value: 'pruning', label: 'Beskåret' },
   { value: 'pest_disease', label: 'Skadedyr/sygdom' },
   { value: 'harvest', label: 'Høstet' },
   { value: 'germination', label: 'Spiret' },
-  { value: 'repotting', label: 'Omplantet' },
+  { value: 'repotting', label: 'Pottet om' },
   { value: 'planting_out', label: 'Udplantet' },
 ]
 
@@ -34,22 +37,33 @@ interface Props {
   log?: PlantLog
   /** Custom trigger (fx en lille pencil-knap i timeline). Default er stor "Ny lognote"-knap. */
   trigger?: React.ReactNode
+  /** Start-type — bruges når feltet åbnes direkte fra fx "Højde"-feltet på kortet. */
+  defaultType?: PlantLogType
 }
 
 /**
  * Log-form til at oprette/redigere en dyrkningslog.
  */
-export function LogForm({ plantId, log, trigger }: Props) {
+export function LogForm({ plantId, log, trigger, defaultType }: Props) {
   const router = useRouter()
   const isEdit = !!log
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [type, setType] = useState<PlantLogType>(log?.type ?? 'note')
+  const [type, setType] = useState<PlantLogType>(log?.type ?? defaultType ?? 'note')
   const [date, setDate] = useState(log?.date ?? idag())
   const [title, setTitle] = useState(log?.title ?? '')
   const [note, setNote] = useState(log?.note ?? '')
   const [images, setImages] = useState<string[]>(log?.imageIds ?? [])
+  const [health, setHealth] = useState<HealthValue | null>(
+    (log?.type === 'health' ? (log.valueText as HealthValue) : null) ?? null,
+  )
+  const [heightCm, setHeightCm] = useState<string>(
+    log?.type === 'height_measurement' && log.valueNumeric != null ? String(log.valueNumeric) : '',
+  )
+
+  const isHealth = type === 'health'
+  const isHeight = type === 'height_measurement'
 
   function reset() {
     if (isEdit && log) {
@@ -58,12 +72,16 @@ export function LogForm({ plantId, log, trigger }: Props) {
       setType(log.type)
       setDate(log.date)
       setImages(log.imageIds)
+      setHealth(log.type === 'health' ? (log.valueText as HealthValue) : null)
+      setHeightCm(log.type === 'height_measurement' && log.valueNumeric != null ? String(log.valueNumeric) : '')
     } else {
       setTitle('')
       setNote('')
-      setType('note')
+      setType(defaultType ?? 'note')
       setDate(idag())
       setImages([])
+      setHealth(null)
+      setHeightCm('')
     }
     setError(null)
   }
@@ -83,13 +101,26 @@ export function LogForm({ plantId, log, trigger }: Props) {
     e.preventDefault()
     setError(null)
 
+    // Validér de to måletyper — de skal have en værdi.
+    if (isHealth && !health) { setError('Vælg hvordan planten trives.'); return }
+    let heightValue: number | null = null
+    if (isHeight) {
+      heightValue = parseFloat(heightCm.replace(',', '.'))
+      if (Number.isNaN(heightValue) || heightValue <= 0) {
+        setError('Angiv en højde i cm (fx 24).'); return
+      }
+    }
+
     startTransition(async () => {
       const payload = {
         date,
         type,
-        title: title.trim() || undefined,
+        // Titel giver ikke mening for trivsel/højde — værdien er overskriften.
+        title: isHealth || isHeight ? undefined : (title.trim() || undefined),
         note: note.trim() || undefined,
         imageUrls: images.length > 0 ? images : undefined,
+        valueNumeric: isHeight ? heightValue : null,
+        valueText: isHealth ? health : null,
       }
 
       const res = isEdit && log
@@ -156,18 +187,67 @@ export function LogForm({ plantId, log, trigger }: Props) {
             </div>
           </div>
 
-          <div>
-            <Label>Titel (valgfri)</Label>
-            <Input
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Fx. Bladene blev gule"
-              className="mt-1.5"
-            />
-          </div>
+          {isHealth ? (
+            <div>
+              <Label>Hvordan trives planten?</Label>
+              <div className="mt-1.5 flex flex-col gap-1.5">
+                {HEALTH_OPTIONS.map(o => {
+                  const active = health === o.value
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setHealth(o.value)}
+                      className={`flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors ${
+                        active
+                          ? 'border-primary bg-primary/10 text-foreground'
+                          : 'border-input bg-card text-muted-foreground hover:bg-muted'
+                      }`}
+                      aria-pressed={active}
+                    >
+                      <span
+                        aria-hidden
+                        className="h-2.5 w-2.5 shrink-0 rounded-full"
+                        style={{ background: o.value === 'good' ? '#5A7038' : o.value === 'okay' ? '#C89A35' : '#B04E38' }}
+                      />
+                      {o.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ) : isHeight ? (
+            <div>
+              <Label htmlFor="log-height">Højde</Label>
+              <div className="mt-1.5 flex items-center gap-2">
+                <Input
+                  id="log-height"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.1"
+                  value={heightCm}
+                  onChange={e => setHeightCm(e.target.value)}
+                  placeholder="Fx. 24"
+                  className="w-32"
+                />
+                <span className="text-sm text-muted-foreground">cm</span>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <Label>Titel (valgfri)</Label>
+              <Input
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder="Fx. Bladene blev gule"
+                className="mt-1.5"
+              />
+            </div>
+          )}
 
           <div>
-            <Label>Note</Label>
+            <Label>Note{isHealth || isHeight ? ' (valgfri)' : ''}</Label>
             <Textarea
               value={note}
               onChange={e => setNote(e.target.value)}

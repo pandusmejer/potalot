@@ -239,6 +239,11 @@ export type PlantLogType =
   | 'note'
   | 'status_change'
   | 'archive'
+  | 'health'              // trivsel — value_text: 'good' | 'okay' | 'attention'
+  | 'height_measurement'  // højde — value_numeric i cm
+
+/** Trivsel-enum (value_text på en 'health'-log). UI: God/Nogenlunde/Kræver opmærksomhed. */
+export type HealthValue = 'good' | 'okay' | 'attention'
 
 export interface PlantLog {
   id: string
@@ -249,6 +254,10 @@ export interface PlantLog {
   title?: string | null
   note?: string | null
   imageIds: string[]
+  /** Måleværdi — højde (cm) nu; temp/pH/fugtighed senere. */
+  valueNumeric?: number | null
+  /** Enum-tilstand — trivsel ('good'|'okay'|'attention'). */
+  valueText?: string | null
   linkedTaskId?: string | null
   createdAt: string
   updatedAt: string
