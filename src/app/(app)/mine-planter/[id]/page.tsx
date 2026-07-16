@@ -186,7 +186,7 @@ function renderEditorial(
         </Button>
         {/* Mål-strimlen er Plantekortets bundpanel (Status·Alder·Højde·
             Trivsel) — ligger ovenpå hero-fotoet (Annas valg 14. juni). */}
-        <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} />
+        <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} logPlantId={log.canLog ? plant.id : undefined} />
       </div>
 
       {/* Indhent historik ved tilbagevirkende oprettelse (frivilligt, skippbart). */}

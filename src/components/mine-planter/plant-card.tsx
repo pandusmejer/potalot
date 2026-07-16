@@ -10,7 +10,9 @@ import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps, type ReactNode } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { GlyphStatusFase, GlyphAlder, GlyphHojde, GlyphSundhed, type GlyphProps } from '@/components/icons/potalot-glyphs'
+import { LogForm } from '@/components/mine-planter/log-form'
 import type { DetailMaal } from '@/data/plant-detail'
+import type { PlantLogType } from '@/lib/types'
 
 /**
  * Konverter fri tekst til kebab-case slug for asset-convention lookup
@@ -35,9 +37,12 @@ interface Props {
   plant: Plant
   /** Næste opgave — bruges ikke i kort-visning v2, holdes for API-kompatibilitet. */
   nextTask?: CalendarTask | null
-  /** Når sat: bundpanelet viser Mål (Status·Alder·Højde·Sundhed) i stedet
+  /** Når sat: bundpanelet viser Mål (Status·Alder·Højde·Trivsel) i stedet
    *  for vækstbjælke + fakta. Bruges på plante-detaljen (editorial-hero). */
   maal?: DetailMaal | null
+  /** Sat for logget-ind bruger med egen plante → Trivsel/Højde i Mål-panelet
+   *  bliver klikbare og åbner logformularen DIREKTE med den rette type. */
+  logPlantId?: string
 }
 
 const sans = 'var(--font-manrope)'
@@ -101,7 +106,7 @@ function statusPosition(status: PlantStatus): number {
  * pleje-rytme. Top-højre er en mekanisk flip-tæller der viser antal
  * AKTIVE planter (tilstedeværelse — IKKE rest af noget).
  */
-export function PlantCard({ plant, nextTask, maal }: Props) {
+export function PlantCard({ plant, nextTask, maal, logPlantId }: Props) {
   // V4.1: canonical resolver. preferredSrc valideres mod manifest;
   // stale DB-paths falder automatisk til asset-convention.
   // Canonical resolver, rolle: plant-card. Falder gennem 4 lag:
@@ -271,7 +276,7 @@ export function PlantCard({ plant, nextTask, maal }: Props) {
         }}
       >
         {maal ? (
-          <MaalRow maal={maal} />
+          <MaalRow maal={maal} logPlantId={logPlantId} />
         ) : (
           <>
         {/* Vækststadie-bjælke. startAnchor varierer mellem "Sået" og
@@ -424,23 +429,25 @@ function trivselFarve(value: string): string {
   return 'rgba(36,48,31,0.45)' // ikke vurderet
 }
 
-function MaalRow({ maal }: { maal: DetailMaal }) {
+function MaalRow({ maal, logPlantId }: { maal: DetailMaal; logPlantId?: string }) {
   const felter: {
     label: string
     value: string
     source?: string
-    href?: string
+    /** Sat på Trivsel/Højde → feltet åbner logformularen direkte med denne type. */
+    logType?: PlantLogType
     color: string
     wrap: boolean
     Comp: (p: GlyphProps) => ReactNode
   }[] = [
     { label: 'Status', value: maal.statusValue, color: '#24301F', wrap: false, Comp: GlyphStatusFase },
     { label: 'Alder', value: maal.alderValue, color: '#24301F', wrap: false, Comp: GlyphAlder },
-    // Trivsel + Højde er nu ægte logdata → klikbare (fører til dagbogen, hvor
-    // man logger en ny vurdering/måling) + viser kilde-dato. Aldrig auto-"God".
-    { label: 'Højde', value: maal.hoejdeValue, source: maal.hoejdeSource, href: '#dagbog', color: '#24301F', wrap: false, Comp: GlyphHojde },
-    { label: 'Trivsel', value: maal.sundhedValue, source: maal.sundhedSource, href: '#dagbog', color: trivselFarve(maal.sundhedValue), wrap: true, Comp: GlyphSundhed },
+    // Trivsel + Højde er ægte logdata → klik åbner logformularen DIREKTE med
+    // rette type valgt (ikke bare scroll til dagbogen). Viser kilde-dato.
+    { label: 'Højde', value: maal.hoejdeValue, source: maal.hoejdeSource, logType: 'height_measurement', color: '#24301F', wrap: false, Comp: GlyphHojde },
+    { label: 'Trivsel', value: maal.sundhedValue, source: maal.sundhedSource, logType: 'health', color: trivselFarve(maal.sundhedValue), wrap: true, Comp: GlyphSundhed },
   ]
+  const cls = 'flex min-w-0 flex-1 flex-col items-center px-0.5 text-center'
   return (
     <>
       <div className="flex items-stretch">
@@ -467,7 +474,27 @@ function MaalRow({ maal }: { maal: DetailMaal }) {
               )}
             </>
           )
-          const cls = 'flex min-w-0 flex-1 flex-col items-center px-0.5 text-center'
+          // Logget-ind + måletype → hele feltet er en LogForm-trigger (åbner
+          // dialogen direkte med rette type). Ellers et roligt statisk felt.
+          const felt =
+            logPlantId && f.logType ? (
+              <LogForm
+                plantId={logPlantId}
+                defaultType={f.logType}
+                trigger={
+                  <button
+                    type="button"
+                    className={`${cls} cursor-pointer appearance-none border-0 bg-transparent transition-opacity active:opacity-60`}
+                    style={{ color: 'inherit', font: 'inherit' }}
+                    aria-label={`${f.label}: ${f.value} — registrér ny`}
+                  >
+                    {inner}
+                  </button>
+                }
+              />
+            ) : (
+              <div className={cls}>{inner}</div>
+            )
           return (
             <Fragment key={f.label}>
               {i > 0 && (
@@ -477,13 +504,7 @@ function MaalRow({ maal }: { maal: DetailMaal }) {
                   style={{ width: 1, background: 'rgba(36,48,31,0.08)', marginInline: 8, marginBlock: 2 }}
                 />
               )}
-              {f.href ? (
-                <a href={f.href} className={`${cls} no-underline transition-opacity active:opacity-60`} style={{ color: 'inherit' }} aria-label={`${f.label}: ${f.value} — log ny`}>
-                  {inner}
-                </a>
-              ) : (
-                <div className={cls}>{inner}</div>
-              )}
+              {felt}
             </Fragment>
           )
         })}
