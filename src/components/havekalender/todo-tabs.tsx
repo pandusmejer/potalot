@@ -6,7 +6,7 @@ import { TaskRow } from '@/components/overblik/task-row'
 import { EmptyState } from '@/components/ui/empty-state'
 import { ListChecks, CalendarCheck } from 'lucide-react'
 import type { CalendarTask } from '@/lib/types'
-import { erIDag, erForsinket, idag } from '@/lib/datetime'
+import { erIDag, erForsinket, erForsinketOpgave, idag } from '@/lib/datetime'
 
 interface Props {
   tasks: CalendarTask[]
@@ -21,7 +21,7 @@ export function TodoTabs({ tasks }: Props) {
   const idagsListe   = aaben.filter(t => erIDag(t.date))
   const ugensListe   = aaben.filter(t => erIDag(t.date) || (!erForsinket(t.date) && erInden(t.date, 7)))
   const maanedListe  = aaben.filter(t => erIDag(t.date) || (!erForsinket(t.date) && erInden(t.date, 30)))
-  const forsinkede   = aaben.filter(t => erForsinket(t.date))
+  const forsinkede   = aaben.filter(t => erForsinketOpgave(t.date, t.createdAt))
   const afsluttede   = tasks.filter(t => t.status === 'completed').slice(0, 20)
 
   function renderList(list: CalendarTask[], emptyTitle: string, emptyDescription: string) {

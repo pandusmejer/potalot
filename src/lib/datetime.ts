@@ -67,6 +67,18 @@ export function erForsinket(date: string): boolean {
   return dageSiden(date) > 0
 }
 
+/**
+ * Er en OPGAVE reelt forsinket? En opgave dateret FØR den blev oprettet kan
+ * ikke være noget brugeren har glemt — den er lagt i fortiden af systemet
+ * (fx guide-gøremål fra en tilbagevirkende såning). Sådan en markeres ALDRIG
+ * som forsinket (Anna 16/7): "Potalot ved ikke, om brugeren allerede har
+ * udført dem." Kun opgaver dateret på/efter oprettelsen kan blive forsinkede.
+ */
+export function erForsinketOpgave(date: string, createdAt: string): boolean {
+  if (!erForsinket(date)) return false
+  return date >= createdAt.slice(0, 10)
+}
+
 export function aktuelMaaned(): number {
   return new Date().getMonth() + 1
 }

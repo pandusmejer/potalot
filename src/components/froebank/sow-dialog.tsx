@@ -166,8 +166,9 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
           <>
         <DialogTitle>Så et frø</DialogTitle>
         <DialogDescription>
-          Opretter en aktiv plante i Mine planter med en initial log-entry.
-          Hvis der er en tilknyttet guide, oprettes også relevante opgaver i kalenderen.
+          Opretter en plante i Mine planter og kobler den til denne frøpost. Vælg
+          den faktiske sådato — også en tidligere — så kalender og Havebog regner
+          fra den. Har frøet en guide, lægges kommende gøremål i kalenderen.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">

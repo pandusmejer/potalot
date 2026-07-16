@@ -245,9 +245,10 @@ export function NewPlantDialog({ inventory, children }: Props) {
               Så {selected.name}{selected.variety ? ` — ${selected.variety}` : ''}
             </DialogTitle>
             <DialogDescription>
-              Opretter en aktiv plante i Mine planter med en initial log-entry.
-              Hvis der er en tilknyttet guide, oprettes også relevante opgaver
-              i kalenderen.
+              Opretter en plante i Mine planter og kobler den til denne frøpost.
+              Vælg den faktiske sådato — også en tidligere — så kalender og
+              Havebog regner fra den. Har frøet en guide, lægges kommende
+              gøremål i kalenderen.
             </DialogDescription>
 
             <form onSubmit={(e) => { e.preventDefault(); submitSowing() }} className="space-y-3">
