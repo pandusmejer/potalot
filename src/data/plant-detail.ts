@@ -28,7 +28,7 @@ export interface DetailMilestone {
   historie: string
 }
 
-/** De fire rolige instrument-tal i toppen (Status · Alder · Højde · Sundhed). */
+/** De fire rolige instrument-tal i toppen (Status · Alder · Højde · Trivsel). */
 export interface DetailMaal {
   statusValue: string
   statusNote: string
@@ -38,6 +38,10 @@ export interface DetailMaal {
   hoejdeNote: string
   sundhedValue: string
   sundhedNote: string
+  /** Kort kilde-dato for seneste højdemåling (fx "16. jul"). Udeladt = ingen måling. */
+  hoejdeSource?: string
+  /** Kort kilde-dato for seneste trivsels-vurdering. Udeladt = ikke vurderet. */
+  sundhedSource?: string
 }
 
 /** "Lige nu" + "Denne uge" — to kort: magasin-historie + plejeliste. */

@@ -3,10 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
 } from '@/lib/task-generation'
-import { getAllGuides } from '@/actions/guides'
+import { getAllGuides, ensureGuideForPlant } from '@/actions/guides'
 import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import {
   maybeAwardFirstSowing, maybeAwardFirstHarvest, maybeAwardSeasonFinisher,
@@ -51,6 +52,8 @@ interface PlantLogRow {
   title: string | null
   note: string | null
   image_urls: string[]
+  value_numeric: number | null
+  value_text: string | null
   linked_task_id: string | null
   created_at: string
   updated_at: string
@@ -93,6 +96,8 @@ function rowToLog(row: PlantLogRow): PlantLog {
     title: row.title,
     note: row.note,
     imageIds: row.image_urls ?? [],
+    valueNumeric: row.value_numeric,
+    valueText: row.value_text,
     linkedTaskId: row.linked_task_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -452,6 +457,17 @@ export async function opretEgenPlante(
 
   maybeAwardFirstSowing(userId).catch(() => {})
 
+  // Baggrund: giv planten en guide (genbrug eksisterende eller AI-generér),
+  // så "Se guide" på plantesiden fører til en ægte guide — som i frøbanken.
+  // Køres efter response, så brugeren ikke venter på AI-kaldet.
+  after(async () => {
+    try {
+      await ensureGuideForPlant(plantId)
+    } catch (e) {
+      console.error('[ensureGuideForPlant] fejl:', e)
+    }
+  })
+
   revalidatePath('/mine-planter')
   revalidatePath(`/mine-planter/${plantId}`)
   revalidatePath('/kalender')
@@ -493,6 +509,10 @@ export async function createPlantLog(input: {
   title?: string
   note?: string
   imageUrls?: string[]
+  /** Måleværdi (fx højde i cm) — kun for målings-typer. */
+  valueNumeric?: number | null
+  /** Enum-tilstand (fx trivsel 'good'|'okay'|'attention'). */
+  valueText?: string | null
 }): Promise<{ id: string; stageAdvancedTo?: PlantStatus } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
@@ -506,6 +526,8 @@ export async function createPlantLog(input: {
       title: input.title || null,
       note: input.note || null,
       image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+      value_numeric: input.valueNumeric ?? null,
+      value_text: input.valueText ?? null,
     })
     .select('id')
     .single()
@@ -561,6 +583,8 @@ export async function updatePlantLog(input: {
   title?: string
   note?: string
   imageUrls?: string[]
+  valueNumeric?: number | null
+  valueText?: string | null
 }): Promise<{ ok: true; plantId: string } | { error: string }> {
   const { id: userId } = await requireUser(); const supabase = await createClient()
 
@@ -572,6 +596,8 @@ export async function updatePlantLog(input: {
       title: input.title || null,
       note: input.note || null,
       image_urls: input.imageUrls && input.imageUrls.length > 0 ? input.imageUrls : [],
+      value_numeric: input.valueNumeric ?? null,
+      value_text: input.valueText ?? null,
     })
     .eq('id', input.logId)
     .eq('user_id', userId)
@@ -767,6 +793,52 @@ export async function updatePlant(
 
   revalidatePath(`/mine-planter/${plantId}`)
   revalidatePath('/mine-planter')
+  return { ok: true }
+}
+
+/**
+ * Tilføj/skift plantens EGNE billeder — efter oprettelsen.
+ *
+ * Fyldte hullet (Anna 16/7): kun manuelt oprettede planter havde et foto-felt
+ * ved oprettelsen. Planter oprettet via så-et-frø (frøbank) eller fritekst-
+ * onboarding kunne aldrig få et rigtigt plantefoto SENERE — plantesidens
+ * eneste virkende foto-indgang hang fotos på en log-hændelse, ikke på planten.
+ *
+ * Skriver til nøjagtig samme felter som `opretEgenPlante`/`saaFroeFraInventory`
+ * (image_urls + primary_image_url + image_source), så det primære foto slår
+ * igennem på plantekort-heroen. Tomt sæt → nulstil til afledt/guide-billede.
+ */
+export async function updatePlantPhotos(
+  plantId: string,
+  input: { imageUrls: string[]; primaryImageUrl: string | null },
+): Promise<{ ok: true } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const urls = input.imageUrls.filter(Boolean)
+  const primary =
+    input.primaryImageUrl && urls.includes(input.primaryImageUrl)
+      ? input.primaryImageUrl
+      : (urls[0] ?? null)
+
+  const { error } = await supabase
+    .from('plants_v2')
+    .update({
+      image_urls: urls,
+      primary_image_url: primary,
+      // Egne fotos = 'user_upload'. Uden fotos falder heroen tilbage til det
+      // guide-/afledte billede (image_source null → resolver vælger).
+      image_source: primary ? 'user_upload' : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', plantId)
+    .eq('user_id', userId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/mine-planter/${plantId}`)
+  revalidatePath('/mine-planter')
+  revalidatePath('/')
   return { ok: true }
 }
 

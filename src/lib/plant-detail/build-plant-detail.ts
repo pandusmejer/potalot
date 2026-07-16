@@ -24,7 +24,7 @@
  */
 
 import type { MockPlant } from '@/data/mock-plants'
-import type { PlantStatus } from '@/lib/types'
+import type { PlantStatus, PlantLog } from '@/lib/types'
 import type {
   DetailMaal,
   DetailNaeste,
@@ -34,6 +34,7 @@ import type {
 } from '@/data/plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
+import { healthShort, heightLabel } from '@/lib/plant-log-meta'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { resolveNowImage, nowTypeForStatus } from '@/lib/images/resolve-now-image'
 
@@ -82,30 +83,42 @@ const STATUS_NOTE: Record<PlantStatus, string> = {
   afsluttet: 'sæsonen er slut',
 }
 
-/** Sundhed udledes groft af fasen (ingen struktureret sundhedslog endnu). */
-function deriveSundhed(status: PlantStatus): { value: string; note: string } {
-  switch (status) {
-    case 'planlagt':  return { value: '—', note: 'ikke sået endnu' }
-    case 'afsluttet': return { value: 'Afsluttet', note: 'sæsonen er slut' }
-    case 'hoestklar': return { value: 'Moden', note: 'klar til høst' }
-    default:          return { value: 'God', note: 'ingen problemer logget' }
-  }
+/** Find den nyeste log af en given type (dato, dernæst created_at). */
+function latestLog(logs: PlantLog[] | undefined, type: PlantLog['type']): PlantLog | null {
+  if (!logs || logs.length === 0) return null
+  const of = logs.filter(l => l.type === type)
+  if (of.length === 0) return null
+  return of.slice().sort((a, b) => {
+    const d = b.date.localeCompare(a.date)
+    return d !== 0 ? d : (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
+  })[0]
 }
 
-export function deriveMaal(plant: MockPlant): DetailMaal {
+/**
+ * Trivsel og Højde er nu ÆGTE brugerlogget data (migration 00060), ikke
+ * status-afledte gæt. Uden en registrering vises "Ikke vurderet"/"Ikke målt" —
+ * appen påstår aldrig at planten har det godt uden en kilde (Anna 16/7).
+ */
+export function deriveMaal(plant: MockPlant, logs?: PlantLog[]): DetailMaal {
   const meta = PLANT_STATUS_META[plant.status]
   const alder = plant.sowDate ? dageSiden(plant.sowDate) : null
-  const sundhed = deriveSundhed(plant.status)
+
+  const healthLog = latestLog(logs, 'health')
+  const heightLog = latestLog(logs, 'height_measurement')
+  const sundhedValue = (healthLog && healthShort(healthLog.valueText)) || 'Ikke vurderet'
+  const hoejdeValue = (heightLog && heightLabel(heightLog.valueNumeric)) || 'Ikke målt'
+
   return {
     statusValue: meta.label,
     statusNote: STATUS_NOTE[plant.status],
     alderValue: alder != null ? (alder === 1 ? '1 dag' : `${alder} dage`) : '—',
     alderNote: plant.sowDate ? 'siden såning' : 'ikke sået endnu',
-    // Ingen struktureret højdemåling endnu → ærlig fallback (ikke et opdigtet tal).
-    hoejdeValue: 'Ikke målt',
-    hoejdeNote: 'log en måling',
-    sundhedValue: sundhed.value,
-    sundhedNote: sundhed.note,
+    hoejdeValue,
+    hoejdeNote: heightLog ? 'seneste måling' : 'log en måling',
+    hoejdeSource: heightLog ? formatDatoKort(heightLog.date) : undefined,
+    sundhedValue,
+    sundhedNote: healthLog ? 'seneste vurdering' : 'endnu ikke vurderet',
+    sundhedSource: healthLog ? formatDatoKort(healthLog.date) : undefined,
   }
 }
 
@@ -276,14 +289,16 @@ export function deriveTidslinje(
 export function buildPlantDetail(args: {
   plant: MockPlant
   override?: PlantDetailOverride | null
+  /** Brugerens ægte logs — driver Trivsel/Højde i Mål-strimlen. */
+  logs?: PlantLog[]
 }): PlantDetail {
-  const { plant, override } = args
+  const { plant, override, logs } = args
   const naeste = deriveNaeste(plant)
 
   return {
     heroFoto: plantCardImage(plant).src,
     heroFotoAlt: `${plant.name}${plant.variety ? ` ${plant.variety}` : ''}`,
-    maal: deriveMaal(plant),
+    maal: deriveMaal(plant, logs),
     naeste: { ...naeste, ...(override?.naeste ?? {}) },
     tidslinje: deriveTidslinje(plant, override?.tidslinjeNoter),
     // V1: galleri + sammenligning kun fra override (ellers skjult — ingen tomme kort).

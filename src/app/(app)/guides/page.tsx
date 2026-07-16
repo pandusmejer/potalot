@@ -1,5 +1,6 @@
 import { GuidesHero } from '@/components/guides/guides-hero'
 import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
+import { MineGuides } from '@/components/guides/mine-guides'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { BookOpen } from 'lucide-react'
 import { getAllGuides } from '@/actions/guides'
@@ -57,6 +58,11 @@ export default async function GuidesPage() {
   const visibleGuides = isDemo ? ALL_GUIDES : IMPORTED_GUIDES
   const aiGuideIds = isDemo ? DEMO_AI_GUIDE_IDS : null
 
+  // Brugerens EGNE (private) guides — dem de selv har lavet, klonet eller fået
+  // autogenereret. Vises foldet øverst i biblioteket (Anna 16/7), klart adskilt
+  // fra det redaktionelle Potalot-lag nedenunder.
+  const mineGuides = guides.filter(g => g.visibility === 'private')
+
   // "I din frøbank"-markør: hvilke guides matcher en sort i frøbanken
   // (eller — i demo — i den lokale demo-frøbank).
   const inFroebankIds = new Set(
@@ -112,6 +118,7 @@ export default async function GuidesPage() {
           title="Forstå det, du dyrker"
           body="Start med arten, dyk ned i sorter, og gem erfaringer undervejs."
         />
+        <MineGuides guides={mineGuides} />
         <GuidesBibliotek
           guides={visibleGuides}
           aiGuideIds={aiGuideIds}

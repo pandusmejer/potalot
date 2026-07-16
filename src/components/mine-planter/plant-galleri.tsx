@@ -1,14 +1,16 @@
 import type { DetailBillede } from '@/data/plant-detail'
-import { Plus } from 'lucide-react'
 
 const sans = 'var(--font-manrope)'
 
 /**
- * BILLEDER — plantens egen fotostrøm.
+ * BILLEDER — plantens egen fotostrøm (statisk, kuraterede billeder).
  *
  * Spec: "Ikke grid. Store billeder. Føles som Apple Photos." Vandret
- * strøm af kuraterede makrofotos, afsluttet med en diskret "Tilføj
- * billede"-flade så brugerens egne fotos har et naturligt hjem.
+ * strøm af kuraterede makrofotos.
+ *
+ * Bruges KUN til demo-browsing. Logget-ind brugere får det interaktive
+ * <PlantFotoManager>, hvor de kan tilføje/skifte egne fotos. (Den gamle
+ * "Tilføj billede"-flade her var en død knap uden handler.)
  */
 export function PlantGalleri({ billeder }: { billeder: DetailBillede[] }) {
   return (
@@ -53,22 +55,6 @@ export function PlantGalleri({ billeder }: { billeder: DetailBillede[] }) {
             <img src={b.src} alt={b.alt} className="h-full w-full object-cover" />
           </div>
         ))}
-
-        {/* Tilføj billede — diskret flade til brugerens egne fotos. */}
-        <button
-          type="button"
-          className="flex h-[104px] w-[104px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-[16px] transition-transform active:scale-95"
-          style={{
-            background: 'var(--surface-2)',
-            border: '1.5px dashed rgba(36,48,31,0.20)',
-            color: 'rgba(36,48,31,0.52)',
-          }}
-        >
-          <Plus className="h-5 w-5" strokeWidth={2} aria-hidden />
-          <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600 }}>
-            Tilføj billede
-          </span>
-        </button>
       </div>
     </section>
   )
