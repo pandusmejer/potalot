@@ -22,13 +22,20 @@ Docs/guide-templates/
 content/guide-production/
 ├── species.csv              inputark: arter (planen + kontrollerede fakta)
 ├── varieties.csv            inputark: sorter
-└── generated/               ChatGPT-JSON lander her (→ bliver til markdown)
+├── status.json              livscyklus-ledger (draft/reviewed/approved/imported)
+├── generated/               ChatGPT-JSON lander her
+└── built/                   KANDIDAT-markdown (guides:build skriver hertil)
 
-content/guides/              færdige guides (importeres til DB)
+content/guides/              LIVE guides (importeres til DB)
 ```
 
-Skabeloner + `generated/` ligger **uden for** `content/guides/`, så importeren
-aldrig tager dem for rigtige guides.
+Skabeloner + `generated/` + `built/` ligger **uden for** `content/guides/`, så
+importeren aldrig tager dem for rigtige guides.
+
+**Sikker staging:** `guides:build` overskriver ALDRIG `content/guides/`. Den
+skriver kandidater til `built/`; du gransker med `guides:diff` og flytter dem
+først i produktion med `guides:promote <slug>`. Så kan de fire eksisterende
+guides ikke forsvinde ved et uheld.
 
 ## Flow
 
@@ -36,11 +43,14 @@ aldrig tager dem for rigtige guides.
 species.csv / varieties.csv          (planen + kontrollerede fakta)
         ↓  ChatGPT skriver JSON i batches (se "Sådan briefer du ChatGPT")
 content/guide-production/generated/*.json   (matcher guide-schema.json)
-        ↓  npm run guides:build        JSON → repoets markdown
+        ↓  npm run guides:build          JSON → KANDIDAT (built/)
+content/guide-production/built/*.md
+        ↓  npm run guides:diff           kandidat vs. live guide (eller NEW)
+        ↓  menneskelig godkendelse       sikkerheds-fakta + redaktionel vurdering
+        ↓  npm run guides:promote <slug> kandidat → content/guides/ (eksplicit)
 content/guides/*.md
-        ↓  npm run guides:validate     niveau 1: struktur/felter/dubletter
-        ↓  npm run guides:status        overblik: produceret / mangler / billeder
-        ↓  menneskelig godkendelse      sikkerheds-fakta (se editorial-rules.md)
+        ↓  npm run guides:validate       niveau 1: struktur/felter/dubletter
+        ↓  npm run guides:mark <slug> imported
         ↓  npm run import:guides
 DB
 ```
@@ -49,7 +59,9 @@ DB
 
 | Kommando | Hvad |
 |----------|------|
-| `npm run guides:build` | JSON i `generated/` → repoets markdown i `content/guides/` |
+| `npm run guides:build` | JSON i `generated/` → KANDIDAT i `built/` (rører **aldrig** `content/guides/`) |
+| `npm run guides:diff [slug]` | Forskel mellem kandidat og live guide; `NEW` hvis ingen findes |
+| `npm run guides:promote <slug>` | Kopiér kandidat → `content/guides/` (eksplicit; ændrer ikke ledger) |
 | `npm run guides:validate` | Niveau 1: felter, enums, dubletter, slug↔filnavn, parentSlug, sektioner, summary-længde |
 | `npm run guides:status` | Overblik: antal, livscyklus, planlagt-men-mangler, JSON-kø, forældreløse sorter, guides uden billede |
 | `npm run guides:mark <slug> <status>` | Sæt livscyklus-status (draft/reviewed/approved/imported) |

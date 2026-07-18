@@ -1,18 +1,20 @@
 /**
- * guides:build — laver AI-genereret guide-JSON om til repoets markdown.
+ * guides:build — laver leveret guide-JSON om til repoets markdown som KANDIDATER.
  *
  *   content/guide-production/generated/*.json   (matcher Docs/guide-templates/guide-schema.json)
- *        → content/guides/<slug>.md
+ *        → content/guide-production/built/<slug>.md      (KANDIDAT — ikke live)
  *
- * Deterministisk: AI'en skriver KUN JSON; strukturen (frontmatter + sektioner)
- * styres her, så alle guides ser ens ud. Kør derefter guides:validate + import:guides.
+ * Build overskriver ALDRIG content/guides/. Kandidaterne granskes med
+ * guides:diff og flyttes først i produktion med guides:promote efter godkendelse.
+ * Deterministisk: strukturen styres her, teksten røres ikke.
  */
 
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SRC = 'content/guide-production/generated'
-const OUT = 'content/guides'
+const OUT = 'content/guide-production/built'
+const LIVE = 'content/guides'
 const CATS = ['fro', 'loeg', 'knolde', 'buske', 'traeer', 'stauder']
 
 interface Section { heading: string; content: string }
@@ -94,6 +96,7 @@ function main(): void {
     console.log(`Ingen .json-filer i ${SRC}/ — intet at bygge.`)
     return
   }
+  mkdirSync(OUT, { recursive: true })
   let n = 0
   for (const f of files) {
     let g: Guide
@@ -103,11 +106,15 @@ function main(): void {
       fail(`${f}: ugyldig JSON — ${e instanceof Error ? e.message : String(e)}`)
     }
     check(g, f)
+    // Skriv KANDIDAT til built/ — aldrig til content/guides/.
     writeFileSync(join(OUT, `${g.slug}.md`), `---\n${frontmatter(g)}\n---\n\n${body(g)}`)
-    console.log(`  ✓ ${OUT}/${g.slug}.md`)
+    const status = existsSync(join(LIVE, `${g.slug}.md`)) ? 'opdaterer eksisterende' : 'NEW'
+    console.log(`  ✓ ${g.slug}  (${status})`)
     n++
   }
-  console.log(`\n${n} guide(s) bygget. Kør nu:  npm run guides:validate  →  npm run import:guides`)
+  console.log(`\n${n} kandidat(er) bygget → ${OUT}/`)
+  console.log(`Gransk:  npm run guides:diff   ·   sæt i produktion:  npm run guides:promote <slug>`)
+  console.log('content/guides/ er URØRT indtil du promoter.')
 }
 
 main()
