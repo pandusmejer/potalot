@@ -60,7 +60,6 @@ tætte makroudsnit — brugeren skal kunne genkende hele arten.
 
 1. **Automatisk** (`guides:validate`): felter, enums, dubletter, slug, parentSlug,
    YAML, sektioner, summary-længde, tomme quickFacts.
-2. **Redaktionel AI** (`guides:review`): gentagelser, generiske formuleringer,
-   art-stof i sortsguide (og omvendt), modstridende tal, upræcise råd, forkert
-   tone. Returnerer fejl + risikoniveau — omskriver ikke selv.
-3. **Menneske**: sikkerheds-fakta ovenfor.
+2. **Menneske**: sikkerheds-fakta ovenfor + at teksten følger disse regler
+   (art/sort-deling, tone, ingen opdigtede tal). ChatGPT skriver indholdet;
+   et menneske godkender før import.
