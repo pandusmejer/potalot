@@ -13,7 +13,8 @@
     "add:photo": "npx tsx scripts/add-photo.ts",
     "guides:build": "npx tsx scripts/guides-build.ts",
     "guides:validate": "npx tsx scripts/guides-validate.ts",
-    "guides:status": "npx tsx scripts/guides-status.ts"
+    "guides:status": "npx tsx scripts/guides-status.ts",
+    "guides:mark": "npx tsx scripts/guides-mark.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

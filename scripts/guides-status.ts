@@ -18,6 +18,8 @@ import { join, basename } from 'node:path'
 const GUIDES = 'content/guides'
 const PROD = 'content/guide-production'
 const GEN = join(PROD, 'generated')
+const LEDGER = join(PROD, 'status.json')
+const LIFECYCLE = ['draft', 'reviewed', 'approved', 'imported'] as const
 
 function slugify(text: string): string {
   return text
@@ -89,11 +91,30 @@ function main(): void {
     catch { return basename(f, '.json') }
   })
 
+  // Livscyklus-status fra ledger (content/guide-production/status.json).
+  // Ikke i ledger → 'draft'.
+  const ledger: Record<string, string> = existsSync(LEDGER)
+    ? (JSON.parse(readFileSync(LEDGER, 'utf8')) as Record<string, string>)
+    : {}
+  const statusOf = (slug: string) => ledger[slug] ?? 'draft'
+  const counts: Record<string, number> = { draft: 0, reviewed: 0, approved: 0, imported: 0 }
+  for (const g of guides) counts[statusOf(g.slug)] = (counts[statusOf(g.slug)] ?? 0) + 1
+
   const line = (s = '') => console.log(s)
   line(`\n📊 GUIDE-STATUS\n${'─'.repeat(40)}`)
   line(`Færdige guides:  ${guides.length}  (${nSpecies} arts · ${nVariety} sorts)`)
   line(`JSON i køen:     ${genJson.length}${genJson.length ? ' (kør guides:build)' : ''}`)
   line(`Planlagt (CSV):  ${plannedSpecies.length} arter · ${plannedVarieties.length} sorter`)
+
+  line(`\nLivscyklus:      ${LIFECYCLE.map(s => `${s} ${counts[s]}`).join('  ·  ')}`)
+  const needsWork = guides.filter(g => statusOf(g.slug) !== 'imported')
+  if (needsWork.length) {
+    line(`\n🔧 Ikke importeret endnu (${needsWork.length}):`)
+    for (const s of LIFECYCLE.slice(0, 3)) {
+      const inState = needsWork.filter(g => statusOf(g.slug) === s)
+      if (inState.length) line(`   ${s}: ${inState.map(g => g.slug).join(', ')}`)
+    }
+  }
 
   const missingSpecies = plannedSpecies.filter(p => p.slug && !bySlug.has(p.slug))
   const missingVarieties = plannedVarieties.filter(p => p.slug && !bySlug.has(p.slug))

@@ -51,8 +51,28 @@ DB
 |----------|------|
 | `npm run guides:build` | JSON i `generated/` → repoets markdown i `content/guides/` |
 | `npm run guides:validate` | Niveau 1: felter, enums, dubletter, slug↔filnavn, parentSlug, sektioner, summary-længde |
-| `npm run guides:status` | Overblik: antal, planlagt-men-mangler, JSON-kø, forældreløse sorter, guides uden billede |
+| `npm run guides:status` | Overblik: antal, livscyklus, planlagt-men-mangler, JSON-kø, forældreløse sorter, guides uden billede |
+| `npm run guides:mark <slug> <status>` | Sæt livscyklus-status (draft/reviewed/approved/imported) |
 | `npm run import:guides` | Markdown → DB |
+
+## Livscyklus (status)
+
+Hver guide har en status, gemt i `content/guide-production/status.json` — **aldrig**
+i selve guide-teksten. Build/import rører aldrig indholdet; kun mennesket flytter
+status med `guides:mark`.
+
+| Status | Betyder |
+|--------|---------|
+| `draft` | leveret (ChatGPT-JSON bygget), ikke tjekket. Standard for nye. |
+| `reviewed` | `guides:validate` kørt uden fejl |
+| `approved` | et menneske har godkendt fakta (se editorial-rules.md) |
+| `imported` | importeret til DB |
+
+```bash
+npm run guides:mark tomat-san-marzano approved
+npm run guides:mark tomat-san-marzano imported
+```
+`guides:status` viser fordelingen + hvad der endnu ikke er importeret.
 
 ## Sådan briefer du ChatGPT
 
