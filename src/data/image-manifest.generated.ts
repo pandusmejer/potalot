@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 284
+ * Fil-tæller: 286
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -265,9 +265,11 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/basilikum-genovese.jpg",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/chili-padron.jpg",
+  "/images/plantekort/cosmos-candy-stripe.jpg",
   "/images/plantekort/dahlia-cafe-au-lait-lys-kaffe.jpg",
   "/images/plantekort/dahlia-cafe-au-lait.jpg",
   "/images/plantekort/dild-bouquet.jpg",
+  "/images/plantekort/graeskar-butternut-waltham.jpg",
   "/images/plantekort/groenkaal-nero-di-toscana.jpg",
   "/images/plantekort/gulerod-nantes.jpg",
   "/images/plantekort/jordbaer-korona.jpg",
