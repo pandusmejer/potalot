@@ -2,19 +2,22 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { fortolkTale } from '@/actions/tale'
-import { gemOptagelse, behandlOptagelse } from '@/actions/optagelser'
+import { gemOptagelse, behandlOptagelse, beholdSomNote } from '@/actions/optagelser'
 import type { TaleForslag, ForslagType } from '@/lib/tale-fortolk'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
-type Fase = 'idle' | 'lytter' | 'skriver' | 'fortolker' | 'forslag' | 'gemmer' | 'gemt' | 'fejl'
+type Fase = 'idle' | 'lytter' | 'skriver' | 'fortolker' | 'forslag' | 'tomt' | 'gemmer' | 'gemt' | 'fejl'
 
 const TYPE_LABEL: Record<ForslagType, string> = {
-  note: 'Note',
   observation: 'Observation',
-  hoest: 'Høst',
   opgave: 'Opgave',
+  hoest: 'Høst',
+  problem: 'Problem',
+  minde: 'Minde',
+  naeste_saeson: 'Næste sæson',
+  note: 'Note',
 }
 
 // Minimal Web Speech-typning (ikke i standard lib.dom alle steder).
@@ -105,20 +108,56 @@ export function TalOptager() {
       setFase('idle')
       return
     }
+    setTekst(trimmet)
     setFase('fortolker')
     // Persistér optagelsen som det FØRSTE (indbakke): den findes i arkivet
-    // som 'unprocessed' uanset om brugeren behandler den nu eller senere.
-    const gem = await gemOptagelse(trimmet)
-    if ('id' in gem) setOptagelseId(gem.id)
+    // som 'unprocessed' uanset udfald → teksten er reddet, selv hvis
+    // fortolkningen fejler. Genbrug id'et ved gen-fortolkning (undgå dubletter).
+    let id = optagelseId
+    if (!id) {
+      const gem = await gemOptagelse(trimmet)
+      if ('id' in gem) {
+        id = gem.id
+        setOptagelseId(gem.id)
+      }
+    }
     const res = await fortolkTale(trimmet)
-    if ('error' in res || res.forslag.length === 0) {
-      setResultat('error' in res ? res.error : 'Jeg fangede ikke noget brugbart — prøv igen.')
-      setFase('fejl')
+    if ('error' in res) {
+      // Ægte net-/API-fejl → "prøv igen". Malformet model (INTERPRETATION_INVALID)
+      // behandles som tomt: teksten bevares, brugeren kan rette eller gemme som note.
+      if (res.code === 'STT_INTERPRET_FAILED') {
+        setResultat(res.error)
+        setFase('fejl')
+        return
+      }
+      setFase('tomt')
+      return
+    }
+    if (res.forslag.length === 0) {
+      setFase('tomt')
       return
     }
     setForslag(res.forslag)
     setValgte(new Set(res.forslag.map(f => f.id)))
     setFase('forslag')
+  }
+
+  // "Gem som note" (tom fortolkning / malformet svar): behold teksten i
+  // arkivet uden log/opgave. Teksten er allerede gemt — intet går tabt.
+  async function gemSomNote() {
+    if (!optagelseId) {
+      nulstil()
+      return
+    }
+    setFase('gemmer')
+    const res = await beholdSomNote(optagelseId)
+    if ('error' in res) {
+      setResultat(res.error)
+      setFase('fejl')
+      return
+    }
+    setResultat('Gemt i dit optagelses-arkiv.')
+    setFase('gemt')
   }
 
   function toggle(id: string) {
@@ -386,8 +425,13 @@ export function TalOptager() {
                       {f.dato ? ` · ${f.dato}` : ''}
                     </span>
                     <span style={{ display: 'block', fontFamily: serif, fontSize: 'clamp(19px,4.4cqw,24px)', fontWeight: 500, color: '#24301F', lineHeight: 1.2, marginTop: 3 }}>
-                      {f.titel}
+                      {f.text}
                     </span>
+                    {f.evidence.sourceText && f.evidence.sourceText !== f.text && (
+                      <span style={{ display: 'block', fontFamily: serif, fontStyle: 'italic', fontSize: 14, color: 'rgba(36,48,31,0.5)', lineHeight: 1.35, marginTop: 6 }}>
+                        Du sagde: «{f.evidence.sourceText}»
+                      </span>
+                    )}
                   </span>
                 </button>
               )
@@ -418,6 +462,45 @@ export function TalOptager() {
               style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}
             >
               Fortryd
+            </button>
+          </div>
+        </div>
+      )}
+
+      {fase === 'tomt' && (
+        <div style={{ width: '100%', textAlign: 'left' }}>
+          <p style={{ fontFamily: serif, fontSize: 'clamp(20px,4.6cqw,26px)', color: '#24301F', margin: '0 0 8px', lineHeight: 1.2 }}>
+            Jeg kunne ikke dele noten op
+          </p>
+          <p style={{ fontFamily: sans, fontSize: 14, color: 'rgba(36,48,31,0.6)', margin: '0 0 16px', lineHeight: 1.5 }}>
+            Teksten er stadig her. Du kan rette den eller gemme den som en almindelig note.
+          </p>
+          {tekst && (
+            <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 18, color: 'rgba(36,48,31,0.8)', lineHeight: 1.4, margin: '0 0 20px', padding: '12px 16px', background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(36,48,31,0.14)', borderRadius: 12 }}>
+              «{tekst}»
+            </p>
+          )}
+          <div className="flex items-center" style={{ gap: 16, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setFase('skriver')}
+              style={{ padding: '12px 24px', borderRadius: 999, border: 'none', background: '#3B4A2F', color: '#F4EFDC', fontFamily: sans, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            >
+              Ret teksten
+            </button>
+            <button
+              type="button"
+              onClick={() => void gemSomNote()}
+              style={{ padding: '12px 22px', borderRadius: 999, border: '1.5px solid rgba(36,48,31,0.25)', background: 'transparent', color: '#24301F', fontFamily: sans, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            >
+              Gem som note
+            </button>
+            <button
+              type="button"
+              onClick={nulstil}
+              style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Annuller
             </button>
           </div>
         </div>

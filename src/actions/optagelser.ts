@@ -23,7 +23,8 @@ import { createClient } from '@/lib/supabase/server'
 import { beregnSaeson } from '@/lib/havebog-saeson'
 import { createPlantLog } from '@/actions/mine-planter'
 import { createTask } from '@/actions/havekalender'
-import type { TaleForslag } from '@/lib/tale-fortolk'
+import { OPGAVE_TYPER, type TaleForslag, type ForslagType } from '@/lib/tale-fortolk'
+import type { PlantLogType } from '@/lib/types'
 import type { OptagelseStatus } from '@/data/havebog-demo'
 
 export interface OptagelseRow {
@@ -115,14 +116,33 @@ export async function listOptagelser(): Promise<OptagelseRow[]> {
   }))
 }
 
-// hoest → minde (høst bliver til minde); observation → observation;
-// note → log; opgave → opgave. Ved flere: den rigeste vinder.
-const STATUS_RANG: OptagelseStatus[] = ['minde', 'observation', 'log', 'opgave']
+// Optagelses-status pr. forslagstype (voice_notes.status CHECK tillader kun
+// log|opgave|minde|observation). problem→observation og naeste_saeson→opgave
+// mappes til nærmeste eksisterende status (ingen migration i v1, jf. spec 2.2).
+// Ved flere forslag vinder den rigeste status.
+const STATUS_RANG: OptagelseStatus[] = ['minde', 'observation', 'opgave', 'log']
 function forslagStatus(f: TaleForslag): OptagelseStatus {
-  if (f.type === 'hoest') return 'minde'
-  if (f.type === 'observation') return 'observation'
-  if (f.type === 'opgave') return 'opgave'
-  return 'log'
+  switch (f.type) {
+    case 'hoest':
+    case 'minde':
+      return 'minde'
+    case 'observation':
+    case 'problem':
+      return 'observation'
+    case 'opgave':
+    case 'naeste_saeson':
+      return 'opgave'
+    default:
+      return 'log' // note
+  }
+}
+
+// Log-typerne → plant_logs_v2.type. problem→pest_disease (naturligt lager),
+// hoest→harvest; resten skrives som 'note'.
+function plantLogType(type: ForslagType): PlantLogType {
+  if (type === 'hoest') return 'harvest'
+  if (type === 'problem') return 'pest_disease'
+  return 'note'
 }
 
 /**
@@ -153,10 +173,10 @@ export async function behandlOptagelse(
   const statuser: OptagelseStatus[] = []
 
   for (const f of forslag) {
-    if (f.type === 'opgave') {
+    if (OPGAVE_TYPER.includes(f.type)) {
       const r = await createTask({
-        title: f.titel,
-        description: f.tekst || undefined,
+        title: f.text,
+        description: f.evidence.sourceText || undefined,
         date: f.dato ?? optagetDato,
         taskType: 'custom',
         source: 'manual',
@@ -164,21 +184,26 @@ export async function behandlOptagelse(
       })
       if ('id' in r) {
         createdTaskId = createdTaskId ?? r.id
-        statuser.push('opgave')
+        statuser.push(forslagStatus(f))
       }
     } else if (f.plantId) {
       const r = await createPlantLog({
         plantId: f.plantId,
         date: optagetDato, // recorded_at, IKKE i dag
-        type: f.type === 'hoest' ? 'harvest' : 'note',
-        title: f.titel,
-        note: f.tekst || undefined,
+        type: plantLogType(f.type),
+        title: f.text,
+        note: f.evidence.sourceText || undefined,
       })
       if ('id' in r) {
         createdLogId = createdLogId ?? r.id
         plantId = plantId ?? f.plantId
         statuser.push(forslagStatus(f))
       }
+    } else {
+      // Log-type uden matchet plante: kan ikke skrives til plant_logs_v2
+      // (plant_id NOT NULL). Teksten ligger allerede i optagelses-arkivet
+      // (voice_notes) → intet droppes. Tæl status, opret ingen domæne-række.
+      statuser.push(forslagStatus(f))
     }
   }
 
@@ -201,4 +226,25 @@ export async function behandlOptagelse(
     .eq('user_id', userId)
 
   return { status }
+}
+
+/**
+ * "Gem som note" — bruges ved tom fortolkning eller INTERPRETATION_INVALID
+ * (spec 2.3). Optagelsens tekst er ALLEREDE gemt af gemOptagelse; her
+ * markeres den blot som behandlet og beholdt i arkivet (status 'log'), uden
+ * at oprette log/opgave. Intet går tabt, selv når modellen fik en dårlig dag.
+ */
+export async function beholdSomNote(
+  optagelseId: string,
+): Promise<{ status: OptagelseStatus } | { error: string }> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+  const nu = new Date().toISOString()
+  const { error } = await supabase
+    .from('voice_notes')
+    .update({ status: 'log', processed_at: nu })
+    .eq('id', optagelseId)
+    .eq('user_id', userId)
+  if (error) return { error: error.message }
+  return { status: 'log' }
 }

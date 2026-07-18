@@ -175,7 +175,14 @@ export function OptagelserArkiv({ optagelser }: { optagelser: OptagelseRow[] }) 
                           <span aria-hidden style={{ flexShrink: 0, width: 20, height: 20, borderRadius: 5, marginTop: 1, border: `1.5px solid ${valgt ? '#3B4A2F' : 'rgba(36,48,31,0.3)'}`, background: valgt ? '#3B4A2F' : 'transparent', color: '#F4EFDC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>
                             {valgt ? '✓' : ''}
                           </span>
-                          <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#24301F' }}>{f.titel}</span>
+                          <span style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                            <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#24301F' }}>{f.text}</span>
+                            {f.evidence.sourceText && f.evidence.sourceText !== f.text && (
+                              <span style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 12.5, color: 'rgba(36,48,31,0.5)', lineHeight: 1.35 }}>
+                                Du sagde: «{f.evidence.sourceText}»
+                              </span>
+                            )}
+                          </span>
                         </button>
                       )
                     })}

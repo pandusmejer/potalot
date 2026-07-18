@@ -1,20 +1,19 @@
 'use server'
 
 /**
- * "Tal til din have" — inputmotoren (V19).
+ * "Tal til din have" — inputmotoren (v1).
  *
  * Server-action:
- *   fortolkTale(transcript)   → Claude foreslår 1-3 strukturerede ting
+ *   fortolkTale(transcript, ankerDato?) → 0-3 strukturerede forslag,
+ *   eller en kendt fejltype (INTERPRETATION_INVALID / STT_INTERPRET_FAILED).
  *
- * Godkendte forslag gemmes via optagelser-sporet (behandlOptagelse i
- * actions/optagelser.ts), dateret til optagelsens recorded_at.
+ * Fortolkeren (src/lib/tale-fortolk.ts) SKRIVER ikke i domænetabeller.
+ * Godkendte forslag gemmes separat via behandlOptagelse i
+ * actions/optagelser.ts, dateret til optagelsens recorded_at.
  *
- * Den producerer råstoffet til resten af Havebogen: noter,
- * observationer, høst (→ minder/vendepunkter) og opgaver.
- *
- * Skema-virkelighed (jf. migrations): note/observation/høst skrives
- * til plant_logs_v2, hvor plant_id er NOT NULL → de KRÆVER en plante.
- * Opgaver skrives til calendar_tasks, som godt kan stå uden plante.
+ * Skema-virkelighed (jf. migrations): log-typerne skrives til plant_logs_v2
+ * (plant_id NOT NULL → kræver plante når muligt); opgave/naeste_saeson
+ * skrives til calendar_tasks, som godt kan stå uden plante.
  */
 
 import { requireUser } from '@/lib/auth'
@@ -25,9 +24,23 @@ function idag(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
+/**
+ * Fortolk en transskription til forslag.
+ *
+ * Returtyper:
+ *  - { forslag }                    — 0-3 forslag (tom = intet brugbart sagt)
+ *  - { error, code }                — kendt, forventet fejl (vis + bevar tekst)
+ *
+ * `ankerDato` (YYYY-MM-DD) bruges til at løse tidsudtryk; udelades den,
+ * bruges i dag (optagelse fortolkes normalt umiddelbart efter den er lavet).
+ */
 export async function fortolkTale(
   transcript: string,
-): Promise<{ forslag: TaleForslag[] } | { error: string }> {
+  ankerDato?: string,
+): Promise<
+  | { forslag: TaleForslag[] }
+  | { error: string; code: 'INTERPRETATION_INVALID' | 'STT_INTERPRET_FAILED' }
+> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
 
@@ -44,9 +57,19 @@ export async function fortolkTale(
   }))
 
   try {
-    const forslag = await byggForslag({ transcript, plants, today: idag() })
-    return { forslag }
+    const res = await byggForslag({
+      transcript,
+      plants,
+      ankerDato: ankerDato ?? idag(),
+    })
+    if (!res.ok) {
+      return { error: res.message, code: res.code }
+    }
+    return { forslag: res.forslag }
   } catch {
-    return { error: 'Kunne ikke fortolke lige nu — prøv igen om lidt.' }
+    return {
+      error: 'Kunne ikke fortolke lige nu — prøv igen om lidt.',
+      code: 'STT_INTERPRET_FAILED',
+    }
   }
 }

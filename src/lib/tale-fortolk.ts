@@ -1,38 +1,68 @@
 /**
- * Tale-fortolkeren (V19) — hjernen i "Tal til din have".
+ * Tale-fortolkeren (v1) — hjernen i "Tal til din have".
  *
- * Tager en transskription af, hvad brugeren sagde i haven, og
- * omdanner den til 1-3 strukturerede forslag, brugeren kan godkende.
- * Ren funktion: ingen auth, ingen DB — så den kan testes isoleret.
- * Auth + gem ligger i src/actions/tale.ts.
+ * Tager en transskription af, hvad brugeren sagde i haven, og omdanner
+ * den til 0-3 strukturerede forslag, brugeren kan godkende. Ren funktion:
+ * ingen auth, ingen DB, ingen skrivning i domænetabeller — så den kan
+ * testes isoleret. Auth + persistering ligger i src/actions/tale.ts og
+ * src/actions/optagelser.ts.
  *
- * Råstof-reglen (Annas dom): det er DENNE funktion der gør Havebogen
- * selvforsynende med indhold — minder, vendepunkter, noter, opgaver.
+ * LÅSTE beslutninger (Docs/product/diktafon-v1-implementering.md):
+ *  - 7 typer (2.2), fallback-type `note` når intet andet passer sikkert.
+ *  - `text` = kort, sprogligt ryddet visningstekst; `evidence.sourceText`
+ *    = ordret udsnit fra transskriptionen. Modellen må rydde talesprog,
+ *    men ikke tilføje eller ændre betydning (2.1).
+ *  - `null` frem for gæt: felter der ikke er nævnt, sættes til null (2.5).
+ *  - Datoer løses til ISO (YYYY-MM-DD) med optagelsestidspunktet som anker;
+ *    aldrig relative strenge (2.5).
+ *  - Output valideres mod et fast Zod-skema; ved malformet svar forsøges
+ *    højst én kontrolleret reparation, ellers INTERPRETATION_INVALID og
+ *    intet gemmes (2.5).
  *
- * DB-virkelighed: plant_logs_v2.plant_id er NOT NULL. Derfor SKAL
- * note/observation/høst knyttes til en af brugerens planter; kan
- * ingen plante matches, bliver forslaget til en opgave (som godt
- * kan stå uden plante). Det håndhæves både i prompten og når der
- * gemmes.
+ * Skema-virkelighed: plant_logs_v2.plant_id er NOT NULL. Log-typerne
+ * (observation/hoest/problem/minde/note) knyttes derfor til en plante, når
+ * en kan matches; kan ingen matches, bevares forslaget stadig (teksten
+ * ligger i optagelses-arkivet) — det degraderes IKKE til en falsk opgave.
  */
 
+import { z } from 'zod'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 
-export type ForslagType = 'note' | 'observation' | 'hoest' | 'opgave'
+export type ForslagType =
+  | 'observation'
+  | 'opgave'
+  | 'hoest'
+  | 'problem'
+  | 'minde'
+  | 'naeste_saeson'
+  | 'note'
+
+export const FORSLAG_TYPER: ForslagType[] = [
+  'observation',
+  'opgave',
+  'hoest',
+  'problem',
+  'minde',
+  'naeste_saeson',
+  'note',
+]
+
+/** Typer der beskriver noget der skal gøres → gemmes som kalender-opgave. */
+export const OPGAVE_TYPER: ForslagType[] = ['opgave', 'naeste_saeson']
 
 export interface TaleForslag {
   /** Klient-id til markering i bekræftelses-UI'et */
   id: string
   type: ForslagType
-  /** Kort overskrift, max ~6 ord */
-  titel: string
-  /** Tæt på brugerens egne ord */
-  tekst: string
-  /** Matchet plante (kræves for note/observation/hoest) */
+  /** Kort, sprogligt ryddet visningstekst (hel sætning, ~max 10 ord) */
+  text: string
+  /** Matchet plante (log-typerne knyttes hertil når muligt) */
   plantId: string | null
   plantNavn: string | null
-  /** YYYY-MM-DD — kun opgaver, når et tidspunkt er nævnt */
+  /** YYYY-MM-DD — kun opgave/naeste_saeson når et tidspunkt er nævnt; ellers null */
   dato: string | null
+  /** Det brugeren faktisk sagde — ordret udsnit fra transskriptionen */
+  evidence: { sourceText: string }
 }
 
 export interface FortolkPlante {
@@ -41,36 +71,74 @@ export interface FortolkPlante {
   variety: string | null
 }
 
-const TYPER: ForslagType[] = ['note', 'observation', 'hoest', 'opgave']
+/**
+ * Resultatet af en fortolkning. `ok: true` med tom `forslag`-liste er en
+ * gyldig tilstand (ren snak / intet brugbart) — UI'et viser da tom-tilstanden.
+ * `ok: false` er en malformet-model-fejl: intet gemmes, teksten bevares.
+ */
+export type FortolkResultat =
+  | { ok: true; forslag: TaleForslag[] }
+  | { ok: false; code: 'INTERPRETATION_INVALID'; message: string }
 
-function systemPrompt(plants: FortolkPlante[], today: string): string {
+// ── Zod-skema for modellens rå output (struktur, ikke semantik) ──────────
+// Løst på plantId/dato med vilje: ukendt plante → null, ikke-ISO dato → null
+// normaliseres i kode. Zod fanger kun STRUKTURfejl (manglende felter, forkert
+// type-enum, tomme strenge) → dét udløser reparation/INTERPRETATION_INVALID.
+const RawItemSchema = z.object({
+  type: z.enum(FORSLAG_TYPER as [ForslagType, ...ForslagType[]]),
+  text: z.string().trim().min(1),
+  sourceText: z.string().trim().min(1),
+  plantId: z.string().nullable(),
+  dato: z.string().nullable(),
+})
+const RawOutputSchema = z.object({
+  forslag: z.array(RawItemSchema).max(3),
+})
+type RawItem = z.infer<typeof RawItemSchema>
+
+const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/
+
+function systemPrompt(plants: FortolkPlante[], ankerDato: string): string {
   const planteListe = plants.length
     ? plants
         .map(p => `- id:${p.id} · ${p.name}${p.variety ? ' ' + p.variety : ''}`)
         .join('\n')
     : '(brugeren har ingen aktive planter endnu)'
 
-  return `Du er Potalots havejournal-assistent. Brugeren har netop fortalt med sin stemme, hvad de så, gjorde eller planlægger i haven. Omdan det til 1-3 korte, strukturerede forslag, som brugeren kan godkende.
+  return `Du er Potalots havejournal-assistent. Brugeren har netop fortalt med sin stemme, hvad de så, gjorde, oplevede eller planlægger i haven. Omdan det til 0-3 korte, strukturerede forslag, som brugeren kan godkende.
 
-I dag er ${today}.
+Optagelsen er lavet ${ankerDato} (brug denne dato som anker, når du løser tidsudtryk).
 
 Brugerens aktive planter:
 ${planteListe}
 
-Svar KUN med ren JSON i dette format (ingen markdown, ingen forklaring):
-{"forslag":[{"type":"note","titel":"...","tekst":"...","plantId":"...","dato":null}]}
+Svar KUN med ren JSON i præcis dette format (ingen markdown, ingen forklaring):
+{"forslag":[{"type":"observation","text":"...","sourceText":"...","plantId":"...","dato":null}]}
+
+Felter pr. forslag:
+- type: én af observation | opgave | hoest | problem | minde | naeste_saeson | note.
+- text: KORT, sprogligt ryddet visningstekst. Du må fjerne fyldord og gøre talesprog til en læsbar sætning. Du må IKKE tilføje oplysninger eller ændre betydningen.
+- sourceText: det ORDRETTE udsnit af transskriptionen, som forslaget bygger på. Citér brugeren; ret ikke.
+- plantId: id fra listen ovenfor, hvis forslaget tydeligt handler om en konkret plante; ellers null. GÆT ALDRIG en plante der ikke er nævnt.
+- dato: YYYY-MM-DD, KUN for opgave/naeste_saeson og KUN hvis brugeren nævner et tidspunkt (fx "på tirsdag", "næste uge"). Løs det til en rigtig dato ud fra ankeret ovenfor. Ellers null. Skriv ALDRIG relative ord som "næste uge" i dato-feltet.
+
+Typernes betydning:
+- observation: en iagttagelse af en plantes tilstand ("tomaterne ser trætte ud").
+- opgave: noget der skal gøres ("husk at vande").
+- hoest: en høst ("første agurk plukket").
+- problem: sygdom, skadedyr eller skade ("meldug på squashen").
+- minde: et øjeblik værd at huske ("første blomst sprang ud i dag").
+- naeste_saeson: en idé eller note til en kommende sæson ("prøv en anden sort næste år").
+- note: meningsfuldt, men passer ikke sikkert i nogen af de andre. Brug den som sidste udvej — kast ALDRIG noget meningsfuldt væk.
 
 Regler:
-- type skal være én af: note, observation, hoest, opgave.
-- "note" og "observation" og "hoest" SKAL have et plantId fra listen ovenfor. Kan du ikke med rimelighed knytte forslaget til en konkret plante, så lav det i stedet til en "opgave" med plantId: null.
-- "hoest" bruges når brugeren fortæller om en høst (fx "første agurk plukket").
-- "opgave" bruges til noget der skal gøres. Sæt dato (YYYY-MM-DD) hvis brugeren nævner et tidspunkt ("i weekenden", "næste uge"); ellers null.
-- titel: kort, max ca. 6 ord. tekst: tæt på brugerens egne ord, hel sætning.
-- Lav kun forslag der faktisk ligger i det sagte. Find ikke på planter eller datoer der ikke er nævnt. Højst 3 forslag.`
+- Lav kun forslag der faktisk ligger i det sagte. Find ikke på planter, datoer eller detaljer.
+- Er intet brugbart sagt, så returnér {"forslag":[]}.
+- Højst 3 forslag.`
 }
 
-/** Trim Claude-svar til det første JSON-objekt og parse det robust. */
-function parseForslagJSON(raw: string): unknown {
+/** Trim modelsvar til det første JSON-objekt og parse det. */
+function udtrækJSON(raw: string): unknown {
   const start = raw.indexOf('{')
   const end = raw.lastIndexOf('}')
   if (start === -1 || end === -1 || end < start) return null
@@ -81,65 +149,108 @@ function parseForslagJSON(raw: string): unknown {
   }
 }
 
+async function kaldModel(system: string, brugerBesked: string): Promise<string> {
+  const anthropic = getAnthropicClient()
+  const response = await anthropic.messages.create({
+    model: CLAUDE_HAIKU,
+    max_tokens: 800,
+    system,
+    messages: [{ role: 'user', content: brugerBesked }],
+  })
+  const textBlock = response.content.find(b => b.type === 'text')
+  return textBlock && textBlock.type === 'text' ? textBlock.text : ''
+}
+
+/** Normalisér ét validt rå-item til et TaleForslag (plante-match + ISO-dato). */
+function normalisér(
+  raw: RawItem,
+  i: number,
+  plantById: Map<string, FortolkPlante>,
+): TaleForslag {
+  const plantId =
+    typeof raw.plantId === 'string' && plantById.has(raw.plantId)
+      ? raw.plantId
+      : null
+  const plante = plantId ? plantById.get(plantId)! : null
+
+  // Dato kun for opgave-typer og kun hvis den er en ægte ISO-dato; ellers null.
+  const dato =
+    OPGAVE_TYPER.includes(raw.type) &&
+    typeof raw.dato === 'string' &&
+    ISO_DATO.test(raw.dato)
+      ? raw.dato
+      : null
+
+  return {
+    id: `f${i}`,
+    type: raw.type,
+    text: raw.text.trim(),
+    plantId,
+    plantNavn: plante ? `${plante.name}${plante.variety ? ' ' + plante.variety : ''}` : null,
+    dato,
+    evidence: { sourceText: raw.sourceText.trim() },
+  }
+}
+
 /**
- * Fortolk en transskription → 1-3 forslag. Kaster ikke; returnerer
- * tom liste hvis Claude svarer uventet (kalderen viser så "prøv igen").
+ * Ren del af fortolkningen (ingen I/O): rå modelsvar → validerede forslag.
+ * Zod fanger STRUKTURfejl → `{ ok: false }`. Ved success normaliseres hvert
+ * item (plante-match, ISO-dato). Eksporteret så logikken kan testes isoleret.
+ */
+export function fortolkRåSvar(
+  rå: string,
+  plants: FortolkPlante[],
+): { ok: true; forslag: TaleForslag[] } | { ok: false; issues: string } {
+  const parsed = RawOutputSchema.safeParse(udtrækJSON(rå))
+  if (!parsed.success) {
+    return {
+      ok: false,
+      issues: parsed.error.issues
+        .map(iss => iss.path.join('.') + ': ' + iss.message)
+        .join('; '),
+    }
+  }
+  const plantById = new Map(plants.map(p => [p.id, p]))
+  return {
+    ok: true,
+    forslag: parsed.data.forslag.map((r, i) => normalisér(r, i, plantById)),
+  }
+}
+
+/**
+ * Fortolk en transskription → 0-3 forslag.
+ *
+ * Flow (2.5): kald model → parse → Zod-validér. Ved struktur-fejl forsøges
+ * ÉN kontrolleret reparation; fejler den også, returneres
+ * INTERPRETATION_INVALID (intet gemmes, teksten bevares i UI'et).
+ * Kaster ikke — kalderen (actions/tale.ts) fanger netværks-/API-fejl separat.
  */
 export async function byggForslag(args: {
   transcript: string
   plants: FortolkPlante[]
-  today: string
-}): Promise<TaleForslag[]> {
+  ankerDato: string
+  /** Injicerbart modelkald (test-seam). Default = det rigtige Haiku-kald. */
+  _kald?: (system: string, besked: string) => Promise<string>
+}): Promise<FortolkResultat> {
   const transcript = args.transcript.trim()
-  if (!transcript) return []
+  if (!transcript) return { ok: true, forslag: [] }
 
-  const anthropic = getAnthropicClient()
-  const response = await anthropic.messages.create({
-    model: CLAUDE_HAIKU,
-    max_tokens: 700,
-    system: systemPrompt(args.plants, args.today),
-    messages: [{ role: 'user', content: transcript }],
-  })
-  const textBlock = response.content.find(b => b.type === 'text')
-  if (!textBlock || textBlock.type !== 'text') return []
+  const system = systemPrompt(args.plants, args.ankerDato)
+  const kald = args._kald ?? kaldModel
 
-  const parsed = parseForslagJSON(textBlock.text) as
-    | { forslag?: unknown[] }
-    | null
-  if (!parsed || !Array.isArray(parsed.forslag)) return []
+  // Forsøg 1 + præcis én reparation.
+  let besked = transcript
+  for (let forsøg = 0; forsøg < 2; forsøg++) {
+    const rå = await kald(system, besked)
+    const res = fortolkRåSvar(rå, args.plants)
+    if (res.ok) return { ok: true, forslag: res.forslag }
+    // Kontrolleret reparation: bed modellen rette til gyldigt skema, én gang.
+    besked = `Dit forrige svar matchede ikke det krævede JSON-skema (${res.issues}). Her er teksten igen — svar KUN med gyldig JSON i det format, jeg beskrev:\n\n${transcript}`
+  }
 
-  const plantById = new Map(args.plants.map(p => [p.id, p]))
-
-  return parsed.forslag
-    .slice(0, 3)
-    .map((r, i): TaleForslag | null => {
-      const o = r as Record<string, unknown>
-      let type = (typeof o.type === 'string' ? o.type : 'note') as ForslagType
-      if (!TYPER.includes(type)) type = 'note'
-      const titel = typeof o.titel === 'string' ? o.titel.trim() : ''
-      const tekst = typeof o.tekst === 'string' ? o.tekst.trim() : ''
-      if (!titel && !tekst) return null
-
-      const plantId = typeof o.plantId === 'string' && plantById.has(o.plantId) ? o.plantId : null
-      // Håndhæv NOT NULL-reglen: note/observation/hoest uden gyldig
-      // plante kan ikke gemmes som log → degradér til opgave.
-      if (type !== 'opgave' && !plantId) type = 'opgave'
-
-      const dato =
-        type === 'opgave' && typeof o.dato === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(o.dato)
-          ? o.dato
-          : null
-
-      const plante = plantId ? plantById.get(plantId) : null
-      return {
-        id: `f${i}`,
-        type,
-        titel: titel || tekst.slice(0, 40),
-        tekst: tekst || titel,
-        plantId,
-        plantNavn: plante ? `${plante.name}${plante.variety ? ' ' + plante.variety : ''}` : null,
-        dato,
-      }
-    })
-    .filter((f): f is TaleForslag => f !== null)
+  return {
+    ok: false,
+    code: 'INTERPRETATION_INVALID',
+    message: 'Potalot kunne ikke dele noten sikkert op.',
+  }
 }
