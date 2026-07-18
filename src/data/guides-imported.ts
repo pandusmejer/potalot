@@ -1795,6 +1795,122 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "tomat-gardeners-delight",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Gardener's Delight",
+    "latinName": "Solanum lycopersicum 'Gardener's Delight'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Klassisk rød cherrytomat med saftig sødme, høj vækst og lang høstperiode.",
+    "difficulty": "easy",
+    "tags": [
+      "cherrytomat",
+      "roed",
+      "klassisk",
+      "ranketomat",
+      "aabenbestoevet"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "ranketomat",
+      "height": "150-220 cm",
+      "maturityDays": "ca. 65-75 dage",
+      "primaryUse": "Frisk spisning, salater og madpakker"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Gardener's Delight er en klassisk rød cherrytomat med saftige frugter og en tydelig balance mellem sødme og syre. Den sætter mange små tomater i klaser og kan levere en lang, løbende høst.\n\nPlanten vokser som ranketomat og skal bindes op. Den kan dyrkes i drivhus eller på et varmt, solrigt sted ude."
+      },
+      {
+        "key": "vaelg-gardener-s-delight-hvis",
+        "title": "Vælg Gardener's Delight hvis",
+        "body": "Vælg sorten, hvis du vil have en alsidig cherrytomat med klassisk tomatsmag. Den fungerer direkte fra planten, i salater, madpakker og hurtige varme retter."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-gardener-s-delight-eller-sungold",
+        "title": "Gardener's Delight eller Sungold?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Gardener's Delight hvis",
+            "items": [
+              "du foretrækker røde tomater med både sødme og syre",
+              "du vil kunne gemme egne frø",
+              "du ønsker en klassisk, alsidig cherrytomat"
+            ]
+          },
+          {
+            "heading": "Vælg Sungold hvis",
+            "items": [
+              "du vil have orange frugter og meget høj sødme",
+              "du prioriterer en særlig tidlig snacktomat",
+              "du accepterer, at modne frugter lettere revner"
+            ]
+          }
+        ],
+        "intro": "Begge giver små frugter over en lang periode, men smagen og dyrkningsoplevelsen er forskellig."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Gardener's Delight er kendt for kraftig, høj vækst og løbende frugtsætning. Den kræver derfor mere opbinding end kompakte busktomater, men giver til gengæld tomater over en længere periode.\n\nSorten har været dyrket længe, og frøstammer fra forskellige leverandører kan variere. Brug frøposens angivelse af modenhed og højde som det mest præcise pejlemærke for netop dine frø."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Gardener's Delight vokser kraftigt og danner lange klaser. Bind derfor planten op i takt med væksten, og støt tunge klaser, før de trækker i stænglen.\n\nPå friland bør du give sorten det varmeste og mest beskyttede sted, du har. En sydvendt mur eller en enkel overdækning kan hjælpe frugterne med at modne og holde bladene tørrere. Planten kan danne tæt løv, men fjern kun blade, når du konkret forbedrer luft eller lys omkring klaserne."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugterne er fuldt røde, blanke og let bløde. Pluk hele klasen, hvis frugterne modner samlet, eller tag dem enkeltvis, efterhånden som de bliver klar.\n\nSmagen kommer bedst frem ved stuetemperatur. Brug dem friske, halver dem i salater eller bag dem kort, så sødmen koncentreres uden at frugterne mister al struktur."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Gardener's Delight er normalt åbenbestøvet, så du kan gemme frø fra en sund, typisk frugt. Lad frøene gære kort i lidt vand, skyl dem rene og tør dem grundigt, før de gemmes.\n\nTomater selvbestøver ofte, men krydsning kan forekomme. Vil du bevare sorten så sikkert som muligt, skal du isolere blomster eller holde afstand til andre tomatsorter."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet fra såning til høst.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/293872/solanum-lycopersicum-gardeners-delight/details",
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tomat-san-marzano",
     "plantName": "Tomat",
     "pluralName": null,
@@ -1910,6 +2026,124 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/plantekort/tomat-san-marzano.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tomat-sungold",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Sungold",
+    "latinName": "Solanum lycopersicum 'Sungold'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Tidlig orange cherrytomat med intens sødme, frugtig smag og lange, rige klaser.",
+    "difficulty": "easy",
+    "tags": [
+      "cherrytomat",
+      "orange",
+      "soed",
+      "tidlig",
+      "f1-hybrid"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "ranketomat",
+      "height": "150-220 cm",
+      "maturityDays": "ca. 57-65 dage",
+      "primaryUse": "Frisk spisning og salater"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Sungold er en orange cherrytomat, som især dyrkes for sin intense sødme og frugtige smag. Den sætter lange klaser med små, runde frugter og begynder ofte at modne tidligere end større tomatsorter.\n\nPlanten vokser kraftigt som ranketomat. Den fortsætter med at sætte nye klaser gennem sommeren og kan høstes langt ind i efteråret under glas."
+      },
+      {
+        "key": "vaelg-sungold-hvis",
+        "title": "Vælg Sungold hvis",
+        "body": "Vælg Sungold, hvis du vil have en tomat til at spise direkte fra planten. Den passer godt til familier, små haver og dyrkere, der prioriterer tidlig og løbende høst frem for store frugter til sauce."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-sungold-eller-roed-cherrytomat",
+        "title": "Sungold eller rød cherrytomat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Sungold hvis",
+            "items": [
+              "du vil have meget søde, orange frugter",
+              "du prioriterer tidlig høst",
+              "du høster ofte og spiser tomaterne hurtigt"
+            ]
+          },
+          {
+            "heading": "Vælg en fast rød cherrytomat hvis",
+            "items": [
+              "du vil gemme frugterne lidt længere",
+              "du foretrækker mere klassisk tomatsmag",
+              "du vil mindske risikoen for revner"
+            ]
+          }
+        ],
+        "intro": "Forskellen handler mest om smag, farve og frugtens holdbarhed."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Sungold regnes som tidlig og kan under gode forhold give de første modne frugter omkring 58-65 dage efter udplantning. Den producerer mange små frugter frem for færre store.\n\nFrugterne er modne, når de skifter fra gul til varm, dyb orange. Smagen bliver sødere, jo længere de hænger, men meget modne frugter revner lettere."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Sungolds største svaghed er frugternes tendens til at revne. Hold vandingen stabil, og høst modne frugter før kraftig regn eller efter en periode med tørke. Pluk ofte, især i varmt vejr.\n\nPlanten er livskraftig og skal bindes op løbende. Knib sideskud som på andre ranketomater, og sørg for luft mellem bladene. Lange klaser kan blive tunge, men bør normalt ikke beskæres, medmindre planten tydeligt er overbelastet."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Pluk Sungold, når frugten er helt orange og slipper let. Spis den frisk, brug den i salater eller bag hele tomater kort i ovnen. Den høje sødme passer også godt sammen med syrlige ingredienser.\n\nFrugterne holder ikke lige så længe som fastere sorter. Læg dem i ét lag ved stuetemperatur og brug dem hurtigt. Køleskab dæmper smagen."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Sungold er en F1-hybrid. Frø fra dine egne frugter vil derfor ikke nødvendigvis give planter med samme smag, farve eller vækst næste år. Køb nye frø, hvis du vil dyrke den samme sort igen."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for ranketomater.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/293979/solanum-lycopersicum-sungold/details",
+      "https://www.johnnyseeds.com/vegetables/tomatoes/cherry-tomatoes/sun-gold-f1-tomato-seed-770.html",
+      "https://www.johnnyseeds.com/growers-library/vegetables/tomatoes/library-vegetables-grow-rainbow-cherry-tomatoes.html",
+      "https://www.johnnyseeds.com/research-farm/3-new-johnnys-bred-stories-by-rob-johnston.html"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
