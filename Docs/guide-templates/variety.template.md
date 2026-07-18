@@ -42,3 +42,25 @@ Potalot-stemme: rolig, konkret. Se editorial-rules.md.
 
 ## Hvem passer den til
 <Begynder/øvet? Lille/stor have? Hvad skal man ville med den.>
+
+<!--
+MODULBLOKKE (:::): kan lægges inde i en sektions content. Brug KUN når de
+hjælper læseren — ikke som pynt. En guide behøver ingen. Fuld syntaks: se
+editorial-rules.md. Til sortsguides passer typisk :::fact (denne sort vs. et
+alternativ), :::guide (teknik) og :::next-guide (peg på en søster-sort).
+Links må kun pege på slugs der findes eller er planlagt.
+Korte eksempler:
+
+:::guide
+slug: opbinding-af-tomater
+title: Sådan opbinder du tomater
+description: Ranketomater bliver tunge — støt dem fra start.
+:::
+
+:::next-guide
+slug: tomat-roma
+title: Sammenlign med Roma
+description: Roma og San Marzano er begge pastatomater, men adskiller sig i vækst og smag.
+label: Læs om Roma
+:::
+-->

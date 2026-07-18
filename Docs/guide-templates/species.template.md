@@ -48,3 +48,21 @@ Potalot-stemme: rolig, konkret, uden overdrivelser. Se editorial-rules.md.
 ## Forskelle mellem sortstyper
 <Overordnede sortstyper inden for arten (fx salattomat vs. pastatomat), så
 sortsguiderne kan pege tilbage hertil uden at gentage.>
+
+<!--
+MODULBLOKKE (:::): kan lægges inde i en sektions content. Brug KUN når de
+hjælper læseren — ikke som pynt. En guide behøver ingen. Fuld syntaks +
+hvilke blokke der passer til arts- vs. sortsguides: se editorial-rules.md.
+Til artsguides passer typisk :::fact (sammenlign sortstyper) og :::related-guides.
+Kort eksempel (sammenligning):
+
+:::fact{variant="comparison" title="Ranke eller busk?"}
+### Ranketomat hvis
+- du har højde/drivhus
+- du vil have lang høst
+
+### Busktomat hvis
+- du dyrker i krukke
+- du vil have alt på én gang
+:::
+-->

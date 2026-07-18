@@ -35,6 +35,80 @@ indhold og tone.
 - `summary`: 1-2 sætninger, ≤ 200 tegn. Vises på kort.
 - Sektioner: 2-5 korte afsnit hver. Hellere præcist end langt.
 
+## Modulblokke i sektioner (`:::`)
+
+Indholdet er ikke kun prosa. Fire modulblokke kan lægges **inde i en sektions
+`content`-felt** (det er fri markdown). Build bevarer indholdet **ordret**;
+import tolker `:::`-blokkene.
+
+**Brug dem kun, når de hjælper læseren — ikke som obligatorisk pynt.** En guide
+behøver ingen af dem, og ingen guide skal have alle fire. Hellere få, velvalgte
+blokke end et botanisk dashboard.
+
+**Links (`slug:`) må kun pege på en guide, der findes eller er planlagt** — ellers
+et dødt link.
+
+### `:::fact` — sammenligning (kræver mindst 2 kolonner)
+```
+:::fact{variant="comparison" title="San Marzano eller salattomat?"}
+Valgfri intro-linje.
+
+### Vælg San Marzano hvis
+- du vil lave sauce
+- du vil have fast frugtkød
+
+### Vælg salattomat hvis
+- du vil spise den frisk
+- du vil snacke fra planten
+
+Valgfri konklusions-linje.
+:::
+```
+
+### `:::guide` — link til en teknik-guide
+```
+:::guide
+slug: opbinding-af-tomater
+title: Sådan opbinder du tomater
+description: Kort beskrivelse.
+:::
+```
+`slug` + `title` + `description` er alle påkrævet.
+
+### `:::next-guide` — "læs videre"-pointer til ÉN guide
+```
+:::next-guide
+slug: tomat-roma
+title: Sammenlign med Roma
+description: Kort tekst.
+label: Læs om Roma
+:::
+```
+`slug` + `title` + `description` + `label` påkrævet.
+
+### `:::related-guides` — flere relaterede guides
+```
+:::related-guides
+#### Roma
+slug: tomat-roma
+Kort beskrivelse.
+
+#### Sungold
+slug: tomat-sungold
+Kort beskrivelse.
+:::
+```
+Mindst ét item; hvert item = `#### overskrift` + `slug:` + beskrivelse.
+
+### Hvilke blokke passer hvor
+
+| Blok | Artsguide | Sortsguide |
+|------|-----------|------------|
+| `:::fact` (sammenligning) | sortstyper (fx ranke vs. busk) | denne sort vs. et alternativ |
+| `:::guide` (teknik) | ✅ opbinding, knibning … | ✅ |
+| `:::next-guide` | sjældnere | ✅ peg på en søster-sort |
+| `:::related-guides` | ✅ relaterede sorter/guides | sjældnere |
+
 ## Sikkerheds-fakta (menneske skal tjekke)
 
 Følgende SKAL et menneske verificere før publicering — de kan skade brugeren
