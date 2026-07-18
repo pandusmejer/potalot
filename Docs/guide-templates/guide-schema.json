@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PotAlot guide",
+  "description": "Kontrakt for en genereret guide. AI'en returnerer JSON der matcher dette; guides:build laver det om til content/guides/<slug>.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "guideLevel", "plantName", "primaryCategoryId", "summary", "sections"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "kebab-case, ae/oe/aa, ingen accenter. Art: 'tomat'. Sort: 'tomat-san-marzano'."
+    },
+    "guideLevel": { "enum": ["species", "variety"] },
+    "parentSlug": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Kun sortsguides: slug på artsguiden sorten hører under."
+    },
+    "plantName": { "type": "string", "minLength": 1 },
+    "variety": {
+      "type": ["string", "null"],
+      "description": "Kun sortsguides. Art: null."
+    },
+    "latinName": { "type": ["string", "null"] },
+    "primaryCategoryId": { "enum": ["fro", "loeg", "knolde", "buske", "traeer", "stauder"] },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 200,
+      "description": "1-2 sætninger. Vises på kort — hold den kort."
+    },
+    "difficulty": { "enum": ["easy", "medium", "hard"] },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "quickFacts": {
+      "type": "object",
+      "description": "Strukturerede fakta. AI'en må KUN udfylde det, den har fra inputarket — ikke opfinde tal.",
+      "additionalProperties": false,
+      "properties": {
+        "preCultivation": { "type": "boolean" },
+        "sowingMonths": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "directSowingMonths": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "plantingOutMonths": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "harvestMonths": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "light": { "enum": ["full_sun", "partial_shade", "shade"] },
+        "water": { "enum": ["low", "regular", "high"] },
+        "soil": { "type": "string" },
+        "germinationTemperature": { "type": "string" },
+        "germinationDays": { "type": "string" },
+        "plantSpacing": { "type": "string" },
+        "rowSpacing": { "type": "string" },
+        "sowingDepthMm": { "type": "integer" },
+        "frostSensitive": { "type": "boolean" },
+        "minimumTemperature": { "type": "string" },
+        "growthType": { "type": "string" },
+        "height": { "type": "string" },
+        "maturityDays": { "type": "string" },
+        "primaryUse": { "type": "string" }
+      }
+    },
+    "calendarRules": { "type": "array", "description": "Som regel tom []; kalenderregler sættes separat." },
+    "sourceLinks": { "type": "array", "items": { "type": "string", "format": "uri" } },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Prosa-sektioner i rækkefølge. heading bliver en ## overskrift, content er markdown.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["heading", "content"],
+        "properties": {
+          "heading": { "type": "string", "minLength": 1 },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "guideLevel": { "const": "variety" } } },
+      "then": { "required": ["parentSlug", "variety"] }
+    }
+  ]
+}

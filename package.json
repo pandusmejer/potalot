@@ -10,7 +10,9 @@
     "import:guides": "npx tsx scripts/import-guides.ts",
     "scan:images": "npx tsx scripts/scan-images.ts",
     "check:images": "npx tsx scripts/check-images.ts",
-    "add:photo": "npx tsx scripts/add-photo.ts"
+    "add:photo": "npx tsx scripts/add-photo.ts",
+    "guides:build": "npx tsx scripts/guides-build.ts",
+    "guides:validate": "npx tsx scripts/guides-validate.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

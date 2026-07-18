@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Forvandlinger asset-reserve (afviste/kandidat-fotos — kun lokalt)
 public/assets/forvandlinger/**/_reserve/
+
+# Midlertidig foto-indbakke — Claude henter herfra, committes aldrig
+_foto-indbakke/
