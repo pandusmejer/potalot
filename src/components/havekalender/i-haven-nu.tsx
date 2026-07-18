@@ -33,7 +33,7 @@ import Link from 'next/link'
 import {
   Sprout, Flower2, RefreshCw, CalendarDays, Clock, CheckCheck, CalendarCheck, Coffee, Plus,
 } from 'lucide-react'
-import { erIDag, erForsinket, idag } from '@/lib/datetime'
+import { erIDag, erForsinket, erForsinketOpgave, idag } from '@/lib/datetime'
 import type { CalendarTask } from '@/lib/types'
 import type { DagensFokus, FokusHandling } from '@/lib/kalender/dagens-fokus'
 
@@ -142,7 +142,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
   const userIDag   = aaben.filter(t => erIDag(t.date))
   const userUge    = aaben.filter(t => erIDag(t.date) || (!erForsinket(t.date) && erInden(t.date, 7)))
   const userMaaned = aaben.filter(t => erIDag(t.date) || (!erForsinket(t.date) && erInden(t.date, 30)))
-  const forsinkede = aaben.filter(t => erForsinket(t.date))
+  const forsinkede = aaben.filter(t => erForsinketOpgave(t.date, t.createdAt))
   const afsluttede = tasks.filter(t => t.status === 'completed').slice(0, 20)
 
   const antal = (derived: FokusHandling[], user: CalendarTask[]) =>

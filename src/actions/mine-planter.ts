@@ -287,12 +287,18 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
       allGuides
     )
     if (guide) {
+      // Ved en TILBAGEVIRKENDE såning (sådato i fortiden) ville guidens gøremål
+      // lande i fortiden og oversvømme kalenderen som "forsinket". Dem opretter
+      // vi ikke — Potalot ved ikke om brugeren allerede har gjort dem (Anna
+      // 16/7). Kun gøremål på/efter i dag lægges i kalenderen; historiske
+      // milepæle kan indhentes manuelt (HistorikIndhent).
+      const idagStr = new Date().toISOString().slice(0, 10)
       const generated = filterRelevantTasks(generateTasksFromGuide({
         guide,
         sowDate: input.date,
         plantId,
         inventoryItemId: inv.id as string,
-      }))
+      })).filter(t => t.date >= idagStr)
       if (generated.length > 0) {
         const taskRows = generated.map(t => ({
           user_id: userId,

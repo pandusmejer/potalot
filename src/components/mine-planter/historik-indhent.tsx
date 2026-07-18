@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useSyncExternalStore } from 'react'
-import { History, Activity, Ruler, X } from 'lucide-react'
+import { History, Activity, Ruler, X, Sprout, ArrowUpRight, TreePine, Wheat } from 'lucide-react'
 import { LogForm } from '@/components/mine-planter/log-form'
 
 const sans = 'var(--font-manrope)'
@@ -93,6 +93,16 @@ export function HistorikIndhent({
       <div className="flex flex-wrap gap-2">
         <LogForm plantId={plantId} defaultType="health" trigger={indhentChip(<Activity className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Registrér trivsel')} />
         <LogForm plantId={plantId} defaultType="height_measurement" trigger={indhentChip(<Ruler className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Mål højden')} />
+      </div>
+
+      <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.5)', margin: '16px 0 8px' }}>
+        Kendte milepæle <span style={{ fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>(vælg den dato de skete)</span>
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <LogForm plantId={plantId} defaultType="germination" trigger={indhentChip(<Sprout className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Spiret')} />
+        <LogForm plantId={plantId} defaultType="repotting" trigger={indhentChip(<ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Pottet om')} />
+        <LogForm plantId={plantId} defaultType="planting_out" trigger={indhentChip(<TreePine className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Udplantet')} />
+        <LogForm plantId={plantId} defaultType="harvest" trigger={indhentChip(<Wheat className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Høstet')} />
       </div>
     </section>
   )

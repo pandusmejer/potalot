@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { saaFroeFraInventory } from '@/actions/mine-planter'
 import { getGardenLocations } from '@/actions/garden-locations'
-import { idag } from '@/lib/datetime'
+import { idag, formatDatoKort } from '@/lib/datetime'
 import { GROWING_LOCATION_META, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { InventoryItem, GrowingLocation, GardenLocation } from '@/lib/types'
 
@@ -245,9 +245,10 @@ export function NewPlantDialog({ inventory, children }: Props) {
               Så {selected.name}{selected.variety ? ` — ${selected.variety}` : ''}
             </DialogTitle>
             <DialogDescription>
-              Opretter en aktiv plante i Mine planter med en initial log-entry.
-              Hvis der er en tilknyttet guide, oprettes også relevante opgaver
-              i kalenderen.
+              Opretter en plante i Mine planter og kobler den til denne frøpost.
+              Vælg den faktiske sådato — også en tidligere — så kalender og
+              Havebog regner fra den. Har frøet en guide, lægges kommende
+              gøremål i kalenderen.
             </DialogDescription>
 
             <form onSubmit={(e) => { e.preventDefault(); submitSowing() }} className="space-y-3">
@@ -426,13 +427,23 @@ export function NewPlantDialog({ inventory, children }: Props) {
             </div>
             <div>
               <p className="font-serif text-2xl text-foreground">
-                {success.merged ? 'Såning tilføjet' : 'Plante aktiveret!'}
+                {success.merged ? 'Såning tilføjet' : `${selected?.variety ?? selected?.name ?? 'Planten'} er i Mine planter`}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {success.merged
-                  ? 'Føjet til din eksisterende dyrkning af samme sort.'
-                  : `Velkommen til Mine planter. ${success.tasksCreated} ${success.tasksCreated === 1 ? 'gøremål er' : 'gøremål er'} lagt i kalenderen.`}
-              </p>
+              {/* Ærlig kvittering — kun handlinger der faktisk skete. */}
+              <div className="text-sm text-muted-foreground mt-1.5 space-y-0.5">
+                {success.merged ? (
+                  <p>Føjet til din eksisterende dyrkning af samme sort.</p>
+                ) : (
+                  <>
+                    <p>Sået {formatDatoKort(date)} · koblet til din frøpost.</p>
+                    <p>
+                      {success.tasksCreated > 0
+                        ? `${success.tasksCreated} gøremål lagt i kalenderen.`
+                        : 'Kalenderen regner fra sådatoen.'}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}

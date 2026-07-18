@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Sprout, Leaf, Flower2 } from 'lucide-react'
 import { saaFroeFraInventory } from '@/actions/mine-planter'
-import { idag } from '@/lib/datetime'
+import { idag, formatDatoKort } from '@/lib/datetime'
 import { GROWING_LOCATION_META } from '@/lib/constants'
 import type { GrowingLocation } from '@/lib/types'
 
@@ -19,10 +19,12 @@ interface Props {
   inventoryItemId: string
   /** Foreslåede placeringer fra inventory item */
   suggestedLocations?: GrowingLocation[]
+  /** Sort-/artsnavn til den ærlige bekræftelse ("Padron er i Mine planter"). */
+  itemLabel?: string
   children?: React.ReactNode
 }
 
-export function SowDialog({ inventoryItemId, suggestedLocations = [], children }: Props) {
+export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel, children }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -134,13 +136,23 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
             </div>
             <div>
               <p className="font-serif text-2xl text-foreground">
-                {success.merged ? 'Såning tilføjet' : 'Plante aktiveret!'}
+                {success.merged ? 'Såning tilføjet' : `${itemLabel ?? 'Planten'} er i Mine planter`}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {success.merged
-                  ? 'Føjet til din eksisterende dyrkning af samme sort.'
-                  : `Velkommen til Mine planter. ${success.tasksCreated} ${success.tasksCreated === 1 ? 'gøremål er' : 'gøremål er'} lagt i kalenderen.`}
-              </p>
+              {/* Ærlig kvittering — kun handlinger der faktisk skete. */}
+              <div className="text-sm text-muted-foreground mt-1.5 space-y-0.5">
+                {success.merged ? (
+                  <p>Føjet til din eksisterende dyrkning af samme sort.</p>
+                ) : (
+                  <>
+                    <p>Sået {formatDatoKort(date)} · koblet til din frøpost.</p>
+                    <p>
+                      {success.tasksCreated > 0
+                        ? `${success.tasksCreated} gøremål lagt i kalenderen.`
+                        : 'Kalenderen regner fra sådatoen.'}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         ) : mergePrompt ? (
@@ -166,8 +178,9 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], children }
           <>
         <DialogTitle>Så et frø</DialogTitle>
         <DialogDescription>
-          Opretter en aktiv plante i Mine planter med en initial log-entry.
-          Hvis der er en tilknyttet guide, oprettes også relevante opgaver i kalenderen.
+          Opretter en plante i Mine planter og kobler den til denne frøpost. Vælg
+          den faktiske sådato — også en tidligere — så kalender og Havebog regner
+          fra den. Har frøet en guide, lægges kommende gøremål i kalenderen.
         </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">

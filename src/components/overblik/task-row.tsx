@@ -9,7 +9,7 @@ import { CompleteTaskDialog } from '@/components/havekalender/complete-task-dial
 import { TaskActions } from '@/components/havekalender/task-actions'
 import { TASK_TYPE_META, TASK_PRIORITY_META } from '@/lib/constants'
 import { SourceChip, taskSourceLabel } from '@/components/havekalender/source-chip'
-import { formatDatoKort, venligDato, erForsinket } from '@/lib/datetime'
+import { formatDatoKort, venligDato, erForsinketOpgave } from '@/lib/datetime'
 import { completeTask, uncompleteTask } from '@/actions/havekalender'
 import type { CalendarTask, PlantLogType } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -31,7 +31,7 @@ export function TaskRow({ task, compact = false, showSource = false }: { task: C
 
   const typeMeta = TASK_TYPE_META[task.taskType]
   const priMeta  = TASK_PRIORITY_META[task.priority]
-  const forsinket = erForsinket(task.date) && task.status === 'open'
+  const forsinket = erForsinketOpgave(task.date, task.createdAt) && task.status === 'open'
   const completed = task.status === 'completed'
   const IconCmp = ((LucideIcons as unknown) as Record<string, ComponentType<SVGProps<SVGSVGElement>>>)[typeMeta.icon] ?? LucideIcons.ListTodo
 
