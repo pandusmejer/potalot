@@ -6,6 +6,7 @@ import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { revalidatePath } from 'next/cache'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
+import { normalizeGuideKey } from '@/lib/guides/normalize-key'
 import type {
   Guide, GuideQuickFacts, GuideSection, GuideCalendarRule,
   PrimaryCategoryId, Difficulty, GuideStatus, GuideVisibility, GuideReviewStatus, GuideLevel,
@@ -88,6 +89,43 @@ function rowToGuide(row: GuideRow): Guide {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
+}
+
+/**
+ * Find en genbrugelig guide til et navn(+sort) og foretræk masteren.
+ *
+ * Matcher på den DELTE normaliseringsnøgle (normalizeGuideKey), så apostrof-
+ * og whitespace-varianter i sortsnavnet ("Gardener's Delight" vs "Gardeners
+ * Delight") stadig kobler til master-guiden — ikke udløser et AI-udkast.
+ * ILIKE på plant_name er kun et groft prefilter; den præcise afgørelse sker på
+ * den normaliserede nøgle i JS. Master-guides (user_id = NULL) vinder via
+ * nullsFirst, dernæst ældste. Har item en SORT → kræv sortsmatch; ellers kun
+ * arts-guide (variety IS NULL) — vi kobler ALDRIG en arts-guide til en sort.
+ */
+async function findReusableGuideId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  plantName: string,
+  variety: string | null,
+): Promise<string | null> {
+  const nameKey = normalizeGuideKey(plantName)
+  const varietyKey = variety ? normalizeGuideKey(variety) : null
+
+  const { data } = await supabase
+    .from('guides')
+    .select('id, plant_name, variety, user_id')
+    .ilike('plant_name', plantName)
+    .order('user_id', { ascending: true, nullsFirst: true })
+    .order('created_at', { ascending: true })
+
+  if (!data) return null
+  const match = data.find(row => {
+    if (normalizeGuideKey(row.plant_name as string) !== nameKey) return false
+    if (varietyKey) {
+      return row.variety != null && normalizeGuideKey(row.variety as string) === varietyKey
+    }
+    return row.variety == null
+  })
+  return match ? (match.id as string) : null
 }
 
 export async function getAllGuides(): Promise<Guide[]> {
@@ -414,16 +452,9 @@ export async function ensureGuideForPlant(plantId: string): Promise<
 
   // 1:1-match (vidensmodel): har planten en SORT → match navn+sort (sorts-
   // guide); ellers navn + ingen sort (arts-guide). Master-guides (user_id =
-  // NULL) foretrækkes via nullsFirst.
-  let matchQuery = supabase.from('guides').select('id').ilike('plant_name', plantName)
-  matchQuery = variety ? matchQuery.ilike('variety', variety) : matchQuery.is('variety', null)
-  const { data: existing } = await matchQuery
-    .order('user_id', { ascending: true, nullsFirst: true })
-    .order('created_at', { ascending: true })
-    .limit(1)
-
-  if (existing && existing.length > 0) {
-    const guideId = existing[0].id as string
+  // NULL) foretrækkes, og matchning sker på den normaliserede nøgle.
+  const guideId = await findReusableGuideId(supabase, plantName, variety)
+  if (guideId) {
     await supabase
       .from('plants_v2')
       .update({ guide_id: guideId, updated_at: new Date().toISOString() })
@@ -660,16 +691,10 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
   // 1:1-match (vidensmodel): en guide skal matche PRÆCIS det uploadede.
   // Har item en SORT → match navn+sort (sorts-guide). Ellers navn + ingen sort
   // (arts-guide). Vi attacher ALDRIG en arts-guide til en sort. Master-guides
-  // (user_id = NULL) foretrækkes via nullsFirst.
-  let matchQuery = supabase.from('guides').select('id').ilike('plant_name', plantName)
-  matchQuery = variety ? matchQuery.ilike('variety', variety) : matchQuery.is('variety', null)
-  const { data: existing } = await matchQuery
-    .order('user_id', { ascending: true, nullsFirst: true })
-    .order('created_at', { ascending: true })
-    .limit(1)
-
-  if (existing && existing.length > 0) {
-    const guideId = existing[0].id as string
+  // (user_id = NULL) foretrækkes, og matchning sker på den normaliserede nøgle,
+  // så en master genbruges frem for at generere et overflødigt AI-udkast.
+  const guideId = await findReusableGuideId(supabase, plantName, variety)
+  if (guideId) {
     await supabase
       .from('inventory_items')
       .update({ guide_id: guideId, updated_at: new Date().toISOString() })

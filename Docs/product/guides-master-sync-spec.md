@@ -1,7 +1,14 @@
 # Spec: Synkronisering af Potalot-masterguides → DB-tabellen `guides`
 
-Status: **SPEC — ikke implementeret. Ingen live-DB-skrivning.**
+Status: **IMPLEMENTERET + kørt mod live 18/7.** 13 masters oprettet (5 art + 8 sort), idempotens bekræftet.
 Forfatter-kontekst: fundet under promovering af `tomat-sungold` + `tomat-gardeners-delight` (18/7).
+
+Implementering (18/7):
+- Migration `00061_guides_master_slug.sql` (§4) + `00062_sync_master_guides_fn.sql` (atomisk to-pass upsert) — anvendt live.
+- Delt `src/lib/guides/normalize-key.ts` (`normalizeGuideKey`) — brugt i `resolvePlantGuideHref` + `findReusableGuideId` (ny helper i `src/actions/guides.ts`, erstatter inline-match i begge `ensureGuideFor*`). NB: apostroffer FJERNES (ikke bare foldes), så "Gardeners" == "Gardener's" — nødvendigt for test 5.
+- `scripts/guides-sync-master.ts` + `npm run guides:sync-master [-- --dry-run]`.
+- `scripts/test-guides-sync.ts` (21 offline-tests). DB-afhængige acceptkrav (1,2,3,4,5,6,8,9) verificeret mod live.
+- Kode endnu ikke committet (afventer Anna).
 
 ---
 
