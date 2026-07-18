@@ -16,7 +16,8 @@
     "guides:status": "npx tsx scripts/guides-status.ts",
     "guides:mark": "npx tsx scripts/guides-mark.ts",
     "guides:diff": "npx tsx scripts/guides-diff.ts",
-    "guides:promote": "npx tsx scripts/guides-promote.ts"
+    "guides:promote": "npx tsx scripts/guides-promote.ts",
+    "guides:sync-master": "npx tsx scripts/guides-sync-master.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

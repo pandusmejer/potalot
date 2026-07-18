@@ -1,6 +1,5 @@
 import type { Guide } from '@/lib/types'
-
-const norm = (s: string) => s.trim().toLowerCase()
+import { normalizeGuideKey as norm } from '@/lib/guides/normalize-key'
 
 /**
  * Find den bedste guide-rute for en plante, så "Se guide" fører til DEN
@@ -29,7 +28,11 @@ export function resolvePlantGuideHref(
     if (byVariety) return `/guides/${byVariety.id}`
   }
 
-  const bySpecies = guides.find(g => norm(g.plantName) === name && g.guideLevel === 'species')
+  // Accepterer både det statiske vokabular ('species') og DB-mastervokabularet
+  // ('art'), så en synket DB-master også genkendes som arts-guide her.
+  const bySpecies = guides.find(
+    g => norm(g.plantName) === name && (g.guideLevel === 'species' || (g.guideLevel as string) === 'art'),
+  )
   if (bySpecies) return `/guides/${bySpecies.id}`
 
   const anyMatch = guides.find(g => norm(g.plantName) === name)
