@@ -9,6 +9,156 @@ import type { Guide } from '@/lib/types'
 
 export const IMPORTED_GUIDES: Guide[] = [
   {
+    "id": "aert",
+    "plantName": "Ært",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Pisum sativum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kølig sæsonafgrøde med klatrende skud, spiselige ærter eller hele bælge.",
+    "difficulty": "easy",
+    "tags": [
+      "aert",
+      "baelgplante",
+      "koelig-saeson",
+      "klatrende",
+      "direkte-saaning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [
+        2,
+        3,
+        4
+      ],
+      "directSowingMonths": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "plantingOutMonths": [
+        3,
+        4,
+        5
+      ],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "preCultivation": true,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Fugtighedsbevarende, veldrænet jord uden store mængder frisk kvælstof",
+      "germinationTemperature": "8-18 °C",
+      "germinationDays": "7-14 dage",
+      "plantSpacing": "5-8 cm",
+      "rowSpacing": "45-60 cm",
+      "growthType": "klatrende eller kompakt bælgplante",
+      "height": "40-200 cm afhængigt af sort",
+      "maturityDays": "ca. 55-90 dage afhængigt af type",
+      "primaryUse": "Friske ærter, hele sukkerbælge eller ærteskud"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-aerter",
+        "title": "Sådan vokser ærter",
+        "body": "Ærter er bælgplanter til køligt vejr. De klatrer med slyngtråde eller vokser kompakt, afhængigt af sorten.\n\nSkalærter høstes for frøene indeni. Sukkerærter har flade bælge, mens sugarsnap-typer har tykkere, sprøde bælge. Begge spises hele."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-skalaert-sukkeraert-eller-sugarsnap",
+        "title": "Skalært, sukkerært eller sugarsnap?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg skalært hvis",
+            "items": [
+              "du vil bælge ærterne",
+              "du foretrækker søde, runde frø"
+            ]
+          },
+          {
+            "heading": "Vælg sukkerært hvis",
+            "items": [
+              "du vil spise flade, unge bælge",
+              "du høster meget tidligt"
+            ]
+          },
+          {
+            "heading": "Vælg sugarsnap hvis",
+            "items": [
+              "du vil have tykke, sprøde bælge",
+              "du vil spise både bælg og små ærter"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-direkte-eller-forkultiv-r",
+        "title": "Så direkte eller forkultivér",
+        "body": "Ærter kan sås direkte, når jorden er til at arbejde med. Kold, vandmættet jord øger risikoen for råd.\n\nForkultivering i moduler kan beskytte frøene mod mus og fugle. Plant ud, før rødderne bliver filtret.\n\nSå flere mindre hold, hvis du vil forlænge høsten. Ærter trives dårligere i stærk sommervarme."
+      },
+      {
+        "key": "giv-stoette-tidligt",
+        "title": "Giv støtte tidligt",
+        "body": "Sæt net, grene eller anden støtte op, før planterne vælter. Selv lave sorter bliver lettere at høste og tørrer hurtigere efter regn, når de holdes oppe.\n\nHøje sorter kræver stabil støtte, som kan bære både planter og våde bælge."
+      },
+      {
+        "key": "vand-ved-blomstring",
+        "title": "Vand ved blomstring",
+        "body": "Ærter klarer køligt vejr, men udbyttet falder, hvis planterne mangler vand under blomstring og bælgdannelse.\n\nFor meget kvælstof giver frodige blade og færre blomster. God havejord behøver ofte kun kompost."
+      },
+      {
+        "key": "beskyt-froe-og-unge-skud",
+        "title": "Beskyt frø og unge skud",
+        "body": "Fugle og mus kan tage både frø og spirer. Net eller forkultivering er den mest direkte beskyttelse.\n\nSnegle kan skade nye skud. Meldug ses ofte sent i varme, tørre perioder."
+      },
+      {
+        "key": "hoest-ofte",
+        "title": "Høst ofte",
+        "body": "Pluk bælge, så snart de har den rette størrelse for typen. Regelmæssig høst holder planten i gang.\n\nSkalærter skal være fyldte, sukkerærter flade og sugarsnap-bælge tykke og sprøde. Brug høsten hurtigt."
+      },
+      {
+        "key": "naar-hoesten-slutter",
+        "title": "Når høsten slutter",
+        "body": "Klip sunde planter ved jorden, og lad rødderne blive tilbage. Kompostér toppen, medmindre den er stærkt angrebet."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Sugar Snap",
+            "slug": "aert-sugar-snap",
+            "description": "En høj sugarsnap-type med tykke, sprøde bælge."
+          },
+          {
+            "heading": "Ambrosia",
+            "slug": "aert-ambrosia",
+            "description": "En tidlig sukkerært med flade, spiselige bælge."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/peas/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "agurk",
     "plantName": "Agurk",
     "pluralName": null,
@@ -1160,6 +1310,139 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "majs",
+    "plantName": "Majs",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Zea mays",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Varmekrævende, vindbestøvet afgrøde, der dyrkes i blokke for fyldte, søde kolber.",
+    "difficulty": "medium",
+    "tags": [
+      "majs",
+      "sukkermajs",
+      "varmekraevende",
+      "vindbestoevet",
+      "blokplantning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [
+        4,
+        5
+      ],
+      "directSowingMonths": [
+        5,
+        6
+      ],
+      "plantingOutMonths": [
+        5,
+        6
+      ],
+      "harvestMonths": [
+        8,
+        9,
+        10
+      ],
+      "preCultivation": true,
+      "frostSensitive": true,
+      "minimumTemperature": "Udplant først efter risiko for nattefrost",
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Varm, næringsrig, fugtighedsbevarende og veldrænet jord",
+      "germinationTemperature": "18-24 °C",
+      "germinationDays": "7-14 dage",
+      "plantSpacing": "30-45 cm",
+      "rowSpacing": "45-60 cm",
+      "growthType": "opret græsplante med kolber på stænglen",
+      "height": "150-250 cm afhængigt af sort",
+      "maturityDays": "ca. 70-110 dage afhængigt af sort og varme",
+      "primaryUse": "Friske, kogte eller grillede kolber"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-majs",
+        "title": "Sådan vokser majs",
+        "body": "Sukkermajs er en høj græsplante, som kræver varme, sol og en lang vækstsæson. Hanblomsterne sidder i toppen, mens hunblomsterne danner silketråde på kolberne længere nede ad stænglen.\n\nPollen bæres med vinden. Hver silketråd svarer til ét muligt majskorn, så dårlig bestøvning giver kolber med tomme felter."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-forkultivering-eller-direkte-saaning",
+        "title": "Forkultivering eller direkte såning?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg forkultivering hvis",
+            "items": [
+              "du vil give planterne et forspring",
+              "din jord bliver sent varm",
+              "du dyrker en middel eller sen sort"
+            ]
+          },
+          {
+            "heading": "Vælg direkte såning hvis",
+            "items": [
+              "jorden er varm og beskyttet",
+              "risikoen for nattefrost er ovre",
+              "du vil undgå rodforstyrrelse"
+            ]
+          }
+        ],
+        "intro": "Valget afhænger især af jordtemperatur og længden på din sæson."
+      },
+      {
+        "key": "saa-varmt-og-plant-ud-forsigtigt",
+        "title": "Så varmt og plant ud forsigtigt",
+        "body": "Så ét frø pr. potte, så rødderne ikke skal skilles ad. Frø i kold, våd jord kan rådne før spiring.\n\nHærd planterne gradvist, og plant dem ud efter risikoen for nattefrost. Bevar rodklumpen hel, og lad dem ikke stå for længe i små potter.\n\nDirekte såning fungerer bedst i varm jord på et læfyldt sted. Beskyt frø og småplanter mod fugle og snegle."
+      },
+      {
+        "key": "plant-i-en-blok",
+        "title": "Plant i en blok",
+        "body": "Plant majs i flere korte rækker frem for én lang. En kompakt blok øger chancen for, at pollen lander på silketrådene.\n\nHold ensartet afstand. Står planterne for tæt, konkurrerer de om lys, vand og næring. Står de for spredt, bliver bestøvningen mere usikker.\n\nDyrker du flere typer sukkermajs, kan krydsbestøvning påvirke kvaliteten. Følg frøleverandørens råd om afstand eller forskudt blomstring."
+      },
+      {
+        "key": "giv-sol-naering-og-vand",
+        "title": "Giv sol, næring og vand",
+        "body": "Vælg havens varmeste, mest solrige plads. En sydvendt og læfyldt placering hjælper især i kølige somre.\n\nForbered jorden med velomsat organisk materiale. Vand jævnt, især under blomstring og kolbedannelse. Tørke på dette tidspunkt kan give små eller dårligt fyldte kolber.\n\nHøje planter kan vælte i vind. Fast jord, blokplantning og let hypning omkring stænglerne giver bedre stabilitet."
+      },
+      {
+        "key": "hoest-paa-det-rette-tidspunkt",
+        "title": "Høst på det rette tidspunkt",
+        "body": "Kolben nærmer sig høst, når silketrådene er brune og tørre, mens svøbet stadig er grønt. Tryk en negl ind i et korn. Mælkehvid saft viser, at kolben typisk er klar.\n\nHøst ved at bøje kolben ned og dreje den fri. Sukkeret omdannes hurtigt til stivelse efter høst, så spis eller køl kolberne hurtigt."
+      },
+      {
+        "key": "efter-hoesten",
+        "title": "Efter høsten",
+        "body": "Fjern planterne, når høsten er slut. Stænglerne er grove og bør findeles, hvis de skal komposteres.\n\nNotér hvilke planter der gav fyldte kolber, og hvornår høsten begyndte. I kølige haver er sortens udviklingstid ofte vigtigere end maksimal kolbestørrelse."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Incredible",
+            "slug": "majs-incredible",
+            "description": "En sukkerforstærket F1-sort med lange gule kolber."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/sweetcorn/grow-your-own",
+      "https://www.rhs.org.uk/plants/105543/zea-mays/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
     "pluralName": null,
@@ -1917,6 +2200,232 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/tomat.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "aert-ambrosia",
+    "plantName": "Ært",
+    "pluralName": null,
+    "variety": "Ambrosia",
+    "latinName": "Pisum sativum 'Ambrosia'",
+    "guideLevel": "variety",
+    "parentGuideId": "aert",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Tidlig sukkerært med flade, spiselige bælge og moderat, forholdsvis kompakt vækst.",
+    "difficulty": "easy",
+    "tags": [
+      "aert",
+      "ambrosia",
+      "sukkeraert",
+      "flad-baelg",
+      "tidlig"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8
+      ],
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "5-8 cm",
+      "growthType": "moderat hoej sukkeraert",
+      "height": "ca. 60-90 cm",
+      "maturityDays": "ca. 50-65 dage",
+      "primaryUse": "Hele unge bælge, salater, snacks, wok og frysning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Ambrosia er en tidlig sukkerært med flade grønne bælge. Bælgene spises hele, før frøene indeni bliver store.\n\nPlanten er mere moderat i højden end høje sugarsnap-typer og kan klare sig med enklere støtte."
+      },
+      {
+        "key": "vaelg-ambrosia-hvis",
+        "title": "Vælg Ambrosia hvis",
+        "body": "Vælg Ambrosia, hvis du vil have flade, unge bælge og en relativt tidlig høst."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-ambrosia-eller-sugar-snap",
+        "title": "Ambrosia eller Sugar Snap?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Ambrosia hvis",
+            "items": [
+              "du vil høste flade, fine bælge",
+              "du foretrækker moderat højde",
+              "du vil have en tidlig sukkerært"
+            ]
+          },
+          {
+            "heading": "Vælg Sugar Snap hvis",
+            "items": [
+              "du vil have tykke, rundede bælge",
+              "du ønsker mere knas og fylde",
+              "du kan give høj støtte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Ambrosia høstes, mens bælgene stadig er flade og glatte. Når frøene bliver tydelige, ændres teksturen.\n\nLav støtte giver bedre luft og gør bælgene nemmere at finde."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Bælgene kan gå fra fine til grove på få dage i varmt vejr. Hold jorden fugtig under blomstring og bælgdannelse."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Pluk, når bælgene er flade, sprøde og stadig har små frø. Brug dem rå, kort dampede eller hurtigt stegte."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Ambrosia er åbenbestøvet. Lad enkelte bælge modne helt til tørt frø."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær ærten at kende",
+        "description": "Få dyrkningsfundamentet for såning, støtte og løbende høst.",
+        "slug": "aert",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/peas/grow-your-own",
+      "https://www.fruithillfarm.com/pea-mangetout-ambrosia.html"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "aert-sugar-snap",
+    "plantName": "Ært",
+    "pluralName": null,
+    "variety": "Sugar Snap",
+    "latinName": "Pisum sativum 'Sugar Snap'",
+    "guideLevel": "variety",
+    "parentGuideId": "aert",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Høj sugarsnap-ært med saftige, rundede bælge, der spises hele.",
+    "difficulty": "easy",
+    "tags": [
+      "aert",
+      "sugarsnap",
+      "spiselig-baelg",
+      "hoej",
+      "sproed"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8
+      ],
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "5-8 cm",
+      "growthType": "hoej klatrende sugarsnap",
+      "height": "ca. 150-200 cm",
+      "maturityDays": "ca. 60-75 dage",
+      "primaryUse": "Hele friske bælge, salater, snacks og kort tilberedning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Sugar Snap er en sugarsnap-ært med tykke, rundede bælge, der spises hele. Bælgen udvikler små ærter, men bevarer en saftig og sprød struktur ved rettidig høst.\n\nPlanten er høj og kræver mere støtte end kompakte ærtesorter."
+      },
+      {
+        "key": "vaelg-sugar-snap-hvis",
+        "title": "Vælg Sugar Snap hvis",
+        "body": "Vælg Sugar Snap, hvis du vil spise hele bælge med mere fylde end en flad sukkerært."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-sugar-snap-eller-flad-sukkeraert",
+        "title": "Sugar Snap eller flad sukkerært?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Sugar Snap hvis",
+            "items": [
+              "du vil have tykke, saftige bælge",
+              "du foretrækker tydelig knas",
+              "du kan give høj støtte"
+            ]
+          },
+          {
+            "heading": "Vælg en flad sukkerært hvis",
+            "items": [
+              "du vil høste meget unge, flade bælge",
+              "du ønsker en finere struktur",
+              "du foretrækker lavere vækst"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Sugar Snap skal ikke høstes helt flad. Bælgen må gerne være rund og have små udviklede ærter, så længe den stadig er sprød.\n\nDen høje vækst giver en lang plukkeflade, men gør planten mere udsat for at vælte."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Bælgene bliver gradvist sejere, hvis de sidder for længe. Høst ofte, og hold stænglen med den ene hånd.\n\nI varmt, tørt vejr kan blomstring og bælgkvalitet falde."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Pluk bælgene, når de er fyldige, grønne og sprøde. Smag på en enkelt bælg for at ramme det bedste høstpunkt.\n\nSpis dem rå eller tilbered dem kort, så den sprøde tekstur bevares."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Lad enkelte bælge tørre helt på planten, hvis du vil samle frø."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær ærten at kende",
+        "description": "Få dyrkningsfundamentet for såning, støtte, vanding og høst.",
+        "slug": "aert",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": "/images/plantekort/aert-sugar-snap.jpg",
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/peas/grow-your-own",
+      "https://realseeds.co.uk/peas.html"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
@@ -2721,6 +3230,120 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "majs-incredible",
+    "plantName": "Majs",
+    "pluralName": null,
+    "variety": "Incredible",
+    "latinName": "Zea mays 'Incredible' F1",
+    "guideLevel": "variety",
+    "parentGuideId": "majs",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Sukkerforstærket F1-majs med lange gule kolber, sød smag og middel sen høst.",
+    "difficulty": "medium",
+    "tags": [
+      "sukkermajs",
+      "incredible",
+      "f1-hybrid",
+      "sukkerforstaerket",
+      "gul"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        8,
+        9
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "30-45 cm",
+      "growthType": "hoej sukkermajs",
+      "height": "ca. 180-240 cm",
+      "maturityDays": "middel sæson, afhænger af varme og såtid",
+      "primaryUse": "Friske, kogte eller grillede kolber"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Incredible er en gul, sukkerforstærket sukkermajs. Sorten dyrkes for lange kolber med søde kerner og beskrives som en middel sæson-type snarere end en meget tidlig majs.\n\nPlanten bliver høj og kræver derfor en varm, solrig og læfyldt placering for at nå god kolbeudvikling i dansk klima."
+      },
+      {
+        "key": "vaelg-incredible-hvis",
+        "title": "Vælg Incredible hvis",
+        "body": "Vælg Incredible, hvis du vil have søde, klassisk gule kolber og kan give planterne en hel, varm sæson."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-incredible-eller-en-meget-tidlig-sort",
+        "title": "Incredible eller en meget tidlig sort?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Incredible hvis",
+            "items": [
+              "du har en varm og solrig placering",
+              "du vil have lange, søde kolber",
+              "du kan forkultivere"
+            ]
+          },
+          {
+            "heading": "Vælg en meget tidlig sort hvis",
+            "items": [
+              "din have er kølig eller vindudsat",
+              "du har en kort vækstsæson",
+              "du prioriterer sikker modenhed"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Incredible er en F1-hybrid og en sukkerforstærket type. Kernerne holder sødmen bedre efter høst end traditionelle standardtyper, men kolberne smager stadig bedst, når de bruges hurtigt.\n\nSorten beskrives med tolerance over for almindelig majsrust. Tolerance er ikke det samme som fuld modstandsdygtighed."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Den høje vækst gør planten udsat for vind. Plant i blok, jord let op omkring stænglerne, og undgå et åbent hjørne.\n\nSom middel sæson-sort har Incredible brug for varme for at modne. Forkultivering er derfor mere relevant end ved meget tidlige sorter."
+      },
+      {
+        "key": "bestoevning-og-hoest",
+        "title": "Bestøvning og høst",
+        "body": "Incredible skal stadig dyrkes i en kompakt blok. Dårlig bestøvning giver ujævnt fyldte kolber.\n\nHøst, når silketrådene er brune, og et kernekorn afgiver mælkehvid saft ved tryk. Brug kolben hurtigt efter høst."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Incredible er en F1-hybrid. Frø fra egne kolber vil derfor ikke nødvendigvis give planter med samme højde, sødme eller udviklingstid næste år."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær majs at kende",
+        "description": "Få hele dyrkningsfundamentet for varme, blokplantning og bestøvning.",
+        "slug": "majs",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://mr-fothergills.co.uk/products/sweet-corn-incredible-f1-seeds",
+      "https://www.kingsseeds.com/14723-sweet-corn-incredible-f1-se",
+      "https://www.rhs.org.uk/vegetables/sweetcorn/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt-california-wonder",
     "plantName": "Peberfrugt",
     "pluralName": null,
@@ -3227,6 +3850,121 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "tomat-black-cherry",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Black Cherry",
+    "latinName": "Solanum lycopersicum 'Black Cherry'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Mørk rødbrun cherrytomat med fyldig smag, kraftig rankevækst og lange klaser.",
+    "difficulty": "medium",
+    "tags": [
+      "cherrytomat",
+      "moerk",
+      "ranketomat",
+      "fyldig-smag",
+      "aabenbestoevet"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "ranketomat",
+      "height": "150-220 cm",
+      "maturityDays": "ca. 65-75 dage",
+      "primaryUse": "Frisk spisning, salater og bagning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Black Cherry er en ranketomat med små mørkerøde til purpurrøde frugter. Farven er mørkest ved fuld modenhed og påvirkes af lys og temperatur.\n\nSmagen er fyldigere og mindre ren-sød end hos mange orange cherrytomater."
+      },
+      {
+        "key": "vaelg-black-cherry-hvis",
+        "title": "Vælg Black Cherry hvis",
+        "body": "Vælg Black Cherry, hvis du vil have en cherrytomat med mørk farve og kompleks smag."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-black-cherry-eller-sungold",
+        "title": "Black Cherry eller Sungold?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Black Cherry hvis",
+            "items": [
+              "du vil have mørke rødbrune frugter",
+              "du foretrækker fyldig smag",
+              "du vil kunne gemme egne frø"
+            ]
+          },
+          {
+            "heading": "Vælg Sungold hvis",
+            "items": [
+              "du vil have orange frugter og høj sødme",
+              "du prioriterer meget tidlig høst",
+              "du accepterer en F1-hybrid"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Black Cherry vokser kraftigt og skal behandles som ranketomat. Den danner lange klaser med mange små frugter.\n\nFrugterne bliver ikke sorte, men modner til mørk rød, brunrød eller purpurrød."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Mørk farve gør modenhed sværere at bedømme. Brug både farve, let eftergivenhed og hvor nemt frugten slipper stilken.\n\nHold vandingen stabil for at mindske revner."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugten har fået en dyb mørkerød farve og er let blød ved forsigtigt tryk.\n\nBrug tomaterne friske, i salater eller bagt hele."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Black Cherry er normalt åbenbestøvet, så frø kan gemmes fra en sund, typisk frugt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for ranketomater.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/325191/solanum-lycopersicum-black-cherry/details",
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tomat-gardeners-delight",
     "plantName": "Tomat",
     "pluralName": null,
@@ -3335,6 +4073,122 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/293872/solanum-lycopersicum-gardeners-delight/details",
       "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tomat-moneymaker",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Moneymaker",
+    "latinName": "Solanum lycopersicum 'Moneymaker'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Klassisk ranketomat med pålidelige klaser af glatte, mellemstore røde frugter.",
+    "difficulty": "easy",
+    "tags": [
+      "salattomat",
+      "roed",
+      "ranketomat",
+      "klassisk",
+      "aabenbestoevet"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "ranketomat",
+      "height": "150-250 cm",
+      "maturityDays": "ca. 75-85 dage",
+      "primaryUse": "Salater, sandwich, madlavning og frisk spisning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Moneymaker er en gammel, velkendt ranketomat med glatte, runde og mellemstore røde frugter. Den dyrkes for en stabil, alsidig høst.\n\nSorten kan dyrkes i drivhus og på et varmt, beskyttet sted ude."
+      },
+      {
+        "key": "vaelg-moneymaker-hvis",
+        "title": "Vælg Moneymaker hvis",
+        "body": "Vælg Moneymaker, hvis du vil have en klassisk rød salattomat med ensartede frugter og bred anvendelse."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-moneymaker-eller-cherrytomat",
+        "title": "Moneymaker eller cherrytomat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Moneymaker hvis",
+            "items": [
+              "du vil have mellemstore tomater",
+              "du foretrækker klassisk rød tomatsmag",
+              "du vil kunne gemme egne frø"
+            ]
+          },
+          {
+            "heading": "Vælg en cherrytomat hvis",
+            "items": [
+              "du vil have små frugter til snacks",
+              "du prioriterer tidligere høst",
+              "du ønsker høj sødme"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Moneymaker producerer større frugter end en cherrytomat, men mindre og mere ensartede frugter end mange bøftomater.\n\nVæksten er rankende. Planten skal bindes op og sideskud knibes."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "På friland kræver Moneymaker et varmt, solrigt og beskyttet sted. I kølige somre kan de sidste klaser have svært ved at modne.\n\nNår sæsonen nærmer sig slutningen, kan toppen knibes over den sidste realistiske klase."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugten er jævnt rød og let eftergivende.\n\nMoneymaker er velegnet til salater, sandwich, lune retter og almindelig køkkenbrug."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Moneymaker er normalt åbenbestøvet. Vælg en sund, typisk frugt og lad den modne helt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet fra såning til høst.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/327922/solanum-lycopersicum-moneymaker/details",
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.gardenersworld.com/how-to/grow-plants/moneymaker-tomato/"
     ],
     "status": "published",
     "visibility": "public",

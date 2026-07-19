@@ -1,4 +1,7 @@
 {
+  "aert": "imported",
+  "aert-ambrosia": "imported",
+  "aert-sugar-snap": "imported",
   "agurk": "imported",
   "agurk-marketmore": "imported",
   "chili": "imported",
@@ -12,6 +15,8 @@
   "kaal-palmekaal": "imported",
   "kaal-roedkaal": "imported",
   "kaal-spidskaal": "imported",
+  "majs": "imported",
+  "majs-incredible": "imported",
   "peberfrugt": "imported",
   "peberfrugt-california-wonder": "imported",
   "peberfrugt-corno-di-toro-rosso": "imported",
@@ -20,7 +25,9 @@
   "salat": "imported",
   "salat-little-gem": "imported",
   "tomat": "imported",
+  "tomat-black-cherry": "imported",
   "tomat-gardeners-delight": "imported",
+  "tomat-moneymaker": "imported",
   "tomat-san-marzano": "imported",
   "tomat-sungold": "imported"
 }
