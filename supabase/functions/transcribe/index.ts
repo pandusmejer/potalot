@@ -14,6 +14,13 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
  *    genkendelsen mod havesprog.
  *  - 30 s timeout; nøgle læses fra Supabase secret OPENAI_API_KEY (aldrig klient).
  *
+ * BESKYTTELSE (så en fejl/misbrug ikke tømmer OpenAI-kontoen):
+ *  1. Kun INDLOGGEDE brugere (JWT-role = authenticated). Anon/demo afvises på
+ *     API-niveau — matcher at diktafonen er login-gated.
+ *  2. Daglig grænse pr. bruger: højst DAILY_CAP optagelser/24t (tælles via
+ *     voice_notes). Fejler tællingen (DB-hik), fejler vi ÅBENT (blokerer ikke
+ *     brugeren), men logger — auth-tjekket fejler LUKKET.
+ *
  * Fortolkningen (tekst → forslag) sker separat på Claude Haiku (Server Action)
  * — denne funktion transskriberer KUN, så de to fejlisoleres.
  */
@@ -28,12 +35,83 @@ const OPENAI_URL = 'https://api.openai.com/v1/audio/transcriptions'
 const MODEL = 'gpt-4o-transcribe' // fallback: whisper-1 (samme endpoint/format)
 const MAX_BYTES = 25 * 1024 * 1024 // OpenAI-grænse; klienten capper reelt på 120 s
 const TIMEOUT_MS = 30_000
+const DAILY_CAP = 50 // optagelser/24t pr. bruger — langt over normal brug (~5/uge),
+//                      rammer kun runaway-fejl eller misbrug.
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...cors, 'Content-Type': 'application/json' },
   })
+}
+
+/** Dekodér JWT-payload uden verifikation (gateway har allerede verificeret). */
+function decodeJwtPayload(jwt: string): { sub?: string; role?: string } | null {
+  try {
+    const part = jwt.split('.')[1]
+    if (!part) return null
+    const b64 = part.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4)
+    return JSON.parse(atob(padded))
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Gate: kræver indlogget bruger + daglig grænse. Returnerer en Response ved
+ * afvisning, ellers null (fortsæt). Tællingen fejler ÅBENT.
+ */
+async function tjekAdgang(req: Request): Promise<Response | null> {
+  const authHeader = req.headers.get('Authorization') ?? ''
+  const jwt = authHeader.replace(/^Bearer\s+/i, '')
+  const payload = jwt ? decodeJwtPayload(jwt) : null
+
+  // 1) Kun indloggede brugere (fejler LUKKET).
+  if (!payload || payload.role !== 'authenticated' || !payload.sub) {
+    return json(
+      { error: { code: 'STT_AUTH', message: 'Log ind for at bruge diktafonen.' } },
+      401,
+    )
+  }
+
+  // 2) Daglig grænse pr. bruger (fejler ÅBENT ved DB-hik).
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!supabaseUrl || !serviceKey) return null // ingen DB-adgang → spring grænse over
+
+  try {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const url =
+      `${supabaseUrl}/rest/v1/voice_notes` +
+      `?user_id=eq.${payload.sub}` +
+      `&recorded_at=gte.${encodeURIComponent(since)}` +
+      `&select=id`
+    const res = await fetch(url, {
+      method: 'HEAD',
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        Prefer: 'count=exact',
+      },
+    })
+    // content-range: "0-49/123" eller "*/123"
+    const total = parseInt(res.headers.get('content-range')?.split('/')[1] ?? '0', 10)
+    if (Number.isFinite(total) && total >= DAILY_CAP) {
+      return json(
+        {
+          error: {
+            code: 'STT_RATE_LIMIT',
+            message: 'Du har nået dagens grænse for taleoptagelser. Prøv igen i morgen.',
+          },
+        },
+        429,
+      )
+    }
+  } catch (e) {
+    console.error('Rate-limit-tælling fejlede (fejler åbent):', e)
+  }
+  return null
 }
 
 Deno.serve(async (req: Request) => {
@@ -46,6 +124,10 @@ Deno.serve(async (req: Request) => {
   if (!apiKey) {
     return json({ error: { code: 'STT_CONFIG', message: 'Transskription er ikke konfigureret.' } }, 500)
   }
+
+  // Adgang + grænse FØR vi bruger OpenAI-kreditter (fail fast).
+  const afvist = await tjekAdgang(req)
+  if (afvist) return afvist
 
   let form: FormData
   try {
