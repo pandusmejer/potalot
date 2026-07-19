@@ -1,0 +1,9 @@
+{
+  "batch": "known-good",
+  "contractVersion": "guide-contract-v1",
+  "generatedAt": "2026-07-19",
+  "guides": [
+    { "slug": "tomat-sungold", "guideType": "variety", "parentSlug": "tomat", "filename": "tomat-sungold.json", "status": "new" },
+    { "slug": "tomat-gardeners-delight", "guideType": "variety", "parentSlug": "tomat", "filename": "tomat-gardeners-delight.json", "status": "new" }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "slug": "tomat-gardeners-delight",
+  "guideLevel": "variety",
+  "parentSlug": "tomat",
+  "plantName": "Tomat",
+  "variety": "Gardener's Delight",
+  "latinName": "Solanum lycopersicum 'Gardener's Delight'",
+  "primaryCategoryId": "fro",
+  "summary": "Klassisk rød cherrytomat med saftig sødme, høj vækst og lang høstperiode.",
+  "difficulty": "easy",
+  "tags": [
+    "cherrytomat",
+    "roed",
+    "klassisk",
+    "ranketomat",
+    "aabenbestoevet"
+  ],
+  "quickFacts": {
+    "harvestMonths": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "light": "full_sun",
+    "water": "regular",
+    "plantSpacing": "45-60 cm",
+    "frostSensitive": true,
+    "growthType": "ranketomat",
+    "height": "150-220 cm",
+    "primaryUse": "Frisk spisning, salater og madpakker",
+    "maturityDays": "ca. 65-75 dage"
+  },
+  "calendarRules": [],
+  "sourceLinks": [
+    "https://www.rhs.org.uk/plants/293872/solanum-lycopersicum-gardeners-delight/details",
+    "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
+  ],
+  "sections": [
+    {
+      "heading": "Om sorten",
+      "content": "Gardener's Delight er en klassisk rød cherrytomat med saftige frugter og en tydelig balance mellem sødme og syre. Den sætter mange små tomater i klaser og kan levere en lang, løbende høst.\n\nPlanten vokser som ranketomat og skal bindes op. Den kan dyrkes i drivhus eller på et varmt, solrigt sted ude."
+    },
+    {
+      "heading": "Vælg Gardener's Delight hvis",
+      "content": "Vælg sorten, hvis du vil have en alsidig cherrytomat med klassisk tomatsmag. Den fungerer direkte fra planten, i salater, madpakker og hurtige varme retter.\n\n:::fact{variant=\"comparison\" title=\"Gardener's Delight eller Sungold?\"}\nBegge giver små frugter over en lang periode, men smagen og dyrkningsoplevelsen er forskellig.\n\n### Vælg Gardener's Delight hvis\n\n- du foretrækker røde tomater med både sødme og syre\n- du vil kunne gemme egne frø\n- du ønsker en klassisk, alsidig cherrytomat\n\n### Vælg Sungold hvis\n\n- du vil have orange frugter og meget høj sødme\n- du prioriterer en særlig tidlig snacktomat\n- du accepterer, at modne frugter lettere revner\n:::"
+    },
+    {
+      "heading": "Sådan adskiller den sig",
+      "content": "Gardener's Delight er kendt for kraftig, høj vækst og løbende frugtsætning. Den kræver derfor mere opbinding end kompakte busktomater, men giver til gengæld tomater over en længere periode.\n\nSorten har været dyrket længe, og frøstammer fra forskellige leverandører kan variere. Brug frøposens angivelse af modenhed og højde som det mest præcise pejlemærke for netop dine frø."
+    },
+    {
+      "heading": "Det skal du være opmærksom på",
+      "content": "Gardener's Delight vokser kraftigt og danner lange klaser. Bind derfor planten op i takt med væksten, og støt tunge klaser, før de trækker i stænglen.\n\nPå friland bør du give sorten det varmeste og mest beskyttede sted, du har. En sydvendt mur eller en enkel overdækning kan hjælpe frugterne med at modne og holde bladene tørrere. Planten kan danne tæt løv, men fjern kun blade, når du konkret forbedrer luft eller lys omkring klaserne."
+    },
+    {
+      "heading": "Høst og brug",
+      "content": "Høst, når frugterne er fuldt røde, blanke og let bløde. Pluk hele klasen, hvis frugterne modner samlet, eller tag dem enkeltvis, efterhånden som de bliver klar.\n\nSmagen kommer bedst frem ved stuetemperatur. Brug dem friske, halver dem i salater eller bag dem kort, så sødmen koncentreres uden at frugterne mister al struktur."
+    },
+    {
+      "heading": "Gem frø",
+      "content": "Gardener's Delight er normalt åbenbestøvet, så du kan gemme frø fra en sund, typisk frugt. Lad frøene gære kort i lidt vand, skyl dem rene og tør dem grundigt, før de gemmes.\n\nTomater selvbestøver ofte, men krydsning kan forekomme. Vil du bevare sorten så sikkert som muligt, skal du isolere blomster eller holde afstand til andre tomatsorter.\n\n:::next-guide\ntitle: Lær tomaten at kende\ndescription: Få hele dyrkningsfundamentet fra såning til høst.\nslug: tomat\nlabel: Læs artsguiden\n:::"
+    }
+  ]
+}
