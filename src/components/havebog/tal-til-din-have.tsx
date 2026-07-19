@@ -97,9 +97,12 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
             animation: 'tal-halo 4.4s ease-in-out infinite',
           }}
         />
-        <button
-          type="button"
-          aria-label="Tryk og tal til din have"
+        {/* Demo: mic'en er ingen tavs attrap. Den fører til opret-bruger, så
+            brugeren forstår at diktafonen er en indlogget funktion (ingen
+            falsk mikrofon-tilladelse). Den ægte recorder = TalOptager (indlogget). */}
+        <Link
+          href="/opret"
+          aria-label="Opret bruger for at bruge din havediktafon"
           className="tal-breath"
           style={{
             position: 'relative',
@@ -113,6 +116,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
             justifyContent: 'center',
             boxShadow: '0 12px 30px rgba(31,45,29,0.18)',
             cursor: 'pointer',
+            textDecoration: 'none',
             animation: 'tal-breath 4.4s ease-in-out infinite',
           }}
         >
@@ -120,7 +124,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
             <rect x="9" y="3" width="6" height="11" rx="3" fill="#F4EFDC" />
             <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="#F4EFDC" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
-        </button>
+        </Link>
       </div>
 
       {/* Kort, rolig hjælpetekst (overskriften bærer handlingen). */}
@@ -136,8 +140,22 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           maxWidth: '22ch',
         }}
       >
-        Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
+        Log ind for at bruge din havediktafon.<br />Indtal hvad du ser, så gemmer Potalot det rigtige sted.
       </p>
+      <div className="flex items-center" style={{ gap: 18, marginTop: 16 }}>
+        <Link
+          href="/opret"
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: '#3B4A2F', textDecoration: 'underline' }}
+        >
+          Opret gratis bruger
+        </Link>
+        <Link
+          href="/login"
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: 'rgba(36,48,31,0.5)', textDecoration: 'underline' }}
+        >
+          Log ind
+        </Link>
+      </div>
 
       {/* Seneste optagelser — beviset på at stemmen bliver til noget */}
       {optagelser.length > 0 && (
