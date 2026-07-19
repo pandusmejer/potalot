@@ -14,10 +14,12 @@
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, basename } from 'node:path'
+import { markersFromMarkdown, compareGuides } from './guide-regression'
 
 const GUIDES = 'content/guides'
 const PROD = 'content/guide-production'
 const GEN = join(PROD, 'generated')
+const BUILT = join(PROD, 'built')
 const LEDGER = join(PROD, 'status.json')
 const LIFECYCLE = ['draft', 'reviewed', 'approved', 'imported'] as const
 
@@ -128,6 +130,38 @@ function main(): void {
   if (notBuilt.length) {
     line(`\n📦 JSON klar men ikke bygget (${notBuilt.length}):`)
     notBuilt.forEach(s => line(`   ${s}`))
+  }
+
+  // Kø-analyse: er hver køet kandidat en NEW eller en UPDATE — og vil
+  // promote-spærren blokere den, fordi den taber godkendt indhold?
+  if (genSlugs.length) {
+    line(`\n🚦 Kø-analyse (NEW vs. UPDATE + promote-spærre):`)
+    let anyUpdate = false
+    for (const slug of genSlugs) {
+      const livePath = join(GUIDES, `${slug}.md`)
+      const candPath = join(BUILT, `${slug}.md`)
+      if (!existsSync(livePath)) {
+        line(`   ✅ ${slug}  — NEW (ingen live at overskrive)`)
+        continue
+      }
+      anyUpdate = true
+      if (!existsSync(candPath)) {
+        line(`   ⚠️  ${slug}  — UPDATE (kør guides:build for regressions-tjek)`)
+        continue
+      }
+      const regs = compareGuides(
+        markersFromMarkdown(readFileSync(livePath, 'utf8')),
+        markersFromMarkdown(readFileSync(candPath, 'utf8')),
+      )
+      if (regs.length === 0) {
+        line(`   ✅ ${slug}  — UPDATE, ingen regression (promote OK)`)
+      } else {
+        line(`   ⛔ ${slug}  — UPDATE, BLOKERES af promote-spærre — taber: ${regs.map(r => r.field).join(', ')}`)
+      }
+    }
+    if (anyUpdate) {
+      line(`      ⚠️  UPDATE rører GODKENDT live-indhold. ⛔ = promote afvises uden --force.`)
+    }
   }
 
   const orphans = guides.filter(g => g.level === 'variety' && g.parentSlug && !speciesSlugs.has(g.parentSlug))

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx scripts/test-guides-sync.ts",
+    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guide-regression.ts",
     "import:guides": "npx tsx scripts/import-guides.ts",
     "scan:images": "npx tsx scripts/scan-images.ts",
     "check:images": "npx tsx scripts/check-images.ts",
