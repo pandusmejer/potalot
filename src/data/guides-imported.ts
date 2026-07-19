@@ -1899,7 +1899,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/tomat-gardeners-delight.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/293872/solanum-lycopersicum-gardeners-delight/details",
       "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
@@ -2137,7 +2137,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/tomat-sungold.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/293979/solanum-lycopersicum-sungold/details",
       "https://www.johnnyseeds.com/vegetables/tomatoes/cherry-tomatoes/sun-gold-f1-tomato-seed-770.html",
