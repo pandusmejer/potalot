@@ -2433,6 +2433,234 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "agurk-cucino",
+    "plantName": "Agurk",
+    "pluralName": null,
+    "variety": "Cucino",
+    "latinName": "Cucumis sativus 'Cucino' F1",
+    "guideLevel": "variety",
+    "parentGuideId": "agurk",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kompakt snackagurk med små glatte frugter, sprød tekstur og løbende høst.",
+    "difficulty": "easy",
+    "tags": [
+      "snackagurk",
+      "miniagurk",
+      "glat",
+      "f1-hybrid",
+      "drivhus"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "high",
+      "plantSpacing": "40-60 cm",
+      "growthType": "klatrende miniagurk",
+      "height": "150-220 cm",
+      "primaryUse": "Snacks, madpakker og salater"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Cucino er en mini- eller snackagurk med små, glatte frugter. Den dyrkes for løbende høst af agurker, der kan spises hele uden at blive skåret i store stykker.\n\nPlanten klatrer og fungerer bedst med støtte. Den kan dyrkes under glas eller på et varmt, beskyttet sted, afhængigt af frøleverandørens angivelse."
+      },
+      {
+        "key": "vaelg-cucino-hvis",
+        "title": "Vælg Cucino hvis",
+        "body": "Vælg Cucino, hvis du vil have små agurker til madpakker, snacks og salater. Den passer godt, hvor én stor drivhusagurk ofte bliver mere, end du bruger ad gangen."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-cucino-eller-lang-drivhusagurk",
+        "title": "Cucino eller lang drivhusagurk?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Cucino hvis",
+            "items": [
+              "du vil høste små portionsagurker",
+              "du bruger agurker direkte som snack",
+              "du vil plukke ofte"
+            ]
+          },
+          {
+            "heading": "Vælg en lang drivhusagurk hvis",
+            "items": [
+              "du vil have store frugter",
+              "du bruger meget agurk ad gangen",
+              "du har god højde og plads under glas"
+            ]
+          }
+        ],
+        "intro": "Forskellen ligger især i frugtstørrelse og høstrytme."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Cucino skal høstes lille. Lader du frugterne sidde for længe, mister de den fine tekstur, og planten bruger energi på få overstore agurker.\n\nDen løbende høst gør planten produktiv over en længere periode, men kræver, at du kontrollerer den ofte."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Bind planten op tidligt, og før skuddene roligt omkring snor eller espalier. Stænglerne er sprøde og bør ikke tvinges.\n\nHold jorden jævnt fugtig og undgå koldt vand direkte på en varm rodklump. Uregelmæssig vanding kan give bitre eller dårligt formede frugter."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst frugterne, mens de er glatte, faste og små. Klip dem af med en saks eller kniv frem for at rive i planten.\n\nSpis dem hele, skær dem i salater eller brug dem i madpakker. Opbevar dem køligt, men ikke i meget lang tid, da små agurker hurtigt mister sprødhed."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Cucino sælges normalt som F1-hybrid. Frø fra egne frugter vil derfor ikke nødvendigvis give samme størrelse, vækst eller frugtkvalitet.\n\nKøb nye frø, hvis du vil dyrke samme sort igen."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær agurken at kende",
+        "description": "Få hele dyrkningsfundamentet for varme, vand og opbinding.",
+        "slug": "agurk",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "agurk-lemon",
+    "plantName": "Agurk",
+    "pluralName": null,
+    "variety": "Lemon",
+    "latinName": "Cucumis sativus 'Lemon'",
+    "guideLevel": "variety",
+    "parentGuideId": "agurk",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Rund frilandsagurk, der modner fra grøn til citrongul og har mild, sprød smag.",
+    "difficulty": "medium",
+    "tags": [
+      "agurk",
+      "lemon",
+      "rund",
+      "gul",
+      "friland"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "high",
+      "plantSpacing": "50-70 cm",
+      "growthType": "kraftigt rankende frilandsagurk",
+      "height": "150-250 cm ved opbinding",
+      "primaryUse": "Frisk spisning, salater og syltning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Lemon er en rund agurk, omtrent på størrelse med en citron. Frugten starter grøn og bliver gul ved modenhed, mens frugtkødet forbliver agurkeagtigt og mildt.\n\nPlanten ranker kraftigt og kan dyrkes på friland, under glas eller i en stor beholder på et varmt og beskyttet sted."
+      },
+      {
+        "key": "vaelg-lemon-hvis",
+        "title": "Vælg Lemon hvis",
+        "body": "Vælg Lemon, hvis du vil have en usædvanlig rund agurk med tydeligt modenhedsskifte. Den passer til dyrkere, som har plads til en kraftig plante og vil høste mindre portionsfrugter."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-lemon-eller-lang-agurk",
+        "title": "Lemon eller lang agurk?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Lemon hvis",
+            "items": [
+              "du vil have runde gule frugter",
+              "du dyrker på friland eller ved espalier",
+              "du vil bruge små portioner ad gangen"
+            ]
+          },
+          {
+            "heading": "Vælg en lang agurk hvis",
+            "items": [
+              "du foretrækker klassisk agurkeform",
+              "du vil have større frugter",
+              "du dyrker en sort specifikt til drivhus"
+            ]
+          }
+        ],
+        "intro": "De har forskellig form, vækst og bedste høsttidspunkt."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Lemon høstes ikke som helt mørkegrøn. Frugten er bedst, når den går fra grøn mod lys citrongul, men før skallen bliver dybt gul og hård.\n\nDen kraftige forgrening giver mange skjulte frugter. Før planten op ad net eller espalier, hvis du vil gøre høsten nemmere."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Overmodne frugter udvikler større kerner og grovere skal. Høst derfor ofte, især i varmt vejr.\n\nSorten kræver samme stabile vandforsyning som andre agurker. Tørke og kulde kan bremse væksten og påvirke smagen."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugten er rund, fast og lys gulgrøn til citrongul. Klip stilken over, så planten ikke beskadiges.\n\nSpis den frisk, skær den i både eller skiver, eller brug små frugter til syltning. Skræl kun, hvis skallen er blevet grov."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Lemon er normalt åbenbestøvet. Skal du gemme frø, skal en frugt blive siddende langt ud over spisemodenhed, til den er stor, hård og fuldt gul.\n\nAgurker krydser let med andre sorter af samme art. Isolér blomster eller dyrk med stor afstand, hvis du vil bevare sorten."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær agurken at kende",
+        "description": "Få hele dyrkningsfundamentet for varme, vand og bestøvning.",
+        "slug": "agurk",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own",
+      "https://culinaris-saatgut.de/en/varieties/vegetables/cucumber/lemon-cucumber-lemon/"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "agurk-marketmore",
     "plantName": "Agurk",
     "pluralName": null,
@@ -2509,6 +2737,121 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/plantekort/agurk-marketmore.png",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "agurk-mini-stars",
+    "plantName": "Agurk",
+    "pluralName": null,
+    "variety": "Mini Stars",
+    "latinName": "Cucumis sativus 'MiniStars'",
+    "guideLevel": "variety",
+    "parentGuideId": "agurk",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Lille glatskallet snackagurk med cirka 10 cm lange frugter til krukke, friland eller drivhus.",
+    "difficulty": "easy",
+    "tags": [
+      "snackagurk",
+      "mini-stars",
+      "miniagurk",
+      "krukke",
+      "glat"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "high",
+      "plantSpacing": "40-60 cm",
+      "growthType": "klatrende snackagurk",
+      "height": "150-250 cm",
+      "primaryUse": "Snacks, madpakker og salater"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Mini Stars er en snackagurk med glatte frugter omkring 10 cm lange. Den kan dyrkes under glas, på et varmt sted ude og i store beholdere.\n\nPlanten klatrer og kan trænes op ad snor eller espalier. Den lille frugtstørrelse gør sorten velegnet til løbende høst."
+      },
+      {
+        "key": "vaelg-mini-stars-hvis",
+        "title": "Vælg Mini Stars hvis",
+        "body": "Vælg Mini Stars, hvis du vil have små, ensartede agurker og mulighed for dyrkning i krukke. Den passer til familier og dyrkere med begrænset jordareal, men stadig god højde."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-mini-stars-eller-cucino",
+        "title": "Mini Stars eller Cucino?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Mini Stars hvis",
+            "items": [
+              "du vil have cirka 10 cm lange frugter",
+              "du dyrker i krukke eller hængende beholder",
+              "du ønsker en sort til både friland og drivhus"
+            ]
+          },
+          {
+            "heading": "Vælg Cucino hvis",
+            "items": [
+              "du allerede kender dens frugtstørrelse fra din frøleverandør",
+              "du dyrker primært under glas",
+              "du ønsker en anden snackagurk til sammenligning"
+            ]
+          }
+        ],
+        "intro": "Begge er snackagurker, men Mini Stars har en dokumenteret frugtlængde omkring 10 cm og bred anvendelse ude og under glas."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Mini Stars er udviklet som en lille portionsagurk. Den skal høstes, før frugterne vokser ud over den typiske snackstørrelse.\n\nSorten kan dyrkes i beholder, men kræver stadig meget jord, stabil fugt og næring. En lille potte begrænser både vækst og frugtsætning."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Planter i krukker tørrer hurtigt. Kontroller fugten dagligt i varmt vejr og vand grundigt, uden at rødderne står permanent i vand.\n\nBind planten op, hvis den vokser lodret. Dyrkes den hængende, skal frugterne kunne hænge frit uden at ligge fugtigt mod jord eller beholderkant."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst frugterne, når de er omkring den forventede længde, glatte og faste. Hyppig høst holder planten produktiv.\n\nBrug dem hele som snacks, i madpakker eller skåret i salater. Den lille størrelse gør dem bedst friske frem for opbevaret længe."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Kontroller frøposen for hybridstatus. Hvis sorten sælges som F1, giver egne frø ikke nødvendigvis samme plante og frugt.\n\nKøb nye frø, hvis du vil være sikker på samme egenskaber næste år."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær agurken at kende",
+        "description": "Få hele dyrkningsfundamentet for varme, vand, næring og støtte.",
+        "slug": "agurk",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/361002/cucumis-sativus-ministars/details",
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
@@ -2870,6 +3213,122 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": null,
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/70213/fragaria-x-ananassa-korona-pbr-f/details",
+      "https://www.rhs.org.uk/fruit/strawberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "jordbaer-mara-des-bois",
+    "plantName": "Jordbær",
+    "pluralName": null,
+    "variety": "Mara des Bois",
+    "latinName": "Fragaria × ananassa 'Mara des Bois'",
+    "guideLevel": "variety",
+    "parentGuideId": "jordbaer",
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Remonterende jordbær med stærk skovjordbæraroma og små til mellemstore røde frugter.",
+    "difficulty": "medium",
+    "tags": [
+      "jordbaer",
+      "mara-des-bois",
+      "remonterende",
+      "aromatisk",
+      "skovjordbaersmag"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "30-45 cm",
+      "growthType": "remonterende jordbaer med udloebere",
+      "height": "15-30 cm",
+      "primaryUse": "Frisk spisning og desserter"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Mara des Bois er et remonterende jordbær, som kombinerer duften og smagen fra skovjordbær med større dyrkede frugter. Bærrene er røde, kegleformede og små til mellemstore.\n\nPlanten blomstrer og sætter frugt i flere omgange gennem sommeren frem for kun én koncentreret hovedhøst."
+      },
+      {
+        "key": "vaelg-mara-des-bois-hvis",
+        "title": "Vælg Mara des Bois hvis",
+        "body": "Vælg Mara des Bois, hvis aroma og frisk smag er vigtigere end store, faste bær. Den passer godt til løbende plukning direkte fra planten."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-mara-des-bois-eller-sommerbaerende-jordbaer",
+        "title": "Mara des Bois eller sommerbærende jordbær?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Mara des Bois hvis",
+            "items": [
+              "du vil høste over en lang periode",
+              "du prioriterer intens aroma",
+              "du spiser bærrene hurtigt efter plukning"
+            ]
+          },
+          {
+            "heading": "Vælg en sommerbærende sort hvis",
+            "items": [
+              "du vil have en stor samlet høst",
+              "du sylter eller fryser større portioner",
+              "du ønsker fastere bær til transport"
+            ]
+          }
+        ],
+        "intro": "De giver høst på forskellig måde."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Mara des Bois giver flere mindre høstbølger. Fjern modne bær ofte, så planten fortsætter med at blomstre og sætte nye frugter.\n\nBærrene er mere sarte end mange kommercielle jordbærsorter. De skal håndteres forsigtigt og bruges hurtigt."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Hold planterne jævnt fugtige gennem hele sæsonen, fordi blomstring og frugtsætning gentages. Tørke kan stoppe nye blomster og give små bær.\n\nSorten danner udløbere. Fjern de fleste, hvis du prioriterer frugt, eller brug enkelte sunde udløbere til fornyelse."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Pluk bærrene, når de er gennemfarvet røde og dufter tydeligt. De udvikler ikke mere sødme efter plukning.\n\nSpis dem friske, brug dem på desserter eller i små portioner syltetøj. Den fine aroma kan gå tabt ved lang kogning."
+      },
+      {
+        "key": "efter-saesonen",
+        "title": "Efter sæsonen",
+        "body": "Fjern syge blade og rådne frugter, men beskadig ikke kronen. Giv planten plads og luft, da tætte, fugtige planter er mere udsatte for gråskimmel.\n\nForny bedet med sunde udløbere eller nye planter, når vækst og udbytte falder."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær jordbær at kende",
+        "description": "Få hele dyrkningsfundamentet for plantning, udløbere og fornyelse.",
+        "slug": "jordbaer",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/65240/fragaria-vesca-mara-des-bois-f/details",
+      "https://www.rhsplants.co.uk/plants/_/strawberry-mara-de-bois/classid.2000051674/",
       "https://www.rhs.org.uk/fruit/strawberries/grow-your-own"
     ],
     "status": "published",
@@ -3717,6 +4176,121 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "radise-sora",
+    "plantName": "Radise",
+    "pluralName": null,
+    "variety": "Sora",
+    "latinName": "Raphanus sativus 'Sora'",
+    "guideLevel": "variety",
+    "parentGuideId": "radise",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Rund rød salatradise med fast tekstur og god modstand mod at blive svampet i varmt vejr.",
+    "difficulty": "easy",
+    "tags": [
+      "radise",
+      "sora",
+      "rund",
+      "roed",
+      "varmetolerant"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "plantSpacing": "2.5-5 cm",
+      "growthType": "rund salatradise",
+      "maturityDays": "ca. 22-30 dage",
+      "primaryUse": "Frisk spisning, salater og garniture"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Sora er en rund, klart rød salatradise med hvidt frugtkød. Sorten dyrkes for ensartede rødder og beskrives som bedre til at holde en fast struktur under varme forhold end mange klassiske forårssorter.\n\nDen er stadig bedst ved hurtig vækst og jævn fugt. Varmetolerance gør ikke planten uafhængig af vand eller rettidig høst."
+      },
+      {
+        "key": "vaelg-sora-hvis",
+        "title": "Vælg Sora hvis",
+        "body": "Vælg Sora, hvis du vil have en rund rød radise og gerne fortsætte såningen længere ind i en lun sæson. Den passer til små gentagne hold."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-sora-eller-french-breakfast",
+        "title": "Sora eller French Breakfast?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Sora hvis",
+            "items": [
+              "du vil have runde røde rødder",
+              "du sår gennem en længere sæson",
+              "du prioriterer fast tekstur"
+            ]
+          },
+          {
+            "heading": "Vælg French Breakfast hvis",
+            "items": [
+              "du vil have aflange rød-hvide rødder",
+              "du foretrækker den klassiske tofarvede form",
+              "du høster meget tidligt og ofte"
+            ]
+          }
+        ],
+        "intro": "De dyrkes ens, men har forskellig form og styrke i varmt vejr."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Sora danner runde rødder, som kan stå lidt længere uden at blive svampede end mange hurtige forårstyper. Det er dog ikke en invitation til at lade dem blive overstore.\n\nSorten er velegnet til gentagne såninger. Små hold giver mere ensartet høst end én tæt række."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Tynd planterne tidligt, så hver rod får plads. Tæt bestand giver meget top og små, uens rødder.\n\nHold jorden fugtig gennem hele den korte udvikling. Selv en varmetolerant radise bliver stærk og træet ved tørke."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Træk de største rødder først, når de er runde og faste. Lad mindre planter stå få dage længere, men kontroller rækken ofte.\n\nSpis Sora frisk, skær den i skiver eller både, og brug toppen fra unge, sunde planter i små mængder."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Sora er normalt åbenbestøvet. Frøavl kræver, at enkelte planter får lov at blomstre og danne tørre frøbælge.\n\nRadiser krydser let med andre sorter. Isolér blomstrende planter, hvis du vil bevare sorten."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær radisen at kende",
+        "description": "Få hele dyrkningsfundamentet for direkte såning, fugt og løbende høst.",
+        "slug": "radise",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
+      "https://www.johnnyseeds.com/vegetables/radishes/round-radishes/sora-organic-radish-seed-2160G.html"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "salat-little-gem",
     "plantName": "Salat",
     "pluralName": null,
@@ -4081,6 +4655,123 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "tomat-green-zebra",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Green Zebra",
+    "latinName": "Solanum lycopersicum 'Green Zebra'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Grøn-gulstribet salattomat med frisk syre, blødt frugtkød og kraftig rankevækst.",
+    "difficulty": "medium",
+    "tags": [
+      "salattomat",
+      "groen",
+      "stribet",
+      "ranketomat",
+      "aabenbestoevet"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "ranketomat",
+      "height": "150-220 cm",
+      "maturityDays": "ca. 70-80 dage",
+      "primaryUse": "Salater, salsa, sandwich og frisk spisning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Green Zebra er en ranketomat med mellemstore, runde frugter. De er lysegrønne med mørkere striber som umodne og skifter ved modenhed mod gulgrøn med tydelige grønne striber.\n\nSmagen er frisk, sød-syrlig og mere markant syrlig end hos mange røde salattomater. Frugtkødet forbliver grønt, selv når tomaten er moden."
+      },
+      {
+        "key": "vaelg-green-zebra-hvis",
+        "title": "Vælg Green Zebra hvis",
+        "body": "Vælg Green Zebra, hvis du vil have en tomat, der skiller sig ud i både farve og smag. Den passer bedst til dyrkere, som er villige til at lære modenheden at kende uden at vente på en rød farve."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-green-zebra-eller-klassisk-roed-salattomat",
+        "title": "Green Zebra eller klassisk rød salattomat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Green Zebra hvis",
+            "items": [
+              "du vil have grøn-gulstribede frugter",
+              "du foretrækker frisk syre",
+              "du vil bruge tomaten rå og visuelt tydeligt"
+            ]
+          },
+          {
+            "heading": "Vælg en rød salattomat hvis",
+            "items": [
+              "du vil have et mere entydigt modenhedstegn",
+              "du foretrækker klassisk tomatsmag",
+              "du ønsker en mere neutral farve i varme retter"
+            ]
+          }
+        ],
+        "intro": "De ligner hinanden i størrelse, men smag og modenhedstegn er forskellige."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Green Zebra modner ikke til rød. Den bliver mere gullig mellem de mørke striber og giver let efter ved et forsigtigt tryk. Frugten slipper også lettere stilken, når den er moden.\n\nPlanten vokser som ranketomat og skal bindes op samt have sideskud fjernet efter samme grundprincip som andre rankesorter."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Det er let at høste frugterne for tidligt. En helt grøn og hård tomat er normalt umoden, selv om den har nået fuld størrelse.\n\nHold vandingen stabil. Modne frugter kan revne ved store udsving i fugt, og tæt løv bør styres, så der er luft omkring klaserne."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når grundfarven er gulgrøn, striberne tydelige og frugten let eftergivende. Smag på de første frugter og brug derefter din foretrukne balance mellem fasthed og syre som pejlemærke.\n\nBrug Green Zebra i salater, salsa og sandwich. Farven giver mindre kontrast i grønne retter, men står tydeligt sammen med røde og orange tomater."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Green Zebra er åbenbestøvet. Du kan gemme frø fra en sund, typisk og fuldt moden frugt. Lad frøene gære kort i lidt vand, skyl dem rene og tør dem grundigt.\n\nTomater selvbestøver ofte, men krydsning kan forekomme. Isolér blomster, hvis sortægthed er vigtig."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for ranketomater.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.bolster.eu/round-tomato-green-zebra-solanum-lycopersicum/p1419",
+      "https://www.bingenheimersaatgut.de/en/organic-seeds/vegetables/tomatoes/green-zebra-g749"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tomat-moneymaker",
     "plantName": "Tomat",
     "pluralName": null,
@@ -4189,6 +4880,242 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/plants/327922/solanum-lycopersicum-moneymaker/details",
       "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
       "https://www.gardenersworld.com/how-to/grow-plants/moneymaker-tomato/"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tomat-oxheart",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Oxheart",
+    "latinName": "Solanum lycopersicum Oxheart Group",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Stor hjerteformet bøftomat med kødfuldt frugtkød, få kerner og lang modningstid.",
+    "difficulty": "hard",
+    "tags": [
+      "boeftomat",
+      "hjerteformet",
+      "storfrugtet",
+      "ranketomat",
+      "koedfuld"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "50-70 cm",
+      "growthType": "kraftig ranketomat",
+      "height": "150-220 cm",
+      "maturityDays": "ca. 80-95 dage",
+      "primaryUse": "Frisk skæring, sandwich, salater og sauce"
+    },
+    "sections": [
+      {
+        "key": "om-typen",
+        "title": "Om typen",
+        "body": "Oxheart er en typebetegnelse for store, ofte hjerteformede tomater med meget frugtkød og relativt få kerner. Frugterne kan variere i farve, størrelse og ribning afhængigt af den konkrete frøstamme.\n\nPlanterne er som regel kraftige ranketomater. De store frugter kræver længere varme og mere støtte end små tomater."
+      },
+      {
+        "key": "vaelg-oxheart-hvis",
+        "title": "Vælg Oxheart hvis",
+        "body": "Vælg Oxheart, hvis du vil have store skivetomater med tæt, kødfuld struktur. Den passer bedst til drivhus eller et meget varmt og beskyttet sted."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-oxheart-eller-cherrytomat",
+        "title": "Oxheart eller cherrytomat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Oxheart hvis",
+            "items": [
+              "du vil have få, meget store frugter",
+              "du prioriterer kødfulde skiver",
+              "du kan give lang sæson og solid støtte"
+            ]
+          },
+          {
+            "heading": "Vælg en cherrytomat hvis",
+            "items": [
+              "du vil høste tidligere",
+              "du ønsker mange små frugter",
+              "du dyrker på et køligere eller mere udsat sted"
+            ]
+          }
+        ],
+        "intro": "De kræver samme tomatgrundlag, men giver en helt forskellig høst."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Oxheart bruger lang tid på at fylde og modne frugterne. I dansk klima er varme under glas en klar fordel, især for de største typer.\n\nFrugterne er ofte uregelmæssige og kan have folder ved stilkenden. Det er en del af typen og ikke nødvendigvis tegn på dårlig udvikling."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Bind hovedstænglen op løbende og støt tunge frugter eller klaser. En enkelt stor tomat kan trække kraftigt i stilken.\n\nHold vandingen stabil. Store frugter er udsatte for revner og griffelråd, hvis væksten skifter mellem tørke og pludselig høj vandtilførsel."
+      },
+      {
+        "key": "styr-antallet-af-frugter",
+        "title": "Styr antallet af frugter",
+        "body": "Planten kan sætte flere frugter, end en kølig sæson kan modne. Fjern misdannede eller meget sene frugtanlæg, hvis planten er tydeligt overbelastet.\n\nTop planten sent på sommeren over den sidste realistiske klase. Det hjælper eksisterende frugter, men kan ikke erstatte varme og lys."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugten har sortens fulde farve og giver let efter. Store tomater modner ikke altid ensartet omkring stilkenden, så vurder hele frugten.\n\nSkær Oxheart i tykke skiver, brug den i sandwich og salater eller kog den til en fyldig sauce. Frugtkødet er mindre vandigt end hos mange salattomater."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Oxheart er en typegruppe, ikke én entydig sort. Gem kun frø, hvis du kender den konkrete åbentbestøvede sort og vil bevare netop dens egenskaber.\n\nVælg en typisk, sund frugt, gær frøene kort, skyl dem og tør dem grundigt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for ranketomater.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.rhs.org.uk/advice/grow-your-own/features/fast-tomatoes"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tomat-roma",
+    "plantName": "Tomat",
+    "pluralName": null,
+    "variety": "Roma",
+    "latinName": "Solanum lycopersicum 'Roma'",
+    "guideLevel": "variety",
+    "parentGuideId": "tomat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kødfuld blommetomat med få kerner, moderat saftighed og god egnethed til sauce.",
+    "difficulty": "easy",
+    "tags": [
+      "blommetomat",
+      "saucetomat",
+      "roed",
+      "koedfuld",
+      "madlavning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "kompakt til halvkompakt tomat",
+      "height": "90-150 cm",
+      "maturityDays": "ca. 75-85 dage",
+      "primaryUse": "Sauce, henkogning, tørring og varm mad"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Roma er en rød blommetomat med aflang form, forholdsvis fast frugtkød og mindre saft end en klassisk salattomat. Den dyrkes især til sauce, henkogning og andre retter, hvor meget frugtkød er en fordel.\n\nNavnet Roma bruges om flere nært beslægtede frøstammer. Vækstform og udviklingstid kan derfor variere mellem leverandører."
+      },
+      {
+        "key": "vaelg-roma-hvis",
+        "title": "Vælg Roma hvis",
+        "body": "Vælg Roma, hvis du vil høste tomater til madlavning frem for primært til snacks. Den passer godt til dyrkere, som vil samle flere frugter til sauce eller konservering."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-roma-eller-salattomat",
+        "title": "Roma eller salattomat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Roma hvis",
+            "items": [
+              "du vil lave sauce eller henkoge",
+              "du foretrækker fast frugtkød",
+              "du vil have færre kerner og mindre væske"
+            ]
+          },
+          {
+            "heading": "Vælg en salattomat hvis",
+            "items": [
+              "du vil spise tomaten frisk",
+              "du foretrækker mere saft",
+              "du vil have en blødere og mere åben struktur"
+            ]
+          }
+        ],
+        "intro": "Forskellen ligger især i saftighed og anvendelse."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Roma har tykkere frugtvægge og mindre gelé omkring kernerne end mange salattomater. Det giver hurtigere indkogning og en mere koncentreret konsistens.\n\nNogle Roma-frøstammer er kompakte, mens andre bliver højere. Følg derfor frøposens vækstangivelse, før du beslutter, om sideskud skal knibes systematisk."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Roma-frugter kan være udsatte for griffelråd, især ved ujævn vandforsyning. Hold jorden stabilt fugtig frem for at skifte mellem tørke og kraftig vanding.\n\nFrugterne modner ofte i tydelige hold. Støt planten, også når den beskrives som kompakt, fordi mange tunge frugter kan bøje stænglerne."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst, når frugterne er gennemfarvet røde og let eftergivende. Til sauce kan meget modne frugter bruges, så længe de er sunde og uden råd.\n\nSkær dem i stykker og kog dem ind, bag dem langsomt eller tør dem. Den faste struktur gør dem mindre vandige end almindelige salattomater."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Roma er normalt åbenbestøvet, men enkelte frøprodukter kan være hybrider. Kontroller frøposen, før du gemmer frø.\n\nFra en åbenbestøvet stamme kan du gemme frø fra en sund, typisk frugt. Gær, skyl og tør dem som andre tomatfrø."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet fra såning til høst.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.johnnyseeds.com/vegetables/tomatoes/paste-tomatoes/roma-vf-organic-tomato-seed-3172G.html"
     ],
     "status": "published",
     "visibility": "public",
