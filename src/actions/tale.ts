@@ -73,3 +73,30 @@ export async function fortolkTale(
     }
   }
 }
+
+/**
+ * Domæneordliste til STT-prompten (spec 2.4): brugerens egne arts- og
+ * sortsnavne, så transskriptionen biases mod havesprog og fanger latinske
+ * sortsnavne ("San Marzano", "Café au Lait") korrekt. Tom streng hvis ingen
+ * planter. Sendes til transcribe-Edge Function som `prompt` — aldrig lagret.
+ */
+export async function hentSortsOrdliste(): Promise<string> {
+  const { id: userId } = await requireUser()
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('plants_v2')
+    .select('name, variety')
+    .eq('user_id', userId)
+    .eq('is_archived', false)
+
+  const navne = new Set<string>()
+  for (const p of data ?? []) {
+    const name = (p.name as string | null)?.trim()
+    const variety = (p.variety as string | null)?.trim()
+    if (name) navne.add(name)
+    if (variety) navne.add(variety)
+  }
+  if (navne.size === 0) return ''
+  return `Havenoter på dansk. Nævnte planter og sorter: ${[...navne].join(', ')}.`
+}

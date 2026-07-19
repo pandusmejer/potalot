@@ -1,14 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { fortolkTale } from '@/actions/tale'
+import { fortolkTale, hentSortsOrdliste } from '@/actions/tale'
 import { gemOptagelse, behandlOptagelse, beholdSomNote } from '@/actions/optagelser'
+import { createClient } from '@/lib/supabase/client'
 import type { TaleForslag, ForslagType } from '@/lib/tale-fortolk'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
-type Fase = 'idle' | 'lytter' | 'skriver' | 'fortolker' | 'forslag' | 'tomt' | 'gemmer' | 'gemt' | 'fejl'
+type Fase = 'idle' | 'lytter' | 'transskriberer' | 'skriver' | 'fortolker' | 'forslag' | 'tomt' | 'gemmer' | 'gemt' | 'fejl'
+
+/** Hård klient-cap på optagelseslængde (spec 2.4). */
+const MAX_SEKUNDER = 120
 
 const TYPE_LABEL: Record<ForslagType, string> = {
   observation: 'Observation',
@@ -20,44 +24,48 @@ const TYPE_LABEL: Record<ForslagType, string> = {
   note: 'Note',
 }
 
-// Minimal Web Speech-typning (ikke i standard lib.dom alle steder).
-interface TaleGenkender {
-  lang: string
-  interimResults: boolean
-  continuous: boolean
-  onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void
-  onerror: () => void
-  onend: () => void
-  start: () => void
-  stop: () => void
+/** MediaRecorder + getUserMedia-support (ellers → tekst-fallback). */
+function harOptager(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    !!navigator.mediaDevices?.getUserMedia &&
+    typeof window !== 'undefined' &&
+    typeof window.MediaRecorder !== 'undefined'
+  )
 }
 
-function nyGenkender(): TaleGenkender | null {
-  if (typeof window === 'undefined') return null
-  const w = window as unknown as {
-    SpeechRecognition?: new () => TaleGenkender
-    webkitSpeechRecognition?: new () => TaleGenkender
-  }
-  const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition
-  if (!Ctor) return null
-  const r = new Ctor()
-  r.lang = 'da-DK'
-  r.interimResults = false
-  r.continuous = false
-  return r
+/** Vælg en container både MediaRecorder og OpenAI forstår (Safari→mp4). */
+function vaelgMimeType(): string | undefined {
+  if (typeof MediaRecorder === 'undefined') return undefined
+  const kandidater = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/mpeg']
+  return kandidater.find(t => MediaRecorder.isTypeSupported(t))
+}
+
+/** Upload lyd til transcribe-Edge Function → dansk tekst. */
+async function transskriber(
+  blob: Blob,
+  filnavn: string,
+  prompt: string,
+): Promise<{ text: string } | { error: string }> {
+  const supabase = createClient()
+  const fd = new FormData()
+  fd.append('file', blob, filnavn)
+  if (prompt) fd.append('prompt', prompt)
+  const { data, error } = await supabase.functions.invoke('transcribe', { body: fd })
+  if (error) return { error: 'Kunne ikke transskribere lige nu — prøv igen.' }
+  const d = data as { text?: string; error?: { message?: string } } | null
+  if (d?.error) return { error: d.error.message ?? 'Transskription mislykkedes.' }
+  return { text: (d?.text ?? '').trim() }
 }
 
 /**
- * RUM 3 — "Tal til din have" som ÆGTE inputmotor (V19).
+ * RUM 3 — "Tal til din have" som ÆGTE inputmotor.
  *
- * Tal (Web Speech, da-DK) eller skriv → Claude foreslår 1-3
- * strukturerede ting → du godkender → Potalot gemmer dem det
- * rigtige sted (note/observation/høst → plante-log, opgave →
- * kalender). Den eneste funktion der producerer eget råstof.
- *
- * Web Speech findes ikke på iOS Safari → tekst-fallbacken ("skriv i
- * stedet") sikrer at motoren virker overalt i dag. En server-side
- * transskription (universel stemme) er flagget som senere valg.
+ * Optag (getUserMedia + MediaRecorder) → server-transskription (dansk, Edge
+ * Function `transcribe`) → Claude foreslår 1-3 strukturerede ting → du
+ * godkender → Potalot gemmer dem det rigtige sted (log/opgave). Ét-tryk-og-tal
+ * virker overalt inkl. iOS Safari. "Skriv i stedet" er fallback, hvis
+ * mikrofonen mangler eller afvises.
  */
 export function TalOptager() {
   const [fase, setFase] = useState<Fase>('idle')
@@ -68,9 +76,12 @@ export function TalOptager() {
   // Optagelsen persisteres (indbakke) og dens id bruges når den behandles.
   const [optagelseId, setOptagelseId] = useState<string | null>(null)
   const [sekunder, setSekunder] = useState(0)
-  const genkenderRef = useRef<TaleGenkender | null>(null)
+  const recorderRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+  const promptRef = useRef<string>('')
+  const capTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const harTale = typeof window !== 'undefined' && nyGenkender() !== null
+  const kanOptage = harOptager()
 
   // Optager-timer (kun mens vi lytter).
   useEffect(() => {
@@ -80,26 +91,78 @@ export function TalOptager() {
   }, [fase])
   const mmss = `${String(Math.floor(sekunder / 60)).padStart(2, '0')}:${String(sekunder % 60).padStart(2, '0')}`
 
-  function startLyt() {
-    const r = nyGenkender()
-    if (!r) {
+  // Ryd op ved unmount: stop cap-timer + slip mikrofonen hvis vi stadig optager.
+  useEffect(() => {
+    return () => {
+      if (capTimerRef.current) clearTimeout(capTimerRef.current)
+      const rec = recorderRef.current
+      if (rec && rec.state !== 'inactive') rec.stop()
+    }
+  }, [])
+
+  async function startOptagelse() {
+    if (!kanOptage) {
       setFase('skriver')
       return
     }
-    genkenderRef.current = r
-    r.onresult = e => {
-      const t = e.results?.[0]?.[0]?.transcript ?? ''
-      setTekst(t)
-      void fortolk(t)
+    let stream: MediaStream
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    } catch {
+      // Mikrofon afvist eller ingen enhed → tekst-fallback.
+      setResultat('Jeg kunne ikke få adgang til mikrofonen. Skriv i stedet, hvad der skete.')
+      setFase('skriver')
+      return
     }
-    r.onerror = () => setFase('skriver')
-    r.onend = () => setFase(f => (f === 'lytter' ? 'idle' : f))
+    // Hent brugerens sortsordliste i baggrunden (biaser transskriptionen).
+    promptRef.current = ''
+    void hentSortsOrdliste().then(p => { promptRef.current = p }).catch(() => {})
+
+    const mimeType = vaelgMimeType()
+    const rec = new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
+    recorderRef.current = rec
+    chunksRef.current = []
+    rec.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+    rec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop()) // slip mikrofonen
+      const type = rec.mimeType || 'audio/webm'
+      void efterOptagelse(new Blob(chunksRef.current, { type }), type)
+    }
     setFase('lytter')
-    r.start()
+    rec.start()
+    // Hård 120s-cap: stop automatisk.
+    capTimerRef.current = setTimeout(stopOptagelse, MAX_SEKUNDER * 1000)
   }
 
-  function stopLyt() {
-    genkenderRef.current?.stop()
+  function stopOptagelse() {
+    if (capTimerRef.current) {
+      clearTimeout(capTimerRef.current)
+      capTimerRef.current = null
+    }
+    const rec = recorderRef.current
+    if (rec && rec.state !== 'inactive') rec.stop()
+  }
+
+  async function efterOptagelse(blob: Blob, type: string) {
+    if (blob.size === 0) {
+      setFase('idle')
+      return
+    }
+    setFase('transskriberer')
+    const ext = type.includes('mp4') ? 'mp4' : type.includes('mpeg') ? 'mp3' : 'webm'
+    const res = await transskriber(blob, `optagelse.${ext}`, promptRef.current)
+    if ('error' in res) {
+      setResultat(res.error)
+      setFase('fejl')
+      return
+    }
+    if (!res.text) {
+      // Ingen tale fanget (stilhed/støj) → lad brugeren skrive i stedet.
+      setResultat('Jeg fangede ikke nogen tale. Skriv i stedet, hvad der skete.')
+      setFase('skriver')
+      return
+    }
+    await fortolk(res.text)
   }
 
   async function fortolk(t: string) {
@@ -253,7 +316,7 @@ export function TalOptager() {
             />
             <button
               type="button"
-              onClick={optager ? stopLyt : startLyt}
+              onClick={optager ? stopOptagelse : startOptagelse}
               aria-label={optager ? 'Stop optagelse' : 'Tryk og tal til din have'}
               className={optager ? undefined : 'tal-breath'}
               style={{
@@ -320,7 +383,7 @@ export function TalOptager() {
                   textDecoration: 'underline',
                 }}
               >
-                {harTale ? 'Skriv i stedet' : 'Skriv hvad der skete'}
+                {kanOptage ? 'Skriv i stedet' : 'Skriv hvad der skete'}
               </button>
             </>
           )}
@@ -366,6 +429,12 @@ export function TalOptager() {
             Fortolk
           </button>
         </div>
+      )}
+
+      {fase === 'transskriberer' && (
+        <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 22, color: 'rgba(36,48,31,0.6)', margin: '20px 0' }}>
+          Skriver din tale ned…
+        </p>
       )}
 
       {fase === 'fortolker' && (
