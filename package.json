@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts",
+    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guides-intake.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts",
     "import:guides": "npx tsx scripts/import-guides.ts",
     "scan:images": "npx tsx scripts/scan-images.ts",
     "check:images": "npx tsx scripts/check-images.ts",
@@ -18,7 +18,8 @@
     "guides:mark": "npx tsx scripts/guides-mark.ts",
     "guides:diff": "npx tsx scripts/guides-diff.ts",
     "guides:promote": "npx tsx scripts/guides-promote.ts",
-    "guides:sync-master": "npx tsx scripts/guides-sync-master.ts"
+    "guides:sync-master": "npx tsx scripts/guides-sync-master.ts",
+    "guides:intake": "npx tsx scripts/guides-intake.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

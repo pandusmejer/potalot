@@ -334,7 +334,30 @@ function hasSecondary(qf: Guide['quickFacts']): boolean {
 
 function formatMonths(months: number[]): string {
   if (!months.length) return '—'
-  const sorted = [...months].sort((a, b) => a - b)
-  if (sorted.length === 1) return MONTHS_DA[sorted[0] - 1].full
-  return `${MONTHS_DA[sorted[0] - 1].short}–${MONTHS_DA[sorted[sorted.length - 1] - 1].short}`
+  const sorted = [...new Set(months)].sort((a, b) => a - b)
+
+  // Gruppér i sammenhængende løb, så delte vinduer (fx hvidløgs okt-dec +
+  // feb-mar) ikke kollapser til et misvisende "feb–dec".
+  const runs: number[][] = []
+  for (const m of sorted) {
+    const last = runs[runs.length - 1]
+    if (last && m === last[last.length - 1] + 1) last.push(m)
+    else runs.push([m])
+  }
+
+  const fmt = (r: number[], solo: boolean) =>
+    r.length === 1
+      ? MONTHS_DA[r[0] - 1][solo ? 'full' : 'short']
+      : `${MONTHS_DA[r[0] - 1].short}–${MONTHS_DA[r[r.length - 1] - 1].short}`
+
+  // Ét sammenhængende løb → uændret adfærd (én måned = fuldt navn).
+  if (runs.length === 1) return fmt(runs[0], true)
+
+  // Årsskifte-sæson (aktiv i både det tidlige og sene år med hul i midten):
+  // vis det sene løb først, så det læses naturligt "okt–dec · feb–mar".
+  const first = runs[0]
+  const last = runs[runs.length - 1]
+  if (first[0] <= 2 && last[last.length - 1] >= 11) runs.unshift(runs.pop()!)
+
+  return runs.map(r => fmt(r, false)).join(' · ')
 }
