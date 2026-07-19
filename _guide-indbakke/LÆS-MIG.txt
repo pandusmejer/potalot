@@ -1,0 +1,19 @@
+GUIDE-INDBAKKE
+==============
+Læg nye guide-JSON'er (eller en .zip med dem) her.
+Læg tilhørende fotos i _foto-indbakke/ — navngiv dem efter guiden:
+
+  hvidloeg.jpg              (art  → arts/hvidloeg.jpg)
+  salat-little-gem.jpg      (sort → plantekort/salat-little-gem.jpg)
+  "tomat sungold.jpg"       (navn matcher også: art + sort)
+
+Kør så:
+  npm run guides:intake -- --dry-run    (se planen, skriv intet)
+  npm run guides:intake                 (byg → guard-promote → import → sync)
+
+Intake behandler KUN nye guides. Omskrivninger af godkendte guides springes
+over (brug --update <slug> hvis du bevidst vil opdatere en). Fotos placeres
+automatisk i rigtig mappe efter guidens niveau, med guidens egen slug.
+Placerede foto-originaler FLYTTES til _foto-arkiv/ (aldrig slettet) — den
+komprimerede jpg i public/images/ er det appen bruger. Indbakker committes
+aldrig (står i .gitignore).
