@@ -734,6 +734,132 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "hvidloeg",
+    "plantName": "Hvidløg",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Allium sativum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Nem løgafgrøde, som plantes som fed og udvikler sig bedst gennem en kølig periode.",
+    "difficulty": "easy",
+    "tags": [
+      "efteraarsplantning",
+      "loeg",
+      "opbevaring",
+      "sol",
+      "koekkenhave"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [
+        10,
+        11,
+        12,
+        2,
+        3
+      ],
+      "harvestMonths": [
+        6,
+        7,
+        8
+      ],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Let, næringsrig og veldrænet jord uden frisk gødning",
+      "plantSpacing": "10-15 cm",
+      "rowSpacing": "25-30 cm",
+      "growthType": "løgplante",
+      "height": "30-60 cm",
+      "primaryUse": "Madlavning, tørring og lagring"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-hvidloeg",
+        "title": "Sådan vokser hvidløg",
+        "body": "Hvidløg dyrkes fra enkelte fed, som udvikler rødder om efteråret eller det tidlige forår og senere danner et nyt løg med flere fed. Planterne vokser langsomt gennem den kølige del af året og tager fart om foråret.\n\nEn periode med kulde hjælper mange sorter med at dele sig i tydelige fed."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-hardneck-eller-softneck",
+        "title": "Hardneck eller softneck?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg hardneck hvis",
+            "items": [
+              "du vil have store, tydelige fed",
+              "du kan bruge løgene inden for nogle måneder",
+              "du gerne vil høste blomsterstængler"
+            ]
+          },
+          {
+            "heading": "Vælg softneck hvis",
+            "items": [
+              "du vil have længere lagring",
+              "du vil flette de tørre toppe",
+              "du dyrker i et mildere område"
+            ]
+          }
+        ],
+        "intro": "De to hovedtyper har forskellig vækst og lagring."
+      },
+      {
+        "key": "plant-om-efteraaret",
+        "title": "Plant om efteråret",
+        "body": "Del et sundt sætteløg i fed lige før plantning. Sæt hvert fed med spidsen opad omkring 5 cm dybt og med 10-15 cm mellem planterne.\n\nEfterårsplantning fra oktober til december giver normalt de største løg. Du kan også plante tidligt om foråret, men høsten bliver ofte mindre."
+      },
+      {
+        "key": "sol-og-veldraenet-jord",
+        "title": "Sol og veldrænet jord",
+        "body": "Vælg et åbent sted i fuld sol. Jorden skal være let og veldrænet, fordi feddene rådner i vintervåd jord. Forbedr tung jord med kompost og dyrk eventuelt på en lav vold eller i højbed.\n\nBrug certificerede sætteløg fra en frøleverandør eller et havecenter. Hvidløg fra supermarkedet kan være behandlet, dårligt tilpasset klimaet eller bære sygdomme."
+      },
+      {
+        "key": "pasning-gennem-saesonen",
+        "title": "Pasning gennem sæsonen",
+        "body": "Hold bedet fri for ukrudt, fordi hvidløg konkurrerer dårligt. Vand i tørre perioder fra foråret, mens løgene vokser, men reducer vandingen, når bladene begynder at gulne.\n\nUndgå frisk husdyrgødning lige før plantning. Den kan give blød vækst og øge risikoen for råd."
+      },
+      {
+        "key": "blomsterstaengler",
+        "title": "Blomsterstængler",
+        "body": "Hardneck-sorter kan danne en snoet blomsterstængel. Skær den af, mens den er ung, hvis du vil sende mere energi til løget. Stænglen kan spises og bruges som mildt hvidløg.\n\nSoftneck-sorter danner normalt ikke blomsterstængler."
+      },
+      {
+        "key": "hoest-paa-det-rigtige-tidspunkt",
+        "title": "Høst på det rigtige tidspunkt",
+        "body": "Høst, når de nederste blade er gule, men de øverste stadig er grønne. Vent ikke, til hele toppen er død, for så kan løgets skæl åbne sig, og holdbarheden falder.\n\nLøsn jorden med en greb og løft planterne forsigtigt. Træk ikke hårdt i toppen."
+      },
+      {
+        "key": "toerring-og-opbevaring",
+        "title": "Tørring og opbevaring",
+        "body": "Lad løgene tørre under tag på et luftigt sted i to til fire uger. Fjern først jord og top, når de er tørre.\n\nOpbevar løgene køligt, tørt og luftigt. Softneck holder som regel længere end hardneck."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Hvidråd, løgskimmel og rust kan ramme planterne. Brug sundt plantemateriale, undgå vintervåd jord og dyrk ikke løgplanter samme sted år efter år.\n\nHvis bladene gulner meget tidligt, kan årsagen være vandmættet jord, sygdom eller næringsmangel."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": "/images/arts/hvidloeg.jpg",
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
+      "https://www.rhs.org.uk/plants/858/allium-sativum/details",
+      "https://www.rhs.org.uk/education-learning/children-young-people/family-activities/grow-it/garlic"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
     "pluralName": null,
@@ -945,6 +1071,155 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/peberfrugt.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "salat",
+    "plantName": "Salat",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Lactuca sativa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig bladgrøntsag, som trives bedst i køligt vejr og med jævn fugt.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "hurtig",
+      "krukke",
+      "saasonafgroede",
+      "loebende-saaning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "directSowingMonths": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "plantingOutMonths": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "preCultivation": true,
+      "frostSensitive": false,
+      "light": "partial_shade",
+      "water": "regular",
+      "soil": "Fugtighedsbevarende, næringsrig og veldrænet jord",
+      "germinationTemperature": "10-18 °C",
+      "germinationDays": "4-10 dage",
+      "plantSpacing": "15-30 cm",
+      "rowSpacing": "25-35 cm",
+      "growthType": "bladroset",
+      "height": "10-30 cm",
+      "maturityDays": "ca. 28-100 dage afhængigt af type",
+      "primaryUse": "Friske blade og hele hoveder"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-salat",
+        "title": "Sådan vokser salat",
+        "body": "Salat danner en roset af blade og kan dyrkes som løse blade, kompakte hoveder eller høje romaine-typer. Den vokser hurtigt i køligt vejr, men kan gå i stok og blive bitter under varme og tørke."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-pluksalat-eller-hovedsalat",
+        "title": "Pluksalat eller hovedsalat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg pluksalat hvis",
+            "items": [
+              "du vil høste unge blade hurtigt",
+              "du sår tæt og ofte",
+              "du vil klippe flere gange"
+            ]
+          },
+          {
+            "heading": "Vælg hovedsalat hvis",
+            "items": [
+              "du vil have et fast, samlet hoved",
+              "du kan give planterne mere plads",
+              "du vil vente længere på høsten"
+            ]
+          }
+        ],
+        "intro": "Du kan vælge efter, hvor hurtigt og hvordan du vil høste."
+      },
+      {
+        "key": "saa-lidt-og-ofte",
+        "title": "Så lidt og ofte",
+        "body": "Så små hold hver anden eller tredje uge fra tidligt forår til sensommer. Det giver en mere jævn høst og mindsker risikoen for, at alle planter bliver klar samtidig.\n\nDæk frøene kun let. Salat spirer bedst køligt, og meget varm jord kan hæmme spiringen. I varme perioder kan du så i skygge eller indendørs og plante ud senere."
+      },
+      {
+        "key": "placering-gennem-aaret",
+        "title": "Placering gennem året",
+        "body": "Giv salat sol i forår og efterår. Om sommeren hjælper let skygge midt på dagen med at holde planterne kølige og forsinke stokløbning.\n\nSalat trives i bed, højbed, krukke og altankasse, så længe jorden holder jævnt på fugten."
+      },
+      {
+        "key": "vand-jaevnt",
+        "title": "Vand jævnt",
+        "body": "Hold jorden fugtig uden at gøre den vandmættet. Tørke giver små, bitre blade og kan udløse stokløbning.\n\nVand ved jorden og helst om morgenen. I krukker kan planterne kræve daglig kontrol i varmt vejr."
+      },
+      {
+        "key": "giv-planterne-plads",
+        "title": "Giv planterne plads",
+        "body": "Tynd småplanterne, så de ikke står tæt. Afstanden afhænger af typen: pluksalat kan stå tæt, mens hovedsalat kræver mere plads for at danne et fast hoved.\n\nDe planter, du tynder væk, kan spises som små blade."
+      },
+      {
+        "key": "hoest-paa-flere-maader",
+        "title": "Høst på flere måder",
+        "body": "Pluk yderblade løbende, klip unge blade nogle centimeter over jorden, eller skær hele hovedet af ved basis. Høst gerne om morgenen, når bladene er sprøde.\n\nHovedsalat bruger ofte 10-14 uger, mens løse blade kan høstes langt tidligere."
+      },
+      {
+        "key": "naar-salaten-gaar-i-stok",
+        "title": "Når salaten går i stok",
+        "body": "Når planten danner en høj blomsterstængel, bliver bladene ofte bitre. Varme, tørke, lange dage og roduro kan udløse stokløbning.\n\nHøst planten, før stænglen bliver høj, og så en ny omgang på et køligere sted."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Snegle kan ødelægge unge planter hurtigt. Beskyt nyplantninger og fjern skjulesteder tæt på bedet.\n\nBladlus og meldug kan også forekomme. Giv planterne luft, vand ved jorden og fjern syge blade."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/cut-come-again-salads"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
@@ -1795,6 +2070,139 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "salat-little-gem",
+    "plantName": "Salat",
+    "pluralName": null,
+    "variety": "Little Gem",
+    "latinName": "Lactuca sativa 'Little Gem'",
+    "guideLevel": "variety",
+    "parentGuideId": "salat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kompakt mini-romainesalat med sprøde, søde hjerter og god pladsøkonomi.",
+    "difficulty": "easy",
+    "tags": [
+      "romainesalat",
+      "mini",
+      "sprød",
+      "krukke",
+      "kompakt"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "plantingOutMonths": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "harvestMonths": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": false,
+      "light": "partial_shade",
+      "water": "regular",
+      "plantSpacing": "15-20 cm",
+      "rowSpacing": "25-30 cm",
+      "growthType": "kompakt romainehoved",
+      "height": "15-25 cm",
+      "maturityDays": "ca. 55-70 dage",
+      "primaryUse": "Hele små hoveder, salater og grill"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Little Gem er en lille romainesalat, som danner tætte, oprette hoveder med sprøde yderblade og et sødt, lyst hjerte. Den fylder mindre end almindelig romaine og passer derfor godt i krukker, små bede og tætte plantninger."
+      },
+      {
+        "key": "vaelg-little-gem-hvis",
+        "title": "Vælg Little Gem hvis",
+        "body": "Vælg sorten, hvis du vil høste hele små hoveder frem for løse blade. Den passer godt til en lille husholdning, fordi ét hoved kan bruges på én gang."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-little-gem-eller-pluksalat",
+        "title": "Little Gem eller pluksalat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Little Gem hvis",
+            "items": [
+              "du vil have et sprødt, kompakt hjerte",
+              "du foretrækker hele små hoveder",
+              "du vil grille eller halvere salaten"
+            ]
+          },
+          {
+            "heading": "Vælg pluksalat hvis",
+            "items": [
+              "du vil høste meget tidligt",
+              "du vil plukke få blade ad gangen",
+              "du vil så tæt og klippe flere gange"
+            ]
+          }
+        ],
+        "intro": "Begge kan dyrkes på lidt plads, men de høstes forskelligt."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Little Gem står tættere end store romainesalater og bliver typisk klar på omkring 55-70 dage afhængigt af temperatur og sæson. Den kan høstes tidligere som løsere mini-hoved eller stå længere, til hjertet er fast.\n\nDe oprette blade holder ofte jorden væk fra hjertet og gør sorten nem at rengøre."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Selv om sorten er kompakt, skal planterne tyndes, så hovederne kan udvikle sig. Hold jorden jævnt fugtig, især mens hjertet dannes.\n\nI varmt vejr bør du dyrke den i let eftermiddagsskygge og høste, før planten begynder at strække sig."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Skær hele hovedet af ved basis, når det føles fast, men før det bliver langt og løst. Du kan også plukke enkelte yderblade og lade hjertet vokse videre.\n\nLittle Gem kan spises rå, halveres og grilles kort eller bruges som små sprøde skåle til fyld."
+      },
+      {
+        "key": "gaa-videre",
+        "title": "Gå videre",
+        "body": "Læs artsguiden om salat for såning gennem sæsonen, vanding, stokløbning og generel pleje."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær salat at kende",
+        "description": "Få hele dyrkningsfundamentet fra frø til sprøde blade.",
+        "slug": "salat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": "/images/plantekort/salat-little-gem.jpg",
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/112416/lactuca-sativa-little-gem/details",
+      "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own",
+      "https://www.rhs.org.uk/advice/grow-your-own/features/crops-in-pots"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tomat-gardeners-delight",
     "plantName": "Tomat",
     "pluralName": null,
@@ -1899,7 +2307,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/tomat-gardeners-delight.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/293872/solanum-lycopersicum-gardeners-delight/details",
       "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
@@ -2137,7 +2545,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/tomat-sungold.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/293979/solanum-lycopersicum-sungold/details",
       "https://www.johnnyseeds.com/vegetables/tomatoes/cherry-tomatoes/sun-gold-f1-tomato-seed-770.html",
