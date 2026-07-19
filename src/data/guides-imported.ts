@@ -860,6 +860,306 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "jordbaer",
+    "plantName": "Jordbær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Fragaria × ananassa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Flerårig frugtplante, der giver bedst med sol, jævn fugt og løbende fornyelse.",
+    "difficulty": "easy",
+    "tags": [
+      "jordbaer",
+      "staude",
+      "baer",
+      "udloebere",
+      "krukke"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Humusrig, fugtighedsbevarende og veldrænet jord",
+      "plantSpacing": "30-45 cm",
+      "rowSpacing": "60-90 cm",
+      "growthType": "lav roset med udloebere",
+      "height": "15-30 cm",
+      "primaryUse": "Friske bær, desserter, syltning og frysning"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-jordbaer",
+        "title": "Sådan vokser jordbær",
+        "body": "Jordbær er lave, flerårige planter, der danner en roset af tredelte blade. Blomsterne udvikler sig til bær, mens lange udløbere kan danne nye planter ved siden af moderplanten.\n\nDer findes sommerbærende sorter med en koncentreret hovedhøst, remonterende sorter med flere mindre høstbølger og skovjordbærtyper med små, aromatiske frugter."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-sommerbaerende-eller-remonterende",
+        "title": "Sommerbærende eller remonterende?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg sommerbærende hvis",
+            "items": [
+              "du vil have mange bær i en kortere periode",
+              "du sylter, fryser eller laver større portioner",
+              "du kan høste ofte i højsæsonen"
+            ]
+          },
+          {
+            "heading": "Vælg remonterende hvis",
+            "items": [
+              "du vil plukke mindre portioner gennem sommeren",
+              "du dyrker til frisk spisning",
+              "du accepterer flere, men mindre koncentrerede høstbølger"
+            ]
+          }
+        ],
+        "intro": "Vælg efter om du vil have én stor høst eller bær over længere tid."
+      },
+      {
+        "key": "plant-hjertet-i-jordhoejde",
+        "title": "Plant hjertet i jordhøjde",
+        "body": "Vælg sunde planter med friske blade og et fast rodnet. Spred rødderne i plantehullet, og placer vækstpunktet, kronen eller hjertet, præcis ved jordoverfladen.\n\nFor dyb plantning kan få kronen til at rådne. For høj plantning udtørrer rødderne. Vand grundigt efter plantning og kontroller, at jorden ikke synker, så kronen ender begravet.\n\nPlant i god afstand, så bladene kan tørre efter regn og vanding."
+      },
+      {
+        "key": "sol-giver-soedere-baer",
+        "title": "Sol giver sødere bær",
+        "body": "Jordbær giver den bedste blomstring og smag i sol. Let skygge kan fungere, men høsten bliver ofte mindre, og bærrene tørrer langsommere efter regn.\n\nJorden skal være næringsrig og veldrænet. Undgå steder, hvor vand samler sig om vinteren. I krukker skal der være drænhuller og tilstrækkelig jordmængde til, at rødderne ikke tørrer ud dagligt."
+      },
+      {
+        "key": "vand-ved-roedderne",
+        "title": "Vand ved rødderne",
+        "body": "Hold jorden jævnt fugtig fra blomstring til høst. Vand ved plantens basis, så blomster og bær ikke unødigt bliver våde.\n\nPlanter i krukker og hængende beholdere tørrer hurtigere end planter i bed. Kontroller dem ofte i varmt vejr, men lad ikke potten stå permanent i vand.\n\nEt lag halm eller andet rent, tørt materiale under bærrene mindsker jordstænk og holder frugterne fra fugtig jord."
+      },
+      {
+        "key": "styr-udloeberne",
+        "title": "Styr udløberne",
+        "body": "Udløbere bruger energi, som ellers kunne gå til blomster og bær. Fjern dem løbende, hvis målet er størst mulig høst fra moderplanten.\n\nVil du lave nye planter, så behold enkelte stærke udløbere efter hovedhøsten. Fastgør den første småplante til en potte med jord, mens den stadig sidder på moderplanten. Klip forbindelsen, når den nye plante har dannet rødder.\n\nBrug kun sunde moderplanter uden tydelige virus- eller sygdomssymptomer."
+      },
+      {
+        "key": "beskyt-blomster-og-baer",
+        "title": "Beskyt blomster og bær",
+        "body": "Fugle kan tage modne bær hurtigt. Brug net, men spænd det stramt og kontroller det jævnligt, så dyr ikke bliver fanget.\n\nSnegle og gråskimmel trives i tæt, fugtig vækst. Fjern rådne bær med det samme, hold rækken luftig, og undgå vanding over bladene sent på dagen.\n\nSen frost kan beskadige åbne blomster. Dæk planterne midlertidigt med fiberdug på kolde nætter, men fjern dækket om dagen, så bestøvere kan komme til."
+      },
+      {
+        "key": "hoest-helt-modne-baer",
+        "title": "Høst helt modne bær",
+        "body": "Pluk bærrene, når de har sortens fulde farve. Jordbær bliver ikke mærkbart sødere efter plukning, så blege skuldre og hårde frugter bør have mere tid.\n\nTag fat i stilken frem for selve bærrene. Høst i tørt vejr, læg bærrene i lave beholdere, og køl dem hurtigt, hvis de ikke skal spises samme dag.\n\nSkyl først lige før brug. Våde bær holder kortere."
+      },
+      {
+        "key": "forny-bedet",
+        "title": "Forny bedet",
+        "body": "Jordbærplanter kan leve i flere år, men udbytte og sundhed falder ofte, når bedet bliver gammelt og tæt. Forny løbende med sunde udløbere eller købte planter.\n\nEfter høst kan gamle, beskadigede blade fjernes uden at skade kronen. Giv derefter vand og et moderat lag kompost, så planten bygger nye blade og blomsteranlæg.\n\nFlyt et nyt jordbærbed til frisk jord frem for direkte at genplante i et gammelt, sygdomsbelastet bed."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Corona",
+            "slug": "jordbaer-corona",
+            "description": "En sommerbærende sort med store, mørkerøde frugter."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/strawberries/grow-your-own",
+      "https://www.rhs.org.uk/advice/grow-your-own/features/fascinating-facts-strawberries",
+      "https://www.rhs.org.uk/fruit/strawberries/strawberry-pests-and-diseases"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kaal",
+    "plantName": "Kål",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Brassica oleracea",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Næringskrævende bladgrøntsag med mange former, fra løse blade til faste hoveder.",
+    "difficulty": "medium",
+    "tags": [
+      "kaal",
+      "bladgroentsag",
+      "koelig-saeson",
+      "lang-saeson",
+      "saedskifte"
+    ],
+    "quickFacts": {
+      "sowingMonths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "directSowingMonths": [
+        4,
+        5,
+        6
+      ],
+      "plantingOutMonths": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "preCultivation": true,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Dyb, fast, næringsrig og fugtighedsbevarende jord med god dræning",
+      "germinationTemperature": "10-20 °C",
+      "germinationDays": "5-10 dage",
+      "plantSpacing": "35-60 cm afhængigt af type",
+      "rowSpacing": "45-75 cm",
+      "growthType": "bladroset eller hoveddannende",
+      "height": "30-100 cm afhængigt af type",
+      "primaryUse": "Friske eller tilberedte blade og hoveder"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-kaal",
+        "title": "Sådan vokser kål",
+        "body": "Kål er en fælles dyrkningsgruppe med meget forskellige former. Nogle typer danner tætte hoveder, mens andre dyrkes for løse blade, høje stængler eller sideskud. Fælles for dem er en forholdsvis lang vækstsæson og et stort behov for næring, vand og plads.\n\nDe fleste kåltyper trives bedst i køligt, jævnt vejr. Unge planter vokser hurtigt om foråret, mens mange efterårs- og vintertyper udvikler kvalitet gennem sensommeren og tåler lave temperaturer bedre end varme og tørke."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-hovedkaal-eller-bladkaal",
+        "title": "Hovedkål eller bladkål?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg hovedkål hvis",
+            "items": [
+              "du vil høste ét samlet, fast hoved",
+              "du kan give planterne god afstand",
+              "du vil gemme eller tilberede større mængder ad gangen"
+            ]
+          },
+          {
+            "heading": "Vælg bladkål hvis",
+            "items": [
+              "du vil plukke blade over en længere periode",
+              "du vil have en afgrøde langt ind i efteråret",
+              "du foretrækker løbende høst frem for én stor høstdag"
+            ]
+          }
+        ],
+        "intro": "Vælg efter hvor meget plads du har, og hvordan du vil høste."
+      },
+      {
+        "key": "forkultiv-r-robuste-planter",
+        "title": "Forkultivér robuste planter",
+        "body": "Så kål i små potter, bakker eller et beskyttet såbed. Forkultivering giver bedre kontrol med fugt, snegle og jordlopper, mens planterne er små. Så frøene forholdsvis tyndt, og prik eller pot dem om, før rødderne bliver filtret sammen.\n\nPlanterne er klar til udplantning, når de har flere rigtige blade og en fast rodklump. Hærd dem gradvist ved at stille dem ude i længere perioder gennem en uge, før de plantes på deres endelige sted.\n\nSæt planterne lidt dybere, end de stod i potten, og tryk jorden fast omkring rødderne. Kål står bedst i fast jord; løs jord kan give ustabile planter og dårlig hoveddannelse."
+      },
+      {
+        "key": "giv-naering-og-fast-jord",
+        "title": "Giv næring og fast jord",
+        "body": "Vælg et åbent sted med sol og jord, der holder på fugten uden at være vandmættet. Arbejd velomsat kompost eller husdyrgødning ind før plantning, især hvor jorden er let eller udpint.\n\nKål bruger meget kvælstof under bladvæksten, men overdreven gødning kan give bløde planter. En jævn forsyning er bedre end store, sene doser. Hold jorden dækket med kompost eller andet organisk materiale for at mindske udtørring.\n\nUndgå at plante kål på samme sted år efter år. Et sædskifte med flere år mellem korsblomstrede afgrøder reducerer risikoen for jordbårne problemer som kålbrok."
+      },
+      {
+        "key": "vand-uden-store-udsving",
+        "title": "Vand uden store udsving",
+        "body": "Hold jorden jævnt fugtig, især efter udplantning og mens hoveder eller store blade udvikles. Lange tørre perioder bremser væksten, og pludselig meget vand bagefter kan få hovedkål til at revne.\n\nVand grundigt ved jorden frem for lidt og ofte. Planter i højbede og let sandjord skal kontrolleres oftere end planter i tungere jord.\n\nFjern konkurrerende ukrudt tidligt, men hak forsigtigt. Kål har mange rødder tæt ved jordoverfladen."
+      },
+      {
+        "key": "beskyt-fra-foerste-dag",
+        "title": "Beskyt fra første dag",
+        "body": "Dæk nyplantede kål med fint insektnet, og sørg for, at nettet slutter tæt ved jorden. Det kan beskytte mod kålsommerfugle, kålfluer, duer og flere andre skadedyr, før de når at etablere sig.\n\nKontroller bladundersider for æg og larver gennem sommeren. Små angreb er langt lettere at håndtere end planter, der allerede er gennemhullede. Snegle kan især tage småplanter efter udplantning.\n\nJordlopper laver små huller i unge blade. Velfugtede, hurtigt voksende planter klarer angreb bedre end planter, der står stille i tør jord."
+      },
+      {
+        "key": "naar-vaeksten-gaar-skaevt",
+        "title": "Når væksten går skævt",
+        "body": "Gule, slappe planter kan skyldes vandmangel, næringsmangel eller beskadigede rødder. Træk en svag plante op og undersøg rodsystemet. Opsvulmede, misformede rødder kan være tegn på kålbrok.\n\nDårlig hoveddannelse skyldes ofte forkert tidspunkt, for tæt plantning, løs jord eller vækststop efter udplantning. Sørg for stabile forhold frem for at forsøge at presse planterne med ekstra gødning sent i sæsonen.\n\nFjern syge planter og plantedele fra bedet. Kompostér ikke materiale med tydelige jordbårne sygdomme, hvis komposten ikke bliver varm nok til at uskadeliggøre smitten."
+      },
+      {
+        "key": "hoest-efter-kaaltypen",
+        "title": "Høst efter kåltypen",
+        "body": "Hovedkål skæres, når hovedet føles fast ved et let tryk. Brug en skarp kniv, og lad eventuelt stokken stå, hvis typen kan danne små sideskud.\n\nBladkål høstes nedefra og op. Tag de ældste, fuldt udviklede blade, og lad topskuddet fortsætte. Det giver en længere høstperiode og holder planten i vækst.\n\nHøst i tørt vejr, hvis kålen skal gemmes. Fjern beskadigede yderblade, men lad beskyttende blade sidde på hoveder, der skal opbevares."
+      },
+      {
+        "key": "planlaeg-naeste-kaalsaeson",
+        "title": "Planlæg næste kålsæson",
+        "body": "Notér hvilke typer der lykkedes på dit sted, og hvornår de faktisk blev høstklare. Kål reagerer tydeligt på forskelle i jord, vind, sommervarme og skadedyrspres.\n\nFlyt næste års kål til et nyt bed. Brug gerne bælgplanter, løg eller andre ikke-korsblomstrede afgrøder i mellemtiden, så sædskiftet ikke blot bliver en symbolsk flytning en halv meter."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Palmekål",
+            "slug": "kaal-palmekaal",
+            "description": "En høj bladkål med lang høstperiode."
+          },
+          {
+            "heading": "Spidskål",
+            "slug": "kaal-spidskaal",
+            "description": "En hovedkål med spidst, forholdsvis løst hoved."
+          },
+          {
+            "heading": "Rødkål",
+            "slug": "kaal-roedkaal",
+            "description": "En tæt hovedkål med mørkt rødlilla løv."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cabbages/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
+      "https://www.rhs.org.uk/biodiversity/cabbage-caterpillars",
+      "https://www.rhs.org.uk/disease/club-root"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
     "pluralName": null,
@@ -1071,6 +1371,152 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/peberfrugt.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "radise",
+    "plantName": "Radise",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Raphanus sativus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig rodafgrøde, der bliver bedst i kølig jord med jævn fugt.",
+    "difficulty": "easy",
+    "tags": [
+      "rodafgroede",
+      "hurtig",
+      "direkte-saaning",
+      "krukke",
+      "successionssaaning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Løs, fugtighedsbevarende og veldrænet jord uden frisk gødning",
+      "germinationTemperature": "5-20 °C",
+      "germinationDays": "3-10 dage",
+      "plantSpacing": "2.5-5 cm",
+      "rowSpacing": "15 cm",
+      "growthType": "hurtig rodafgroede",
+      "height": "10-25 cm",
+      "maturityDays": "ca. 20-45 dage for salatradiser",
+      "primaryUse": "Friske rødder, salater og garniture"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-radiser",
+        "title": "Sådan vokser radiser",
+        "body": "Radiser danner en opsvulmet, spiselig rod på kort tid. De klassiske salatradiser er små og hurtige, mens vinterradiser og daikon er større og bruger længere tid.\n\nDen bedste kvalitet kommer i køligt vejr med stabil fugt. Varm, tør jord giver let træede, hule eller meget stærke rødder og kan få planterne til at gå i blomst."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-salatradise-eller-vinterradise",
+        "title": "Salatradise eller vinterradise?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg salatradise hvis",
+            "items": [
+              "du vil høste efter få uger",
+              "du sår små hold gennem forår og sensommer",
+              "du vil have små, sprøde rødder"
+            ]
+          },
+          {
+            "heading": "Vælg vinterradise hvis",
+            "items": [
+              "du vil dyrke større rødder",
+              "du sår senere på sommeren",
+              "du vil opbevare høsten længere"
+            ]
+          }
+        ],
+        "intro": "Typen afgør både sæson og høststørrelse."
+      },
+      {
+        "key": "saa-direkte-paa-voksestedet",
+        "title": "Så direkte på voksestedet",
+        "body": "Radiser forkultiveres normalt ikke. Rødderne udvikles bedst uden omplantning, så så frøene direkte i bed, højbed, krukke eller altankasse.\n\nLav en lav rille, vand den, og så frøene med afstand. Dæk med cirka én centimeter løs jord. Hold overfladen fugtig, til spirerne er etableret.\n\nTynd tidligt, hvis planterne står tæt. Trængsel giver små rødder og mere bladvækst."
+      },
+      {
+        "key": "saa-smaa-hold-gennem-saesonen",
+        "title": "Så små hold gennem sæsonen",
+        "body": "Så en kort række hver eller hver anden uge i stedet for hele posen på én gang. Radiser bliver høstklare hurtigt, så gentagne små såninger giver en mere anvendelig høst.\n\nHold pause i den varmeste, tørreste del af sommeren, hvis planterne gentagne gange går i stok eller bliver skarpe og træede. Begynd igen i sensommeren, når jorden bliver køligere.\n\nRadiser kan bruges som mellemafgrøde, men undgå at lade dem stå skjult under store planter, når rødderne er klar."
+      },
+      {
+        "key": "hold-jorden-fugtig",
+        "title": "Hold jorden fugtig",
+        "body": "Vand jævnt fra spiring til høst. Radiser har et lille rodsystem og reagerer hurtigt på udtørring. Store udsving mellem tørke og meget vand giver ujævn kvalitet.\n\nJorden skal være løs nok til, at rødderne kan udvide sig. Fjern sten og grove klumper i såområdet, men undgå meget frisk, kvælstofrig gødning, som fremmer blade på bekostning af rødder."
+      },
+      {
+        "key": "pas-paa-jordlopper-og-snegle",
+        "title": "Pas på jordlopper og snegle",
+        "body": "Jordlopper laver mange små huller i bladene, især i tørt forårsvejr. Skaden ser voldsom ud, men etablerede planter kan ofte stadig danne rødder. Hold planterne i vækst med vand, og brug fint net ved vedvarende problemer.\n\nSnegle kan tage spirer og gnave i rødder nær jordoverfladen. Hold området fri for skjulesteder, og kontroller nye såninger efter fugtige nætter."
+      },
+      {
+        "key": "hoest-mens-de-er-unge",
+        "title": "Høst mens de er unge",
+        "body": "Træk enkelte radiser op og vurder størrelsen. Høst hellere lidt tidligt end for sent. Rødder, der bliver stående, kan blive svampede, hule eller træede.\n\nTag toppen af efter høst, hvis radiserne skal gemmes nogle dage. Bladene trækker ellers fugt fra roden. Skyl først rødderne kort før brug.\n\nUnge, friske blade kan også bruges, hvis de er sunde og ubeskadigede."
+      },
+      {
+        "key": "naar-radisen-ikke-danner-rod",
+        "title": "Når radisen ikke danner rod",
+        "body": "Meget blad og næsten ingen rod skyldes ofte for tæt såning, for meget kvælstof, for lidt lys eller varmt vejr. Tynd planterne og prøv igen på et køligere tidspunkt.\n\nPlanter, der skyder en blomsterstængel, bliver sjældent gode salatradiser. Fjern dem, før de tager plads, eller lad enkelte stå, hvis du bevidst vil samle frø.\n\nRadiser kan krydse med andre blomstrende radisesorter. Gem derfor ikke frø med forventning om sortægthed, medmindre blomsterne er isoleret."
+      },
+      {
+        "key": "planlaeg-den-naeste-saaning",
+        "title": "Planlæg den næste såning",
+        "body": "Notér datoen for såning og første høst. Radiser er en enkel måde at se, hvor meget temperatur og vanding ændrer udviklingstiden i netop din have.\n\nFlyt rækkerne mellem afgrøder, men husk, at radise hører til korsblomstfamilien. Den bør indgå i samme sædskifte som kål, rucola og majroe, især hvor der er problemer med kålbrok."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "French Breakfast",
+            "slug": "radise-french-breakfast",
+            "description": "En aflang, rød-hvid salatradise til tidlig høst."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
+      "https://www.johnnyseeds.com/growers-library/vegetables/radishes/radishes-key-growing-information.html",
+      "https://www.rhs.org.uk/biodiversity/flea-beetles-on-brassicas-and-allied-plants"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
@@ -1812,6 +2258,469 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "jordbaer-corona",
+    "plantName": "Jordbær",
+    "pluralName": null,
+    "variety": "Corona",
+    "latinName": "Fragaria × ananassa 'Korona'",
+    "guideLevel": "variety",
+    "parentGuideId": "jordbaer",
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Sommerbærende jordbær med store, blanke mørkerøde frugter og en koncentreret tidlig sommerhøst.",
+    "difficulty": "easy",
+    "tags": [
+      "jordbaer",
+      "corona",
+      "korona",
+      "sommerbaerende",
+      "moerkeroed"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7
+      ],
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "30-45 cm",
+      "growthType": "sommerbaerende jordbaer",
+      "height": "15-30 cm",
+      "primaryUse": "Frisk spisning, desserter og syltning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Corona, ofte skrevet Korona i internationale plantesamlinger, er et sommerbærende jordbær. Den danner en koncentreret høst i den tidlige del af sommeren frem for små høstbølger gennem hele sæsonen.\n\nFrugterne beskrives som store, blanke og mørkerøde. Sorten passer derfor til dyrkere, der vil høste mange bær i en samlet periode."
+      },
+      {
+        "key": "vaelg-corona-hvis",
+        "title": "Vælg Corona hvis",
+        "body": "Vælg Corona, hvis du vil have en klassisk sommerhøst til både frisk spisning og forarbejdning. Den er mindre oplagt, hvis dit vigtigste mål er enkelte bær helt frem til efteråret."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-corona-eller-remonterende-jordbaer",
+        "title": "Corona eller remonterende jordbær?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Corona hvis",
+            "items": [
+              "du vil have en tydelig hovedhøst i forsommeren",
+              "du vil plukke større mængder til dessert eller syltning",
+              "du foretrækker store, mørkerøde frugter"
+            ]
+          },
+          {
+            "heading": "Vælg en remonterende sort hvis",
+            "items": [
+              "du vil plukke små portioner gennem længere tid",
+              "du dyrker primært til løbende frisk spisning",
+              "du accepterer en mindre koncentreret høst"
+            ]
+          }
+        ],
+        "intro": "Forskellen ligger især i høstens rytme."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Corona skal behandles som en sommerbærende sort. Den store del af blomstringen og frugtsætningen ligger samlet, så vandmangel netop i denne periode mærkes tydeligt på høsten.\n\nBærrene bliver mørke ved fuld modenhed. Høst efter smag og fasthed, ikke alene efter den første røde farve."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Den koncentrerede høst kræver hyppig plukning. Modne bær, der ligger tæt ved jorden eller skjult under blade, kan hurtigt angribes af snegle og råd.\n\nLæg rent materiale under frugterne, og fjern beskadigede bær med det samme. Hold planterne jævnt vandede, men undgå at gennemvæde frugterne."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Pluk Corona, når frugten er mørkerød, men stadig fast nok til at løftes uden trykskader. Brug bærrene hurtigt, især hvis de er høstet helt modne.\n\nDe store frugter egner sig til frisk spisning, kager og desserter. En samlet høst gør sorten praktisk til syltetøj og frysning."
+      },
+      {
+        "key": "efter-hoesten",
+        "title": "Efter høsten",
+        "body": "Fjern uønskede udløbere, så moderplanten ikke bruger resten af sæsonen på et tæt tæppe af småplanter. Behold kun de stærkeste udløbere, hvis du vil forny bedet.\n\nRyd beskadigede blade og rester af bær væk, men undgå at skære ned i kronen. Giv planterne vand i tørre perioder, så de kan danne nye blade og blomsteranlæg."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær jordbær at kende",
+        "description": "Få hele dyrkningsfundamentet for plantning, udløbere og fornyelse.",
+        "slug": "jordbaer",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/70213/fragaria-x-ananassa-korona-pbr-f/details",
+      "https://www.rhs.org.uk/fruit/strawberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kaal-palmekaal",
+    "plantName": "Kål",
+    "pluralName": null,
+    "variety": "Palmekål",
+    "latinName": "Brassica oleracea var. palmifolia",
+    "guideLevel": "variety",
+    "parentGuideId": "kaal",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Høj bladkål med mørke, smalle blade og en lang høstperiode fra sensommer til vinter.",
+    "difficulty": "easy",
+    "tags": [
+      "bladkaal",
+      "palmekaal",
+      "sortkaal",
+      "vinterhoest",
+      "loebende-hoest"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        1,
+        2
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "hoej bladkaal",
+      "height": "80-150 cm",
+      "primaryUse": "Tilberedte blade, supper, pasta og chips"
+    },
+    "sections": [
+      {
+        "key": "om-palmekaal",
+        "title": "Om palmekål",
+        "body": "Palmekål er en høj bladkål med lange, smalle, mørkegrønne blade og en tydelig opret stamme. Den kaldes også sortkål eller cavolo nero. Planten danner ikke hoved, men høstes blad for blad gennem en lang periode.\n\nDen lodrette vækst gør planten lettere at placere mellem lavere afgrøder end brede hovedkål. Efterhånden som de nederste blade høstes, bliver den bare stamme mere synlig og giver planten dens palmelignende form."
+      },
+      {
+        "key": "vaelg-palmekaal-hvis",
+        "title": "Vælg palmekål hvis",
+        "body": "Vælg palmekål, hvis du vil høste lidt ad gangen frem for et helt kålhoved. Den passer til dyrkere, der vil have robuste vinterblade og en plante, der fortsat ser tydelig og strukturel ud i bedet."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-palmekaal-eller-hovedkaal",
+        "title": "Palmekål eller hovedkål?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg palmekål hvis",
+            "items": [
+              "du vil plukke blade løbende",
+              "du ønsker en høj, smal plante",
+              "du vil høste ind i den kolde del af året"
+            ]
+          },
+          {
+            "heading": "Vælg hovedkål hvis",
+            "items": [
+              "du vil høste et samlet hoved",
+              "du vil snitte større mængder på én gang",
+              "du prioriterer lagring af hele hoveder"
+            ]
+          }
+        ],
+        "intro": "De fylder forskelligt og høstes på hver sin måde."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Palmekål bruger sin energi på nye blade omkring topskuddet. Den skal derfor ikke knibes eller toppes under normal dyrkning. Fjernes topskuddet, mister planten sit vigtigste vækstpunkt.\n\nBladene er mere faste og kraftige end hos mange andre bladkål. De bliver bedst, når midterribben fjernes fra store blade, mens unge blade ofte kan bruges hele."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Den høje stamme kan blive ustabil i løs jord og på vindudsatte steder. Plant i fast jord, og jord eventuelt op omkring stænglen senere på sæsonen. En enkel støtte kan være nødvendig, hvor vinden tager hårdt.\n\nDe smalle, foldede blade kan skjule larver og bladlus. Kontroller især bladundersider og området omkring topskuddet, hvor nye blade sidder tæt."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst de nederste, fuldt udviklede blade først. Lad de yngste blade omkring toppen blive siddende, så planten fortsætter væksten. Tag kun det, du skal bruge, og undgå at afløve planten helt.\n\nFjern den grove midterribbe fra store blade. Brug bladene i supper, gryderetter, pastaretter eller bagt sprøde. Kort tilberedning bevarer mere struktur; længere tilberedning gør bladene blødere."
+      },
+      {
+        "key": "frost-og-naeste-saeson",
+        "title": "Frost og næste sæson",
+        "body": "Palmekål tåler køligt vejr og kan ofte stå gennem en stor del af vinteren. Høstkvalitet og plantens overlevelse afhænger dog af sort, vind, jordfugtighed og vinterens styrke.\n\nPlanten er botanisk toårig og vil normalt forsøge at blomstre efter vinteren. Dyrkes den videre til frø, kan den krydse med andre blomstrende kålplanter i nærheden."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær kål at kende",
+        "description": "Få dyrkningsfundamentet for jord, udplantning, net og sædskifte.",
+        "slug": "kaal",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
+      "https://www.rhs.org.uk/plants/295423/brassica-oleracea-acephala-group-taunton-deane/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kaal-roedkaal",
+    "plantName": "Kål",
+    "pluralName": null,
+    "variety": "Rødkål",
+    "latinName": "Brassica oleracea Capitata Group",
+    "guideLevel": "variety",
+    "parentGuideId": "kaal",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Tæt hovedkål med rødlilla blade, lang udvikling og god anvendelse til både frisk og tilberedt mad.",
+    "difficulty": "medium",
+    "tags": [
+      "hovedkaal",
+      "roedkaal",
+      "lagerkaal",
+      "efteraar",
+      "roedlilla"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "45-60 cm",
+      "growthType": "taet rundt hoved",
+      "height": "35-60 cm",
+      "primaryUse": "Råkost, stegning, braisering, syltning og tilbehør"
+    },
+    "sections": [
+      {
+        "key": "om-roedkaal",
+        "title": "Om rødkål",
+        "body": "Rødkål er en hovedkål med tætte blade i røde, violette og mørkt purpurfarvede toner. Farven skyldes naturlige plantepigmenter og kan ændre udtryk under tilberedning afhængigt af rettens surhedsgrad.\n\nDer findes tidlige sommer- og efterårssorter samt senere typer til vinterbrug. Sortens navn og frøposens anvisning er derfor afgørende for, hvornår hovedet forventes færdigt."
+      },
+      {
+        "key": "vaelg-roedkaal-hvis",
+        "title": "Vælg rødkål hvis",
+        "body": "Vælg rødkål, hvis du vil have en fast hovedkål, der både kan bruges rå, tilberedt og syltet. Den egner sig til dyrkere, der kan give planten god plads gennem en forholdsvis lang sæson."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-roedkaal-eller-spidskaal",
+        "title": "Rødkål eller spidskål?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg rødkål hvis",
+            "items": [
+              "du vil have tætte, farvede blade",
+              "du vil braisere, sylte eller gemme kålen",
+              "du kan vente på et langsommere hoved"
+            ]
+          },
+          {
+            "heading": "Vælg spidskål hvis",
+            "items": [
+              "du prioriterer mild smag og sprød tekstur",
+              "du vil høste tidligere",
+              "du bruger kålen hurtigt efter høst"
+            ]
+          }
+        ],
+        "intro": "Begge danner hoveder, men de bruges forskelligt."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Rødkål danner som regel et fastere hoved end spidskål og kræver god afstand for at udvikle både yderblade og hoved. Senere sorter står længe på bedet og skal derfor have adgang til næring og vand gennem hele sommeren.\n\nBladfarven er ikke et sikkert modenhedstegn. Bedøm i stedet hovedets størrelse, vægt og fasthed i forhold til sortens beskrivelse."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Ujævn vanding kan give revnede hoveder. Hold jorden fugtig, mens hovedet fyldes, men undgå vandmættet jord. Et lag organisk dække hjælper med at udjævne fugten.\n\nRødkål angribes af de samme skadedyr som andre kål. Net tidligt i sæsonen er lettere end at rense et tæt hoved for larver senere."
+      },
+      {
+        "key": "hoest-og-opbevaring",
+        "title": "Høst og opbevaring",
+        "body": "Skær hovedet, når det føles fast og har nået sortens forventede størrelse. Høst før alvorlig frost, medmindre sorten specifikt er beregnet til at stå længere.\n\nHoveder til opbevaring skal være tørre, faste og uden dybe skader. Behold enkelte beskyttende yderblade, og opbevar køligt med luft omkring hovederne. Brug beskadigede hoveder først."
+      },
+      {
+        "key": "brug-farven-i-koekkenet",
+        "title": "Brug farven i køkkenet",
+        "body": "Snit rødkål fint til råkost og salater, eller tilbered den langsomt til et blødere tilbehør. Syre fra eksempelvis eddike eller frugt hjælper med at bevare en klarere rød tone, mens mere basiske forhold kan trække farven mod blåviolet.\n\nSortens tæthed gør den også velegnet til fermentering og syltning. Brug friske, ubeskadigede blade og rene redskaber."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær kål at kende",
+        "description": "Få dyrkningsfundamentet for alle kåltyper.",
+        "slug": "kaal",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cabbages/grow-your-own",
+      "https://www.rhs.org.uk/plants/353511/brassica-oleracea-capitata-group-primero/details",
+      "https://www.rhs.org.uk/plants/119154/brassica-oleracea-capitata-group-rookie/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kaal-spidskaal",
+    "plantName": "Kål",
+    "pluralName": null,
+    "variety": "Spidskål",
+    "latinName": "Brassica oleracea Capitata Group",
+    "guideLevel": "variety",
+    "parentGuideId": "kaal",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hovedkål med spidst, forholdsvis løst hoved og milde, sprøde blade.",
+    "difficulty": "medium",
+    "tags": [
+      "hovedkaal",
+      "spidskaal",
+      "tidlig",
+      "mild",
+      "frisk-brug"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "35-50 cm",
+      "growthType": "spidst hoved",
+      "height": "30-50 cm",
+      "primaryUse": "Salater, dampning, stegning og snitning"
+    },
+    "sections": [
+      {
+        "key": "om-spidskaal",
+        "title": "Om spidskål",
+        "body": "Spidskål er en hovedkål med et tydeligt kegleformet hoved. Bladene sidder ofte mindre kompakt end i rund hvidkål, og teksturen er typisk mere sprød og fin.\n\nGruppen omfatter både tidlige og senere sorter. Det præcise så- og høsttidspunkt afhænger derfor af frøposen, men spidskål dyrkes ofte for en relativt tidlig og frisk høst."
+      },
+      {
+        "key": "vaelg-spidskaal-hvis",
+        "title": "Vælg spidskål hvis",
+        "body": "Vælg spidskål, hvis du vil have en mild hovedkål til frisk brug og hurtig tilberedning. Den passer godt til mindre husholdninger, fordi hovederne ofte er mere håndterlige end store vinterkål."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-spidskaal-eller-taet-vinterkaal",
+        "title": "Spidskål eller tæt vinterkål?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg spidskål hvis",
+            "items": [
+              "du vil have sprøde, milde blade",
+              "du bruger kålen frisk eller hurtigt tilberedt",
+              "du foretrækker et mindre, tidligere hoved"
+            ]
+          },
+          {
+            "heading": "Vælg tæt vinterkål hvis",
+            "items": [
+              "du vil gemme hovederne længere",
+              "du vil sylte eller lave store portioner",
+              "du ønsker fastere og mere kompakte blade"
+            ]
+          }
+        ],
+        "intro": "Forskellen mærkes især i bladstruktur, anvendelse og lagring."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Spidskål danner et smallere og ofte løsere hoved end rund hovedkål. Den behøver stadig plads til yderbladene, men flere sorter kan stå lidt tættere end store vinterkål.\n\nHovedet skal føles dannet og have tydelig vægt, men det bliver ikke nødvendigvis stenhårdt. Vent ikke på samme fasthed som hos en kompakt lagerkål."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Jævn vækst er vigtig, mens hovedet udvikles. Tørke efterfulgt af kraftig regn eller meget vanding kan øge risikoen for revner. Hold derfor jorden stabilt fugtig.\n\nTjek planten ofte, når hovedet nærmer sig høst. Et modent spidskålshoved kan miste kvalitet hurtigt, hvis det bliver stående for længe i varmt eller vådt vejr."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Skær hovedet ved basis, når det har nået den forventede størrelse og føles fast for typen. Fjern kun de yderblade, der er beskadigede; friske grønne omslagsblade kan også bruges.\n\nSpidskål egner sig til tynd snitning, salater, kort dampning og hurtig stegning. Den milde smag og fine bladstruktur gør lang kogning unødvendig."
+      },
+      {
+        "key": "efter-hovedet-er-skaaret",
+        "title": "Efter hovedet er skåret",
+        "body": "Efter høst kan stokken i nogle tilfælde danne små sideskud. Lad stokken stå, hvis der er plads i bedet, og skær et kryds i snitfladen. Resultatet varierer, men de små hoveder kan give en ekstra sen høst.\n\nFjern resten af planten, hvis den er syg eller stærkt angrebet. Plant en anden plantefamilie på stedet næste sæson."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær kål at kende",
+        "description": "Få hele fundamentet for forkultivering, jord, net og sædskifte.",
+        "slug": "kaal",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cabbages/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/choosing-mini-vegetables"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt-california-wonder",
     "plantName": "Peberfrugt",
     "pluralName": null,
@@ -2063,6 +2972,121 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "radise-french-breakfast",
+    "plantName": "Radise",
+    "pluralName": null,
+    "variety": "French Breakfast",
+    "latinName": "Raphanus sativus 'French Breakfast'",
+    "guideLevel": "variety",
+    "parentGuideId": "radise",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Aflang rød radise med hvid spids, sprød tekstur og mild til let pebret smag.",
+    "difficulty": "easy",
+    "tags": [
+      "radise",
+      "french-breakfast",
+      "aflang",
+      "roed-hvid",
+      "tidlig"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "plantSpacing": "2.5-5 cm",
+      "growthType": "aflang salatradise",
+      "maturityDays": "ca. 25-30 dage",
+      "primaryUse": "Frisk spisning, salater og garniture"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "French Breakfast er en klassisk aflang salatradise med rød overdel og hvid spids. Formen er mere fingerlang end rund, og rødderne høstes, mens de stadig er slanke og sprøde.\n\nSmagen er mild til let pebret, når planten vokser hurtigt i køligt vejr. Står den længe eller mangler vand, bliver både tekstur og styrke mindre behagelig."
+      },
+      {
+        "key": "vaelg-french-breakfast-hvis",
+        "title": "Vælg French Breakfast hvis",
+        "body": "Vælg sorten, hvis du vil have en hurtig radise med et tydeligt tofarvet udseende. Den passer til små gentagne såninger og kan dyrkes mellem langsommere grøntsager, hvis du husker at høste den i tide."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-french-breakfast-eller-rund-radise",
+        "title": "French Breakfast eller rund radise?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg French Breakfast hvis",
+            "items": [
+              "du vil have en aflang rød-hvid rod",
+              "du høster små hold ofte",
+              "du foretrækker en mild, sprød salatradise"
+            ]
+          },
+          {
+            "heading": "Vælg en rund radise hvis",
+            "items": [
+              "du vil have kompakte kugler",
+              "du følger en sort med tydelig diameter som høstmål",
+              "du ønsker andre farver eller mere markant styrke"
+            ]
+          }
+        ],
+        "intro": "Dyrkningen ligner hinanden, men formen og høstøjeblikket er forskelligt."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Den aflange rod kræver løs jord i hele sin længde. Tunge klumper og sten kan give skæve eller forgrenede rødder, selv om planten ellers vokser godt.\n\nSorten bør ikke bedømmes som en rund radise. Høst, når den røde overdel er tydelig og roden har fået sin aflange form, før den bliver bred og grov."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "French Breakfast mister hurtigt kvalitet i varmt og tørt vejr. Så korte rækker, vand jævnt, og høst flere gange om ugen, når de første rødder er klar.\n\nHvis rødderne bliver tynde uden at fylde, står planterne ofte for tæt eller i for meget skygge. Tynd tidligt frem for at vente, til bladene dækker hinanden."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Træk de største rødder først og lad de mindre stå få dage længere. Brug den hvide spids som en del af sortens naturlige udseende; den skal ikke skæres væk af kosmetiske grunde.\n\nSpis radiserne friske, skær dem på langs eller i tynde skiver, og brug dem i salater og på brød. Smør og salt er en klassisk enkel servering, men sorten fungerer også i hurtige syltninger."
+      },
+      {
+        "key": "gem-ikke-hoesten-for-laenge",
+        "title": "Gem ikke høsten for længe",
+        "body": "Fjern bladene efter høst, hvis rødderne ikke bruges straks. Opbevar dem køligt og fugtbevarende, men brug dem, mens de stadig er faste.\n\nFrench Breakfast er åbenbestøvet, men radiser krydser let under blomstring. Frøavl kræver derfor afstand eller isolation fra andre blomstrende radisesorter."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær radisen at kende",
+        "description": "Få hele dyrkningsfundamentet for såning, fugt og løbende høst.",
+        "slug": "radise",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.johnnyseeds.com/vegetables/radishes/long-french-radishes/french-breakfast-radish-seed-4088.html",
+      "https://www.rhs.org.uk/vegetables/radishes/grow-your-own"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
