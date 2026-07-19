@@ -53,3 +53,10 @@ public/assets/forvandlinger/**/_reserve/
 
 # Midlertidig foto-indbakke — Claude henter herfra, committes aldrig
 _foto-indbakke/
+
+# Midlertidig guide-indbakke — intake henter herfra, committes aldrig
+_guide-indbakke/*
+!_guide-indbakke/LÆS-MIG.txt
+
+# Arkiv for foto-originaler (høj-opløst master) — committes aldrig
+_foto-arkiv/
