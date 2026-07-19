@@ -1,0 +1,121 @@
+{
+  "generatedAt_note": "Snapshot af origin/main. Regenerér før hver batch.",
+  "live": [
+    {
+      "slug": "agurk",
+      "guideLevel": "species",
+      "parentSlug": "null",
+      "status": "imported"
+    },
+    {
+      "slug": "chili",
+      "guideLevel": "species",
+      "parentSlug": "null",
+      "status": "imported"
+    },
+    {
+      "slug": "dahlia",
+      "guideLevel": "species",
+      "parentSlug": "null",
+      "status": "imported"
+    },
+    {
+      "slug": "hvidloeg",
+      "guideLevel": "species",
+      "parentSlug": null,
+      "status": "imported"
+    },
+    {
+      "slug": "peberfrugt",
+      "guideLevel": "species",
+      "parentSlug": "null",
+      "status": "imported"
+    },
+    {
+      "slug": "salat",
+      "guideLevel": "species",
+      "parentSlug": null,
+      "status": "imported"
+    },
+    {
+      "slug": "tomat",
+      "guideLevel": "species",
+      "parentSlug": "null",
+      "status": "imported"
+    },
+    {
+      "slug": "agurk-marketmore",
+      "guideLevel": "variety",
+      "parentSlug": "agurk",
+      "status": "imported"
+    },
+    {
+      "slug": "chili-habanero-orange",
+      "guideLevel": "variety",
+      "parentSlug": "chili",
+      "status": "imported"
+    },
+    {
+      "slug": "dahlia-cafe-au-lait",
+      "guideLevel": "variety",
+      "parentSlug": "dahlia",
+      "status": "imported"
+    },
+    {
+      "slug": "peberfrugt-california-wonder",
+      "guideLevel": "variety",
+      "parentSlug": "peberfrugt",
+      "status": "imported"
+    },
+    {
+      "slug": "peberfrugt-corno-di-toro-rosso",
+      "guideLevel": "variety",
+      "parentSlug": "peberfrugt",
+      "status": "imported"
+    },
+    {
+      "slug": "salat-little-gem",
+      "guideLevel": "variety",
+      "parentSlug": "salat",
+      "status": "imported"
+    },
+    {
+      "slug": "tomat-gardeners-delight",
+      "guideLevel": "variety",
+      "parentSlug": "tomat",
+      "status": "imported"
+    },
+    {
+      "slug": "tomat-san-marzano",
+      "guideLevel": "variety",
+      "parentSlug": "tomat",
+      "status": "imported"
+    },
+    {
+      "slug": "tomat-sungold",
+      "guideLevel": "variety",
+      "parentSlug": "tomat",
+      "status": "imported"
+    }
+  ],
+  "generated": [],
+  "built": [],
+  "allSlugs": [
+    "agurk",
+    "agurk-marketmore",
+    "chili",
+    "chili-habanero-orange",
+    "dahlia",
+    "dahlia-cafe-au-lait",
+    "hvidloeg",
+    "peberfrugt",
+    "peberfrugt-california-wonder",
+    "peberfrugt-corno-di-toro-rosso",
+    "salat",
+    "salat-little-gem",
+    "tomat",
+    "tomat-gardeners-delight",
+    "tomat-san-marzano",
+    "tomat-sungold"
+  ]
+}

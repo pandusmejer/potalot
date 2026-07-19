@@ -1,0 +1,32 @@
+POTALOT GUIDE — VALIDERINGS- OG BUILD-KOMMANDOER
+=================================================
+Køres af Claude i repoet (ikke af ChatGPT). ChatGPT leverer JSON; disse
+kommandoer bekræfter at JSON'en er gyldig, FØR noget promoveres.
+
+── Anbefalet: ét greb (klassificerer + validerer + matcher fotos, skriver intet)
+   Læg batchens .json i _guide-indbakke/ og fotos i _foto-indbakke/, så:
+
+     npm run guides:intake -- --dry-run
+
+   Viser: NEW vs UPDATE, foto-match, og hvad der ville ske. Ingen skrivning.
+
+── Ren struktur-validering af JSON (uden intake)
+   Læg .json i content/guide-production/generated/ og kør:
+
+     npm run guides:build        # JSON → KANDIDAT .md i built/ (fejler på strukturfejl)
+     npm run guides:validate     # niveau 1: felter, enums, slug, parentSlug, dubletter
+
+── Round-trip-check af ét eksempel (bevis for at JSON matcher live-format)
+   (bygger JSON→md og sammenligner — bruges til at verificere eksempelfiler)
+
+     npx tsx scripts/guides-build.ts   # efter JSON lagt i generated/
+
+── Fuld livscyklus efter menneskelig godkendelse (Claude kører):
+     npm run guides:promote <slug>     # guard-tjekket: blokerer hvis kandidat taber indhold
+     npm run guides:validate
+     npm run guides:mark <slug> imported
+     npm run import:guides
+     npm run guides:sync-master        # → DB master-rækker (auto-kobling)
+
+── Test af selve pipelinen:
+     npm test                          # tsc-typecheck-adjacent node-tests (sync/guard/intake)
