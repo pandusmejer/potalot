@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { fortolkTale, hentSortsOrdliste } from '@/actions/tale'
 import { gemOptagelse, behandlOptagelse, beholdSomNote } from '@/actions/optagelser'
 import { createClient } from '@/lib/supabase/client'
+import { DiktafonGuideArk } from '@/components/havebog/diktafon-guide-ark'
 import type { TaleForslag, ForslagType } from '@/lib/tale-fortolk'
 
 const sans = 'var(--font-manrope)'
@@ -81,7 +82,38 @@ export function TalOptager() {
   const promptRef = useRef<string>('')
   const capTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // "Sådan virker det"-ark: vises FØRSTE gang man trykker mic, kan genåbnes.
+  const [visGuide, setVisGuide] = useState(false)
+  const [harSetGuide, setHarSetGuide] = useState(true) // default true → ingen "flash" for gengangere
+  const [guideSkjult, setGuideSkjult] = useState(false) // "vis ikke igen" → skjul genvejen
+
   const kanOptage = harOptager()
+
+  // Læs guide-tilstand fra localStorage (kun klient).
+  useEffect(() => {
+    try {
+      setHarSetGuide(localStorage.getItem('potalot_diktafon_guide_set') === '1')
+      setGuideSkjult(localStorage.getItem('potalot_diktafon_guide_skjult') === '1')
+    } catch {
+      setHarSetGuide(false) // localStorage utilgængelig → vis guiden
+    }
+  }, [])
+
+  function markGuide(skjul: boolean) {
+    try {
+      localStorage.setItem('potalot_diktafon_guide_set', '1')
+      if (skjul) localStorage.setItem('potalot_diktafon_guide_skjult', '1')
+    } catch { /* ignorér */ }
+    setHarSetGuide(true)
+    if (skjul) setGuideSkjult(true)
+  }
+
+  // Mic-klik: første gang → vis "Sådan virker det"-arket; derefter optag direkte.
+  function micKlik() {
+    if (fase === 'lytter') { stopOptagelse(); return }
+    if (!harSetGuide) { setVisGuide(true); return }
+    void startOptagelse()
+  }
 
   // Optager-timer (kun mens vi lytter).
   useEffect(() => {
@@ -316,7 +348,7 @@ export function TalOptager() {
             />
             <button
               type="button"
-              onClick={optager ? stopOptagelse : startOptagelse}
+              onClick={micKlik}
               aria-label={optager ? 'Stop optagelse' : 'Tryk og tal til din have'}
               className={optager ? undefined : 'tal-breath'}
               style={{
@@ -366,8 +398,26 @@ export function TalOptager() {
                   maxWidth: '22ch',
                 }}
               >
-                Fortæl hvad du ser.<br />Potalot hjælper dig med at gemme det rigtigt.
+                Fortæl frit om din have.<br />Potalot organiserer resten.
               </p>
+              {!guideSkjult && (
+                <button
+                  type="button"
+                  onClick={() => setVisGuide(true)}
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: '#3B4A2F',
+                    background: 'none',
+                    border: 'none',
+                    marginTop: 14,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sådan virker det →
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setFase('skriver')}
@@ -378,7 +428,7 @@ export function TalOptager() {
                   color: 'rgba(36,48,31,0.5)',
                   background: 'none',
                   border: 'none',
-                  marginTop: 12,
+                  marginTop: guideSkjult ? 14 : 8,
                   cursor: 'pointer',
                   textDecoration: 'underline',
                 }}
@@ -591,6 +641,12 @@ export function TalOptager() {
           )}
         </div>
       )}
+
+      <DiktafonGuideArk
+        open={visGuide}
+        onClose={skjul => { setVisGuide(false); markGuide(skjul) }}
+        onBegin={skjul => { setVisGuide(false); markGuide(skjul); void startOptagelse() }}
+      />
     </section>
   )
 }
