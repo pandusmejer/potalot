@@ -3227,6 +3227,356 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "hvidloeg-germidour",
+    "plantName": "Hvidløg",
+    "pluralName": null,
+    "variety": "Germidour",
+    "latinName": "Allium sativum 'Germidour'",
+    "guideLevel": "variety",
+    "parentGuideId": "hvidloeg",
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Kraftig fransk softneck-sort med store hvid-violette løg, brune fedskaller og en mild, men fyldig smag.",
+    "difficulty": "easy",
+    "tags": [
+      "softneck",
+      "fransk",
+      "violet",
+      "store-loeg",
+      "mild-smag"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [
+        10,
+        11
+      ],
+      "harvestMonths": [
+        6,
+        7
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 15 cm",
+      "rowSpacing": "ca. 30 cm",
+      "growthType": "kraftig softneck-sort uden fast blomsterstængel",
+      "height": "ca. 45-60 cm",
+      "primaryUse": "Frisk brug, presning, bagning, stegning og dekorativ lagring"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Germidour er en kraftig fransk softneck-sort med store, runde løg. De ydre skaller veksler mellem hvidt og violet, mens feddene har brunlige skaller.\n\nPlanten vokser halvt opret med brede, mørkegrønne blade og en kraftig falsk stængel. Den danner normalt ikke en fast blomsterstængel."
+      },
+      {
+        "key": "vaelg-germidour-hvis",
+        "title": "Vælg Germidour hvis",
+        "body": "Vælg Germidour, hvis du vil have store, dekorative løg og en mildere, men stadig fyldig hvidløgssmag."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-germidour-eller-en-hvid-dr-me-sort",
+        "title": "Germidour eller en hvid Drôme-sort?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Germidour hvis",
+            "items": [
+              "du vil have hvid-violette løg",
+              "du foretrækker mild, rig smag",
+              "du prioriterer store, dekorative løg"
+            ]
+          },
+          {
+            "heading": "Vælg Messidrome eller Thermidrome hvis",
+            "items": [
+              "du vil have et mere ensartet hvidt løg",
+              "du prioriterer klassisk Drôme-type",
+              "du ønsker en mere neutral visuel høst"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Germidour har højt udbyttepotentiale og danner store løg med markante violette tegninger. Farven kan blive tydeligere i lerholdig jord, men jorden skal stadig være veldrænet.\n\nRHS beskriver sorten som velkendt og pålidelig med store løg og en forholdsvis mild, rig smag."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Germidour vokser kraftigt og kan danne en bred bladmasse. Hold bedet fri for ukrudt, så planterne ikke konkurrerer om lys og vand.\n\nVand under længere tørkeperioder i foråret, men reducer vandingen, når løgene nærmer sig høst."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst normalt fra midten af juni til juli, når løvet gulner og begynder at falde sammen. Tør løgene grundigt i skygge med god ventilation.\n\nDen milde, fyldige smag fungerer rå i dressinger og presset i kolde retter, men også bagt eller stegt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær hvidløget at kende",
+        "description": "Få det fælles dyrkningsfundament for hvidløg i dansk klima.",
+        "slug": "hvidloeg",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.aildupontvert.com/en/varieties-garlic/germidour",
+      "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
+      "https://www.rhsplants.co.uk/plants/_/garlic-germidour/classid.2000040281/",
+      "https://garlicaustralia.asn.au/garlics/artichoke/germidour/"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hvidloeg-messidrome",
+    "plantName": "Hvidløg",
+    "pluralName": null,
+    "variety": "Messidrome",
+    "latinName": "Allium sativum 'Messidrome'",
+    "guideLevel": "variety",
+    "parentGuideId": "hvidloeg",
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Fransk, hvid softneck-sort med runde løg, god sygdomsrobusthed og fast kvalitet efter tørring og lagring.",
+    "difficulty": "easy",
+    "tags": [
+      "softneck",
+      "fransk",
+      "hvid",
+      "efteraarsplantning",
+      "lagring"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [
+        10,
+        11
+      ],
+      "harvestMonths": [
+        6,
+        7
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 15 cm",
+      "rowSpacing": "ca. 30 cm",
+      "growthType": "softneck-hvidløg uden fast blomsterstængel",
+      "height": "ca. 45-60 cm",
+      "primaryUse": "Almindelig madlavning, stegning, bagning og lagring"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Messidrome er en fransk softneck-sort udviklet fra hvidløg fra Drôme. Den danner runde, hvide løg med lyse fed og en tæt skal, som gør de tørrede løg nemme at rense og håndtere.\n\nSorten er produktiv og kendt for robust vækst og god modstandsdygtighed mod sygdomme. Den dyrkes som efterårshvidløg og høstes tidligt på sommeren."
+      },
+      {
+        "key": "vaelg-messidrome-hvis",
+        "title": "Vælg Messidrome hvis",
+        "body": "Vælg Messidrome, hvis du vil have et klassisk, hvidt hvidløg med ensartede løg og en sort, der klarer almindelig lagring godt efter korrekt tørring."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-messidrome-thermidrome-eller-germidour",
+        "title": "Messidrome, Thermidrome eller Germidour?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Messidrome hvis",
+            "items": [
+              "du vil have runde, hvide løg med stærk skal",
+              "du prioriterer robusthed og ensartet kvalitet",
+              "du vil bruge hvidløget bredt i køkkenet"
+            ]
+          },
+          {
+            "heading": "Vælg Thermidrome hvis",
+            "items": [
+              "du prioriterer en tidlig og forholdsvis kuldetålende sort",
+              "du vil have hvide løg med beige eller rosa fed",
+              "du foretrækker en mere delikat smag"
+            ]
+          },
+          {
+            "heading": "Vælg Germidour hvis",
+            "items": [
+              "du vil have store løg med hvid-violette skaller",
+              "du foretrækker en mild, men fyldig smag",
+              "du vil have en tydeligt dekorativ høst"
+            ]
+          }
+        ],
+        "intro": "De tre franske softneck-sorter adskiller sig især i udseende, tidlighed og smagsprofil."
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Messidrome danner typisk store, runde løg med omkring 8-12 lyse fed. Den franske producent fremhæver sortens høje udbyttepotentiale, robuste løg og evne til at bevare kvalitet og smag under lagring.\n\nRødderne sidder relativt samlet, så løgene er lette at rense efter tørring."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Plant sunde, certificerede sætteløg om efteråret. Sorten danner ikke en fast blomsterstængel som hardneck-hvidløg, så du skal normalt ikke fjerne hvidløgsskud.\n\nLagringsevnen afhænger af rettidig høst og grundig tørring. Løft løgene, når bladene begynder at gulne, før de yderste skaller bryder helt ned."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst normalt i juni eller begyndelsen af juli, afhængigt af vinter og forårsvejr. Løft forsigtigt hele planten og tør den under tag med god luftcirkulation.\n\nMessidrome har en klassisk hvidløgskarakter, som fungerer i både rå og tilberedte retter."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær hvidløget at kende",
+        "description": "Få hele dyrkningsfundamentet fra sættefed til tørrede løg.",
+        "slug": "hvidloeg",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.aildupontvert.com/en/varieties-garlic/messidrome",
+      "https://www.theoniongroup.com/products/garlic-for-planting/",
+      "https://hub.suttons.co.uk/garlic/garlic-growing-guide",
+      "https://www.rhs.org.uk/vegetables/garlic/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hvidloeg-thermidrome",
+    "plantName": "Hvidløg",
+    "pluralName": null,
+    "variety": "Thermidrome",
+    "latinName": "Allium sativum 'Thermidrome'",
+    "guideLevel": "variety",
+    "parentGuideId": "hvidloeg",
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Tidlig fransk softneck-sort med hvide løg, fyldige beige-rosa fed og god tilpasning til kølige dyrkningsområder.",
+    "difficulty": "easy",
+    "tags": [
+      "softneck",
+      "fransk",
+      "tidlig",
+      "kuldetolerant",
+      "efteraarsplantning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "harvestMonths": [
+        6,
+        7
+      ],
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 15 cm",
+      "rowSpacing": "ca. 30 cm",
+      "growthType": "tidlig softneck-sort uden fast blomsterstængel",
+      "height": "ca. 45-60 cm",
+      "primaryUse": "Frisk brug, stegning, bagning og almindelig køkkenbrug"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Thermidrome er en fransk, hvid softneck-sort fra Drôme. Den danner hvide løg med beige til rosa fed og regnes som en tidlig efterårssort.\n\nSorten blev udviklet af INRA og står i det officielle franske sortskatalog. Den vokser uden fast blomsterstængel."
+      },
+      {
+        "key": "vaelg-thermidrome-hvis",
+        "title": "Vælg Thermidrome hvis",
+        "body": "Vælg Thermidrome, hvis du ønsker en tidlig sort, som beskrives som produktiv og forholdsvis robust i køligere områder."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-thermidrome-eller-messidrome",
+        "title": "Thermidrome eller Messidrome?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Thermidrome hvis",
+            "items": [
+              "du prioriterer tidlig høst",
+              "du dyrker i et køligere område",
+              "du foretrækker en mere delikat smag"
+            ]
+          },
+          {
+            "heading": "Vælg Messidrome hvis",
+            "items": [
+              "du prioriterer ensartede, runde løg og stærk skal",
+              "du vil have en robust allround-sort",
+              "du lægger særlig vægt på kvalitet efter tørring"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Det officielle franske katalog beskriver Thermidrome som tidlig, efterårsplantet og med middel dvale. Løgene er hvide, mens feddene er beige.\n\nSorten danner typisk omkring 8-14 eller 9-16 fyldige fed pr. løg, afhængigt af udsæd, jord og sæson."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Thermidrome er tidlig, så følg bladene fra begyndelsen af sommeren. Venter du for længe efter tydelig gulning, kan de yderste skaller sprække.\n\nSorten beskrives som mere rustik og kuldetålende end Messidrome, men vandmættet vinterjord kan stadig få feddene til at rådne."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Høst fra juni til juli, når løvet begynder at gulne og lægge sig. Tør hele planterne i et skygget, luftigt rum i to til tre uger.\n\nThermidrome beskrives med en delikat til middelstærk smag, som holder sig godt under tilberedning."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær hvidløget at kende",
+        "description": "Få hele dyrkningsfundamentet for efterårsplantning, pleje, høst og tørring.",
+        "slug": "hvidloeg",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://ail-echalote-certifie.org/en/the-official-french-catalogue-of-garlic-varieties/thermidrome/",
+      "https://www.rhsplants.co.uk/plants/_/garlic-thermidrme/classid.2000040282/",
+      "https://kokopelli-semences.fr/fr/p/BA0002-Bulbes-d-Ail-blanc-Thermidrome-AB-250-g-Allium-sativum",
+      "https://www.rhs.org.uk/vegetables/garlic/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "jordbaer-corona",
     "plantName": "Jordbær",
     "pluralName": null,
@@ -4408,6 +4758,126 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "salat-buttercrunch",
+    "plantName": "Salat",
+    "pluralName": null,
+    "variety": "Buttercrunch",
+    "latinName": "Lactuca sativa 'Buttercrunch'",
+    "guideLevel": "variety",
+    "parentGuideId": "salat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kompakt smørsalat med mørkegrønne yderblade, cremegult hjerte og en blød, men tydeligt sprød tekstur.",
+    "difficulty": "easy",
+    "tags": [
+      "smoersalat",
+      "kompakt",
+      "sprød",
+      "sommer",
+      "aabenbestoevet"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "light": "partial_shade",
+      "water": "regular",
+      "plantSpacing": "ca. 25-30 cm",
+      "growthType": "kompakt smørsalat med løst hoved",
+      "height": "ca. 20-25 cm",
+      "maturityDays": "ca. 10-14 uger fra såning",
+      "primaryUse": "Hele hoveder, sandwich, salater og løbende plukning af yderblade"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Buttercrunch er en smørsalat med små til mellemstore hoveder. De mørkegrønne yderblade folder sig omkring et lyst, cremegult hjerte, og bladene kombinerer den bløde smørsalatsstruktur med mere bid end mange klassiske butterhead-sorter.\n\nSorten står i RHS' aktuelle sammenlignende salatforsøg og dyrkes som sommer-smørsalat. Den kan høstes som helt hoved eller plukkes udefra, mens midten fortsætter med at vokse."
+      },
+      {
+        "key": "vaelg-buttercrunch-hvis",
+        "title": "Vælg Buttercrunch hvis",
+        "body": "Vælg Buttercrunch, hvis du vil have en mild salat, der både føles blød og sprød. Den passer godt i sandwich og salater, hvor bladene skal være mere fyldige end pluksalat, men mindre stive end batavia."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-buttercrunch-lollo-rossa-eller-rouge-grenobloise",
+        "title": "Buttercrunch, Lollo Rossa eller Rouge Grenobloise?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Buttercrunch hvis",
+            "items": [
+              "du vil have et kompakt smørsalathoved",
+              "du foretrækker milde, fyldige blade",
+              "du vil bruge salaten i sandwich og som hele blade"
+            ]
+          },
+          {
+            "heading": "Vælg Lollo Rossa hvis",
+            "items": [
+              "du vil plukke røde, krusede blade løbende",
+              "du prioriterer farve og let struktur",
+              "du vil dyrke mange planter tættere"
+            ]
+          },
+          {
+            "heading": "Vælg Rouge Grenobloise hvis",
+            "items": [
+              "du vil have store, sprøde bataviablade",
+              "du ønsker en robust sort til skiftende sæsoner",
+              "du prioriterer rødgrøn farve og mere knas"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Buttercrunch danner et tæt, men ikke hårdt hoved. De inderste blade bliver lysere og mere møre, mens yderbladene giver mere struktur.\n\nBritiske frøleverandører angiver typisk omkring 10-14 uger fra såning til fuldt hoved. Du kan begynde at tage enkelte yderblade tidligere, hvis du lader hjertet stå urørt."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Buttercrunch beskrives ofte som langsommere til at gå i stok end mange smørsalater, men varme og tørke kan stadig forkorte høstvinduet. Hold jorden jævnt fugtig, og giv let middagsskygge i varme perioder.\n\nHøst hele hovedet, før midten begynder at strække sig opad. Når blomsterstænglen udvikler sig, bliver bladene gradvist mere bitre."
+      },
+      {
+        "key": "hoest-og-brug",
+        "title": "Høst og brug",
+        "body": "Skær hele hovedet ved jordoverfladen, når det føles fyldigt, eller pluk de største yderblade løbende. Høst helst om morgenen, mens bladene er spændstige.\n\nBrug de brede blade i sandwich, burgere og salater. Det lyse hjerte egner sig særligt godt til enkel servering, hvor den milde smag og sprøde midte får lov at stå tydeligt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær salaten at kende",
+        "description": "Få hele dyrkningsfundamentet for såning, vanding, skygge og løbende høst.",
+        "slug": "salat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/trials-awards/ongoing-plant-trials/lettuce",
+      "https://www.dobies.co.uk/vegetable-seeds/when-to-sow-vegetables/april/lettuce-seeds-buttercrunch_mh-3582",
+      "https://www.kingsseeds.com/12605-lettuce-buttercrunch",
+      "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "salat-little-gem",
     "plantName": "Salat",
     "pluralName": null,
@@ -4533,6 +5003,244 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/plants/112416/lactuca-sativa-little-gem/details",
       "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own",
       "https://www.rhs.org.uk/advice/grow-your-own/features/crops-in-pots"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "salat-lollo-rossa",
+    "plantName": "Salat",
+    "pluralName": null,
+    "variety": "Lollo Rossa",
+    "latinName": "Lactuca sativa 'Lollo Rossa'",
+    "guideLevel": "variety",
+    "parentGuideId": "salat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Rød, kruset pluksalat med åbent hoved, dekorative blade og mulighed for både løbende plukning og hel høst.",
+    "difficulty": "easy",
+    "tags": [
+      "pluksalat",
+      "roed",
+      "kruset",
+      "cut-and-come-again",
+      "dekorativ"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "light": "partial_shade",
+      "water": "regular",
+      "plantSpacing": "ca. 20-25 cm",
+      "growthType": "åben, kruset pluksalat uden fast hjerte",
+      "height": "ca. 20-30 cm",
+      "primaryUse": "Løbende bladplukning, salater, pynt og blandede babyblade"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Lollo Rossa er en rødbladet, kruset salat, som danner et åbent hoved frem for et tæt hjerte. Bladene går fra grønligt gul nær basis til mørkerøde eller bordeaux kanter.\n\nRHS beskriver sorten som velegnet både til løbende høst af yderblade og til at stå, til hele planten kan skæres. Den bruges især for farve, fin krusning og let sprødhed."
+      },
+      {
+        "key": "vaelg-lollo-rossa-hvis",
+        "title": "Vælg Lollo Rossa hvis",
+        "body": "Vælg Lollo Rossa, hvis du vil have en salat, der giver farve i bedet og skålen, og som kan høstes lidt ad gangen. Den passer godt til små haver, altankasser og blandede salatbede."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-lollo-rossa-eller-en-hovedsalat",
+        "title": "Lollo Rossa eller en hovedsalat?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Lollo Rossa hvis",
+            "items": [
+              "du vil plukke yderblade gennem flere uger",
+              "du vil have krusede røde blade",
+              "du prioriterer en åben plante frem for et fast hoved"
+            ]
+          },
+          {
+            "heading": "Vælg en hovedsalat hvis",
+            "items": [
+              "du vil høste ét samlet, tæt hoved",
+              "du foretrækker brede og mere ensartede blade",
+              "du vil have en tydelig kerne eller et sprødt hjerte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Lollo Rossa danner ikke et kompakt hoved som Little Gem eller Buttercrunch. De mange fint krusede blade står åbent, så planten ser større ud uden at blive tæt i midten.\n\nFarven bliver typisk kraftigst i godt lys og køligt vejr. I dyb skygge kan bladene blive mere grønne, mens meget varme og tørke kan gøre dem hurtigere bitre."
+      },
+      {
+        "key": "hoest-som-pluksalat",
+        "title": "Høst som pluksalat",
+        "body": "Tag de største yderblade og lad hjertet stå. Så kan planten sætte nye blade gennem flere uger. Du kan også klippe unge blade nogle centimeter over vækstpunktet og lade planten skyde igen.\n\nPluk ofte, før bladene bliver grove. Hvis du vil høste hele planten, skærer du den ved basis, mens hovedet stadig er åbent og bladene sprøde."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "De krusede blade kan holde på jord og små snegle, især efter regn. Skyl høsten grundigt og kontrollér bladfolderne.\n\nLollo Rossa giver bedst kvalitet i jævn fugt. Ved varme sommersåninger hjælper let skygge og små, gentagne såninger med at forlænge høsten."
+      },
+      {
+        "key": "brug-i-koekkenet",
+        "title": "Brug i køkkenet",
+        "body": "Brug bladene i blandede salater, som farverigt lag i sandwich eller som dekorativ kant omkring mildere grøn salat. Smagen er mild med en let bitter tone i de mørkeste, ældre blade.\n\nDe krusede blade falder hurtigt sammen efter høst, så køl dem ned og brug dem friske."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær salaten at kende",
+        "description": "Få det fælles dyrkningsfundament for salat gennem hele sæsonen.",
+        "slug": "salat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": "/images/plantekort/salat-lollo-rossa.jpg",
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/119367/lactuca-sativa-lollo-rossa/details",
+      "https://www.rhs.org.uk/plants/articles/graham-rice/edibles/10-agm-leafy-greens",
+      "https://www.rhs.org.uk/vegetables/cut-come-again-salads",
+      "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "salat-rouge-grenobloise",
+    "plantName": "Salat",
+    "pluralName": null,
+    "variety": "Rouge Grenobloise",
+    "latinName": "Lactuca sativa 'Rouge Grenobloise'",
+    "guideLevel": "variety",
+    "parentGuideId": "salat",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Gammel fransk bataviasalat med store, løse hoveder, sprøde rødgrønne blade og god robusthed i både køligt og varmt vejr.",
+    "difficulty": "easy",
+    "tags": [
+      "batavia",
+      "roedgroen",
+      "sprød",
+      "fransk",
+      "slow-bolting"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "light": "partial_shade",
+      "water": "regular",
+      "plantSpacing": "ca. 30-35 cm",
+      "growthType": "stor, løs bataviasalat med sprøde blade",
+      "height": "ca. 20-30 cm",
+      "primaryUse": "Hele hoveder, løbende yderblade, sprøde salater og sandwich"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Rouge Grenobloise er en gammel fransk bataviasalat med store, løse hoveder. Bladene er grønne med blanke røde eller bordeaux nuancer, let vaflede flader og en tydeligt sprød struktur.\n\nSorten kombinerer noget af hovedsalatens fylde med pluksalatens åbne vækst. Du kan derfor høste yderblade løbende eller lade planten danne et stort, middelkompakt hoved."
+      },
+      {
+        "key": "vaelg-rouge-grenobloise-hvis",
+        "title": "Vælg Rouge Grenobloise hvis",
+        "body": "Vælg sorten, hvis du vil have mere knas end i en smørsalat og en mere åben plante end klassisk iceberg. Den fungerer godt som en robust allround-salat gennem forår, sommer og efterår."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-rouge-grenobloise-eller-buttercrunch",
+        "title": "Rouge Grenobloise eller Buttercrunch?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Rouge Grenobloise hvis",
+            "items": [
+              "du vil have store, sprøde bataviablade",
+              "du prioriterer rødgrøn farve",
+              "du vil kunne høste både yderblade og et løst hoved"
+            ]
+          },
+          {
+            "heading": "Vælg Buttercrunch hvis",
+            "items": [
+              "du vil have et mindre og mere kompakt hoved",
+              "du foretrækker blødere, mildere blade",
+              "du vil have et lyst, mørt hjerte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Sativa beskriver Rouge Grenobloise som en robust sort med store, løse hoveder til forårs- og sommerdyrkning. Kokopelli beskriver bladene som grønne, kraftigt blærede og blankt rødfarvede med sprød tekstur.\n\nFlere frøleverandører fremhæver sortens tolerance over for både køligt vejr og varme samt dens langsommere stokløbning. Det gør den alsidig, men den kræver stadig jævn fugt for at holde bladene møre."
+      },
+      {
+        "key": "giv-den-plads",
+        "title": "Giv den plads",
+        "body": "Rouge Grenobloise bliver større end mange pluksalater. Giv cirka 30-35 cm mellem planterne, hvis du vil dyrke fulde hoveder. Står planterne tættere, kan du høste dem tidligere som mindre salater.\n\nDe brede blade har brug for luft omkring sig. Fjern døde yderblade og undgå at vande direkte ind i hovedet sent på dagen."
+      },
+      {
+        "key": "hoest-paa-to-maader",
+        "title": "Høst på to måder",
+        "body": "Pluk de største yderblade, mens midten fortsætter med at vokse, eller skær hele hovedet, når det føles fyldigt og stadig er løst. Sorten kan holde sig brugbar længe i bedet, hvis du høster regelmæssigt.\n\nVed sommersåning skal du holde jorden fugtig under spiringen. Ved efterårsdyrkning kan en let overdækning forlænge høsten, men planten skal stadig have luft."
+      },
+      {
+        "key": "smag-og-brug",
+        "title": "Smag og brug",
+        "body": "Bladene er mere sprøde og fyldige end Lollo Rossa og har en frisk salatsmag med let nøddeagtige eller bitre toner i de mørkeste blade.\n\nBrug sorten i grove salater, sandwich og retter, hvor bladene skal bevare struktur efter dressing. De store yderblade kan også fungere som bund under andre grøntsager."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær salaten at kende",
+        "description": "Få hele dyrkningsfundamentet fra små såninger til sprød høst.",
+        "slug": "salat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.sativa.bio/en/rouge-grenobloise-batavia-lettuce-prospecierara-es15",
+      "https://kokopelli-semences.fr/fr/p/P3611-Rouge-Grenobloise",
+      "https://blog.kokopelli-semences.fr/2023/01/culture-de-la-laitue-batavia-autonome-du-semis-la-recolte/",
+      "https://vitalseeds.co.uk/product/winter-lettuce-grenoble-red-organic/",
+      "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
