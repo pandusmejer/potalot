@@ -2976,6 +2976,247 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "chili-de-cayenne",
+    "plantName": "Chili",
+    "pluralName": null,
+    "variety": "De Cayenne",
+    "latinName": "Capsicum annuum 'De Cayenne'",
+    "guideLevel": "variety",
+    "parentGuideId": "chili",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Klassisk cayennechili med lange, slanke frugter, tydelig varme og god egnethed til tørring, pulver og stærke saucer.",
+    "difficulty": "medium",
+    "tags": [
+      "cayenne",
+      "lang",
+      "staerk",
+      "toerring",
+      "capsicum-annuum"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 45 cm",
+      "growthType": "opret, forgrenet plante med lange, hængende frugter",
+      "height": "ca. 60-90 cm",
+      "maturityDays": "ca. 70-85 dage fra udplantning",
+      "primaryUse": "Tørring, chilipulver, stærke saucer og frisk krydring"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "De Cayenne er en klassisk cayenne-type med lange, slanke frugter, som modner fra grøn til rød. Frugterne er væsentligt tyndere end jalapeño og egner sig derfor godt til tørring.\n\nPlanten vokser opret og forgrenet og kan bære mange hængende frugter gennem sensommeren under varme forhold."
+      },
+      {
+        "key": "vaelg-de-cayenne-hvis",
+        "title": "Vælg De Cayenne hvis",
+        "body": "Vælg sorten, hvis du vil dyrke chili til pulver, tørrede flager eller stærk sauce. Den tynde frugtvæg tørrer hurtigere og mere jævnt end kødfulde jalapeño-frugter."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-de-cayenne-eller-early-jalape-o",
+        "title": "De Cayenne eller Early Jalapeño?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg De Cayenne hvis",
+            "items": [
+              "du vil have en stærkere og mere koncentreret varme",
+              "du vil tørre frugterne",
+              "du vil lave pulver, flager eller sauce"
+            ]
+          },
+          {
+            "heading": "Vælg Early Jalapeño hvis",
+            "items": [
+              "du vil have tykke, saftige frugter",
+              "du vil sylte eller fylde dem",
+              "du ønsker en mildere, grønnere chilismag"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "De Cayenne danner lange, smalle frugter med forholdsvis tynde vægge. De bliver mere aromatiske og udvikler deres fulde farve, når de modner røde.\n\nSorten har en tydelig varme, men styrken varierer med dyrkningsforhold og frugtens modenhed. Brug derfor beskrivelser af styrke som pejlemærke, ikke som et laboratorietal for hver frugt."
+      },
+      {
+        "key": "giv-plads-til-en-hoejere-plante",
+        "title": "Giv plads til en højere plante",
+        "body": "De Cayenne bliver normalt højere og mere åben end en kompakt jalapeño. Bind planten løst til en pind, hvis grenene bøjer under mange frugter.\n\nI dansk klima modner sorten sikrest i drivhus. På friland bør du give den en sydvendt, varm og vindbeskyttet plads."
+      },
+      {
+        "key": "hoest-og-toerring",
+        "title": "Høst og tørring",
+        "body": "Høst grønne frugter til frisk brug eller vent, til de bliver helt røde til tørring. Klip dem af med stilk, så du ikke river grenene.\n\nTør kun hele, ubeskadigede frugter. Brug dehydrator eller et varmt, tørt sted med god luftbevægelse. Frugterne skal være helt sprøde, før du gemmer eller maler dem, ellers kan de mugne."
+      },
+      {
+        "key": "haandtering-og-naeste-guide",
+        "title": "Håndtering og næste guide",
+        "body": "Cayenne kan irritere hud og slimhinder. Brug handsker, når du skærer mange frugter, og undgå støv fra tørret chili, når du maler den."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær chili at kende",
+        "description": "Få det fælles dyrkningsfundament for chili i dansk klima.",
+        "slug": "chili",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/522802/capsicum-annuum-de-cayenne/details",
+      "https://www.rhs.org.uk/plants/157405/capsicum-annuum-var-annuum-longum-group/details",
+      "https://www.rhs.org.uk/plants/325164/capsicum-annuum-cayenne-red/details",
+      "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "chili-early-jalapeno",
+    "plantName": "Chili",
+    "pluralName": null,
+    "variety": "Early Jalapeño",
+    "latinName": "Capsicum annuum 'Early Jalapeño'",
+    "guideLevel": "variety",
+    "parentGuideId": "chili",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Tidlig jalapeño med kødfulde, middelstærke frugter, som kan høstes grønne eller modne videre til røde.",
+    "difficulty": "medium",
+    "tags": [
+      "jalapeno",
+      "tidlig",
+      "middelstaerk",
+      "syltning",
+      "capsicum-annuum"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 45 cm",
+      "growthType": "kompakt, busket jalapeño",
+      "height": "ca. 50-60 cm",
+      "maturityDays": "ca. 60-70 dage fra udplantning",
+      "primaryUse": "Syltning, salsa, frisk brug, grill og røgning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Early Jalapeño er en tidlig jalapeño-type med korte, kraftige frugter, som modner fra mørkegrøn til rød. RHS beskriver frugterne som elliptiske, middelstærke og op til omkring 7,5 cm lange.\n\nSorten modner tidligere end mange almindelige jalapeño-sorter og passer derfor bedre til en kort nordisk sæson. Planten vokser kompakt og busket."
+      },
+      {
+        "key": "vaelg-early-jalape-o-hvis",
+        "title": "Vælg Early Jalapeño hvis",
+        "body": "Vælg sorten, hvis du vil have klassiske jalapeño-frugter, men prioriterer en tidligere høst. Den passer til dyrkere, der vil sylte grønne frugter, lave salsa eller lade nogle modne røde til en sødere og mere afrundet smag."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-early-jalape-o-de-cayenne-eller-padr-n",
+        "title": "Early Jalapeño, De Cayenne eller Padrón?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Early Jalapeño hvis",
+            "items": [
+              "du vil have kødfulde, middelstærke frugter",
+              "du vil sylte eller bruge dem i salsa",
+              "du prioriterer tidlig modenhed"
+            ]
+          },
+          {
+            "heading": "Vælg De Cayenne hvis",
+            "items": [
+              "du vil have lange, tynde og stærkere frugter",
+              "du vil tørre eller male chili",
+              "du ønsker en mere koncentreret varme"
+            ]
+          },
+          {
+            "heading": "Vælg Padrón hvis",
+            "items": [
+              "du vil høste små grønne frugter til stegning",
+              "du foretrækker mild varme med enkelte overraskelser",
+              "du vil spise frugterne hele"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Early Jalapeño skiller sig især ud ved tidligheden. RHS angiver, at sorten kan modne omkring to uger før mange andre jalapeño-typer.\n\nFrugterne er tykkere og mere kødfulde end cayennechili. De udvikler ofte lyse korkstriber i skallen, når de modner. Det er normalt og ikke et tegn på sygdom."
+      },
+      {
+        "key": "hoest-groen-eller-roed",
+        "title": "Høst grøn eller rød",
+        "body": "Høst frugterne grønne, når de er faste, mørke og har nået fuld størrelse. Grøn høst giver den klassiske friske jalapeño-smag og kan få planten til at sætte flere frugter.\n\nLader du dem modne røde, bliver smagen sødere og mere moden. Den røde frugt kan bruges frisk, tørres eller røges til chipotle-lignende brug."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Styrken varierer mellem frugter og påvirkes af sort, modenhed og dyrkningsforhold. Brug handsker ved større mængder, og undgå at røre øjne eller ansigt under arbejdet.\n\nPlanten er tidligere end mange jalapeño-sorter, men den kræver stadig varme. Drivhus eller en meget lun, beskyttet plads giver den sikreste høst i Danmark."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Early Jalapeño sælges normalt som en åbenbestøvet sort. Gem kun frø fra fuldt modne røde frugter og fra planter, der har sortens typiske form og vækst.\n\nChili krydsbestøver lettere, end mange forventer. Isolér blomster eller hold afstand til andre Capsicum annuum-sorter, hvis du vil bevare sorten sikkert."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær chili at kende",
+        "description": "Få hele dyrkningsfundamentet for såning, varme, bestøvning og høst.",
+        "slug": "chili",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/383264/capsicum-annuum-var-annuum-longum-group-early-jalapeno/details",
+      "https://www.johnnyseeds.com/vegetables/peppers/hot-peppers/early-jalapen%CC%83o-organic-jalapeno-pepper-seed-586G.11.html",
+      "https://www.rhs.org.uk/plants/210489/capsicum-annuum-var-annuum-longum-group-jalapeno/details",
+      "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "chili-habanero-orange",
     "plantName": "Chili",
     "pluralName": null,
@@ -3088,6 +3329,127 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/plantekort/chili-habanero-orange.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "chili-padron",
+    "plantName": "Chili",
+    "pluralName": null,
+    "variety": "Padrón",
+    "latinName": "Capsicum annuum 'Padrón'",
+    "guideLevel": "variety",
+    "parentGuideId": "chili",
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Spansk tapaschili, som høstes lille og grøn med mild smag, tynd skal og enkelte overraskende stærke frugter.",
+    "difficulty": "medium",
+    "tags": [
+      "padron",
+      "spansk",
+      "mild",
+      "tapas",
+      "groen-hoest"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "plantSpacing": "ca. 40-45 cm",
+      "growthType": "busket plante med mange små, hængende frugter",
+      "height": "ca. 50-70 cm",
+      "maturityDays": "ca. 60 dage fra udplantning til små grønne frugter",
+      "primaryUse": "Stegt hel som tapas, grill og hurtig pandestegning"
+    },
+    "sections": [
+      {
+        "key": "om-sorten",
+        "title": "Om sorten",
+        "body": "Padrón er en spansk heirloom-chili opkaldt efter området, hvor typen blev kendt. Den dyrkes især for små grønne frugter, der steges hele og serveres med salt.\n\nFrugterne er tyndskallede og oftest milde, men enkelte kan være markant stærkere. Det er en del af sortens kendte karakter."
+      },
+      {
+        "key": "vaelg-padr-n-hvis",
+        "title": "Vælg Padrón hvis",
+        "body": "Vælg sorten, hvis du vil have en chili, der først og fremmest bruges hel og grøn. Den giver en anden høstoplevelse end sorter, der dyrkes til røde frugter, tørring eller stærk sauce."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-padr-n-eller-jalape-o",
+        "title": "Padrón eller jalapeño?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg Padrón hvis",
+            "items": [
+              "du vil stege små frugter hele",
+              "du foretrækker mild varme med enkelte stærke frugter",
+              "du vil høste meget tidligt i frugtens udvikling"
+            ]
+          },
+          {
+            "heading": "Vælg jalapeño hvis",
+            "items": [
+              "du vil have tykkere og mere kødfulde frugter",
+              "du vil sylte, fylde eller lave salsa",
+              "du ønsker mere ensartet jalapeño-karakter"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saadan-adskiller-den-sig",
+        "title": "Sådan adskiller den sig",
+        "body": "Padrón høstes normalt, når frugterne kun er omkring 2,5-4 cm lange og stadig grønne. Johnny's beskriver sorten som en spansk heirloom, hvor omtrent én ud af tyve frugter kan være stærk, men forholdet varierer.\n\nLader du frugterne vokse og modne videre, bliver de større, røde og typisk stærkere. Det traditionelle høststadie er derfor lille og grønt."
+      },
+      {
+        "key": "hoest-ofte",
+        "title": "Høst ofte",
+        "body": "Pluk frugterne flere gange om ugen, så de ikke bliver for store. Tidlig høst holder normalt styrken lavere og stimulerer planten til at sætte flere blomster.\n\nRHS anbefaler at høste dem små og grønne. Brug en saks, fordi de tynde grene kan knække, hvis du trækker hårdt."
+      },
+      {
+        "key": "tilberedning",
+        "title": "Tilberedning",
+        "body": "Steg hele frugter hurtigt i en meget varm pande med lidt olie, til skallen får mørke blærer. Drys med groft salt og server straks.\n\nSpis omkring stilken, som normalt ikke bruges. Fortæl gæster, at enkelte frugter kan være stærke. Mennesker kalder det en charmerende overraskelse, fordi roulette åbenbart bliver hyggeligere med grøntsager."
+      },
+      {
+        "key": "det-skal-du-vaere-opmaerksom-paa",
+        "title": "Det skal du være opmærksom på",
+        "body": "Padrón kræver varme for at give mange frugter. Drivhus eller en varm, beskyttet terrasse giver den sikreste danske sæson.\n\nStyrken er uforudsigelig. Smag ikke en stor mængde råt for at teste planten, og brug almindelig forsigtighed ved håndtering af frø og frugter."
+      },
+      {
+        "key": "froe-og-naeste-saeson",
+        "title": "Frø og næste sæson",
+        "body": "Padrón er åbenbestøvet. Hvis du vil gemme frø, skal du lade udvalgte frugter modne helt røde. De frugter skal ikke høstes på det normale grønne tapasstadie."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær chili at kende",
+        "description": "Få hele dyrkningsfundamentet fra varm spiring til moden høst.",
+        "slug": "chili",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": "/images/plantekort/chili-padron.jpg",
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/346583/capsicum-annuum-padron/details",
+      "https://www.johnnyseeds.com/vegetables/peppers/hot-peppers/padron-organic-padron-pepper-seed-666G.html",
+      "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
