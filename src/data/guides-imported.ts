@@ -2852,7 +2852,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": "/images/plantekort/agurk-marketmore.png",
+    "primaryImageId": "/images/plantekort/agurk-marketmore.jpg",
     "sourceLinks": [],
     "status": "published",
     "visibility": "public",

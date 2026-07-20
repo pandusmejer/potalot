@@ -262,7 +262,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/tomat/kondens.jpg",
   "/images/makro/tomat/top-haar.jpg",
   "/images/plantekort/aert-sugar-snap.jpg",
-  "/images/plantekort/agurk-marketmore.png",
+  "/images/plantekort/agurk-marketmore.jpg",
   "/images/plantekort/basilikum-genovese.jpg",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/chili-padron.jpg",
