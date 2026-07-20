@@ -1,6 +1,6 @@
 {
   "generatedAt_note": "Snapshot af content/guides. Regenerer foer hver batch for at undgaa dubletter.",
-  "total": 40,
+  "total": 46,
   "species": [
     {
       "slug": "aert",
@@ -98,6 +98,21 @@
       "parentSlug": "dahlia"
     },
     {
+      "slug": "hvidloeg-germidour",
+      "variety": "Germidour",
+      "parentSlug": "hvidloeg"
+    },
+    {
+      "slug": "hvidloeg-messidrome",
+      "variety": "Messidrome",
+      "parentSlug": "hvidloeg"
+    },
+    {
+      "slug": "hvidloeg-thermidrome",
+      "variety": "Thermidrome",
+      "parentSlug": "hvidloeg"
+    },
+    {
       "slug": "jordbaer-corona",
       "variety": "Corona",
       "parentSlug": "jordbaer"
@@ -148,8 +163,23 @@
       "parentSlug": "radise"
     },
     {
+      "slug": "salat-buttercrunch",
+      "variety": "Buttercrunch",
+      "parentSlug": "salat"
+    },
+    {
       "slug": "salat-little-gem",
       "variety": "Little Gem",
+      "parentSlug": "salat"
+    },
+    {
+      "slug": "salat-lollo-rossa",
+      "variety": "Lollo Rossa",
+      "parentSlug": "salat"
+    },
+    {
+      "slug": "salat-rouge-grenobloise",
+      "variety": "Rouge Grenobloise",
       "parentSlug": "salat"
     },
     {
@@ -208,6 +238,9 @@
     "dahlia",
     "dahlia-cafe-au-lait",
     "hvidloeg",
+    "hvidloeg-germidour",
+    "hvidloeg-messidrome",
+    "hvidloeg-thermidrome",
     "jordbaer",
     "jordbaer-corona",
     "jordbaer-mara-des-bois",
@@ -224,7 +257,10 @@
     "radise-french-breakfast",
     "radise-sora",
     "salat",
+    "salat-buttercrunch",
     "salat-little-gem",
+    "salat-lollo-rossa",
+    "salat-rouge-grenobloise",
     "tomat",
     "tomat-black-cherry",
     "tomat-gardeners-delight",
