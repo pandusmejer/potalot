@@ -53,7 +53,7 @@ export function GuideHeroEditorialDemo() {
         subtitle="Marketmore"
         latinName="Cucumis sativus"
         tag="Friland"
-        imageSrc="/images/plantekort/agurk-marketmore.png"
+        imageSrc="/images/plantekort/agurk-marketmore.jpg"
         imageAlt="Agurk Marketmore plante"
         imageShape="organic-left"
         imageObjectPosition="44% 50%"

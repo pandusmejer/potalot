@@ -154,8 +154,8 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   },
 
   'agurk-marketmore': {
-    plantCard:   { src: '/images/plantekort/agurk-marketmore.png', alt: 'Marketmore agurk — plantekort' },
-    varietyHero: { src: '/images/plantekort/agurk-marketmore.png', alt: 'Marketmore agurk — sortsfoto' },
+    plantCard:   { src: '/images/plantekort/agurk-marketmore.jpg', alt: 'Marketmore agurk — plantekort' },
+    varietyHero: { src: '/images/plantekort/agurk-marketmore.jpg', alt: 'Marketmore agurk — sortsfoto' },
     seedCard:    { src: '/images/frokort/agurk-marketmore.png',    alt: 'Marketmore agurk — frøkort' },
     macro: [
       // Audit 2.A: 5 makro-filer fundet — annoteret med distinkte roller

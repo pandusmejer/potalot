@@ -840,7 +840,7 @@ const AI_AGURK: Guide = {
     { taskType: 'plant_out', title: 'Plant ud i drivhus', recommendedMonths: [6], priority: 'high' },
     { taskType: 'harvest', title: 'Pluk agurker løbende', recommendedMonths: [7, 8, 9], priority: 'medium' },
   ],
-  primaryImageId: '/images/plantekort/agurk-marketmore.png',
+  primaryImageId: '/images/plantekort/agurk-marketmore.jpg',
   visibility: 'private',
 }
 

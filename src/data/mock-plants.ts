@@ -163,8 +163,8 @@ export const mockPlants: MockPlant[] = [
     expectedHarvestStart: '2026-07-22',
     expectedHarvestEnd: '2026-09-05',
     quantity: 3,
-    imageIds: ['/images/plantekort/agurk-marketmore.png'],
-    primaryImageId: '/images/plantekort/agurk-marketmore.png',
+    imageIds: ['/images/plantekort/agurk-marketmore.jpg'],
+    primaryImageId: '/images/plantekort/agurk-marketmore.jpg',
     imageSource: 'user_upload',
     logIds: ['log-agurk-1', 'log-agurk-2'],
     guideId: 'agurk-marketmore',
@@ -173,7 +173,7 @@ export const mockPlants: MockPlant[] = [
     updatedAt: '2026-05-29T07:40:00.000Z',
     notes: 'Spirer hurtigt. Skal ikke stå for vådt omkring rothalsen.',
     pictures: [
-      { id: 'agurk-img-1', src: '/images/plantekort/agurk-marketmore.png', alt: 'Agurk Marketmore' },
+      { id: 'agurk-img-1', src: '/images/plantekort/agurk-marketmore.jpg', alt: 'Agurk Marketmore' },
     ],
     latestActivity: {
       id: 'activity-agurk',
@@ -181,7 +181,7 @@ export const mockPlants: MockPlant[] = [
       plantName: 'Agurk Marketmore',
       action: 'Foto tilføjet',
       when: 'I dag',
-      image: '/images/plantekort/agurk-marketmore.png',
+      image: '/images/plantekort/agurk-marketmore.jpg',
     },
     nextAction: {
       id: 'next-agurk',
