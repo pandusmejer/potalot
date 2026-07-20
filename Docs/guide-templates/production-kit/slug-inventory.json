@@ -1,120 +1,237 @@
 {
-  "generatedAt_note": "Snapshot af origin/main. Regenerér før hver batch.",
-  "live": [
+  "generatedAt_note": "Snapshot af content/guides. Regenerer foer hver batch for at undgaa dubletter.",
+  "total": 40,
+  "species": [
+    {
+      "slug": "aert",
+      "plantName": "Ært"
+    },
     {
       "slug": "agurk",
-      "guideLevel": "species",
-      "parentSlug": "null",
-      "status": "imported"
+      "plantName": "Agurk"
     },
     {
       "slug": "chili",
-      "guideLevel": "species",
-      "parentSlug": "null",
-      "status": "imported"
+      "plantName": "Chili"
     },
     {
       "slug": "dahlia",
-      "guideLevel": "species",
-      "parentSlug": "null",
-      "status": "imported"
+      "plantName": "Dahlia"
     },
     {
       "slug": "hvidloeg",
-      "guideLevel": "species",
-      "parentSlug": null,
-      "status": "imported"
+      "plantName": "Hvidløg"
+    },
+    {
+      "slug": "jordbaer",
+      "plantName": "Jordbær"
+    },
+    {
+      "slug": "kaal",
+      "plantName": "Kål"
+    },
+    {
+      "slug": "majs",
+      "plantName": "Majs"
     },
     {
       "slug": "peberfrugt",
-      "guideLevel": "species",
-      "parentSlug": "null",
-      "status": "imported"
+      "plantName": "Peberfrugt"
+    },
+    {
+      "slug": "radise",
+      "plantName": "Radise"
     },
     {
       "slug": "salat",
-      "guideLevel": "species",
-      "parentSlug": null,
-      "status": "imported"
+      "plantName": "Salat"
     },
     {
       "slug": "tomat",
-      "guideLevel": "species",
-      "parentSlug": "null",
-      "status": "imported"
+      "plantName": "Tomat"
+    }
+  ],
+  "varieties": [
+    {
+      "slug": "aert-ambrosia",
+      "variety": "Ambrosia",
+      "parentSlug": "aert"
+    },
+    {
+      "slug": "aert-kelvedon-wonder",
+      "variety": "Kelvedon Wonder",
+      "parentSlug": "aert"
+    },
+    {
+      "slug": "aert-sugar-snap",
+      "variety": "Sugar Snap",
+      "parentSlug": "aert"
+    },
+    {
+      "slug": "agurk-cucino",
+      "variety": "Cucino",
+      "parentSlug": "agurk"
+    },
+    {
+      "slug": "agurk-lemon",
+      "variety": "Lemon",
+      "parentSlug": "agurk"
     },
     {
       "slug": "agurk-marketmore",
-      "guideLevel": "variety",
-      "parentSlug": "agurk",
-      "status": "imported"
+      "variety": "Marketmore",
+      "parentSlug": "agurk"
+    },
+    {
+      "slug": "agurk-mini-stars",
+      "variety": "Mini Stars",
+      "parentSlug": "agurk"
     },
     {
       "slug": "chili-habanero-orange",
-      "guideLevel": "variety",
-      "parentSlug": "chili",
-      "status": "imported"
+      "variety": "Habanero Orange",
+      "parentSlug": "chili"
     },
     {
       "slug": "dahlia-cafe-au-lait",
-      "guideLevel": "variety",
-      "parentSlug": "dahlia",
-      "status": "imported"
+      "variety": "Café au Lait",
+      "parentSlug": "dahlia"
+    },
+    {
+      "slug": "jordbaer-corona",
+      "variety": "Corona",
+      "parentSlug": "jordbaer"
+    },
+    {
+      "slug": "jordbaer-mara-des-bois",
+      "variety": "Mara des Bois",
+      "parentSlug": "jordbaer"
+    },
+    {
+      "slug": "kaal-palmekaal",
+      "variety": "Palmekål",
+      "parentSlug": "kaal"
+    },
+    {
+      "slug": "kaal-roedkaal",
+      "variety": "Rødkål",
+      "parentSlug": "kaal"
+    },
+    {
+      "slug": "kaal-spidskaal",
+      "variety": "Spidskål",
+      "parentSlug": "kaal"
+    },
+    {
+      "slug": "majs-incredible",
+      "variety": "Incredible",
+      "parentSlug": "majs"
     },
     {
       "slug": "peberfrugt-california-wonder",
-      "guideLevel": "variety",
-      "parentSlug": "peberfrugt",
-      "status": "imported"
+      "variety": "California Wonder",
+      "parentSlug": "peberfrugt"
     },
     {
       "slug": "peberfrugt-corno-di-toro-rosso",
-      "guideLevel": "variety",
-      "parentSlug": "peberfrugt",
-      "status": "imported"
+      "variety": "Corno di Toro Rosso",
+      "parentSlug": "peberfrugt"
+    },
+    {
+      "slug": "radise-french-breakfast",
+      "variety": "French Breakfast",
+      "parentSlug": "radise"
+    },
+    {
+      "slug": "radise-sora",
+      "variety": "Sora",
+      "parentSlug": "radise"
     },
     {
       "slug": "salat-little-gem",
-      "guideLevel": "variety",
-      "parentSlug": "salat",
-      "status": "imported"
+      "variety": "Little Gem",
+      "parentSlug": "salat"
+    },
+    {
+      "slug": "tomat-black-cherry",
+      "variety": "Black Cherry",
+      "parentSlug": "tomat"
     },
     {
       "slug": "tomat-gardeners-delight",
-      "guideLevel": "variety",
-      "parentSlug": "tomat",
-      "status": "imported"
+      "variety": "Gardener's Delight",
+      "parentSlug": "tomat"
+    },
+    {
+      "slug": "tomat-green-zebra",
+      "variety": "Green Zebra",
+      "parentSlug": "tomat"
+    },
+    {
+      "slug": "tomat-moneymaker",
+      "variety": "Moneymaker",
+      "parentSlug": "tomat"
+    },
+    {
+      "slug": "tomat-oxheart",
+      "variety": "Oxheart",
+      "parentSlug": "tomat"
+    },
+    {
+      "slug": "tomat-roma",
+      "variety": "Roma",
+      "parentSlug": "tomat"
     },
     {
       "slug": "tomat-san-marzano",
-      "guideLevel": "variety",
-      "parentSlug": "tomat",
-      "status": "imported"
+      "variety": "San Marzano",
+      "parentSlug": "tomat"
     },
     {
       "slug": "tomat-sungold",
-      "guideLevel": "variety",
-      "parentSlug": "tomat",
-      "status": "imported"
+      "variety": "Sungold",
+      "parentSlug": "tomat"
     }
   ],
-  "generated": [],
-  "built": [],
   "allSlugs": [
+    "aert",
+    "aert-ambrosia",
+    "aert-kelvedon-wonder",
+    "aert-sugar-snap",
     "agurk",
+    "agurk-cucino",
+    "agurk-lemon",
     "agurk-marketmore",
+    "agurk-mini-stars",
     "chili",
     "chili-habanero-orange",
     "dahlia",
     "dahlia-cafe-au-lait",
     "hvidloeg",
+    "jordbaer",
+    "jordbaer-corona",
+    "jordbaer-mara-des-bois",
+    "kaal",
+    "kaal-palmekaal",
+    "kaal-roedkaal",
+    "kaal-spidskaal",
+    "majs",
+    "majs-incredible",
     "peberfrugt",
     "peberfrugt-california-wonder",
     "peberfrugt-corno-di-toro-rosso",
+    "radise",
+    "radise-french-breakfast",
+    "radise-sora",
     "salat",
     "salat-little-gem",
     "tomat",
+    "tomat-black-cherry",
     "tomat-gardeners-delight",
+    "tomat-green-zebra",
+    "tomat-moneymaker",
+    "tomat-oxheart",
+    "tomat-roma",
     "tomat-san-marzano",
     "tomat-sungold"
   ]
