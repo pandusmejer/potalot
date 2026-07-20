@@ -106,6 +106,7 @@ export function DiktafonGuideArk({
         className="ark-panel"
         onClick={e => e.stopPropagation()}
         style={{
+          position: 'relative',
           width: '100%',
           maxWidth: 480,
           maxHeight: '86vh',
@@ -114,13 +115,37 @@ export function DiktafonGuideArk({
           borderTopLeftRadius: 26,
           borderTopRightRadius: 26,
           boxShadow: '0 -18px 50px rgba(31,45,29,0.28)',
-          padding: '10px 24px 28px',
+          padding: '0 24px 28px',
           animation: 'ark-op 0.36s cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
-        {/* Greb */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 16 }}>
-          <span aria-hidden style={{ width: 40, height: 4, borderRadius: 999, background: 'rgba(36,48,31,0.18)' }} />
+        {/* Sticky header med luk-knap (altid synlig). Intet "greb" — vi
+            understøtter ikke swipe-to-dismiss, så vi antyder det heller ikke. */}
+        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: '#FBF6EA', margin: '0 -24px', padding: '8px 24px', minHeight: 44 }}>
+          <button
+            type="button"
+            aria-label="Luk"
+            onClick={() => onClose(visIkkeIgen)}
+            style={{
+              position: 'absolute',
+              top: 8,
+              right: 14,
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              border: 'none',
+              background: 'rgba(36,48,31,0.08)',
+              color: 'rgba(36,48,31,0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
 
         {kompakt ? (
