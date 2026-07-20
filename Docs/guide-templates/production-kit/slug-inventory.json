@@ -1,6 +1,6 @@
 {
   "generatedAt_note": "Snapshot af content/guides. Regenerer foer hver batch for at undgaa dubletter.",
-  "total": 46,
+  "total": 49,
   "species": [
     {
       "slug": "aert",
@@ -88,8 +88,23 @@
       "parentSlug": "agurk"
     },
     {
+      "slug": "chili-de-cayenne",
+      "variety": "De Cayenne",
+      "parentSlug": "chili"
+    },
+    {
+      "slug": "chili-early-jalapeno",
+      "variety": "Early Jalapeño",
+      "parentSlug": "chili"
+    },
+    {
       "slug": "chili-habanero-orange",
       "variety": "Habanero Orange",
+      "parentSlug": "chili"
+    },
+    {
+      "slug": "chili-padron",
+      "variety": "Padrón",
       "parentSlug": "chili"
     },
     {
@@ -234,7 +249,10 @@
     "agurk-marketmore",
     "agurk-mini-stars",
     "chili",
+    "chili-de-cayenne",
+    "chili-early-jalapeno",
     "chili-habanero-orange",
+    "chili-padron",
     "dahlia",
     "dahlia-cafe-au-lait",
     "hvidloeg",
