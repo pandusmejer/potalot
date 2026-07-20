@@ -68,7 +68,8 @@ async function transskriber(
  * virker overalt inkl. iOS Safari. "Skriv i stedet" er fallback, hvis
  * mikrofonen mangler eller afvises.
  */
-export function TalOptager() {
+export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'hurtig' } = {}) {
+  const hurtig = kontekst === 'hurtig'
   const [fase, setFase] = useState<Fase>('idle')
   const [tekst, setTekst] = useState('')
   const [forslag, setForslag] = useState<TaleForslag[]>([])
@@ -326,9 +327,9 @@ export function TalOptager() {
           marginBottom: 46,
         }}
       >
-        Tryk og tal
+        {hurtig ? 'Fang' : 'Fortæl om'}
         <br />
-        til din have
+        {hurtig ? 'en tanke' : 'din have'}
       </p>
 
       {(fase === 'idle' || fase === 'lytter') && (
@@ -398,7 +399,9 @@ export function TalOptager() {
                   maxWidth: '22ch',
                 }}
               >
-                Fortæl frit om din have.<br />Potalot organiserer resten.
+                {hurtig
+                  ? <>En hurtig note til haven.<br />Potalot organiserer resten.</>
+                  : <>Fortæl frit om din have.<br />Potalot organiserer resten.</>}
               </p>
               {!guideSkjult && (
                 <button
@@ -644,6 +647,7 @@ export function TalOptager() {
 
       <DiktafonGuideArk
         open={visGuide}
+        startVisning={hurtig ? 'kompakt' : 'fuld'}
         onClose={skjul => { setVisGuide(false); markGuide(skjul) }}
         onBegin={skjul => { setVisGuide(false); markGuide(skjul); void startOptagelse() }}
       />
