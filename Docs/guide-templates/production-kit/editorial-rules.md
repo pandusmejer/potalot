@@ -13,6 +13,24 @@ indhold og tone.
    højde, modenhedstid, udbytte, egnet sted, styrker/svagheder, hvem den passer til.
 3. **Gentag aldrig artsguiden i en sortsguide.** Hvis en oplysning gælder alle
    sorter, hører den i artsguiden.
+4. **Teknikguiden** forklarer ÉN handling (fx knibning, opbinding, prikling,
+   hærdning) trin for trin — løsrevet fra en bestemt plante. En arts- eller
+   sortsguide linker til den med `:::guide` i stedet for at forklare teknikken
+   selv. Gentag ikke teknikken i plantens guide, og gentag ikke plantens
+   dyrkning i teknikguiden.
+
+## Teknikguider (guideLevel: technique)
+
+- **Handling, ikke plante.** Titlen er handlingen (`title: "Sådan kniber du
+  tomater"`), ikke et plantenavn. Ingen `plantName`, `primaryCategoryId`,
+  `parentSlug`, `variety` eller `quickFacts` — udelad dem alle.
+- **Trin-form.** Hver sektion er typisk ét kort, imperativt trin ("Find
+  sideskuddet", "Knib af"). Reader'en nummererer dem. Færre klare trin slår
+  mange små. Afslut gerne med en kort "Hvorfor …?"-sektion om formålet.
+- **`appliesTo`** (valgfri): slugs på de arter/sorter teknikken hører til, fx
+  `["tomat"]`. Bruges til kobling — ikke til at gentage plantens fakta.
+- **Links:** afslut typisk med et `:::next-guide` tilbage til arten/sorten
+  (det naturlige næste skridt). `:::guide` kan pege på en beslægtet teknik.
 
 ## Fakta før poesi
 
@@ -102,12 +120,12 @@ Mindst ét item; hvert item = `#### overskrift` + `slug:` + beskrivelse.
 
 ### Hvilke blokke passer hvor
 
-| Blok | Artsguide | Sortsguide |
-|------|-----------|------------|
-| `:::fact` (sammenligning) | sortstyper (fx ranke vs. busk) | denne sort vs. et alternativ |
-| `:::guide` (teknik) | ✅ opbinding, knibning … | ✅ |
-| `:::next-guide` | sjældnere | ✅ peg på en søster-sort |
-| `:::related-guides` | ✅ relaterede sorter/guides | sjældnere |
+| Blok | Artsguide | Sortsguide | Teknikguide |
+|------|-----------|------------|-------------|
+| `:::fact` (sammenligning) | sortstyper (fx ranke vs. busk) | denne sort vs. et alternativ | sjældnere |
+| `:::guide` (teknik) | ✅ opbinding, knibning … | ✅ | ✅ beslægtet teknik |
+| `:::next-guide` | sjældnere | ✅ peg på en søster-sort | ✅ tilbage til art/sort |
+| `:::related-guides` | ✅ relaterede sorter/guides | sjældnere | sjældnere |
 
 ## Sikkerheds-fakta (menneske skal tjekke)
 

@@ -14,7 +14,7 @@ import { join, basename } from 'node:path'
 
 const DIR = 'content/guides'
 const CATS = ['fro', 'loeg', 'knolde', 'buske', 'traeer', 'stauder']
-const LEVELS = ['species', 'variety']
+const LEVELS = ['species', 'variety', 'technique']
 const DIFFS = ['easy', 'medium', 'hard']
 const SUMMARY_MAX = 200
 
@@ -98,14 +98,21 @@ function main(): void {
 
     // guideLevel
     if (!F.guideLevel) err("mangler 'guideLevel'")
-    else if (!LEVELS.includes(F.guideLevel)) err(`guideLevel '${F.guideLevel}' skal være species/variety`)
+    else if (!LEVELS.includes(F.guideLevel)) err(`guideLevel '${F.guideLevel}' skal være ${LEVELS.join('/')}`)
 
-    // plantName
-    if (!F.plantName) err("mangler 'plantName'")
+    const isTechnique = F.guideLevel === 'technique'
 
-    // kategori
-    if (!F.primaryCategoryId) err("mangler 'primaryCategoryId'")
-    else if (!CATS.includes(F.primaryCategoryId)) err(`ugyldig primaryCategoryId '${F.primaryCategoryId}' (skal være ${CATS.join('/')})`)
+    if (isTechnique) {
+      // Teknikguide: titel driver H1; ingen plante/kategori.
+      if (!F.title) err("teknikguide mangler 'title'")
+    } else {
+      // plantName
+      if (!F.plantName) err("mangler 'plantName'")
+
+      // kategori
+      if (!F.primaryCategoryId) err("mangler 'primaryCategoryId'")
+      else if (!CATS.includes(F.primaryCategoryId)) err(`ugyldig primaryCategoryId '${F.primaryCategoryId}' (skal være ${CATS.join('/')})`)
+    }
 
     // summary
     if (!F.summary) err("mangler 'summary'")
@@ -127,8 +134,8 @@ function main(): void {
     // sektioner
     if (p.headingCount === 0) err('ingen sektioner (mindst én ## overskrift kræves)')
 
-    // quickFacts (advarsel — ikke fejl)
-    if (p.quickFactsCount === 0) warn('tomme quickFacts (ingen strukturerede fakta)')
+    // quickFacts (advarsel — ikke fejl; teknikguider har ingen)
+    if (!isTechnique && p.quickFactsCount === 0) warn('tomme quickFacts (ingen strukturerede fakta)')
   }
 
   // rapport

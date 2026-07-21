@@ -8,22 +8,27 @@ Alle felter i `guide.schema.json`, afledt direkte fra importeren
 
 | Felt | Type | Obl. | Regler |
 |------|------|:----:|--------|
-| `slug` | string | ✅ | kebab-case `^[a-z0-9]+(-[a-z0-9]+)*$`. æ→ae, ø→oe, å→aa, ingen accenter. Art: `salat`. Sort: `salat-little-gem` (art-slug + sort). |
-| `guideLevel` | enum | ✅ | `"species"` (art) eller `"variety"` (sort). |
-| `parentSlug` | string\|null | ⬤ | **Kun sort:** slug på artsguiden sorten hører under (skal findes/planlægges). Art: udelad eller `null`. |
-| `plantName` | string | ✅ | Artens navn, fx `"Salat"`. Samme på art og alle dens sorter. |
-| `variety` | string\|null | ⬤ | **Kun sort:** sortsnavn, fx `"Little Gem"`. Art: udelad eller `null`. |
+| `slug` | string | ✅ | kebab-case `^[a-z0-9]+(-[a-z0-9]+)*$`. æ→ae, ø→oe, å→aa, ingen accenter. Art: `salat`. Sort: `salat-little-gem` (art-slug + sort). Teknik: `knibning-af-tomater`. |
+| `guideLevel` | enum | ✅ | `"species"` (art), `"variety"` (sort) eller `"technique"` (teknik). |
+| `parentSlug` | string\|null | ⬤ | **Kun sort:** slug på artsguiden sorten hører under (skal findes/planlægges). Art/teknik: udelad eller `null`. |
+| `title` | string | ⬤ | **Kun teknik:** H1-titlen — handlingen, fx `"Sådan kniber du tomater"`. Art/sort: udelad. |
+| `plantName` | string | ⬤ | **Art/sort:** artens navn, fx `"Salat"`. Samme på art og alle dens sorter. Teknik: udelad. |
+| `variety` | string\|null | ⬤ | **Kun sort:** sortsnavn, fx `"Little Gem"`. Art/teknik: udelad eller `null`. |
+| `appliesTo` | string[] | | **Kun teknik (valgfri):** slugs på arter/sorter teknikken hører til, fx `["tomat"]`. Til `:::guide`-kobling. |
 | `latinName` | string\|null | | Fx `"Lactuca sativa"` / `"Lactuca sativa 'Little Gem'"`. |
-| `primaryCategoryId` | enum | ✅ | `fro` · `loeg` · `knolde` · `buske` · `traeer` · `stauder`. (Grøntsager/urter/tomater = `fro`; løg/hvidløg = `loeg`.) |
+| `primaryCategoryId` | enum | ⬤ | **Art/sort:** `fro` · `loeg` · `knolde` · `buske` · `traeer` · `stauder`. (Grøntsager/urter/tomater = `fro`; løg/hvidløg = `loeg`.) Teknik: udelad. |
 | `summary` | string | ✅ | 10–200 tegn, 1–2 sætninger. Vises på kort. |
 | `difficulty` | enum | | `easy` · `medium` · `hard`. |
 | `tags` | string[] | | Korte nøgleord, fx `["cherrytomat","orange","tidlig"]`. |
-| `quickFacts` | object | | Strukturerede fakta (se nedenfor). `additionalProperties: false`. |
+| `quickFacts` | object | | **Kun art/sort:** strukturerede fakta (se nedenfor). `additionalProperties: false`. Teknik har ingen. |
 | `calendarRules` | array | | Næsten altid `[]` (kalenderregler sættes separat). |
 | `sourceLinks` | string[] (uri) | | Rigtige kilde-URL'er (RHS, frøleverandør). Skal resolve. |
-| `sections` | array | ✅ | ≥ 1 prosa-sektion (se nedenfor). |
+| `sections` | array | ✅ | ≥ 1 prosa-sektion (se nedenfor). Teknik: hver sektion er typisk ét kort, imperativt trin. |
 
-⬤ = betinget påkrævet: `guideLevel: "variety"` KRÆVER `parentSlug` + `variety`.
+⬤ = betinget påkrævet efter `guideLevel`:
+- `"species"` KRÆVER `plantName` + `primaryCategoryId`.
+- `"variety"` KRÆVER `plantName` + `primaryCategoryId` + `parentSlug` + `variety`.
+- `"technique"` KRÆVER `title` (og bruger IKKE `plantName`, `primaryCategoryId`, `parentSlug`, `variety`, `quickFacts`).
 
 ## quickFacts (alle valgfri, kun tilladte nøgler)
 

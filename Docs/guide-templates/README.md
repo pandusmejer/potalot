@@ -15,9 +15,10 @@ Rollefordeling:
 Docs/guide-templates/
 ├── species.template.md      artsguide-skabelon (fagligt fundament)
 ├── variety.template.md      sortsguide-skabelon (kun forskellene)
+├── technique.template.md    teknikguide-skabelon (én handling, trin for trin)
 ├── guide-schema.json        kontrakt for ChatGPT-JSON'en
 ├── editorial-rules.md       tone + art/sort-deling + billed-regler
-└── examples/                referenceguides (tomat, tomat-san-marzano)
+└── examples/                referenceguides (art, sort, teknik)
 
 content/guide-production/
 ├── species.csv              inputark: arter (planen + kontrollerede fakta)

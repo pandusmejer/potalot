@@ -1,0 +1,27 @@
+{
+  "slug": "knibning-af-tomater",
+  "guideLevel": "technique",
+  "title": "Sådan kniber du tomater",
+  "appliesTo": ["tomat"],
+  "summary": "Knibning styrer plantens vækst og giver flere og bedre tomater. Ranketomater danner løbende sideskud mellem stængel og blad. Dem fjerner du.",
+  "difficulty": "easy",
+  "tags": ["knibning", "ranketomat", "pleje", "sideskud"],
+  "calendarRules": [],
+  "sourceLinks": [
+    "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own"
+  ],
+  "sections": [
+    {
+      "heading": "Find sideskuddet",
+      "content": "Sideskud vokser ud fra bladhjørnerne — dér hvor et blad møder hovedstammen. Det er et lille nyt skud i selve vinklen, ikke bladet selv og ikke toppen af planten.\n\nKig planten igennem oppefra og ned. På en ranketomat kommer der nye sideskud hele sæsonen, så det er noget du gør løbende, ikke én gang."
+    },
+    {
+      "heading": "Knib af",
+      "content": "Knib skuddet af med fingrene, mens det er ungt og blødt — typisk 3-5 cm. Så heler såret hurtigt, og du undgår at bruge kniv.\n\nEr skuddet blevet stort og træet, så klip det af med et rent redskab på en tør dag, så snitfladen tørrer ind i stedet for at stå fugtig."
+    },
+    {
+      "heading": "Hvorfor knibe tomater?",
+      "content": "Når du fjerner sideskuddene, bruger planten sin energi på at danne blomster og frugter i stedet for på unødige skud og blade. Det giver en mere overskuelig plante, bedre luft mellem grenene og som regel større, mere ensartede tomater.\n\nBusktomater skal derimod ikke knibes — de er bygget til at forgrene sig frit. Knibning gælder ranketomater, som du binder op ad én eller to hovedstammer.\n\n:::next-guide\nslug: tomat\ntitle: Lær tomaten at kende\ndescription: Få hele dyrkningsfundamentet for tomater — jord, lys, vanding, opbinding og høst.\nlabel: Læs artsguiden\n:::"
+    }
+  ]
+}
