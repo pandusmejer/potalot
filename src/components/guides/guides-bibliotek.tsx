@@ -110,6 +110,27 @@ export function GuidesBibliotek({
     variety: potalot.filter(g => levelOf(g) === 'variety').length,
   }
 
+  // Pre-wired Spotlight-gruppering: søgeresultater kan opdeles i
+  // PLANTEGUIDER + TEKNIKGUIDER. Teknik-gruppen fyldes kun ved søgning og kun
+  // hvis der FINDES teknikguides (tom nu → gruppen renderes aldrig). Gruppe-
+  // labels vises kun når mere end én gruppe har indhold (ellers redundant med
+  // sektionsoverskriften). Klar til vækst uden tomme teknik-overskrifter.
+  const teknikResultater = useMemo(() => {
+    if (!searching) return []
+    return techniqueGuides.filter(
+      g =>
+        g.plantName.toLowerCase().includes(q) ||
+        (g.summary?.toLowerCase().includes(q) ?? false) ||
+        g.tags.some(t => t.toLowerCase().includes(q)),
+    )
+  }, [searching, techniqueGuides, q])
+
+  const resultGrupper = [
+    { label: 'Planteguider', guides: filtered },
+    { label: 'Teknikguider', guides: teknikResultater },
+  ].filter(g => g.guides.length > 0)
+  const visGruppeLabels = resultGrupper.length > 1
+
   const filterChips: { id: Filter; label: string }[] = [
     { id: 'alle', label: 'Alle' },
     { id: 'species', label: 'Artsguides' },
@@ -159,7 +180,7 @@ export function GuidesBibliotek({
           Søgning + chips + kompakt grid. Søgning/chips filtrerer HELE
           biblioteket (ikke kun den personlige sektion). */}
       <section id="guides-i-felten" className="scroll-mt-24">
-        <Eyebrow>Udforsk biblioteket</Eyebrow>
+        <Eyebrow>Udforsk planteguider</Eyebrow>
         <Subtitle>Find den plante, du står med.</Subtitle>
 
         <div className="mt-4">
@@ -197,7 +218,7 @@ export function GuidesBibliotek({
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {resultGrupper.length === 0 ? (
           <div className="mt-6">
             <EmptyNote
               text={
@@ -208,9 +229,16 @@ export function GuidesBibliotek({
             />
           </div>
         ) : (
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {filtered.map(g => (
-              <GuideCardCompact key={g.id} guide={g} />
+          <div className="mt-4 space-y-6">
+            {resultGrupper.map(grp => (
+              <div key={grp.label}>
+                {visGruppeLabels && <GroupLabel>{grp.label}</GroupLabel>}
+                <div className="grid grid-cols-2 gap-3">
+                  {grp.guides.map(g => (
+                    <GuideCardCompact key={g.id} guide={g} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -219,7 +247,7 @@ export function GuidesBibliotek({
       {/* ── TEKNIKGUIDES ────────────────────────────────────────
           BETINGET: kun når der findes mindst én. Ingen "kommer snart",
           ingen tom placeholder. Aktiveres når data-laget findes. */}
-      {techniqueGuides.length > 0 && (
+      {!searching && techniqueGuides.length > 0 && (
         <section>
           <Eyebrow>Teknikguides</Eyebrow>
           <Subtitle>Konkrete opgaver — opbinding, forkultivering, vanding.</Subtitle>
@@ -364,6 +392,28 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+    </p>
+  )
+}
+
+// Gruppe-label til Spotlight-søgeresultater (PLANTEGUIDER / TEKNIKGUIDER).
+// Vises kun når mere end én gruppe har resultater — ellers redundant.
+function GroupLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      className="mb-2.5 flex items-center gap-2"
+      style={{
+        fontFamily: sans,
+        fontSize: 10.5,
+        fontWeight: 700,
+        letterSpacing: '0.16em',
+        textTransform: 'uppercase',
+        color: 'rgba(36,48,31,0.55)',
+        margin: '0 0 10px',
+      }}
+    >
+      {children}
+      <span aria-hidden className="h-px flex-1" style={{ background: 'rgba(45,42,36,0.12)' }} />
     </p>
   )
 }
