@@ -18,7 +18,7 @@
         "required": ["slug", "guideType", "filename"],
         "properties": {
           "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
-          "guideType": { "enum": ["species", "variety"] },
+          "guideType": { "enum": ["species", "variety", "technique"] },
           "parentSlug": { "type": ["string", "null"], "description": "Kun variety: art-slug." },
           "filename": { "type": "string", "description": "Filnavn i ZIP'en, fx 'salat.json'. Bør matche <slug>.json." },
           "status": { "enum": ["new", "update"], "description": "new = ny slug; update = ændrer en eksisterende guide (kræver eksplicit --update)." },

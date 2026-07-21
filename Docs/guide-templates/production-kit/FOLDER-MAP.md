@@ -42,6 +42,10 @@ Appen læser aldrig fra indbakkerne — kun fra `public/images/`.
 > asset-convention — ingen dobbeltproduktion. Arts-hero hører i `arts/`, ikke
 > plantekort.
 
+> **Teknikguider har ingen fotohero** (kun farveblok + titel + labelen
+> TEKNIKGUIDE). De har derfor ingen dedikeret hero-mappe — trin-fotos hentes fra
+> artens `public/images/makro/<art>/`. Ingen ny billedmappe pr. teknik.
+
 **Afledt:** `src/data/image-manifest.generated.ts` (genereret af `scan:images`),
 `src/data/potalot-image-sets.ts` (kuraterede roller pr. slug).
 

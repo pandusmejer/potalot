@@ -1,9 +1,13 @@
 # Potalot Guide Production Kit
 
-**Version: guide-contract-v1 · 2026-07-19**
+**Version: guide-contract-v1.1 · 2026-07-21**
 Afledt direkte fra koden på `main` (importer, validator, schema, promoverede
 guides). Portabelt: kan gives til enhver ny ChatGPT-session, så batches
 produceres korrekt uden adgang til repoet og uden at gætte.
+
+> **v1.1:** tredje guidetype `technique` (teknikguide, fx knibning) tilføjet —
+> `guideLevel: "technique"`, `title` i stedet for `plantName`, ingen
+> `primaryCategoryId`/`quickFacts`. Se `examples/technique-guide.example.json`.
 
 > Regenerér kittet, hver gang importeren/skemaet ændres, og hæv versionen.
 
@@ -27,6 +31,7 @@ godkendt tekst uden besked.
 | `editorial-rules.md` | Redaktionelle regler: art/sort-deling, tone, længde, kilder, `:::`-blokke, dansk klima. |
 | `examples/species-guide.example.json` | Promoveret **artsguide** (salat) — round-trip 1:1 mod live. |
 | `examples/variety-guide.example.json` | Promoveret **sortsguide** (tomat-sungold) — round-trip 1:1. |
+| `examples/technique-guide.example.json` | **Teknikguide** (knibning-af-tomater) — kanonisk form: `title`, trin-sektioner, `:::next-guide`. |
 | `slug-inventory.json` | Alle eksisterende slugs (live/generated/built) + status → undgå dubletter. |
 | `batch-manifest.schema.json` | Format for batch-leverancens manifest. |
 | `validate-command.txt` | De præcise valideringskommandoer Claude kører. |
@@ -78,5 +83,10 @@ content/guides/ (live) + IMPORTED_GUIDES (læse-lag) + public.guides (koblings-l
 
 - `botaniskeKendetegn` og `pluralName` findes i nogle håndskrevne arts-guides,
   men er **ikke** i skemaet — brug dem ikke i batch-JSON (afvises).
+- **Teknikguider** (`guideLevel: "technique"`) beskriver ÉN handling (knibning,
+  opbinding, prikling …), ikke en plante. De bruger `title` i stedet for
+  `plantName`, har hverken `primaryCategoryId` eller `quickFacts`, og linker
+  tilbage til arten/sorten med `:::next-guide`. Se
+  `examples/technique-guide.example.json`.
 - Alle 6 promoverede batch-guides (salat, hvidloeg, salat-little-gem,
   tomat-sungold, tomat-gardeners-delight, tomat-san-marzano) matcher dette skema.

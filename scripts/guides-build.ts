@@ -20,12 +20,14 @@ const CATS = ['fro', 'loeg', 'knolde', 'buske', 'traeer', 'stauder']
 interface Section { heading: string; content: string }
 interface Guide {
   slug: string
-  guideLevel: 'species' | 'variety'
+  guideLevel: 'species' | 'variety' | 'technique'
   parentSlug?: string | null
-  plantName: string
+  title?: string | null
+  plantName?: string
   variety?: string | null
   latinName?: string | null
-  primaryCategoryId: string
+  appliesTo?: string[]
+  primaryCategoryId?: string
   summary: string
   difficulty?: string
   tags?: string[]
@@ -54,10 +56,12 @@ function frontmatter(g: Guide): string {
   L.push(`slug: ${g.slug}`)
   L.push(`guideLevel: ${g.guideLevel}`)
   if (g.guideLevel === 'variety' && g.parentSlug) L.push(`parentSlug: ${g.parentSlug}`)
-  L.push(`plantName: ${scalar(g.plantName)}`)
+  if (g.title) L.push(`title: ${scalar(g.title)}`)
+  if (g.plantName) L.push(`plantName: ${scalar(g.plantName)}`)
   if (g.variety) L.push(`variety: ${scalar(g.variety)}`)
   if (g.latinName) L.push(`latinName: ${scalar(g.latinName)}`)
-  L.push(`primaryCategoryId: ${g.primaryCategoryId}`)
+  if (g.appliesTo && g.appliesTo.length) L.push(`appliesTo: ${inlineArr(g.appliesTo)}`)
+  if (g.primaryCategoryId) L.push(`primaryCategoryId: ${g.primaryCategoryId}`)
   L.push(`summary: ${JSON.stringify(g.summary)}`)
   if (g.difficulty) L.push(`difficulty: ${g.difficulty}`)
   if (g.tags && g.tags.length) L.push(`tags: ${inlineArr(g.tags)}`)
@@ -79,11 +83,18 @@ function body(g: Guide): string {
 }
 
 function check(g: Guide, file: string): void {
-  for (const k of ['slug', 'guideLevel', 'plantName', 'primaryCategoryId', 'summary'] as const) {
+  for (const k of ['slug', 'guideLevel', 'summary'] as const) {
     if (!g[k]) fail(`${file}: mangler feltet '${k}'`)
   }
-  if (!['species', 'variety'].includes(g.guideLevel)) fail(`${file}: guideLevel skal være 'species' eller 'variety'`)
-  if (!CATS.includes(g.primaryCategoryId)) fail(`${file}: ugyldig primaryCategoryId '${g.primaryCategoryId}'`)
+  if (!['species', 'variety', 'technique'].includes(g.guideLevel)) fail(`${file}: guideLevel skal være 'species', 'variety' eller 'technique'`)
+  if (g.guideLevel === 'technique') {
+    // Teknikguide: titel driver H1, ingen plante/kategori/quickFacts.
+    if (!g.title) fail(`${file}: teknikguide mangler feltet 'title'`)
+  } else {
+    if (!g.plantName) fail(`${file}: mangler feltet 'plantName'`)
+    if (!g.primaryCategoryId) fail(`${file}: mangler feltet 'primaryCategoryId'`)
+    if (!CATS.includes(g.primaryCategoryId)) fail(`${file}: ugyldig primaryCategoryId '${g.primaryCategoryId}'`)
+  }
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(g.slug)) fail(`${file}: slug '${g.slug}' er ikke kebab-case`)
   if (g.guideLevel === 'variety' && !g.parentSlug) fail(`${file}: sortsguide mangler parentSlug`)
   if (!Array.isArray(g.sections) || g.sections.length === 0) fail(`${file}: mindst én section kræves`)
