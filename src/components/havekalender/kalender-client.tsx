@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
 // DetKanDuNu er erstattet af det nye 4-lags Inspiration-card. Importen
 // bevares som kommentar i tilfælde af genaktivering.
@@ -144,7 +144,23 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
-  const year = new Date().getFullYear()
+  const [year, setYear] = useState(new Date().getFullYear())
+
+  // Månedsheaderen (MaanedsHero). "Se [næste måned]"-teaseren scroller herop
+  // via ref — ikke window.top — så den sticky topbar ikke æder placeringen
+  // (wrapperen har scroll-mt).
+  const maanedsHeaderRef = useRef<HTMLDivElement>(null)
+
+  // "Se [næste måned]" i bund-teaseren: skift kalenderens valgte måned til
+  // NÆSTE måned (relativt til den aktuelle måned), håndter årsskifte dec→jan,
+  // og scroll roligt op til månedsoversigten. Ingen navigation — vi er allerede
+  // på /kalender, så et link dertil ville bare genindlæse samme måned.
+  const handleSelectNextMonth = () => {
+    const wrapsToNextYear = nuMaaned >= 12
+    setValgtMaaned(wrapsToNextYear ? 1 : nuMaaned + 1)
+    if (wrapsToNextYear) setYear((y) => y + 1)
+    maanedsHeaderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   const aktivePlanter = plants
     .filter(p => !p.isArchived)
@@ -167,8 +183,11 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   return (
     <div className="space-y-7">
       {/* 1 · ORIENTERING — månedskapitlet er brugerens mentale landing.
-          Heroen er fredet per KALENDER_MASTER_SPEC.md (critical rule). */}
-      <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
+          Heroen er fredet per KALENDER_MASTER_SPEC.md (critical rule).
+          scroll-mt giver plads til den sticky topbar, når teaseren scroller herop. */}
+      <div ref={maanedsHeaderRef} className="scroll-mt-20">
+        <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
+      </div>
 
       {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
           Ikke et dashboard; rolige observationer fra haven. Sæsonbilledet
@@ -328,7 +347,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* 9 · PROGRESSION — rolig teaser mod næste måned. Kalenderens
           afslutning ("næste kapitel venter"), ikke endnu en opgaveliste. */}
-      <NextMonthTeaser currentMonth={nuMaaned} />
+      <NextMonthTeaser currentMonth={nuMaaned} onSelectNextMonth={handleSelectNextMonth} />
     </div>
   )
 }

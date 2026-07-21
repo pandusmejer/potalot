@@ -9,7 +9,6 @@
  * - Later replacement candidate for the larger `NaesteMaaned` block.
  */
 
-import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
@@ -21,14 +20,17 @@ interface NextMonthTeaserProps {
   /** Kalenderens AKTUELLE måned (1-12). Teaseren viser ALTID currentMonth+1
    *  — aldrig samme måned som topheroen. */
   currentMonth?: number
-  href?: string
+  /** Kaldes når brugeren trykker "Se [måned]". Skifter kalenderens valgte
+   *  måned til næste måned (håndteret af forælderen). Ingen href — kortet
+   *  sidder allerede på /kalender, så et link dertil ville være en no-op. */
+  onSelectNextMonth?: () => void
   /** Valgfri override; ellers afledt af NÆSTE måneds hero-foto. */
   heroImage?: string
 }
 
 export function NextMonthTeaser({
   currentMonth = 7,
-  href = '/kalender',
+  onSelectNextMonth,
   heroImage,
 }: NextMonthTeaserProps) {
   // Produktregel: "Kig mod [måned]" er ALTID næste måned relativt til
@@ -134,22 +136,27 @@ export function NextMonthTeaser({
           zIndex: 1,
         }}
       >
-        <Link
-          href={href}
+        <button
+          type="button"
+          onClick={onSelectNextMonth}
           style={{
             alignItems: 'center',
+            background: 'none',
+            border: 'none',
             color: '#3C552F',
+            cursor: 'pointer',
             display: 'inline-flex',
             fontFamily: sans,
             fontSize: 15,
             fontWeight: 800,
             gap: 9,
+            padding: 0,
             textDecoration: 'none',
           }}
         >
           Se {monthName.toLowerCase()}
           <ArrowRight width={17} height={17} strokeWidth={1.9} aria-hidden />
-        </Link>
+        </button>
       </div>
     </section>
   )
