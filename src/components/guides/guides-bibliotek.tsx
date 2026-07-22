@@ -7,11 +7,11 @@ import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import {
-  foodCategoryOf,
-  FOOD_CATEGORY_ORDER,
-  FOOD_CATEGORY_LABEL,
-  type FoodCategory,
-} from '@/data/guide-food-categories'
+  libraryCategoryOf,
+  LIBRARY_CATEGORY_ORDER,
+  LIBRARY_CATEGORY_LABEL,
+  type LibraryCategory,
+} from '@/data/guide-library-categories'
 import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
@@ -687,15 +687,22 @@ function QuickSearch({
 }
 
 // ════════════════════════════════════════════════════════════════
-// UDFORSK GUIDEBIBLIOTEKET — arkivet (ikke et feed)
+// UDFORSK GUIDEBIBLIOTEKET — matrix (kategori → art → sort)
 // ════════════════════════════════════════════════════════════════
-// Foldbare grupper, kun ÉN åben ad gangen pr. sektion → brugeren ser altid kun
-// 8-15 elementer, selv ved hundreder af guides. Arter = kvadratiske hero-kort
-// (indgang/udstilling); sorter = små listekort (fordybelse); teknik = separat
-// værktøjskasse. Søgning overtager og viser flade resultater (Planter/Teknik).
+// Ét hierarki, ikke to biblioteker: en SORT bor under en ART, en art under en
+// bibliotekskategori (navigations-kategori, ikke botanik). Foldbare niveauer,
+// kun ÉN åben ad gangen pr. niveau → altid kun få elementer synlige. Søgning
+// overtager og viser flade resultater (Planter/Teknik). Teknik er parallelt.
 
 type BiblioChip = 'alle' | 'arter' | 'sorter' | 'teknik'
 const FOLD_KEY = 'potalot:biblio-fold'
+
+/** Én art: hero-artsguide (hvis den findes) + dens sorter. */
+interface ArtNodeData {
+  plantName: string
+  hero?: Guide
+  varieties: Guide[]
+}
 
 function UdforskBiblioteket({
   guides,
@@ -709,10 +716,9 @@ function UdforskBiblioteket({
   onSearch: (v: string) => void
 }) {
   const [chip, setChip] = useState<BiblioChip>('alle')
-  // Kun ÉN gruppe åben ad gangen pr. sektion; tilstanden huskes (localStorage).
-  const [openCat, setOpenCat] = useState<FoodCategory | null>('groentsag')
+  // Kun ÉN gruppe åben ad gangen pr. niveau; tilstanden huskes (localStorage).
+  const [openCat, setOpenCat] = useState<LibraryCategory | null>('groentsager')
   const [openArt, setOpenArt] = useState<string | null>(null)
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     try {
@@ -734,42 +740,33 @@ function UdforskBiblioteket({
     }
   }, [openCat, openArt])
 
-  const arter = useMemo(() => guides.filter(g => levelOf(g) === 'species'), [guides])
-  const sorter = useMemo(() => guides.filter(g => levelOf(g) === 'variety'), [guides])
+  // ── Byg matrixen: kategori → art → sort ──────────────────────────
+  const matrix = useMemo(() => {
+    const arts = new Map<string, ArtNodeData>()
+    for (const g of guides) {
+      const a =
+        arts.get(g.plantName) ?? { plantName: g.plantName, hero: undefined, varieties: [] }
+      if (levelOf(g) === 'species') a.hero = g
+      else a.varieties.push(g)
+      arts.set(g.plantName, a)
+    }
+    for (const a of arts.values()) {
+      a.varieties.sort((x, y) => (x.variety ?? '').localeCompare(y.variety ?? '', 'da'))
+    }
+    const cats = new Map<LibraryCategory, ArtNodeData[]>()
+    for (const a of arts.values()) {
+      const c = libraryCategoryOf(a.plantName)
+      const arr = cats.get(c) ?? []
+      arr.push(a)
+      cats.set(c, arr)
+    }
+    for (const arr of cats.values()) {
+      arr.sort((x, y) => x.plantName.localeCompare(y.plantName, 'da'))
+    }
+    return cats
+  }, [guides])
 
-  // ARTER grupperet i mad-kategorier (kurateret kort, ikke datamodel-felt).
-  const arterByCat = useMemo(() => {
-    const m = new Map<FoodCategory, Guide[]>()
-    for (const g of arter) {
-      const c = foodCategoryOf(g.plantName)
-      const arr = m.get(c) ?? []
-      arr.push(g)
-      m.set(c, arr)
-    }
-    for (const arr of m.values()) {
-      arr.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
-    }
-    return m
-  }, [arter])
-
-  // SORTER grupperet pr. art (plantName) — arten er indgangen, sorterne dybden.
-  const sorterByArt = useMemo(() => {
-    const m = new Map<string, Guide[]>()
-    for (const g of sorter) {
-      const arr = m.get(g.plantName) ?? []
-      arr.push(g)
-      m.set(g.plantName, arr)
-    }
-    for (const arr of m.values()) {
-      arr.sort((a, b) => (a.variety ?? '').localeCompare(b.variety ?? '', 'da'))
-    }
-    return m
-  }, [sorter])
-  const artOrder = useMemo(
-    () => [...sorterByArt.keys()].sort((a, b) => a.localeCompare(b, 'da')),
-    [sorterByArt],
-  )
-
+  // ── Søgning overtager ────────────────────────────────────────────
   const q = search.trim().toLowerCase()
   const searching = q.length > 0
   const matches = (g: Guide) =>
@@ -778,7 +775,6 @@ function UdforskBiblioteket({
     (g.latinName?.toLowerCase().includes(q) ?? false) ||
     g.summary.toLowerCase().includes(q) ||
     g.tags.some(t => t.toLowerCase().includes(q))
-
   const planteHits = useMemo(
     () => (searching ? guides.filter(matches) : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -799,12 +795,8 @@ function UdforskBiblioteket({
       : []),
   ]
 
-  const visArter = chip === 'alle' || chip === 'arter'
-  const visSorter = chip === 'alle' || chip === 'sorter'
+  const visPlanter = chip !== 'teknik'
   const visTeknik = (chip === 'alle' || chip === 'teknik') && techniqueGuides.length > 0
-
-  const toggleExpanded = (key: string) =>
-    setExpanded(e => ({ ...e, [key]: !e[key] }))
 
   return (
     <div>
@@ -855,39 +847,44 @@ function UdforskBiblioteket({
         )
       ) : (
         <div className="mt-6 space-y-8">
-          {/* 🌱 PLANTEGUIDER — arter i mad-kategorier, hero-kort */}
-          {visArter && (
+          {/* 🌱 PLANTEGUIDES — matrix: kategori → art → sort */}
+          {visPlanter && (
             <div>
-              <SectionLabel>Planteguider</SectionLabel>
+              <SectionLabel>Planteguides</SectionLabel>
               <div className="mt-3 space-y-2">
-                {FOOD_CATEGORY_ORDER.filter(
-                  c => (arterByCat.get(c)?.length ?? 0) > 0,
-                ).map(c => {
-                  const items = arterByCat.get(c)!
+                {LIBRARY_CATEGORY_ORDER.filter(c => {
+                  const arts = matrix.get(c)
+                  if (!arts?.length) return false
+                  if (chip === 'sorter') return arts.some(a => a.varieties.length > 0)
+                  return true
+                }).map(c => {
+                  const artsAll = matrix.get(c)!
+                  const arts =
+                    chip === 'sorter'
+                      ? artsAll.filter(a => a.varieties.length > 0)
+                      : artsAll
                   const open = openCat === c
-                  const key = 'cat:' + c
-                  const showAll = !!expanded[key]
-                  const shown = showAll ? items : items.slice(0, 2)
                   return (
                     <GroupBlock
                       key={c}
-                      label={FOOD_CATEGORY_LABEL[c]}
-                      count={items.length}
+                      label={LIBRARY_CATEGORY_LABEL[c]}
+                      count={arts.length}
                       open={open}
                       onToggle={() => setOpenCat(open ? null : c)}
                     >
-                      <div className="mt-3 grid grid-cols-2 gap-3">
-                        {shown.map((g, i) => (
-                          <ArtHeroCard key={g.id} guide={g} index={i} />
+                      <div className="mt-2 space-y-1.5">
+                        {arts.map(a => (
+                          <ArtNode
+                            key={a.plantName}
+                            art={a}
+                            open={openArt === a.plantName}
+                            onToggle={() =>
+                              setOpenArt(openArt === a.plantName ? null : a.plantName)
+                            }
+                            arterOnly={chip === 'arter'}
+                          />
                         ))}
                       </div>
-                      {items.length > 2 && (
-                        <VisAlleKnap onClick={() => toggleExpanded(key)}>
-                          {showAll
-                            ? 'Vis færre'
-                            : `Vis alle ${FOOD_CATEGORY_LABEL[c].toLowerCase()} (${items.length})`}
-                        </VisAlleKnap>
-                      )}
                     </GroupBlock>
                   )
                 })}
@@ -895,46 +892,10 @@ function UdforskBiblioteket({
             </div>
           )}
 
-          {/* 🌿 SORTSGUIDER — sorter pr. art, små listekort */}
-          {visSorter && artOrder.length > 0 && (
-            <div>
-              <SectionLabel>Sortsguider</SectionLabel>
-              <div className="mt-3 space-y-2">
-                {artOrder.map(art => {
-                  const items = sorterByArt.get(art)!
-                  const open = openArt === art
-                  const key = 'art:' + art
-                  const showAll = !!expanded[key]
-                  const shown = showAll ? items : items.slice(0, 5)
-                  return (
-                    <GroupBlock
-                      key={art}
-                      label={art}
-                      count={items.length}
-                      open={open}
-                      onToggle={() => setOpenArt(open ? null : art)}
-                    >
-                      <div className="mt-2 space-y-2">
-                        {shown.map(g => <BiblioRow key={g.id} guide={g} />)}
-                      </div>
-                      {items.length > 5 && (
-                        <VisAlleKnap onClick={() => toggleExpanded(key)}>
-                          {showAll
-                            ? 'Vis færre'
-                            : `Se alle ${art.toLowerCase()} (${items.length})`}
-                        </VisAlleKnap>
-                      )}
-                    </GroupBlock>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* 🛠 TEKNIKGUIDER — egen værktøjskasse, kun når de findes */}
+          {/* 🛠 TEKNIKGUIDES — parallelt bibliotek, egen værktøjskasse */}
           {visTeknik && (
             <div>
-              <SectionLabel tone="teknik">Teknikguider</SectionLabel>
+              <SectionLabel tone="teknik">Teknikguides</SectionLabel>
               <div className="mt-3 space-y-2">
                 {techniqueGuides.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
               </div>
@@ -943,6 +904,107 @@ function UdforskBiblioteket({
         </div>
       )}
     </div>
+  )
+}
+
+/**
+ * Art-node i matrixen. Har arten sorter (og vi ikke er i "Arter"-visning) →
+ * foldbar: åbner til artens hero-guide + dens sorter. Ellers en direkte
+ * genvej til artsguiden.
+ */
+function ArtNode({
+  art,
+  open,
+  onToggle,
+  arterOnly,
+}: {
+  art: ArtNodeData
+  open: boolean
+  onToggle: () => void
+  arterOnly: boolean
+}) {
+  const hasSorter = art.varieties.length > 0
+
+  // Direkte link når arten ikke har sorter, eller i "Arter"-visning (og der er
+  // en hero at linke til).
+  if ((!hasSorter || arterOnly) && art.hero) {
+    return <BiblioRow guide={art.hero} />
+  }
+
+  return (
+    <div
+      className="overflow-hidden rounded-[12px]"
+      style={{ background: open ? 'rgba(255,255,255,0.5)' : 'transparent' }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center gap-2 px-2.5 py-2 text-left"
+      >
+        <ChevronRight
+          size={15}
+          strokeWidth={2.25}
+          className="shrink-0 transition-transform duration-200"
+          style={{
+            color: 'rgba(36,48,31,0.4)',
+            transform: open ? 'rotate(90deg)' : 'none',
+          }}
+        />
+        <span
+          className="flex-1 truncate"
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 16,
+            letterSpacing: '-0.01em',
+            color: '#242019',
+          }}
+        >
+          {art.plantName}
+        </span>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 11.5,
+            fontWeight: 600,
+            color: 'rgba(36,48,31,0.42)',
+          }}
+        >
+          {art.varieties.length} {art.varieties.length === 1 ? 'sort' : 'sorter'}
+        </span>
+      </button>
+      {open && (
+        <div className="space-y-2 pb-2.5 pl-3.5 pr-1.5">
+          {art.hero && <BiblioRow guide={art.hero} />}
+          {hasSorter && (
+            <>
+              <SubLabel>Sorter</SubLabel>
+              <div className="space-y-2">
+                {art.varieties.map(v => <BiblioRow key={v.id} guide={v} />)}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SubLabel({ children }: { children: ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 10.5,
+        fontWeight: 700,
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        color: 'rgba(36,48,31,0.4)',
+        margin: '2px 0 0',
+      }}
+    >
+      {children}
+    </p>
   )
 }
 
@@ -1049,25 +1111,6 @@ function GroupBlock({
   )
 }
 
-/** Arts-hero-kort i biblioteket — genbruger den kvadratiske form. */
-function ArtHeroCard({ guide, index }: { guide: Guide; index: number }) {
-  const { src } = resolvePotalotImage({
-    guideId: guide.id,
-    speciesSlug: guide.id,
-    varietySlug: null,
-    role: 'species-hero',
-    preferredSrc: guide.primaryImageId,
-  })
-  return (
-    <TopicSquareCard
-      index={index}
-      href={`/guides/${guide.id}`}
-      imageUrl={src}
-      navn={guide.pluralName ?? guide.plantName}
-    />
-  )
-}
-
 /** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
 function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
   const isVar = guide.guideLevel === 'variety' || !!guide.variety
@@ -1136,27 +1179,6 @@ function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }
         style={{ color: 'rgba(36,48,31,0.3)' }}
       />
     </Link>
-  )
-}
-
-/** "Vis alle …"-genvej under en åben gruppe. */
-function VisAlleKnap({
-  children,
-  onClick,
-}: {
-  children: ReactNode
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="mt-3 inline-flex items-center gap-1"
-      style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: '#3D5A26' }}
-    >
-      {children}
-      <ArrowRight size={14} strokeWidth={2} />
-    </button>
   )
 }
 
