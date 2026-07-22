@@ -12,6 +12,7 @@ import {
   LIBRARY_CATEGORY_LABEL,
   type LibraryCategory,
 } from '@/data/guide-library-categories'
+import { GuideCardEditorial } from './guide-card-editorial'
 import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
@@ -884,15 +885,15 @@ function UdforskBiblioteket({
                         </p>
                       ) : (
                         <>
-                          {/* De to første arter som store hero-kort (kategori-
-                              indgang), resten som foldbare rækker. */}
-                          <div className="mt-3 grid grid-cols-2 gap-3">
+                          {/* De to første arter som store editorial-hero-kort
+                              (kategori-indgang), resten som foldbare rækker. */}
+                          <div className="mt-3 space-y-7">
                             {arts.slice(0, 2).map((a, i) => (
                               <ArtHeroCard key={a.plantName} art={a} index={i} />
                             ))}
                           </div>
                           {arts.length > 2 && (
-                            <div className="mt-2.5 space-y-1.5">
+                            <div className="mt-5 space-y-1.5">
                               {arts.slice(2).map(a => (
                                 <ArtNode
                                   key={a.plantName}
@@ -931,25 +932,18 @@ function UdforskBiblioteket({
 }
 
 /**
- * Kategori-indgang: stort kvadratisk hero-kort for en art. Bruger artens
- * hero-guide (eller første sort hvis arten kun har sorter). Linker til guiden.
+ * Kategori-indgang: stort editorial-hero-kort for en art (fuld bredde, ARTSGUIDE-
+ * badge, navn + latin + resumé + pil). Bruger artens hero-guide (eller første
+ * sort hvis arten kun har sorter).
  */
 function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
   const g = art.hero ?? art.varieties[0]
   if (!g) return null
-  const { src } = resolvePotalotImage({
-    guideId: g.id,
-    speciesSlug: art.hero ? g.id : g.parentGuideId,
-    varietySlug: art.hero ? null : g.id,
-    role: art.hero ? 'species-hero' : 'variety-hero',
-    preferredSrc: g.primaryImageId,
-  })
   return (
-    <TopicSquareCard
-      index={index}
-      href={`/guides/${g.id}`}
-      imageUrl={src}
-      navn={art.hero?.pluralName ?? art.plantName}
+    <GuideCardEditorial
+      guide={g}
+      kind="potalot"
+      offset={index % 2 === 1 ? 'right' : 'none'}
     />
   )
 }
