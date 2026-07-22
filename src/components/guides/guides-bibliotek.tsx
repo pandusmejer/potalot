@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
-import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
+import { Search, ArrowRight, ChevronRight, Leaf, Star } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import {
@@ -695,7 +695,7 @@ function QuickSearch({
 // kun ÉN åben ad gangen pr. niveau → altid kun få elementer synlige. Søgning
 // overtager og viser flade resultater (Planter/Teknik). Teknik er parallelt.
 
-type BiblioChip = 'alle' | 'arter' | 'sorter' | 'teknik'
+type BiblioChip = 'alle' | 'planter' | 'teknik'
 const FOLD_KEY = 'potalot:biblio-fold'
 
 /** Én art: hero-artsguide (hvis den findes) + dens sorter. */
@@ -787,16 +787,17 @@ function UdforskBiblioteket({
     [searching, techniqueGuides, q],
   )
 
+  // Chips = top-niveau bibliotek (ikke art/sort — sorter lever under arter i
+  // matrixen). Planter rummer både arter og sorter; Teknik er parallelt.
   const chips: { id: BiblioChip; label: string }[] = [
     { id: 'alle', label: 'Alle' },
-    { id: 'arter', label: 'Arter' },
-    { id: 'sorter', label: 'Sorter' },
+    { id: 'planter', label: 'Planter' },
     ...(techniqueGuides.length > 0
       ? [{ id: 'teknik' as const, label: 'Teknik' }]
       : []),
   ]
 
-  const visPlanter = chip !== 'teknik'
+  const visPlanter = chip === 'alle' || chip === 'planter'
   const visTeknik = (chip === 'alle' || chip === 'teknik') && techniqueGuides.length > 0
 
   return (
@@ -856,11 +857,11 @@ function UdforskBiblioteket({
                 {/* ALLE 8 kategorier vises — også de tomme (Anna 22/7), så hele
                     taksonomien er synlig. Tom kategori → antal 0 + stille note. */}
                 {LIBRARY_CATEGORY_ORDER.map(c => {
-                  const artsAll = matrix.get(c) ?? []
-                  const arts =
-                    chip === 'sorter'
-                      ? artsAll.filter(a => a.varieties.length > 0)
-                      : artsAll
+                  const arts = matrix.get(c) ?? []
+                  // Redaktionelt fremhævede arter (pt. de 2 første alfabetisk —
+                  // senere kurateret/sæsonbestemt). De optræder OGSÅ i den
+                  // komplette liste nedenunder, så listen altid er fuld.
+                  const fremhaevet = arts.slice(0, 2)
                   const open = openCat === c
                   return (
                     <GroupBlock
@@ -885,28 +886,35 @@ function UdforskBiblioteket({
                         </p>
                       ) : (
                         <>
-                          {/* De to første arter som store editorial-hero-kort
-                              (kategori-indgang), resten som foldbare rækker. */}
-                          <div className="mt-3 space-y-7">
-                            {arts.slice(0, 2).map((a, i) => (
+                          {/* ⭐ Fremhævet — redaktionelle anbefalinger (store kort) */}
+                          <FremhaevetLabel />
+                          <div className="mt-2 space-y-7">
+                            {fremhaevet.map((a, i) => (
                               <ArtHeroCard key={a.plantName} art={a} index={i} />
                             ))}
                           </div>
-                          {arts.length > 2 && (
-                            <div className="mt-5 space-y-1.5">
-                              {arts.slice(2).map(a => (
-                                <ArtNode
-                                  key={a.plantName}
-                                  art={a}
-                                  open={openArt === a.plantName}
-                                  onToggle={() =>
-                                    setOpenArt(openArt === a.plantName ? null : a.plantName)
-                                  }
-                                  arterOnly={chip === 'arter'}
-                                />
-                              ))}
-                            </div>
-                          )}
+
+                          {/* Divider → den komplette, forudsigelige liste */}
+                          <div
+                            aria-hidden
+                            className="my-5 h-px"
+                            style={{ background: 'rgba(45,42,36,0.12)' }}
+                          />
+
+                          {/* Alle arter — komplet alfabetisk liste (inkl. fremhævede) */}
+                          <SubLabel>Alle arter</SubLabel>
+                          <div className="mt-2 space-y-1.5">
+                            {arts.map(a => (
+                              <ArtNode
+                                key={a.plantName}
+                                art={a}
+                                open={openArt === a.plantName}
+                                onToggle={() =>
+                                  setOpenArt(openArt === a.plantName ? null : a.plantName)
+                                }
+                              />
+                            ))}
+                          </div>
                         </>
                       )}
                     </GroupBlock>
@@ -949,26 +957,22 @@ function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
 }
 
 /**
- * Art-node i matrixen. Har arten sorter (og vi ikke er i "Arter"-visning) →
- * foldbar: åbner til artens hero-guide + dens sorter. Ellers en direkte
- * genvej til artsguiden.
+ * Art-node i "Alle arter"-listen. Klik folder ud til artsguiden + artens
+ * sorter (her samles art og sort). Har arten ingen sorter → direkte link.
  */
 function ArtNode({
   art,
   open,
   onToggle,
-  arterOnly,
 }: {
   art: ArtNodeData
   open: boolean
   onToggle: () => void
-  arterOnly: boolean
 }) {
   const hasSorter = art.varieties.length > 0
 
-  // Direkte link når arten ikke har sorter, eller i "Arter"-visning (og der er
-  // en hero at linke til).
-  if ((!hasSorter || arterOnly) && art.hero) {
+  // Ingen sorter → ingen grund til at folde; direkte link til artsguiden.
+  if (!hasSorter && art.hero) {
     return <BiblioRow guide={art.hero} />
   }
 
@@ -1016,7 +1020,12 @@ function ArtNode({
       </button>
       {open && (
         <div className="space-y-2 pb-2.5 pl-3.5 pr-1.5">
-          {art.hero && <BiblioRow guide={art.hero} />}
+          {art.hero && (
+            <>
+              <SubLabel>Artsguide</SubLabel>
+              <BiblioRow guide={art.hero} />
+            </>
+          )}
           {hasSorter && (
             <>
               <SubLabel>Sorter</SubLabel>
@@ -1046,6 +1055,31 @@ function SubLabel({ children }: { children: ReactNode }) {
     >
       {children}
     </p>
+  )
+}
+
+/** "⭐ Fremhævet"-label over de redaktionelle hero-kort i en kategori. */
+function FremhaevetLabel() {
+  return (
+    <div className="flex items-center gap-1.5">
+      <Star
+        size={12}
+        strokeWidth={2}
+        style={{ color: '#B0862F', fill: '#E8C86A' }}
+      />
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: 10.5,
+          fontWeight: 700,
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.5)',
+        }}
+      >
+        Fremhævet
+      </span>
+    </div>
   )
 }
 
