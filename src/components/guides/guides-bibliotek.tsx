@@ -509,22 +509,10 @@ function FortsaetDineGuider({
           letterSpacing: '0.18em',
           textTransform: 'uppercase',
           color: 'rgba(36,48,31,0.72)',
-          margin: 0,
+          margin: '0 0 12px',
         }}
       >
         Fortsæt dine guides
-      </p>
-      <p
-        style={{
-          fontFamily: serif,
-          fontStyle: 'italic',
-          fontSize: 14.5,
-          lineHeight: 1.3,
-          color: 'rgba(36,48,31,0.5)',
-          margin: '4px 0 12px',
-        }}
-      >
-        Sidst åbnet
       </p>
       <div className="space-y-2.5">
         {items.map(({ guide: g, at }) => {
