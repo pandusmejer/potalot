@@ -852,13 +852,10 @@ function UdforskBiblioteket({
             <div>
               <SectionLabel>Planteguides</SectionLabel>
               <div className="mt-3 space-y-2">
-                {LIBRARY_CATEGORY_ORDER.filter(c => {
-                  const arts = matrix.get(c)
-                  if (!arts?.length) return false
-                  if (chip === 'sorter') return arts.some(a => a.varieties.length > 0)
-                  return true
-                }).map(c => {
-                  const artsAll = matrix.get(c)!
+                {/* ALLE 8 kategorier vises — også de tomme (Anna 22/7), så hele
+                    taksonomien er synlig. Tom kategori → antal 0 + stille note. */}
+                {LIBRARY_CATEGORY_ORDER.map(c => {
+                  const artsAll = matrix.get(c) ?? []
                   const arts =
                     chip === 'sorter'
                       ? artsAll.filter(a => a.varieties.length > 0)
@@ -872,19 +869,34 @@ function UdforskBiblioteket({
                       open={open}
                       onToggle={() => setOpenCat(open ? null : c)}
                     >
-                      <div className="mt-2 space-y-1.5">
-                        {arts.map(a => (
-                          <ArtNode
-                            key={a.plantName}
-                            art={a}
-                            open={openArt === a.plantName}
-                            onToggle={() =>
-                              setOpenArt(openArt === a.plantName ? null : a.plantName)
-                            }
-                            arterOnly={chip === 'arter'}
-                          />
-                        ))}
-                      </div>
+                      {arts.length === 0 ? (
+                        <p
+                          className="mt-1"
+                          style={{
+                            fontFamily: serif,
+                            fontStyle: 'italic',
+                            fontSize: 14,
+                            color: 'rgba(36,48,31,0.45)',
+                            margin: 0,
+                          }}
+                        >
+                          Ingen guides her endnu.
+                        </p>
+                      ) : (
+                        <div className="mt-2 space-y-1.5">
+                          {arts.map(a => (
+                            <ArtNode
+                              key={a.plantName}
+                              art={a}
+                              open={openArt === a.plantName}
+                              onToggle={() =>
+                                setOpenArt(openArt === a.plantName ? null : a.plantName)
+                              }
+                              arterOnly={chip === 'arter'}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </GroupBlock>
                   )
                 })}
