@@ -883,19 +883,30 @@ function UdforskBiblioteket({
                           Ingen guides her endnu.
                         </p>
                       ) : (
-                        <div className="mt-2 space-y-1.5">
-                          {arts.map(a => (
-                            <ArtNode
-                              key={a.plantName}
-                              art={a}
-                              open={openArt === a.plantName}
-                              onToggle={() =>
-                                setOpenArt(openArt === a.plantName ? null : a.plantName)
-                              }
-                              arterOnly={chip === 'arter'}
-                            />
-                          ))}
-                        </div>
+                        <>
+                          {/* De to første arter som store hero-kort (kategori-
+                              indgang), resten som foldbare rækker. */}
+                          <div className="mt-3 grid grid-cols-2 gap-3">
+                            {arts.slice(0, 2).map((a, i) => (
+                              <ArtHeroCard key={a.plantName} art={a} index={i} />
+                            ))}
+                          </div>
+                          {arts.length > 2 && (
+                            <div className="mt-2.5 space-y-1.5">
+                              {arts.slice(2).map(a => (
+                                <ArtNode
+                                  key={a.plantName}
+                                  art={a}
+                                  open={openArt === a.plantName}
+                                  onToggle={() =>
+                                    setOpenArt(openArt === a.plantName ? null : a.plantName)
+                                  }
+                                  arterOnly={chip === 'arter'}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </>
                       )}
                     </GroupBlock>
                   )
@@ -916,6 +927,30 @@ function UdforskBiblioteket({
         </div>
       )}
     </div>
+  )
+}
+
+/**
+ * Kategori-indgang: stort kvadratisk hero-kort for en art. Bruger artens
+ * hero-guide (eller første sort hvis arten kun har sorter). Linker til guiden.
+ */
+function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
+  const g = art.hero ?? art.varieties[0]
+  if (!g) return null
+  const { src } = resolvePotalotImage({
+    guideId: g.id,
+    speciesSlug: art.hero ? g.id : g.parentGuideId,
+    varietySlug: art.hero ? null : g.id,
+    role: art.hero ? 'species-hero' : 'variety-hero',
+    preferredSrc: g.primaryImageId,
+  })
+  return (
+    <TopicSquareCard
+      index={index}
+      href={`/guides/${g.id}`}
+      imageUrl={src}
+      navn={art.hero?.pluralName ?? art.plantName}
+    />
   )
 }
 
