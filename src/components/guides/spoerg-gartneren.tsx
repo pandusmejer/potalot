@@ -120,7 +120,7 @@ export function SpoergGartneren() {
           type="text"
           value={spoergsmaal}
           onChange={e => setSpoergsmaal(e.target.value)}
-          placeholder="Hvorfor krøller tomatblade?"
+          placeholder="Hvorfor krøller mine tomatblade?"
           aria-label="Skriv dit havespørgsmål"
           style={{
             flex: 1,
