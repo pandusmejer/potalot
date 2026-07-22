@@ -411,7 +411,7 @@ export async function GuideArticle({
                 margin: 0,
               }}
             >
-              Artsguide
+              Bygger på
             </p>
             <h2
               style={{
@@ -424,8 +424,7 @@ export async function GuideArticle({
                 margin: '8px 0 0',
               }}
             >
-              {effective.variety ?? effective.plantName} bygger på{' '}
-              {parent.plantName.toLowerCase()}guiden
+              Start med {parent.plantName.toLowerCase()}guiden
             </h2>
             <p
               style={{
