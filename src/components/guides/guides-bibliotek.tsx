@@ -1,12 +1,17 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
 import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
-import { GuideCardEditorial } from './guide-card-editorial'
+import {
+  foodCategoryOf,
+  FOOD_CATEGORY_ORDER,
+  FOOD_CATEGORY_LABEL,
+  type FoodCategory,
+} from '@/data/guide-food-categories'
 import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
@@ -21,11 +26,6 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 // Display-font på Guides = IBM Plex Sans Condensed (feltmanual/dyrkningsarkiv,
 // ikke romantisk herbarium). Kun store overskrifter + arts-/kort-titler.
 const plex = 'var(--font-plex-condensed), sans-serif'
-
-// Biblioteket viser kun det redaktionelle 'potalot'-lag, så en "Potalot"-chip
-// ville vise præcis det samme som "Alle" (pynt forklædt som funktion). Den ægte,
-// meningsfulde dimension her er guideLevel: art vs. sort.
-type Filter = 'alle' | 'species' | 'variety'
 
 /**
  * Arts- vs sortsguide — samme regel som kortenes egen type-chip (guideLevel med
@@ -48,15 +48,20 @@ interface Props {
    */
   bridgeMacroSrc?: string | null
   bridgeMacroAlt?: string | null
+  /**
+   * Teknik-guides (forkultivering, opbinding, vanding …). Egen værktøjskasse
+   * nederst i biblioteket — vises KUN når der findes mindst én. Tom nu → skjult.
+   */
+  techniqueGuides?: Guide[]
 }
 
 export function GuidesBibliotek({
   guides,
   aiGuideIds,
   iFroebankIds,
+  techniqueGuides = [],
 }: Props) {
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<Filter>('alle')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
   const [visAlleMine, setVisAlleMine] = useState(false)
   // Senest læste guide-id'er fra localStorage (client-only → tom ved SSR,
@@ -136,41 +141,12 @@ export function GuidesBibliotek({
     return out
   }, [recent, byId])
 
-  const filtered = useMemo(() => {
-    const q = effectiveSearch.trim().toLowerCase()
-    return withKind
-      // Aktiv filterakse = guideLevel (art vs. sort). Biblioteket viser i dag
-      // KUN Potalot-laget, så en kind-chip ville aldrig ændre resultatet.
-      //
-      // FUTURE:
-      // When /guides-bibliotek starts rendering user-owned guides or AI drafts,
-      // reintroduce a separate kind-filter axis here:
-      //   kind: potalot | egen | ai-udkast   (afsender/tillid)
-      // Keep it SEPARATE from guideLevel:
-      //   guideLevel: art | sort             (indholdsniveau)
-      // Do not combine both axes in one single-select chip row (brugeren skal
-      // ikke vælge mellem "hvem skrev den?" og "hvad handler den om?" i samme
-      // klik). Maskineriet står klar: guideKindFor() + `kind` på hvert element.
-      .filter(({ guide: g }) => filter === 'alle' || levelOf(g) === filter)
-      .filter(({ guide: g }) => {
-        if (!q) return true
-        return (
-          g.plantName.toLowerCase().includes(q) ||
-          (g.variety?.toLowerCase().includes(q) ?? false) ||
-          (g.latinName?.toLowerCase().includes(q) ?? false) ||
-          g.summary.toLowerCase().includes(q) ||
-          g.tags.some(t => t.toLowerCase().includes(q))
-        )
-      })
-      .sort((a, b) => {
-        if (a.guide.guideLevel !== b.guide.guideLevel) {
-          return a.guide.guideLevel === 'species' ? -1 : 1
-        }
-        return a.guide.plantName.localeCompare(b.guide.plantName, 'da')
-      })
-  }, [withKind, effectiveSearch, filter])
-
-  const potalot = filtered.filter(x => x.kind === 'potalot')
+  // Hele det redaktionelle 'potalot'-lag (arter + sorter). Biblioteket nedenfor
+  // (UdforskBiblioteket) styrer selv chip-filtrering, gruppering og søgning.
+  const potalotAll = useMemo(
+    () => withKind.filter(x => x.kind === 'potalot').map(x => x.guide),
+    [withKind],
+  )
 
   return (
     <div className="space-y-8 sm:space-y-10">
@@ -206,59 +182,18 @@ export function GuidesBibliotek({
           "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
       <SpoergGartneren />
 
-      {/* Layered section: one trust signal, then mixed guide objects instead of repeated badges. */}
-      {/* Guides i felten = fortsættelsen af Dyrkningsforløb-introen, ikke en ny
-          tung sektion. -mt trækker den tættere på intro-kortet. POTALOT-GUIDE-
-          pillen ligger på sin EGEN linje (brækker ikke) over eyebrow-teksten;
-          den præcise type (arts/sort) ligger som metadata på selve kortene. */}
-      {/* Ingen separat "Guides i felten"-overskrift: introen ovenfor forklarer
-          guidesystemet og leder direkte ned i kortene. Én intro → kort, ikke to
-          sektioner. id bevaret som scroll-anker fra "Begynd her". */}
-      <section id="guides-i-felten" className="relative -mt-1 pt-0 scroll-mt-24">
-        <AtmosphericGuideField />
-        <div className="relative z-10">
-          {potalot.length === 0 ? (
-            <EmptyNote text={
-              aktivtEmne || effectiveSearch
-                ? 'Ingen guide matcher endnu. Prøv et andet emne eller søg bredere.'
-                : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
-            } />
-          ) : (
-            <div className="space-y-7">
-              {potalot.map(({ guide, kind }, index) => (
-                <GuideCardEditorial
-                  key={guide.id}
-                  guide={guide}
-                  kind={kind}
-                  iFroebank={iFroebankIds.has(guide.id)}
-                  offset={index % 3 === 1 ? 'right' : index % 3 === 2 ? 'left' : 'none'}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+      {/* UDFORSK GUIDEBIBLIOTEKET — her skifter siden karakter fra rolig
+          redaktionel indgang til effektivt ARKIV. Foldbare grupper (kun én åben
+          ad gangen) → brugeren ser altid kun 8-15 elementer, selv ved hundreder
+          af guides. Søgning overtager og viser flade resultater. */}
+      <section id="guides-i-felten" className="scroll-mt-24">
+        <UdforskBiblioteket
+          guides={potalotAll}
+          techniqueGuides={techniqueGuides}
+          search={effectiveSearch}
+          onSearch={handleSearch}
+        />
       </section>
-
-      {/* Det praktiske værktøj kommer FØRST efter guidekortene: brugeren er på
-          Guides for at finde en konkret plante. Søgning + filtre, rolig felt-
-          index-stil. */}
-      <SoegBar
-        search={search}
-        onSearch={handleSearch}
-        filter={filter}
-        onFilter={setFilter}
-        antal={{
-          // Tællere over det viste 'potalot'-lag, ikke alle kinds — ellers
-          // ville tallene love guides der aldrig vises i biblioteket.
-          alle: withKind.filter(x => x.kind === 'potalot').length,
-          species: withKind.filter(
-            x => x.kind === 'potalot' && levelOf(x.guide) === 'species',
-          ).length,
-          variety: withKind.filter(
-            x => x.kind === 'potalot' && levelOf(x.guide) === 'variety',
-          ).length,
-        }}
-      />
 
       {/* Sekundært lær-mere-lag NEDERST — ekstra læring efter find-en-guide-
           værktøjet, ikke en stopklods før søgningen. Bevidst nedtonet så den
@@ -679,45 +614,6 @@ function PopulaereEmner({
   )
 }
 
-function AtmosphericGuideField() {
-  return (
-    <>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-20 top-4 h-72 w-72"
-        style={{
-          backgroundImage: 'url(/images/makro/agurk/blad.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.08,
-          mixBlendMode: 'multiply',
-          transform: 'rotate(-7deg)',
-          maskImage:
-            'radial-gradient(ellipse 70% 64% at 50% 50%, black 20%, transparent 82%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 70% 64% at 50% 50%, black 20%, transparent 82%)',
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-24 top-[28rem] h-80 w-80"
-        style={{
-          backgroundImage: 'url(/images/makro/tomat-san-marzano/dug.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.09,
-          mixBlendMode: 'multiply',
-          transform: 'rotate(5deg)',
-          maskImage:
-            'radial-gradient(ellipse 66% 70% at 50% 50%, black 20%, transparent 84%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 66% 70% at 50% 50%, black 20%, transparent 84%)',
-        }}
-      />
-    </>
-  )
-}
-
 /**
  * Delt søge-input — samme rolige felt-index-stil for både quick-search (øverst)
  * og biblioteks-søgningen (nederst), så de to inputs ser ens ud og deler query.
@@ -790,91 +686,495 @@ function QuickSearch({
   )
 }
 
-function SoegBar({
+// ════════════════════════════════════════════════════════════════
+// UDFORSK GUIDEBIBLIOTEKET — arkivet (ikke et feed)
+// ════════════════════════════════════════════════════════════════
+// Foldbare grupper, kun ÉN åben ad gangen pr. sektion → brugeren ser altid kun
+// 8-15 elementer, selv ved hundreder af guides. Arter = kvadratiske hero-kort
+// (indgang/udstilling); sorter = små listekort (fordybelse); teknik = separat
+// værktøjskasse. Søgning overtager og viser flade resultater (Planter/Teknik).
+
+type BiblioChip = 'alle' | 'arter' | 'sorter' | 'teknik'
+const FOLD_KEY = 'potalot:biblio-fold'
+
+function UdforskBiblioteket({
+  guides,
+  techniqueGuides,
   search,
   onSearch,
-  filter,
-  onFilter,
-  antal,
 }: {
+  guides: Guide[]
+  techniqueGuides: Guide[]
   search: string
   onSearch: (v: string) => void
-  filter: Filter
-  onFilter: (f: Filter) => void
-  antal: Record<Filter, number>
 }) {
-  const filterChips: { id: Filter; label: string }[] = [
+  const [chip, setChip] = useState<BiblioChip>('alle')
+  // Kun ÉN gruppe åben ad gangen pr. sektion; tilstanden huskes (localStorage).
+  const [openCat, setOpenCat] = useState<FoodCategory | null>('groentsag')
+  const [openArt, setOpenArt] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FOLD_KEY)
+      if (raw) {
+        const s = JSON.parse(raw)
+        if ('cat' in s) setOpenCat(s.cat)
+        if ('art' in s) setOpenArt(s.art)
+      }
+    } catch {
+      // ignorér
+    }
+  }, [])
+  useEffect(() => {
+    try {
+      localStorage.setItem(FOLD_KEY, JSON.stringify({ cat: openCat, art: openArt }))
+    } catch {
+      // ignorér
+    }
+  }, [openCat, openArt])
+
+  const arter = useMemo(() => guides.filter(g => levelOf(g) === 'species'), [guides])
+  const sorter = useMemo(() => guides.filter(g => levelOf(g) === 'variety'), [guides])
+
+  // ARTER grupperet i mad-kategorier (kurateret kort, ikke datamodel-felt).
+  const arterByCat = useMemo(() => {
+    const m = new Map<FoodCategory, Guide[]>()
+    for (const g of arter) {
+      const c = foodCategoryOf(g.plantName)
+      const arr = m.get(c) ?? []
+      arr.push(g)
+      m.set(c, arr)
+    }
+    for (const arr of m.values()) {
+      arr.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
+    }
+    return m
+  }, [arter])
+
+  // SORTER grupperet pr. art (plantName) — arten er indgangen, sorterne dybden.
+  const sorterByArt = useMemo(() => {
+    const m = new Map<string, Guide[]>()
+    for (const g of sorter) {
+      const arr = m.get(g.plantName) ?? []
+      arr.push(g)
+      m.set(g.plantName, arr)
+    }
+    for (const arr of m.values()) {
+      arr.sort((a, b) => (a.variety ?? '').localeCompare(b.variety ?? '', 'da'))
+    }
+    return m
+  }, [sorter])
+  const artOrder = useMemo(
+    () => [...sorterByArt.keys()].sort((a, b) => a.localeCompare(b, 'da')),
+    [sorterByArt],
+  )
+
+  const q = search.trim().toLowerCase()
+  const searching = q.length > 0
+  const matches = (g: Guide) =>
+    g.plantName.toLowerCase().includes(q) ||
+    (g.variety?.toLowerCase().includes(q) ?? false) ||
+    (g.latinName?.toLowerCase().includes(q) ?? false) ||
+    g.summary.toLowerCase().includes(q) ||
+    g.tags.some(t => t.toLowerCase().includes(q))
+
+  const planteHits = useMemo(
+    () => (searching ? guides.filter(matches) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searching, guides, q],
+  )
+  const teknikHits = useMemo(
+    () => (searching ? techniqueGuides.filter(matches) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searching, techniqueGuides, q],
+  )
+
+  const chips: { id: BiblioChip; label: string }[] = [
     { id: 'alle', label: 'Alle' },
-    { id: 'species', label: 'Artsguides' },
-    { id: 'variety', label: 'Sortsguides' },
+    { id: 'arter', label: 'Arter' },
+    { id: 'sorter', label: 'Sorter' },
+    ...(techniqueGuides.length > 0
+      ? [{ id: 'teknik' as const, label: 'Teknik' }]
+      : []),
   ]
+
+  const visArter = chip === 'alle' || chip === 'arter'
+  const visSorter = chip === 'alle' || chip === 'sorter'
+  const visTeknik = (chip === 'alle' || chip === 'teknik') && techniqueGuides.length > 0
+
+  const toggleExpanded = (key: string) =>
+    setExpanded(e => ({ ...e, [key]: !e[key] }))
+
   return (
-    <section className="relative pt-6">
-      <div
-        aria-hidden
-        className="absolute left-10 right-10 top-0 h-px bg-[#2D2A24]/10"
-      />
-      {/* Nederste søgning = det fulde bibliotek: egen sektionstitel + filtrering.
-          Adskiller sig fra quick-searchen øverst (der kun er label + input). */}
-      <p
-        className="text-center"
-        style={{
-          fontFamily: sans,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.55)',
-          margin: '0 0 6px',
-        }}
-      >
-        Alle guides
-      </p>
-      <p
-        className="mb-3 text-center"
-        style={{
-          fontFamily: serif,
-          fontStyle: 'italic',
-          fontSize: 18,
-          color: 'rgba(36,48,31,0.56)',
-          marginTop: 0,
-        }}
-      >
-        Find den plante, du står med.
-      </p>
-      <SearchField
-        value={search}
-        onChange={onSearch}
-        placeholder="Søg plante, sort eller problem"
-      />
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {filterChips.map(c => {
-          const active = filter === c.id
-          return (
+    <div>
+      <Eyebrow>Udforsk guidebiblioteket</Eyebrow>
+      <div className="mt-3">
+        <SearchField value={search} onChange={onSearch} placeholder="Søg i biblioteket" />
+      </div>
+
+      {!searching && (
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {chips.map(c => (
             <button
               key={c.id}
               type="button"
-              onClick={() => onFilter(c.id)}
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 650,
-                padding: '6px 10px',
-                borderRadius: 999,
-                background: active ? 'rgba(36,48,31,0.88)' : 'rgba(244,240,229,0.35)',
-                color: active ? '#F6F3EB' : 'rgba(36,48,31,0.55)',
-                border: active ? '1px solid rgba(36,48,31,0.88)' : '1px solid rgba(36,48,31,0.10)',
-              }}
+              onClick={() => setChip(c.id)}
+              style={chipStyle(chip === c.id)}
             >
               {c.label}
-              <span style={{ marginLeft: 6, opacity: 0.66 }}>
-                {antal[c.id]}
-              </span>
             </button>
-          )
-        })}
+          ))}
+        </div>
+      )}
+
+      {searching ? (
+        planteHits.length + teknikHits.length === 0 ? (
+          <div className="mt-6">
+            <EmptyNote text="Ingen guide matcher. Prøv et andet ord." />
+          </div>
+        ) : (
+          <div className="mt-5 space-y-6">
+            {planteHits.length > 0 && (
+              <div>
+                <SectionLabel>Planter</SectionLabel>
+                <div className="mt-3 space-y-2">
+                  {planteHits.map(g => <BiblioRow key={g.id} guide={g} />)}
+                </div>
+              </div>
+            )}
+            {teknikHits.length > 0 && (
+              <div>
+                <SectionLabel tone="teknik">Teknik</SectionLabel>
+                <div className="mt-3 space-y-2">
+                  {teknikHits.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      ) : (
+        <div className="mt-6 space-y-8">
+          {/* 🌱 PLANTEGUIDER — arter i mad-kategorier, hero-kort */}
+          {visArter && (
+            <div>
+              <SectionLabel>Planteguider</SectionLabel>
+              <div className="mt-3 space-y-2">
+                {FOOD_CATEGORY_ORDER.filter(
+                  c => (arterByCat.get(c)?.length ?? 0) > 0,
+                ).map(c => {
+                  const items = arterByCat.get(c)!
+                  const open = openCat === c
+                  const key = 'cat:' + c
+                  const showAll = !!expanded[key]
+                  const shown = showAll ? items : items.slice(0, 2)
+                  return (
+                    <GroupBlock
+                      key={c}
+                      label={FOOD_CATEGORY_LABEL[c]}
+                      count={items.length}
+                      open={open}
+                      onToggle={() => setOpenCat(open ? null : c)}
+                    >
+                      <div className="mt-3 grid grid-cols-2 gap-3">
+                        {shown.map((g, i) => (
+                          <ArtHeroCard key={g.id} guide={g} index={i} />
+                        ))}
+                      </div>
+                      {items.length > 2 && (
+                        <VisAlleKnap onClick={() => toggleExpanded(key)}>
+                          {showAll
+                            ? 'Vis færre'
+                            : `Vis alle ${FOOD_CATEGORY_LABEL[c].toLowerCase()} (${items.length})`}
+                        </VisAlleKnap>
+                      )}
+                    </GroupBlock>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 🌿 SORTSGUIDER — sorter pr. art, små listekort */}
+          {visSorter && artOrder.length > 0 && (
+            <div>
+              <SectionLabel>Sortsguider</SectionLabel>
+              <div className="mt-3 space-y-2">
+                {artOrder.map(art => {
+                  const items = sorterByArt.get(art)!
+                  const open = openArt === art
+                  const key = 'art:' + art
+                  const showAll = !!expanded[key]
+                  const shown = showAll ? items : items.slice(0, 5)
+                  return (
+                    <GroupBlock
+                      key={art}
+                      label={art}
+                      count={items.length}
+                      open={open}
+                      onToggle={() => setOpenArt(open ? null : art)}
+                    >
+                      <div className="mt-2 space-y-2">
+                        {shown.map(g => <BiblioRow key={g.id} guide={g} />)}
+                      </div>
+                      {items.length > 5 && (
+                        <VisAlleKnap onClick={() => toggleExpanded(key)}>
+                          {showAll
+                            ? 'Vis færre'
+                            : `Se alle ${art.toLowerCase()} (${items.length})`}
+                        </VisAlleKnap>
+                      )}
+                    </GroupBlock>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 🛠 TEKNIKGUIDER — egen værktøjskasse, kun når de findes */}
+          {visTeknik && (
+            <div>
+              <SectionLabel tone="teknik">Teknikguider</SectionLabel>
+              <div className="mt-3 space-y-2">
+                {techniqueGuides.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function chipStyle(active: boolean) {
+  return {
+    fontFamily: sans,
+    fontSize: 12,
+    fontWeight: 650,
+    padding: '7px 14px',
+    borderRadius: 999,
+    background: active ? 'rgba(36,48,31,0.9)' : 'rgba(244,240,229,0.55)',
+    color: active ? '#F6F3EB' : 'rgba(36,48,31,0.62)',
+    border: active
+      ? '1px solid rgba(36,48,31,0.9)'
+      : '1px solid rgba(36,48,31,0.12)',
+  } as const
+}
+
+function SectionLabel({
+  children,
+  tone,
+}: {
+  children: ReactNode
+  tone?: 'teknik'
+}) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: '0.16em',
+        textTransform: 'uppercase',
+        color: tone === 'teknik' ? 'rgba(60,54,44,0.72)' : 'rgba(36,48,31,0.62)',
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+/** Foldbar gruppe: header (chevron + navn + antal) + indhold når åben. */
+function GroupBlock({
+  label,
+  count,
+  open,
+  onToggle,
+  children,
+}: {
+  label: string
+  count: number
+  open: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  return (
+    <div
+      className="overflow-hidden rounded-[16px] border transition-colors"
+      style={{
+        borderColor: open ? 'rgba(45,42,36,0.14)' : 'rgba(45,42,36,0.09)',
+        background: open ? 'rgba(244,240,229,0.55)' : 'transparent',
+      }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center gap-2.5 px-3.5 py-3 text-left"
+      >
+        <ChevronRight
+          size={16}
+          strokeWidth={2.25}
+          className="shrink-0 transition-transform duration-200"
+          style={{
+            color: 'rgba(36,48,31,0.42)',
+            transform: open ? 'rotate(90deg)' : 'none',
+          }}
+        />
+        <span
+          className="flex-1 truncate"
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 17,
+            letterSpacing: '-0.01em',
+            color: '#242019',
+          }}
+        >
+          {label}
+        </span>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: 'rgba(36,48,31,0.42)',
+          }}
+        >
+          {count}
+        </span>
+      </button>
+      {open && <div className="px-3.5 pb-4">{children}</div>}
+    </div>
+  )
+}
+
+/** Arts-hero-kort i biblioteket — genbruger den kvadratiske form. */
+function ArtHeroCard({ guide, index }: { guide: Guide; index: number }) {
+  const { src } = resolvePotalotImage({
+    guideId: guide.id,
+    speciesSlug: guide.id,
+    varietySlug: null,
+    role: 'species-hero',
+    preferredSrc: guide.primaryImageId,
+  })
+  return (
+    <TopicSquareCard
+      index={index}
+      href={`/guides/${guide.id}`}
+      imageUrl={src}
+      navn={guide.pluralName ?? guide.plantName}
+    />
+  )
+}
+
+/** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
+function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
+  const isVar = guide.guideLevel === 'variety' || !!guide.variety
+  const { src } = resolvePotalotImage({
+    guideId: guide.id,
+    speciesSlug: isVar ? guide.parentGuideId : guide.id,
+    varietySlug: isVar ? guide.id : null,
+    role: isVar ? 'variety-hero' : 'species-hero',
+    preferredSrc: guide.primaryImageId,
+  })
+  const hasPhoto = !!guide.primaryImageId
+  const titel = guide.variety ?? guide.plantName
+  return (
+    <Link
+      href={`/guides/${guide.id}`}
+      className="group flex items-center overflow-hidden rounded-[13px] border transition-colors hover:border-[rgba(86,111,60,0.28)]"
+      style={{
+        height: 58,
+        background: teknik ? 'rgba(58,54,44,0.055)' : 'rgba(244,240,229,0.96)',
+        borderColor: 'rgba(45,42,36,0.09)',
+        textDecoration: 'none',
+        color: 'inherit',
+      }}
+    >
+      <div className="relative h-full w-[58px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+        {hasPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              background:
+                'radial-gradient(120% 120% at 30% 20%, #F1ECDC 0%, #E4E0CE 100%)',
+            }}
+          >
+            <Leaf
+              size={20}
+              strokeWidth={1.5}
+              style={{ color: 'rgba(86,111,60,0.32)', transform: 'rotate(-12deg)' }}
+            />
+          </div>
+        )}
       </div>
-    </section>
+      <p
+        className="min-w-0 flex-1 truncate px-3"
+        style={{
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 16.5,
+          letterSpacing: '-0.01em',
+          color: '#242019',
+          margin: 0,
+        }}
+      >
+        {titel}
+      </p>
+      <ChevronRight
+        size={16}
+        strokeWidth={2}
+        className="mr-3 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(36,48,31,0.3)' }}
+      />
+    </Link>
+  )
+}
+
+/** "Vis alle …"-genvej under en åben gruppe. */
+function VisAlleKnap({
+  children,
+  onClick,
+}: {
+  children: ReactNode
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="mt-3 inline-flex items-center gap-1"
+      style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: '#3D5A26' }}
+    >
+      {children}
+      <ArrowRight size={14} strokeWidth={2} />
+    </button>
+  )
+}
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color: 'rgba(36,48,31,0.72)',
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
   )
 }
 
