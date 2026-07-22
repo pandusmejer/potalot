@@ -24,6 +24,7 @@ import { GuideNote } from '@/components/guides/guide-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
+import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
 import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
@@ -381,6 +382,16 @@ export async function GuideArticle({
           </div>
         )}
       </header>
+
+      {/* Lille "Relateret"-genvej højt på artsguiden (kun species): 2-3 sorter
+          → "Se alle" scroller til Sortsvarianter-sektionen, + Spørg gartneren.
+          Additivt — flytter/ombygger INTET af den låste artsguide. */}
+      {isSpecies && (
+        <ArtsguideRelateret
+          plantName={effective.plantName}
+          varieties={sortsvarianter}
+        />
+      )}
 
       {parent && (
         <>
