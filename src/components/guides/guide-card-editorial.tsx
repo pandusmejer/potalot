@@ -211,36 +211,38 @@ export function GuideCardEditorial({
             {title}
           </h3>
 
-          {guide.latinName && (
-            <p
-              style={{
-                fontFamily: serif,
-                fontStyle: 'italic',
-                fontSize: 13,
-                fontWeight: 400,
-                color: '#2D2A24',
-                opacity: 0.5,
-                margin: 0,
-                marginTop: 3,
-              }}
-            >
-              {guide.latinName}
-            </p>
-          )}
-
-          {sortCount != null && sortCount > 0 && (
-            <p
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                color: '#7F8F6A',
-                margin: 0,
-                marginTop: 6,
-              }}
-            >
-              {sortCount} {sortCount === 1 ? 'sort' : 'sorter'}
+          {/* Meta-billedtekst på ÉN linje: latin (kursiv) • N sorter (olivengrøn,
+              diskret). Sparer en linje pr. hero og læses i ét blik. */}
+          {(guide.latinName || (sortCount != null && sortCount > 0)) && (
+            <p style={{ margin: 0, marginTop: 3, lineHeight: 1.3 }}>
+              {guide.latinName && (
+                <span
+                  style={{
+                    fontFamily: serif,
+                    fontStyle: 'italic',
+                    fontSize: 13,
+                    fontWeight: 400,
+                    color: 'rgba(45,42,36,0.5)',
+                  }}
+                >
+                  {guide.latinName}
+                </span>
+              )}
+              {guide.latinName && sortCount != null && sortCount > 0 && (
+                <span style={{ color: '#7F8F6A', margin: '0 6px' }}>•</span>
+              )}
+              {sortCount != null && sortCount > 0 && (
+                <span
+                  style={{
+                    fontFamily: sans,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: '#7F8F6A',
+                  }}
+                >
+                  {sortCount} {sortCount === 1 ? 'sort' : 'sorter'}
+                </span>
+              )}
             </p>
           )}
 
