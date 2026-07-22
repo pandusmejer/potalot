@@ -148,7 +148,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/aert.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/peas/grow-your-own"
     ],
@@ -1135,7 +1135,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/jordbaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/strawberries/grow-your-own",
       "https://www.rhs.org.uk/advice/grow-your-own/features/fascinating-facts-strawberries",
@@ -1296,7 +1296,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kaal.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/cabbages/grow-your-own",
       "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
@@ -1431,7 +1431,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/majs.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/sweetcorn/grow-your-own",
       "https://www.rhs.org.uk/plants/105543/zea-mays/details"
@@ -1794,7 +1794,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/radise.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
       "https://www.johnnyseeds.com/growers-library/vegetables/radishes/radishes-key-growing-information.html",
@@ -1943,7 +1943,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/salat.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own",
       "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own",
