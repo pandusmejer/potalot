@@ -717,9 +717,9 @@ function UdforskBiblioteket({
   onSearch: (v: string) => void
 }) {
   const [chip, setChip] = useState<BiblioChip>('alle')
-  // Kun ÉN gruppe åben ad gangen pr. niveau; tilstanden huskes (localStorage).
+  // Kun ÉN kategori åben ad gangen; tilstanden huskes (localStorage). Arter er
+  // rene links til artsguiden (ingen fold-tilstand mere).
   const [openCat, setOpenCat] = useState<LibraryCategory | null>('groentsager')
-  const [openArt, setOpenArt] = useState<string | null>(null)
 
   useEffect(() => {
     try {
@@ -727,7 +727,6 @@ function UdforskBiblioteket({
       if (raw) {
         const s = JSON.parse(raw)
         if ('cat' in s) setOpenCat(s.cat)
-        if ('art' in s) setOpenArt(s.art)
       }
     } catch {
       // ignorér
@@ -735,11 +734,11 @@ function UdforskBiblioteket({
   }, [])
   useEffect(() => {
     try {
-      localStorage.setItem(FOLD_KEY, JSON.stringify({ cat: openCat, art: openArt }))
+      localStorage.setItem(FOLD_KEY, JSON.stringify({ cat: openCat }))
     } catch {
       // ignorér
     }
-  }, [openCat, openArt])
+  }, [openCat])
 
   // ── Byg matrixen: kategori → art → sort ──────────────────────────
   const matrix = useMemo(() => {
@@ -903,16 +902,9 @@ function UdforskBiblioteket({
 
                           {/* Alle arter — komplet alfabetisk liste (inkl. fremhævede) */}
                           <SubLabel>Alle arter</SubLabel>
-                          <div className="mt-2 space-y-1.5">
+                          <div className="mt-2 space-y-0.5">
                             {arts.map(a => (
-                              <ArtNode
-                                key={a.plantName}
-                                art={a}
-                                open={openArt === a.plantName}
-                                onToggle={() =>
-                                  setOpenArt(openArt === a.plantName ? null : a.plantName)
-                                }
-                              />
+                              <ArtNode key={a.plantName} art={a} />
                             ))}
                           </div>
                         </>
@@ -957,56 +949,33 @@ function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
 }
 
 /**
- * Art-node i "Alle arter"-listen. Klik folder ud til artsguiden + artens
- * sorter (her samles art og sort). Har arten ingen sorter → direkte link.
+ * Art-node i "Alle arter"-listen. ÉN destination: klik åbner altid artens
+ * artsguide (samme sted som hero + søgning). Sorter/teknik bor inde på
+ * artsguiden — biblioteket FINDER kun arten. Viser sort-tal som hint.
  */
-function ArtNode({
-  art,
-  open,
-  onToggle,
-}: {
-  art: ArtNodeData
-  open: boolean
-  onToggle: () => void
-}) {
-  const hasSorter = art.varieties.length > 0
-
-  // Ingen sorter → ingen grund til at folde; direkte link til artsguiden.
-  if (!hasSorter && art.hero) {
-    return <BiblioRow guide={art.hero} />
-  }
-
+function ArtNode({ art }: { art: ArtNodeData }) {
+  const g = art.hero ?? art.varieties[0]
+  if (!g) return null
+  const n = art.varieties.length
   return (
-    <div
-      className="overflow-hidden rounded-[12px]"
-      style={{ background: open ? 'rgba(255,255,255,0.5)' : 'transparent' }}
+    <Link
+      href={`/guides/${g.id}`}
+      className="group flex items-center gap-2 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-white/50"
+      style={{ textDecoration: 'none', color: 'inherit' }}
     >
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full items-center gap-2 px-2.5 py-2 text-left"
+      <span
+        className="min-w-0 flex-1 truncate"
+        style={{
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 16,
+          letterSpacing: '-0.01em',
+          color: '#242019',
+        }}
       >
-        <ChevronRight
-          size={15}
-          strokeWidth={2.25}
-          className="shrink-0 transition-transform duration-200"
-          style={{
-            color: 'rgba(36,48,31,0.4)',
-            transform: open ? 'rotate(90deg)' : 'none',
-          }}
-        />
-        <span
-          className="flex-1 truncate"
-          style={{
-            fontFamily: plex,
-            fontWeight: 600,
-            fontSize: 16,
-            letterSpacing: '-0.01em',
-            color: '#242019',
-          }}
-        >
-          {art.plantName}
-        </span>
+        {art.plantName}
+      </span>
+      {n > 0 && (
         <span
           style={{
             fontFamily: sans,
@@ -1015,28 +984,16 @@ function ArtNode({
             color: 'rgba(36,48,31,0.42)',
           }}
         >
-          {art.varieties.length} {art.varieties.length === 1 ? 'sort' : 'sorter'}
+          {n} {n === 1 ? 'sort' : 'sorter'}
         </span>
-      </button>
-      {open && (
-        <div className="space-y-2 pb-2.5 pl-3.5 pr-1.5">
-          {art.hero && (
-            <>
-              <SubLabel>Artsguide</SubLabel>
-              <BiblioRow guide={art.hero} />
-            </>
-          )}
-          {hasSorter && (
-            <>
-              <SubLabel>Sorter</SubLabel>
-              <div className="space-y-2">
-                {art.varieties.map(v => <BiblioRow key={v.id} guide={v} />)}
-              </div>
-            </>
-          )}
-        </div>
       )}
-    </div>
+      <ChevronRight
+        size={16}
+        strokeWidth={2}
+        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(36,48,31,0.3)' }}
+      />
+    </Link>
   )
 }
 
