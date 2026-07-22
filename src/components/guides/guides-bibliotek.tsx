@@ -717,9 +717,9 @@ function UdforskBiblioteket({
   onSearch: (v: string) => void
 }) {
   const [chip, setChip] = useState<BiblioChip>('alle')
-  // Kun ÉN kategori åben ad gangen; tilstanden huskes (localStorage). Arter er
-  // rene links til artsguiden (ingen fold-tilstand mere).
-  const [openCat, setOpenCat] = useState<LibraryCategory | null>('groentsager')
+  // Ingen kategori åben som standard → brugeren ser HELE kategori-strukturen
+  // først, åbner så én (struktur før indhold). Kun én åben ad gangen; huskes.
+  const [openCat, setOpenCat] = useState<LibraryCategory | null>(null)
 
   useEffect(() => {
     try {
@@ -851,11 +851,25 @@ function UdforskBiblioteket({
         )
       ) : (
         <div className="mt-6 space-y-8">
-          {/* 🌱 PLANTEGUIDES — matrix: kategori → art → sort */}
+          {/* 🌱 PLANTEKATEGORIER — matrix: kategori → art → sort. Kategorierne
+              annoncerer sig selv som en liste FØRST (struktur før indhold). */}
           {visPlanter && (
             <div>
-              <SectionLabel>Planteguides</SectionLabel>
-              <div className="mt-3 space-y-2">
+              <SectionLabel>Plantekategorier</SectionLabel>
+              <p
+                style={{
+                  fontFamily: sans,
+                  fontSize: 12.5,
+                  fontWeight: 500,
+                  lineHeight: 1.45,
+                  color: 'rgba(36,48,31,0.55)',
+                  margin: '6px 0 0',
+                }}
+              >
+                Vælg en plantekategori. Inde i hver kategori finder du plantearter
+                og deres sorter.
+              </p>
+              <div className="mt-4 space-y-2">
                 {/* ALLE 8 kategorier vises — også de tomme (Anna 22/7), så hele
                     taksonomien er synlig. Tom kategori → antal 0 + stille note. */}
                 {LIBRARY_CATEGORY_ORDER.map(c => {
@@ -870,6 +884,7 @@ function UdforskBiblioteket({
                       key={c}
                       label={LIBRARY_CATEGORY_LABEL[c]}
                       count={arts.length}
+                      unit={arts.length === 1 ? 'art' : 'arter'}
                       open={open}
                       onToggle={() => setOpenCat(open ? null : c)}
                     >
@@ -1118,12 +1133,14 @@ function SectionLabel({
 function GroupBlock({
   label,
   count,
+  unit,
   open,
   onToggle,
   children,
 }: {
   label: string
   count: number
+  unit?: string
   open: boolean
   onToggle: () => void
   children: ReactNode
@@ -1171,6 +1188,7 @@ function GroupBlock({
           }}
         >
           {count}
+          {unit ? ` ${unit}` : ''}
         </span>
       </button>
       {open && <div className="px-3.5 pb-4">{children}</div>}
