@@ -806,7 +806,10 @@ function UdforskBiblioteket({
         <SearchField value={search} onChange={onSearch} placeholder="Søg i biblioteket" />
       </div>
 
-      {!searching && (
+      {/* Chips vises kun når der ER en reel alternativ visning (teknikguides).
+          Indtil da ville "Alle" og "Planter" vise næsten det samme — dekorativ
+          beslutningstræthed. Med teknik: Alle · Planter · Teknik. */}
+      {!searching && techniqueGuides.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {chips.map(c => (
             <button
@@ -885,7 +888,24 @@ function UdforskBiblioteket({
                         </p>
                       ) : (
                         <>
-                          {/* ⭐ Fremhævet — redaktionelle anbefalinger (store kort) */}
+                          {/* Kategori-intro — forklarer overgangen bibliotek →
+                              kategori → arter uden tutorial/modal. */}
+                          <p
+                            className="mt-0.5"
+                            style={{
+                              fontFamily: sans,
+                              fontSize: 12.5,
+                              fontWeight: 500,
+                              lineHeight: 1.45,
+                              color: 'rgba(36,48,31,0.55)',
+                              margin: '0 0 14px',
+                            }}
+                          >
+                            Find arten først. Hver artsguide samler dyrkning,
+                            sorter og relateret hjælp.
+                          </p>
+
+                          {/* Fremhævede arter — redaktionelle anbefalinger (store kort) */}
                           <FremhaevetLabel />
                           <div className="mt-2 space-y-7">
                             {fremhaevet.map((a, i) => (
@@ -902,7 +922,19 @@ function UdforskBiblioteket({
 
                           {/* Alle arter — komplet alfabetisk liste (inkl. fremhævede) */}
                           <SubLabel>Alle arter</SubLabel>
-                          <div className="mt-2 space-y-0.5">
+                          <p
+                            style={{
+                              fontFamily: sans,
+                              fontSize: 12,
+                              fontWeight: 500,
+                              lineHeight: 1.4,
+                              color: 'rgba(36,48,31,0.5)',
+                              margin: '3px 0 0',
+                            }}
+                          >
+                            Åbn en art for at se artsguiden og dens sorter.
+                          </p>
+                          <div className="mt-2.5 space-y-0.5">
                             {arts.map(a => (
                               <ArtNode key={a.plantName} art={a} />
                             ))}
@@ -944,6 +976,7 @@ function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
       guide={g}
       kind="potalot"
       offset={index % 2 === 1 ? 'right' : 'none'}
+      sortCount={art.varieties.length}
     />
   )
 }
@@ -1034,7 +1067,7 @@ function FremhaevetLabel() {
           color: 'rgba(36,48,31,0.5)',
         }}
       >
-        Fremhævet
+        Fremhævede arter
       </span>
     </div>
   )

@@ -57,6 +57,8 @@ interface Props {
   aiHelpText?: boolean
   size?: 'standard' | 'compact'
   offset?: 'none' | 'left' | 'right'
+  /** Diskret "N sorter"-linje under titlen (artsguide-hero i biblioteket). */
+  sortCount?: number | null
 }
 
 export function GuideCardEditorial({
@@ -67,6 +69,7 @@ export function GuideCardEditorial({
   aiHelpText = false,
   size = 'standard',
   offset = 'none',
+  sortCount = null,
 }: Props) {
   const isCompact = size === 'compact'
   const isVariety = guide.guideLevel === 'variety' || !!guide.variety
@@ -222,6 +225,22 @@ export function GuideCardEditorial({
               }}
             >
               {guide.latinName}
+            </p>
+          )}
+
+          {sortCount != null && sortCount > 0 && (
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: 11.5,
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                color: '#7F8F6A',
+                margin: 0,
+                marginTop: 6,
+              }}
+            >
+              {sortCount} {sortCount === 1 ? 'sort' : 'sorter'}
             </p>
           )}
 
