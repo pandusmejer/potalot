@@ -24,6 +24,7 @@ import { GuideNote } from '@/components/guides/guide-note'
 import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
+import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
 import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
@@ -382,6 +383,16 @@ export async function GuideArticle({
         )}
       </header>
 
+      {/* Lille "Relateret"-genvej højt på artsguiden (kun species): 2-3 sorter
+          → "Se alle" scroller til Sortsvarianter-sektionen, + Spørg gartneren.
+          Additivt — flytter/ombygger INTET af den låste artsguide. */}
+      {isSpecies && (
+        <ArtsguideRelateret
+          plantName={effective.plantName}
+          varieties={sortsvarianter}
+        />
+      )}
+
       {parent && (
         <>
           {debug && <DebugBlock name="ArtsguideLink" />}
@@ -400,7 +411,7 @@ export async function GuideArticle({
                 margin: 0,
               }}
             >
-              Artsguide
+              Bygger på
             </p>
             <h2
               style={{
@@ -413,8 +424,7 @@ export async function GuideArticle({
                 margin: '8px 0 0',
               }}
             >
-              {effective.variety ?? effective.plantName} bygger på{' '}
-              {parent.plantName.toLowerCase()}guiden
+              Start med {parent.plantName.toLowerCase()}guiden
             </h2>
             <p
               style={{

@@ -1,25 +1,37 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
-import { Search, ArrowRight, Sprout } from 'lucide-react'
+import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
+import {
+  libraryCategoryOf,
+  LIBRARY_CATEGORY_ORDER,
+  LIBRARY_CATEGORY_LABEL,
+  type LibraryCategory,
+} from '@/data/guide-library-categories'
 import { GuideCardEditorial } from './guide-card-editorial'
 import { SpoergGartneren } from './spoerg-gartneren'
-import { KortForklaret } from './kort-forklaret'
 import { layeredGuideSampleData } from './layered-guide'
+import { KortForklaret } from './kort-forklaret'
 import { guideKindFor } from './trust-badge'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import {
+  POPULAERE_EMNER,
+  type PopulaertEmne,
+} from '@/data/guides-demo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+// Display-font på Guides = IBM Plex Sans Condensed (feltmanual/dyrkningsarkiv,
+// ikke romantisk herbarium). Kun store overskrifter + arts-/kort-titler.
 const plex = 'var(--font-plex-condensed), sans-serif'
 
-// Aktiv filterakse = guideLevel (art vs. sort). Mad-kategorier (grøntsag/blomst
-// /frugt/urt) hører til en senere datamodel-opgave — de kan ikke udledes af de
-// plantnings-baserede primaryCategoryId (fro/loeg/knolde/stauder).
-type Filter = 'alle' | 'species' | 'variety'
-
+/**
+ * Arts- vs sortsguide — samme regel som kortenes egen type-chip (guideLevel med
+ * variety-navn som fallback), så filtre og kort-mærkater altid er enige.
+ */
 function levelOf(g: Guide): 'species' | 'variety' {
   return g.guideLevel === 'variety' || g.variety ? 'variety' : 'species'
 }
@@ -28,14 +40,18 @@ interface Props {
   guides: Guide[]
   aiGuideIds: ReadonlySet<string> | null
   parentPlantNameById: Map<string, string>
-  /** Guide-id'er der matcher en sort/art i brugerens frøbank → "I din have". */
   iFroebankIds: ReadonlySet<string>
+  /**
+   * Atmospheric makro-billede til EditorialBleedCard-broen mellem
+   * "Begynd her" og "Guides i felten". Resolved server-side i
+   * /guides/page.tsx via resolvePotalotMacro. Hvis null/undefined
+   * skjules broen helt (ingen død blok uden billede).
+   */
   bridgeMacroSrc?: string | null
   bridgeMacroAlt?: string | null
   /**
-   * Teknik-guides (opbinding, forkultivering, kompost …). BETINGET sektion:
-   * rendres kun når der findes mindst én. Tom nu → sektionen vises ikke, og
-   * layout/spacing ændres ikke. Klar til vækst uden at belaste forsiden.
+   * Teknik-guides (forkultivering, opbinding, vanding …). Egen værktøjskasse
+   * nederst i biblioteket — vises KUN når der findes mindst én. Tom nu → skjult.
    */
   techniqueGuides?: Guide[]
 }
@@ -47,17 +63,51 @@ export function GuidesBibliotek({
   techniqueGuides = [],
 }: Props) {
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<Filter>('alle')
+  const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
   const [visAlleMine, setVisAlleMine] = useState(false)
+  // Senest læste guide-id'er fra localStorage (client-only → tom ved SSR,
+  // fyldes efter mount). Ingen backend.
+  const [recent, setRecent] = useState<RecentRead[]>([])
+  useEffect(() => {
+    setRecent(getRecentlyRead())
+  }, [])
 
-  const q = search.trim().toLowerCase()
-  const searching = q.length > 0
+  // Delt af BÅDE quick-search (øverst) og biblioteks-søgning (nederst), så de
+  // to inputs styrer præcis samme query. At skrive rydder et aktivt emne-filter.
+  function handleSearch(v: string) {
+    setSearch(v)
+    setAktivtEmne(null)
+  }
+
+  function vaelgEmne(e: PopulaertEmne) {
+    setAktivtEmne(curr => (curr?.matchPlantName === e.matchPlantName ? null : e))
+    setSearch('')
+    if (typeof document !== 'undefined') {
+      requestAnimationFrame(() => {
+        document.getElementById('guides-i-felten')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      })
+    }
+  }
+
+  const effectiveSearch = aktivtEmne?.matchPlantName ?? search
+
+  const withKind = useMemo(() => {
+    return guides.map(g => ({
+      guide: g,
+      kind: guideKindFor(g, aiGuideIds),
+    }))
+  }, [guides, aiGuideIds])
 
   const byId = useMemo(() => new Map(guides.map(g => [g.id, g])), [guides])
 
   // ── I DIN HAVE ──────────────────────────────────────────────────
-  // Match frøbank → guide, og LØFT til artsniveau: har brugeren 5 tomatsorter,
-  // skal sektionen vise ÉN tomat-artsguide, ikke fem kort. Dedup på art.
+  // De store hero-kort trækkes fra brugerens frøbank/planter, så de er
+  // RELEVANTE (ikke redaktionelle default-emner). Match frøbank → guide og
+  // LØFT til artsniveau: har brugeren 5 tomatsorter, vises ÉN tomat-artsguide,
+  // ikke fem kort. Dedup på art. Kun 'potalot'-guides (kvalitetssikrede).
   const mineHave = useMemo(() => {
     const seen = new Set<string>()
     const out: Guide[] = []
@@ -65,9 +115,10 @@ export function GuidesBibliotek({
       const g = byId.get(id)
       if (!g) continue
       const isVar = g.guideLevel === 'variety' || !!g.variety
-      const speciesId = isVar && g.parentGuideId && byId.has(g.parentGuideId)
-        ? g.parentGuideId
-        : g.id
+      const speciesId =
+        isVar && g.parentGuideId && byId.has(g.parentGuideId)
+          ? g.parentGuideId
+          : g.id
       if (seen.has(speciesId)) continue
       const target = byId.get(speciesId)
       if (!target || guideKindFor(target, aiGuideIds) !== 'potalot') continue
@@ -77,363 +128,509 @@ export function GuidesBibliotek({
     return out.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
   }, [iFroebankIds, byId, aiGuideIds])
 
-  const mineShown = visAlleMine ? mineHave : mineHave.slice(0, 3)
+  // ── FORTSÆT DINE GUIDES ─────────────────────────────────────────
+  // De guides brugeren senest har åbnet (localStorage), senest først. Max 3.
+  // Kun guides der stadig findes i biblioteket. Tom → sektionen renderes ikke.
+  const fortsaet = useMemo(() => {
+    const out: { guide: Guide; at: number }[] = []
+    for (const r of recent) {
+      const g = byId.get(r.id)
+      if (!g) continue
+      out.push({ guide: g, at: r.at })
+      if (out.length >= 3) break
+    }
+    return out
+  }, [recent, byId])
 
-  // ── Bibliotek (kompakt grid) ────────────────────────────────────
-  const potalot = useMemo(
-    () => guides.filter(g => guideKindFor(g, aiGuideIds) === 'potalot'),
-    [guides, aiGuideIds],
+  // Hele det redaktionelle 'potalot'-lag (arter + sorter). Biblioteket nedenfor
+  // (UdforskBiblioteket) styrer selv chip-filtrering, gruppering og søgning.
+  const potalotAll = useMemo(
+    () => withKind.filter(x => x.kind === 'potalot').map(x => x.guide),
+    [withKind],
   )
 
-  const filtered = useMemo(() => {
-    return potalot
-      .filter(g => filter === 'alle' || levelOf(g) === filter)
-      .filter(g => {
-        if (!q) return true
-        return (
-          g.plantName.toLowerCase().includes(q) ||
-          (g.variety?.toLowerCase().includes(q) ?? false) ||
-          (g.latinName?.toLowerCase().includes(q) ?? false) ||
-          g.summary.toLowerCase().includes(q) ||
-          g.tags.some(t => t.toLowerCase().includes(q))
-        )
-      })
-      .sort((a, b) => {
-        if (a.guideLevel !== b.guideLevel) return a.guideLevel === 'species' ? -1 : 1
-        return a.plantName.localeCompare(b.plantName, 'da')
-      })
-  }, [potalot, filter, q])
-
-  const antal: Record<Filter, number> = {
-    alle: potalot.length,
-    species: potalot.filter(g => levelOf(g) === 'species').length,
-    variety: potalot.filter(g => levelOf(g) === 'variety').length,
-  }
-
-  // Pre-wired Spotlight-gruppering: søgeresultater kan opdeles i
-  // PLANTEGUIDER + TEKNIKGUIDER. Teknik-gruppen fyldes kun ved søgning og kun
-  // hvis der FINDES teknikguides (tom nu → gruppen renderes aldrig). Gruppe-
-  // labels vises kun når mere end én gruppe har indhold (ellers redundant med
-  // sektionsoverskriften). Klar til vækst uden tomme teknik-overskrifter.
-  const teknikResultater = useMemo(() => {
-    if (!searching) return []
-    return techniqueGuides.filter(
-      g =>
-        g.plantName.toLowerCase().includes(q) ||
-        (g.summary?.toLowerCase().includes(q) ?? false) ||
-        g.tags.some(t => t.toLowerCase().includes(q)),
-    )
-  }, [searching, techniqueGuides, q])
-
-  const resultGrupper = [
-    { label: 'Planteguider', guides: filtered },
-    { label: 'Teknikguider', guides: teknikResultater },
-  ].filter(g => g.guides.length > 0)
-  const visGruppeLabels = resultGrupper.length > 1
-
-  const filterChips: { id: Filter; label: string }[] = [
-    { id: 'alle', label: 'Alle' },
-    { id: 'species', label: 'Artsguides' },
-    { id: 'variety', label: 'Sortsguides' },
-  ]
-
   return (
-    <div className="space-y-9 sm:space-y-11">
-      {/* ── I DIN HAVE ──────────────────────────────────────────
-          Personlig forside: store editorial-kort for det brugeren dyrker.
-          Skjules helt ved aktiv søgning (så resultater kommer direkte frem)
-          og hvis der ingen matches er (ingen tom placeholder). */}
-      {!searching && mineHave.length > 0 && (
-        <section>
-          <Eyebrow>I din have</Eyebrow>
-          <Subtitle>Fortsæt med det, du allerede dyrker.</Subtitle>
-          <div className="mt-4 space-y-7">
-            {mineShown.map((g, i) => (
-              <GuideCardEditorial
-                key={g.id}
-                guide={g}
-                kind="potalot"
-                offset={i % 3 === 1 ? 'right' : i % 3 === 2 ? 'left' : 'none'}
-              />
-            ))}
-          </div>
-          {mineHave.length > 3 && (
-            <button
-              type="button"
-              onClick={() => setVisAlleMine(v => !v)}
-              className="group mt-5 inline-flex items-center gap-1.5"
-              style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 700, color: '#3D5A26' }}
-            >
-              {visAlleMine ? 'Vis færre' : `Se alle dine planteguider (${mineHave.length})`}
-              <ArrowRight
-                size={15}
-                strokeWidth={2}
-                className="transition-transform group-hover:translate-x-0.5"
-                style={{ transform: visAlleMine ? 'rotate(-90deg)' : 'none' }}
-              />
-            </button>
-          )}
-        </section>
+    <div className="space-y-8 sm:space-y-10">
+      {/* Hurtig quick-search øverst: brugeren der VED hvad de leder efter kan
+          søge med det samme uden at scrolle forbi hele udstillingen. Kun input,
+          ingen chips/tællere/filtre — det fulde bibliotek ligger nederst. Deler
+          samme search-state som biblioteks-søgningen. */}
+      <QuickSearch value={search} onChange={handleSearch} />
+
+      {/* Top-sektion: hvis brugeren HAR noget i frøbank/planter der matcher en
+          guide → personlig "I DIN HAVE" med store hero-kort. Ellers falder vi
+          tilbage til det redaktionelle "Et godt sted at starte". */}
+      {mineHave.length > 0 ? (
+        <IDinHave
+          guides={mineHave}
+          visAlle={visAlleMine}
+          onToggle={() => setVisAlleMine(v => !v)}
+        />
+      ) : (
+        <PopulaereEmner
+          emner={POPULAERE_EMNER}
+          aktivt={aktivtEmne}
+          onVaelg={vaelgEmne}
+        />
       )}
 
-      {/* ── UDFORSK BIBLIOTEKET ─────────────────────────────────
-          Søgning + chips + kompakt grid. Søgning/chips filtrerer HELE
-          biblioteket (ikke kun den personlige sektion). */}
+      {/* FORTSÆT DINE GUIDER — diskret genvej til det brugeren var i gang med.
+          Små mini-editorials (foto + navn + "fortsæt"), meget lavere end
+          hero-kortene. Renderes KUN når der er læste guides. */}
+      {fortsaet.length > 0 && <FortsaetDineGuider items={fortsaet} />}
+
+      {/* Lavmælt hjælpe-modul lige efter "Begynd her" — brugeren er stadig i
+          "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
+      <SpoergGartneren />
+
+      {/* UDFORSK GUIDEBIBLIOTEKET — her skifter siden karakter fra rolig
+          redaktionel indgang til effektivt ARKIV. Foldbare grupper (kun én åben
+          ad gangen) → brugeren ser altid kun 8-15 elementer, selv ved hundreder
+          af guides. Søgning overtager og viser flade resultater. */}
       <section id="guides-i-felten" className="scroll-mt-24">
-        <Eyebrow>Udforsk planteguider</Eyebrow>
-        <Subtitle>Find den plante, du står med.</Subtitle>
-
-        <div className="mt-4">
-          <SearchField
-            value={search}
-            onChange={setSearch}
-            placeholder="Søg plante, sort eller problem"
-          />
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {filterChips.map(c => {
-              const active = filter === c.id
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setFilter(c.id)}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: 11.5,
-                    fontWeight: 650,
-                    padding: '6px 11px',
-                    borderRadius: 999,
-                    background: active ? 'rgba(36,48,31,0.88)' : 'rgba(244,240,229,0.55)',
-                    color: active ? '#F6F3EB' : 'rgba(36,48,31,0.6)',
-                    border: active
-                      ? '1px solid rgba(36,48,31,0.88)'
-                      : '1px solid rgba(36,48,31,0.10)',
-                  }}
-                >
-                  {c.label}
-                  <span style={{ marginLeft: 6, opacity: 0.66 }}>{antal[c.id]}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {resultGrupper.length === 0 ? (
-          <div className="mt-6">
-            <EmptyNote
-              text={
-                searching
-                  ? 'Ingen guide matcher. Prøv et andet ord eller søg bredere.'
-                  : 'Når der er kvalitetssikrede guides klar, dukker de op her.'
-              }
-            />
-          </div>
-        ) : (
-          <div className="mt-4 space-y-6">
-            {resultGrupper.map(grp => (
-              <div key={grp.label}>
-                {visGruppeLabels && <GroupLabel>{grp.label}</GroupLabel>}
-                <div className="grid grid-cols-2 gap-3">
-                  {grp.guides.map(g => (
-                    <GuideCardCompact key={g.id} guide={g} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <UdforskBiblioteket
+          guides={potalotAll}
+          techniqueGuides={techniqueGuides}
+          search={effectiveSearch}
+          onSearch={handleSearch}
+        />
       </section>
 
-      {/* ── TEKNIKGUIDES ────────────────────────────────────────
-          BETINGET: kun når der findes mindst én. Ingen "kommer snart",
-          ingen tom placeholder. Aktiveres når data-laget findes. */}
-      {!searching && techniqueGuides.length > 0 && (
-        <section>
-          <Eyebrow>Teknikguides</Eyebrow>
-          <Subtitle>Konkrete opgaver — opbinding, forkultivering, vanding.</Subtitle>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {techniqueGuides.map(g => (
-              <GuideCardCompact key={g.id} guide={g} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Sekundære lær-mere-moduler (rolige, ingen kort-væg) ── */}
-      <div className="space-y-9 pt-2">
-        <SpoergGartneren />
-        <div className="pb-10">
-          <KortForklaret
-            title="Chili eller peberfrugt?"
-            teaser="To planter fra samme familie, men chili indeholder capsaicin."
-            columns={layeredGuideSampleData.fact.columns}
-          />
-        </div>
+      {/* Sekundært lær-mere-lag NEDERST — ekstra læring efter find-en-guide-
+          værktøjet, ikke en stopklods før søgningen. Bevidst nedtonet så den
+          ikke konkurrerer med søgningen. Ekstra bundluft så bottom-nav ikke
+          klemmer noten. */}
+      <div className="pb-10">
+        <KortForklaret
+          title="Chili eller peberfrugt?"
+          teaser="To planter fra samme familie, men chili indeholder capsaicin."
+          columns={layeredGuideSampleData.fact.columns}
+        />
       </div>
+
+      {/* Biblioteket viser kun det redaktionelle 'potalot'-lag. Egne
+          guider og AI-udkast åbnes fra frø/plante/notifikation, ikke her. */}
     </div>
   )
 }
 
-// ── Kompakt biblioteks-kort ─────────────────────────────────────
-// Samme creme/Plex-sprog som GuideCardEditorial, men lav og fast højde:
-// foto → arts/sort-label, navn, evt. latin, pil. INGEN summary (den gør
-// kortene høje igen). Guides uden foto får en creme-fallback i SAMME højde.
-function GuideCardCompact({ guide }: { guide: Guide }) {
-  const isVariety = guide.guideLevel === 'variety' || !!guide.variety
-  const { src: hero } = resolvePotalotImage({
-    guideId: guide.id,
-    speciesSlug: isVariety ? guide.parentGuideId : guide.id,
-    varietySlug: isVariety ? guide.id : null,
-    role: isVariety ? 'variety-hero' : 'species-hero',
-    preferredSrc: guide.primaryImageId,
-  })
-  const hasPhoto = !!guide.primaryImageId
-  const title = guide.variety ?? guide.plantName
-
-  return (
-    <Link
-      href={`/guides/${guide.id}`}
-      className="group block overflow-hidden rounded-[18px] border transition-transform duration-200 ease-out hover:-translate-y-0.5"
-      style={{
-        background: 'rgba(244,240,229,0.96)',
-        borderColor: 'rgba(45,42,36,0.09)',
-        textDecoration: 'none',
-        color: 'inherit',
-      }}
-    >
-      <div className="relative h-[104px] overflow-hidden bg-[#EAE6D8]">
-        {hasPhoto ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={hero}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Sprout size={26} strokeWidth={1.5} style={{ color: 'rgba(86,111,60,0.32)' }} />
-          </div>
-        )}
-        <span
-          className="absolute left-2.5 top-2.5 inline-flex items-center rounded-full"
+/**
+ * Kvadratisk foto-emnekort — DELT form mellem "Et godt sted at starte"
+ * (default-emner, filter-knap) og "I DIN HAVE" (brugerens planter, link til
+ * guiden). Formen er IDENTISK; kun indhold og klik-mål skifter (onClick vs href).
+ */
+function TopicSquareCard({
+  imageUrl,
+  navn,
+  byline,
+  index,
+  active = false,
+  href,
+  onClick,
+}: {
+  imageUrl: string
+  navn: string
+  byline?: string | null
+  index: number
+  active?: boolean
+  href?: string
+  onClick?: () => void
+}) {
+  const className = [
+    'group relative isolate block overflow-hidden text-left transition-transform duration-200 ease-out hover:-translate-y-0.5',
+    index % 2 === 0 ? 'translate-y-0' : 'translate-y-5',
+  ].join(' ')
+  const style = {
+    borderRadius: index % 2 === 0 ? 24 : 18,
+    aspectRatio: '4 / 3.35',
+    border: active
+      ? '1.5px solid rgba(61,90,38,0.75)'
+      : '1px solid rgba(45,42,36,0.10)',
+    background: '#F4F0E5',
+  }
+  const inner = (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={imageUrl}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(24,20,14,0.02) 20%, rgba(24,20,14,0.66) 100%)',
+        }}
+      />
+      <div className="absolute inset-x-0 bottom-0 p-3.5">
+        <h3
           style={{
-            fontFamily: sans,
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            padding: '3px 8px',
-            background: 'rgba(250,247,237,0.82)',
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            border: '1px solid rgba(86,111,60,0.14)',
-            color: '#4E6138',
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 'clamp(24px, 7.4cqw, 33px)',
+            lineHeight: 0.94,
+            color: '#FFFFFF',
+            margin: 0,
+            letterSpacing: '-0.01em',
+            textShadow: '0 2px 12px rgba(20,14,8,0.50)',
           }}
         >
-          {isVariety ? 'Sort' : 'Art'}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 px-3 py-2.5">
-        <div className="min-w-0 flex-1">
-          <h3
-            className="truncate"
+          {navn}
+        </h3>
+        {byline && (
+          <p
+            className="mt-1 line-clamp-1"
             style={{
-              fontFamily: plex,
+              fontFamily: sans,
+              fontSize: 11.5,
               fontWeight: 600,
-              fontSize: 18,
-              lineHeight: 1.05,
-              letterSpacing: '-0.01em',
-              color: '#242019',
+              color: 'rgba(255,255,255,0.88)',
               margin: 0,
             }}
           >
-            {title}
-          </h3>
-          {guide.latinName && (
-            <p
-              className="truncate"
+            {byline}
+          </p>
+        )}
+      </div>
+    </>
+  )
+  if (href) {
+    return (
+      <Link href={href} className={className} style={style}>
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <button type="button" onClick={onClick} className={className} style={style}>
+      {inner}
+    </button>
+  )
+}
+
+/**
+ * I DIN HAVE — personlig top-sektion. SAMME kvadratiske foto-kort som "Et godt
+ * sted at starte", men indholdet trækkes fra brugerens frøbank/planter (mineHave
+ * i parent) → relevante planter. Viser max 4; har brugeren flere, henvises
+ * resten via "Se alle dine planteguides (N)". Klik → plantens guide.
+ */
+function IDinHave({
+  guides,
+  visAlle,
+  onToggle,
+}: {
+  guides: Guide[]
+  visAlle: boolean
+  onToggle: () => void
+}) {
+  const shown = visAlle ? guides : guides.slice(0, 4)
+  return (
+    <section className="relative -mt-2">
+      <div className="relative z-10 mb-3">
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            // En tand mørkere end "Et godt sted at starte" (0.72 → 0.85): den
+            // personlige sektion vejer tungere.
+            color: 'rgba(36,48,31,0.85)',
+            margin: 0,
+          }}
+        >
+          I din have
+        </p>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: 'italic',
+            fontSize: 15.5,
+            lineHeight: 1.3,
+            color: 'rgba(36,48,31,0.58)',
+            margin: '5px 0 0',
+          }}
+        >
+          Fortsæt med det, du allerede dyrker.
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {shown.map((g, i) => {
+          const isVar = g.guideLevel === 'variety' || !!g.variety
+          const { src } = resolvePotalotImage({
+            guideId: g.id,
+            speciesSlug: isVar ? g.parentGuideId : g.id,
+            varietySlug: isVar ? g.id : null,
+            role: isVar ? 'variety-hero' : 'species-hero',
+            preferredSrc: g.primaryImageId,
+          })
+          return (
+            <TopicSquareCard
+              key={g.id}
+              index={i}
+              href={`/guides/${g.id}`}
+              imageUrl={src}
+              navn={g.pluralName ?? g.plantName}
+              byline={g.summary}
+            />
+          )
+        })}
+      </div>
+      {guides.length > 4 && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="group mt-8 inline-flex items-center gap-1.5"
+          style={{
+            fontFamily: sans,
+            fontSize: 13.5,
+            fontWeight: 700,
+            color: '#3D5A26',
+          }}
+        >
+          {visAlle ? 'Vis færre' : `Se alle dine planteguides (${guides.length})`}
+          <ArrowRight
+            size={15}
+            strokeWidth={2}
+            className="transition-transform group-hover:translate-x-0.5"
+            style={{ transform: visAlle ? 'rotate(-90deg)' : 'none' }}
+          />
+        </button>
+      )}
+    </section>
+  )
+}
+
+/**
+ * Ægte hukommelsesstøtte af HVORNÅR guiden sidst blev åbnet. Aldrig en
+ * generisk linje: kender vi ikke tidspunktet (legacy/ældre end 2 uger),
+ * returnerer vi null → kortet får INGEN undertitel (bedre end en tom floskel).
+ */
+function laestLabel(at: number): string | null {
+  if (!at) return null
+  const now = new Date()
+  const then = new Date(at)
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const startThen = new Date(then.getFullYear(), then.getMonth(), then.getDate()).getTime()
+  const days = Math.round((startToday - startThen) / 86_400_000)
+  if (days <= 0) return 'Læst i dag'
+  if (days === 1) return 'Læst i går'
+  if (days < 7) return `Læst for ${days} dage siden`
+  if (days < 14) return 'Læst i sidste uge'
+  return null
+}
+
+/**
+ * FORTSÆT DINE GUIDES — diskret genkendelses-række for senest læste guides.
+ * Små mini-editorials (~74px): foto til venstre, plantenavn + hvornår-læst til
+ * højre, lille chevron. For sortsguider vises SORTENS navn + foto (Sungold, ikke
+ * artens tomat) → hurtigere genkendelse. Ingen resume, ingen latin. Samme creme
+ * + typografi, bare meget lavere end hero-kortene.
+ */
+function FortsaetDineGuider({
+  items,
+}: {
+  items: { guide: Guide; at: number }[]
+}) {
+  return (
+    <section className="relative -mt-1">
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.72)',
+          margin: '0 0 12px',
+        }}
+      >
+        Fortsæt dine guides
+      </p>
+      <div className="space-y-2.5">
+        {items.map(({ guide: g, at }) => {
+          const isVar = g.guideLevel === 'variety' || !!g.variety
+          const { src } = resolvePotalotImage({
+            guideId: g.id,
+            speciesSlug: isVar ? g.parentGuideId : g.id,
+            varietySlug: isVar ? g.id : null,
+            role: isVar ? 'variety-hero' : 'species-hero',
+            preferredSrc: g.primaryImageId,
+          })
+          const hasPhoto = !!g.primaryImageId
+          const undertitel = laestLabel(at)
+          return (
+            <Link
+              key={g.id}
+              href={`/guides/${g.id}`}
+              className="group flex items-center overflow-hidden rounded-[16px] border transition-colors duration-200 hover:border-[rgba(86,111,60,0.28)]"
               style={{
-                fontFamily: serif,
-                fontStyle: 'italic',
-                fontSize: 12,
-                color: '#2D2A24',
-                opacity: 0.5,
-                margin: 0,
-                marginTop: 1,
+                height: 74,
+                background: 'rgba(244,240,229,0.96)',
+                borderColor: 'rgba(45,42,36,0.09)',
+                textDecoration: 'none',
+                color: 'inherit',
               }}
             >
-              {guide.latinName}
-            </p>
-          )}
-        </div>
-        <ArrowRight
-          size={16}
-          strokeWidth={1.75}
-          className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-          style={{ color: '#7F8F6A' }}
-        />
+              <div className="relative h-full w-[74px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+                {hasPhoto ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+                  />
+                ) : (
+                  // Bevidst blød creme-flade + diskret bladmotiv (ikke en død grå
+                  // plante). Føles som et designvalg, ikke en manglende asset.
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{
+                      background:
+                        'radial-gradient(120% 120% at 30% 20%, #F1ECDC 0%, #E4E0CE 100%)',
+                    }}
+                  >
+                    <Leaf
+                      size={24}
+                      strokeWidth={1.5}
+                      style={{ color: 'rgba(86,111,60,0.32)', transform: 'rotate(-12deg)' }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1 px-3.5">
+                {/* Både sort OG art — bredden kalder på det: "Marketmore · agurk".
+                    Arts-kortet viser bare artsnavnet. lineHeight 1.3 så "g"-
+                    descenderen ikke klippes af truncate/overflow. */}
+                <p
+                  className="truncate"
+                  style={{
+                    fontFamily: plex,
+                    fontWeight: 600,
+                    fontSize: 18,
+                    lineHeight: 1.3,
+                    letterSpacing: '-0.01em',
+                    color: '#242019',
+                    margin: 0,
+                  }}
+                >
+                  {g.variety ? (
+                    <>
+                      {g.variety}
+                      <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.45)' }}>
+                        {' · '}
+                        {g.plantName.toLowerCase()}
+                      </span>
+                    </>
+                  ) : (
+                    g.plantName
+                  )}
+                </p>
+                {undertitel && (
+                  <p
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: 'rgba(36,48,31,0.5)',
+                      margin: '2px 0 0',
+                    }}
+                  >
+                    {undertitel}
+                  </p>
+                )}
+              </div>
+              <ChevronRight
+                size={17}
+                strokeWidth={2}
+                className="mr-3 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                style={{ color: 'rgba(36,48,31,0.32)' }}
+              />
+            </Link>
+          )
+        })}
       </div>
-    </Link>
+    </section>
   )
 }
 
-// ── Delte små byggeklodser ──────────────────────────────────────
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function PopulaereEmner({
+  emner,
+  aktivt,
+  onVaelg,
+}: {
+  emner: PopulaertEmne[]
+  aktivt: PopulaertEmne | null
+  onVaelg: (e: PopulaertEmne) => void
+}) {
   return (
-    <p
-      style={{
-        fontFamily: sans,
-        fontSize: 11,
-        fontWeight: 700,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        color: 'rgba(36,48,31,0.72)',
-        margin: 0,
-      }}
-    >
-      {children}
-    </p>
+    <section className="relative -mt-2">
+      <div className="relative z-10 mb-3">
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.72)',
+            margin: 0,
+          }}
+        >
+          Et godt sted at starte
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {emner.map((e, index) => (
+          <TopicSquareCard
+            key={e.matchPlantName}
+            index={index}
+            active={aktivt?.matchPlantName === e.matchPlantName}
+            onClick={() => onVaelg(e)}
+            imageUrl={e.imageUrl}
+            navn={e.navn}
+            byline={e.byline}
+          />
+        ))}
+      </div>
+      {aktivt && (
+        <p
+          className="mt-8"
+          style={{
+            fontFamily: sans,
+            fontSize: 12.5,
+            fontWeight: 500,
+            color: 'rgba(36,48,31,0.58)',
+            marginBottom: 0,
+          }}
+        >
+          Viser {aktivt.navn.toLowerCase()}.{' '}
+          <button
+            type="button"
+            onClick={() => onVaelg(aktivt)}
+            className="underline underline-offset-4"
+            style={{
+              color: '#3D5A26',
+              fontFamily: sans,
+              fontSize: 12.5,
+              fontWeight: 700,
+            }}
+          >
+            Vis alle
+          </button>
+        </p>
+      )}
+    </section>
   )
 }
 
-// Gruppe-label til Spotlight-søgeresultater (PLANTEGUIDER / TEKNIKGUIDER).
-// Vises kun når mere end én gruppe har resultater — ellers redundant.
-function GroupLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      className="mb-2.5 flex items-center gap-2"
-      style={{
-        fontFamily: sans,
-        fontSize: 10.5,
-        fontWeight: 700,
-        letterSpacing: '0.16em',
-        textTransform: 'uppercase',
-        color: 'rgba(36,48,31,0.55)',
-        margin: '0 0 10px',
-      }}
-    >
-      {children}
-      <span aria-hidden className="h-px flex-1" style={{ background: 'rgba(45,42,36,0.12)' }} />
-    </p>
-  )
-}
-
-function Subtitle({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontFamily: serif,
-        fontStyle: 'italic',
-        fontSize: 18,
-        color: 'rgba(36,48,31,0.56)',
-        margin: '4px 0 0',
-      }}
-    >
-      {children}
-    </p>
-  )
-}
-
+/**
+ * Delt søge-input — samme rolige felt-index-stil for både quick-search (øverst)
+ * og biblioteks-søgningen (nederst), så de to inputs ser ens ud og deler query.
+ */
 function SearchField({
   value,
   onChange,
@@ -476,6 +673,627 @@ function SearchField({
         }}
       />
     </div>
+  )
+}
+
+/**
+ * QuickSearch — hurtig indgang øverst (efter hero, før "Et godt sted at starte").
+ * Bevidst let: lille sans-label + input. INGEN chips/tællere/filtre — det fulde
+ * bibliotek med filtrering ligger nederst. Distinkt fra bibliotekets serif-intro.
+ */
+function QuickSearch({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <section className="relative -mt-6">
+      <SearchField
+        value={value}
+        onChange={onChange}
+        placeholder="Søg guide til plante, sort eller problem"
+      />
+    </section>
+  )
+}
+
+// ════════════════════════════════════════════════════════════════
+// UDFORSK GUIDEBIBLIOTEKET — matrix (kategori → art → sort)
+// ════════════════════════════════════════════════════════════════
+// Ét hierarki, ikke to biblioteker: en SORT bor under en ART, en art under en
+// bibliotekskategori (navigations-kategori, ikke botanik). Foldbare niveauer,
+// kun ÉN åben ad gangen pr. niveau → altid kun få elementer synlige. Søgning
+// overtager og viser flade resultater (Planter/Teknik). Teknik er parallelt.
+
+type BiblioChip = 'alle' | 'planter' | 'teknik'
+const FOLD_KEY = 'potalot:biblio-fold'
+
+/** Én art: hero-artsguide (hvis den findes) + dens sorter. */
+interface ArtNodeData {
+  plantName: string
+  hero?: Guide
+  varieties: Guide[]
+}
+
+function UdforskBiblioteket({
+  guides,
+  techniqueGuides,
+  search,
+  onSearch,
+}: {
+  guides: Guide[]
+  techniqueGuides: Guide[]
+  search: string
+  onSearch: (v: string) => void
+}) {
+  const [chip, setChip] = useState<BiblioChip>('alle')
+  // Ingen kategori åben som standard → brugeren ser HELE kategori-strukturen
+  // først, åbner så én (struktur før indhold). Kun én åben ad gangen; huskes.
+  const [openCat, setOpenCat] = useState<LibraryCategory | null>(null)
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FOLD_KEY)
+      if (raw) {
+        const s = JSON.parse(raw)
+        if ('cat' in s) setOpenCat(s.cat)
+      }
+    } catch {
+      // ignorér
+    }
+  }, [])
+  useEffect(() => {
+    try {
+      localStorage.setItem(FOLD_KEY, JSON.stringify({ cat: openCat }))
+    } catch {
+      // ignorér
+    }
+  }, [openCat])
+
+  // ── Byg matrixen: kategori → art → sort ──────────────────────────
+  const matrix = useMemo(() => {
+    const arts = new Map<string, ArtNodeData>()
+    for (const g of guides) {
+      const a =
+        arts.get(g.plantName) ?? { plantName: g.plantName, hero: undefined, varieties: [] }
+      if (levelOf(g) === 'species') a.hero = g
+      else a.varieties.push(g)
+      arts.set(g.plantName, a)
+    }
+    for (const a of arts.values()) {
+      a.varieties.sort((x, y) => (x.variety ?? '').localeCompare(y.variety ?? '', 'da'))
+    }
+    const cats = new Map<LibraryCategory, ArtNodeData[]>()
+    for (const a of arts.values()) {
+      const c = libraryCategoryOf(a.plantName)
+      const arr = cats.get(c) ?? []
+      arr.push(a)
+      cats.set(c, arr)
+    }
+    for (const arr of cats.values()) {
+      arr.sort((x, y) => x.plantName.localeCompare(y.plantName, 'da'))
+    }
+    return cats
+  }, [guides])
+
+  // ── Søgning overtager ────────────────────────────────────────────
+  const q = search.trim().toLowerCase()
+  const searching = q.length > 0
+  const matches = (g: Guide) =>
+    g.plantName.toLowerCase().includes(q) ||
+    (g.variety?.toLowerCase().includes(q) ?? false) ||
+    (g.latinName?.toLowerCase().includes(q) ?? false) ||
+    g.summary.toLowerCase().includes(q) ||
+    g.tags.some(t => t.toLowerCase().includes(q))
+  const planteHits = useMemo(
+    () => (searching ? guides.filter(matches) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searching, guides, q],
+  )
+  const teknikHits = useMemo(
+    () => (searching ? techniqueGuides.filter(matches) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searching, techniqueGuides, q],
+  )
+
+  // Chips = top-niveau bibliotek (ikke art/sort — sorter lever under arter i
+  // matrixen). Planter rummer både arter og sorter; Teknik er parallelt.
+  const chips: { id: BiblioChip; label: string }[] = [
+    { id: 'alle', label: 'Alle' },
+    { id: 'planter', label: 'Planter' },
+    ...(techniqueGuides.length > 0
+      ? [{ id: 'teknik' as const, label: 'Teknik' }]
+      : []),
+  ]
+
+  const visPlanter = chip === 'alle' || chip === 'planter'
+  const visTeknik = (chip === 'alle' || chip === 'teknik') && techniqueGuides.length > 0
+
+  return (
+    <div>
+      <Eyebrow>Udforsk guidebiblioteket</Eyebrow>
+      <div className="mt-3">
+        <SearchField value={search} onChange={onSearch} placeholder="Søg i biblioteket" />
+      </div>
+
+      {/* Chips vises kun når der ER en reel alternativ visning (teknikguides).
+          Indtil da ville "Alle" og "Planter" vise næsten det samme — dekorativ
+          beslutningstræthed. Med teknik: Alle · Planter · Teknik. */}
+      {!searching && techniqueGuides.length > 0 && (
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {chips.map(c => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setChip(c.id)}
+              style={chipStyle(chip === c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {searching ? (
+        planteHits.length + teknikHits.length === 0 ? (
+          <div className="mt-6">
+            <EmptyNote text="Ingen guide matcher. Prøv et andet ord." />
+          </div>
+        ) : (
+          <div className="mt-5 space-y-6">
+            {planteHits.length > 0 && (
+              <div>
+                <SectionLabel>Planter</SectionLabel>
+                <div className="mt-3 space-y-2">
+                  {planteHits.map(g => <BiblioRow key={g.id} guide={g} />)}
+                </div>
+              </div>
+            )}
+            {teknikHits.length > 0 && (
+              <div>
+                <SectionLabel tone="teknik">Teknik</SectionLabel>
+                <div className="mt-3 space-y-2">
+                  {teknikHits.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      ) : (
+        <div className="mt-6 space-y-8">
+          {/* 🌱 PLANTEKATEGORIER — matrix: kategori → art → sort. Kategorierne
+              annoncerer sig selv som en liste FØRST (struktur før indhold). */}
+          {visPlanter && (
+            <div>
+              <SectionLabel>Plantekategorier</SectionLabel>
+              <p
+                style={{
+                  fontFamily: sans,
+                  fontSize: 12.5,
+                  fontWeight: 500,
+                  lineHeight: 1.45,
+                  color: 'rgba(36,48,31,0.55)',
+                  margin: '6px 0 0',
+                }}
+              >
+                Vælg en plantekategori. Inde i hver kategori finder du plantearter
+                og deres sorter.
+              </p>
+              <div className="mt-4 space-y-2">
+                {/* ALLE 8 kategorier vises — også de tomme (Anna 22/7), så hele
+                    taksonomien er synlig. Tom kategori → antal 0 + stille note. */}
+                {LIBRARY_CATEGORY_ORDER.map(c => {
+                  const arts = matrix.get(c) ?? []
+                  // Redaktionelt fremhævede arter (pt. de 2 første alfabetisk —
+                  // senere kurateret/sæsonbestemt). De optræder OGSÅ i den
+                  // komplette liste nedenunder, så listen altid er fuld.
+                  const fremhaevet = arts.slice(0, 2)
+                  const open = openCat === c
+                  return (
+                    <GroupBlock
+                      key={c}
+                      label={LIBRARY_CATEGORY_LABEL[c]}
+                      count={arts.length}
+                      unit={arts.length === 1 ? 'art' : 'arter'}
+                      open={open}
+                      onToggle={() => setOpenCat(open ? null : c)}
+                    >
+                      {arts.length === 0 ? (
+                        <p
+                          className="mt-1"
+                          style={{
+                            fontFamily: serif,
+                            fontStyle: 'italic',
+                            fontSize: 14,
+                            color: 'rgba(36,48,31,0.45)',
+                            margin: 0,
+                          }}
+                        >
+                          Ingen guides her endnu.
+                        </p>
+                      ) : (
+                        <>
+                          {/* Kategori-intro — forklarer overgangen bibliotek →
+                              kategori → arter uden tutorial/modal. */}
+                          <p
+                            className="mt-0.5"
+                            style={{
+                              fontFamily: sans,
+                              fontSize: 12.5,
+                              fontWeight: 500,
+                              lineHeight: 1.45,
+                              color: 'rgba(36,48,31,0.55)',
+                              margin: '0 0 14px',
+                            }}
+                          >
+                            Find arten først. Hver artsguide samler dyrkning,
+                            sorter og relateret hjælp.
+                          </p>
+
+                          {/* Fremhævede arter — redaktionelle anbefalinger (store kort) */}
+                          <FremhaevetLabel />
+                          <div className="mt-2 space-y-7">
+                            {fremhaevet.map((a, i) => (
+                              <ArtHeroCard key={a.plantName} art={a} index={i} />
+                            ))}
+                          </div>
+
+                          {/* Divider → den komplette, forudsigelige liste */}
+                          <div
+                            aria-hidden
+                            className="my-5 h-px"
+                            style={{ background: 'rgba(45,42,36,0.12)' }}
+                          />
+
+                          {/* Alle arter — komplet alfabetisk liste (inkl. fremhævede) */}
+                          <SubLabel>Alle arter</SubLabel>
+                          <p
+                            style={{
+                              fontFamily: sans,
+                              fontSize: 12,
+                              fontWeight: 500,
+                              lineHeight: 1.4,
+                              color: 'rgba(36,48,31,0.5)',
+                              margin: '3px 0 0',
+                            }}
+                          >
+                            Åbn en art for at se artsguiden og dens sorter.
+                          </p>
+                          <div className="mt-2.5 space-y-0.5">
+                            {arts.map(a => (
+                              <ArtNode key={a.plantName} art={a} />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </GroupBlock>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 🛠 TEKNIKGUIDES — parallelt bibliotek, egen værktøjskasse */}
+          {visTeknik && (
+            <div>
+              <SectionLabel tone="teknik">Teknikguides</SectionLabel>
+              <div className="mt-3 space-y-2">
+                {techniqueGuides.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/**
+ * Kategori-indgang: stort editorial-hero-kort for en art (fuld bredde, ARTSGUIDE-
+ * badge, navn + latin + resumé + pil). Bruger artens hero-guide (eller første
+ * sort hvis arten kun har sorter).
+ */
+function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
+  const g = art.hero ?? art.varieties[0]
+  if (!g) return null
+  return (
+    <GuideCardEditorial
+      guide={g}
+      kind="potalot"
+      offset={index % 2 === 1 ? 'right' : 'none'}
+      sortCount={art.varieties.length}
+    />
+  )
+}
+
+/**
+ * Art-node i "Alle arter"-listen. ÉN destination: klik åbner altid artens
+ * artsguide (samme sted som hero + søgning). Sorter/teknik bor inde på
+ * artsguiden — biblioteket FINDER kun arten. Viser sort-tal som hint.
+ */
+function ArtNode({ art }: { art: ArtNodeData }) {
+  const g = art.hero ?? art.varieties[0]
+  if (!g) return null
+  const n = art.varieties.length
+  return (
+    <Link
+      href={`/guides/${g.id}`}
+      className="group flex items-center gap-2 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-white/50"
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
+      <span
+        className="min-w-0 flex-1 truncate"
+        style={{
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 16,
+          letterSpacing: '-0.01em',
+          color: '#242019',
+        }}
+      >
+        {art.plantName}
+      </span>
+      {n > 0 && (
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 11.5,
+            fontWeight: 600,
+            color: 'rgba(36,48,31,0.42)',
+          }}
+        >
+          {n} {n === 1 ? 'sort' : 'sorter'}
+        </span>
+      )}
+      <ChevronRight
+        size={16}
+        strokeWidth={2}
+        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(36,48,31,0.3)' }}
+      />
+    </Link>
+  )
+}
+
+function SubLabel({ children }: { children: ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 10.5,
+        fontWeight: 700,
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        color: 'rgba(36,48,31,0.4)',
+        margin: '2px 0 0',
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+/** "Fremhævede arter"-label — blødt Potalot-plante-glyph (ikke en generisk
+ *  stjerne) over de redaktionelle hero-kort i en kategori. */
+function FremhaevetLabel() {
+  return (
+    <div className="flex items-center gap-1.5">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/glyphs/plante.png"
+        alt=""
+        style={{ width: 16, height: 16, objectFit: 'contain' }}
+      />
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: 10.5,
+          fontWeight: 700,
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.5)',
+        }}
+      >
+        Start med disse arter
+      </span>
+    </div>
+  )
+}
+
+function chipStyle(active: boolean) {
+  return {
+    fontFamily: sans,
+    fontSize: 12,
+    fontWeight: 650,
+    padding: '7px 14px',
+    borderRadius: 999,
+    background: active ? 'rgba(36,48,31,0.9)' : 'rgba(244,240,229,0.55)',
+    color: active ? '#F6F3EB' : 'rgba(36,48,31,0.62)',
+    border: active
+      ? '1px solid rgba(36,48,31,0.9)'
+      : '1px solid rgba(36,48,31,0.12)',
+  } as const
+}
+
+function SectionLabel({
+  children,
+  tone,
+}: {
+  children: ReactNode
+  tone?: 'teknik'
+}) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: '0.16em',
+        textTransform: 'uppercase',
+        color: tone === 'teknik' ? 'rgba(60,54,44,0.72)' : 'rgba(36,48,31,0.62)',
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+/** Foldbar gruppe: header (chevron + navn + antal) + indhold når åben. */
+function GroupBlock({
+  label,
+  count,
+  unit,
+  open,
+  onToggle,
+  children,
+}: {
+  label: string
+  count: number
+  unit?: string
+  open: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  return (
+    <div
+      className="overflow-hidden rounded-[16px] border transition-colors"
+      style={{
+        borderColor: open ? 'rgba(45,42,36,0.14)' : 'rgba(45,42,36,0.09)',
+        background: open ? 'rgba(244,240,229,0.55)' : 'transparent',
+      }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center gap-2.5 px-3.5 py-3 text-left"
+      >
+        <ChevronRight
+          size={16}
+          strokeWidth={2.25}
+          className="shrink-0 transition-transform duration-200"
+          style={{
+            color: 'rgba(36,48,31,0.42)',
+            transform: open ? 'rotate(90deg)' : 'none',
+          }}
+        />
+        <span
+          className="flex-1 truncate"
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 17,
+            letterSpacing: '-0.01em',
+            color: '#242019',
+          }}
+        >
+          {label}
+        </span>
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: 'rgba(36,48,31,0.42)',
+          }}
+        >
+          {count}
+          {unit ? ` ${unit}` : ''}
+        </span>
+      </button>
+      {open && <div className="px-3.5 pb-4">{children}</div>}
+    </div>
+  )
+}
+
+/** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
+function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
+  const isVar = guide.guideLevel === 'variety' || !!guide.variety
+  const { src } = resolvePotalotImage({
+    guideId: guide.id,
+    speciesSlug: isVar ? guide.parentGuideId : guide.id,
+    varietySlug: isVar ? guide.id : null,
+    role: isVar ? 'variety-hero' : 'species-hero',
+    preferredSrc: guide.primaryImageId,
+  })
+  const hasPhoto = !!guide.primaryImageId
+  const titel = guide.variety ?? guide.plantName
+  return (
+    <Link
+      href={`/guides/${guide.id}`}
+      className="group flex items-center overflow-hidden rounded-[13px] border transition-colors hover:border-[rgba(86,111,60,0.28)]"
+      style={{
+        height: 58,
+        background: teknik ? 'rgba(58,54,44,0.055)' : 'rgba(244,240,229,0.96)',
+        borderColor: 'rgba(45,42,36,0.09)',
+        textDecoration: 'none',
+        color: 'inherit',
+      }}
+    >
+      <div className="relative h-full w-[58px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+        {hasPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              background:
+                'radial-gradient(120% 120% at 30% 20%, #F1ECDC 0%, #E4E0CE 100%)',
+            }}
+          >
+            <Leaf
+              size={20}
+              strokeWidth={1.5}
+              style={{ color: 'rgba(86,111,60,0.32)', transform: 'rotate(-12deg)' }}
+            />
+          </div>
+        )}
+      </div>
+      <p
+        className="min-w-0 flex-1 truncate px-3"
+        style={{
+          fontFamily: plex,
+          fontWeight: 600,
+          fontSize: 16.5,
+          letterSpacing: '-0.01em',
+          color: '#242019',
+          margin: 0,
+        }}
+      >
+        {titel}
+      </p>
+      <ChevronRight
+        size={16}
+        strokeWidth={2}
+        className="mr-3 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(36,48,31,0.3)' }}
+      />
+    </Link>
+  )
+}
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: sans,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color: 'rgba(36,48,31,0.72)',
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
   )
 }
 
