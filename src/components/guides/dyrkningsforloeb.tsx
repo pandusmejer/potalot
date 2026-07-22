@@ -10,12 +10,12 @@
 import { ChevronDown } from 'lucide-react'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
-const plex = 'var(--font-plex-condensed), sans-serif'
 
 export function Dyrkningsforloeb() {
   return (
     <section aria-labelledby="dyrkningsforloeb-titel" className="relative pl-2">
       <p
+        id="dyrkningsforloeb-titel"
         style={{
           margin: 0,
           fontFamily: sans,
@@ -28,25 +28,9 @@ export function Dyrkningsforloeb() {
       >
         Dyrkningsforløb
       </p>
-      <h3
-        id="dyrkningsforloeb-titel"
-        style={{
-          margin: '8px 0 0',
-          fontFamily: plex,
-          fontWeight: 600,
-          fontSize: 'clamp(27px, 8vw, 35px)',
-          lineHeight: 0.96,
-          letterSpacing: '-0.01em',
-          color: '#242019',
-        }}
-      >
-        Fra første frø
-        <br />
-        til sidste høst
-      </h3>
       <p
         style={{
-          margin: '10px 0 0',
+          margin: '12px 0 0',
           maxWidth: 340,
           fontFamily: sans,
           fontSize: 13.5,

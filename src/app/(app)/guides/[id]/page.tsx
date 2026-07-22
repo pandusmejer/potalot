@@ -12,6 +12,7 @@
  */
 
 import { GuideArticle } from '@/components/guides/guide-article'
+import { RecordGuideRead } from '@/components/guides/record-guide-read'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -21,5 +22,10 @@ interface Props {
 export default async function GuideDetailPage({ params, searchParams }: Props) {
   const { id } = await params
   const { returnTo } = await searchParams
-  return <GuideArticle id={id} returnTo={returnTo} />
+  return (
+    <>
+      <RecordGuideRead id={id} />
+      <GuideArticle id={id} returnTo={returnTo} />
+    </>
+  )
 }

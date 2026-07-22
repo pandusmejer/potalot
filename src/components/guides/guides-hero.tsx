@@ -16,6 +16,22 @@ const plex = 'var(--font-plex-condensed), sans-serif'
 export function GuidesHero() {
   return (
     <section className="pt-2 sm:pt-3">
+      {/* Eyebrow — samme tekniske etiket-stil som "Et godt sted at starte"
+          (sans, 11px, 700, 0.18em, uppercase). Kategori-ordet flyttet op hertil,
+          så h1 kan bære den redaktionelle linje. */}
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'rgba(36,48,31,0.72)',
+          margin: '0 0 12px',
+        }}
+      >
+        Dyrkningsguides
+      </p>
       <h1
         style={{
           fontFamily: plex,
@@ -29,10 +45,11 @@ export function GuidesHero() {
           letterSpacing: '-0.02em',
           color: '#242019',
           margin: '0 0 18px',
-          whiteSpace: 'nowrap',
         }}
       >
-        Dyrkningsguides
+        Fra første frø
+        <br />
+        til sidste høst
       </h1>
       <p
         style={{
@@ -45,9 +62,11 @@ export function GuidesHero() {
           maxWidth: 420,
         }}
       >
-        Fra frø, jord og første blade til høst,
+        Brug Potalots guides som en sikker vej gennem
         <br />
-        frøtagning og næste sæson.
+        sæsonen — fra valg af sort til såning, udplantning,
+        <br />
+        pleje og høst.
       </p>
     </section>
   )
