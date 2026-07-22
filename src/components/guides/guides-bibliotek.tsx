@@ -1069,7 +1069,7 @@ function FremhaevetLabel() {
           color: 'rgba(36,48,31,0.5)',
         }}
       >
-        Fremhævede arter
+        Start med disse arter
       </span>
     </div>
   )
