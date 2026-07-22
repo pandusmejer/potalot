@@ -461,7 +461,6 @@ function FortsaetDineGuider({
             preferredSrc: g.primaryImageId,
           })
           const hasPhoto = !!g.primaryImageId
-          const titel = g.variety ?? g.plantName
           const undertitel = laestLabel(at)
           return (
             <Link
@@ -503,19 +502,32 @@ function FortsaetDineGuider({
                 )}
               </div>
               <div className="min-w-0 flex-1 px-3.5">
+                {/* Både sort OG art — bredden kalder på det: "Marketmore · agurk".
+                    Arts-kortet viser bare artsnavnet. lineHeight 1.3 så "g"-
+                    descenderen ikke klippes af truncate/overflow. */}
                 <p
                   className="truncate"
                   style={{
                     fontFamily: plex,
                     fontWeight: 600,
                     fontSize: 18,
-                    lineHeight: 1.05,
+                    lineHeight: 1.3,
                     letterSpacing: '-0.01em',
                     color: '#242019',
                     margin: 0,
                   }}
                 >
-                  {titel}
+                  {g.variety ? (
+                    <>
+                      {g.variety}
+                      <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.45)' }}>
+                        {' · '}
+                        {g.plantName.toLowerCase()}
+                      </span>
+                    </>
+                  ) : (
+                    g.plantName
+                  )}
                 </p>
                 {undertitel && (
                   <p
