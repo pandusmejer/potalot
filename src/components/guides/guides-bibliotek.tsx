@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
-import { Search, ArrowRight, ChevronRight, Leaf, Star } from 'lucide-react'
+import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import {
@@ -1048,14 +1048,16 @@ function SubLabel({ children }: { children: ReactNode }) {
   )
 }
 
-/** "⭐ Fremhævet"-label over de redaktionelle hero-kort i en kategori. */
+/** "Fremhævede arter"-label — blødt Potalot-plante-glyph (ikke en generisk
+ *  stjerne) over de redaktionelle hero-kort i en kategori. */
 function FremhaevetLabel() {
   return (
     <div className="flex items-center gap-1.5">
-      <Star
-        size={12}
-        strokeWidth={2}
-        style={{ color: '#B0862F', fill: '#E8C86A' }}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/glyphs/plante.png"
+        alt=""
+        style={{ width: 16, height: 16, objectFit: 'contain' }}
       />
       <span
         style={{
