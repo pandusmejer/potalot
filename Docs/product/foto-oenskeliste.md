@@ -1,33 +1,41 @@
 # Foto-ønskeliste — guides uden hero-billede
 
 Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægges ind.
-**Interaktiv version:** https://claude.ai/code/artifact/d159e484-fa07-446d-8f6c-0e2d1b0a53a2
+**Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
-Status efter **batch 10**: **31 fotos mangler** (6 arter + 25 sorter). 18 er på plads (nederst).
+Status **24/7 2026** (107 guides: 58 arts · 37 sorts · 12 teknik):
+**33 fotos mangler** (11 arter + 22 sorter). 62 er på plads.
 
-**Sådan:** læg foto i `_foto-indbakke/` navngivet efter **slug** (fx `aert.jpg`,
+**Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
+ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
+(se editorial-reglen "Billeder i teknikguider" + `knibning-af-tomater.md` som eksempel).
+
+**Sådan:** læg foto i `_foto-indbakke/` navngivet efter **slug** (fx `rabarber.jpg`,
 `tomat-black-cherry.jpg`), kør `npm run guides:intake`. Mappen vælges automatisk
 efter niveau (art → `arts/`, sort → `plantekort/`), originalen arkiveres.
 
 ---
 
-## 🥇 Tier 1 — arts-hero (6) · øverst: hver anker en hel familie
+## 🥇 Tier 1 — arts-hero (11) · øverst: hver anker en hel familie
 
-- [ ] **Ært** → `arts/aert.jpg`
-- [ ] **Jordbær** → `arts/jordbaer.jpg`
-- [ ] **Kål** → `arts/kaal.jpg`
-- [ ] **Majs** → `arts/majs.jpg`
-- [ ] **Radise** → `arts/radise.jpg`
-- [ ] **Salat** → `arts/salat.jpg`
+### Frugtbuske & frugttræer (8 — batch 5+6, ingen af dem har foto endnu)
+- [ ] **Æble** → `arts/aeble.jpg`
+- [ ] **Blåbær** → `arts/blaabaer.jpg`
+- [ ] **Blomme** → `arts/blomme.jpg`
+- [ ] **Brombær** → `arts/brombaer.jpg`
+- [ ] **Hindbær** → `arts/hindbaer.jpg`
+- [ ] **Kirsebær** → `arts/kirsebaer.jpg`
+- [ ] **Pære** → `arts/paere.jpg`
+- [ ] **Ribs** → `arts/ribs.jpg`
+- [ ] **Solbær** → `arts/solbaer.jpg`
+- [ ] **Stikkelsbær** → `arts/stikkelsbaer.jpg`
 
-## 🥈 Tier 2 — plantekort (25) · grupperet pr. familie
+### Øvrige (3)
+- [ ] **Citronmelisse** → `arts/citronmelisse.jpg`  *(ny guide 24/7)*
+- [ ] **Morgenfrue** → `arts/morgenfrue.jpg`
+- [ ] **Rabarber** → `arts/rabarber.jpg`  *(ny guide 24/7)*
 
-### Tomat (5)
-- [ ] Black Cherry → `plantekort/tomat-black-cherry.jpg`
-- [ ] Green Zebra → `plantekort/tomat-green-zebra.jpg`
-- [ ] Moneymaker → `plantekort/tomat-moneymaker.jpg`
-- [ ] Oxheart → `plantekort/tomat-oxheart.jpg`
-- [ ] Roma → `plantekort/tomat-roma.jpg`
+## 🥈 Tier 2 — plantekort (22) · grupperet pr. familie
 
 ### Agurk (3)
 - [ ] Cucino → `plantekort/agurk-cucino.jpg`
@@ -69,13 +77,21 @@ efter niveau (art → `arts/`, sort → `plantekort/`), originalen arkiveres.
 
 ---
 
-## ✅ Allerede på plads (18 — intet at gøre)
+## 📸 Teknik-fotos (uden for listen — inline, ikke hero)
 
-**Arter (6):** Agurk · Chili · Dahlia · Hvidløg · Peberfrugt · Tomat
-**Sorter (12):** Sugar Snap · Marketmore · Habanero Orange · Padrón · Café au Lait ·
-California Wonder · Corno di Toro Rosso · Little Gem · Lollo Rossa ·
-Gardener's Delight · San Marzano · Sungold
+- [ ] `makro/knibning-af-tomater/sideskud.jpg` — trin 02, identifikation
+- [ ] `makro/knibning-af-tomater/knib-basis.jpg` — trin 03, håndgreb
+
+Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
+"Foto kommer"-placeholderen i guiden.
 
 ---
 
-*Regenerér efter nye batches: manglende hero via `npm run guides:status` / `check:images`.*
+## ✅ Allerede på plads (62)
+
+45 arter + 17 sorter. `npm run guides:status` er den autoritative kilde —
+dette dokument regenereres ud fra den.
+
+---
+
+*Regenerér efter nye batches / nye fotos: `npm run guides:status`.*
