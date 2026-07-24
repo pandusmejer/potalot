@@ -8,16 +8,18 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 313
+ * Fil-tæller: 323
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
+  "/images/arts/aerteblomst.jpg",
   "/images/arts/agurk.jpg",
   "/images/arts/aubergine.jpg",
   "/images/arts/basilikum.jpg",
   "/images/arts/bladbede.jpg",
   "/images/arts/boenne.jpg",
   "/images/arts/chili.jpg",
+  "/images/arts/cosmos.jpg",
   "/images/arts/dahlia.jpg",
   "/images/arts/dild.jpg",
   "/images/arts/graeskar.jpg",
@@ -26,7 +28,10 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/kartoffel.jpg",
   "/images/arts/knoldfennikel.jpg",
   "/images/arts/koriander.jpg",
+  "/images/arts/kornblomst.jpg",
+  "/images/arts/kornvalmue.jpg",
   "/images/arts/loeg.jpg",
+  "/images/arts/loevemund.jpg",
   "/images/arts/melon.jpg",
   "/images/arts/mynte.jpg",
   "/images/arts/oregano.jpg",
@@ -34,13 +39,18 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/persille.jpg",
   "/images/arts/porre.jpg",
   "/images/arts/purloeg.jpg",
+  "/images/arts/roedbede.jpg",
   "/images/arts/rosmarin.jpg",
   "/images/arts/salvie.jpg",
   "/images/arts/selleri.jpg",
+  "/images/arts/solsikke.jpg",
   "/images/arts/spinat.jpg",
   "/images/arts/squash.jpg",
+  "/images/arts/tagetes.jpg",
+  "/images/arts/tallerkensmaekker.jpg",
   "/images/arts/timian.jpg",
   "/images/arts/tomat.jpg",
+  "/images/arts/zinnia.jpg",
   "/images/frokort/aeble-ingrid-marie.jpg",
   "/images/frokort/aert-sugar-snap.png",
   "/images/frokort/agurk-delikatesse.png",

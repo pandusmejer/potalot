@@ -319,7 +319,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/aerteblomst.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/lathyrus/growing-guide"
     ],
@@ -1481,7 +1481,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/cosmos.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/30717/cosmos-bipinnatus/details"
     ],
@@ -3071,7 +3071,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kornblomst.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/46174/centaurea-cyanus/details"
     ],
@@ -3142,7 +3142,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kornvalmue.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/56687/papaver-rhoeas/details/"
     ],
@@ -3367,7 +3367,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/loevemund.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/69565/antirrhinum-majus/details"
     ],
@@ -4684,7 +4684,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/roedbede.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/beetroot/grow-your-own"
     ],
@@ -5262,7 +5262,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/solsikke.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/helianthus/growing-guide"
     ],
@@ -5649,7 +5649,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/tagetes.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/105531/tagetes-patula/details"
     ],
@@ -5742,7 +5742,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/tallerkensmaekker.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/85362/tropaeolum-majus/details"
     ],
@@ -6162,7 +6162,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/zinnia.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/zinnia/growing-guide"
     ],
