@@ -441,7 +441,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/aubergine.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/aubergines/grow-your-own"
     ],
@@ -515,7 +515,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/basilikum.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/basil/grow-your-own"
     ],
@@ -2222,7 +2222,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/knoldfennikel.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/florence-fennel/grow-your-own"
     ],
@@ -2296,7 +2296,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/koriander.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/coriander/grow-your-own"
     ],
@@ -2646,7 +2646,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/melon.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/melons/grow-your-own"
     ],
@@ -2720,7 +2720,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/mynte.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/mint/grow-your-own"
     ],
@@ -2794,7 +2794,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/oregano.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/oregano/grow-your-own"
     ],
@@ -3110,7 +3110,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/persille.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/parsley/grow-your-own"
     ],
@@ -3217,7 +3217,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/porre.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/leeks/grow-your-own"
     ],
@@ -3291,7 +3291,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/purloeg.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/chives/grow-your-own"
     ],
@@ -3591,7 +3591,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/rosmarin.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/rosemary/grow-your-own"
     ],
@@ -3814,7 +3814,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/salvie.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/sage/grow-your-own"
     ],
@@ -3924,7 +3924,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/selleri.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/celery/grow-your-own",
       "https://www.rhs.org.uk/vegetables/celeriac/grow-your-own"
@@ -4033,7 +4033,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/spinat.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/spinach/grow-your-own"
     ],
@@ -4237,7 +4237,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/timian.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/thyme/grow-your-own"
     ],
