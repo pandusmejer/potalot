@@ -358,7 +358,7 @@ export interface UserGardenTask {
 // ============================================
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
-export type GuideLevel = 'species' | 'variety'
+export type GuideLevel = 'species' | 'variety' | 'technique'
 export type GuideStatus = 'draft' | 'published' | 'archived'
 export type GuideVisibility = 'private' | 'public' | 'system'
 export type GuideReviewStatus = 'not_required' | 'pending_review' | 'approved' | 'rejected'
@@ -522,6 +522,10 @@ export interface Guide {
 
   // Identitet
   plantName: string
+  /** Kun teknikguider: H1-titlen ("Sådan kniber du tomater"). Art/sort: undefined. */
+  title?: string | null
+  /** Kun teknikguider: slugs på arter/sorter teknikken hører til (til :::guide). */
+  appliesTo?: string[]
   /** Flertalsform til arts-copy ("tomater"). Fallback: plantName i småt. */
   pluralName?: string | null
   variety?: string | null
@@ -529,8 +533,8 @@ export interface Guide {
   guideLevel: GuideLevel
   parentGuideId?: string | null      // for sortsguide: reference til artsguide
 
-  // Kategorisering
-  primaryCategoryId: PrimaryCategoryId
+  // Kategorisering (teknikguider har ingen plantekategori → null)
+  primaryCategoryId: PrimaryCategoryId | null
   subcategoryId?: string | null
 
   // Indhold

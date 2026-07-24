@@ -37,7 +37,7 @@ export function UserGuideEditDialog({ guide }: Props) {
   const [plantName, setPlantName] = useState(guide.plantName)
   const [variety, setVariety] = useState(guide.variety ?? '')
   const [latinName, setLatinName] = useState(guide.latinName ?? '')
-  const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>(guide.primaryCategoryId)
+  const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>(guide.primaryCategoryId ?? 'fro')
   const [summary, setSummary] = useState(guide.summary)
   const [difficulty, setDifficulty] = useState<Difficulty | ''>(guide.difficulty || '')
   const [tagsInput, setTagsInput] = useState(guide.tags.join(', '))

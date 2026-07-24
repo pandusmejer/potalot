@@ -11,6 +11,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aeble",
     "plantName": "Æble",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Malus domestica",
@@ -111,6 +113,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aert",
     "plantName": "Ært",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Pisum sativum",
@@ -261,6 +265,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aerteblomst",
     "plantName": "Ærteblomst",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Lathyrus odoratus",
@@ -332,6 +338,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk",
     "plantName": "Agurk",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Cucumis sativus",
@@ -537,6 +545,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aubergine",
     "plantName": "Aubergine",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Solanum melongena",
@@ -625,6 +635,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "basilikum",
     "plantName": "Basilikum",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Ocimum basilicum",
@@ -699,6 +711,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "blaabaer",
     "plantName": "Blåbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Vaccinium corymbosum",
@@ -777,6 +791,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "bladbede",
     "plantName": "Bladbede",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Beta vulgaris subsp. vulgaris",
@@ -865,6 +881,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "blomme",
     "plantName": "Blomme",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Prunus domestica",
@@ -943,6 +961,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "boenne",
     "plantName": "Bønne",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Phaseolus vulgaris",
@@ -1075,6 +1095,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "brombaer",
     "plantName": "Brombær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Rubus fruticosus agg.",
@@ -1153,6 +1175,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili",
     "plantName": "Chili",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Capsicum",
@@ -1399,6 +1423,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "cosmos",
     "plantName": "Cosmos",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Cosmos bipinnatus",
@@ -1494,6 +1520,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia",
     "plantName": "Dahlia",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Dahlia",
@@ -1768,6 +1796,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dild",
     "plantName": "Dild",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Anethum graveolens",
@@ -1842,6 +1872,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "graeskar",
     "plantName": "Græskar",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Cucurbita spp.",
@@ -1971,6 +2003,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "gulerod",
     "plantName": "Gulerod",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Daucus carota subsp. sativus",
@@ -2101,6 +2135,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "hindbaer",
     "plantName": "Hindbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Rubus idaeus",
@@ -2203,6 +2239,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "hvidloeg",
     "plantName": "Hvidløg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Allium sativum",
@@ -2329,6 +2367,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "jordbaer",
     "plantName": "Jordbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Fragaria × ananassa",
@@ -2467,6 +2507,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kaal",
     "plantName": "Kål",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Brassica oleracea",
@@ -2629,6 +2671,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kartoffel",
     "plantName": "Kartoffel",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Solanum tuberosum",
@@ -2754,6 +2798,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kirsebaer",
     "plantName": "Kirsebær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Prunus avium / Prunus cerasus",
@@ -2856,6 +2902,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "knoldfennikel",
     "plantName": "Knoldfennikel",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Foeniculum vulgare var. azoricum",
@@ -2939,6 +2987,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "koriander",
     "plantName": "Koriander",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Coriandrum sativum",
@@ -3013,6 +3063,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kornblomst",
     "plantName": "Kornblomst",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Centaurea cyanus",
@@ -3084,6 +3136,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kornvalmue",
     "plantName": "Kornvalmue",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Papaver rhoeas",
@@ -3155,6 +3209,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "loeg",
     "plantName": "Løg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Allium cepa",
@@ -3286,6 +3342,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "loevemund",
     "plantName": "Løvemund",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Antirrhinum majus",
@@ -3380,6 +3438,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "majs",
     "plantName": "Majs",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Zea mays",
@@ -3513,6 +3573,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "melon",
     "plantName": "Melon",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Cucumis melo",
@@ -3599,6 +3661,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "morgenfrue",
     "plantName": "Morgenfrue",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Calendula officinalis",
@@ -3670,6 +3734,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "mynte",
     "plantName": "Mynte",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Mentha spp.",
@@ -3744,6 +3810,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "oregano",
     "plantName": "Oregano",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Origanum vulgare",
@@ -3818,6 +3886,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "paere",
     "plantName": "Pære",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Pyrus communis",
@@ -3896,6 +3966,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt",
     "plantName": "Peberfrugt",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Capsicum annuum",
@@ -4114,6 +4186,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "persille",
     "plantName": "Persille",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Petroselinum crispum",
@@ -4212,6 +4286,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "porre",
     "plantName": "Porre",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Allium porrum",
@@ -4319,6 +4395,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "purloeg",
     "plantName": "Purløg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Allium schoenoprasum",
@@ -4393,6 +4471,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "radise",
     "plantName": "Radise",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Raphanus sativus",
@@ -4539,6 +4619,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "ribs",
     "plantName": "Ribs",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Ribes rubrum",
@@ -4617,6 +4699,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "roedbede",
     "plantName": "Rødbede",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Beta vulgaris",
@@ -4697,6 +4781,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "rosmarin",
     "plantName": "Rosmarin",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Salvia rosmarinus",
@@ -4771,6 +4857,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salat",
     "plantName": "Salat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Lactuca sativa",
@@ -4920,6 +5008,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salvie",
     "plantName": "Salvie",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Salvia officinalis",
@@ -4994,6 +5084,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "selleri",
     "plantName": "Selleri",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Apium graveolens",
@@ -5105,6 +5197,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "solbaer",
     "plantName": "Solbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Ribes nigrum",
@@ -5182,6 +5276,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "solsikke",
     "plantName": "Solsikke",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Helianthus annuus",
@@ -5275,6 +5371,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "spinat",
     "plantName": "Spinat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Spinacia oleracea",
@@ -5383,6 +5481,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "squash",
     "plantName": "Squash",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Cucurbita pepo",
@@ -5513,6 +5613,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "stikkelsbaer",
     "plantName": "Stikkelsbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Ribes uva-crispa",
@@ -5591,6 +5693,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tagetes",
     "plantName": "Tagetes",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Tagetes patula",
@@ -5662,6 +5766,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tallerkensmaekker",
     "plantName": "Tallerkensmækker",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Tropaeolum majus",
@@ -5755,6 +5861,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "timian",
     "plantName": "Timian",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Thymus vulgaris",
@@ -5829,6 +5937,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": "tomater",
     "variety": null,
     "latinName": "Solanum lycopersicum",
@@ -6080,6 +6190,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "zinnia",
     "plantName": "Zinnia",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": null,
     "latinName": "Zinnia elegans",
@@ -6175,6 +6287,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aert-ambrosia",
     "plantName": "Ært",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Ambrosia",
     "latinName": "Pisum sativum 'Ambrosia'",
@@ -6288,6 +6402,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aert-kelvedon-wonder",
     "plantName": "Ært",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Kelvedon Wonder",
     "latinName": "Pisum sativum 'Kelvedon Wonder'",
@@ -6405,6 +6521,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "aert-sugar-snap",
     "plantName": "Ært",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Sugar Snap",
     "latinName": "Pisum sativum 'Sugar Snap'",
@@ -6518,6 +6636,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-cucino",
     "plantName": "Agurk",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Cucino",
     "latinName": "Cucumis sativus 'Cucino' F1",
@@ -6632,6 +6752,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-lemon",
     "plantName": "Agurk",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Lemon",
     "latinName": "Cucumis sativus 'Lemon'",
@@ -6746,6 +6868,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-marketmore",
     "plantName": "Agurk",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Marketmore",
     "latinName": "Cucumis sativus 'Marketmore'",
@@ -6829,6 +6953,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "agurk-mini-stars",
     "plantName": "Agurk",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Mini Stars",
     "latinName": "Cucumis sativus 'MiniStars'",
@@ -6942,8 +7068,173 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "beskaering-af-agurker",
+    "plantName": "Sådan beskærer du agurker",
+    "title": "Sådan beskærer du agurker",
+    "appliesTo": [
+      "agurk",
+      "agurk-cucino",
+      "agurk-lemon",
+      "agurk-marketmore",
+      "agurk-mini-stars"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Styr agurkens hovedskud og sideskud efter, om planten vokser lodret i drivhus eller breder sig på friland.",
+    "difficulty": "medium",
+    "tags": [
+      "beskaering",
+      "agurk",
+      "sideskud",
+      "topning",
+      "drivhus"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "vaelg-efter-dyrkningsformen",
+        "title": "Vælg efter dyrkningsformen",
+        "body": "Beskær ikke alle agurker efter samme skema. En drivhusagurk, der vokser lodret på snor, styres anderledes end en frilandsagurk, der breder sig hen over jorden eller et net.\n\nLæs frøposens råd først. Sorter kan danne blomster og frugter forskelligt, og nogle moderne drivhussorter kræver mindre indgreb end ældre dyrkningssystemer."
+      },
+      {
+        "key": "bevar-hovedskuddet-i-drivhuset",
+        "title": "Bevar hovedskuddet i drivhuset",
+        "body": "Led drivhusagurkens hovedskud op ad snoren eller støtten. Fjern ikke toppen, før planten har nået den højde, du vil bruge, typisk toppen af støtten.\n\nNår hovedskuddet når toppen, kan du knibe vækstspidsen af, så planten ikke fortsætter ind i tag og naboplanter."
+      },
+      {
+        "key": "forkort-sideskud-med-omtanke",
+        "title": "Forkort sideskud med omtanke",
+        "body": "På en lodret dyrket drivhusagurk kan du forkorte sideskud efter frugtsætningen. Et almindeligt princip er at lade blade sidde efter en frugt og fjerne resten af skudspidsen, men følg sortens anvisning, fordi anbefalingen varierer.\n\nFjern ikke store mængder løv på én gang. Bladene forsyner frugterne, og planten kan gå i stå, hvis du gør den for bar."
+      },
+      {
+        "key": "top-frilandsagurken-senere",
+        "title": "Top frilandsagurken senere",
+        "body": "Frilandsagurker må gerne forgrene sig. Når planten har dannet flere rigtige blade, kan du knibe hovedskuddets spids for at fremme sideskud, hvis sortens dyrkningsvejledning anbefaler det.\n\nLad ellers planten brede sig, og fjern kun syge, knækkede eller stærkt sammenfiltrede skud."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær agurken at kende",
+        "description": "Se forskellen på drivhus- og frilandsagurker og få hele dyrkningsforløbet.",
+        "slug": "agurk",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own",
+      "https://www.rhs.org.uk/plants/500531/cucumis-sativus-party-time/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "beskaering-af-chili-og-peberfrugt",
+    "plantName": "Sådan beskærer du chili og peberfrugt",
+    "title": "Sådan beskærer du chili og peberfrugt",
+    "appliesTo": [
+      "chili",
+      "chili-de-cayenne",
+      "chili-early-jalapeno",
+      "chili-habanero-orange",
+      "chili-padron",
+      "peberfrugt",
+      "peberfrugt-california-wonder",
+      "peberfrugt-corno-di-toro-rosso"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Beskær kun chili og peberfrugt, når planten har et konkret problem. Automatisk topning kan forsinke den første høst.",
+    "difficulty": "medium",
+    "tags": [
+      "beskaering",
+      "chili",
+      "peberfrugt",
+      "topning",
+      "plantepleje"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "lad-en-sund-plante-vokse",
+        "title": "Lad en sund plante vokse",
+        "body": "En sund chili- eller peberfrugtplante behøver normalt ikke løbende beskæring. Fjern ikke toppen som standard ved udplantning. Når du topper planten, fjerner du samtidig vækst og ofte de første blomsteranlæg, så den første høst kan komme senere.\n\nVælg i stedet en kompakt, kraftig plante og giv den lys, varme, jævn vanding og støtte, hvis frugterne gør grenene tunge."
+      },
+      {
+        "key": "fjern-beskadiget-vaekst",
+        "title": "Fjern beskadiget vækst",
+        "body": "Klip knækkede, døde eller tydeligt syge skud tilbage til sundt væv med en ren saks. Fjern også blade, der ligger konstant mod våd jord, hvis de giver et konkret fugtproblem.\n\nKlip ikke raske blade væk for at gøre planten pænere. Planten bruger dem til at opbygge energi og modne frugter."
+      },
+      {
+        "key": "tynd-kun-en-meget-taet-plante",
+        "title": "Tynd kun en meget tæt plante",
+        "body": "Hvis planten bliver så tæt, at blade og grene står presset sammen uden luft, kan du fjerne enkelte svage skud inde i planten. Start med skud, der krydser, er beskadigede eller vokser ind mod centrum.\n\nFjern få ad gangen. Målet er at åbne planten lidt, ikke at forme den som en tomatplante."
+      },
+      {
+        "key": "top-kun-med-et-tydeligt-maal",
+        "title": "Top kun med et tydeligt mål",
+        "body": "Topning kan få nogle planter til at forgrene sig, men resultatet afhænger af sort, vækstforhold og tidspunkt. I en kort dansk sæson kan forsinkelsen koste modne frugter.\n\nTop derfor kun, hvis du bevidst prioriterer en mere forgrenet plante frem for tidlig høst, og gør det mens planten stadig har god tid til at vokse videre."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Chili",
+            "slug": "chili",
+            "description": "Se varmebehov, vækst og høst for chili."
+          },
+          {
+            "heading": "Peberfrugt",
+            "slug": "peberfrugt",
+            "description": "Se dyrkningsfundamentet for søde peberfrugter."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://extensionpubs.unl.edu/publication/967/html/view",
+      "https://extension.umn.edu/vegetables/growing-peppers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "chili-de-cayenne",
     "plantName": "Chili",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "De Cayenne",
     "latinName": "Capsicum annuum 'De Cayenne'",
@@ -7060,6 +7351,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili-early-jalapeno",
     "plantName": "Chili",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Early Jalapeño",
     "latinName": "Capsicum annuum 'Early Jalapeño'",
@@ -7185,6 +7478,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili-habanero-orange",
     "plantName": "Chili",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Habanero Orange",
     "latinName": "Capsicum chinense 'Habanero Orange'",
@@ -7304,6 +7599,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "chili-padron",
     "plantName": "Chili",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Padrón",
     "latinName": "Capsicum annuum 'Padrón'",
@@ -7425,6 +7722,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "dahlia-cafe-au-lait",
     "plantName": "Dahlia",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Café au Lait",
     "latinName": "Dahlia 'Café au Lait'",
@@ -7557,6 +7856,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "hvidloeg-germidour",
     "plantName": "Hvidløg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Germidour",
     "latinName": "Allium sativum 'Germidour'",
@@ -7670,6 +7971,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "hvidloeg-messidrome",
     "plantName": "Hvidløg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Messidrome",
     "latinName": "Allium sativum 'Messidrome'",
@@ -7792,6 +8095,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "hvidloeg-thermidrome",
     "plantName": "Hvidløg",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Thermidrome",
     "latinName": "Allium sativum 'Thermidrome'",
@@ -7907,6 +8212,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "jordbaer-corona",
     "plantName": "Jordbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Corona",
     "latinName": "Fragaria × ananassa 'Korona'",
@@ -8019,6 +8326,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "jordbaer-mara-des-bois",
     "plantName": "Jordbær",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Mara des Bois",
     "latinName": "Fragaria × ananassa 'Mara des Bois'",
@@ -8135,6 +8444,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kaal-palmekaal",
     "plantName": "Kål",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Palmekål",
     "latinName": "Brassica oleracea var. palmifolia",
@@ -8253,6 +8564,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kaal-roedkaal",
     "plantName": "Kål",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Rødkål",
     "latinName": "Brassica oleracea Capitata Group",
@@ -8370,6 +8683,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "kaal-spidskaal",
     "plantName": "Kål",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Spidskål",
     "latinName": "Brassica oleracea Capitata Group",
@@ -8484,8 +8799,264 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "knibning-af-tomater",
+    "plantName": "Sådan kniber du tomater",
+    "title": "Sådan kniber du tomater",
+    "appliesTo": [
+      "tomat",
+      "tomat-black-cherry",
+      "tomat-gardeners-delight",
+      "tomat-green-zebra",
+      "tomat-moneymaker",
+      "tomat-oxheart",
+      "tomat-roma",
+      "tomat-san-marzano",
+      "tomat-sungold"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Fjern sideskud på ranketomater, så planten bliver overskuelig og kan bindes op langs én eller få stammer.",
+    "difficulty": "easy",
+    "tags": [
+      "knibning",
+      "tomat",
+      "ranketomat",
+      "sideskud",
+      "pleje"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "tjek-tomattypen",
+        "title": "Tjek tomattypen",
+        "body": "Knib kun sideskud på ranketomater, som du dyrker op ad snor, stok eller spiral. Busktomater og hængetomater skal normalt beholde deres forgrening, fordi de sætter en stor del af høsten på sideskuddene.\n\nStår typen ikke tydeligt på frøposen, så se efter ord som ranke, cordon eller indeterminate. Er du stadig i tvivl, så vent med at knibe."
+      },
+      {
+        "key": "find-sideskuddet",
+        "title": "Find sideskuddet",
+        "body": "Et sideskud vokser i bladhjørnet, hvor bladstilken møder hovedstammen. Det ligner en lille ny tomatplante med egen spids og små blade.\n\nFjern ikke selve bladet, blomsterklasen eller plantens top. Følg hovedstammen med fingeren, og find det ekstra skud i vinklen mellem stamme og blad."
+      },
+      {
+        "key": "knib-det-unge-skud-af",
+        "title": "Knib det unge skud af",
+        "body": "Tag fat helt nede ved basis, og knib eller bøj det bløde sideskud forsigtigt af. Små skud giver et mindre sår og er lettere at fjerne uden redskab.\n\nEr skuddet blevet tykt og fast, så brug en ren, skarp saks. Riv ikke et stort skud ned langs hovedstammen."
+      },
+      {
+        "key": "gentag-loebende",
+        "title": "Gentag løbende",
+        "body": "Gennemgå planten regelmæssigt, mens den vokser. Nye sideskud kan komme hele sæsonen, også fra steder du allerede har kigget på.\n\nLad planten beholde raske blade. Fjern kun blade, når du har en konkret grund, for eksempel et blad der er sygt, ligger mod jorden eller spærrer helt for luft omkring en tæt klase."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for tomater, fra vækstform til høst.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.rhs.org.uk/education-learning/children-young-people/family-activities/grow-it/tangy-tomatoes"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "knibning-beskaering-og-udtynding",
+    "plantName": "Knibning, beskæring og udtynding",
+    "title": "Knibning, beskæring og udtynding",
+    "appliesTo": [
+      "tomat",
+      "agurk",
+      "chili",
+      "peberfrugt",
+      "dahlia",
+      "salat",
+      "radise",
+      "kaal",
+      "majs",
+      "aert"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Lær forskellen på at knibe, beskære og tynde ud, så du kun fjerner det, der hjælper planten.",
+    "difficulty": "easy",
+    "tags": [
+      "knibning",
+      "beskaering",
+      "udtynding",
+      "plantepleje",
+      "begynder"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "se-hvad-du-vil-aendre",
+        "title": "Se, hvad du vil ændre",
+        "body": "Knibning, beskæring og udtynding løser forskellige problemer. Knibning fjerner en blød vækstspids eller et ungt sideskud. Beskæring fjerner større eller mere træagtige dele med et redskab. Udtynding fjerner hele småplanter, skud, blomster eller frugter, så det, der bliver tilbage, får mere plads.\n\nStart altid med at sætte ord på målet: Vil du styre formen, skabe luft, give mere plads eller forlænge blomstringen? Hvis du ikke kan svare, så vent. En plante behøver ikke automatisk at blive klippet, bare fordi du ejer en saks."
+      },
+      {
+        "key": "vaelg-det-mindste-indgreb",
+        "title": "Vælg det mindste indgreb",
+        "body": "Fjern så lidt som muligt og se planten an. Et lille, blødt sideskud kan ofte knibes af med fingrene. En tør eller beskadiget stængel kræver et rent klip. Tæt såede småplanter skal tyndes, før de begynder at konkurrere om lys og plads.\n\nArbejd fra det tydelige mod det tvivlsomme: dødt og beskadiget først, derefter vækst, du med sikkerhed vil styre. Lad raske blade og skud sidde, hvis du ikke har en konkret grund til at fjerne dem."
+      },
+      {
+        "key": "arbejd-rent-og-toert",
+        "title": "Arbejd rent og tørt",
+        "body": "Brug fingrene til helt bløde skud og en ren, skarp saks eller beskærer til fastere væv. Klip uden at mase stænglen, og undgå at rive bark eller fibre med.\n\nVælg helst en tør periode, når du laver større snit. Rengør redskabet mellem syge og raske planter, og fjern sygt plantemateriale fra dyrkningsstedet."
+      },
+      {
+        "key": "foelg-planten-bagefter",
+        "title": "Følg planten bagefter",
+        "body": "Se planten igen efter nogle dage. Den skal fortsætte væksten uden at hænge, tørre ind omkring snittet eller sætte en tæt krans af nye skud, du ikke ønskede.\n\nVand som normalt, men prøv ikke at kompensere for beskæring med ekstra vand eller gødning. Planten skal have tid til at reagere på indgrebet."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Knib tomater",
+            "slug": "knibning-af-tomater",
+            "description": "Fjern sideskud på ranketomater uden at forveksle dem med blade eller blomsterklaser."
+          },
+          {
+            "heading": "Beskær agurker",
+            "slug": "beskaering-af-agurker",
+            "description": "Styr hovedskud og sideskud efter dyrkningsform."
+          },
+          {
+            "heading": "Tynd småplanter",
+            "slug": "udtynding-af-smaaplanter",
+            "description": "Giv de stærkeste planter plads uden at skade rødderne."
+          },
+          {
+            "heading": "Plej dahliaer",
+            "slug": "knibning-og-afblomstring-af-dahliaer",
+            "description": "Få en mere forgrenet plante og fjern visne blomster korrekt."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own",
+      "https://www.rhs.org.uk/garden-jobs/deadheading-plants",
+      "https://www.rhs.org.uk/advice/profile?cid=1107&pid=619"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "knibning-og-afblomstring-af-dahliaer",
+    "plantName": "Sådan kniber og afblomstrer du dahliaer",
+    "title": "Sådan kniber og afblomstrer du dahliaer",
+    "appliesTo": [
+      "dahlia",
+      "dahlia-cafe-au-lait"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Knib unge dahliaer for mere forgrening, og fjern visne blomster ned til et bladfæste for at holde planten i gang.",
+    "difficulty": "easy",
+    "tags": [
+      "knibning",
+      "afblomstring",
+      "dahlia",
+      "deadheading",
+      "blomstring"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "knib-den-unge-vaekstspids",
+        "title": "Knib den unge vækstspids",
+        "body": "Når den unge dahlia er godt i vækst, kan du fjerne den øverste bløde vækstspids over et bladpar. Planten vil normalt danne flere sideskud fra bladfæsterne og få en mere forgrenet form.\n\nKnib kun en sund plante, som er kommet godt i gang. En lille, stresset eller nyligt beskadiget plante har mere gavn af at beholde sin top."
+      },
+      {
+        "key": "behold-staerke-skud",
+        "title": "Behold stærke skud",
+        "body": "Efter knibningen udvikler planten flere nye skud. Lad de stærke skud vokse, og fjern kun svage, beskadigede eller meget tæt placerede skud, hvis planten bliver overfyldt.\n\nBind høje sorter op, mens de vokser. Flere grene giver flere blomster, men de giver også mere vægt og større vindfang."
+      },
+      {
+        "key": "find-den-visne-blomst",
+        "title": "Find den visne blomst",
+        "body": "En færdig dahliablomst bliver mat, blød og spids i formen, mens en ny knop er fast og rund. Følg stilken ned fra den visne blomst, så du ikke kommer til at fjerne en knop ved siden af.\n\nKlip ikke kun blomsterhovedet af. Den bare stilk bliver stående og bidrager ikke med nye blomster."
+      },
+      {
+        "key": "klip-tilbage-til-et-bladfaeste",
+        "title": "Klip tilbage til et bladfæste",
+        "body": "Følg blomsterstilken ned til et bladfæste eller en forgrening, og klip lige over dette punkt. Så skjuler planten snittet, og et nyt sideskud kan fortsætte væksten.\n\nFjern visne blomster regelmæssigt, hvis du vil forlænge blomstringen. Lad enkelte hoveder sidde, hvis du bevidst vil samle frø."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær dahliaen at kende",
+        "description": "Få hele dyrkningsfundamentet fra knold til blomstring.",
+        "slug": "dahlia",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/dahlia/growing-guide",
+      "https://www.rhs.org.uk/garden-jobs/deadheading-plants"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "majs-incredible",
     "plantName": "Majs",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Incredible",
     "latinName": "Zea mays 'Incredible' F1",
@@ -8598,8 +9169,263 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "opbinding-af-agurker",
+    "plantName": "Sådan binder du agurker op",
+    "title": "Sådan binder du agurker op",
+    "appliesTo": [
+      "agurk"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Dyrk agurker lodret på snor, net eller espalier, når du vil spare plads og holde frugterne fri af jorden. Hjælp de unge skud ind på støtten.",
+    "difficulty": "easy",
+    "tags": [
+      "opbinding",
+      "agurk",
+      "lodret-dyrkning",
+      "snor",
+      "espalier"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "saet-stoetten-op",
+        "title": "Sæt støtten op",
+        "body": "Sæt en lodret snor, et net eller et fast espalier op ved plantning. I drivhus kan snoren hænge fra en solid overligger. Udendørs skal net og stolper kunne modstå vind og vægten af en våd plante med frugter.\n\nAgurken kan brede sig på jorden, men lodret dyrkning kræver, at støtten står klar, før rankerne bliver lange og filtres sammen."
+      },
+      {
+        "key": "led-hovedskuddet",
+        "title": "Led hovedskuddet",
+        "body": "Før det unge hovedskud hen til støtten. Bind det løst de første gange, eller sno det forsigtigt omkring en lodret snor. Træk ikke i toppen; den er blød og knækker let.\n\nAgurkens slyngtråde griber selv, når de finder net eller snor, men planten kan miste grebet eller vokse væk fra støtten. Hjælp den tilbage, mens skuddet stadig er bøjeligt."
+      },
+      {
+        "key": "bind-uden-at-klemme",
+        "title": "Bind uden at klemme",
+        "body": "Placér et blødt bind omkring en stærk del af stænglen under et bladfæste. Lad plads til fortykkelse, og undgå at binde hen over slyngtråde, blomster eller små frugter.\n\nBrug flere løse bindinger i stedet for én stram binding. Så fordeler du vægten og mindsker risikoen for, at stænglen knækker ét sted."
+      },
+      {
+        "key": "fordel-sideskuddene",
+        "title": "Fordel sideskuddene",
+        "body": "Led sideskud ud på nettet eller langs espalieret, så bladene ikke samler sig i én tæt klump. Du skal ikke tvinge et stift skud i en ny retning. Flyt det lidt ad gangen eller vælg en ny vej gennem støtten.\n\nHold frugterne fri af snore og netmasker, så de kan vokse uden at blive klemt eller bøjet."
+      },
+      {
+        "key": "tjek-efter-vaekst-og-vind",
+        "title": "Tjek efter vækst og vind",
+        "body": "Se planten efter jævnligt. Tilføj bind, hvis hovedskuddet løsner sig, og fjern bind, der strammer. Udendørs bør du kontrollere støtten efter blæst; i drivhus især når planten bærer mange frugter."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær agurken at kende",
+        "description": "Få hele dyrkningsfundamentet for agurker, fra varme og vanding til høst.",
+        "slug": "agurk",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/cucumbers/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/growing-in-greenhouse"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "opbinding-af-tomater",
+    "plantName": "Sådan binder du tomater op",
+    "title": "Sådan binder du tomater op",
+    "appliesTo": [
+      "tomat"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Ranketomater skal støttes gennem hele sæsonen. Bind hovedstænglen løst til snor, stok eller espalier, efterhånden som planten vokser.",
+    "difficulty": "easy",
+    "tags": [
+      "opbinding",
+      "tomat",
+      "ranketomat",
+      "snor",
+      "stok"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "find-tomattypen",
+        "title": "Find tomattypen",
+        "body": "Tjek frøposen eller plantemærket. Ranketomater vokser videre i højden og skal bindes op løbende. Busktomater forgrener sig lavere og behøver normalt ikke en lodret snor, men et bur eller korte stokke kan støtte tunge grene.\n\nEr typen ukendt, så se på væksten: En tydelig hovedstængel, der fortsætter opad og sætter nye bladpar og klaser, behandles som en ranketomat."
+      },
+      {
+        "key": "saet-stoetten-fast",
+        "title": "Sæt støtten fast",
+        "body": "Brug en fastgjort lodret snor, en solid stok, en tomatspiral eller et espalier. Sæt en stok i jorden ved plantning, før rødderne fylder området. Fastgør en snor til en konstruktion, der kan bære en fuldvoksen plante med frugter.\n\nLad støtten stå tæt nok på hovedstænglen til, at planten ikke skal trækkes skæv."
+      },
+      {
+        "key": "bind-hovedstaenglen",
+        "title": "Bind hovedstænglen",
+        "body": "Lav den første løse binding lavt på hovedstænglen, men ikke helt ved jordoverfladen. Tilføj nye bindinger op gennem sæsonen, så toppen aldrig hænger langt væk fra støtten.\n\nBrug bløde, brede bind og lav gerne en ottetalsbinding omkring stok og stængel. Hvis du dyrker på snor, kan du forsigtigt sno planten omkring snoren eller fastgøre den med clips beregnet til tomater."
+      },
+      {
+        "key": "hold-klaserne-fri",
+        "title": "Hold klaserne fri",
+        "body": "Bind ikke omkring blomster- eller frugtklaser. Placér bindingen på hovedstænglen mellem bladene, så klasen kan hænge frit.\n\nStøt kun en tung klase særskilt, hvis stilken bøjer skarpt eller er ved at flække. Brug da en løs slynge eller en clips, som bærer klasen uden at klemme den."
+      },
+      {
+        "key": "foelg-vaeksten",
+        "title": "Følg væksten",
+        "body": "Tjek planten mindst ugentligt i perioder med hurtig vækst. Flyt eller løsn bind, der begynder at stramme, og bind den nye top ind, før den knækker.\n\nNår planten når toppen af støtten, kan du lede den videre langs en vandret tråd eller følge artsguidens råd om at stoppe toppen."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær tomaten at kende",
+        "description": "Få hele dyrkningsfundamentet for tomater, fra plantning til høst.",
+        "slug": "tomat",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/growing-in-greenhouse"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "opbinding-og-plantestoette",
+    "plantName": "Sådan støtter og binder du planter",
+    "title": "Sådan støtter og binder du planter",
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Vælg støtte efter plantens vækst og sæt den op tidligt. Så undgår du væltede stængler, knækkede grene og frugter mod jorden.",
+    "difficulty": "easy",
+    "tags": [
+      "opbinding",
+      "plantestoette",
+      "espalier",
+      "stok",
+      "net"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "se-paa-planten",
+        "title": "Se på planten",
+        "body": "Begynd med det, du kan se. Lange skud, slyngtråde og stængler, der søger væk fra planten, peger mod net, snor eller espalier. En opret plante, der hælder eller bøjer under blomster og frugter, har snarere brug for en stok, ring eller et bur.\n\nDu behøver ikke kende plantens væksttype på forhånd. Kig efter skud, der ligger på jorden, stængler der knækker i vinden, og grene der trækkes ned af vægt. Det fortæller, hvilken støtte planten mangler."
+      },
+      {
+        "key": "vaelg-den-rigtige-stoette",
+        "title": "Vælg den rigtige støtte",
+        "body": "Brug net eller et åbent espalier til planter, der selv griber med slyngtråde. Brug lodrette snore eller stokke til planter, som du selv skal lede opad. Brug ringe, gitre eller forgrenede støtter til planter, der bliver brede eller tunge i toppen.\n\nStøtten skal kunne bære en våd, fuldvoksen plante, ikke kun den lille plante du står med nu. Sæt derfor stolper, snore og stativer solidt fast."
+      },
+      {
+        "key": "saet-stoetten-op-tidligt",
+        "title": "Sæt støtten op tidligt",
+        "body": "Sæt helst støtten på plads ved plantning eller tidligt i væksten. Så kan du placere den uden at beskadige rødder, stængler eller nye skud.\n\nEn sen støtte kan stadig redde planten. Arbejd langsomt, løft få stængler ad gangen, og forsøg ikke at rette en stiv eller bøjet stængel helt ud på én gang."
+      },
+      {
+        "key": "bind-loest",
+        "title": "Bind løst",
+        "body": "Brug et bredt, blødt bindemateriale. Før bindet omkring støtten og planten, så stænglen holdes på plads uden at blive klemt. En løs ottetalsbinding holder stænglen adskilt fra stokken og mindsker gnidning.\n\nBind aldrig omkring et blad, en blomsterstilk eller en frugtklase. Bind omkring en stærk del af hovedstænglen, og lad plads til, at den kan blive tykkere."
+      },
+      {
+        "key": "tjek-gennem-saesonen",
+        "title": "Tjek gennem sæsonen",
+        "body": "Se bindingerne efter, når planten vokser hurtigt, efter kraftig blæst og når frugter eller blomster bliver tunge. Løsn bind, der strammer, og tilføj støtte højere oppe, før stænglen knækker.\n\nFjern gamle bind efter sæsonen. Genbrug kun materialer, der stadig er hele og rene."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Tomater",
+            "slug": "opbinding-af-tomater",
+            "description": "Bind ranketomater op langs én hovedstængel og støt planten gennem hele sæsonen."
+          },
+          {
+            "heading": "Agurker",
+            "slug": "opbinding-af-agurker",
+            "description": "Led agurken op ad snor eller net, og hjælp rankerne med at finde støtten."
+          },
+          {
+            "heading": "Ærter og klatrebønner",
+            "slug": "stoette-til-aerter-og-klatreboenner",
+            "description": "Sæt net, ris eller høje stænger op, før planterne tager fart."
+          },
+          {
+            "heading": "Chili og peberfrugt",
+            "slug": "stoette-til-chili-og-peberfrugt",
+            "description": "Støt hovedstamme og tunge sidegrene uden at spænde planten fast."
+          },
+          {
+            "heading": "Dahlia og høje blomster",
+            "slug": "stoette-til-dahlia-og-hoeje-blomster",
+            "description": "Sæt støtten tidligt, så løv og stængler kan skjule den."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/advice/grow-your-own/features/vertical-veg",
+      "https://www.rhs.org.uk/plants/types/climbers/how-to-tie-in-climbers",
+      "https://www.rhs.org.uk/plants/types/perennials/staking"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "peberfrugt-california-wonder",
     "plantName": "Peberfrugt",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "California Wonder",
     "latinName": "Capsicum annuum 'California Wonder'",
@@ -8729,6 +9555,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "peberfrugt-corno-di-toro-rosso",
     "plantName": "Peberfrugt",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Corno di Toro Rosso",
     "latinName": "Capsicum annuum 'Corno di Toro Rosso'",
@@ -8858,6 +9686,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "radise-french-breakfast",
     "plantName": "Radise",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "French Breakfast",
     "latinName": "Raphanus sativus 'French Breakfast'",
@@ -8973,6 +9803,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "radise-sora",
     "plantName": "Radise",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Sora",
     "latinName": "Raphanus sativus 'Sora'",
@@ -9088,6 +9920,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salat-buttercrunch",
     "plantName": "Salat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Buttercrunch",
     "latinName": "Lactuca sativa 'Buttercrunch'",
@@ -9208,6 +10042,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salat-little-gem",
     "plantName": "Salat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Little Gem",
     "latinName": "Lactuca sativa 'Little Gem'",
@@ -9341,6 +10177,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salat-lollo-rossa",
     "plantName": "Salat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Lollo Rossa",
     "latinName": "Lactuca sativa 'Lollo Rossa'",
@@ -9459,6 +10297,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "salat-rouge-grenobloise",
     "plantName": "Salat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Rouge Grenobloise",
     "latinName": "Lactuca sativa 'Rouge Grenobloise'",
@@ -9577,8 +10417,252 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "stoette-til-aerter-og-klatreboenner",
+    "plantName": "Sådan støtter du ærter og klatrebønner",
+    "title": "Sådan støtter du ærter og klatrebønner",
+    "appliesTo": [
+      "aert"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Ærter klatrer i net og ris med slyngtråde, mens klatrebønner snor stænglen omkring høje stænger. Sæt støtten op før væksten tager fart.",
+    "difficulty": "easy",
+    "tags": [
+      "aert",
+      "klatreboenne",
+      "net",
+      "ris",
+      "boennestativ"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "vaelg-stoette-efter-planten",
+        "title": "Vælg støtte efter planten",
+        "body": "Brug fintmasket net, trådnet eller forgrenede ris til ærter. Slyngtrådene skal kunne gribe om mange tynde kontaktpunkter.\n\nBrug høje stænger, en tipi, et A-stativ eller et kraftigt net til klatrebønner. Bønnestænglen snor sig omkring støtten og har derfor brug for højde og en solid konstruktion. Lave buskbønner skal ikke have et højt klatrestativ."
+      },
+      {
+        "key": "saet-stativet-op-foerst",
+        "title": "Sæt stativet op først",
+        "body": "Sæt net, stolper og stænger op før såning eller senest, når planterne er små. Så undgår du at træde på rødder og filtre skuddene sammen senere.\n\nForankr stolperne godt, og spænd nettet, så det ikke falder ind over planterne. Et stativ skal kunne holde til både vind og en tæt, våd plantemasse."
+      },
+      {
+        "key": "hjaelp-de-foerste-skud",
+        "title": "Hjælp de første skud",
+        "body": "Led ærteskuddene ind mod nettet eller risene, når slyngtrådene begynder at søge. Du kan holde rækken samlet med en løs snor langs ydersiden, indtil planterne selv får fat.\n\nFør unge bønnestængler hen til hver sin stok. Sno dem kun forsigtigt i den retning, planten allerede søger. Når de har fået fat, klatrer de videre selv."
+      },
+      {
+        "key": "fordel-planterne",
+        "title": "Fordel planterne",
+        "body": "Fordel skuddene over støtten i stedet for at lade alle planter klatre samme sted. Det giver bedre plads til blade og bælge og gør høsten lettere.\n\nLøft skud, der ligger på jorden, mens de stadig er bløde. Knæk ikke en stængel fri af nettet for at gøre den pænere; led den videre derfra, hvor den allerede sidder fast."
+      },
+      {
+        "key": "hold-stoetten-stabil",
+        "title": "Hold støtten stabil",
+        "body": "Tjek stativet efter blæst og når planterne bliver tunge. Stram løse snore, ret skæve stolper og bind konstruktionen sammen igen, før den vælter."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær ærten at kende",
+        "description": "Få hele dyrkningsfundamentet for ærter, fra såning til høst.",
+        "slug": "aert",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/peas/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/runner-beans/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "stoette-til-chili-og-peberfrugt",
+    "plantName": "Sådan støtter du chili og peberfrugt",
+    "title": "Sådan støtter du chili og peberfrugt",
+    "appliesTo": [
+      "chili",
+      "peberfrugt"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Chili og peberfrugt kan ofte stå selv, men høje planter og tunge frugter kan bøje eller flække grenene. Støt tidligt og bind løst.",
+    "difficulty": "easy",
+    "tags": [
+      "chili",
+      "peberfrugt",
+      "stok",
+      "grenstoette",
+      "frugtvaegt"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "vurd-r-behovet",
+        "title": "Vurdér behovet",
+        "body": "Lad en kompakt, stabil plante stå uden opbinding, hvis stænglen holder frugterne sikkert. Sæt støtte til, når hovedstammen hælder, sidegrene bøjer tydeligt, eller frugter trækker en gren ned.\n\nVent ikke på, at en gren flækker. En plante med mange blomster eller unge frugter bliver hurtigt tungere, end den ser ud."
+      },
+      {
+        "key": "saet-en-stok-ved-planten",
+        "title": "Sæt en stok ved planten",
+        "body": "Sæt en solid stok tæt ved hovedstammen uden at ramme rodklumpen. Gør det helst ved udplantning eller tidligt i væksten. I en krukke skal stokken nå godt ned og stå stabilt i mediet.\n\nMeget brede planter kan have bedre gavn af to eller tre stokke omkring planten eller et lille plantebur."
+      },
+      {
+        "key": "bind-hovedstammen-loest",
+        "title": "Bind hovedstammen løst",
+        "body": "Bind hovedstammen til stokken med et bredt, blødt materiale. Placér bindet under en forgrening, hvor stænglen er stærk, og lad plads til vækst.\n\nBrug flere løse bindinger, hvis planten er høj. Én stram binding kan både gnave i stænglen og få planten til at knække lige over bindet."
+      },
+      {
+        "key": "stoet-tunge-grene",
+        "title": "Støt tunge grene",
+        "body": "Bind ikke alle sidegrene ind mod hovedstammen. Støt i stedet den enkelte gren, der bærer tungt, med en løs slynge, en ekstra stok eller en grenstøtte.\n\nPlacér støtten tættere på grenens basis end på frugten. Så bærer du vægten uden at klemme frugtstilke eller hindre frugterne i at vokse."
+      },
+      {
+        "key": "juster-gennem-saesonen",
+        "title": "Juster gennem sæsonen",
+        "body": "Kontrollér bindingerne, når frugterne vokser. Løsn stramme bind, og flyt støttepunkter, hvis en gren ændrer vinkel. Efter vanding eller blæst kan en plante i krukke have brug for at blive rettet og forankret igen."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Chili",
+            "slug": "chili",
+            "description": "Læs om vækst, varme, vanding og høst for chili."
+          },
+          {
+            "heading": "Peberfrugt",
+            "slug": "peberfrugt",
+            "description": "Læs om dyrkning og pleje af peberfrugt."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/peppers/grow-your-own",
+      "https://www.rhs.org.uk/vegetables/chilli-peppers/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "stoette-til-dahlia-og-hoeje-blomster",
+    "plantName": "Sådan støtter du dahlia og høje blomster",
+    "title": "Sådan støtter du dahlia og høje blomster",
+    "appliesTo": [
+      "dahlia"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Høje planter og tunge blomsterhoveder står bedst med støtte fra starten. Brug stok, ring eller gitter, før stænglerne vælter eller knækker.",
+    "difficulty": "easy",
+    "tags": [
+      "dahlia",
+      "stauder",
+      "blomsterstoette",
+      "ringstoette",
+      "stok"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "saet-stoetten-tidligt",
+        "title": "Sæt støtten tidligt",
+        "body": "Sæt stokke, ringe eller gitre på plads, mens planten stadig er lav. Når stænglerne vokser gennem støtten, skjuler løvet den, og du undgår at presse en fuld plante sammen senere.\n\nTil dahlia kan du sætte en kraftig stok ved plantning. Til brede stauder med mange stængler kan en ring eller et vandret gitter støtte hele planten mere naturligt."
+      },
+      {
+        "key": "vaelg-stoette-efter-formen",
+        "title": "Vælg støtte efter formen",
+        "body": "Brug en enkelt stok til en plante med få tydelige hovedstængler. Brug flere stokke og snor omkring planten, hvis den danner en bred tue. Brug ring- eller gitterstøtte til planter med mange stængler og tunge blomsterhoveder.\n\nStøtten skal ende under eller inde i løvet, men være høj nok til at bære planten dér, hvor den bliver tung."
+      },
+      {
+        "key": "bind-de-staerke-staengler",
+        "title": "Bind de stærke stængler",
+        "body": "Bind dahliaens stærkeste stængler løst til stokken, efterhånden som de vokser. Placér bindet under et bladpar eller en forgrening, ikke lige under blomsterhovedet.\n\nSaml ikke hele planten i ét stramt bundt. Fordel bindingerne, så stænglerne stadig står naturligt og vinden kan passere gennem planten."
+      },
+      {
+        "key": "loeft-en-vaeltet-plante-forsigtigt",
+        "title": "Løft en væltet plante forsigtigt",
+        "body": "Efter regn eller blæst skal du løfte få stængler ad gangen. Bøj dem ikke tilbage med kraft, hvis de er blevet stive. Sæt ekstra støtte på den side, planten læner sig mod, og bind den gradvist op.\n\nEn knækket stængel kan ikke reddes med en stram binding. Klip den rent af, hvis den hænger eller er flækket alvorligt, og støt resten af planten."
+      },
+      {
+        "key": "tjek-foer-blomstring-og-uvejr",
+        "title": "Tjek før blomstring og uvejr",
+        "body": "Kontrollér støtten, når knopperne svulmer, og før perioder med kraftig regn eller vind. Tilføj en højere binding, hvis blomsterne løfter plantens tyngdepunkt."
+      },
+      {
+        "kind": "next",
+        "key": "next",
+        "title": "Lær dahliaen at kende",
+        "description": "Få hele dyrkningsfundamentet for dahlia, fra knold til blomstring.",
+        "slug": "dahlia",
+        "label": "Læs artsguiden"
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/types/perennials/staking",
+      "https://www.rhs.org.uk/plants/dahlia/growing-guide",
+      "https://www.rhs.org.uk/plants/peony/herbaceous/growing-guide"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tomat-black-cherry",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Black Cherry",
     "latinName": "Solanum lycopersicum 'Black Cherry'",
@@ -9694,6 +10778,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-gardeners-delight",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Gardener's Delight",
     "latinName": "Solanum lycopersicum 'Gardener's Delight'",
@@ -9810,6 +10896,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-green-zebra",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Green Zebra",
     "latinName": "Solanum lycopersicum 'Green Zebra'",
@@ -9927,6 +11015,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-moneymaker",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Moneymaker",
     "latinName": "Solanum lycopersicum 'Moneymaker'",
@@ -10043,6 +11133,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-oxheart",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Oxheart",
     "latinName": "Solanum lycopersicum Oxheart Group",
@@ -10163,6 +11255,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-roma",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Roma",
     "latinName": "Solanum lycopersicum 'Roma'",
@@ -10279,6 +11373,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-san-marzano",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "San Marzano",
     "latinName": "Solanum lycopersicum 'San Marzano'",
@@ -10401,6 +11497,8 @@ export const IMPORTED_GUIDES: Guide[] = [
   {
     "id": "tomat-sungold",
     "plantName": "Tomat",
+    "title": null,
+    "appliesTo": [],
     "pluralName": null,
     "variety": "Sungold",
     "latinName": "Solanum lycopersicum 'Sungold'",
@@ -10509,6 +11607,99 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.johnnyseeds.com/vegetables/tomatoes/cherry-tomatoes/sun-gold-f1-tomato-seed-770.html",
       "https://www.johnnyseeds.com/growers-library/vegetables/tomatoes/library-vegetables-grow-rainbow-cherry-tomatoes.html",
       "https://www.johnnyseeds.com/research-farm/3-new-johnnys-bred-stories-by-rob-johnston.html"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "udtynding-af-smaaplanter",
+    "plantName": "Sådan tynder du småplanter",
+    "title": "Sådan tynder du småplanter",
+    "appliesTo": [
+      "aert",
+      "chili",
+      "kaal",
+      "majs",
+      "peberfrugt",
+      "radise",
+      "salat",
+      "tomat"
+    ],
+    "pluralName": null,
+    "variety": null,
+    "latinName": null,
+    "guideLevel": "technique",
+    "parentGuideId": null,
+    "primaryCategoryId": null,
+    "subcategoryId": null,
+    "summary": "Fjern overskydende småplanter, når de første rigtige blade viser sig, så de stærkeste får lys, luft og plads.",
+    "difficulty": "easy",
+    "tags": [
+      "udtynding",
+      "smaaplanter",
+      "saaning",
+      "afstand",
+      "spirer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "vent-paa-de-foerste-rigtige-blade",
+        "title": "Vent på de første rigtige blade",
+        "body": "De første blade efter spiring er kimblade og ligner ofte ikke den voksne plante. Vent, til småplanterne har dannet deres første rigtige blade, så du bedre kan se, hvilke planter der vokser stærkt og normalt.\n\nTynd tidligere, hvis spirerne står så tæt, at de allerede strækker sig, vælter eller skubber hinanden op af jorden."
+      },
+      {
+        "key": "vaelg-planterne-der-skal-blive",
+        "title": "Vælg planterne, der skal blive",
+        "body": "Behold de stærkeste, mest jævnt placerede småplanter. Fjern planter, der er svage, beskadigede eller står helt tæt på en stærkere nabo.\n\nBrug frøposens endelige planteafstand som mål. Du kan tynde i flere omgange, hvis afstanden er stor, eller hvis du vil høste nogle af planterne som spæde blade."
+      },
+      {
+        "key": "klip-eller-traek-forsigtigt",
+        "title": "Klip eller træk forsigtigt",
+        "body": "I løst og fugtigt bed kan du trække små planter op uden at forstyrre naboerne for meget. Hold jorden let omkring den plante, der skal blive.\n\nI bakker, potter eller tæt såning er det ofte sikrere at klippe den svage plante af ved jordoverfladen. Så undgår du at rive i de sammenfiltrede rødder."
+      },
+      {
+        "key": "vand-jorden-paa-plads",
+        "title": "Vand jorden på plads",
+        "body": "Vand forsigtigt efter udtynding, så jorden slutter tæt omkring de tilbageværende rødder. Brug en fin bruser, så småplanterne ikke vælter eller skylles fri.\n\nSe rækken eller potten igen efter nogle dage. Fjern eventuelle nye spirer, der stadig står for tæt, og sørg for, at de tilbageværende planter får lys fra flere sider."
+      },
+      {
+        "kind": "related",
+        "key": "related-1",
+        "items": [
+          {
+            "heading": "Salat",
+            "slug": "salat",
+            "description": "Se hvordan afstand ændrer, om du høster spæde blade eller hele hoveder."
+          },
+          {
+            "heading": "Radise",
+            "slug": "radise",
+            "description": "Se hvorfor jævn afstand hjælper rødderne med at udvikle sig."
+          },
+          {
+            "heading": "Kål",
+            "slug": "kaal",
+            "description": "Se hvordan unge kålplanter etableres med plads omkring sig."
+          }
+        ]
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/advice/profile?cid=1107&pid=619",
+      "https://www.rhs.org.uk/advice/grow-your-own/features/crop-care-june",
+      "https://www.rhs.org.uk/advice/beginners-guide/vegetable-basics/seed-sowing-techniques"
     ],
     "status": "published",
     "visibility": "public",

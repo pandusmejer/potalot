@@ -71,7 +71,7 @@ export function mapGuide(g: Guide): PayloadRow {
     latin_name: g.latinName ?? null,
     guide_level: isSort ? 'sort' : 'art', // oversæt species→art, variety→sort
     parent_slug: isSort ? (g.parentGuideId ?? null) : null,
-    primary_category_id: g.primaryCategoryId,
+    primary_category_id: g.primaryCategoryId!, // teknik filtreret fra i main() → altid sat her
     subcategory_id: g.subcategoryId ?? null,
     summary: g.summary ?? null,
     difficulty: g.difficulty ?? null,
@@ -97,7 +97,7 @@ export function validate(guides: Guide[]): string[] {
     if (seen.has(g.id)) errors.push(`Duplikeret slug i kilden: "${g.id}"`)
     seen.add(g.id)
 
-    if (!VALID_CATEGORIES.has(g.primaryCategoryId)) {
+    if (!g.primaryCategoryId || !VALID_CATEGORIES.has(g.primaryCategoryId)) {
       errors.push(`"${g.id}": ugyldig primaryCategoryId "${g.primaryCategoryId}"`)
     }
     if (g.difficulty != null && !VALID_DIFFICULTY.has(g.difficulty)) {
@@ -157,7 +157,9 @@ async function main() {
     fail('Mangler NEXT_PUBLIC_SUPABASE_URL og/eller SUPABASE_SERVICE_ROLE_KEY. Syncen nægter at køre uden service-role-nøglen.')
   }
 
-  const guides = IMPORTED_GUIDES
+  // Teknikguider kobles ikke til inventar-planter, så de skal IKKE være
+  // master-rækker (de har hverken plantName eller primaryCategoryId).
+  const guides = IMPORTED_GUIDES.filter(g => g.guideLevel !== 'technique')
   console.log(`\n🌱 guides:sync-master ${DRY_RUN ? '(DRY-RUN — skriver intet)' : '(RIGTIG KØRSEL)'}`)
   console.log(`   Kilde: ${guides.length} masterguides (${guides.filter(g => g.guideLevel === 'species').length} art · ${guides.filter(g => g.guideLevel === 'variety').length} sort)`)
 
