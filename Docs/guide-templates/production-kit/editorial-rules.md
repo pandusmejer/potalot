@@ -32,6 +32,41 @@ indhold og tone.
 - **Links:** afslut typisk med et `:::next-guide` tilbage til arten/sorten
   (det naturlige næste skridt). `:::guide` kan pege på en beslægtet teknik.
 
+## Billeder i teknikguider (`@foto`)
+
+Teknikguidens billeder er **funktion, ikke pynt** — guiden lever eller dør på,
+om fotoet hjælper brugeren med at *udføre* handlingen. Derfor:
+
+- **Inline ved trinnet, aldrig galleri eller hero.** Fotoet placeres midt i det
+  trin, det hjælper med — ikke samlet i en billedsektion, ikke som stort
+  hero-foto øverst (farveblok-introen ER teknikguidens hero).
+- **Skriv et `@foto`-direktiv som sit eget afsnit** (blank linje før og efter)
+  i trinnets tekst, EFTER det afsnit der introducerer handlingen/objektet.
+  Teksten fortsætter under fotoet. Syntaks:
+
+  ```
+  Et sideskud vokser i bladhjørnet …
+
+  @foto knibning-af-tomater/sideskud
+  caption: Sideskuddet sidder her
+  note: Mellem hovedstammen og bladstilken.
+  marker: Sideskud
+
+  Fjern ikke selve bladet …
+  ```
+
+  `@foto <mappe>/<navn>` → `public/images/makro/<mappe>/<navn>.jpg`. `caption`
+  (kort eyebrow under billedet) + `note` (uddybning) + `marker` (valgfri diskret
+  oliven-pil/-label PÅ billedet) er alle valgfri felter under src-linjen.
+- **0, 1 eller undtagelsesvis 2 fotos pr. trin.** Brug kun foto, når brugeren
+  lærer noget visuelt. Intet fast "ét foto pr. trin".
+- **Prioritér foto ved:** identifikation ("hvad skal jeg finde?"), placering
+  ("hvor på planten?"), håndgreb ("hvordan gør jeg fysisk?"), resultat ("hvordan
+  ser det ud bagefter?"). Valg og rutine-trin behøver sjældent foto.
+- Format 4:3 eller 3:2 (ikke højt 4:5 plantekort-format). Ingen billeder som ren
+  dekoration. Reader'en viser en rolig "Foto kommer"-placeholder, indtil filen
+  lander — så `@foto`-slots må gerne lægges ind før fotoet findes.
+
 ## Fakta før poesi
 
 - Skriv KUN ud fra kontrollerede fakta fra inputarket + artsguiden. **Opfind

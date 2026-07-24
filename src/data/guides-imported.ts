@@ -8844,12 +8844,12 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "find-sideskuddet",
         "title": "Find sideskuddet",
-        "body": "Et sideskud vokser i bladhjørnet, hvor bladstilken møder hovedstammen. Det ligner en lille ny tomatplante med egen spids og små blade.\n\nFjern ikke selve bladet, blomsterklasen eller plantens top. Følg hovedstammen med fingeren, og find det ekstra skud i vinklen mellem stamme og blad."
+        "body": "Et sideskud vokser i bladhjørnet, hvor bladstilken møder hovedstammen. Det ligner en lille ny tomatplante med egen spids og små blade.\n\n@foto knibning-af-tomater/sideskud\ncaption: Sideskuddet sidder her\nnote: Mellem hovedstammen og bladstilken.\nmarker: Sideskud\n\nFjern ikke selve bladet, blomsterklasen eller plantens top. Følg hovedstammen med fingeren, og find det ekstra skud i vinklen mellem stamme og blad."
       },
       {
         "key": "knib-det-unge-skud-af",
         "title": "Knib det unge skud af",
-        "body": "Tag fat helt nede ved basis, og knib eller bøj det bløde sideskud forsigtigt af. Små skud giver et mindre sår og er lettere at fjerne uden redskab.\n\nEr skuddet blevet tykt og fast, så brug en ren, skarp saks. Riv ikke et stort skud ned langs hovedstammen."
+        "body": "Tag fat helt nede ved basis, og knib eller bøj det bløde sideskud forsigtigt af. Små skud giver et mindre sår og er lettere at fjerne uden redskab.\n\n@foto knibning-af-tomater/knib-basis\ncaption: Knib ved basis\nnote: Små, bløde skud kan fjernes med fingrene.\nmarker: Knib her\n\nEr skuddet blevet tykt og fast, så brug en ren, skarp saks. Riv ikke et stort skud ned langs hovedstammen."
       },
       {
         "key": "gentag-loebende",
