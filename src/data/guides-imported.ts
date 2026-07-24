@@ -603,7 +603,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/bladbede.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/chard/grow-your-own"
     ],
@@ -734,7 +734,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/boenne.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-beans"
@@ -1457,7 +1457,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/graeskar.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/pumpkins/grow-your-own",
       "https://extension.umn.edu/planting-and-growing-guides/growing-giant-pumpkins-home-garden"
@@ -1587,7 +1587,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/gulerod.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/carrots/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-carrots-and-parsnips"
@@ -2138,7 +2138,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kartoffel.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/potatoes/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-potatoes"
@@ -2426,7 +2426,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/loeg.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/onions/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-onions"
@@ -4163,7 +4163,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/squash.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/courgettes/grow-your-own"
     ],
