@@ -68,8 +68,11 @@ function guide(over: Partial<Guide>): Guide {
 
 // ── §3 validering ────────────────────────────────────────────────────────────
 {
-  tjek('Ægte IMPORTED_GUIDES består validering', validate(IMPORTED_GUIDES).length === 0,
-    JSON.stringify(validate(IMPORTED_GUIDES)))
+  // Samme sæt som main() synker: teknikguider har ingen primaryCategoryId og
+  // filtreres fra før validering (de hører ikke til i master-tabellen).
+  const syncable = IMPORTED_GUIDES.filter(g => g.guideLevel !== 'technique')
+  tjek('Ægte IMPORTED_GUIDES består validering', validate(syncable).length === 0,
+    JSON.stringify(validate(syncable)))
 
   // Test 7-lag: forældreløs sort fanges FØR skrivning (DB-funktionen ruller
   // desuden tilbage, hvis den slipper igennem).

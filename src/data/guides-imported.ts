@@ -1421,6 +1421,87 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "citronmelisse",
+    "plantName": "Citronmelisse",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Melissa officinalis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør flerårig krydderurt med citronduftende blade, kraftig vækst og nektarrige blomster til bier.",
+    "difficulty": "easy",
+    "tags": [
+      "krydderurt",
+      "fleraarig",
+      "citronduft",
+      "halvskygge",
+      "bestoevning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-fleraarig-krydderurt-der-kommer-igen",
+        "title": "En flerårig krydderurt, der kommer igen",
+        "body": "Citronmelisse er en hårdfør, urteagtig staude. Den danner en tæt, bladfyldt tue om foråret, blomstrer om sommeren og visner tilbage mod jorden senere på året.\n\nBladene dufter tydeligt af citron, især når de gnides eller høstes som unge skud. Planten er nem at dyrke og kan blive markant større, end den ser ud i en lille krydderurtepotte."
+      },
+      {
+        "key": "sol-eller-halvskygge-fungerer",
+        "title": "Sol eller halvskygge fungerer",
+        "body": "Citronmelisse klarer både sol og halvskygge og er tolerant over for mange almindelige havejorder. En jord, der holder rimeligt på fugten uden at stå vandmættet, giver en stabil bladvækst.\n\nI meget varm sol kan planten kræve mere vand. Let skygge er derfor ikke et nederlag, bare en sjældent praktisk egenskab hos en krydderurt."
+      },
+      {
+        "key": "saa-plant-eller-del-en-eksisterende-tue",
+        "title": "Så, plant eller del en eksisterende tue",
+        "body": "Planten kan dyrkes fra frø, men en etableret citronmelisse er også meget nem at dele. Grav en del af tuen op, sørg for at stykket har både rødder og skud, og plant det igen i frisk jord.\n\nDeling er den sikreste måde at kopiere en navngiven sort på. Frøplanter fra sorter kan variere fra moderplanten."
+      },
+      {
+        "key": "hoest-de-unge-skudspidser",
+        "title": "Høst de unge skudspidser",
+        "body": "De yngste blade og skudspidser har den friskeste duft og den blødeste struktur. Høst lidt og ofte fra forår til efterår.\n\nKlip hele skud lige over et bladpar i stedet for kun at nippe tilfældige blade af. Det fremmer ny forgrening og holder planten mere kompakt."
+      },
+      {
+        "key": "klip-tilbage-naar-planten-bliver-grov",
+        "title": "Klip tilbage, når planten bliver grov",
+        "body": "Efter blomstring kan planten blive høj, åben og mindre interessant som bladurt. Klip den tilbage, så den kan sende et frisk hold blade op.\n\nHvis planten skal bruges primært i køkkenet, kan blomsterstængler også fjernes tidligere. Lader du nogle blomstre, får bier og andre bestøvere til gengæld en nektarrig plante."
+      },
+      {
+        "key": "den-kan-saa-sig-selv",
+        "title": "Den kan så sig selv",
+        "body": "Citronmelisse kan selvså, hvis blomsterne får lov at modne frø. I en løs naturhave kan det være fint; i et lille krydderurtebed kan det hurtigt blive mere citronmelisse, end nogen husholdning realistisk kan drikke som te.\n\nFjern derfor visne blomsterstængler før frømodning, hvis du vil holde bestanden på plads."
+      },
+      {
+        "key": "dyrkning-i-krukke-holder-den-samlet",
+        "title": "Dyrkning i krukke holder den samlet",
+        "body": "Citronmelisse fungerer godt i en rummelig krukke og er nem at placere tæt ved køkkenet. Krukker tørrer hurtigere end åben jord, så vandingen skal følges tættere om sommeren.\n\nEn krukke gør det også lettere at styre plantens størrelse og eventuelle selvsåning."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Citronmelisse er generelt robust og har få alvorlige problemer. Meldug kan dukke op på gamle eller stressede blade, især hvis planten står tæt og tørt.\n\nKlip angrebet, træt vækst tilbage, vand ved behov og lad frisk løv overtage."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/herbs/lemon-balm/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "cosmos",
     "plantName": "Cosmos",
     "title": null,
@@ -4461,6 +4542,97 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/purloeg.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/chives/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "rabarber",
+    "plantName": "Rabarber",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rheum × hybridum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Hårdfør flerårig grøntsag, der dyrkes for de syrlige bladstilke og kan give høst fra samme krone i mange år.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "groentsag",
+      "fleraarig",
+      "tidlig-hoest",
+      "deling"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-groentsag-der-staar-fast-i-haven",
+        "title": "En grøntsag, der står fast i haven",
+        "body": "Rabarber er en flerårig plante med en kraftig underjordisk krone og store blade på tykke bladstilke. Det er bladstilkene, der høstes; planten kan blive stående på samme sted og give afgrøde gennem mange år.\n\nDen fylder betydeligt som voksen, så placeringen bør vælges som til en staude eller frugtbusk snarere end som til en hurtig række grøntsager."
+      },
+      {
+        "key": "giv-kronen-sol-plads-og-god-jord",
+        "title": "Giv kronen sol, plads og god jord",
+        "body": "Rabarber trives bedst i sol og frugtbar, veldrænet jord med god adgang til fugt. Den store bladmasse bruger meget vand gennem foråret og sommeren.\n\nForbedr jorden med organisk materiale, men undgå et sted, der står vandmættet om vinteren."
+      },
+      {
+        "key": "plant-kronen-i-den-rigtige-hoejde",
+        "title": "Plant kronen i den rigtige højde",
+        "body": "Rabarber etableres typisk fra en krone eller et delt stykke af en ældre plante. Placer kronen, så vækstpunkterne ikke begraves dybt under jorden.\n\nGiv hver plante god afstand. En etableret rabarber bliver bred og konkurrerer dårligt, hvis den er klemt mellem andre kraftige planter."
+      },
+      {
+        "key": "lad-unge-planter-bygge-styrke",
+        "title": "Lad unge planter bygge styrke",
+        "body": "En nyplantet rabarber bør først opbygge et stærkt rodsystem og en stor krone. Begræns derfor høsten det første etableringsår i stedet for straks at tage alle de flotteste stilke.\n\nEn langsommere start giver en stærkere flerårig plante, hvilket er kedeligt på kort sigt og irriterende for mennesket, men ganske effektivt biologisk."
+      },
+      {
+        "key": "traek-stilkene-naar-de-er-store-nok",
+        "title": "Træk stilkene, når de er store nok",
+        "body": "Høst bladstilke ved at gribe dem tæt ved basis og trække med en let vridende bevægelse, så hele stilken slipper fra kronen. Undgå at fjerne alle stilke på én gang; planten skal beholde blade til at opbygge energi.\n\nHovedhøsten ligger i foråret og den tidlige sommer. Senere på sommeren bør planten få fred til at genopbygge kronen."
+      },
+      {
+        "key": "bladene-skal-ikke-spises",
+        "title": "Bladene skal ikke spises",
+        "body": "Det er bladstilkene, der bruges i køkkenet. Selve bladpladerne indeholder høje niveauer af oxalsyre og andre stoffer og skal ikke spises.\n\nSkær eller vrid bladet af stilken efter høst og læg bladmaterialet på komposten, hvis det ellers er sundt."
+      },
+      {
+        "key": "fjern-blomsterstaengler",
+        "title": "Fjern blomsterstængler",
+        "body": "Ældre eller stressede planter kan sende en kraftig blomsterstængel op. Hvis målet er bladstilke, fjernes blomsterstænglen ved basis, så planten ikke bruger unødig energi på frøproduktion.\n\nBlomstring er ikke tegn på, at planten er ødelagt, men hyppig blomstring kan være et signal om alder eller stress."
+      },
+      {
+        "key": "del-gamle-kroner",
+        "title": "Del gamle kroner",
+        "body": "Efter flere år kan en stor rabarberkrone blive mindre produktiv i midten. I hvileperioden kan kronen graves op og deles i kraftige stykker med tydelige knopper.\n\nGenplant de bedste dele i frisk jord. Deling er samtidig den normale måde at formere en navngiven sort på."
+      },
+      {
+        "key": "tvangsdyrkning-giver-tidlige-milde-stilke",
+        "title": "Tvangsdyrkning giver tidlige, milde stilke",
+        "body": "En veletableret plante kan dækkes mørkt tidligt på sæsonen for at fremdrive lyse, møre stilke. Det kaldes forcing eller tvangsdyrkning.\n\nDet belaster planten mere end almindelig høst, så samme krone bør ikke presses hårdt hvert år."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Rabarber er generelt robust. Kroneråd er blandt de alvorligere problemer og hænger især sammen med dårlig dræning og svækkede planter.\n\nSnegle kan gnave i blade og unge stilke, men skader på bladene er ofte mere kosmetiske end katastrofale for en stor etableret plante."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/rhubarb/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",

@@ -170,7 +170,9 @@ function main(): void {
     orphans.forEach(g => line(`   ${g.slug}  →  savner art '${g.parentSlug}'`))
   }
 
-  const noImage = guides.filter(g => !hasHero(g))
+  // Teknikguider SKAL ikke have hero-billede: farveblok-introen er deres hero, og
+  // deres fotos ligger inline ved trinnet via @foto. De hører ikke på ønskelisten.
+  const noImage = guides.filter(g => g.level !== 'technique' && !hasHero(g))
   if (noImage.length) {
     line(`\n🖼️  Guides uden hero-billede (${noImage.length}):`)
     noImage.forEach(g => line(`   ${g.slug}  (læg i public/images/${g.level === 'species' ? 'arts' : 'plantekort'}/)`))
