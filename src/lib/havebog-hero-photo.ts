@@ -46,6 +46,16 @@ const MAANED_SLUG = [
 const HAVEBOG_HERO_MANIFEST: {
   [month: number]: Partial<Record<HavebogUserState, string>>
 } = {
+  // ── Januar (active — stilprøve for 11-måneders serien, jul 2026) ──
+  // Rim på tørre frøstande i lav vintersol, drivhusglas anes. Ét foto
+  // pr. måned = launch-scope; active dækker også new/year2plus via fallback.
+  1: {
+    active: '/images/heroes-havebog/januar/havebog-hero-januar-active.jpg',
+  },
+  // ── Februar (active) — vintergæk bryder gennem mørk jord, køligt lys ──
+  2: {
+    active: '/images/heroes-havebog/februar/havebog-hero-februar-active.jpg',
+  },
   // ── Juni (komplet trippel pr. 11. juni 2026) ──────────────
   6: {
     // Ny bruger: valmue-eng med strå i modlys — mockup'ets foto.
