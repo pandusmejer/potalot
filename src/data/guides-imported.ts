@@ -9,6 +9,106 @@ import type { Guide } from '@/lib/types'
 
 export const IMPORTED_GUIDES: Guide[] = [
   {
+    "id": "aeble",
+    "plantName": "Æble",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Malus domestica",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Langlivet frugttræ, hvor grundstamme, bestøvning og træningsform er mindst lige så vigtige som selve æblesorten.",
+    "difficulty": "medium",
+    "tags": [
+      "frugttrae",
+      "grundstamme",
+      "bestoevning",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-aebletrae-er-sort-plus-grundstamme",
+        "title": "Et æbletræ er sort plus grundstamme",
+        "body": "Den navngivne æblesort er normalt podet på en grundstamme. Sorten bestemmer frugten, mens grundstammen i høj grad styrer vækstkraft og endelig størrelse."
+      },
+      {
+        "key": "vaelg-stoerrelse-foer-sort",
+        "title": "Vælg størrelse før sort",
+        "body": "Tænk over pladsen først. Fritstående træ, espalier og kordón er forskellige dyrkningssystemer."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-frit-trae-eller-traenet-form",
+        "title": "Frit træ eller trænet form?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Fritstående",
+            "items": [
+              "kræver mere plads",
+              "enklere træningssystem"
+            ]
+          },
+          {
+            "heading": "Espalier eller kordón",
+            "items": [
+              "sparer plads",
+              "kræver regelmæssig sommerbeskæring"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "bestoevning-skal-passe",
+        "title": "Bestøvning skal passe",
+        "body": "De fleste æblesorter giver bedre med en kompatibel bestøver med overlappende blomstring."
+      },
+      {
+        "key": "plant-med-podestedet-over-jorden",
+        "title": "Plant med podestedet over jorden",
+        "body": "Podestedet skal holdes frit over jordniveau. Vand stabilt under etableringen og hold græs væk lige omkring stammen."
+      },
+      {
+        "key": "beskaer-efter-traeningsformen",
+        "title": "Beskær efter træningsformen",
+        "body": "Fritstående æbler beskæres primært om vinteren, mens espalier og kordón i høj grad styres med sommerbeskæring."
+      },
+      {
+        "key": "tynd-ved-tungt-frugtsaet",
+        "title": "Tynd ved tungt frugtsæt",
+        "body": "Udtynding efter det naturlige frugtfald kan give større frugter og aflaste grenene."
+      },
+      {
+        "key": "hoest-efter-modenhed",
+        "title": "Høst efter modenhed",
+        "body": "Tidlige sorter bruges hurtigt, mens lagersorter kan gemmes. Høsttid er sortsspecifik."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Skurv, meldug, kræft, æblevikler og bladlus er blandt de almindelige problemer."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/apples/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "aert",
     "plantName": "Ært",
     "pluralName": null,
@@ -151,6 +251,77 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": null,
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/peas/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "aerteblomst",
+    "plantName": "Ærteblomst",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Lathyrus odoratus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Duftende etårig klatreblomst, der giver flest nye blomster, når du plukker ofte og ikke lader bælge modne.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-etaarig-klatreblomst",
+        "title": "En etårig klatreblomst",
+        "body": "Lathyrus odoratus er den klassiske duftende ærteblomst. Den klatrer med slyngtråde og skal have net, grene eller snore at gribe i. Flerårige Lathyrus-arter er noget andet."
+      },
+      {
+        "key": "giv-roedderne-plads",
+        "title": "Giv rødderne plads",
+        "body": "Ærteblomster vil stå lyst og i veldrænet jord, der kan holde fugt. En god rodzone hjælper gennem tørre perioder."
+      },
+      {
+        "key": "saa-med-plads-til-roedderne",
+        "title": "Så med plads til rødderne",
+        "body": "Start i dybe potter eller så på voksestedet. Målet er kompakte planter med gode rødder, ikke lange bløde ranker indendørs."
+      },
+      {
+        "key": "knib-unge-planter",
+        "title": "Knib unge planter",
+        "body": "Når planten er etableret, kan toppen knibes for at fremme sideskud. Udstillingsdyrkning som cordon er en særskilt teknik."
+      },
+      {
+        "key": "pluk-ofte",
+        "title": "Pluk ofte",
+        "body": "Klip blomster til vase eller fjern visne blomster. Hvis mange bælge får lov at modne, falder produktionen af nye blomster."
+      },
+      {
+        "key": "vand-i-toerre-perioder",
+        "title": "Vand i tørre perioder",
+        "body": "Tørkestress forkorter blomstringen. Vand ved jorden og vær særligt opmærksom langs mure og i beholdere."
+      },
+      {
+        "key": "sorten-afgoer-duft-og-form",
+        "title": "Sorten afgør duft og form",
+        "body": "Gamle duftende typer, moderne storblomstrede sorter og kompakte former kan være meget forskellige. Det hører hjemme i sortsguiden."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/lathyrus/growing-guide"
     ],
     "status": "published",
     "visibility": "public",
@@ -526,6 +697,84 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "blaabaer",
+    "plantName": "Blåbær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Vaccinium corymbosum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Syreelskende frugtbusk, der kræver lav jord-pH og trives bedst i sur jord eller en stor krukke med surbundssubstrat.",
+    "difficulty": "medium",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "surbund",
+      "krukke"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "blaabaer-kraever-sur-jord",
+        "title": "Blåbær kræver sur jord",
+        "body": "Det vigtigste ved blåbær er jordens surhedsgrad. Planten trives i sur jord og mistrives i kalkrig jord."
+      },
+      {
+        "key": "test-foer-du-planter",
+        "title": "Test før du planter",
+        "body": "Test jordens pH. Hvis jorden ikke er sur nok, er en stor krukke eller et særligt surbundsbed sikrere end et lille ændret plantehul."
+      },
+      {
+        "key": "regnvand-er-nyttigt",
+        "title": "Regnvand er nyttigt",
+        "body": "Hvor postevandet er hårdt, er regnvand bedre til krukkeplanter. Hold samtidig substratet jævnt fugtigt."
+      },
+      {
+        "key": "flere-sorter-kan-give-bedre-hoest",
+        "title": "Flere sorter kan give bedre høst",
+        "body": "Mange blåbær kan sætte frugt alene, men krydsbestøvning mellem kompatible sorter kan øge høsten."
+      },
+      {
+        "key": "beskaer-foerst-rigtigt-senere",
+        "title": "Beskær først rigtigt senere",
+        "body": "Unge planter behøver kun let oprydning. På ældre buske fjernes gradvist nogle af de ældste grene ved basis."
+      },
+      {
+        "key": "vent-paa-fuld-modenhed",
+        "title": "Vent på fuld modenhed",
+        "body": "Bærrene kan være blå, før de smager fuldmodent. Lad dem sidde, til de slipper let og smagen er udviklet."
+      },
+      {
+        "key": "beskyt-mod-fugle",
+        "title": "Beskyt mod fugle",
+        "body": "Når bærrene farver, kan fugle tage en stor del af høsten. Net eller frugtbur er ofte nødvendigt."
+      },
+      {
+        "key": "sorten-bestemmer-stoerrelse-og-saeson",
+        "title": "Sorten bestemmer størrelse og sæson",
+        "body": "Buskstørrelse, høsttid og bærstørrelse varierer markant."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/blueberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "bladbede",
     "plantName": "Bladbede",
     "pluralName": null,
@@ -606,6 +855,84 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/bladbede.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/chard/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "blomme",
+    "plantName": "Blomme",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Prunus domestica",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Tidligt blomstrende frugttræ til sol og læ, som beskæres i vækstsæsonen og kan give så tung høst, at grenene skal aflastes.",
+    "difficulty": "medium",
+    "tags": [
+      "frugttrae",
+      "stenfrugt",
+      "sommerbeskaering",
+      "grundstamme"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "blommer-blomstrer-tidligt",
+        "title": "Blommer blomstrer tidligt",
+        "body": "Blommetræer kan rammes af sen frost under blomstring. Et solrigt og læfyldt sted giver bedre udgangspunkt."
+      },
+      {
+        "key": "sort-grundstamme-og-bestoevning",
+        "title": "Sort, grundstamme og bestøvning",
+        "body": "Grundstammen påvirker størrelsen. Nogle sorter er selvfertile, andre har gavn af eller kræver bestøver."
+      },
+      {
+        "key": "plant-med-podestedet-frit",
+        "title": "Plant med podestedet frit",
+        "body": "Podestedet holdes over jordniveau. Nyplantede træer skal vandes konsekvent under etablering."
+      },
+      {
+        "key": "beskaer-i-vaekstsaesonen",
+        "title": "Beskær i vækstsæsonen",
+        "body": "Blomme er stenfrugt og bør beskæres i vækstsæsonen frem for midt om vinteren for at mindske sygdomsrisiko."
+      },
+      {
+        "key": "tynd-tunge-afgroeder",
+        "title": "Tynd tunge afgrøder",
+        "body": "Blommer kan sætte så meget frugt, at grene belastes. Udtynding kan give større frugter og færre knækkede grene."
+      },
+      {
+        "key": "hoest-i-flere-omgange",
+        "title": "Høst i flere omgange",
+        "body": "Frugterne modner ikke nødvendigvis samtidigt. Pluk modne blommer og lad resten hænge."
+      },
+      {
+        "key": "vand-under-frugtudvikling",
+        "title": "Vand under frugtudvikling",
+        "body": "Længere tørke kan påvirke frugtstørrelse og kvalitet, især på unge træer."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Blommevikler, bladlus, sølvglans og brunråd kan forekomme."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/plums/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -738,6 +1065,84 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-beans"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "brombaer",
+    "plantName": "Brombær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rubus fruticosus agg.",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kraftig flerårig bærplante med lange skud, som trænes på tråde og beskæres ved at fjerne de skud, der netop har båret frugt.",
+    "difficulty": "medium",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "opbinding",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "brombaer-er-lange-skud",
+        "title": "Brombær er lange skud",
+        "body": "Havebrombær er bedst tænkt som lange, flerårige rankende skud frem for en kompakt busk. De fleste sorter dyrkes lettest på tråde langs hegn, væg eller stolper."
+      },
+      {
+        "key": "frugt-paa-aeldre-skud",
+        "title": "Frugt på ældre skud",
+        "body": "De fleste sorter bærer på skud, der voksede året før. Samtidig laver planten nye skud, som skal bære næste sæson."
+      },
+      {
+        "key": "plant-med-plads-omkring",
+        "title": "Plant med plads omkring",
+        "body": "Brombær er robuste, men kraftige sorter kræver meget plads. Et solrigt sted giver bedst modning, og jorden bør være veldrænet og fugtighedsbevarende."
+      },
+      {
+        "key": "bind-nye-skud-ind",
+        "title": "Bind nye skud ind",
+        "body": "Før skuddene langs trådene, mens de er fleksible. Hold gerne nye skud adskilt fra dem, der bærer frugt."
+      },
+      {
+        "key": "fjern-gamle-frugtskud",
+        "title": "Fjern gamle frugtskud",
+        "body": "Efter høst skæres de skud, der har båret, væk ved basis. De nye skud overtager pladsen på espalieret."
+      },
+      {
+        "key": "hoest-fuldmodent",
+        "title": "Høst fuldmodent",
+        "body": "Brombær udvikler bedst smag, når de får lov at blive helt mørke og fyldige på planten."
+      },
+      {
+        "key": "hold-vaeksten-i-system",
+        "title": "Hold væksten i system",
+        "body": "Kraftige skud kan blive flere meter lange. Led dem langs trådene frem for at lade dem vokse gennem hele bedet."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Fugle og gråskimmel er blandt de almindelige problemer. Tæt, fugtig vækst bør undgås."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/blackberries-and-hybrid-berries/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -985,6 +1390,101 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/chili.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "cosmos",
+    "plantName": "Cosmos",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cosmos bipinnatus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Let sommerblomst med fint løv og lang blomstring, som trives i sol og fortsætter, når visne blomster fjernes.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-cosmos",
+        "title": "Sådan vokser cosmos",
+        "body": "Cosmos er en busket, etårig sommerblomst med fint, fjeragtigt løv og blomster på lange stilke. Den blomstrer fra sommer og ind i efteråret, indtil frosten afslutter sæsonen."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-hoej-eller-kompakt-cosmos",
+        "title": "Høj eller kompakt cosmos?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Høje typer",
+            "items": [
+              "giver højde og bevægelse",
+              "er gode til snit",
+              "kan kræve let støtte"
+            ]
+          },
+          {
+            "heading": "Kompakte typer",
+            "items": [
+              "passer i krukker og mindre bede",
+              "står mere samlet",
+              "er mindre udsatte i vind"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "giv-den-sol",
+        "title": "Giv den sol",
+        "body": "Cosmos blomstrer bedst i fuld sol og veldrænet, moderat næringsrig jord. Meget kraftig gødskning kan give masser af grønt uden tilsvarende mange blomster."
+      },
+      {
+        "key": "saa-med-varme-i-sigte",
+        "title": "Så med varme i sigte",
+        "body": "Forkultivér for et forspring eller så direkte, når jorden er lun. Småplanter skal stå lyst, og forkultiverede planter skal afhærdes før udplantning."
+      },
+      {
+        "key": "knib-for-flere-grene",
+        "title": "Knib for flere grene",
+        "body": "Toppen kan knibes på unge planter for at fremme sideskud og flere blomsterstængler. Det er især nyttigt på høje snitblomsttyper."
+      },
+      {
+        "key": "fjern-visne-blomster",
+        "title": "Fjern visne blomster",
+        "body": "Klip til vase eller deadhead løbende. Det holder planten i blomstringsfasen længere. Lad enkelte hoveder modne, hvis du vil samle frø."
+      },
+      {
+        "key": "hold-oeje-med-vind-og-snegle",
+        "title": "Hold øje med vind og snegle",
+        "body": "Snegle kan tage unge planter, og høje sorter kan lægge sig i vind. Giv luft mellem planterne, så tæt fugtig vækst ikke fremmer gråskimmel."
+      },
+      {
+        "key": "gem-froe-med-omtanke",
+        "title": "Gem frø med omtanke",
+        "body": "Åbne sorter kan give brugbart frø, mens hybrider og blandinger kan variere. Gem kun sortsnavnet på afkom, når du ved, at sorten er frøstabil."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/30717/cosmos-bipinnatus/details"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
@@ -1599,6 +2099,108 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "hindbaer",
+    "plantName": "Hindbær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rubus idaeus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Flerårig bærplante med oprette skud, hvor beskæringen afhænger af, om sorten bærer på sidste års eller årets nye skud.",
+    "difficulty": "medium",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "opbinding",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "to-maader-at-baere-hindbaer-paa",
+        "title": "To måder at bære hindbær på",
+        "body": "Hindbær opdeles dyrkningsmæssigt i sommerbærende og efterårsbærende typer. Sommerbærende giver frugt på skud fra året før, mens efterårsbærende giver frugt på årets nye skud."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-sommer-eller-efteraarshindbaer",
+        "title": "Sommer- eller efterårshindbær?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Sommerbærende",
+            "items": [
+              "gamle frugtskud fjernes efter høst",
+              "nye skud gemmes til næste år",
+              "kræver tydelig opbinding"
+            ]
+          },
+          {
+            "heading": "Efterårsbærende",
+            "items": [
+              "bærer på årets skud",
+              "enklere beskæring",
+              "ofte mere kompakte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "plant-i-sol-eller-let-skygge",
+        "title": "Plant i sol eller let skygge",
+        "body": "Et solrigt, læfyldt sted giver bedst modning, men hindbær tåler let skygge. Jorden skal holde på fugten uden at være vandmættet."
+      },
+      {
+        "key": "stoet-raekkerne",
+        "title": "Støt rækkerne",
+        "body": "De fleste sorter har gavn af stolper og vandrette tråde. Det holder skuddene oprejste og gør beskæring og høst langt lettere."
+      },
+      {
+        "key": "vand-under-blomstring-og-frugt",
+        "title": "Vand under blomstring og frugt",
+        "body": "Rødderne ligger relativt højt. Vand derfor i tørre perioder, især mens blomster og bær udvikler sig."
+      },
+      {
+        "key": "beskaer-efter-typen",
+        "title": "Beskær efter typen",
+        "body": "På sommerbærende fjernes de skud, der netop har båret, helt ved jorden. De bedste nye skud bindes ind. Efterårsbærende kan fornyes langt mere samlet i hvileperioden."
+      },
+      {
+        "key": "hoest-ofte",
+        "title": "Høst ofte",
+        "body": "Modne bær slipper let fra blomsterbunden. Pluk jævnligt, da fuldmodne hindbær er bløde og hurtigt bliver overmodne."
+      },
+      {
+        "key": "hold-raekken-aaben",
+        "title": "Hold rækken åben",
+        "body": "Fjern svage og uønskede rodskud, så rækken ikke bliver en tæt masse. Luft og lys gør både høst og sygdomskontrol lettere."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Fugle, hindbærbiller, gråskimmel og virussygdomme kan forekomme. Sunde udgangsplanter og god luft omkring skuddene er vigtigt."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/raspberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "hvidloeg",
     "plantName": "Hvidløg",
     "pluralName": null,
@@ -2150,6 +2752,108 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "kirsebaer",
+    "plantName": "Kirsebær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Prunus avium / Prunus cerasus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Frugttræ med søde eller sure kirsebær, hvor type, grundstamme, bestøvning og beskyttelse mod fugle styrer dyrkningen.",
+    "difficulty": "medium",
+    "tags": [
+      "frugttrae",
+      "stenfrugt",
+      "bestoevning",
+      "fuglebeskyttelse"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "to-kirsebaertyper-i-samme-univers",
+        "title": "To kirsebærtyper i samme univers",
+        "body": "Kirsebær samles brugerrettet i sødkirsebær og surkirsebær. De er botanisk forskellige arter, men deler så meget dyrkningslogik, at én guide er nyttig."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-soedt-eller-surt-kirsebaer",
+        "title": "Sødt eller surt kirsebær?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Sødkirsebær",
+            "items": [
+              "primært frisk spisning",
+              "ofte kraftigere træer",
+              "bestøvningsbehov varierer"
+            ]
+          },
+          {
+            "heading": "Surkirsebær",
+            "items": [
+              "især madlavning og syltning",
+              "ofte mere kompakte",
+              "mange sorter er selvfertile"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "vaelg-grundstamme-efter-plads",
+        "title": "Vælg grundstamme efter plads",
+        "body": "Grundstammen er central for træets størrelse. Små haver kan vælge mere kompakte træer eller fan-træning."
+      },
+      {
+        "key": "sol-og-lae",
+        "title": "Sol og læ",
+        "body": "En varm, solrig placering hjælper modning. Sen frost kan skade blomsterne."
+      },
+      {
+        "key": "bestoevning-afhaenger-af-sorten",
+        "title": "Bestøvning afhænger af sorten",
+        "body": "Nogle sødkirsebær er selvfertile, andre kræver en kompatibel sort. Surkirsebær er ofte mindre krævende."
+      },
+      {
+        "key": "beskaer-om-sommeren",
+        "title": "Beskær om sommeren",
+        "body": "Som anden stenfrugt beskæres kirsebær i vækstsæsonen snarere end midt om vinteren."
+      },
+      {
+        "key": "fuglene-elsker-kirsebaer",
+        "title": "Fuglene elsker kirsebær",
+        "body": "Netning er ofte nødvendig på små træer, hvis høsten skal blive hos dyrkeren."
+      },
+      {
+        "key": "hoest-fuldmodent",
+        "title": "Høst fuldmodent",
+        "body": "Kirsebær bør høstes, når sortens farve og smag er udviklet. De eftermodner ikke som pærer."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Kirsebærflue, bladlus, brunråd, bakteriekræft og fugleskader kan forekomme."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/cherries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "knoldfennikel",
     "plantName": "Knoldfennikel",
     "pluralName": null,
@@ -2307,6 +3011,148 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "kornblomst",
+    "plantName": "Kornblomst",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Centaurea cyanus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør etårig markblomst til sol og veldrænet jord, velegnet til naturprægede bede, bestøvere og snit.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-klassisk-markblomst",
+        "title": "En klassisk markblomst",
+        "body": "Kornblomst er etårig med smalle grågrønne blade og frynsede blomsterhoveder. Den klassiske er blå, men sorter findes i flere farver."
+      },
+      {
+        "key": "saa-direkte-i-sol",
+        "title": "Så direkte i sol",
+        "body": "Så på voksestedet i veldrænet jord. Forårs- og efterårssåning kan bruges afhængigt af forholdene."
+      },
+      {
+        "key": "tynd-bestanden",
+        "title": "Tynd bestanden",
+        "body": "Meget tæt spiring giver tynde planter. Tynd, så hver plante får lys og plads til sideskud."
+      },
+      {
+        "key": "klip-og-deadhead",
+        "title": "Klip og deadhead",
+        "body": "Høst til vase eller fjern visne hoveder. Det holder planten i blomstring længere."
+      },
+      {
+        "key": "vand-under-etablering",
+        "title": "Vand under etablering",
+        "body": "Etablerede planter klarer almindelige sommerforhold, men vanding i længere tørke giver mere stabil blomstring."
+      },
+      {
+        "key": "hold-oeje-med-meldug",
+        "title": "Hold øje med meldug",
+        "body": "Kornblomst er generelt robust, men meldug kan forekomme. Luft og ikke for tætte bestande hjælper."
+      },
+      {
+        "key": "gem-froe",
+        "title": "Gem frø",
+        "body": "Lad enkelte hoveder modne og tørre. Saml frøene eller lad nogle falde, hvis planten gerne må selvså."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/46174/centaurea-cyanus/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kornvalmue",
+    "plantName": "Kornvalmue",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Papaver rhoeas",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Etårig valmue med papirtynde blomster, som sås direkte i sol og passer bedst i let, veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "bliv-hvor-du-spirer",
+        "title": "Bliv hvor du spirer",
+        "body": "Kornvalmue er etårig med fint delte blade og kortlivede skålformede blomster. Den egner sig bedst til direkte såning frem for gentagen omplantning."
+      },
+      {
+        "key": "saa-direkte",
+        "title": "Så direkte",
+        "body": "Så de små frø tyndt på åben, solrig og veldrænet jord. Frøene skal have jordkontakt uden at blive begravet dybt."
+      },
+      {
+        "key": "tynd-forsigtigt",
+        "title": "Tynd forsigtigt",
+        "body": "Tæt spiring giver svage planter. Tynd småplanter forsigtigt og undgå senere at flytte etablerede planter unødigt."
+      },
+      {
+        "key": "lad-blomstringen-vaere-let",
+        "title": "Lad blomstringen være let",
+        "body": "Hver blomst er kortlivet, men en bestand kan sende nye knopper op. Lad nogle blomster udvikle kapsler, hvis du vil have frø."
+      },
+      {
+        "key": "froekapslen-afsloerer-modenhed",
+        "title": "Frøkapslen afslører modenhed",
+        "body": "Efter blomstring dannes kapslen. Når den er moden og tør, kan frøene samles og opbevares helt tørre."
+      },
+      {
+        "key": "sol-og-draen",
+        "title": "Sol og dræn",
+        "body": "Kornvalmue behøver ikke kraftig gødskning. For frodige naboplanter kan i stedet skygge småplanterne væk."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Bladlus og svampesygdomme kan forekomme. Luft mellem planterne og fjern hårdt syge planter."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/56687/papaver-rhoeas/details/"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "loeg",
     "plantName": "Løg",
     "pluralName": null,
@@ -2430,6 +3276,100 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/onions/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-onions"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "loevemund",
+    "plantName": "Løvemund",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Antirrhinum majus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Langblomstrende sommerblomst med oprette blomsteraks, dyrket fra frø til bede, krukker og snit.",
+    "difficulty": "medium",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "fra-dvaerg-til-snitblomst",
+        "title": "Fra dværg til snitblomst",
+        "body": "Løvemund findes fra kompakte kantplanter til høje sorter med lange blomsteraks."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-lav-eller-hoej-loevemund",
+        "title": "Lav eller høj løvemund?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Lave typer",
+            "items": [
+              "krukker og forkant",
+              "kompakt vækst"
+            ]
+          },
+          {
+            "heading": "Høje typer",
+            "items": [
+              "gode til snit",
+              "giver lodret struktur",
+              "kan kræve støtte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-lyst",
+        "title": "Så lyst",
+        "body": "Løvemund dyrkes let fra frø, men småplanterne kan være langsommere end mange andre sommerblomster. Giv dem lys og tid."
+      },
+      {
+        "key": "plant-i-sol",
+        "title": "Plant i sol",
+        "body": "Vælg en solrig plads med veldrænet jord. Høje sorter står bedst i læ."
+      },
+      {
+        "key": "knib-efter-formaal",
+        "title": "Knib efter formål",
+        "body": "Til busket vækst kan unge planter knibes. Til lange snitstængler kan færre stærke stængler være bedre."
+      },
+      {
+        "key": "deadhead",
+        "title": "Deadhead",
+        "body": "Fjern færdige blomsteraks for at fremme nye sideskud. Lad kun udvalgte aks modne, hvis du vil samle frø."
+      },
+      {
+        "key": "hold-oeje-med-rust",
+        "title": "Hold øje med rust",
+        "body": "Løvemund kan få rust, meldug og bladlus. Giv luft og fjern tydeligt syge plantedele."
+      },
+      {
+        "key": "blomster-til-bestoevere",
+        "title": "Blomster til bestøvere",
+        "body": "Den karakteristiske blomst åbnes blandt andet af humlebier. Enkeltblomstrende sorter giver aktivitet omkring planten."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/69565/antirrhinum-majus/details"
     ],
     "status": "published",
     "visibility": "public",
@@ -2657,6 +3597,77 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "morgenfrue",
+    "plantName": "Morgenfrue",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Calendula officinalis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Robust etårig blomst, der er nem at så direkte og blomstrer længe, når du løbende fjerner visne blomster.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-nem-blomst-fra-froe",
+        "title": "En nem blomst fra frø",
+        "body": "Morgenfrue er en robust etårig plante med gule, orange eller cremefarvede blomster. Den vokser hurtigt fra frø og passer i både køkkenhave, blomsterbed og krukker."
+      },
+      {
+        "key": "saa-direkte",
+        "title": "Så direkte",
+        "body": "Frøene er store og nemme at håndtere. Så dem direkte i veldrænet jord og tynd senere. Flere mindre såninger kan sprede blomstringen."
+      },
+      {
+        "key": "sol-giver-flest-blomster",
+        "title": "Sol giver flest blomster",
+        "body": "Morgenfrue blomstrer bedst i fuld sol, men tåler let skygge. Meget våd eller overgødet jord giver ofte dårligere balance mellem blade og blomster."
+      },
+      {
+        "key": "knib-og-deadhead",
+        "title": "Knib og deadhead",
+        "body": "Unge planter kan knibes for mere forgrening. Fjern senere visne blomsterhoveder løbende, medmindre nogle skal modne til frø."
+      },
+      {
+        "key": "vand-efter-behov",
+        "title": "Vand efter behov",
+        "body": "Hold unge planter i vækst under etablering. Etablerede planter tåler kortere tørke, mens krukker skal kontrolleres oftere."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Bladlus kan samle sig på bløde skud, og meldug kan komme senere. Luft mellem planterne og fjern hårdt angrebne dele."
+      },
+      {
+        "key": "lad-nogle-froe-modne",
+        "title": "Lad nogle frø modne",
+        "body": "De krumme frø udvikles tydeligt i det tørre blomsterhoved. Saml dem modne og tørre; planter fra flere sorter kan krydse og variere."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/62350/calendula-officinalis/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "mynte",
     "plantName": "Mynte",
     "pluralName": null,
@@ -2797,6 +3808,84 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/oregano.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/oregano/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "paere",
+    "plantName": "Pære",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Pyrus communis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Frugttræ til varme, solrige steder, hvor grundstamme, bestøvningspartner og korrekt høsttid er afgørende for et godt resultat.",
+    "difficulty": "medium",
+    "tags": [
+      "frugttrae",
+      "grundstamme",
+      "bestoevning",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "paerer-vil-have-den-lune-plads",
+        "title": "Pærer vil have den lune plads",
+        "body": "Pærer blomstrer tidligt og modner bedst varmt, solrigt og i læ. Undgå havens koldeste lavning."
+      },
+      {
+        "key": "grundstammen-styrer-stoerrelsen",
+        "title": "Grundstammen styrer størrelsen",
+        "body": "Som æbler er pærer podede. Grundstammen påvirker træets vækstkraft og skal vælges sammen med sort og træningsform."
+      },
+      {
+        "key": "bestoevning-kraever-selskab",
+        "title": "Bestøvning kræver selskab",
+        "body": "Mange sorter giver bedst høst med en kompatibel sort med overlappende blomstring."
+      },
+      {
+        "key": "plant-og-vand-gennem-etableringen",
+        "title": "Plant og vand gennem etableringen",
+        "body": "Hold podestedet over jorden og vand nyplantede træer i tørre perioder."
+      },
+      {
+        "key": "beskaer-efter-formen",
+        "title": "Beskær efter formen",
+        "body": "Fritstående træer og trænet espalier/kordón kræver forskellig beskæring. Hård beskæring bør undgås uden klart formål."
+      },
+      {
+        "key": "paerer-eftermodner-ofte",
+        "title": "Pærer eftermodner ofte",
+        "body": "Mange sorter høstes faste og udvikler den bedste konsistens efter plukning."
+      },
+      {
+        "key": "tynd-tunge-klaser",
+        "title": "Tynd tunge klaser",
+        "body": "Udtynding kan give bedre størrelse og mindske belastningen på grene."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Pæregitterrust, skurv, bladlus og pærebladlopper kan forekomme."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/pears/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -3448,6 +4537,84 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "ribs",
+    "plantName": "Ribs",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Ribes rubrum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Produktiv frugtbusk med lange klaser af bær, som kan dyrkes som busk eller kordón og beskæres anderledes end solbær.",
+    "difficulty": "easy",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "kordon",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "ribs-baerer-paa-aeldre-ved",
+        "title": "Ribs bærer på ældre ved",
+        "body": "Ribs har en anden beskæringslogik end solbær. Frugten dannes på ældre ved og korte frugtsporer."
+      },
+      {
+        "key": "busk-eller-kord-n",
+        "title": "Busk eller kordón",
+        "body": "Ribs kan dyrkes som fri busk eller trænes som kordón og espalier. Trænede former sparer plads, men kræver mere præcis beskæring."
+      },
+      {
+        "key": "sol-eller-let-skygge",
+        "title": "Sol eller let skygge",
+        "body": "Ribs trives i sol og tåler også let skygge. Jorden bør holde fugt uden at stå våd."
+      },
+      {
+        "key": "beskaer-efter-formen",
+        "title": "Beskær efter formen",
+        "body": "Buske og kordóner beskæres forskelligt. Målet er i begge tilfælde en stabil frugtbærende ramme med lys og luft."
+      },
+      {
+        "key": "beskyt-mod-fugle",
+        "title": "Beskyt mod fugle",
+        "body": "Modne ribs er meget synlige og bør ofte nettes eller dyrkes i frugtbur."
+      },
+      {
+        "key": "hoest-hele-klaser",
+        "title": "Høst hele klaser",
+        "body": "Når bærrene er modne, kan klaserne høstes samlet og håndteres mere skånsomt."
+      },
+      {
+        "key": "roede-hvide-og-rosa-ribs",
+        "title": "Røde, hvide og rosa ribs",
+        "body": "Disse kan samles i samme brugerrettede artsguide, fordi dyrkningslogikken er fælles."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Bladlus, savfluelarver, meldug og fugleskader kan forekomme."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/redcurrants/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "roedbede",
     "plantName": "Rødbede",
     "pluralName": null,
@@ -3936,6 +5103,176 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "solbaer",
+    "plantName": "Solbær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Ribes nigrum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør frugtbusk, der bærer godt på yngre ved og holdes produktiv ved løbende at forny de ældste grene fra basis.",
+    "difficulty": "easy",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "solbaer-fornyes-fra-basis",
+        "title": "Solbær fornyes fra basis",
+        "body": "Solbær danner mange oprette grene. Den bedste frugtproduktion findes på relativt ungt ved, så beskæring handler om gradvis fornyelse."
+      },
+      {
+        "key": "plant-lidt-dybere",
+        "title": "Plant lidt dybere",
+        "body": "Solbær kan plantes lidt dybere end planteskoleniveau for at fremme nye basalskud."
+      },
+      {
+        "key": "sol-eller-let-skygge",
+        "title": "Sol eller let skygge",
+        "body": "Busken giver bedst i sol, men tåler lidt skygge. Jorden skal være fugtighedsbevarende og veldrænet."
+      },
+      {
+        "key": "beskaer-de-aeldste-grene-vaek",
+        "title": "Beskær de ældste grene væk",
+        "body": "På etablerede buske fjernes løbende nogle af de ældste, mørkeste grene helt ved basis."
+      },
+      {
+        "key": "hoest-efter-sortens-modning",
+        "title": "Høst efter sortens modning",
+        "body": "Nogle sorter modner klaserne ret samlet, andre mere ujævnt. Høst derefter."
+      },
+      {
+        "key": "sen-frost-kan-skade-blomster",
+        "title": "Sen frost kan skade blomster",
+        "body": "Busken er hårdfør, men blomsterne kan skades af sen frost. Senere blomstrende sorter kan være en fordel udsatte steder."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Meldug, bladlus, knopmider og bladpletter kan forekomme. Hold busken åben."
+      },
+      {
+        "key": "sorten-betyder-meget",
+        "title": "Sorten betyder meget",
+        "body": "Modningstid, bærstørrelse, vækstkraft og robusthed varierer og hører hjemme i sortsguiden."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/blackcurrants/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "solsikke",
+    "plantName": "Solsikke",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Helianthus annuus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig etårig blomst fra frø, fra lave krukketyper til meterhøje planter med blomster, pollen og frø til fugle.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "fra-dvaerg-til-kaempe",
+        "title": "Fra dværg til kæmpe",
+        "body": "Etårige solsikker spænder fra kompakte krukkeplanter til meget høje sorter. Nogle danner én hovedblomst, andre forgrener sig."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-n-kaempe-eller-mange-blomster",
+        "title": "Én kæmpe eller mange blomster?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Enkeltstammede typer",
+            "items": [
+              "dyrkes for højde og stort hoved",
+              "kræver ofte solid støtte"
+            ]
+          },
+          {
+            "heading": "Forgrenede typer",
+            "items": [
+              "giver flere blomster",
+              "passer godt til snit og bestøvere"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-direkte-eller-forkultiv-r",
+        "title": "Så direkte eller forkultivér",
+        "body": "Solsikker spirer hurtigt. Forkultivering kan beskytte de første blade og give høje sorter et forspring, mens direkte såning er enkel i varm jord."
+      },
+      {
+        "key": "sol-naering-og-vand",
+        "title": "Sol, næring og vand",
+        "body": "Store sorter udvikler meget plantemasse og trives i sol med organisk materiale og stabil adgang til vand. Jorden skal stadig være veldrænet."
+      },
+      {
+        "key": "beskyt-unge-planter",
+        "title": "Beskyt unge planter",
+        "body": "Snegle kan hurtigt æde nye solsikkeskud, og frø ved direkte såning kan blive taget af fugle og smådyr."
+      },
+      {
+        "key": "stoet-de-hoeje",
+        "title": "Støt de høje",
+        "body": "Store blomsterhoveder giver meget vindfang. Placér høje sorter i læ og bind stammen løst til en solid støtte under væksten."
+      },
+      {
+        "key": "lad-froehoveder-modne",
+        "title": "Lad frøhoveder modne",
+        "body": "Modne hoveder kan blive stående til fugle eller høstes. Frø til udsæd skal tørres grundigt før opbevaring."
+      },
+      {
+        "key": "sorten-bestemmer-udtrykket",
+        "title": "Sorten bestemmer udtrykket",
+        "body": "Højde, forgrening, farve og blomsterstørrelse varierer voldsomt. Sortsguiden skal beskrive netop disse forskelle."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/helianthus/growing-guide"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "spinat",
     "plantName": "Spinat",
     "pluralName": null,
@@ -4166,6 +5503,248 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/squash.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/courgettes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "stikkelsbaer",
+    "plantName": "Stikkelsbær",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Ribes uva-crispa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør frugtbusk med grønne, gule eller røde bær, som beskæres for lys og luft og kan dyrkes som busk eller kordón.",
+    "difficulty": "easy",
+    "tags": [
+      "frugtbusk",
+      "baer",
+      "kordon",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-lille-busk-med-stor-hoest",
+        "title": "En lille busk med stor høst",
+        "body": "Stikkelsbær giver meget frugt på relativt lidt plads. Sorter spænder fra syrlige køkkensorter til sødere dessertsorter."
+      },
+      {
+        "key": "busk-eller-kord-n",
+        "title": "Busk eller kordón",
+        "body": "Klassisk dyrkning er som åben busk, men planten kan også trænes som kordón eller fan."
+      },
+      {
+        "key": "sol-eller-let-skygge",
+        "title": "Sol eller let skygge",
+        "body": "Stikkelsbær klarer sol og let skygge. Jorden skal være veldrænet og fugtighedsbevarende."
+      },
+      {
+        "key": "beskaer-for-lys-og-adgang",
+        "title": "Beskær for lys og adgang",
+        "body": "En åben plante giver bedre lys, luft og langt lettere høst mellem tornene."
+      },
+      {
+        "key": "tynd-hoesten-ved-at-hoeste-tidligt",
+        "title": "Tynd høsten ved at høste tidligt",
+        "body": "Tidlige grønne bær kan bruges i køkkenet, mens resten får lov at modne videre og blive sødere."
+      },
+      {
+        "key": "beskyt-mod-fugle",
+        "title": "Beskyt mod fugle",
+        "body": "Net eller frugtbur kan være relevant både omkring knopper og modne bær."
+      },
+      {
+        "key": "meldug-og-savfluer",
+        "title": "Meldug og savfluer",
+        "body": "Meldug og stikkelsbærbladhvepsens larver er klassiske problemer. Tjek bladene ofte."
+      },
+      {
+        "key": "sorten-bestemmer-anvendelsen",
+        "title": "Sorten bestemmer anvendelsen",
+        "body": "Farve, sødme, torne, modningstid og sygdomsresistens varierer mellem sorter."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/fruit/gooseberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tagetes",
+    "plantName": "Tagetes",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Tagetes patula",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kompakt, varmekrævende sommerblomst med aromatisk løv og lang blomstring i gule, orange og rødbrune nuancer.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "den-kompakte-tagetes",
+        "title": "Den kompakte tagetes",
+        "body": "Tagetes patula er en busket etårig sommerblomst med aromatiske, fintdelte blade. Andre Tagetes-arter kan være højere, så artsnavnet betyder noget."
+      },
+      {
+        "key": "start-fra-froe-i-varme",
+        "title": "Start fra frø i varme",
+        "body": "Tagetes spirer hurtigt i varme. Forkultivér lyst og plant først ud, når frostfaren er væk."
+      },
+      {
+        "key": "plant-i-fuld-sol",
+        "title": "Plant i fuld sol",
+        "body": "Den blomstrer bedst i sol og moderat næringsrig, veldrænet jord. Den fungerer i bed, krukke og som kantplante."
+      },
+      {
+        "key": "vand-i-toerke",
+        "title": "Vand i tørke",
+        "body": "Hold nyplantede planter i jævn vækst. Vand grundigt i tørre perioder, men lad ikke krukker stå permanent i vand."
+      },
+      {
+        "key": "deadhead",
+        "title": "Deadhead",
+        "body": "Fjern visne hoveder for at fremme fortsat knopdannelse. Lad enkelte sene hoveder modne til frø, hvis du ønsker udsæd."
+      },
+      {
+        "key": "faa-problemer",
+        "title": "Få problemer",
+        "body": "Tagetes patula er generelt robust. Unge planter kan dog blive taget af snegle, og krukker kan tørre hurtigt."
+      },
+      {
+        "key": "sorten-bestemmer-blomsterformen",
+        "title": "Sorten bestemmer blomsterformen",
+        "body": "Enkelte, halvfyldte og fyldte sorter varierer i farve og højde. Sortsguiden skal beskrive disse forskelle."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/105531/tagetes-patula/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tallerkensmaekker",
+    "plantName": "Tallerkensmækker",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Tropaeolum majus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig etårig sommerblomst med runde blade og varme blomsterfarver, velegnet til krukker, kanter og rankende vækst.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "busket-eller-rankende",
+        "title": "Busket eller rankende",
+        "body": "Tallerkensmækker findes både i kompakte og lange rankende former. De runde skjoldformede blade gør planten let at genkende."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-busket-eller-rankende",
+        "title": "Busket eller rankende?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Kompakt",
+            "items": [
+              "krukker og bedkanter",
+              "lavere vækst"
+            ]
+          },
+          {
+            "heading": "Rankende",
+            "items": [
+              "hænger over kanter",
+              "kan ledes op i støtte"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "for-rig-jord-giver-mest-blad",
+        "title": "For rig jord giver mest blad",
+        "body": "Planten blomstrer godt i sol og veldrænet, ikke alt for næringsrig jord. Kraftig gødskning kan fremme blade på bekostning af blomster."
+      },
+      {
+        "key": "saa-de-store-froe",
+        "title": "Så de store frø",
+        "body": "Så direkte, når jorden er lun, eller start enkelte planter i potter. Forkultiverede planter afhærdes før udplantning."
+      },
+      {
+        "key": "vand-uden-at-drukne",
+        "title": "Vand uden at drukne",
+        "body": "Unge planter og krukker skal have stabil fugt, men rødderne må ikke stå permanent vandmættede."
+      },
+      {
+        "key": "deadhead-for-laengere-blomstring",
+        "title": "Deadhead for længere blomstring",
+        "body": "Fjern visne blomster for at fremme nye. Lad enkelte blomster sætte frø, hvis du vil samle udsæd."
+      },
+      {
+        "key": "hold-oeje-med-bladlus",
+        "title": "Hold øje med bladlus",
+        "body": "Bladlus kan samle sig på friske skud. Opdag små kolonier tidligt og fjern stærkt angrebne skud."
+      },
+      {
+        "key": "vaelg-vaekstform-foerst",
+        "title": "Vælg vækstform først",
+        "body": "En kompakt og en rankende sort løser helt forskellige opgaver. Sortsguiden skal derfor prioritere vækstform sammen med farve."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/85362/tropaeolum-majus/details"
     ],
     "status": "published",
     "visibility": "public",
@@ -4492,6 +6071,101 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/tomat.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "zinnia",
+    "plantName": "Zinnia",
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Zinnia elegans",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Farverig, varmekrævende sommerblomst til solrige bede, krukker og buketter med lang blomstring gennem sensommeren.",
+    "difficulty": "easy",
+    "tags": [
+      "blomst",
+      "fra-froe"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "zinnia-vil-have-sommer",
+        "title": "Zinnia vil have sommer",
+        "body": "Zinnia er en halvhårdfør etårig sommerblomst til varme, solrige og beskyttede steder. Den fungerer i bed, krukke og som snitblomst."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-hoej-eller-lav-zinnia",
+        "title": "Høj eller lav zinnia?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Høje typer",
+            "items": [
+              "gode til snit",
+              "giver højde i bedet",
+              "kan behøve støtte"
+            ]
+          },
+          {
+            "heading": "Lave typer",
+            "items": [
+              "gode i krukker og forkant",
+              "mere kompakte",
+              "mindre udsatte for vind"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-ikke-for-tidligt",
+        "title": "Så ikke for tidligt",
+        "body": "Zinnia vokser hurtigt i varme. Forkultivér lyst og varmt, men ikke så tidligt at planterne står for længe inde. Plant først ud efter frostfaren."
+      },
+      {
+        "key": "giv-sol-varme-og-draen",
+        "title": "Giv sol, varme og dræn",
+        "body": "Vælg havens lune side. Kold, tung og vedvarende våd jord hæmmer væksten, mens veldrænet jord og sol giver stærkere planter."
+      },
+      {
+        "key": "vand-ved-jorden",
+        "title": "Vand ved jorden",
+        "body": "Vand grundigt i tørke, men undgå konstant vådt løv. Krukker kræver hyppigere kontrol end planter i bed."
+      },
+      {
+        "key": "klip-for-flere-blomster",
+        "title": "Klip for flere blomster",
+        "body": "Høst og deadhead over et godt bladpar. Det fremmer nye sideskud og forlænger blomstringen. Stænglerne kan være hule og sprøde, så håndtér dem roligt."
+      },
+      {
+        "key": "giv-luft",
+        "title": "Giv luft",
+        "body": "Meldug og andre bladsygdomme får bedre vilkår i tæt, fugtig vækst. Giv planterne plads og undgå unødigt vådt løv."
+      },
+      {
+        "key": "vaelg-sort-efter-brug",
+        "title": "Vælg sort efter brug",
+        "body": "Zinnia findes fra kompakte planter til høje snitblomsttyper og i mange blomsterformer. Sortsguiden skal forklare højde, farve og blomsterform."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/zinnia/growing-guide"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
