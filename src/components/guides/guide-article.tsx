@@ -25,6 +25,7 @@ import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
 import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
+import { TechniqueArticle } from '@/components/guides/technique-article'
 import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
@@ -135,6 +136,19 @@ export async function GuideArticle({
     ? new Set((await import('@/data/guides-demo')).DEMO_AI_GUIDE_IDS)
     : null
   const kind = guideKindFor(original, aiIds)
+
+  // Teknikguide = eget register (handling, ikke planteidentitet): farveblok-
+  // hero + trin-nummerering, ingen quickFacts/kalender/frøbank/sortsvarianter.
+  // Branch tidligt så den låste arts/sort-rendering nedenfor er urørt.
+  if (effective.guideLevel === 'technique') {
+    return (
+      <TechniqueArticle
+        guide={effective}
+        allGuides={allGuides}
+        safeReturnTo={safeReturnTo}
+      />
+    )
+  }
 
   // Makro-strategi
   const usedMacroSrcs = new Set<string>()
