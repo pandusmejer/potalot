@@ -4,21 +4,25 @@ Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægge
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
 Status **24/7 2026** (107 guides: 58 arts · 37 sorts · 12 teknik):
-**33 fotos mangler** (11 arter + 22 sorter). 62 er på plads.
+**31 fotos mangler** (11 arter + 20 sorter). 64 er på plads.
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
 (se editorial-reglen "Billeder i teknikguider" + `knibning-af-tomater.md` som eksempel).
 
-**Sådan:** læg foto i `_foto-indbakke/` navngivet efter **slug** (fx `rabarber.jpg`,
-`tomat-black-cherry.jpg`), kør `npm run guides:intake`. Mappen vælges automatisk
-efter niveau (art → `arts/`, sort → `plantekort/`), originalen arkiveres.
+**Sådan:** læg foto i `_foto-indbakke/` og kør `npm run add:photo <fil> <arts|plantekort|frokort> "<Art>" ["<Sort>"]`.
+(`guides:intake` matcher kun fotos mod guides fra *samme* kørsel — til en guide der
+allerede er live, er `add:photo` vejen.)
+
+**Format:** arts-hero = 4:3 liggende (1600×1200). Plantekort = **4:5 stående**
+(1440×1800) — kortet rendrer med `object-cover` i en 4:5-ramme, så et 2:3-foto
+får ~17 % af højden skåret væk i top og bund.
 
 ---
 
 ## 🥇 Tier 1 — arts-hero (11) · øverst: hver anker en hel familie
 
-### Frugtbuske & frugttræer (8 — batch 5+6, ingen af dem har foto endnu)
+### Frugtbuske & frugttræer (10 — batch 5+6, ingen af dem har foto endnu)
 - [ ] **Æble** → `arts/aeble.jpg`
 - [ ] **Blåbær** → `arts/blaabaer.jpg`
 - [ ] **Blomme** → `arts/blomme.jpg`
@@ -30,12 +34,10 @@ efter niveau (art → `arts/`, sort → `plantekort/`), originalen arkiveres.
 - [ ] **Solbær** → `arts/solbaer.jpg`
 - [ ] **Stikkelsbær** → `arts/stikkelsbaer.jpg`
 
-### Øvrige (3)
-- [ ] **Citronmelisse** → `arts/citronmelisse.jpg`  *(ny guide 24/7)*
+### Blomster (1)
 - [ ] **Morgenfrue** → `arts/morgenfrue.jpg`
-- [ ] **Rabarber** → `arts/rabarber.jpg`  *(ny guide 24/7)*
 
-## 🥈 Tier 2 — plantekort (22) · grupperet pr. familie
+## 🥈 Tier 2 — plantekort (20) · grupperet pr. familie
 
 ### Agurk (3)
 - [ ] Cucino → `plantekort/agurk-cucino.jpg`
@@ -73,7 +75,7 @@ efter niveau (art → `arts/`, sort → `plantekort/`), originalen arkiveres.
 - [ ] Early Jalapeño → `plantekort/chili-early-jalapeno.jpg`
 
 ### Majs (1)
-- [ ] Incredible → `plantekort/majs-incredible.jpg`
+- [ ] Incredible → `plantekort/majs-incredible.jpg`  *(kandidat kasseret 24/7 — nyt foto ønskes)*
 
 ---
 
@@ -87,10 +89,14 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ---
 
-## ✅ Allerede på plads (62)
+## ✅ Allerede på plads (64)
 
-45 arter + 17 sorter. `npm run guides:status` er den autoritative kilde —
+47 arter + 17 sorter. `npm run guides:status` er den autoritative kilde —
 dette dokument regenereres ud fra den.
+
+**Forældreløse plantekort-fotos:** 18 fotos ligger i `plantekort/` til sorter der
+endnu ikke har en guide (fx Gulerod Nantes, Rødbede Boltardy, Stangbønne Cobra).
+De aktiveres ved at skrive de tilhørende sortsguider — ikke ved nye fotos.
 
 ---
 
