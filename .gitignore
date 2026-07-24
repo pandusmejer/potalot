@@ -60,3 +60,9 @@ _guide-indbakke/*
 
 # Arkiv for foto-originaler (høj-opløst master) — committes aldrig
 _foto-arkiv/
+
+# Ephemere guide-produktions-artefakter (regenereres af `npm run guides:build`) — committes aldrig
+content/guide-production/built/*
+content/guide-production/generated/*
+!content/guide-production/built/.gitkeep
+!content/guide-production/generated/.gitkeep
