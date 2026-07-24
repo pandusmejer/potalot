@@ -20,11 +20,21 @@ Står typen ikke tydeligt på frøposen, så se efter ord som ranke, cordon elle
 
 Et sideskud vokser i bladhjørnet, hvor bladstilken møder hovedstammen. Det ligner en lille ny tomatplante med egen spids og små blade.
 
+@foto knibning-af-tomater/sideskud
+caption: Sideskuddet sidder her
+note: Mellem hovedstammen og bladstilken.
+marker: Sideskud
+
 Fjern ikke selve bladet, blomsterklasen eller plantens top. Følg hovedstammen med fingeren, og find det ekstra skud i vinklen mellem stamme og blad.
 
 ## Knib det unge skud af
 
 Tag fat helt nede ved basis, og knib eller bøj det bløde sideskud forsigtigt af. Små skud giver et mindre sår og er lettere at fjerne uden redskab.
+
+@foto knibning-af-tomater/knib-basis
+caption: Knib ved basis
+note: Små, bløde skud kan fjernes med fingrene.
+marker: Knib her
 
 Er skuddet blevet tykt og fast, så brug en ren, skarp saks. Riv ikke et stort skud ned langs hovedstammen.
 

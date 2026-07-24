@@ -15,6 +15,7 @@ import { GuideTechniqueCard } from './guide-technique-card'
 import { GuideRelatedList } from './guide-related-list'
 import { GuidePotalotNote, isPotalotNoteSection } from './guide-potalot-note'
 import { GuideEvidenceImage } from './bleed-blocks'
+import { StepPhoto } from './guide-step-photo'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -373,6 +374,12 @@ function ProseBody({
 
   const renderBlock = (para: string, i: number) => {
     const lines = para.split('\n').map((l) => l.trim())
+    // Inline step-foto (teknikguider): et @foto-direktiv står som sit eget
+    // "afsnit" mellem tekstblokke, så fotoet lander præcis dér forfatteren
+    // vil have det i trinnet. Se guide-step-photo.tsx + editorial-rules.md.
+    if (lines[0].startsWith('@foto')) {
+      return <StepPhoto key={`foto-${i}`} raw={para} />
+    }
     const isBulletList = lines.every((l) => /^-\s+\S/.test(l))
     if (isBulletList) {
       const items = lines.map((l) => l.replace(/^-\s+/, ''))
