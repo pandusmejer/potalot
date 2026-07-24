@@ -28,7 +28,7 @@ import { join, basename } from 'node:path'
 // (vi importerer ikke fra src/ for at undgå Next.js' import-system)
 // ─────────────────────────────────────────────────────────────────
 
-const GUIDE_LEVELS = ['species', 'variety'] as const
+const GUIDE_LEVELS = ['species', 'variety', 'technique'] as const
 type GuideLevel = (typeof GUIDE_LEVELS)[number]
 
 const PRIMARY_CATEGORY_IDS = [
@@ -478,6 +478,8 @@ interface RawFrontmatter {
   slug?: unknown
   guideLevel?: unknown
   parentSlug?: unknown
+  title?: unknown
+  appliesTo?: unknown
   plantName?: unknown
   pluralName?: unknown
   variety?: unknown
@@ -514,16 +516,23 @@ function validateFrontmatter(raw: RawFrontmatter, file: string): void {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
     throw new ImportError(file, `frontmatter: slug "${slug}" — kun små bogstaver, tal og bindestreger`)
   }
-  if (!asString(raw.plantName)) {
-    throw new ImportError(file, 'frontmatter: plantName er påkrævet')
-  }
   const level = asString(raw.guideLevel)
   if (!level || !GUIDE_LEVELS.includes(level as GuideLevel)) {
-    throw new ImportError(file, `frontmatter: guideLevel "${level}" — skal være "species" eller "variety"`)
+    throw new ImportError(file, `frontmatter: guideLevel "${level}" — skal være ${GUIDE_LEVELS.join('/')}`)
   }
-  const pcId = asString(raw.primaryCategoryId)
-  if (!pcId || !PRIMARY_CATEGORY_IDS.includes(pcId as any)) {
-    throw new ImportError(file, `frontmatter: primaryCategoryId "${pcId}" — ikke i [${PRIMARY_CATEGORY_IDS.join(', ')}]`)
+  if (level === 'technique') {
+    // Teknikguide: title driver H1; ingen plantName/primaryCategoryId (farveblok, ikke foto).
+    if (!asString(raw.title)) {
+      throw new ImportError(file, 'frontmatter: title er påkrævet for technique-guides')
+    }
+  } else {
+    if (!asString(raw.plantName)) {
+      throw new ImportError(file, 'frontmatter: plantName er påkrævet')
+    }
+    const pcId = asString(raw.primaryCategoryId)
+    if (!pcId || !PRIMARY_CATEGORY_IDS.includes(pcId as any)) {
+      throw new ImportError(file, `frontmatter: primaryCategoryId "${pcId}" — ikke i [${PRIMARY_CATEGORY_IDS.join(', ')}]`)
+    }
   }
   const diff = asString(raw.difficulty)
   if (!diff || !DIFFICULTIES.includes(diff as any)) {
@@ -612,6 +621,7 @@ function slugify(text: string): string {
  * Returnerer /images/... path hvis fundet, ellers null.
  */
 function detectPrimaryImage(slug: string, guideLevel: string): string | null {
+  if (guideLevel === 'technique') return null // teknikguider har ingen fotohero (farveblok + titel)
   const folder = guideLevel === 'species' ? 'arts' : 'plantekort'
   for (const ext of ['jpg', 'png']) {
     const rel = `public/images/${folder}/${slug}.${ext}`
@@ -728,14 +738,17 @@ function buildGuide(
   if (!asStringArray(raw.sourceLinks).length) warnings.push({ file, message: 'ingen sourceLinks' })
   if (sections.length < 3) warnings.push({ file, message: `kun ${sections.length} sektioner — virker tyndt for en ${raw.guideLevel}-guide` })
   const heroPath = detectPrimaryImage(slug, asString(raw.guideLevel)!)
-  if (!heroPath) {
+  if (!heroPath && asString(raw.guideLevel) !== 'technique') {
     const folder = asString(raw.guideLevel) === 'species' ? 'arts' : 'plantekort'
     warnings.push({ file, message: `intet hero-billede fundet (forventet public/images/${folder}/${slug}.jpg)` })
   }
 
   return {
     id: slug,
-    plantName: asString(raw.plantName),
+    // Teknikguider har ingen plantName → brug title som visningsnavn (H1).
+    plantName: asString(raw.plantName) ?? asString(raw.title) ?? slug,
+    title: asString(raw.title),
+    appliesTo: asStringArray(raw.appliesTo),
     pluralName: asString(raw.pluralName),
     variety: asString(raw.variety),
     latinName: asString(raw.latinName),

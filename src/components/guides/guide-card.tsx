@@ -18,7 +18,7 @@ export function GuideCard({
   /** Hvis sat: denne private guide er en kopi af en master-guide med dette id. */
   tilpasningOfMasterId?: string | null
 }) {
-  const cat = PRIMARY_CATEGORIES[guide.primaryCategoryId]
+  const cat = guide.primaryCategoryId ? PRIMARY_CATEGORIES[guide.primaryCategoryId] : undefined
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
   const sowingPeriod = formatMonths(guide.quickFacts.sowingMonths.length ? guide.quickFacts.sowingMonths : guide.quickFacts.directSowingMonths)
   const isMaster = guide.visibility === 'public'
@@ -78,7 +78,7 @@ export function GuideCard({
                   Min
                 </Badge>
               )}
-              <Badge variant="outline" className="text-[10px] shrink-0">{cat.name}</Badge>
+              {cat && <Badge variant="outline" className="text-[10px] shrink-0">{cat.name}</Badge>}
               {/* Plads-holder så Slet-knappen ikke overlapper badges */}
               {canDelete && <span className="block w-16 shrink-0" aria-hidden="true" />}
             </div>

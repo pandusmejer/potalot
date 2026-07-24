@@ -69,10 +69,12 @@ function collectJsonFiles(dir: string): string[] {
 function readMeta(path: string): GuideMeta | null {
   try {
     const d = JSON.parse(readFileSync(path, 'utf8'))
-    if (!d.slug || !d.guideLevel || !d.plantName) return null
+    if (!d.slug || !d.guideLevel) return null
+    // Teknikguider har ingen plantName (de bruger title); alle andre skal have den.
+    if (d.guideLevel !== 'technique' && !d.plantName) return null
     return {
       slug: d.slug, guideLevel: d.guideLevel, parentSlug: d.parentSlug ?? null,
-      plantName: d.plantName, variety: d.variety ?? null,
+      plantName: d.plantName ?? d.title ?? d.slug, variety: d.variety ?? null,
     }
   } catch {
     return null
