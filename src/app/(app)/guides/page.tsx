@@ -11,6 +11,7 @@ import {
 } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
+import { normalizeGuideKey } from '@/lib/guides/normalize-key'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,10 +64,13 @@ export default async function GuidesPage() {
   // fra det redaktionelle Potalot-lag nedenunder.
   const mineGuides = guides.filter(g => g.visibility === 'private')
 
-  // "I din frøbank"-markør: hvilke guides matcher en sort i frøbanken
-  // (eller — i demo — i den lokale demo-frøbank).
-  const inFroebankIds = new Set(
-    inventory.filter(i => i.guideId).map(i => i.guideId as string),
+  // "I din frøbank"-nøgler: normaliserede plante-navne fra frøbanken. Vi matcher
+  // PÅ NAVN, ikke på guide_id — frøbank-varens guide_id peger på brugerens egen
+  // PRIVATE guide (DB-uuid), som aldrig findes i det redaktionelle
+  // IMPORTED_GUIDES-lag "I DIN HAVE" bygges af. normalizeGuideKey er samme nøgle
+  // som master-syncen bruger, så "Tomat" → "tomat" rammer artsguiden.
+  const inFroebankKeys = new Set(
+    inventory.map(i => normalizeGuideKey(i.name)).filter(Boolean),
   )
 
   // Lineage-map: for hver afledt guide, hvad hed planten i Potalot-
@@ -123,7 +127,7 @@ export default async function GuidesPage() {
           guides={visibleGuides}
           aiGuideIds={aiGuideIds}
           parentPlantNameById={parentPlantNameById}
-          iFroebankIds={inFroebankIds}
+          iFroebankKeys={inFroebankKeys}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />
