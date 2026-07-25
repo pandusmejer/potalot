@@ -7,13 +7,12 @@ import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
 import {
-  libraryCategoryOf,
   LIBRARY_CATEGORY_ORDER,
   LIBRARY_CATEGORY_LABEL,
   type LibraryCategory,
 } from '@/data/guide-library-categories'
-import { GuideCardEditorial } from './guide-card-editorial'
 import { SpoergGartneren } from './spoerg-gartneren'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
@@ -243,15 +242,26 @@ export function GuidesBibliotek({
           guides={potalotAll}
           techniqueGuides={techniqueGuides}
           search={effectiveSearch}
-          onSearch={handleSearch}
         />
       </section>
 
-      {/* Sekundært lær-mere-lag NEDERST — ekstra læring efter find-en-guide-
-          værktøjet, ikke en stopklods før søgningen. Bevidst nedtonet så den
-          ikke konkurrerer med søgningen. Ekstra bundluft så bottom-nav ikke
-          klemmer noten. */}
+      {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort. Rykket op fra
+          bunden og navngivet, så det er redaktionelt indhold, ikke en
+          efterladenskab efter biblioteket. */}
       <div className="pb-10">
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.62)',
+            margin: '0 0 12px',
+          }}
+        >
+          Godt at vide
+        </p>
         <KortForklaret
           title="Chili eller peberfrugt?"
           teaser="To planter fra samme familie, men chili indeholder capsaicin."
@@ -447,10 +457,15 @@ function IDinHave({
 }
 
 /**
- * Ét art-kort i "I DIN HAVE". Øverste flade (foto + navn + antal) er ét link til
- * artsguiden; sort-chippene UNDER er selvstændige links/tekst (ikke nested i
- * art-linket → gyldig HTML). Grøn chip = kurateret sortsguide; dæmpet chip = kun
- * din egen (AI) sort, ingen redaktionel guide endnu.
+ * Ét art-kort i "I DIN HAVE". KOMPAKT: foto til venstre, navn + antal + sort-chips
+ * i ÉN tekstkolonne ved siden af (ikke en separat bund-etage → ingen tomme kort
+ * for arter med få sorter). Højden følger indholdet.
+ *
+ * Klik-model uden nested links: et "stretched" link dækker hele kortet (→
+ * artsguiden) og ligger BAGVED indholdet; indholdet har pointer-events: none, så
+ * klik falder ned til art-linket — UNDTAGEN de kuraterede sort-chips, der får
+ * pointer-events auto og fanger deres eget klik (→ sortsguiden). Grøn chip =
+ * kurateret sortsguide; dæmpet chip = kun din egen (AI) sort, ingen link.
  */
 function HaveArtCard({ card }: { card: HaveCard }) {
   const g = card.guide
@@ -464,20 +479,24 @@ function HaveArtCard({ card }: { card: HaveCard }) {
   const n = card.varieties.length
   return (
     <div
-      className="overflow-hidden"
+      className="group relative overflow-hidden"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 18,
       }}
     >
-      {/* Hovedflade → artsguiden */}
+      {/* Stretched link → artsguiden (bag indholdet) */}
       <Link
         href={`/guides/${g.id}`}
-        className="group flex items-stretch gap-3.5 no-underline"
-        style={{ color: 'inherit' }}
+        aria-label={g.plantName}
+        className="absolute inset-0 z-0"
+      />
+      <div
+        className="relative z-10 flex items-center gap-3.5 p-2.5"
+        style={{ pointerEvents: 'none' }}
       >
-        <span className="relative h-[76px] w-[76px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+        <span className="relative h-[92px] w-[92px] shrink-0 overflow-hidden rounded-[13px] bg-[#EAE6D8]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
@@ -485,9 +504,9 @@ function HaveArtCard({ card }: { card: HaveCard }) {
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
           />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col justify-center py-2 pr-3">
+        <div className="min-w-0 flex-1 pr-1">
           <span
-            className="truncate"
+            className="block truncate"
             style={{
               fontFamily: plex,
               fontWeight: 600,
@@ -497,73 +516,73 @@ function HaveArtCard({ card }: { card: HaveCard }) {
               color: '#242019',
             }}
           >
-            {g.pluralName ?? g.plantName}
+            {g.plantName}
           </span>
           {n > 0 && (
-            <span
-              className="mt-1"
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 600,
-                color: 'rgba(36,48,31,0.5)',
-              }}
-            >
-              {n} {n === 1 ? 'sort' : 'sorter'} i din have
-            </span>
+            <>
+              <span
+                className="mt-0.5 block"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.5)',
+                }}
+              >
+                {n} {n === 1 ? 'sort' : 'sorter'} i din have
+              </span>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {card.varieties.map(v =>
+                  v.href ? (
+                    <Link
+                      key={v.name}
+                      href={v.href}
+                      className="no-underline transition-colors hover:bg-[rgba(86,111,60,0.18)]"
+                      style={{
+                        pointerEvents: 'auto',
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: '#3D5A26',
+                        background: 'rgba(86,111,60,0.11)',
+                        border: '1px solid rgba(86,111,60,0.24)',
+                        borderRadius: 999,
+                        padding: '3px 10px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {v.name}
+                    </Link>
+                  ) : (
+                    <span
+                      key={v.name}
+                      style={{
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: 'rgba(36,48,31,0.55)',
+                        background: 'rgba(45,42,36,0.05)',
+                        border: '1px solid rgba(45,42,36,0.08)',
+                        borderRadius: 999,
+                        padding: '3px 10px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {v.name}
+                    </span>
+                  ),
+                )}
+              </div>
+            </>
           )}
-        </span>
+        </div>
         <ChevronRight
           size={18}
           strokeWidth={2}
-          className="mr-3 shrink-0 self-center transition-transform duration-200 group-hover:translate-x-0.5"
+          className="shrink-0 self-center transition-transform duration-200 group-hover:translate-x-0.5"
           style={{ color: 'rgba(36,48,31,0.3)' }}
         />
-      </Link>
-      {/* Sort-chips */}
-      {n > 0 && (
-        <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-0.5">
-          {card.varieties.map(v =>
-            v.href ? (
-              <Link
-                key={v.name}
-                href={v.href}
-                className="no-underline transition-colors"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: '#3D5A26',
-                  background: 'rgba(86,111,60,0.11)',
-                  border: '1px solid rgba(86,111,60,0.24)',
-                  borderRadius: 999,
-                  padding: '3px 10px',
-                  lineHeight: 1.3,
-                }}
-              >
-                {v.name}
-              </Link>
-            ) : (
-              <span
-                key={v.name}
-                style={{
-                  fontFamily: sans,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: 'rgba(36,48,31,0.55)',
-                  background: 'rgba(45,42,36,0.05)',
-                  border: '1px solid rgba(45,42,36,0.08)',
-                  borderRadius: 999,
-                  padding: '3px 10px',
-                  lineHeight: 1.3,
-                }}
-              >
-                {v.name}
-              </span>
-            ),
-          )}
-        </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -588,11 +607,10 @@ function laestLabel(at: number): string | null {
 }
 
 /**
- * FORTSÆT DINE GUIDES — diskret genkendelses-række for senest læste guides.
- * Små mini-editorials (~74px): foto til venstre, plantenavn + hvornår-læst til
- * højre, lille chevron. For sortsguider vises SORTENS navn + foto (Sungold, ikke
- * artens tomat) → hurtigere genkendelse. Ingen resume, ingen latin. Samme creme
- * + typografi, bare meget lavere end hero-kortene.
+ * SENEST LÆST — diskret genkendelses-række (utility, IKKE featured content).
+ * Bevidst nedtonet ift. "I din have": mindre eyebrow, ~74px rækker → føles som
+ * historik/navigation, ikke en ny stor sektion. For sortsguider vises SORTENS
+ * navn + foto (Sungold, ikke artens tomat) → hurtigere genkendelse.
  */
 function FortsaetDineGuider({
   items,
@@ -600,19 +618,19 @@ function FortsaetDineGuider({
   items: { guide: Guide; at: number }[]
 }) {
   return (
-    <section className="relative -mt-1">
+    <section className="relative">
       <p
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: 700,
-          letterSpacing: '0.18em',
+          letterSpacing: '0.16em',
           textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.72)',
-          margin: '0 0 12px',
+          color: 'rgba(36,48,31,0.55)',
+          margin: '0 0 10px',
         }}
       >
-        Fortsæt dine guides
+        Senest læst
       </p>
       <div className="space-y-2.5">
         {items.map(({ guide: g, at }) => {
@@ -871,78 +889,20 @@ function QuickSearch({
 // kun ÉN åben ad gangen pr. niveau → altid kun få elementer synlige. Søgning
 // overtager og viser flade resultater (Planter/Teknik). Teknik er parallelt.
 
-type BiblioChip = 'alle' | 'planter' | 'teknik'
-const FOLD_KEY = 'potalot:biblio-fold'
-
-/** Én art: hero-artsguide (hvis den findes) + dens sorter. */
-interface ArtNodeData {
-  plantName: string
-  hero?: Guide
-  varieties: Guide[]
-}
 
 function UdforskBiblioteket({
   guides,
   techniqueGuides,
   search,
-  onSearch,
 }: {
   guides: Guide[]
   techniqueGuides: Guide[]
   search: string
-  onSearch: (v: string) => void
 }) {
-  const [chip, setChip] = useState<BiblioChip>('alle')
-  // Ingen kategori åben som standard → brugeren ser HELE kategori-strukturen
-  // først, åbner så én (struktur før indhold). Kun én åben ad gangen; huskes.
-  const [openCat, setOpenCat] = useState<LibraryCategory | null>(null)
+  // Kategori → arter (delt model, samme tal som kategorisiden viser).
+  const cats = useMemo(() => artsByCategory(guides), [guides])
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(FOLD_KEY)
-      if (raw) {
-        const s = JSON.parse(raw)
-        if ('cat' in s) setOpenCat(s.cat)
-      }
-    } catch {
-      // ignorér
-    }
-  }, [])
-  useEffect(() => {
-    try {
-      localStorage.setItem(FOLD_KEY, JSON.stringify({ cat: openCat }))
-    } catch {
-      // ignorér
-    }
-  }, [openCat])
-
-  // ── Byg matrixen: kategori → art → sort ──────────────────────────
-  const matrix = useMemo(() => {
-    const arts = new Map<string, ArtNodeData>()
-    for (const g of guides) {
-      const a =
-        arts.get(g.plantName) ?? { plantName: g.plantName, hero: undefined, varieties: [] }
-      if (levelOf(g) === 'species') a.hero = g
-      else a.varieties.push(g)
-      arts.set(g.plantName, a)
-    }
-    for (const a of arts.values()) {
-      a.varieties.sort((x, y) => (x.variety ?? '').localeCompare(y.variety ?? '', 'da'))
-    }
-    const cats = new Map<LibraryCategory, ArtNodeData[]>()
-    for (const a of arts.values()) {
-      const c = libraryCategoryOf(a.plantName)
-      const arr = cats.get(c) ?? []
-      arr.push(a)
-      cats.set(c, arr)
-    }
-    for (const arr of cats.values()) {
-      arr.sort((x, y) => x.plantName.localeCompare(y.plantName, 'da'))
-    }
-    return cats
-  }, [guides])
-
-  // ── Søgning overtager ────────────────────────────────────────────
+  // ── Søgning overtager hele hierarkiet (flade resultater) ─────────
   const q = search.trim().toLowerCase()
   const searching = q.length > 0
   const matches = (g: Guide) =>
@@ -962,43 +922,21 @@ function UdforskBiblioteket({
     [searching, techniqueGuides, q],
   )
 
-  // Chips = top-niveau bibliotek (ikke art/sort — sorter lever under arter i
-  // matrixen). Planter rummer både arter og sorter; Teknik er parallelt.
-  const chips: { id: BiblioChip; label: string }[] = [
-    { id: 'alle', label: 'Alle' },
-    { id: 'planter', label: 'Planter' },
-    ...(techniqueGuides.length > 0
-      ? [{ id: 'teknik' as const, label: 'Teknik' }]
-      : []),
-  ]
-
-  const visPlanter = chip === 'alle' || chip === 'planter'
-  const visTeknik = (chip === 'alle' || chip === 'teknik') && techniqueGuides.length > 0
-
   return (
     <div>
       <Eyebrow>Udforsk guidebiblioteket</Eyebrow>
-      <div className="mt-3">
-        <SearchField value={search} onChange={onSearch} placeholder="Søg i biblioteket" />
-      </div>
-
-      {/* Chips vises kun når der ER en reel alternativ visning (teknikguides).
-          Indtil da ville "Alle" og "Planter" vise næsten det samme — dekorativ
-          beslutningstræthed. Med teknik: Alle · Planter · Teknik. */}
-      {!searching && techniqueGuides.length > 0 && (
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
-          {chips.map(c => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => setChip(c.id)}
-              style={chipStyle(chip === c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
-      )}
+      <p
+        style={{
+          fontFamily: sans,
+          fontSize: 12.5,
+          fontWeight: 500,
+          lineHeight: 1.45,
+          color: 'rgba(36,48,31,0.55)',
+          margin: '6px 0 0',
+        }}
+      >
+        Find guides efter det, du dyrker — eller det, du skal gøre.
+      </p>
 
       {searching ? (
         planteHits.length + teknikHits.length === 0 ? (
@@ -1026,128 +964,21 @@ function UdforskBiblioteket({
           </div>
         )
       ) : (
-        <div className="mt-6 space-y-8">
-          {/* 🌱 PLANTEKATEGORIER — matrix: kategori → art → sort. Kategorierne
-              annoncerer sig selv som en liste FØRST (struktur før indhold). */}
-          {visPlanter && (
-            <div>
-              <SectionLabel>Plantekategorier</SectionLabel>
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: 12.5,
-                  fontWeight: 500,
-                  lineHeight: 1.45,
-                  color: 'rgba(36,48,31,0.55)',
-                  margin: '6px 0 0',
-                }}
-              >
-                Vælg en plantekategori. Inde i hver kategori finder du plantearter
-                og deres sorter.
-              </p>
-              <div className="mt-4 space-y-2">
-                {/* ALLE 8 kategorier vises — også de tomme (Anna 22/7), så hele
-                    taksonomien er synlig. Tom kategori → antal 0 + stille note. */}
-                {LIBRARY_CATEGORY_ORDER.map(c => {
-                  const arts = matrix.get(c) ?? []
-                  // Redaktionelt fremhævede arter (pt. de 2 første alfabetisk —
-                  // senere kurateret/sæsonbestemt). De optræder OGSÅ i den
-                  // komplette liste nedenunder, så listen altid er fuld.
-                  const fremhaevet = arts.slice(0, 2)
-                  const open = openCat === c
-                  return (
-                    <GroupBlock
-                      key={c}
-                      label={LIBRARY_CATEGORY_LABEL[c]}
-                      count={arts.length}
-                      unit={arts.length === 1 ? 'art' : 'arter'}
-                      open={open}
-                      onToggle={() => setOpenCat(open ? null : c)}
-                    >
-                      {arts.length === 0 ? (
-                        <p
-                          className="mt-1"
-                          style={{
-                            fontFamily: serif,
-                            fontStyle: 'italic',
-                            fontSize: 14,
-                            color: 'rgba(36,48,31,0.45)',
-                            margin: 0,
-                          }}
-                        >
-                          Ingen guides her endnu.
-                        </p>
-                      ) : (
-                        <>
-                          {/* Kategori-intro — forklarer overgangen bibliotek →
-                              kategori → arter uden tutorial/modal. */}
-                          <p
-                            className="mt-0.5"
-                            style={{
-                              fontFamily: sans,
-                              fontSize: 12.5,
-                              fontWeight: 500,
-                              lineHeight: 1.45,
-                              color: 'rgba(36,48,31,0.55)',
-                              margin: '0 0 14px',
-                            }}
-                          >
-                            Find arten først. Hver artsguide samler dyrkning,
-                            sorter og relateret hjælp.
-                          </p>
+        <div className="mt-5 space-y-3">
+          {/* Kategori-indgange: 2-kol grid, KUN kategorier med indhold (ingen
+              "0 arter"-byggepladser). Hver → sin egen kategoriside. Brugeren ser
+              hele bibliotekets struktur på ~én skærm og vælger, hvor de vil hen. */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {LIBRARY_CATEGORY_ORDER.map(c => {
+              const arts = cats.get(c) ?? []
+              if (arts.length === 0) return null
+              return <KategoriKort key={c} category={c} arts={arts} />
+            })}
+          </div>
 
-                          {/* Fremhævede arter — redaktionelle anbefalinger (store kort) */}
-                          <FremhaevetLabel />
-                          <div className="mt-2 space-y-7">
-                            {fremhaevet.map((a, i) => (
-                              <ArtHeroCard key={a.plantName} art={a} index={i} />
-                            ))}
-                          </div>
-
-                          {/* Divider → den komplette, forudsigelige liste */}
-                          <div
-                            aria-hidden
-                            className="my-5 h-px"
-                            style={{ background: 'rgba(45,42,36,0.12)' }}
-                          />
-
-                          {/* Alle arter — komplet alfabetisk liste (inkl. fremhævede) */}
-                          <SubLabel>Alle arter</SubLabel>
-                          <p
-                            style={{
-                              fontFamily: sans,
-                              fontSize: 12,
-                              fontWeight: 500,
-                              lineHeight: 1.4,
-                              color: 'rgba(36,48,31,0.5)',
-                              margin: '3px 0 0',
-                            }}
-                          >
-                            Åbn en art for at se artsguiden og dens sorter.
-                          </p>
-                          <div className="mt-2.5 space-y-0.5">
-                            {arts.map(a => (
-                              <ArtNode key={a.plantName} art={a} />
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </GroupBlock>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* 🛠 TEKNIKGUIDES — parallelt bibliotek, egen værktøjskasse */}
-          {visTeknik && (
-            <div>
-              <SectionLabel tone="teknik">Teknikguides</SectionLabel>
-              <div className="mt-3 space-y-2">
-                {techniqueGuides.map(g => <BiblioRow key={g.id} guide={g} teknik />)}
-              </div>
-            </div>
-          )}
+          {/* Teknikguides — ÉN tydelig indgang (arbejde, ikke art) → egen side.
+              De enkelte teknikguider bor IKKE på forsiden. */}
+          {techniqueGuides.length > 0 && <TeknikIndgang count={techniqueGuides.length} />}
         </div>
       )}
     </div>
@@ -1155,35 +986,127 @@ function UdforskBiblioteket({
 }
 
 /**
- * Kategori-indgang: stort editorial-hero-kort for en art (fuld bredde, ARTSGUIDE-
- * badge, navn + latin + resumé + pil). Bruger artens hero-guide (eller første
- * sort hvis arten kun har sorter).
+ * Kompakt kategori-kort (2-kol grid) → kategorisiden. Navn + antal arter + en
+ * lille smagsprøve. Erstatter de gamle fuldbredde-accordions.
  */
-function ArtHeroCard({ art, index }: { art: ArtNodeData; index: number }) {
-  const g = art.hero ?? art.varieties[0]
-  if (!g) return null
+function KategoriKort({ category, arts }: { category: LibraryCategory; arts: LibraryArt[] }) {
+  const n = arts.length
+  const teaser = arts.slice(0, 3).map(a => a.plantName).join(', ')
   return (
-    <GuideCardEditorial
-      guide={g}
-      kind="potalot"
-      offset={index % 2 === 1 ? 'right' : 'none'}
-      sortCount={art.varieties.length}
-    />
+    <Link
+      href={`/guides/kategori/${category}`}
+      className="group relative flex flex-col justify-between overflow-hidden no-underline"
+      style={{
+        background: 'rgba(244,240,229,0.96)',
+        border: '1px solid rgba(45,42,36,0.10)',
+        borderRadius: 16,
+        padding: '13px 14px',
+        minHeight: 92,
+        color: 'inherit',
+      }}
+    >
+      <div>
+        <span
+          className="block"
+          style={{
+            fontFamily: plex,
+            fontWeight: 600,
+            fontSize: 17,
+            lineHeight: 1.1,
+            letterSpacing: '-0.01em',
+            color: '#242019',
+          }}
+        >
+          {LIBRARY_CATEGORY_LABEL[category]}
+        </span>
+        <span
+          className="mt-0.5 block"
+          style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(36,48,31,0.5)' }}
+        >
+          {n} {n === 1 ? 'art' : 'arter'}
+        </span>
+      </div>
+      <div className="mt-2.5 flex items-end justify-between gap-1.5">
+        <span
+          className="min-w-0 flex-1 truncate"
+          style={{ fontFamily: sans, fontSize: 11, fontWeight: 500, color: 'rgba(36,48,31,0.42)' }}
+        >
+          {teaser}
+        </span>
+        <ChevronRight
+          size={16}
+          strokeWidth={2}
+          className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+          style={{ color: 'rgba(36,48,31,0.3)' }}
+        />
+      </div>
+    </Link>
   )
 }
 
 /**
- * Art-node i "Alle arter"-listen. ÉN destination: klik åbner altid artens
- * artsguide (samme sted som hero + søgning). Sorter/teknik bor inde på
- * artsguiden — biblioteket FINDER kun arten. Viser sort-tal som hint.
+ * TEKNIKGUIDES-indgang — ét bredere kort (grønlig tone, adskilt fra plante-
+ * kategorierne) → tekniksiden.
  */
-function ArtNode({ art }: { art: ArtNodeData }) {
-  const g = art.hero ?? art.varieties[0]
-  if (!g) return null
-  const n = art.varieties.length
+function TeknikIndgang({ count }: { count: number }) {
   return (
     <Link
-      href={`/guides/${g.id}`}
+      href="/guides/teknik"
+      className="group flex items-center gap-3.5 overflow-hidden no-underline"
+      style={{
+        background: 'linear-gradient(180deg, rgba(86,111,60,0.10) 0%, rgba(86,111,60,0.05) 100%)',
+        border: '1px solid rgba(86,111,60,0.22)',
+        borderRadius: 18,
+        padding: '14px 15px',
+        color: 'inherit',
+      }}
+    >
+      <span
+        className="flex shrink-0 items-center justify-center"
+        style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(86,111,60,0.14)' }}
+      >
+        <Leaf size={22} strokeWidth={1.7} style={{ color: '#4B6636' }} aria-hidden />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span
+          className="block"
+          style={{ fontFamily: plex, fontWeight: 600, fontSize: 19, lineHeight: 1.1, color: '#233019' }}
+        >
+          Få hjælp til arbejdet
+        </span>
+        <span
+          className="mt-0.5 block"
+          style={{ fontFamily: sans, fontSize: 12, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}
+        >
+          Såning, opbinding, beskæring, høst … · {count} teknikguider
+        </span>
+      </span>
+      <ChevronRight
+        size={18}
+        strokeWidth={2}
+        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(75,102,54,0.5)' }}
+      />
+    </Link>
+  )
+}
+
+/** Slank art-række til kategorisidens A–Å-liste (serialiserer ikke fulde guides). */
+export interface ArtRow {
+  plantName: string
+  guideId: string
+  sortCount: number
+}
+
+/**
+ * Art-node i "Alle arter"-listen (bruges på kategorisiden). ÉN destination: klik
+ * åbner altid artens artsguide. Sorter/teknik bor inde på artsguiden —
+ * biblioteket FINDER kun arten. Viser sort-tal som hint.
+ */
+export function ArtNode({ plantName, guideId, sortCount: n }: ArtRow) {
+  return (
+    <Link
+      href={`/guides/${guideId}`}
       className="group flex items-center gap-2 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-white/50"
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
@@ -1197,7 +1120,7 @@ function ArtNode({ art }: { art: ArtNodeData }) {
           color: '#242019',
         }}
       >
-        {art.plantName}
+        {plantName}
       </span>
       {n > 0 && (
         <span
@@ -1219,66 +1142,6 @@ function ArtNode({ art }: { art: ArtNodeData }) {
       />
     </Link>
   )
-}
-
-function SubLabel({ children }: { children: ReactNode }) {
-  return (
-    <p
-      style={{
-        fontFamily: sans,
-        fontSize: 10.5,
-        fontWeight: 700,
-        letterSpacing: '0.14em',
-        textTransform: 'uppercase',
-        color: 'rgba(36,48,31,0.4)',
-        margin: '2px 0 0',
-      }}
-    >
-      {children}
-    </p>
-  )
-}
-
-/** "Fremhævede arter"-label — blødt Potalot-plante-glyph (ikke en generisk
- *  stjerne) over de redaktionelle hero-kort i en kategori. */
-function FremhaevetLabel() {
-  return (
-    <div className="flex items-center gap-1.5">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/glyphs/plante.png"
-        alt=""
-        style={{ width: 16, height: 16, objectFit: 'contain' }}
-      />
-      <span
-        style={{
-          fontFamily: sans,
-          fontSize: 10.5,
-          fontWeight: 700,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.5)',
-        }}
-      >
-        Start med disse arter
-      </span>
-    </div>
-  )
-}
-
-function chipStyle(active: boolean) {
-  return {
-    fontFamily: sans,
-    fontSize: 12,
-    fontWeight: 650,
-    padding: '7px 14px',
-    borderRadius: 999,
-    background: active ? 'rgba(36,48,31,0.9)' : 'rgba(244,240,229,0.55)',
-    color: active ? '#F6F3EB' : 'rgba(36,48,31,0.62)',
-    border: active
-      ? '1px solid rgba(36,48,31,0.9)'
-      : '1px solid rgba(36,48,31,0.12)',
-  } as const
 }
 
 function SectionLabel({
@@ -1305,75 +1168,8 @@ function SectionLabel({
   )
 }
 
-/** Foldbar gruppe: header (chevron + navn + antal) + indhold når åben. */
-function GroupBlock({
-  label,
-  count,
-  unit,
-  open,
-  onToggle,
-  children,
-}: {
-  label: string
-  count: number
-  unit?: string
-  open: boolean
-  onToggle: () => void
-  children: ReactNode
-}) {
-  return (
-    <div
-      className="overflow-hidden rounded-[16px] border transition-colors"
-      style={{
-        borderColor: open ? 'rgba(45,42,36,0.14)' : 'rgba(45,42,36,0.09)',
-        background: open ? 'rgba(244,240,229,0.55)' : 'transparent',
-      }}
-    >
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full items-center gap-2.5 px-3.5 py-3 text-left"
-      >
-        <ChevronRight
-          size={16}
-          strokeWidth={2.25}
-          className="shrink-0 transition-transform duration-200"
-          style={{
-            color: 'rgba(36,48,31,0.42)',
-            transform: open ? 'rotate(90deg)' : 'none',
-          }}
-        />
-        <span
-          className="flex-1 truncate"
-          style={{
-            fontFamily: plex,
-            fontWeight: 600,
-            fontSize: 17,
-            letterSpacing: '-0.01em',
-            color: '#242019',
-          }}
-        >
-          {label}
-        </span>
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 12.5,
-            fontWeight: 600,
-            color: 'rgba(36,48,31,0.42)',
-          }}
-        >
-          {count}
-          {unit ? ` ${unit}` : ''}
-        </span>
-      </button>
-      {open && <div className="px-3.5 pb-4">{children}</div>}
-    </div>
-  )
-}
-
 /** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
-function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
+export function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
   const isVar = guide.guideLevel === 'variety' || !!guide.variety
   const { src } = resolvePotalotImage({
     guideId: guide.id,
@@ -1383,7 +1179,8 @@ function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }
     preferredSrc: guide.primaryImageId,
   })
   const hasPhoto = !!guide.primaryImageId
-  const titel = guide.variety ?? guide.plantName
+  // Teknikguider har title (plantName/variety = null) → title først.
+  const titel = guide.title ?? guide.variety ?? guide.plantName
   return (
     <Link
       href={`/guides/${guide.id}`}

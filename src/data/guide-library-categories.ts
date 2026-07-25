@@ -42,55 +42,97 @@ export const LIBRARY_CATEGORY_LABEL: Record<LibraryCategory, string> = {
 }
 
 // Nøgle = plantName i småt. Ukendte planter falder til 'groentsager' (langt det
-// mest almindelige i en køkkenhave) — se libraryCategoryOf.
+// mest almindelige i en køkkenhave) — se libraryCategoryOf. Holdes ajour med
+// arts-guiderne: hver ny art tilføjes her, ellers havner den forkert.
 const MAP: Record<string, LibraryCategory> = {
-  // Grøntsager
-  tomat: 'groentsager',
+  // ── Grøntsager ──
   agurk: 'groentsager',
-  chili: 'groentsager',
-  peberfrugt: 'groentsager',
-  salat: 'groentsager',
-  kål: 'groentsager',
-  majs: 'groentsager',
-  ært: 'groentsager',
-  sukkerært: 'groentsager',
-  radise: 'groentsager',
-  squash: 'groentsager',
-  græskar: 'groentsager',
-  zucchini: 'groentsager',
-  bønne: 'groentsager',
-  stangbønne: 'groentsager',
-  buskbønne: 'groentsager',
-  gulerod: 'groentsager',
-  rødbede: 'groentsager',
-  pastinak: 'groentsager',
-  selleri: 'groentsager',
-  spinat: 'groentsager',
+  artiskok: 'groentsager',
+  asparges: 'groentsager',
+  aubergine: 'groentsager',
+  bladbede: 'groentsager',
   broccoli: 'groentsager',
   blomkål: 'groentsager',
+  bønne: 'groentsager',
+  buskbønne: 'groentsager',
+  stangbønne: 'groentsager',
+  chili: 'groentsager',
+  cikorie: 'groentsager',
+  endivie: 'groentsager',
   fennikel: 'groentsager',
-  aubergine: 'groentsager',
+  knoldfennikel: 'groentsager',
+  græskar: 'groentsager',
+  gulerod: 'groentsager',
+  havrerod: 'groentsager',
+  kål: 'groentsager',
+  kålroe: 'groentsager',
+  majroe: 'groentsager',
+  majs: 'groentsager',
+  melon: 'groentsager',
+  okra: 'groentsager',
+  'pak choi': 'groentsager',
+  pastinak: 'groentsager',
+  peberfrugt: 'groentsager',
+  peberrod: 'groentsager',
+  portulak: 'groentsager',
+  radise: 'groentsager',
+  rucola: 'groentsager',
+  rødbede: 'groentsager',
+  salat: 'groentsager',
+  selleri: 'groentsager',
+  skorzonerrod: 'groentsager',
+  spinat: 'groentsager',
+  squash: 'groentsager',
+  zucchini: 'groentsager',
+  tomat: 'groentsager',
+  tomatillo: 'groentsager',
+  vårsalat: 'groentsager',
+  ært: 'groentsager',
+  sukkerært: 'groentsager',
 
-  // Frugt & bær
+  // ── Frugt & bær (ikke-vedagtige/bløde bær) ──
   jordbær: 'frugt-baer',
   hindbær: 'frugt-baer',
-  ribs: 'frugt-baer',
-  solbær: 'frugt-baer',
-  blåbær: 'frugt-baer',
-  stikkelsbær: 'frugt-baer',
   rabarber: 'frugt-baer',
 
-  // Blomster
+  // ── Buske (vedagtige bærbuske) ──
+  solbær: 'buske',
+  ribs: 'buske',
+  blåbær: 'buske',
+  stikkelsbær: 'buske',
+  brombær: 'buske',
+
+  // ── Træer (frugttræer) ──
+  æble: 'traeer',
+  pære: 'traeer',
+  blomme: 'traeer',
+  kirsebær: 'traeer',
+
+  // ── Prydgræsser ──
+  blåtop: 'prydgraesser',
+  elefantgræs: 'prydgraesser',
+  hakonegræs: 'prydgraesser',
+  lampepudsergræs: 'prydgraesser',
+  rørhvene: 'prydgraesser',
+  staudehirse: 'prydgraesser',
+
+  // ── Blomster ──
   dahlia: 'blomster',
   zinnia: 'blomster',
   solsikke: 'blomster',
   tagetes: 'blomster',
   morgenfrue: 'blomster',
+  cosmos: 'blomster',
   kosmos: 'blomster',
+  kornblomst: 'blomster',
+  kornvalmue: 'blomster',
+  løvemund: 'blomster',
+  tallerkensmækker: 'blomster',
+  ærteblomst: 'blomster',
   ranunkel: 'blomster',
   stedmoderblomst: 'blomster',
 
-  // Urter
+  // ── Urter ──
   basilikum: 'urter',
   persille: 'urter',
   dild: 'urter',
@@ -101,17 +143,31 @@ const MAP: Record<string, LibraryCategory> = {
   oregano: 'urter',
   purløg: 'urter',
   salvie: 'urter',
+  citronmelisse: 'urter',
 
-  // Løg & knolde
+  // ── Løg & knolde ──
   hvidløg: 'loeg-knolde',
   løg: 'loeg-knolde',
   rødløg: 'loeg-knolde',
   skalotteløg: 'loeg-knolde',
+  porre: 'loeg-knolde',
   kartoffel: 'loeg-knolde',
-
-  // Træer / Buske / Prydgræsser: tilføjes når guiderne kommer.
+  jordskok: 'loeg-knolde',
+  'sød kartoffel': 'loeg-knolde',
 }
 
 export function libraryCategoryOf(plantName: string): LibraryCategory {
   return MAP[plantName.toLowerCase().trim()] ?? 'groentsager'
+}
+
+/** Kort intro pr. kategori — vises på kategorisidens hero. */
+export const LIBRARY_CATEGORY_INTRO: Record<LibraryCategory, string> = {
+  groentsager: 'Dyrk grøntsager fra frø til høst',
+  'frugt-baer': 'Søde bær og frugter til haven',
+  blomster: 'Blomster til bed, krukke og buket',
+  urter: 'Krydderurter til køkken og vindueskarm',
+  traeer: 'Frugttræer til den lille og store have',
+  buske: 'Bærbuske, der giver høst år efter år',
+  prydgraesser: 'Græsser med struktur og bevægelse',
+  'loeg-knolde': 'Løg og knolde — læg nu, høst senere',
 }
