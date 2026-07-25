@@ -1,6 +1,6 @@
 import { GuidesHero } from '@/components/guides/guides-hero'
 import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
-import { MineGuides } from '@/components/guides/mine-guides'
+import { DineEgneGuides } from '@/components/guides/dine-egne-guides'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { BookOpen } from 'lucide-react'
 import { getAllGuides } from '@/actions/guides'
@@ -64,14 +64,21 @@ export default async function GuidesPage() {
   // fra det redaktionelle Potalot-lag nedenunder.
   const mineGuides = guides.filter(g => g.visibility === 'private')
 
-  // "I din frøbank"-nøgler: normaliserede plante-navne fra frøbanken. Vi matcher
-  // PÅ NAVN, ikke på guide_id — frøbank-varens guide_id peger på brugerens egen
-  // PRIVATE guide (DB-uuid), som aldrig findes i det redaktionelle
-  // IMPORTED_GUIDES-lag "I DIN HAVE" bygges af. normalizeGuideKey er samme nøgle
-  // som master-syncen bruger, så "Tomat" → "tomat" rammer artsguiden.
-  const inFroebankKeys = new Set(
-    inventory.map(i => normalizeGuideKey(i.name)).filter(Boolean),
-  )
+  // "I din frøbank" grupperet: normalizeGuideKey(plantenavn) → distinkte
+  // sortsnavne. Vi matcher PÅ NAVN, ikke på guide_id — frøbank-varens guide_id
+  // peger på brugerens egen PRIVATE guide (DB-uuid), som aldrig findes i det
+  // redaktionelle IMPORTED_GUIDES-lag "I DIN HAVE" bygges af. normalizeGuideKey
+  // er samme nøgle som master-syncen, så "Tomat" → "tomat" rammer artsguiden.
+  // Sortsnavnene bliver til chips på art-kortet.
+  const inFroebankVarieties = new Map<string, string[]>()
+  for (const i of inventory) {
+    const key = normalizeGuideKey(i.name)
+    if (!key) continue
+    const arr = inFroebankVarieties.get(key) ?? []
+    const v = i.variety?.trim()
+    if (v && !arr.some(x => normalizeGuideKey(x) === normalizeGuideKey(v))) arr.push(v)
+    inFroebankVarieties.set(key, arr)
+  }
 
   // Lineage-map: for hver afledt guide, hvad hed planten i Potalot-
   // guiden den er baseret på? Bruges til "Baseret på Potalot-guiden om X".
@@ -122,15 +129,17 @@ export default async function GuidesPage() {
           title="Forstå det, du dyrker"
           body="Start med arten, dyk ned i sorter, og gem erfaringer undervejs."
         />
-        <MineGuides guides={mineGuides} />
         <GuidesBibliotek
           guides={visibleGuides}
           aiGuideIds={aiGuideIds}
           parentPlantNameById={parentPlantNameById}
-          iFroebankKeys={inFroebankKeys}
+          iFroebankVarieties={inFroebankVarieties}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />
+        {/* AI-genererede fallback-guides — bevidst UNDER biblioteket og som
+            ÉN kompakt indgang, aldrig top-of-mind (Anna 25/7). */}
+        <DineEgneGuides guides={mineGuides} />
       </div>
     </div>
   )

@@ -42,12 +42,13 @@ interface Props {
   aiGuideIds: ReadonlySet<string> | null
   parentPlantNameById: Map<string, string>
   /**
-   * Normaliserede plante-navne fra brugerens frøbank (normalizeGuideKey af
-   * inventar-navnet — fx "tomat"). Matcher artsguidens navn, IKKE guide_id:
-   * frøbank-varer peger på brugerens PRIVATE guides, hvis uuid aldrig findes i
-   * det redaktionelle IMPORTED_GUIDES-lag biblioteket rendrer.
+   * Brugerens frøbank grupperet: normalizeGuideKey(plantenavn) → distinkte
+   * sortsnavne. Vi matcher PÅ NAVN, ikke guide_id (frøbank-varer peger på
+   * brugerens PRIVATE guide, hvis uuid aldrig findes i IMPORTED_GUIDES). Nøglen
+   * tænder art-kortet i "I DIN HAVE"; værdierne bliver til sort-chips på kortet
+   * (findes en kurateret sortsguide → chip er et link, ellers ren tekst).
    */
-  iFroebankKeys: ReadonlySet<string>
+  iFroebankVarieties: ReadonlyMap<string, string[]>
   /**
    * Atmospheric makro-billede til EditorialBleedCard-broen mellem
    * "Begynd her" og "Guides i felten". Resolved server-side i
@@ -61,7 +62,7 @@ interface Props {
 export function GuidesBibliotek({
   guides,
   aiGuideIds,
-  iFroebankKeys,
+  iFroebankVarieties,
 }: Props) {
   const [search, setSearch] = useState('')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
@@ -125,14 +126,46 @@ export function GuidesBibliotek({
   const mineHave = useMemo(() => {
     const seen = new Set<string>()
     const out: Guide[] = []
-    for (const key of iFroebankKeys) {
+    for (const key of iFroebankVarieties.keys()) {
       const g = bySpeciesKey.get(key)
       if (!g || seen.has(g.id)) continue
       seen.add(g.id)
       out.push(g)
     }
     return out.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
-  }, [iFroebankKeys, bySpeciesKey])
+  }, [iFroebankVarieties, bySpeciesKey])
+
+  // Sort-opslag til chips: `${artsnøgle}::${sortsnøgle}` → kurateret sortsguide.
+  // Bruges til at afgøre om en frøbank-sort har en RIGTIG Potalot-sortsguide
+  // (→ chip bliver et link) eller kun findes som brugerens AI-guide (→ ren
+  // tekst). Regel: Potalot-indhold først, AI-indhold linkes ALDRIG herfra.
+  const varietyGuideByKey = useMemo(() => {
+    const m = new Map<string, Guide>()
+    for (const g of guides) {
+      if (levelOf(g) !== 'variety' || !g.variety) continue
+      if (guideKindFor(g, aiGuideIds) !== 'potalot') continue
+      const parent = g.parentGuideId ? byId.get(g.parentGuideId) : undefined
+      const speciesName = parent?.plantName ?? g.plantName
+      m.set(`${normalizeGuideKey(speciesName)}::${normalizeGuideKey(g.variety)}`, g)
+    }
+    return m
+  }, [guides, byId, aiGuideIds])
+
+  // I DIN HAVE-kort: art + brugerens KONKRETE sorter (chips). Kortet dedup'er på
+  // art (ét Tomat-kort, ikke 6), men viser sorterne så "det du dyrker" faktisk
+  // er det du dyrker — ikke bare abstraktionen ovenover.
+  const mineHaveCards = useMemo(
+    () =>
+      mineHave.map(g => {
+        const key = normalizeGuideKey(g.plantName)
+        const varieties = (iFroebankVarieties.get(key) ?? []).map(name => {
+          const vg = varietyGuideByKey.get(`${key}::${normalizeGuideKey(name)}`)
+          return { name, href: vg ? `/guides/${vg.id}` : null }
+        })
+        return { guide: g, varieties }
+      }),
+    [mineHave, iFroebankVarieties, varietyGuideByKey],
+  )
 
   // ── FORTSÆT DINE GUIDES ─────────────────────────────────────────
   // De guides brugeren senest har åbnet (localStorage), senest først. Max 3.
@@ -178,9 +211,9 @@ export function GuidesBibliotek({
       {/* Top-sektion: hvis brugeren HAR noget i frøbank/planter der matcher en
           guide → personlig "I DIN HAVE" med store hero-kort. Ellers falder vi
           tilbage til det redaktionelle "Et godt sted at starte". */}
-      {mineHave.length > 0 ? (
+      {mineHaveCards.length > 0 ? (
         <IDinHave
-          guides={mineHave}
+          cards={mineHaveCards}
           visAlle={visAlleMine}
           onToggle={() => setVisAlleMine(v => !v)}
         />
@@ -328,25 +361,33 @@ function TopicSquareCard({
   )
 }
 
+/** Én sort i frøbanken: navn + (evt.) link til den kuraterede sortsguide. */
+type HaveVariety = { name: string; href: string | null }
+type HaveCard = { guide: Guide; varieties: HaveVariety[] }
+
 /**
- * I DIN HAVE — personlig top-sektion. SAMME kvadratiske foto-kort som "Et godt
- * sted at starte", men indholdet trækkes fra brugerens frøbank/planter (mineHave
- * i parent) → relevante planter. Viser max 4; har brugeren flere, henvises
- * resten via "Se alle dine planteguides (N)". Klik → plantens guide.
+ * I DIN HAVE — personlig top-sektion. Kort på ARTSNIVEAU (dedup: ét Tomat-kort,
+ * ikke 6), MEN kortet viser brugerens konkrete sorter som chips, så "det du
+ * dyrker" faktisk er det du dyrker — ikke bare abstraktionen ovenover.
+ *
+ * Klik-mål: kortets hovedflade (foto + navn) → artsguiden. En sort-chip →
+ * sortsguiden HVIS Potalot har en kurateret sådan (grøn chip = link). Har vi
+ * den ikke endnu (kun brugerens AI-guide), er chippen ren tekst — vi linker
+ * ALDRIG til AI-indhold herfra. Regel: Potalot-indhold først, AI som supplement.
  */
 function IDinHave({
-  guides,
+  cards,
   visAlle,
   onToggle,
 }: {
-  guides: Guide[]
+  cards: HaveCard[]
   visAlle: boolean
   onToggle: () => void
 }) {
-  const shown = visAlle ? guides : guides.slice(0, 4)
+  const shown = visAlle ? cards : cards.slice(0, 4)
   return (
     <section className="relative -mt-2">
-      <div className="relative z-10 mb-3">
+      <div className="relative z-10 mb-3.5">
         <p
           style={{
             fontFamily: sans,
@@ -375,33 +416,16 @@ function IDinHave({
           Fortsæt med det, du allerede dyrker.
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        {shown.map((g, i) => {
-          const isVar = g.guideLevel === 'variety' || !!g.variety
-          const { src } = resolvePotalotImage({
-            guideId: g.id,
-            speciesSlug: isVar ? g.parentGuideId : g.id,
-            varietySlug: isVar ? g.id : null,
-            role: isVar ? 'variety-hero' : 'species-hero',
-            preferredSrc: g.primaryImageId,
-          })
-          return (
-            <TopicSquareCard
-              key={g.id}
-              index={i}
-              href={`/guides/${g.id}`}
-              imageUrl={src}
-              navn={g.pluralName ?? g.plantName}
-              byline={g.summary}
-            />
-          )
-        })}
+      <div className="space-y-2.5">
+        {shown.map(card => (
+          <HaveArtCard key={card.guide.id} card={card} />
+        ))}
       </div>
-      {guides.length > 4 && (
+      {cards.length > 4 && (
         <button
           type="button"
           onClick={onToggle}
-          className="group mt-8 inline-flex items-center gap-1.5"
+          className="group mt-5 inline-flex items-center gap-1.5"
           style={{
             fontFamily: sans,
             fontSize: 13.5,
@@ -409,7 +433,7 @@ function IDinHave({
             color: '#3D5A26',
           }}
         >
-          {visAlle ? 'Vis færre' : `Se alle dine planteguides (${guides.length})`}
+          {visAlle ? 'Vis færre' : `Se alle ${cards.length} fra din have`}
           <ArrowRight
             size={15}
             strokeWidth={2}
@@ -419,6 +443,128 @@ function IDinHave({
         </button>
       )}
     </section>
+  )
+}
+
+/**
+ * Ét art-kort i "I DIN HAVE". Øverste flade (foto + navn + antal) er ét link til
+ * artsguiden; sort-chippene UNDER er selvstændige links/tekst (ikke nested i
+ * art-linket → gyldig HTML). Grøn chip = kurateret sortsguide; dæmpet chip = kun
+ * din egen (AI) sort, ingen redaktionel guide endnu.
+ */
+function HaveArtCard({ card }: { card: HaveCard }) {
+  const g = card.guide
+  const { src } = resolvePotalotImage({
+    guideId: g.id,
+    speciesSlug: g.id,
+    varietySlug: null,
+    role: 'species-hero',
+    preferredSrc: g.primaryImageId,
+  })
+  const n = card.varieties.length
+  return (
+    <div
+      className="overflow-hidden"
+      style={{
+        background: 'rgba(244,240,229,0.96)',
+        border: '1px solid rgba(45,42,36,0.10)',
+        borderRadius: 18,
+      }}
+    >
+      {/* Hovedflade → artsguiden */}
+      <Link
+        href={`/guides/${g.id}`}
+        className="group flex items-stretch gap-3.5 no-underline"
+        style={{ color: 'inherit' }}
+      >
+        <span className="relative h-[76px] w-[76px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+          />
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col justify-center py-2 pr-3">
+          <span
+            className="truncate"
+            style={{
+              fontFamily: plex,
+              fontWeight: 600,
+              fontSize: 20,
+              lineHeight: 1.05,
+              letterSpacing: '-0.01em',
+              color: '#242019',
+            }}
+          >
+            {g.pluralName ?? g.plantName}
+          </span>
+          {n > 0 && (
+            <span
+              className="mt-1"
+              style={{
+                fontFamily: sans,
+                fontSize: 11.5,
+                fontWeight: 600,
+                color: 'rgba(36,48,31,0.5)',
+              }}
+            >
+              {n} {n === 1 ? 'sort' : 'sorter'} i din have
+            </span>
+          )}
+        </span>
+        <ChevronRight
+          size={18}
+          strokeWidth={2}
+          className="mr-3 shrink-0 self-center transition-transform duration-200 group-hover:translate-x-0.5"
+          style={{ color: 'rgba(36,48,31,0.3)' }}
+        />
+      </Link>
+      {/* Sort-chips */}
+      {n > 0 && (
+        <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-0.5">
+          {card.varieties.map(v =>
+            v.href ? (
+              <Link
+                key={v.name}
+                href={v.href}
+                className="no-underline transition-colors"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: '#3D5A26',
+                  background: 'rgba(86,111,60,0.11)',
+                  border: '1px solid rgba(86,111,60,0.24)',
+                  borderRadius: 999,
+                  padding: '3px 10px',
+                  lineHeight: 1.3,
+                }}
+              >
+                {v.name}
+              </Link>
+            ) : (
+              <span
+                key={v.name}
+                style={{
+                  fontFamily: sans,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.55)',
+                  background: 'rgba(45,42,36,0.05)',
+                  border: '1px solid rgba(45,42,36,0.08)',
+                  borderRadius: 999,
+                  padding: '3px 10px',
+                  lineHeight: 1.3,
+                }}
+              >
+                {v.name}
+              </span>
+            ),
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
