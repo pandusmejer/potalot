@@ -3,8 +3,8 @@
 Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægges ind.
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
-Status **24/7 2026** (107 guides: 58 arts · 37 sorts · 12 teknik):
-**31 fotos mangler** (11 arter + 20 sorter). 64 er på plads.
+Status **24/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
+**55 fotos mangler** (35 arter + 20 sorter). 64 er på plads.
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
@@ -20,7 +20,7 @@ får ~17 % af højden skåret væk i top og bund.
 
 ---
 
-## 🥇 Tier 1 — arts-hero (11) · øverst: hver anker en hel familie
+## 🥇 Tier 1 — arts-hero (35) · øverst: hver anker en hel familie
 
 ### Frugtbuske & frugttræer (10 — batch 5+6, ingen af dem har foto endnu)
 - [ ] **Æble** → `arts/aeble.jpg`
@@ -33,6 +33,34 @@ får ~17 % af højden skåret væk i top og bund.
 - [ ] **Ribs** → `arts/ribs.jpg`
 - [ ] **Solbær** → `arts/solbaer.jpg`
 - [ ] **Stikkelsbær** → `arts/stikkelsbaer.jpg`
+
+### Prydgræsser · batch 7 (6)
+- [ ] **Blåtop** → `arts/blaatop.jpg`
+- [ ] **Elefantgræs** → `arts/elefantgraes.jpg`
+- [ ] **Hakonegræs** → `arts/hakonegraes.jpg`
+- [ ] **Lampepudsergræs** → `arts/lampepudsergraes.jpg`
+- [ ] **Rørhvene** → `arts/roerhvene.jpg`
+- [ ] **Staudehirse** → `arts/staudehirse.jpg`
+
+### Køkkenhave · batch 8–10 (18)
+- [ ] **Artiskok** → `arts/artiskok.jpg`
+- [ ] **Asparges** → `arts/asparges.jpg`
+- [ ] **Cikorie** → `arts/cikorie.jpg`
+- [ ] **Endivie** → `arts/endivie.jpg`
+- [ ] **Havrerod** → `arts/havrerod.jpg`
+- [ ] **Jordskok** → `arts/jordskok.jpg`
+- [ ] **Kålroe** → `arts/kaalroe.jpg`
+- [ ] **Majroe** → `arts/majroe.jpg`
+- [ ] **Okra** → `arts/okra.jpg`
+- [ ] **Pak choi** → `arts/pak-choi.jpg`
+- [ ] **Pastinak** → `arts/pastinak.jpg`
+- [ ] **Peberrod** → `arts/peberrod.jpg`
+- [ ] **Portulak** → `arts/portulak.jpg`
+- [ ] **Rucola** → `arts/rucola.jpg`
+- [ ] **Skorzonerrod** → `arts/skorzonerrod.jpg`
+- [ ] **Sød kartoffel** → `arts/soed-kartoffel.jpg`
+- [ ] **Tomatillo** → `arts/tomatillo.jpg`
+- [ ] **Vårsalat** → `arts/vaarsalat.jpg`
 
 ### Blomster (1)
 - [ ] **Morgenfrue** → `arts/morgenfrue.jpg`
@@ -91,7 +119,7 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ## ✅ Allerede på plads (64)
 
-47 arter + 17 sorter. `npm run guides:status` er den autoritative kilde —
+47 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
 dette dokument regenereres ud fra den.
 
 **Forældreløse plantekort-fotos:** 18 fotos ligger i `plantekort/` til sorter der

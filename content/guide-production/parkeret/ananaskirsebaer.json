@@ -1,0 +1,58 @@
+{
+  "slug": "ananaskirsebaer",
+  "guideLevel": "species",
+  "plantName": "Ananaskirsebær",
+  "latinName": "Physalis peruviana",
+  "primaryCategoryId": "fro",
+  "summary": "Varmekrævende natskyggeplante med orange bær i papiragtige hylstre, som forkultiveres tidligt og dyrkes solrigt og beskyttet.",
+  "difficulty": "medium",
+  "tags": [
+    "frugtgroentsag",
+    "physalis",
+    "forkultivering",
+    "varmekraevende",
+    "drivhus"
+  ],
+  "calendarRules": [],
+  "sourceLinks": [
+    "https://www.rhs.org.uk/plants/87740/physalis-peruviana-f/details"
+  ],
+  "sections": [
+    {
+      "heading": "Et bær inde i en lille papirlygte",
+      "content": "Ananaskirsebær danner forgrenede planter med små blomster og orange bær, som modner inde i et tørt, papiragtigt hylster. Planten tilhører natskyggefamilien og kræver en længere varm sæson end de fleste blad- og rodgrøntsager.\n\nI dansk klima giver drivhus eller et meget varmt, beskyttet voksested den sikreste modning."
+    },
+    {
+      "heading": "Ananaskirsebær er ikke tomatillo",
+      "content": "Begge tilhører Physalis-slægten og danner frugter i hylstre, men de skal ikke dele artsguide.\n\n:::fact{variant=\"comparison\" title=\"Ananaskirsebær eller tomatillo?\"}\n### Ananaskirsebær\n- Physalis peruviana\n- modne frugter er orange og søde-syrlige\n- dyrkes som lille frugt til frisk brug\n\n### Tomatillo\n- Physalis philadelphica\n- større grønne eller lilla frugter\n- dyrkes især som grøntsagsfrugt til fx salsa\n:::"
+    },
+    {
+      "heading": "Forkultivér tidligt",
+      "content": "Så frø indendørs om foråret og giv planterne lys og stabil varme. De unge planter skal have tid til at udvikle sig, før de flyttes til deres endelige voksested.\n\nPlant først ud, når risikoen for frost er væk og nætterne er blevet milde."
+    },
+    {
+      "heading": "Vælg sol og læ",
+      "content": "Ananaskirsebær skal stå solrigt i veldrænet jord. I køligere områder er drivhus en fordel, mens friland kræver en varm og beskyttet placering.\n\nPlanterne kan også dyrkes i store beholdere, hvor jorden dog tørrer hurtigere."
+    },
+    {
+      "heading": "Støt de bløde grene",
+      "content": "Planten bliver busket og kan udvikle lange, relativt bløde grene. En løs støtte eller opbinding hjælper, når planten bliver tung af frugt.\n\nUndgå at presse grenene sammen; lys og luft omkring planten hjælper mod bladproblemer."
+    },
+    {
+      "heading": "Vand jævnt gennem frugtsætningen",
+      "content": "Hold jorden jævnt fugtig uden at gøre den konstant våd. Beholderplanter kræver hyppigere kontrol i varmt vejr.\n\nFor kraftig kvælstofgødskning kan give meget bladmasse på bekostning af en praktisk, overskuelig plante."
+    },
+    {
+      "heading": "Vent på den modne frugt",
+      "content": "Frugten skal have tid til at udvikle sin modne farve og smag inde i hylstret. Hylstret bliver tørt og papiragtigt omkring den modne frugt.\n\nHøst løbende gennem sensommer og efterår, så snart frugterne er modne."
+    },
+    {
+      "heading": "Frost afslutter sæsonen",
+      "content": "Ananaskirsebær tåler ikke hård frost. I køligt klima dyrkes den derfor ofte som en enårig afgrøde, selv om planten botanisk kan leve længere under frostfrie forhold.\n\nNår sæsonen slutter, fjernes planten eller overvintres kun, hvis du bevidst har frostfri plads til den."
+    },
+    {
+      "heading": "Typiske problemer",
+      "content": "Planten er ofte forholdsvis problemfri, men drivhusdyrkning kan give almindelige problemer som bladlus og spindemider. Kulde og for kort sæson er ofte større begrænsninger end skadedyr.\n\nBrug kun frugter fra korrekt identificerede spiselige Physalis-typer; slægten rummer også planter, som ikke dyrkes til spisning."
+    }
+  ]
+}

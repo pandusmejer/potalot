@@ -543,6 +543,173 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "artiskok",
+    "plantName": "Artiskok",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cynara cardunculus Scolymus Group",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Stor flerårig grøntsag med sølvgrå blade og spiselige blomsterknopper, bedst på en varm, solrig og veldrænet plads.",
+    "difficulty": "medium",
+    "tags": [
+      "fleraarig",
+      "groentsag",
+      "blomsterknop",
+      "sol",
+      "vinterbeskyttelse"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-groentsag-der-ligner-en-prydstaude",
+        "title": "En grøntsag, der ligner en prydstaude",
+        "body": "Artiskok danner store tuer af sølvgrønne, fligede blade og høje stængler med kraftige blomsterknopper. Det er de lukkede knopper, der høstes til køkkenet.\n\nLader du en knop åbne, udvikler den sig til en stor lilla tidsellignende blomst, som er attraktiv for bestøvere."
+      },
+      {
+        "key": "den-kraever-plads",
+        "title": "Den kræver plads",
+        "body": "En etableret plante bliver både høj og bred. Giv den derfor en permanent placering med god afstand til naboerne.\n\nDen fungerer lige så godt i et stort staudebed som i køkkenhaven, hvilket er praktisk, fordi planten nægter at opføre sig som en diskret rækkegrøntsag."
+      },
+      {
+        "key": "vaelg-varmt-solrigt-og-veldraenet",
+        "title": "Vælg varmt, solrigt og veldrænet",
+        "body": "Artiskok trives bedst i fuld sol og frugtbar jord med god dræning. Vintervåd jord er en større risiko end moderat sommertørke.\n\nPå udsatte steder hjælper læ med at beskytte de store blade og blomsterstængler."
+      },
+      {
+        "key": "start-fra-froe-eller-deling",
+        "title": "Start fra frø eller deling",
+        "body": "Planter kan dyrkes fra frø, men frøplanter varierer. Når du har en plante med gode egenskaber, kan sideskud eller deling bruges til at lave genetisk identiske planter.\n\nFjern eventuelle blomsterknopper på meget unge planter, hvis de endnu ikke er ordentligt etablerede."
+      },
+      {
+        "key": "vand-under-etablering-og-knopdannelse",
+        "title": "Vand under etablering og knopdannelse",
+        "body": "Nye planter skal vandes gennem tørre perioder. Etablerede planter er mere robuste, men stabil fugt under aktiv vækst understøtter udviklingen af store knopper.\n\nEt organisk dæklag kan hjælpe med at holde på fugt og forbedre jorden."
+      },
+      {
+        "key": "hoest-knopperne-foer-de-aabner",
+        "title": "Høst knopperne før de åbner",
+        "body": "Skær blomsterknopper, når de har opnået god størrelse, men mens skællene stadig sidder tæt. En åben knop er på vej til at blive en blomst og bliver grovere som spiseafgrøde.\n\nEfter hovedknoppen kan mindre sideknopper udvikle sig og høstes senere."
+      },
+      {
+        "key": "beskyt-planten-gennem-kolde-vintre",
+        "title": "Beskyt planten gennem kolde vintre",
+        "body": "Toppen kan dø tilbage om vinteren, og kronen kan have gavn af beskyttelse i kolde eller udsatte haver. Undgå samtidig en kompakt våd vinterdækning, der holder kronen konstant fugtig.\n\nNår væksten starter igen, fjernes døde plantedele og beskyttelsen gradvist."
+      },
+      {
+        "key": "del-aeldre-tuer",
+        "title": "Del ældre tuer",
+        "body": "Efter flere år kan en stor tue blive mindre vital. Del eller tag kraftige sideskud om foråret og genplant i frisk jord.\n\nDet forynger bestanden og giver mulighed for at bevare de bedste planter."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Bladlus, snegle og forskellige bladproblemer kan forekomme. Den største dyrkningsudfordring er ofte vinterkulde kombineret med dårlig dræning.\n\nSorternes hårdførhed og knopstørrelse bør fremgå af sortsguiden."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/globe-artichokes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "asparges",
+    "plantName": "Asparges",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Asparagus officinalis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Flerårig grøntsag til et permanent, veldrænet bed, hvor en tålmodig etablering belønnes med forårshøst i mange år.",
+    "difficulty": "medium",
+    "tags": [
+      "fleraarig",
+      "groentsag",
+      "permanent-bed",
+      "foraarshoest",
+      "kroner"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-bed-du-planter-for-mange-aar",
+        "title": "Et bed, du planter for mange år",
+        "body": "Asparges er en flerårig grøntsag. De spiselige skud kommer fra en underjordisk krone, og en veletableret plante kan give forårshøst gennem mange sæsoner.\n\nDet betyder, at placeringen skal vælges som til en permanent afgrøde, ikke som til noget, der roteres videre næste år."
+      },
+      {
+        "key": "draen-er-afgoerende",
+        "title": "Dræn er afgørende",
+        "body": "Asparges vil stå lyst og beskyttet i veldrænet jord. Tung vintervåd jord er et dårligt udgangspunkt for kroner, der skal overleve i mange år.\n\nForbered derfor bedet grundigt før plantning og fjern flerårigt ukrudt, mens du stadig kan arbejde uden at beskadige etablerede kroner."
+      },
+      {
+        "key": "kroner-er-den-hurtigste-vej",
+        "title": "Kroner er den hurtigste vej",
+        "body": "Asparges kan dyrkes fra frø, men etableres ofte fra etårige kroner. Kronerne plantes med rødderne bredt ud og dækkes efter den valgte plantemetode.\n\nFrø er billigere, men lægger ekstra tid til et projekt, der i forvejen er bygget på tålmodighed."
+      },
+      {
+        "key": "hoest-ikke-for-tidligt",
+        "title": "Høst ikke for tidligt",
+        "body": "Nye planter skal først udvikle et stort rodsystem og stærke kroner. Lad derfor planterne etablere sig i de første år frem for at høste alle de fristende skud.\n\nNår bedet er etableret, kan der høstes i en begrænset periode om foråret, hvorefter planten skal have lov at vokse frit."
+      },
+      {
+        "key": "lad-bregneloevet-bygge-naeste-aars-hoest",
+        "title": "Lad bregneløvet bygge næste års høst",
+        "body": "Efter høstperioden får skuddene lov til at udvikle sig til høje, fine, bregnelignende planter. Det grønne løv producerer den energi, kronen skal bruge til næste års skud.\n\nKlip derfor ikke toppen ned midt på sommeren bare fordi høsten er slut."
+      },
+      {
+        "key": "hold-bedet-fri-for-konkurrence",
+        "title": "Hold bedet fri for konkurrence",
+        "body": "Aspargesrødder skal ikke kæmpe med et tæt lag flerårigt ukrudt. Lug forsigtigt og undgå dyb jordbearbejdning tæt ved kronerne.\n\nEt organisk dæklag kan hjælpe med at holde på fugten og dæmpe nye ukrudtsplanter."
+      },
+      {
+        "key": "fjern-toppen-efter-nedvisning",
+        "title": "Fjern toppen efter nedvisning",
+        "body": "Når løvet naturligt gulner og dør tilbage, kan den tørre top fjernes. Fjern sygt plantemateriale fra bedet, så det ikke ligger som overvintringssted for problemer.\n\nOm foråret starter cyklussen igen med nye spyd fra kronen."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Aspargesbiller, snegle og svampesygdomme kan forekomme. God luft, veldrænet jord og oprydning i nedvisnet top er vigtige forebyggende greb.\n\nEt dårligt etableret bed er vanskeligt at reparere senere, så grundarbejdet er mere værd end kreative redningsaktioner efter fem år."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/asparagus/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "aubergine",
     "plantName": "Aubergine",
     "title": null,
@@ -781,6 +948,87 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": null,
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/blueberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "blaatop",
+    "plantName": "Blåtop",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Molinia caerulea",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Let, tueformet prydgræs med fine blade og høje transparente blomsterstængler, velegnet til sol eller let skygge og fugtigere jord.",
+    "difficulty": "easy",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "transparent",
+      "fugtighed",
+      "sol-eller-halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-lav-tue-med-hoeje-lette-staengler",
+        "title": "En lav tue med høje, lette stængler",
+        "body": "Blåtop danner en kompakt tue af forholdsvis lave blade, mens de fine blomsterstængler kan løfte sig langt højere. Det giver en transparent effekt, hvor man kan se andre planter gennem græsset.\n\nSorterne varierer meget i højden, men den lette karakter går igen."
+      },
+      {
+        "key": "mere-fugt-end-mange-andre-prydgraesser",
+        "title": "Mere fugt end mange andre prydgræsser",
+        "body": "Molinia trives i fugtighedsbevarende, men veldrænet jord og er et oplagt valg, hvor tørketålende middelhavsgræsser ville mistrives.\n\nDen tåler både fuld sol og let skygge og foretrækker neutral til sur jord."
+      },
+      {
+        "key": "lad-efteraarsfarven-arbejde",
+        "title": "Lad efterårsfarven arbejde",
+        "body": "Blade og blomsterstængler skifter ofte til gule, orange eller gyldne toner i efteråret. De tynde stængler kan blive stående langt ind i vinteren.\n\nPlacér planten, hvor lav efterårssol kan ramme stænglerne bagfra; det er omtrent gratis havearkitektur."
+      },
+      {
+        "key": "ingen-grund-til-at-opbinde-normalt",
+        "title": "Ingen grund til at opbinde normalt",
+        "body": "De lange blomsterstængler virker spinkle, men er bygget til at stå over tuen. På meget udsatte steder kan vinterstorme lægge dem ned, men almindelig opbinding er ikke en del af normal dyrkning.\n\nVælg i stedet en sort med passende højde til stedet."
+      },
+      {
+        "key": "skaer-ned-foer-foraarets-nye-vaekst",
+        "title": "Skær ned før forårets nye vækst",
+        "body": "Fjern de tørre blade og gamle blomsterstængler i sen vinter eller tidligt forår. Klip tæt over kronen uden at beskadige nye skud.\n\nDen gamle top kan blive stående så længe, den stadig ser godt ud."
+      },
+      {
+        "key": "del-om-foraaret",
+        "title": "Del om foråret",
+        "body": "Store, gamle tuer kan deles om foråret. Det forynger planten og er den bedste måde at formere navngivne sorter på.\n\nGenplant i fugtighedsbevarende jord og vand gennem etableringen."
+      },
+      {
+        "key": "brug-den-mellem-stauder",
+        "title": "Brug den mellem stauder",
+        "body": "Blåtop fungerer bedst, når de transparente blomsterstængler får lov at blande sig med stauder og andre græsser. Den er mindre egnet som massiv skærm end Miscanthus.\n\nTænk på den som et slør, ikke en mur."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Arten er generelt robust og sygdomsfri. Meget tør jord er et mere sandsynligt problem end skadedyr.\n\nHvis planten står svagt, så kontrollér først jordfugtighed, konkurrence og lysforhold."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/11169/molinia-caerulea/details"
     ],
     "status": "published",
     "visibility": "public",
@@ -1421,6 +1669,119 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "cikorie",
+    "plantName": "Cikorie",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cichorium intybus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Alsidig bladgrøntsag med tre tydelige dyrkningstyper: radicchio, sukkerhat og forcing-cikorie til vinterens lyse chicons.",
+    "difficulty": "medium",
+    "tags": [
+      "bladgroentsag",
+      "radicchio",
+      "sukkerhat",
+      "forcing",
+      "efteraarsafgroede"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "tre-maader-at-dyrke-cikorie-paa",
+        "title": "Tre måder at dyrke cikorie på",
+        "body": "Cikorie dækker flere meget forskellige køkkenhaveformer. I Potalot bør de samles under samme artsguide, men brugeren skal vælge type tidligt."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-hvilken-cikorie-dyrker-du",
+        "title": "Hvilken cikorie dyrker du?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Radicchio",
+            "items": [
+              "kompakte, ofte røde hoveder",
+              "høstes sensommer og efterår",
+              "bitterheden mildnes i det tætte hjerte"
+            ]
+          },
+          {
+            "heading": "Sukkerhat",
+            "items": [
+              "høje, grønne hoveder",
+              "sprøde blade og relativt mild smag",
+              "oplagt til efterårshøst"
+            ]
+          },
+          {
+            "heading": "Forcing-cikorie",
+            "items": [
+              "dyrkes først for en kraftig rod",
+              "roden tages op og drives senere i mørke",
+              "giver blege, tætte chicons om vinteren"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saatid-afhaenger-af-typen",
+        "title": "Såtid afhænger af typen",
+        "body": "Radicchio og sukkerhat sås typisk til senere høst, mens forcing-cikorie skal have tid til at udvikle store rødder før vinterdrivning.\n\nUndgå meget tidlig udendørs såning i koldt vejr, fordi kuldestress kan fremme stokløbning."
+      },
+      {
+        "key": "giv-hovederne-plads",
+        "title": "Giv hovederne plads",
+        "body": "Planter til fulde hoveder skal tyndes eller plantes med god afstand. Til babyblade kan cikorie stå tættere og høstes som cut-and-come-again.\n\nJorden bør være frugtbar, fugtighedsbevarende og veldrænet."
+      },
+      {
+        "key": "hold-bitterheden-under-kontrol-med-dyrkningen",
+        "title": "Hold bitterheden under kontrol med dyrkningen",
+        "body": "Bitterhed er en del af cikoriens karakter, men tørkestress og gamle blade kan gøre smagen hårdere. Vand derfor i tørre perioder og høst på det rigtige udviklingstrin.\n\nTætte hoveder beskytter selv de inderste blade mod lys og gør dem mildere."
+      },
+      {
+        "key": "forcing-cikorie-faar-et-andet-liv-om-vinteren",
+        "title": "Forcing-cikorie får et andet liv om vinteren",
+        "body": "Ved forcing dyrker du først planten udendørs for at få en kraftig rod. Senere graves rødderne op, toppen skæres tilbage, og rødderne drives tæt og mørkt, så de producerer blege chicons.\n\nDet er altså ikke en sær sort salat i en spand. Brugeren gennemfører to tydelige dyrkningsfaser."
+      },
+      {
+        "key": "hoesttypen-foelger-cikorieformen",
+        "title": "Høsttypen følger cikorieformen",
+        "body": "Radicchio høstes som tætte hoveder, sukkerhat som store oprette hoveder og forcing-cikorie som chicons. Babyblade kan plukkes tidligere fra ikke-forcede typer.\n\nSortsguiden skal derfor altid angive typen; ellers kan en kalender eller høstvejledning blive direkte misvisende."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Snegle kan angribe unge planter og gemme sig i hovederne. Varmt eller tørt vejr kan fremme stokløbning, og råd kan opstå i tætte planter eller under forkert blanchering.\n\nJævn vækst og passende såtid er vigtigere end avancerede indgreb."
+      },
+      {
+        "key": "sorter-skal-ligge-under-den-rigtige-type",
+        "title": "Sorter skal ligge under den rigtige type",
+        "body": "Navne som Palla Rossa, Pan di Zucchero og Witloof beskriver ikke bare farvevariationer; de repræsenterer forskellige dyrkningsformer.\n\nInformationsarkitekturen bør derfor være `Cikorie → type → sort`, mens alle sorter stadig bruger `parentSlug: cikorie`."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/chicory/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "citronmelisse",
     "plantName": "Citronmelisse",
     "title": null,
@@ -1491,7 +1852,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/citronmelisse.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/lemon-balm/grow-your-own"
     ],
@@ -1951,6 +2312,193 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "elefantgraes",
+    "plantName": "Elefantgræs",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Miscanthus sinensis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Høj, tueformet prydgræs med markante strå, sensommeraks og stærk vinterstruktur, bedst i sol og veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "hoej",
+      "sol",
+      "vinterstruktur"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-stor-tue-ikke-et-graes-der-loeber-gennem-bedet",
+        "title": "En stor tue, ikke et græs der løber gennem bedet",
+        "body": "Miscanthus sinensis danner tætte tuer med oprette til buede blade og høje blomsterstængler. De fleste havesorter breder sig langsomt udad fra tuen i stedet for at sende aggressive udløbere langt gennem bedet.\n\nDet gør arten velegnet som arkitektonisk solitærplante, gentaget rytme i større bede eller som let skærm."
+      },
+      {
+        "key": "sol-giver-den-bedste-blomstring",
+        "title": "Sol giver den bedste blomstring",
+        "body": "Elefantgræs udvikler de stærkeste strå og mest pålidelige blomsteraks i fuld sol. Let skygge kan tolereres, men blomstringen bliver ofte svagere.\n\nVælg veldrænet jord. Meget våd vinterjord kan give problemer omkring kronen."
+      },
+      {
+        "key": "giv-planten-den-plads-sorten-faktisk-kraever",
+        "title": "Giv planten den plads, sorten faktisk kræver",
+        "body": "Sorter varierer kraftigt i både højde og bredde. En kompakt sort kan fungere i et mindre bed eller en stor krukke, mens høje sorter har brug for markant mere plads.\n\nSortsguiden skal derfor altid beskrive den endelige størrelse og vækstform."
+      },
+      {
+        "key": "lad-toppen-staa-gennem-vinteren",
+        "title": "Lad toppen stå gennem vinteren",
+        "body": "De tørre strå og aks er en vigtig del af prydværdien gennem vinteren og beskytter samtidig kronen en smule mod vejret.\n\nSkær derfor ikke planten ned om efteråret alene for at gøre bedet 'ryddeligt'. Det er menneskets behov for orden, ikke plantens."
+      },
+      {
+        "key": "skaer-ned-lige-foer-den-nye-vaekst",
+        "title": "Skær ned lige før den nye vækst",
+        "body": "I sen vinter eller tidligt forår klippes de gamle strå ned tæt over jorden, før de nye skud for alvor kommer frem.\n\nBrug handsker; bladkanterne kan være skarpe. På store tuer er en hækkesaks eller samlet bundtning af toppen ofte lettere end at klippe ét strå ad gangen."
+      },
+      {
+        "key": "del-kun-naar-det-er-noedvendigt",
+        "title": "Del kun når det er nødvendigt",
+        "body": "En etableret tue kan stå i mange år. Hvis midten bliver åben, planten er blevet for stor, eller du vil formere den, kan tuen deles om foråret.\n\nStore gamle tuer kan være meget kompakte. Deling er derfor en reel arbejdsopgave, ikke en hyggelig femminuttersøvelse med en lille planteskovl."
+      },
+      {
+        "key": "blomstring-afhaenger-ogsaa-af-sommeren",
+        "title": "Blomstring afhænger også af sommeren",
+        "body": "Miscanthus er et varm-sæson-græs og kommer relativt sent i gang. Blomstringen udvikles bedst efter en varm sommer, og nogle sorter er mere pålidelige i køligt klima end andre.\n\nDet gør sortens tidlighed til en vigtig egenskab i Danmark."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Miscanthus er generelt robust og har få alvorlige problemer. Den største dyrkningsrisiko er ofte forkert placering: for lidt sol, for våd vinterjord eller for lidt plads.\n\nBrogede sorter kan reagere anderledes på stærk sol end helt grønne sorter, så særlige krav bør fremgå af sortsguiden."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/miscanthus",
+      "https://www.rhs.org.uk/plants/types/grasses/ornamental/selection"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "endivie",
+    "plantName": "Endivie",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cichorium endivia",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Bitter, sprød salatafgrøde til babyblade eller hele hoveder, særligt velegnet til sensommer og efterår, hvor køligere vejr giver rolig vækst.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "salat",
+      "efteraarsafgroede",
+      "blanchering",
+      "cut-and-come-again"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "to-hovedtyper-kruset-og-bredbladet",
+        "title": "To hovedtyper: kruset og bredbladet",
+        "body": "Endivie dyrkes især som kruset frisée eller bredbladet escarole. Begge hører til samme art, men bladform, tekstur og bitterhed varierer."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-fris-e-eller-escarole",
+        "title": "Frisée eller escarole?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Frisée",
+            "items": [
+              "fint fligede, krusede blade",
+              "let og sprød struktur",
+              "god både som babyblade og helt hoved"
+            ]
+          },
+          {
+            "heading": "Escarole",
+            "items": [
+              "bredere og kraftigere blade",
+              "fyldigere hoveder",
+              "ofte velegnet til sensommer- og efterårsdyrkning"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "dyrk-den-helst-uden-store-temperaturchok",
+        "title": "Dyrk den helst uden store temperaturchok",
+        "body": "Endivie kan sås i flere hold, men langvarig kulde omkring unge planter kan udløse tidlig blomstring. Tidlige hold bør derfor forkultiveres beskyttet og først plantes ud, når vejret er stabilt.\n\nSensommeren er et særligt godt dyrkningsvindue, fordi planterne kan udvikle hoveder i køligere vejr."
+      },
+      {
+        "key": "saa-til-babyblade-eller-hele-hoveder",
+        "title": "Så til babyblade eller hele hoveder",
+        "body": "Til babyblade kan du så forholdsvis tæt og høste hurtigt. Til fuldvoksne hoveder skal planterne have markant mere afstand, så bladene kan brede sig.\n\nSmå gentagne såninger giver en mere brugbar høst end ét stort hold, der bliver høstklart samtidig."
+      },
+      {
+        "key": "hold-vaeksten-jaevn",
+        "title": "Hold væksten jævn",
+        "body": "Endivie trives i frugtbar, fugtighedsbevarende jord. Vand i tørre perioder, fordi tørkestress kan gøre bladene grovere og øge risikoen for stokløbning.\n\nPlanter i beholdere kræver særlig opmærksomhed på vandingen."
+      },
+      {
+        "key": "blanchering-goer-hjertet-mildere",
+        "title": "Blanchering gør hjertet mildere",
+        "body": "Endivie har naturligt bitre blade. Når lyset udelukkes fra de inderste blade, bliver de lysere, mere møre og mildere.\n\nNogle sorter blancherer delvist sig selv, mens andre kan dækkes eller samles forsigtigt. Blanchér kun tørre, sunde planter, fordi fugt inde i et tæt hoved kan fremme råd."
+      },
+      {
+        "key": "hoest-efter-den-dyrkningsform-du-valgte",
+        "title": "Høst efter den dyrkningsform du valgte",
+        "body": "Babyblade kan klippes unge og ofte give endnu en høst. Hele hoveder skæres, når de har nået passende størrelse og før planten begynder at strække sig mod blomstring.\n\nSenere hold kan beskyttes med fiberdug eller dyrkes under glas for at forlænge sæsonen."
+      },
+      {
+        "key": "snegle-og-stokloebning-er-de-klassiske-problemer",
+        "title": "Snegle og stokløbning er de klassiske problemer",
+        "body": "Snegle og sneglehuse kan gøre stor skade på unge planter og gemme sig inde i tætte hoveder. Tørke, varme eller kuldestress kan få planten til at gå i blomst før tid.\n\nHold derfor væksten stabil og kontrollér tætte planter regelmæssigt."
+      },
+      {
+        "key": "endivie-er-ikke-det-samme-som-cikorie",
+        "title": "Endivie er ikke det samme som cikorie",
+        "body": "Endivie og cikorie er nært beslægtede og bruges på lignende måder, men Potalot skal behandle dem som separate artsguides. Endivie er Cichorium endivia; cikorie til radicchio, sukkerhat og forcing er Cichorium intybus.\n\nDet skel bliver vigtigt, når navngivne sorter kobles til deres moder-guide."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/endive/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "graeskar",
     "plantName": "Græskar",
     "title": null,
@@ -2206,6 +2754,174 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/carrots/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-carrots-and-parsnips"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hakonegraes",
+    "plantName": "Hakonegræs",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Hakonechloa macra",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Lavt, buet prydgræs med bløde båndformede blade, særligt velegnet til halvskygge, kanter, krukker og skovhavepræg.",
+    "difficulty": "easy",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "lav",
+      "halvskygge",
+      "krukke"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-graes-der-flyder-hen-over-kanten",
+        "title": "Et græs der flyder hen over kanten",
+        "body": "Hakonechloa macra danner lave, brede tuer med bløde, buede blade. I stedet for at stå stift oprejst falder bladene i lag, næsten som små grønne bølger.\n\nDet gør planten særlig effektiv langs stier, på skråninger, ved sten og i krukker."
+      },
+      {
+        "key": "halvskygge-er-en-styrke-ikke-et-kompromis",
+        "title": "Halvskygge er en styrke, ikke et kompromis",
+        "body": "Hakonegræs klarer både sol og let skygge, men er især værdifuldt, fordi det fungerer i lys halvskygge, hvor mange højere prydgræsser bliver svage.\n\nDyb skygge kan reducere vækst og farve, mens meget tør, varm sol kan give stress på visse sorter."
+      },
+      {
+        "key": "jorden-skal-holde-lidt-paa-fugten",
+        "title": "Jorden skal holde lidt på fugten",
+        "body": "Planten trives bedst i fugtighedsbevarende, veldrænet jord. Den bryder sig hverken om meget tung, konstant våd jord eller om et sted, der tørrer hårdt ud hele sommeren.\n\nKrukker skal derfor vandes jævnt gennem varme perioder."
+      },
+      {
+        "key": "farvesorterne-reagerer-paa-lyset",
+        "title": "Farvesorterne reagerer på lyset",
+        "body": "Grønne, gyldne og brogede sorter kan se meget forskellige ud alt efter lysforholdene. Mere sol kan forstærke nogle farver, men også give bladskader på følsomme former.\n\nSortsguiden skal derfor beskrive både farve og den placering, der fremhæver den bedst."
+      },
+      {
+        "key": "vaeksten-er-rolig",
+        "title": "Væksten er rolig",
+        "body": "Hakonegræs bruger tid på at opbygge en stor tue og er ikke et aggressivt græs. Det spreder sig gradvist og fungerer godt blandt hosta, bregner og skyggetålende stauder.\n\nGiv planten et par sæsoner, før du vurderer dens endelige effekt."
+      },
+      {
+        "key": "lad-bladene-staa-vinteren-over",
+        "title": "Lad bladene stå vinteren over",
+        "body": "Løvet får ofte rødlige eller brune efterårsfarver og falmer senere til stråfarvet. Det kan blive stående vinteren over.\n\nFjern den gamle top i sen vinter eller tidligt forår, før de friske blade folder sig ud."
+      },
+      {
+        "key": "del-etablerede-tuer",
+        "title": "Del etablerede tuer",
+        "body": "Når en plante er blevet stor nok, kan den deles om foråret. Små stykker etablerer sig langsomt, så behold rimelige dele med flere vækstpunkter.\n\nDeling bruges også til at bevare navngivne sorter identisk."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Hakonegræs er generelt problemfrit. De mest almindelige problemer skyldes for tør jord, meget tung vintervåd jord eller en lysplacering, der ikke passer til sortens bladfarve.\n\nDet er altså endnu en plante, hvor stedet oftere er skyldig end planten."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/33668/hakonechloa-macra/details",
+      "https://www.rhs.org.uk/plants/hakonechloa"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "havrerod",
+    "plantName": "Havrerod",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Tragopogon porrifolius",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør toårig rodgrøntsag med lange lyse rødder, som sås direkte om foråret og høstes fra efterår gennem vinter.",
+    "difficulty": "medium",
+    "tags": [
+      "rodfrugt",
+      "vinterhoest",
+      "direkte-saaning",
+      "lang-saeson",
+      "toaarig"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-gammeldags-rod-der-fortjener-sin-plads",
+        "title": "En gammeldags rod, der fortjener sin plads",
+        "body": "Havrerod danner lange, slanke, lyse rødder og en roset af smalle blade. Den er hårdfør og kan blive stående i jorden til høst gennem efterår og vinter.\n\nPlanten er toårig. Første år bruger den kræfterne på rod og blade; får den lov at fortsætte, blomstrer den senere."
+      },
+      {
+        "key": "saa-den-direkte",
+        "title": "Så den direkte",
+        "body": "Havrerod skal sås direkte i det endelige bed om foråret. Rødderne bliver lange og er ikke oplagte kandidater til omplantning.\n\nSå i en dyb, løs jord og hold såbedet fugtigt, mens frøene spirer."
+      },
+      {
+        "key": "giv-roedderne-dyb-jord",
+        "title": "Giv rødderne dyb jord",
+        "body": "Sten, hårde jordlag og kompakt jord kan give forgrenede eller korte rødder. Løsn derfor jorden i dybden før såning.\n\nDyrker du på tung jord, kan et højbed eller en dybt forberedt række gøre både vækst og høst lettere."
+      },
+      {
+        "key": "tynd-til-staerke-enkeltplanter",
+        "title": "Tynd til stærke enkeltplanter",
+        "body": "Tynd planterne, når de er store nok til at håndtere, så hver rod får plads. Hold ukrudt væk, mens planterne etablerer sig.\n\nDe smalle blade fylder ikke bedet hurtigt, så ukrudt kan ellers få et irriterende forspring."
+      },
+      {
+        "key": "vand-gennem-toerre-perioder",
+        "title": "Vand gennem tørre perioder",
+        "body": "Jævn fugt hjælper rødderne med at udvikle sig uden vækststop. Vand grundigt ved længere tørke.\n\nEt organisk dæklag mellem rækkerne kan hjælpe med at holde på fugten, men dæk ikke småplanterne."
+      },
+      {
+        "key": "hoest-fra-efteraaret",
+        "title": "Høst fra efteråret",
+        "body": "Begynd høsten, når rødderne har fået ordentlig størrelse. Frost kan gøre rødderne sødere og mere møre, og afgrøden kan derfor bruges langt ind i den kolde sæson.\n\nLad resten stå i jorden og løft efter behov, hvis jordforholdene tillader det."
+      },
+      {
+        "key": "grav-traek-ikke",
+        "title": "Grav, træk ikke",
+        "body": "Havrerødder knækker let. Stik en greb dybt ned ved siden af rækken og løsn jorden, før du løfter planten.\n\nEn knækket rod er stadig spiselig, men den er mindre praktisk at rense og lagre."
+      },
+      {
+        "key": "hvis-planten-gaar-videre-til-aar-to",
+        "title": "Hvis planten går videre til år to",
+        "body": "Planter, der overvintrer og ikke høstes, kan sende blomsterstængler op. Blomsterne er dekorative, men planten bruger nu energien på reproduktion frem for en fin spise-rod.\n\nVil du dyrke til frø, kan enkelte planter få lov at fortsætte. Til køkkenbrug høster du normalt rødderne før det."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Havrerod er generelt ukompliceret. Dårlig jordstruktur, tørke og konkurrence fra ukrudt giver oftere skuffende rødder end sygdom gør.\n\nHold sædskifte og almindelig køkkenhavehygiejne, og fjern beskadigede planter ved behov."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/salsify/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -2586,6 +3302,87 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "jordskok",
+    "plantName": "Jordskok",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Helianthus tuberosus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "knolde",
+    "subcategoryId": null,
+    "summary": "Meget hårdfør, flerårig solsikkeslægtning, der dyrkes for underjordiske knolde og kan høstes direkte fra jorden gennem vinteren.",
+    "difficulty": "easy",
+    "tags": [
+      "knold",
+      "fleraarig",
+      "vinterhoest",
+      "hoej",
+      "spredende"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-solsikke-med-spiselige-knolde",
+        "title": "En solsikke med spiselige knolde",
+        "body": "Jordskok er en flerårig slægtning til solsikken. Den danner høje stængler over jorden og et stort netværk af spiselige knolde under jorden.\n\nPlanten er ekstremt robust og kan komme igen fra selv små knolde, der bliver glemt ved høsten."
+      },
+      {
+        "key": "vaelg-placeringen-med-omtanke",
+        "title": "Vælg placeringen med omtanke",
+        "body": "Jordskok bliver høj og kan fungere som en sæsonmæssig skærm. Placér den, så den ikke skygger uønsket for lavere afgrøder.\n\nDen kan dyrkes i sol og også give afgrøde i let skygge. Jorden bør være veldrænet og rimeligt frugtbar."
+      },
+      {
+        "key": "plant-knolde-som-kartofler",
+        "title": "Plant knolde som kartofler",
+        "body": "Jordskok etableres fra knolde, ikke fra almindelige havefrø. Plant sunde, faste knolde og giv dem plads til at danne nye underjordiske skud.\n\nNår planterne først er etableret, er det sjældent fremspiring, der bliver problemet. Det bliver snarere at forklare dem, hvor bedet slutter."
+      },
+      {
+        "key": "stoet-paa-udsatte-steder",
+        "title": "Støt på udsatte steder",
+        "body": "Planterne kan blive meget høje. På vindudsatte steder kan stænglerne bindes til støtte eller forkortes senere på sommeren for at mindske vindskader.\n\nLavere sorter er et bedre valg, hvis du vil undgå store tre meter høje planter."
+      },
+      {
+        "key": "vand-ved-langvarig-toerke",
+        "title": "Vand ved langvarig tørke",
+        "body": "Jordskok er robust, men jævn fugt gennem sommeren hjælper knoldene med at udvikle sig. Vand især nye planter og ved længere tørre perioder.\n\nEt lag organisk materiale kan hjælpe både jordstruktur og fugtighed."
+      },
+      {
+        "key": "hoest-fra-sen-efteraar-og-gennem-vinteren",
+        "title": "Høst fra sen efterår og gennem vinteren",
+        "body": "Knoldene kan graves op, efter at toppen begynder at visne. De holder sig bedre i jorden end på et varmt lager, så høst gerne efter behov gennem vinteren.\n\nEfterlad kun knolde i jorden, hvis du faktisk vil have planten tilbage næste år."
+      },
+      {
+        "key": "fjern-alle-knolde-hvis-planten-skal-vaek",
+        "title": "Fjern alle knolde, hvis planten skal væk",
+        "body": "Jordskok regenererer fra efterladte knoldstykker. Hvis du vil rydde bedet, skal du derfor være grundig ved høsten og fjerne nye skud, der kommer frem efterfølgende.\n\nDet er en nyttig afgrøde, men den har ingen særlig respekt for matrikelgrænser."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Jordskok har generelt få problemer. Snegle kan tage unge skud, og kraftig vind kan beskadige høje stængler.\n\nSorten betyder især noget for knoldform, højde og hvor let knoldene er at rengøre og høste."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/jerusalem-artichokes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "kaal",
     "plantName": "Kål",
     "title": null,
@@ -2742,6 +3539,87 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
       "https://www.rhs.org.uk/biodiversity/cabbage-caterpillars",
       "https://www.rhs.org.uk/disease/club-root"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kaalroe",
+    "plantName": "Kålroe",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Brassica napus Napobrassica Group",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hårdfør, langsommere rodfrugt til efterår og vinter, dyrket for store gule eller cremefarvede rødder med sødlig, kraftig smag.",
+    "difficulty": "easy",
+    "tags": [
+      "rodfrugt",
+      "kaalfamilie",
+      "vintergroentsag",
+      "direkte-saaning",
+      "haardfoer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-vinterrod-ikke-bare-en-stor-majroe",
+        "title": "En vinterrod, ikke bare en stor majroe",
+        "body": "Kålroe udvikler en stor rund rod med typisk gul til cremefarvet indre og en kraftigere smag end majroe. Den bruger længere tid på at modne og dyrkes først og fremmest til efterårs- og vinterhøst.\n\nSelv om navnene blandes sammen regionalt, bør Potalot holde kålroe og majroe adskilt."
+      },
+      {
+        "key": "saa-direkte-i-foraar-og-tidlig-sommer",
+        "title": "Så direkte i forår og tidlig sommer",
+        "body": "Kålroe har brug for en lang vækstsæson. Så direkte i det endelige bed, når jorden er blevet lun og kan bearbejdes.\n\nEn jævn fremspiring er vigtig, fordi meget forsinkede planter sjældent indhenter de stærkeste naboer."
+      },
+      {
+        "key": "giv-hver-rod-god-plads",
+        "title": "Giv hver rod god plads",
+        "body": "De færdige rødder bliver markant større end almindelige salatmajroer. Tynd derfor planterne, før de begynder at konkurrere om lys, vand og næring.\n\nHold rækkerne fri for ukrudt, mens planterne er små."
+      },
+      {
+        "key": "jaevn-fugt-giver-jaevn-vaekst",
+        "title": "Jævn fugt giver jævn vækst",
+        "body": "Kålroe klarer køligt vejr godt, men tørke kan bremse rodudviklingen. Vand under længere tørre perioder, især mens rødderne svulmer.\n\nEn frugtbar jord med god struktur hjælper planten gennem den lange sæson."
+      },
+      {
+        "key": "beskyt-de-unge-planter-mod-kaalskadedyr",
+        "title": "Beskyt de unge planter mod kålskadedyr",
+        "body": "Som medlem af kålfamilien kan kålroe angribes af jordlopper, kålflue, kållarver og kålbrok. Insektnet over unge planter er et enkelt forebyggende greb mod flere skadedyr.\n\nBrug sædskifte, hvis du dyrker mange Brassica-afgrøder."
+      },
+      {
+        "key": "hoest-fra-efteraaret",
+        "title": "Høst fra efteråret",
+        "body": "Rødderne kan løftes, når de har nået brugbar størrelse. De er hårdføre og kan ofte stå ude et stykke ind i den kolde sæson, men meget hård frost gør høsten vanskelig og kan skade udsatte rødder.\n\nLøft med en greb, hvis jorden er fast."
+      },
+      {
+        "key": "opbevar-overskuddet-koeligt",
+        "title": "Opbevar overskuddet køligt",
+        "body": "Høstet kålroe kan opbevares køligt og frostfrit. Fjern toppen og kassér beskadigede eller syge rødder før lagring.\n\nKontrollér lageret undervejs og brug rødder, der begynder at blive bløde, først."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Kålbrok er blandt de alvorligste jordbårne problemer, mens kålflue og larver kan skade unge planter. Rødder kan også blive små eller grove efter længere tørke og hård konkurrence.\n\nForebyggelse gennem sædskifte, net og stabil vækst er vigtigere end behandling bagefter."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/swede/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -3288,6 +4166,87 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "lampepudsergraes",
+    "plantName": "Lampepudsergræs",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cenchrus alopecuroides",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Tueformet prydgræs med bløde flaskerenserlignende aks i sensommeren, bedst på en varm, solrig og veldrænet placering.",
+    "difficulty": "medium",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "varmekraevende",
+      "sol",
+      "sensommer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "aksene-er-hele-pointen",
+        "title": "Aksene er hele pointen",
+        "body": "Lampepudsergræs danner tætte tuer af smalle blade og karakteristiske bløde aks, som kommer fra sensommeren. De bevæger sig tydeligt i vinden og giver planten et blødere udtryk end de mere stive rørhvene.\n\nNavnet Pennisetum alopecuroides bruges stadig meget i handel, selv om det accepterede botaniske navn nu ofte er Cenchrus alopecuroides."
+      },
+      {
+        "key": "vaelg-havens-lune-plads",
+        "title": "Vælg havens lune plads",
+        "body": "Arten vil have fuld sol og veldrænet jord. En varm syd- eller vestvendt placering hjælper både vækst og blomstring.\n\nDen er mindre vinterrobust end flere af de andre græsser i batchen, så kold, våd jord og udsatte steder er en dårlig kombination."
+      },
+      {
+        "key": "draen-er-saerlig-vigtigt-om-vinteren",
+        "title": "Dræn er særlig vigtigt om vinteren",
+        "body": "Planten kan klare tørre perioder, når den er etableret, men vand omkring kronen i den kolde sæson øger risikoen for vinterskade.\n\nI tung jord er et hævet bed, skrånende voksested eller en stor veldrænet krukke ofte bedre."
+      },
+      {
+        "key": "vent-paa-vaeksten-om-foraaret",
+        "title": "Vent på væksten om foråret",
+        "body": "Lampepudsergræs starter relativt sent. En plante kan derfor se død ud, mens mere kuldetolerante græsser allerede er grønne.\n\nLad være med at grave den op i april i ren utålmodighed. Det er en imponerende menneskelig tradition at erklære planter døde tre uger før de vågner."
+      },
+      {
+        "key": "fjern-den-gamle-top-i-foraaret",
+        "title": "Fjern den gamle top i foråret",
+        "body": "De tørre blade og aks kan stå vinteren over. Når foråret kommer, klippes den gamle vækst tilbage, før nye skud bliver lange.\n\nPå udsatte steder kan den gamle top også give lidt beskyttelse omkring kronen."
+      },
+      {
+        "key": "del-etablerede-planter-i-foraaret",
+        "title": "Del etablerede planter i foråret",
+        "body": "Når planten er i aktiv vækst, kan store tuer deles. Genplant i veldrænet jord og vand gennem etableringen.\n\nNavngivne sorter formeres bedst vegetativt, så deres form og aksfarve bevares."
+      },
+      {
+        "key": "sorten-afgoer-stoerrelse-og-blomstring",
+        "title": "Sorten afgør størrelse og blomstring",
+        "body": "Der findes kompakte sorter til krukker og større sorter til bede. Aksenes størrelse, farve og blomstringstid varierer.\n\nI dansk klima er tidlig og pålidelig blomstring en vigtig sortsegenskab."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Arten er generelt fri for større skadedyrs- og sygdomsproblemer. Vintertab skyldes oftere klima, kulde og fugtig jord end sygdom.\n\nBetragt derfor placeringen som den vigtigste forebyggelse."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/523411/cenchrus-alopecuroides/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "loeg",
     "plantName": "Løg",
     "title": null,
@@ -3509,6 +4468,111 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/loevemund.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/69565/antirrhinum-majus/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "majroe",
+    "plantName": "Majroe",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Brassica rapa Rapifera Group",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig, kølig-sæson rodfrugt, der kan høstes ung og sprød få uger efter såning, mens de unge blade også kan spises.",
+    "difficulty": "easy",
+    "tags": [
+      "rodfrugt",
+      "kaalfamilie",
+      "hurtig",
+      "direkte-saaning",
+      "successionssaaning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-hurtig-rodfrugt-til-de-koelige-maaneder",
+        "title": "En hurtig rodfrugt til de kølige måneder",
+        "body": "Majroe udvikler en rund eller flad opsvulmet rod på relativt kort tid. De unge rødder er milde og sprøde, og de unge blade kan også høstes.\n\nDen korte udviklingstid gør majroe velegnet som mellemafgrøde før eller efter langsommere grøntsager."
+      },
+      {
+        "key": "saa-direkte-og-lidt-ad-gangen",
+        "title": "Så direkte og lidt ad gangen",
+        "body": "Så i det endelige bed, fordi rodafgrøden ikke har noget at vinde ved unødvendig omplantning. Små hold med nogle ugers mellemrum giver en jævn høst.\n\nForår og sensommer er ofte de letteste perioder, fordi majroe foretrækker kølige forhold."
+      },
+      {
+        "key": "tidlig-type-eller-hovedafgroede",
+        "title": "Tidlig type eller hovedafgrøde",
+        "body": "Sorter kan groft deles efter dyrkningstidspunkt og høststørrelse."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-tidlig-majroe-eller-hovedafgroede",
+        "title": "Tidlig majroe eller hovedafgrøde?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Tidlige typer",
+            "items": [
+              "sås fra forår",
+              "høstes unge og små",
+              "gode som sprøde salatroer"
+            ]
+          },
+          {
+            "heading": "Hovedafgrøde",
+            "items": [
+              "sås senere",
+              "får længere udviklingstid",
+              "bruges især til efterårs- og tidlig vinterhøst"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "tynd-foer-roedderne-konkurrerer",
+        "title": "Tynd før rødderne konkurrerer",
+        "body": "Hvis planterne står for tæt, får de svært ved at udvikle jævne rødder. Tynd tidligt til den afstand, sorten og den ønskede høststørrelse kræver.\n\nDe spæde udtyndingsblade kan bruges i køkkenet."
+      },
+      {
+        "key": "vand-gennem-toerre-perioder",
+        "title": "Vand gennem tørre perioder",
+        "body": "Majroe skal vokse hurtigt og jævnt. Tør jord kan give små, træede eller sprækkede rødder og kan udløse tidlig blomstring.\n\nVand grundigt i tørke, især mens rødderne svulmer."
+      },
+      {
+        "key": "hoest-hellere-lidt-for-tidligt-end-for-sent",
+        "title": "Høst hellere lidt for tidligt end for sent",
+        "body": "Unge rødder har den fineste tekstur. Lader du mange sorter stå længe og blive meget store, kan de blive grove og mere bitre.\n\nTræk enkelte planter og vurder størrelsen i stedet for at vente på én universel høstdato."
+      },
+      {
+        "key": "beskyt-som-en-lille-kaalplante",
+        "title": "Beskyt som en lille kålplante",
+        "body": "Majroe tilhører kålfamilien og kan rammes af blandt andet jordlopper, kålflue og kålbrok. Et fint net kan beskytte unge planter mod flere flyvende skadedyr.\n\nSædskifte er relevant, især hvis jorden tidligere har haft kålbrok."
+      },
+      {
+        "key": "majroe-er-ikke-kaalroe",
+        "title": "Majroe er ikke kålroe",
+        "body": "Majroe og kålroe ligner hinanden, men er forskellige afgrøder. Majroe vokser hurtigere, høstes ofte mindre og har typisk lyst kød; kålroe udvikler større, hårdføre rødder til efterår og vinter.\n\nDe skal derfor have hver sin Potalot-artsguide."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/turnips/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -3889,6 +4953,92 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "okra",
+    "plantName": "Okra",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Abelmoschus esculentus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Varmekrævende afgrøde med hibiscuslignende blomster og spiselige bælge, som i dansk klima normalt bør dyrkes i drivhus eller et meget varmt beskyttet miljø.",
+    "difficulty": "hard",
+    "tags": [
+      "drivhus",
+      "varmekraevende",
+      "baelg",
+      "forkultivering",
+      "tropisk"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-af-de-mest-varmekraevende-groentsager-i-potalot",
+        "title": "En af de mest varmekrævende grøntsager i Potalot",
+        "body": "Okra kommer fra varme klimaer og skal have en lang, varm sæson for at give en ordentlig bælgproduktion. I dansk klima bør drivhus eller polytunnel være standardanbefalingen.\n\nEt forsøg på friland giver kun mening på et usædvanligt varmt, solrigt og beskyttet sted."
+      },
+      {
+        "key": "forkultiv-r-varmt",
+        "title": "Forkultivér varmt",
+        "body": "Så indendørs om foråret. Frøene kan lægges i blød i lunkent vand før såning, og spiringen kræver stabil varme.\n\nSå gerne enkeltvis i små potter eller moduler, så de unge rødder ikke skal skilles voldsomt ad senere."
+      },
+      {
+        "key": "plant-foerst-ud-naar-varmen-er-reel",
+        "title": "Plant først ud, når varmen er reel",
+        "body": "Flyt planterne til drivhus, store beholdere eller et meget lunt voksested, når nætterne er milde og planterne er i aktiv vækst.\n\nEn kold jord og lave temperaturer stopper væksten. Kalenderdatoen alene kan derfor ikke afgøre udplantningen."
+      },
+      {
+        "key": "sol-vand-og-naering-skal-foelges-ad",
+        "title": "Sol, vand og næring skal følges ad",
+        "body": "Okra skal have meget lys og varme, men en kraftig plante i drivhus bruger også meget vand. Hold jorden jævnt fugtig, især under blomstring og bælgdannelse.\n\nPlanter i beholdere kan få flydende gødning, når blomstringen begynder."
+      },
+      {
+        "key": "knib-toppen-for-mere-forgrening",
+        "title": "Knib toppen for mere forgrening",
+        "body": "Når planten er blevet godt etableret og har opnået passende højde, kan topskuddet knibes for at fremme sideskud og flere blomsterbærende grene.\n\nHøje planter kan have brug for en stok eller anden støtte."
+      },
+      {
+        "key": "blomsten-bliver-hurtigt-til-en-baelg",
+        "title": "Blomsten bliver hurtigt til en bælg",
+        "body": "Okras blomster minder om hibiscus og efterfølges af lange, tilspidsede bælge. Bælgene vokser hurtigt i varmt vejr.\n\nDet betyder, at høst ikke er en ugentlig ceremoniel aktivitet; planterne bør kontrolleres ofte."
+      },
+      {
+        "key": "hoest-baelgene-unge",
+        "title": "Høst bælgene unge",
+        "body": "Skær bælgene, mens de stadig er unge og møre. Overmodne bælge bliver hurtigt grove og træede.\n\nBrug handsker og lange ærmer, hvis plantens små hår irriterer huden."
+      },
+      {
+        "key": "sorten-betyder-meget-i-et-koeligt-klima",
+        "title": "Sorten betyder meget i et køligt klima",
+        "body": "Sorter varierer i højde, tidlighed og bælgfarve. I Danmark er tidlig produktion og egnethed til drivhus vigtigere end maksimal plantehøjde.\n\nEn sortsguide skal derfor forklare, hvorfor netop sorten giver mening under en kort nordisk sommer."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Okra har ofte færre problemer, når den får den varme, den kræver. Bladlus, spindemider og drivhus-skadedyr kan dog forekomme.\n\nDen største dyrkningsfejl er simpelthen for lave temperaturer og for kort sæson."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/okra/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "oregano",
     "plantName": "Oregano",
     "title": null,
@@ -4037,6 +5187,192 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": null,
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/pears/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "pak-choi",
+    "plantName": "Pak choi",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Brassica rapa subsp. chinensis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Hurtig asiatisk kål til babyblade eller hele sprøde rosetter, bedst i køligt, fugtigt vejr frem for varm højsommer.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "kaal",
+      "hurtig",
+      "koelig-saeson",
+      "cut-and-come-again"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "babyblade-eller-hele-rosetter",
+        "title": "Babyblade eller hele rosetter",
+        "body": "Pak choi kan dyrkes på to ret forskellige måder. Tæt såning giver små blade til løbende høst, mens større afstand giver hele oprette rosetter med brede, sprøde bladstilke."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-babyblade-eller-fuld-stoerrelse",
+        "title": "Babyblade eller fuld størrelse?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Babyblade",
+            "items": [
+              "tættere såning",
+              "hurtig høst",
+              "flere små hold gennem sæsonen"
+            ]
+          },
+          {
+            "heading": "Hele rosetter",
+            "items": [
+              "mere plads mellem planterne",
+              "længere udviklingstid",
+              "større risiko for stokløbning i stressende vejr"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "dyrk-den-i-de-koelige-vinduer",
+        "title": "Dyrk den i de kølige vinduer",
+        "body": "Pak choi vokser bedst i mildt, fugtigt vejr. Forår og sensommer til efterår er derfor ofte lettere end den varmeste del af sommeren.\n\nVarme, tørke og også kuldestress kan udløse for tidlig blomstring."
+      },
+      {
+        "key": "saa-smaa-hold-ofte",
+        "title": "Så små hold ofte",
+        "body": "Frøene spirer hurtigt. Så lidt ad gangen med nogle ugers mellemrum, hvis du vil have en stabil strøm af unge blade og rosetter.\n\nDu kan så direkte eller bruge moduler, især når du vil styre afstanden til fuldvoksne planter."
+      },
+      {
+        "key": "undgaa-haard-rodforstyrrelse",
+        "title": "Undgå hård rodforstyrrelse",
+        "body": "Ved forkultivering er individuelle moduler bedre end en tæt såbakke, hvor rødderne skal rives fra hinanden. Plant ud med rodklumpen så intakt som muligt.\n\nVækststop ved udplantning kan øge risikoen for stokløbning."
+      },
+      {
+        "key": "hold-jorden-jaevnt-fugtig",
+        "title": "Hold jorden jævnt fugtig",
+        "body": "Pak choi skal vokse hurtigt for at blive sprød og mild. Vand gennem tørre perioder og brug eventuelt et tyndt dæklag for at begrænse fordampningen.\n\nPlanter i beholdere og højbede tørrer hurtigere end planter i åben jord."
+      },
+      {
+        "key": "beskyt-som-andre-kaalplanter",
+        "title": "Beskyt som andre kålplanter",
+        "body": "Jordlopper kan lave mange små huller i bladene, og snegle kan angribe småplanter. Kålsommerfugle og andre kålskadedyr kan også finde planten.\n\nEt fint insektnet kan være relevant fra tidligt i kulturen."
+      },
+      {
+        "key": "hoest-efter-den-stoerrelse-du-oensker",
+        "title": "Høst efter den størrelse du ønsker",
+        "body": "Babyblade klippes eller plukkes unge. Hele rosetter høstes, når de er faste og veludviklede, før planten begynder at strække sig mod blomstring.\n\nDu behøver altså ikke vente på én bestemt 'færdig' størrelse."
+      },
+      {
+        "key": "pak-choi-er-ikke-tatsoi",
+        "title": "Pak choi er ikke tatsoi",
+        "body": "Pak choi, tatsoi, mizuna og andre asiatiske bladkål er nært beslægtede, men de bør ikke behandles som sorter af én art i Potalot alene fordi de står ved siden af hinanden i frøkataloget.\n\nNavngivne pak choi-sorter skal have `parentSlug: pak-choi`; andre asiatiske kåltyper får deres egen brugerrettede guide, når de tilføjes."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/pak-choi/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "pastinak",
+    "plantName": "Pastinak",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Pastinaca sativa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Langsom, hårdfør rodfrugt, der sås direkte om foråret og kan blive stående i jorden til høst gennem efterår og vinter.",
+    "difficulty": "medium",
+    "tags": [
+      "rodfrugt",
+      "direkte-saaning",
+      "vinterhoest",
+      "lang-saeson",
+      "haardfoer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-langsom-rod-med-en-lang-saeson",
+        "title": "En langsom rod med en lang sæson",
+        "body": "Pastinak er en klassisk efterårs- og vinterafgrøde. Den bruger lang tid på at udvikle den dybe, lyse pælerod, men kræver forholdsvis lidt arbejde, når først rækken er etableret.\n\nRødderne kan blive stående i jorden langt ind i den kolde sæson og graves op efter behov."
+      },
+      {
+        "key": "saa-direkte-hvor-roedderne-skal-vokse",
+        "title": "Så direkte, hvor rødderne skal vokse",
+        "body": "Pastinak danner en tydelig pælerod og egner sig dårligt til almindelig omplantning. Så derfor direkte i det endelige bed.\n\nVent til jorden er blevet lun nok til pålidelig spiring. Meget tidlig såning i kold jord giver ofte mere ventetid end tidligere høst."
+      },
+      {
+        "key": "brug-friske-froe",
+        "title": "Brug friske frø",
+        "body": "Pastinakfrø mister spireevnen forholdsvis hurtigt. Brug derfor frø fra den aktuelle sæson frem for en gammel åben pose, der har ligget tre år i en skuffe og nu forventes at præstere af ren loyalitet.\n\nSå lidt tættere end den endelige afstand, fordi fremspiringen kan være ujævn."
+      },
+      {
+        "key": "hold-raekken-fugtig-og-fri-for-ukrudt",
+        "title": "Hold rækken fugtig og fri for ukrudt",
+        "body": "Spiringen kan tage flere uger. Hold jorden jævnt fugtig i perioden og fjern ukrudt forsigtigt, så de små pastinakplanter ikke bliver overskygget.\n\nEn hurtigtspirende markørafgrøde kan bruges mellem pastinakfrøene, hvis du har svært ved at se rækken."
+      },
+      {
+        "key": "tynd-til-n-god-rod-pr-plads",
+        "title": "Tynd til én god rod pr. plads",
+        "body": "Når planterne er tydelige, tyndes de, så hver rod får plads til at udvikle sig. Lange sorter kræver især en løs, dyb jord uden mange sten og hårde klumper.\n\nKortere typer er et bedre valg i tung, stenet eller lav jord."
+      },
+      {
+        "key": "vand-under-laengere-toerke",
+        "title": "Vand under længere tørke",
+        "body": "Pastinak er robust, men længere tørke mens rødderne vokser kan reducere størrelse og give ujævn udvikling. Vand grundigt i tørre perioder frem for kun at fugte overfladen.\n\nUndgå meget frisk, kraftig gødning omkring rødderne, som kan bidrage til forgrenede rødder."
+      },
+      {
+        "key": "hoest-gennem-den-kolde-saeson",
+        "title": "Høst gennem den kolde sæson",
+        "body": "Begynd høsten, når rødderne har opnået brugbar størrelse. Løsn jorden dybt med en greb ved siden af rækken, før du trækker, så de lange rødder ikke knækker.\n\nRødder, der bliver stående, kan høstes senere gennem vinteren, så længe jorden kan bearbejdes."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Pastinak kan få pastinakkræft, gulerodsflue og forskellige bladproblemer. God jordstruktur, sædskifte og robuste sorter reducerer risikoen.\n\nSortsguiden bør fremhæve dokumenteret resistens mod sygdomme, når det er en reel sortsegenskab."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/parsnips/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -4265,6 +5601,111 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "peberrod",
+    "plantName": "Peberrod",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Armoracia rusticana",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Hårdfør flerårig rodafgrøde med kraftig smag, som er nem at dyrke, men så livskraftig at den ofte er smartest i en stor beholder.",
+    "difficulty": "easy",
+    "tags": [
+      "fleraarig",
+      "rodafgroede",
+      "rodstikling",
+      "krukke",
+      "haardfoer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-fleraarig-rod-med-temperament",
+        "title": "En flerårig rod med temperament",
+        "body": "Peberrod er en flerårig plante i kålfamilien. Den danner en kraftig bladroset over jorden og lange, lyse rødder under jorden. Det er rødderne, der høstes for deres skarpe smag.\n\nPlanten går i hvile om vinteren og skyder igen fra rødderne om foråret. Selv små rodstykker kan danne nye planter, så vælg voksestedet med mere omtanke end menneskeheden normalt bruger på ting, der senere viser sig at være permanente."
+      },
+      {
+        "key": "krukke-eller-friland",
+        "title": "Krukke eller friland?",
+        "body": "Peberrod kan vokse begge steder, men dyrkningsformen ændrer, hvor let du kan styre planten."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-krukke-eller-friland",
+        "title": "Krukke eller friland?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Vælg en stor krukke hvis",
+            "items": [
+              "du vil begrænse spredningen",
+              "du vil gøre høsten enkel",
+              "du vil kunne forny jorden omkring planten"
+            ]
+          },
+          {
+            "heading": "Vælg friland hvis",
+            "items": [
+              "du har plads til en permanent, kraftig plante",
+              "du accepterer, at efterladte rodstykker kan skyde igen",
+              "du kan grave dybt ved høst"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "start-med-rodstykker-eller-en-ung-plante",
+        "title": "Start med rodstykker eller en ung plante",
+        "body": "Peberrod etableres lettest fra unge planter eller rodstykker. Plantematerialet sættes om foråret eller tidligt på sommeren i veldrænet jord.\n\nFrø findes, men rodstykker giver en hurtigere og mere forudsigelig etablering. Når du senere høster, kan sunde rodstykker bruges til nye planter."
+      },
+      {
+        "key": "giv-den-sol-eller-let-skygge",
+        "title": "Giv den sol eller let skygge",
+        "body": "Peberrod er tolerant og kan vokse i både sol og let skygge. Jorden skal kunne dræne, fordi rødderne ikke trives i konstant vandmættet jord.\n\nI meget tør jord bliver rodudviklingen dårligere. En almindelig havejord med organisk materiale er et fint udgangspunkt."
+      },
+      {
+        "key": "vand-isaer-nye-planter-og-krukker",
+        "title": "Vand især nye planter og krukker",
+        "body": "Planter i friland klarer sig forholdsvis selvstændigt efter etablering, men bør vandes gennem tørre perioder det første år. Krukkeplanter tørrer hurtigere og skal kontrolleres løbende.\n\nHold jorden jævnt fugtig frem for konstant våd."
+      },
+      {
+        "key": "hoest-uden-at-miste-kontrollen",
+        "title": "Høst uden at miste kontrollen",
+        "body": "Rødder kan høstes fra etablerede planter, især i efterår og tidlig vinter. Grav eller løft kun den mængde, du skal bruge, hvis planten skal fortsætte.\n\nI en krukke kan du løfte rodklumpen, tage en del af rødderne og plante resten tilbage. I friland bør du regne med, at rodstumper, du overser, kan blive næste års planter."
+      },
+      {
+        "key": "form-r-med-rodstiklinger",
+        "title": "Formér med rodstiklinger",
+        "body": "Ved høst kan du gemme sunde rodstykker og plante dem som nye planter. Etablerede tuer kan også deles.\n\nDet gør peberrod nem at formere. Det gør den desværre også temmelig talentfuld til at formere sig uden at blive spurgt."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Peberrod er generelt robust og har få alvorlige problemer. Den største praktiske udfordring er ofte dens egen vækstkraft.\n\nHold øje med råd i meget våd jord og almindelige skadedyr fra kålfamilien. Hvis planten vokser i friland, er konsekvent fjernelse af nye skud nødvendig, hvis du vil begrænse den."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/herbs/horseradish/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "persille",
     "plantName": "Persille",
     "title": null,
@@ -4474,6 +5915,117 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "portulak",
+    "plantName": "Portulak",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Portulaca oleracea",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Varmekær, sukkulent bladgrøntsag med sprøde, syrlige blade, som vokser hurtigt om sommeren og kan høstes flere gange.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "sommerafgroede",
+      "varmekraevende",
+      "cut-and-come-again",
+      "sukkulent"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-bladgroentsag-der-ogsaa-opfoerer-sig-som-ukrudt",
+        "title": "En bladgrøntsag, der også opfører sig som ukrudt",
+        "body": "Portulak er en hurtig enårig plante med tykke, sukkulente blade og saftige stængler. Den trives i varme og sol og dyrkes for de unge skud og blade.\n\nDen samme livskraft gør vild portulak til et almindeligt ukrudt mange steder. I køkkenhaven betyder det især, at du bør høste før massiv frøsætning."
+      },
+      {
+        "key": "dyrket-portulak-og-vild-portulak",
+        "title": "Dyrket portulak og vild portulak",
+        "body": "Navngivne grøntsagssorter er ofte mere oprette og lettere at høste end den vilde, fladtvoksende form."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-dyrket-eller-vild-portulak",
+        "title": "Dyrket eller vild portulak?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Dyrket portulak",
+            "items": [
+              "udvalgt til større eller mere oprette skud",
+              "lettere at høste som bladgrøntsag",
+              "findes i grønne og gyldne typer"
+            ]
+          },
+          {
+            "heading": "Vild portulak",
+            "items": [
+              "vokser ofte fladt som en måtte",
+              "kan dukke spontant op i bede",
+              "bør kun spises, når planten er sikkert identificeret og ikke er behandlet med sprøjtemidler"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "vent-paa-varmen",
+        "title": "Vent på varmen",
+        "body": "Portulak er en sommerafgrøde. Frøene spirer og planterne vokser bedst, når jorden er blevet varm.\n\nSå direkte på et solrigt sted eller forkultivér et lille hold, hvis du vil starte tidligere. Frøene er små og skal kun dækkes meget let."
+      },
+      {
+        "key": "giv-den-sol-og-draen",
+        "title": "Giv den sol og dræn",
+        "body": "Planten klarer både relativt mager jord og tørre perioder, men dyrket som grøntsag giver den mere møre blade, når den får jævn fugt.\n\nUndgå vandmættet jord. De sukkulente stængler og rødder tåler tørke bedre end konstant våd jord."
+      },
+      {
+        "key": "hoest-foer-planterne-bliver-grove",
+        "title": "Høst før planterne bliver grove",
+        "body": "Klip unge skud og blade, mens de er sprøde og saftige. Du kan høste hele planten eller skære den tilbage og lade den skyde igen.\n\nGentagne små såninger giver også en stabil forsyning af unge planter."
+      },
+      {
+        "key": "staengelstykker-kan-slaa-rod-igen",
+        "title": "Stængelstykker kan slå rod igen",
+        "body": "Afskårne eller hakkede stængler kan danne nye rødder, hvis de bliver liggende fugtigt på jorden. Fjern derfor plantemateriale, du ikke vil have til at vokse videre.\n\nDet er praktisk ved formering og mindre charmerende ved oprydning."
+      },
+      {
+        "key": "stop-froesaetning-hvis-du-vil-holde-styr-paa-den",
+        "title": "Stop frøsætning, hvis du vil holde styr på den",
+        "body": "Portulak kan producere mange frø, som kan overleve længe i jorden. Høst eller fjern planterne, før modne frøkapsler spreder sig, hvis du ikke ønsker frivillige planter de kommende år.\n\nEn enkelt sommerafgrøde behøver ikke udvikle sig til et flerårigt forhold."
+      },
+      {
+        "key": "sikker-identifikation-betyder-noget",
+        "title": "Sikker identifikation betyder noget",
+        "body": "Spis kun portulak, du selv har sået som grøntsag, eller planter du kan identificere sikkert. Lave planter med rødlige stængler kan forveksles med andre arter, og vilde planter kan være udsat for sprøjtemidler eller anden forurening.\n\nPotalot-guiden handler om dyrket Portulaca oleracea, ikke om generel sankning."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Portulak har få alvorlige problemer. Snegle, bladlus og enkelte bladskadedyr kan forekomme, mens meget våd jord kan give råd.\n\nDen mest almindelige praktiske udfordring er at forhindre planten i at sprede sig mere, end dyrkeren ønsker."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://hort.extension.wisc.edu/articles/common-purslane-portulaca-oleracea/",
+      "https://extension.umd.edu/resource/purslane"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "purloeg",
     "plantName": "Purløg",
     "title": null,
@@ -4630,7 +6182,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/rabarber.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/rhubarb/grow-your-own"
     ],
@@ -4951,6 +6503,88 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "roerhvene",
+    "plantName": "Rørhvene",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Calamagrostis × acutiflora",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Opret og tidligt voksende prydgræs med smalle tuer og lodrette aks, velegnet til struktur, gentagelse og let afskærmning.",
+    "difficulty": "easy",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "opret",
+      "sol",
+      "tidlig-vaekst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-af-de-mest-lodrette-prydgraesser",
+        "title": "Et af de mest lodrette prydgræsser",
+        "body": "Calamagrostis × acutiflora danner en forholdsvis smal tue og sender stive, oprette blomsterstængler op over bladene. Det giver et tydeligt lodret udtryk uden samme brede volumen som mange Miscanthus-sorter.\n\nDen er derfor nyttig i smalle bede, gentagne plantninger og som let skærm."
+      },
+      {
+        "key": "et-koelig-saeson-graes",
+        "title": "Et kølig-sæson-græs",
+        "body": "Rørhvene starter væksten tidligt om foråret. Det adskiller den fra varme-sæson-græsser som Miscanthus og Panicum, som vågner senere.\n\nDet betyder også, at den gamle top skal fjernes i god tid, så de nye skud ikke bliver klippet over."
+      },
+      {
+        "key": "sol-eller-let-skygge",
+        "title": "Sol eller let skygge",
+        "body": "Planten klarer fuld sol og let skygge. Den trives bedst i en almindelig, humusrig og veldrænet jord med rimelig fugtighed.\n\nMeget tør, mager jord og dyb skygge giver dårligere vækst."
+      },
+      {
+        "key": "aksene-aendrer-karakter-gennem-saesonen",
+        "title": "Aksene ændrer karakter gennem sæsonen",
+        "body": "Blomsterstandene starter forholdsvis tætte og ændrer gradvist farve og tekstur, efterhånden som de tørrer. De kan stå oprejst langt ind i vinteren.\n\nDet er netop denne lange strukturperiode, der gør planten værdifuld efter blomstring."
+      },
+      {
+        "key": "skaer-ned-tidligt",
+        "title": "Skær ned tidligt",
+        "body": "Klip den tørre top ned i sen vinter, før den tidlige forårsvækst er blevet høj. Venter du for længe, ligger de nye grønne blade skjult inde mellem de gamle strå.\n\nDet er en af de vigtigste forskelle fra de senere voksende prydgræsser."
+      },
+      {
+        "key": "del-i-foraaret",
+        "title": "Del i foråret",
+        "body": "Hvis tuen bliver for stor eller mindre vital i midten, kan den deles om foråret. Genplant stærke yderstykker og kassér meget trætte dele.\n\nDeling er også den sikre måde at bevare en navngiven sort på."
+      },
+      {
+        "key": "den-vaelter-mindre-end-mange-hoeje-graesser",
+        "title": "Den vælter mindre end mange høje græsser",
+        "body": "De oprette blomsterstængler er generelt stabile, men meget udsatte voksesteder kan stadig flade vinteraksene ud.\n\nPlacér planten, så dens lodrette form kan ses, frem for at gemme den midt i højere, mere kraftige stauder."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Rørhvene er normalt problemfri. Rust kan forekomme på bladene, men alvorlige skadedyrsproblemer er usædvanlige.\n\nDen hyppigste fejl er at plante den i dyb skygge eller meget tør jord og derefter undre sig over, hvorfor den ser ud som en dårlig kost."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/calamagrostis/growing-guide",
+      "https://www.rhs.org.uk/plants/72074/calamagrostis-x-acutiflora-karl-foerster/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "rosmarin",
     "plantName": "Rosmarin",
     "title": null,
@@ -5019,6 +6653,112 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/rosmarin.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/rosemary/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "rucola",
+    "plantName": "Rucola",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Eruca vesicaria / Diplotaxis tenuifolia",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Pebret bladgrønt, der findes som hurtig enårig salatrucola og mere flerårig, kraftigt smagende vild rucola.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "salat",
+      "hurtig",
+      "cut-and-come-again",
+      "koelig-saeson"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "to-planter-som-koekkenet-kalder-rucola",
+        "title": "To planter, som køkkenet kalder rucola",
+        "body": "Rucola er et brugerrettet navn, der især dækker to forskellige planter: salatrucola og vild rucola. De kan bruges på samme måde i køkkenet, men de har forskellig livscyklus og smagsstyrke."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-salatrucola-eller-vild-rucola",
+        "title": "Salatrucola eller vild rucola?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Salatrucola",
+            "items": [
+              "hurtig og typisk enårig",
+              "bredere, mildere blade",
+              "oplagt til gentagne små såninger"
+            ]
+          },
+          {
+            "heading": "Vild rucola",
+            "items": [
+              "flerårig under passende forhold",
+              "smallere, mere fligede blade",
+              "kraftigere, mere pebret smag"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-lidt-og-ofte",
+        "title": "Så lidt og ofte",
+        "body": "Begge typer kan dyrkes fra frø, og små gentagne såninger giver bedre kontinuitet end én massiv række, der bliver gammel samtidig.\n\nSalatrucola er særligt hurtig og egner sig til at udfylde små huller mellem langsommere afgrøder."
+      },
+      {
+        "key": "koeligt-vejr-giver-de-bedste-blade",
+        "title": "Køligt vejr giver de bedste blade",
+        "body": "Rucola trives godt i forår og efterår. Højsommervarme og tørke får især salatrucola til hurtigt at gå i blomst og giver ofte stærkere, grovere blade.\n\nLet skygge midt på dagen kan være nyttigt i varme perioder."
+      },
+      {
+        "key": "hold-jorden-fugtig",
+        "title": "Hold jorden fugtig",
+        "body": "Jævn fugt hjælper planterne med at holde bladene bløde og væksten hurtig. Vand i tørke, især når rucola dyrkes tæt til babyblade.\n\nUndgå samtidig konstant vandmættet jord."
+      },
+      {
+        "key": "hoest-som-cut-and-come-again",
+        "title": "Høst som cut-and-come-again",
+        "body": "Pluk enkelte blade eller klip et helt hold over vækstpunktet og lad planterne skyde igen. Høst unge blade for mildere smag.\n\nNår blomsterstænglerne udvikles, kan du enten lade planten blomstre eller erstatte den med et nyt hold."
+      },
+      {
+        "key": "jordlopper-elsker-ogsaa-rucola",
+        "title": "Jordlopper elsker også rucola",
+        "body": "Små runde huller i bladene skyldes ofte jordlopper. Unge planter kan beskyttes med fint net, og hurtig, jævn vækst gør skaderne mindre ødelæggende.\n\nSnegle kan også tage småplanter."
+      },
+      {
+        "key": "vild-rucola-bliver-ved-laengere",
+        "title": "Vild rucola bliver ved længere",
+        "body": "Diplotaxis tenuifolia kan leve flere år under passende forhold og skyde igen efter klipning. Den kan derfor behandles mere som en lille flerårig bladplante end som en engangs-salat.\n\nKlip blomsterstængler tilbage, hvis bladproduktion er målet."
+      },
+      {
+        "key": "sorter-skal-kobles-til-den-rigtige-type",
+        "title": "Sorter skal kobles til den rigtige type",
+        "body": "Potalot bør ikke lade en sort af vild rucola arve en botanisk salatrucola-identitet eller omvendt. Sortsguiden skal derfor angive både sort og type.\n\nInformationsarkitekturen er brugerrettet `Rucola → salatrucola/vild rucola → navngiven sort`, mens det botaniske navn bevares korrekt i data."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/rocket/grow-your-own",
+      "https://www.rhs.org.uk/plants/61139/diplotaxis-tenuifolia/details"
     ],
     "status": "published",
     "visibility": "public",
@@ -5359,6 +7099,197 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/celery/grow-your-own",
       "https://www.rhs.org.uk/vegetables/celeriac/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "skorzonerrod",
+    "plantName": "Skorzonerrod",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Scorzonera hispanica",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Lang, mørkskindet vinterrod, som sås direkte i dyb jord og får lov at bruge en lang sæson på at udvikle glatte, møre rødder.",
+    "difficulty": "medium",
+    "tags": [
+      "rodfrugt",
+      "vinterhoest",
+      "direkte-saaning",
+      "lang-saeson",
+      "haardfoer"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-lang-sort-rod-til-den-kolde-saeson",
+        "title": "En lang sort rod til den kolde sæson",
+        "body": "Skorzonerrod danner lange, mørkebrune til næsten sorte pælerødder med lyst indre. Planten dyrkes primært for rødderne, men unge blade kan også bruges.\n\nDen har en lang udviklingstid og passer derfor bedst til et bed, hvor den kan stå uforstyrret gennem sæsonen."
+      },
+      {
+        "key": "skorzonerrod-og-havrerod-er-ikke-det-samme",
+        "title": "Skorzonerrod og havrerod er ikke det samme",
+        "body": "De to afgrøder ligner hinanden i dyrkningen, men er botanisk forskellige og har forskelligt udseende."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-skorzonerrod-eller-havrerod",
+        "title": "Skorzonerrod eller havrerod?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Skorzonerrod",
+            "items": [
+              "Scorzonera hispanica",
+              "mørk brun-sort rodskal",
+              "meget hårdfør og egnet til sen høst"
+            ]
+          },
+          {
+            "heading": "Havrerod",
+            "items": [
+              "Tragopogon porrifolius",
+              "lys cremefarvet rod",
+              "dyrkes også som lang vinterrod, men er en anden art"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "saa-direkte-i-dyb-loes-jord",
+        "title": "Så direkte i dyb, løs jord",
+        "body": "Så frøene direkte, hvor rødderne skal udvikle sig. En lang pælerod har ikke brug for omplantning og menneskelig kreativitet omkring roden.\n\nJorden bør være dyb, veldrænet og fri for store sten og hårde klumper, som kan få rødderne til at forgrene sig eller blive skæve."
+      },
+      {
+        "key": "tynd-planterne-i-god-tid",
+        "title": "Tynd planterne i god tid",
+        "body": "Når planterne er kommet sikkert op, tyndes de, så hver rod får plads. Hold rækken fri for ukrudt, mens bladene endnu er små.\n\nSkorzonerrod vokser langsommere end mange sommergrøntsager, så konkurrencen fra ukrudt betyder mest tidligt."
+      },
+      {
+        "key": "hold-jorden-jaevnt-fugtig",
+        "title": "Hold jorden jævnt fugtig",
+        "body": "Stabil fugt gennem vækstsæsonen hjælper rødderne med at udvikle sig jævnt. Vand ved længere tørke frem for kun at fugte jordoverfladen.\n\nUndgå frisk gødning direkte før dyrkning, hvis den giver en meget grov eller ujævn jordstruktur omkring rødderne."
+      },
+      {
+        "key": "lad-planten-bruge-hele-saesonen",
+        "title": "Lad planten bruge hele sæsonen",
+        "body": "Skorzonerrod er ikke en hurtig afgrøde. Den skal have måneder til at opbygge en ordentlig rod og kan blive stående til efterår og vinter.\n\nKulde er ikke i sig selv et problem for en etableret afgrøde, og rødderne kan høstes sent."
+      },
+      {
+        "key": "loeft-roedderne-forsigtigt",
+        "title": "Løft rødderne forsigtigt",
+        "body": "Rødderne er lange og kan knække, hvis du bare trækker i toppen. Løsn jorden dybt ved siden af planten med en greb og løft roden gradvist.\n\nHvis jorden er meget tung, er et dybt højbed eller en løsnet række ofte lettere at høste fra."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Skorzonerrod har relativt få dyrkningsproblemer, når jorden er dyb og væksten jævn. Ujævn fugt, hård jord og tæt planteafstand giver oftere dårlige rødder end skadedyr gør.\n\nLad ikke blomsterstængler på unge planter tage over, hvis målet er rodproduktion."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://extension.usu.edu/yardandgarden/research/black-salsify-in-the-garden"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "soed-kartoffel",
+    "plantName": "Sød kartoffel",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Ipomoea batatas",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "knolde",
+    "subcategoryId": null,
+    "summary": "Tropisk, slyngende knoldafgrøde, der plantes som stiklinger eller slips og kræver en lang, varm sæson for at danne gode knolde.",
+    "difficulty": "hard",
+    "tags": [
+      "knold",
+      "varmekraevende",
+      "drivhus",
+      "slyngende",
+      "stiklinger"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "ikke-en-kartoffel",
+        "title": "Ikke en kartoffel",
+        "body": "Sød kartoffel er Ipomoea batatas og hører til snerlefamilien. Almindelig kartoffel er Solanum tuberosum og hører til natskyggefamilien.\n\nDe producerer begge spiselige underjordiske lagringsorganer, men dyrkningsbiologien er forskellig. Potalot skal derfor aldrig lade sød kartoffel arve kartoffelguidens regler."
+      },
+      {
+        "key": "start-med-slips-eller-stiklinger",
+        "title": "Start med slips eller stiklinger",
+        "body": "Sød kartoffel dyrkes normalt fra unge skud eller stiklinger, ofte solgt som slips, frem for fra frø eller læggekartofler.\n\nPlantematerialet skal holdes varmt og frostfrit fra starten."
+      },
+      {
+        "key": "giv-den-den-varmeste-plads",
+        "title": "Giv den den varmeste plads",
+        "body": "Planten kræver meget varme og en lang sæson. Drivhus, polytunnel eller et meget varmt beskyttet bed med jorddække giver de bedste chancer i nordligt klima.\n\nJorden skal være veldrænet, så de nye rødder kan udvikle sig uden at stå vandmættede."
+      },
+      {
+        "key": "rankerne-vokser-kraftigt",
+        "title": "Rankerne vokser kraftigt",
+        "body": "Sød kartoffel sender lange, slyngende stængler hen over jorden eller op ad støtte. I drivhus kan rankerne trænes opad for at spare gulvplads.\n\nFor voldsom beskæring reducerer bladarealet, som planten bruger til at opbygge energi til knoldene."
+      },
+      {
+        "key": "hold-vaeksten-jaevn-gennem-sommeren",
+        "title": "Hold væksten jævn gennem sommeren",
+        "body": "Vand regelmæssigt under etablering og aktiv vækst, men undgå konstant våd jord. Planter i beholdere kræver mere overvågning end planter i et stort jordvolumen.\n\nMeget kvælstof kan give imponerende ranker uden tilsvarende knoldudbytte."
+      },
+      {
+        "key": "hoest-foer-kulden-vinder",
+        "title": "Høst før kulden vinder",
+        "body": "Knoldene udvikles gennem den varme sæson og høstes i det tidlige efterår, før frost beskadiger planten. Grav forsigtigt, fordi skindet på nyhøstede knolde er sart.\n\nDansk sæsonlængde betyder, at en varm placering og en tidlig sort har stor betydning."
+      },
+      {
+        "key": "eftermodning-forbedrer-lagringen",
+        "title": "Eftermodning forbedrer lagringen",
+        "body": "Nyhøstede søde kartofler kan eftermodnes eller cures varmt og fugtigt i en kort periode, så sår heler og lagringsegenskaberne forbedres. Derefter opbevares de tørt og ikke for koldt.\n\nEt almindeligt køleskab er ikke et godt langtidslager for denne tropiske afgrøde."
+      },
+      {
+        "key": "sorten-skal-passe-til-en-kort-sommer",
+        "title": "Sorten skal passe til en kort sommer",
+        "body": "Sorter varierer i udviklingstid, vækstkraft, skindfarve og kødfarve. I Danmark bør sortsguiden især fremhæve tidlighed og dokumenteret evne til at give knolde under relativt korte somre.\n\nEn flot tropisk sort, der kræver fem måneders konstant varme, er botanisk interessant og praktisk omtrent lige så nyttig som en kokosplantage i Randers."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Lave temperaturer, utilstrækkelig sæson og for våd jord er de vigtigste dyrkningsproblemer. I beskyttet kultur kan bladlus, mellus og spindemider også forekomme.\n\nHold planterne varme, sunde og i aktiv vækst frem mod knolddannelsen."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/vegetables/sweet-potatoes/grow-your-own"
     ],
     "status": "published",
     "visibility": "public",
@@ -5775,6 +7706,87 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/squash.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/courgettes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "staudehirse",
+    "plantName": "Staudehirse",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Panicum virgatum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Opret varm-sæson-prydgræs med lette sensommeraks og markante efterårsfarver, bedst i fuld sol og veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "prydgraes",
+      "staude",
+      "varm-saeson",
+      "efteraarsfarve",
+      "sol"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "sen-start-staerk-sensommer",
+        "title": "Sen start, stærk sensommer",
+        "body": "Panicum virgatum er et varm-sæson-græs. Det kommer senere i gang om foråret end kølig-sæson-græsser, men bygger til gengæld højde og blomstring gennem sommeren.\n\nDe luftige blomsterstande og ofte markante efterårsfarver gør planten særlig interessant fra sensommer og langt ind i vinteren."
+      },
+      {
+        "key": "fuld-sol-holder-planten-staerk",
+        "title": "Fuld sol holder planten stærk",
+        "body": "Staudehirse trives bedst i fuld sol og moderat næringsrig, veldrænet jord. For meget skygge kan gøre væksten mindre kompakt og mere tilbøjelig til at lægge sig.\n\nNår planten er etableret, tåler den perioder med tørke forholdsvis godt."
+      },
+      {
+        "key": "sorten-bestemmer-farven",
+        "title": "Sorten bestemmer farven",
+        "body": "Nogle sorter er blågrønne, andre bliver rødlige allerede i sommeren, og nogle får stærke gule, orange eller vinrøde efterårsfarver.\n\nHøjde og oprethed varierer også meget. Det er derfor ikke nok at skrive 'Panicum' på indkøbslisten og håbe på et bestemt udtryk."
+      },
+      {
+        "key": "lad-vinterstrukturen-staa",
+        "title": "Lad vinterstrukturen stå",
+        "body": "De tørre strå og luftige aks kan holde formen gennem en stor del af vinteren. Lad dem stå, så længe de stadig bidrager til bedet.\n\nDe gamle stængler beskytter også plantens basis og giver habitat til smådyr."
+      },
+      {
+        "key": "skaer-ned-foer-ny-vaekst",
+        "title": "Skær ned før ny vækst",
+        "body": "Klip planten ned i sen vinter eller tidligt forår, før nye skud er blevet lange. Panicum starter relativt sent, så du har normalt lidt bedre tid end med Calamagrostis.\n\nFjern det afklippede materiale, så lys og luft når de nye skud."
+      },
+      {
+        "key": "del-i-foraaret",
+        "title": "Del i foråret",
+        "body": "Store eller aldrende tuer kan deles, når væksten begynder om foråret. Deling bruges både til foryngelse og formering af navngivne sorter.\n\nVent til planten viser tegn på aktivitet; varm-sæson-græsser reagerer dårligt på unødigt tidlig håndtering i kold jord."
+      },
+      {
+        "key": "brug-den-som-transparent-struktur",
+        "title": "Brug den som transparent struktur",
+        "body": "Blomsterstandene er lette og halvtransparente. Planten kan derfor skabe højde uden at blive en massiv grøn væg.\n\nDen fungerer godt mellem stauder, i præriebeplantning og som gentaget lodret rytme."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Staudehirse er generelt sund og problemfri. Dårlig oprethed skyldes oftere for lidt lys, for rig jord eller en sort, der naturligt er mere åben, end sygdom.\n\nVælg sort efter den faktiske placering og den ønskede form."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/71459/panicum-virgatum/details"
     ],
     "status": "published",
     "visibility": "public",
@@ -6353,6 +8365,203 @@ export const IMPORTED_GUIDES: Guide[] = [
     "mediaIds": [],
     "primaryImageId": "/images/arts/tomat.jpg",
     "sourceLinks": [],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "tomatillo",
+    "plantName": "Tomatillo",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Physalis philadelphica",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kraftig, varmekrævende Physalis med grønne eller lilla frugter i papirhylstre; dyrk mindst to planter for bedre og mere sikker frugtsætning.",
+    "difficulty": "medium",
+    "tags": [
+      "frugtgroentsag",
+      "physalis",
+      "bestoevning",
+      "forkultivering",
+      "varmekraevende"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-physalis-til-koekkenet",
+        "title": "En Physalis til køkkenet",
+        "body": "Tomatillo danner kraftige, forgrenede planter med runde frugter inde i papiragtige hylstre. Frugterne kan være grønne, gule eller lilla afhængigt af sorten og bruges især som grøntsagsfrugt.\n\nPlanten er i natskyggefamilien, men den skal ikke dyrkes som en tomat med automatisk forventning om samme vækstform og bestøvning."
+      },
+      {
+        "key": "dyrk-mere-end-n-plante",
+        "title": "Dyrk mere end én plante",
+        "body": "Tomatillo sætter langt mere pålideligt frugt, når pollen kan flyttes mellem genetisk forskellige planter. Plant derfor mindst to planter fra frø eller to forskellige individer tæt nok på hinanden til, at bestøvere kan arbejde mellem dem.\n\nÉn ensom plante kan blomstre imponerende og stadig levere den botaniske version af tomme løfter."
+      },
+      {
+        "key": "forkultiv-r-som-en-varmekraevende-afgroede",
+        "title": "Forkultivér som en varmekrævende afgrøde",
+        "body": "Så indendørs i foråret og giv planterne godt lys. Plant først ud, når frostrisikoen er væk og jorden er blevet varm.\n\nI Danmark vil drivhus eller en meget solrig, beskyttet placering ofte give den mest stabile sæson."
+      },
+      {
+        "key": "giv-planterne-plads",
+        "title": "Giv planterne plads",
+        "body": "Tomatillo vokser kraftigt og breder sig med mange grene. Giv derfor mere plads end den lille frugt antyder.\n\nStængler, der ligger mod jorden, kan danne rødder, og planten kan blive uoverskuelig uden støtte."
+      },
+      {
+        "key": "brug-bur-eller-anden-stoette",
+        "title": "Brug bur eller anden støtte",
+        "body": "Et tomatbur, espalier eller anden åben støtte holder grenene fra jorden og gør høsten lettere. Bind kun løst, så de forgrenede stængler ikke klemmes.\n\nMålet er at støtte planten, ikke at tvinge den ind i én ranke som en klassisk indeterminant tomat."
+      },
+      {
+        "key": "vand-stabilt",
+        "title": "Vand stabilt",
+        "body": "Hold jorden jævnt fugtig gennem blomstring og frugtdannelse. Planterne tåler korte tørre perioder bedre end konstant vandmætning.\n\nVand ved jorden og giv luft mellem planterne, især i drivhus."
+      },
+      {
+        "key": "hylstret-fortaeller-hvornaar-du-skal-kigge",
+        "title": "Hylstret fortæller, hvornår du skal kigge",
+        "body": "Frugten vokser inde i hylstret og fylder det gradvist ud. Høsttidspunktet afhænger af sort og anvendelse, men et fyldt hylster og sortens forventede frugtfarve er bedre tegn end kalenderen alene.\n\nHøst regelmæssigt, når planterne først kommer i gang."
+      },
+      {
+        "key": "groen-eller-lilla-type",
+        "title": "Grøn eller lilla type",
+        "body": "Sorterne varierer både i farve, størrelse og smag."
+      },
+      {
+        "kind": "fact",
+        "key": "fact-groen-eller-lilla-tomatillo",
+        "title": "Grøn eller lilla tomatillo?",
+        "variant": "comparison",
+        "columns": [
+          {
+            "heading": "Grønne sorter",
+            "items": [
+              "klassisk grøn frugt til salsa og varme retter",
+              "høstes typisk, mens frugten stadig er frisk grøn"
+            ]
+          },
+          {
+            "heading": "Lilla sorter",
+            "items": [
+              "udvikler lilla pigment, især i godt lys",
+              "kan have en anderledes sødme og aroma"
+            ]
+          }
+        ],
+        "conclusion": "Dyrkningsformen er grundlæggende den samme; sortsguiden skal beskrive den konkrete forskel."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Jordlopper, bladlus og andre almindelige natskygge-skadedyr kan forekomme. For tæt vækst giver dårligere luft og gør høsten besværlig.\n\nDen vigtigste forebyggelse er varme, plads, støtte og flere planter til bestøvning."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://plants.ces.ncsu.edu/plants/physalis-philadelphica/common-name/tomatillo/",
+      "https://ucanr.edu/site/uc-master-gardeners-santa-clara-county/spring-garden-fair-global-vegetables"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "vaarsalat",
+    "plantName": "Vårsalat",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Valerianella locusta",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Kuldetålende, mild bladgrøntsag til efterår, vinter og tidligt forår, hvor små rosetter giver friske blade uden sommervarme.",
+    "difficulty": "easy",
+    "tags": [
+      "bladgroentsag",
+      "vintersalat",
+      "koelig-saeson",
+      "roset",
+      "successionssaaning"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "salat-til-den-kolde-del-af-aaret",
+        "title": "Salat til den kolde del af året",
+        "body": "Vårsalat, også kendt som feldsalat eller mâche, danner lave rosetter af bløde grønne blade. Den trives i køligt vejr og er derfor særlig værdifuld, når almindelig salat enten er færdig eller endnu ikke er kommet i gang.\n\nBotanisk er den Valerianella locusta og skal ikke ligge som en sort under almindelig salat."
+      },
+      {
+        "key": "saa-i-de-koelige-vinduer",
+        "title": "Så i de kølige vinduer",
+        "body": "Så til forårs- eller efterårshøst, når jorden er kølig. Varm jord kan give langsom og ujævn spiring.\n\nTil en lang høstperiode kan du så små hold med mellemrum i stedet for én stor række."
+      },
+      {
+        "key": "saa-direkte-og-overfladisk",
+        "title": "Så direkte og overfladisk",
+        "body": "Frøene sås direkte i veldrænet, fugtighedsbevarende jord og dækkes let. Hold såbedet fugtigt under fremspiringen.\n\nDu kan også så i beholdere, hvilket gør det lettere at placere planterne tæt på huset gennem vinteren."
+      },
+      {
+        "key": "giv-lys-men-ikke-sommervarme",
+        "title": "Giv lys, men ikke sommervarme",
+        "body": "Vårsalat kan stå solrigt i den kølige sæson. Når vejret bliver varmt, bliver forholdene mindre egnede, og planterne går hurtigere mod blomstring.\n\nDet er en afgrøde til de måneder, hvor mange andre bladgrøntsager tager en pause."
+      },
+      {
+        "key": "tynd-til-smaa-rosetter",
+        "title": "Tynd til små rosetter",
+        "body": "Planterne skal have plads nok til at danne rene rosetter, men de behøver ikke samme afstand som store hovedsalater.\n\nFjern ukrudt forsigtigt, fordi vårsalat vokser lavt og let bliver dækket af kraftigere naboer."
+      },
+      {
+        "key": "vand-sparsomt-men-lad-den-ikke-toerre-ud",
+        "title": "Vand sparsomt, men lad den ikke tørre ud",
+        "body": "I køligt vejr bruger planterne mindre vand, men jorden bør stadig være jævnt fugtig. Beholdere under tag kræver kontrol, selv når haven ellers føles våd.\n\nGod dræning er vigtig gennem vinteren."
+      },
+      {
+        "key": "hoest-blade-eller-hele-rosetter",
+        "title": "Høst blade eller hele rosetter",
+        "body": "Pluk enkelte yderblade, eller skær hele rosetten ved basis. Unge blade er milde og møre.\n\nHøst løbende, før planten begynder at sende blomsterstængler op i varmere forårsvejr."
+      },
+      {
+        "key": "beskyt-vinterhold-efter-behov",
+        "title": "Beskyt vinterhold efter behov",
+        "body": "Planterne tåler kulde godt, men fiberdug, tunnel eller koldhus kan beskytte mod hårdt vejr og gøre høsten lettere.\n\nBeskyttelse handler ofte lige så meget om vind, slagregn og adgang til bedet som om temperatur."
+      },
+      {
+        "key": "typiske-problemer",
+        "title": "Typiske problemer",
+        "body": "Snegle kan angribe de lave rosetter, og konstant vådt, tæt løv kan give råd eller bladproblemer. Hold planterne rene og luftige.\n\nVårsalat er ellers en forholdsvis ukompliceret afgrøde, når den dyrkes i den kølige del af sæsonen."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://extension.usu.edu/yardandgarden/research/lambs-lettuce-in-the-garden",
+      "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own"
+    ],
     "status": "published",
     "visibility": "public",
     "reviewStatus": "approved",
