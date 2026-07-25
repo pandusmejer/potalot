@@ -447,10 +447,15 @@ function IDinHave({
 }
 
 /**
- * Ét art-kort i "I DIN HAVE". Øverste flade (foto + navn + antal) er ét link til
- * artsguiden; sort-chippene UNDER er selvstændige links/tekst (ikke nested i
- * art-linket → gyldig HTML). Grøn chip = kurateret sortsguide; dæmpet chip = kun
- * din egen (AI) sort, ingen redaktionel guide endnu.
+ * Ét art-kort i "I DIN HAVE". KOMPAKT: foto til venstre, navn + antal + sort-chips
+ * i ÉN tekstkolonne ved siden af (ikke en separat bund-etage → ingen tomme kort
+ * for arter med få sorter). Højden følger indholdet.
+ *
+ * Klik-model uden nested links: et "stretched" link dækker hele kortet (→
+ * artsguiden) og ligger BAGVED indholdet; indholdet har pointer-events: none, så
+ * klik falder ned til art-linket — UNDTAGEN de kuraterede sort-chips, der får
+ * pointer-events auto og fanger deres eget klik (→ sortsguiden). Grøn chip =
+ * kurateret sortsguide; dæmpet chip = kun din egen (AI) sort, ingen link.
  */
 function HaveArtCard({ card }: { card: HaveCard }) {
   const g = card.guide
@@ -464,20 +469,24 @@ function HaveArtCard({ card }: { card: HaveCard }) {
   const n = card.varieties.length
   return (
     <div
-      className="overflow-hidden"
+      className="group relative overflow-hidden"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 18,
       }}
     >
-      {/* Hovedflade → artsguiden */}
+      {/* Stretched link → artsguiden (bag indholdet) */}
       <Link
         href={`/guides/${g.id}`}
-        className="group flex items-stretch gap-3.5 no-underline"
-        style={{ color: 'inherit' }}
+        aria-label={g.plantName}
+        className="absolute inset-0 z-0"
+      />
+      <div
+        className="relative z-10 flex items-center gap-3.5 p-2.5"
+        style={{ pointerEvents: 'none' }}
       >
-        <span className="relative h-[76px] w-[76px] shrink-0 overflow-hidden bg-[#EAE6D8]">
+        <span className="relative h-[92px] w-[92px] shrink-0 overflow-hidden rounded-[13px] bg-[#EAE6D8]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
@@ -485,9 +494,9 @@ function HaveArtCard({ card }: { card: HaveCard }) {
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
           />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col justify-center py-2 pr-3">
+        <div className="min-w-0 flex-1 pr-1">
           <span
-            className="truncate"
+            className="block truncate"
             style={{
               fontFamily: plex,
               fontWeight: 600,
@@ -497,73 +506,73 @@ function HaveArtCard({ card }: { card: HaveCard }) {
               color: '#242019',
             }}
           >
-            {g.pluralName ?? g.plantName}
+            {g.plantName}
           </span>
           {n > 0 && (
-            <span
-              className="mt-1"
-              style={{
-                fontFamily: sans,
-                fontSize: 11.5,
-                fontWeight: 600,
-                color: 'rgba(36,48,31,0.5)',
-              }}
-            >
-              {n} {n === 1 ? 'sort' : 'sorter'} i din have
-            </span>
+            <>
+              <span
+                className="mt-0.5 block"
+                style={{
+                  fontFamily: sans,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: 'rgba(36,48,31,0.5)',
+                }}
+              >
+                {n} {n === 1 ? 'sort' : 'sorter'} i din have
+              </span>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {card.varieties.map(v =>
+                  v.href ? (
+                    <Link
+                      key={v.name}
+                      href={v.href}
+                      className="no-underline transition-colors hover:bg-[rgba(86,111,60,0.18)]"
+                      style={{
+                        pointerEvents: 'auto',
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: '#3D5A26',
+                        background: 'rgba(86,111,60,0.11)',
+                        border: '1px solid rgba(86,111,60,0.24)',
+                        borderRadius: 999,
+                        padding: '3px 10px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {v.name}
+                    </Link>
+                  ) : (
+                    <span
+                      key={v.name}
+                      style={{
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: 'rgba(36,48,31,0.55)',
+                        background: 'rgba(45,42,36,0.05)',
+                        border: '1px solid rgba(45,42,36,0.08)',
+                        borderRadius: 999,
+                        padding: '3px 10px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {v.name}
+                    </span>
+                  ),
+                )}
+              </div>
+            </>
           )}
-        </span>
+        </div>
         <ChevronRight
           size={18}
           strokeWidth={2}
-          className="mr-3 shrink-0 self-center transition-transform duration-200 group-hover:translate-x-0.5"
+          className="shrink-0 self-center transition-transform duration-200 group-hover:translate-x-0.5"
           style={{ color: 'rgba(36,48,31,0.3)' }}
         />
-      </Link>
-      {/* Sort-chips */}
-      {n > 0 && (
-        <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-0.5">
-          {card.varieties.map(v =>
-            v.href ? (
-              <Link
-                key={v.name}
-                href={v.href}
-                className="no-underline transition-colors"
-                style={{
-                  fontFamily: sans,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: '#3D5A26',
-                  background: 'rgba(86,111,60,0.11)',
-                  border: '1px solid rgba(86,111,60,0.24)',
-                  borderRadius: 999,
-                  padding: '3px 10px',
-                  lineHeight: 1.3,
-                }}
-              >
-                {v.name}
-              </Link>
-            ) : (
-              <span
-                key={v.name}
-                style={{
-                  fontFamily: sans,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: 'rgba(36,48,31,0.55)',
-                  background: 'rgba(45,42,36,0.05)',
-                  border: '1px solid rgba(45,42,36,0.08)',
-                  borderRadius: 999,
-                  padding: '3px 10px',
-                  lineHeight: 1.3,
-                }}
-              >
-                {v.name}
-              </span>
-            ),
-          )}
-        </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -588,11 +597,10 @@ function laestLabel(at: number): string | null {
 }
 
 /**
- * FORTSÆT DINE GUIDES — diskret genkendelses-række for senest læste guides.
- * Små mini-editorials (~74px): foto til venstre, plantenavn + hvornår-læst til
- * højre, lille chevron. For sortsguider vises SORTENS navn + foto (Sungold, ikke
- * artens tomat) → hurtigere genkendelse. Ingen resume, ingen latin. Samme creme
- * + typografi, bare meget lavere end hero-kortene.
+ * SENEST LÆST — diskret genkendelses-række (utility, IKKE featured content).
+ * Bevidst nedtonet ift. "I din have": mindre eyebrow, ~74px rækker → føles som
+ * historik/navigation, ikke en ny stor sektion. For sortsguider vises SORTENS
+ * navn + foto (Sungold, ikke artens tomat) → hurtigere genkendelse.
  */
 function FortsaetDineGuider({
   items,
@@ -600,19 +608,19 @@ function FortsaetDineGuider({
   items: { guide: Guide; at: number }[]
 }) {
   return (
-    <section className="relative -mt-1">
+    <section className="relative">
       <p
         style={{
           fontFamily: sans,
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: 700,
-          letterSpacing: '0.18em',
+          letterSpacing: '0.16em',
           textTransform: 'uppercase',
-          color: 'rgba(36,48,31,0.72)',
-          margin: '0 0 12px',
+          color: 'rgba(36,48,31,0.55)',
+          margin: '0 0 10px',
         }}
       >
-        Fortsæt dine guides
+        Senest læst
       </p>
       <div className="space-y-2.5">
         {items.map(({ guide: g, at }) => {
