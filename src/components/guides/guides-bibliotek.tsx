@@ -6,6 +6,7 @@ import type { Guide } from '@/lib/types'
 import { Search, ArrowRight, ChevronRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
+import { normalizeGuideKey } from '@/lib/guides/normalize-key'
 import {
   libraryCategoryOf,
   LIBRARY_CATEGORY_ORDER,
@@ -40,7 +41,13 @@ interface Props {
   guides: Guide[]
   aiGuideIds: ReadonlySet<string> | null
   parentPlantNameById: Map<string, string>
-  iFroebankIds: ReadonlySet<string>
+  /**
+   * Normaliserede plante-navne fra brugerens frøbank (normalizeGuideKey af
+   * inventar-navnet — fx "tomat"). Matcher artsguidens navn, IKKE guide_id:
+   * frøbank-varer peger på brugerens PRIVATE guides, hvis uuid aldrig findes i
+   * det redaktionelle IMPORTED_GUIDES-lag biblioteket rendrer.
+   */
+  iFroebankKeys: ReadonlySet<string>
   /**
    * Atmospheric makro-billede til EditorialBleedCard-broen mellem
    * "Begynd her" og "Guides i felten". Resolved server-side i
@@ -49,18 +56,12 @@ interface Props {
    */
   bridgeMacroSrc?: string | null
   bridgeMacroAlt?: string | null
-  /**
-   * Teknik-guides (forkultivering, opbinding, vanding …). Egen værktøjskasse
-   * nederst i biblioteket — vises KUN når der findes mindst én. Tom nu → skjult.
-   */
-  techniqueGuides?: Guide[]
 }
 
 export function GuidesBibliotek({
   guides,
   aiGuideIds,
-  iFroebankIds,
-  techniqueGuides = [],
+  iFroebankKeys,
 }: Props) {
   const [search, setSearch] = useState('')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
@@ -108,25 +109,30 @@ export function GuidesBibliotek({
   // RELEVANTE (ikke redaktionelle default-emner). Match frøbank → guide og
   // LØFT til artsniveau: har brugeren 5 tomatsorter, vises ÉN tomat-artsguide,
   // ikke fem kort. Dedup på art. Kun 'potalot'-guides (kvalitetssikrede).
+  // Art-opslag på NAVNE-nøgle (ikke id): guide.id er en translittereret slug
+  // ("soed-kartoffel"), mens normalizeGuideKey beholder æøå/mellemrum ("sød
+  // kartoffel"). Frøbankens navn normaliseres med samme nøgle → sikkert match.
+  const bySpeciesKey = useMemo(() => {
+    const m = new Map<string, Guide>()
+    for (const g of guides) {
+      if (g.guideLevel !== 'species') continue // ekskl. variety + technique (plantName kan være null)
+      if (guideKindFor(g, aiGuideIds) !== 'potalot') continue
+      m.set(normalizeGuideKey(g.plantName), g)
+    }
+    return m
+  }, [guides, aiGuideIds])
+
   const mineHave = useMemo(() => {
     const seen = new Set<string>()
     const out: Guide[] = []
-    for (const id of iFroebankIds) {
-      const g = byId.get(id)
-      if (!g) continue
-      const isVar = g.guideLevel === 'variety' || !!g.variety
-      const speciesId =
-        isVar && g.parentGuideId && byId.has(g.parentGuideId)
-          ? g.parentGuideId
-          : g.id
-      if (seen.has(speciesId)) continue
-      const target = byId.get(speciesId)
-      if (!target || guideKindFor(target, aiGuideIds) !== 'potalot') continue
-      seen.add(speciesId)
-      out.push(target)
+    for (const key of iFroebankKeys) {
+      const g = bySpeciesKey.get(key)
+      if (!g || seen.has(g.id)) continue
+      seen.add(g.id)
+      out.push(g)
     }
     return out.sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
-  }, [iFroebankIds, byId, aiGuideIds])
+  }, [iFroebankKeys, bySpeciesKey])
 
   // ── FORTSÆT DINE GUIDES ─────────────────────────────────────────
   // De guides brugeren senest har åbnet (localStorage), senest først. Max 3.
@@ -142,10 +148,22 @@ export function GuidesBibliotek({
     return out
   }, [recent, byId])
 
-  // Hele det redaktionelle 'potalot'-lag (arter + sorter). Biblioteket nedenfor
-  // (UdforskBiblioteket) styrer selv chip-filtrering, gruppering og søgning.
+  // Teknik-guider = eget register (handling, ikke planteidentitet). De må ALDRIG
+  // ende i arts-matrixen (teknik har plantName: null → ville klumpe under en
+  // tom art). Skilles ud her og vises i deres egen "Teknikguides"-værktøjskasse.
+  const techniqueGuides = useMemo(
+    () => guides.filter(g => g.guideLevel === 'technique'),
+    [guides],
+  )
+
+  // Hele det redaktionelle 'potalot'-lag (arter + sorter) UDEN teknik.
+  // Biblioteket nedenfor (UdforskBiblioteket) styrer selv chip-filtrering,
+  // gruppering og søgning.
   const potalotAll = useMemo(
-    () => withKind.filter(x => x.kind === 'potalot').map(x => x.guide),
+    () =>
+      withKind
+        .filter(x => x.kind === 'potalot' && x.guide.guideLevel !== 'technique')
+        .map(x => x.guide),
     [withKind],
   )
 
