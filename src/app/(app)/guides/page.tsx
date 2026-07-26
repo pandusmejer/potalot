@@ -10,7 +10,7 @@ import {
 } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePotalotMacro, resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
-import { buildMineHaveGuides, pickForForside, looseKey } from '@/lib/guides/min-have'
+import { buildMineHaveGuides, pickForForside } from '@/lib/guides/min-have'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,26 +62,6 @@ export default async function GuidesPage() {
   // autogenereret. Vises foldet øverst i biblioteket (Anna 16/7), klart adskilt
   // fra det redaktionelle Potalot-lag nedenunder.
   const mineGuides = guides.filter(g => g.visibility === 'private')
-
-  // Foto-collage til "Dine egne guides": op til 3 ÆGTE fotos af brugerens sorter
-  // (guidens eget foto, ellers den matchende frøbank-vares upload). Ingen
-  // generiske stockfotos — findes ingen, falder kortet til plante-ikonet.
-  const invPhotoByKey = new Map<string, string>()
-  for (const i of inventory) {
-    if (i.primaryImageId) {
-      invPhotoByKey.set(`${looseKey(i.name)}::${looseKey(i.variety ?? '')}`, i.primaryImageId)
-    }
-  }
-  const mineGuidePhotos = [...mineGuides]
-    .sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt))
-    .map(
-      g =>
-        g.primaryImageId ??
-        invPhotoByKey.get(`${looseKey(g.plantName)}::${looseKey(g.variety ?? '')}`) ??
-        null,
-    )
-    .filter((s): s is string => !!s)
-    .slice(0, 3)
 
   // "I DIN HAVE" — prioriteret udvalg af GUIDE-OBJEKTER (arts- OG sortsguides)
   // beregnet ud fra frøbanken + sæson (lib/guides/min-have). Ikke et artsindeks:
@@ -166,7 +146,6 @@ export default async function GuidesPage() {
           mineHaveCards={mineHaveCards}
           mineHaveTotal={mineHaveTotal}
           mineGuides={mineGuides}
-          mineGuidePhotos={mineGuidePhotos}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />
