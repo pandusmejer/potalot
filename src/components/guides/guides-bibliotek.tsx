@@ -782,10 +782,19 @@ function TeknikIndgang({ count }: { count: number }) {
       }}
     >
       <span
-        className="flex shrink-0 items-center justify-center"
+        className="flex shrink-0 items-center justify-center overflow-hidden"
         style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(86,111,60,0.14)' }}
       >
-        <Leaf size={22} strokeWidth={1.7} style={{ color: '#4B6636' }} aria-hidden />
+        {/* Eksisterende Potalot-teknik-glyph (planteskovl) — funktionel indgang,
+            derfor ikon-flade (ikke vandmærke som kategorierne). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/glyphs/planteskovl.png"
+          alt=""
+          aria-hidden="true"
+          className="select-none"
+          style={{ width: 30, height: 30, objectFit: 'contain' }}
+        />
       </span>
       <span className="min-w-0 flex-1">
         <span

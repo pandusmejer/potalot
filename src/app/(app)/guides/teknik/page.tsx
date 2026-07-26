@@ -7,6 +7,7 @@ import {
   TECHNIQUE_TASK_ORDER,
   TECHNIQUE_TASK_LABEL,
   TECHNIQUE_TASK_INTRO,
+  TECHNIQUE_TASK_GLYPH,
   TECHNIQUE_TASK_OF,
   type TechniqueTask,
 } from '@/data/guide-technique-tasks'
@@ -97,18 +98,29 @@ export default async function TeknikPage() {
           const guides = byTask.get(t) ?? []
           return (
             <section key={t}>
-              <h2
-                style={{
-                  fontFamily: serif,
-                  fontWeight: 600,
-                  fontSize: 24,
-                  lineHeight: 1.1,
-                  color: '#242019',
-                  margin: 0,
-                }}
-              >
-                {TECHNIQUE_TASK_LABEL[t]}
-              </h2>
+              <div className="flex items-center gap-2.5">
+                {/* Eksisterende Potalot-glyph pr. opgave — kun genbrug */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/images/glyphs/${TECHNIQUE_TASK_GLYPH[t]}.png`}
+                  alt=""
+                  aria-hidden="true"
+                  className="shrink-0 select-none"
+                  style={{ width: 30, height: 30, objectFit: 'contain' }}
+                />
+                <h2
+                  style={{
+                    fontFamily: serif,
+                    fontWeight: 600,
+                    fontSize: 24,
+                    lineHeight: 1.1,
+                    color: '#242019',
+                    margin: 0,
+                  }}
+                >
+                  {TECHNIQUE_TASK_LABEL[t]}
+                </h2>
+              </div>
               <p
                 style={{
                   fontFamily: sans,
