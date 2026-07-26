@@ -135,23 +135,40 @@ export default async function ArtssamlingPage({
         </div>
       </div>
 
+      {/* Navigations-undertitel (ikke artikel-ingress): samlingen HJÆLPER dig
+          videre — den ER ikke indholdet. */}
       <p
         style={{
-          fontFamily: sans,
-          fontSize: 13,
-          fontWeight: 600,
-          color: 'rgba(36,48,31,0.55)',
+          fontFamily: serif,
+          fontStyle: 'italic',
+          fontSize: 16,
+          lineHeight: 1.35,
+          color: 'rgba(36,48,31,0.6)',
           margin: '12px 0 0',
         }}
       >
-        {varieties.length} {varieties.length === 1 ? 'sort' : 'sorter'}
-        {techniques.length > 0 && ` · ${techniques.length} ${techniques.length === 1 ? 'teknik' : 'teknikker'}`}
+        Find guide til {species.plantName.toLowerCase()} og dine sorter.
       </p>
 
-      {/* Læs artsguiden — det er HER indholdet ligger; samlingen er navigation */}
+      {/* CTA-hierarki: kommer brugeren fra "I DIN HAVE → Tomat", er deres EGEN
+          have vigtigere end latin + hero. Dine sorter først, så alle sorter, så
+          artsguiden som tydelig men SEPARAT mulighed, teknikker nederst. */}
+      {dineSorter.length > 0 && (
+        <SortSektion titel="Dine sorter" sorter={dineSorter} species={species} />
+      )}
+      {andreSorter.length > 0 && (
+        <SortSektion
+          titel={dineSorter.length > 0 ? 'Andre sorter' : 'Sorter'}
+          sorter={andreSorter}
+          species={species}
+        />
+      )}
+
+      {/* Læs artsguiden — indholdet. Tydelig, men SEPARAT fra sort-navigationen
+          og bevidst UNDER sorterne (ikke en dominerende hero-CTA). */}
       <Link
         href={`/guides/${species.id}`}
-        className="group mt-3 flex items-center justify-between gap-3 no-underline"
+        className="group mt-8 flex items-center justify-between gap-3 no-underline"
         style={{
           background: 'rgba(86,111,60,0.10)',
           border: '1px solid rgba(86,111,60,0.22)',
@@ -165,22 +182,11 @@ export default async function ArtssamlingPage({
             Læs artsguiden
           </span>
           <span className="mt-0.5 block" style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>
-            Fra såning til sidste høst
+            Fra såning til sidste høst · {varieties.length} {varieties.length === 1 ? 'sort' : 'sorter'}
           </span>
         </span>
         <ArrowRight size={18} strokeWidth={2} className="shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: '#4B6636' }} />
       </Link>
-
-      {dineSorter.length > 0 && (
-        <SortSektion titel="Dine sorter" sorter={dineSorter} species={species} />
-      )}
-      {andreSorter.length > 0 && (
-        <SortSektion
-          titel={dineSorter.length > 0 ? 'Andre sorter' : 'Sorter'}
-          sorter={andreSorter}
-          species={species}
-        />
-      )}
 
       {techniques.length > 0 && (
         <section className="mt-8">

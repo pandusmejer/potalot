@@ -108,13 +108,19 @@ export function buildMineHaveGuides(
   return items
 }
 
-/** Forside-udvalg: maks ÉN guide pr. art, så seks tomater ikke overtager. */
-export function pickForForside(items: HaveGuideItem[], n = 4): HaveGuideItem[] {
-  const perArt = new Set<string>()
+/**
+ * Forside-udvalg: relevans (rank) afgør, art-diversitet er BALANCING ikke dedup.
+ * Maks 2 guideobjekter pr. art i det viste udvalg — så en sommersektion legitimt
+ * kan være Tomat (art) + Sungold (sort) + California Wonder + Agurk, men aldrig
+ * seks tomatkort. items er allerede rank-sorteret af buildMineHaveGuides.
+ */
+export function pickForForside(items: HaveGuideItem[], n = 4, maxPerArt = 2): HaveGuideItem[] {
+  const count = new Map<string, number>()
   const out: HaveGuideItem[] = []
   for (const it of items) {
-    if (perArt.has(it.plantName)) continue
-    perArt.add(it.plantName)
+    const c = count.get(it.plantName) ?? 0
+    if (c >= maxPerArt) continue
+    count.set(it.plantName, c + 1)
     out.push(it)
     if (out.length >= n) break
   }

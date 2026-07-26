@@ -137,8 +137,8 @@ export function KategoriBibliotek({
         </div>
       )}
 
-      {/* START HER — redaktionelle/sæson-arter som store visuelle indgange.
-          Discovery, så brugeren ikke møder 36 ens tekstrækker med det samme. */}
+      {/* AKTUELT NU — sæson-drevne arter som store visuelle indgange (arter der
+          skal sås/plantes/høstes nu). Discovery, ikke 36 ens tekstrækker. */}
       {heroes.length > 0 && !query && (
         <div className="mt-7">
           <p
@@ -152,7 +152,7 @@ export function KategoriBibliotek({
               margin: '0 0 10px',
             }}
           >
-            Start her
+            Aktuelt nu
           </p>
           <div className="grid grid-cols-2 gap-2.5">
             {heroes.map(h => (
