@@ -725,19 +725,20 @@ function KategoriKort({ category, arts }: { category: LibraryCategory; arts: Lib
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 16,
         padding: '13px 14px',
-        minHeight: 96,
+        minHeight: 84,
         color: 'inherit',
       }}
     >
-      {/* Afdæmpet botanisk vandmærke nederst-højre. Ingen ikon-boks; ~18 % styrke
-          så kategorinavnet beholder første prioritet. */}
+      {/* Afdæmpet botanisk vandmærke — større og placeret ekspansivt mod nederste
+          højre hjørne, så det bevidst beskæres af kortets højre + nederste kant.
+          Uændret lav styrke (~18 %) så kategorinavnet beholder første prioritet. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/images/glyphs/${glyph}.png`}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.05]"
-        style={{ width: 78, height: 78, right: -8, bottom: -10, opacity: 0.18, objectFit: 'contain' }}
+        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+        style={{ width: 96, height: 96, right: -18, bottom: -20, opacity: 0.18, objectFit: 'contain' }}
       />
       <span className="relative">
         <span
