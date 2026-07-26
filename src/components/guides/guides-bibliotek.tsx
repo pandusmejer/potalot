@@ -13,6 +13,7 @@ import { DineEgneGuides } from './dine-egne-guides'
 import {
   LIBRARY_CATEGORY_ORDER,
   LIBRARY_CATEGORY_LABEL,
+  LIBRARY_CATEGORY_GLYPH,
   type LibraryCategory,
 } from '@/data/guide-library-categories'
 import { SpoergGartneren } from './spoerg-gartneren'
@@ -685,7 +686,7 @@ function UdforskBiblioteket({
           </div>
         )
       ) : (
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-5">
           {/* Kategori-indgange: 2-kol grid, KUN kategorier med indhold (ingen
               "0 arter"-byggepladser). Hver → sin egen kategoriside. Brugeren ser
               hele bibliotekets struktur på ~én skærm og vælger, hvor de vil hen. */}
@@ -707,26 +708,38 @@ function UdforskBiblioteket({
 }
 
 /**
- * Kompakt kategori-kort (2-kol grid) → kategorisiden. Navn + antal arter + en
- * lille smagsprøve. Erstatter de gamle fuldbredde-accordions.
+ * Kompakt kategori-kort (2-kol grid) → kategorisiden. Redaktionel botanisk
+ * indgang, ikke database-række: navn + antal arter + afdæmpet soft-glyph som
+ * vandmærke. INGEN chevron/arts-eksempler (hele kortet er klikbart; glyphen
+ * giver identiteten). Glyphen er en EKSISTERENDE Potalot-glyph — ingen ny asset.
  */
 function KategoriKort({ category, arts }: { category: LibraryCategory; arts: LibraryArt[] }) {
   const n = arts.length
-  const teaser = arts.slice(0, 3).map(a => a.plantName).join(', ')
+  const glyph = LIBRARY_CATEGORY_GLYPH[category]
   return (
     <Link
       href={`/guides/kategori/${category}`}
-      className="group relative flex flex-col justify-between overflow-hidden no-underline"
+      className="group relative block overflow-hidden no-underline"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 16,
         padding: '13px 14px',
-        minHeight: 92,
+        minHeight: 96,
         color: 'inherit',
       }}
     >
-      <div>
+      {/* Afdæmpet botanisk vandmærke nederst-højre. Ingen ikon-boks; ~18 % styrke
+          så kategorinavnet beholder første prioritet. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`/images/glyphs/${glyph}.png`}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+        style={{ width: 78, height: 78, right: -8, bottom: -10, opacity: 0.18, objectFit: 'contain' }}
+      />
+      <span className="relative">
         <span
           className="block"
           style={{
@@ -746,21 +759,7 @@ function KategoriKort({ category, arts }: { category: LibraryCategory; arts: Lib
         >
           {n} {n === 1 ? 'art' : 'arter'}
         </span>
-      </div>
-      <div className="mt-2.5 flex items-end justify-between gap-1.5">
-        <span
-          className="min-w-0 flex-1 truncate"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 500, color: 'rgba(36,48,31,0.42)' }}
-        >
-          {teaser}
-        </span>
-        <ChevronRight
-          size={16}
-          strokeWidth={2}
-          className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-          style={{ color: 'rgba(36,48,31,0.3)' }}
-        />
-      </div>
+      </span>
     </Link>
   )
 }
@@ -793,13 +792,13 @@ function TeknikIndgang({ count }: { count: number }) {
           className="block"
           style={{ fontFamily: plex, fontWeight: 600, fontSize: 19, lineHeight: 1.1, color: '#233019' }}
         >
-          Få hjælp til arbejdet
+          Hvad skal du gøre?
         </span>
         <span
           className="mt-0.5 block"
           style={{ fontFamily: sans, fontSize: 12, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}
         >
-          Såning, opbinding, beskæring, høst … · {count} teknikguider
+          Såning · opbinding · beskæring · høst · {count} teknikguider
         </span>
       </span>
       <ChevronRight
