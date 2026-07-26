@@ -44,6 +44,8 @@ interface Props {
   mineHaveTotal: number
   /** Brugerens egne (private/AI) guides — "Dine egne guides"-indgangen nederst. */
   mineGuides: Guide[]
+  /** Op til 3 ægte sort-fotos til collagen på "Dine egne guides". */
+  mineGuidePhotos: string[]
   /**
    * Atmospheric makro-billede til EditorialBleedCard-broen mellem
    * "Begynd her" og "Guides i felten". Resolved server-side i
@@ -60,6 +62,7 @@ export function GuidesBibliotek({
   mineHaveCards,
   mineHaveTotal,
   mineGuides,
+  mineGuidePhotos,
 }: Props) {
   const [search, setSearch] = useState('')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
@@ -181,7 +184,7 @@ export function GuidesBibliotek({
 
       {/* DINE EGNE GUIDES — AI-genereret fallback-indhold, ÉN kompakt indgang.
           Bevidst over "Godt at vide", som lukker siden redaktionelt. */}
-      <DineEgneGuides guides={mineGuides} />
+      <DineEgneGuides guides={mineGuides} photos={mineGuidePhotos} />
 
       {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort som redaktionel
           afslutning på siden. */}
