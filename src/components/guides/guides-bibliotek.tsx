@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
-import { Search, ChevronRight, Leaf } from 'lucide-react'
+import { Search, ChevronRight, ArrowUpRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
@@ -772,50 +772,90 @@ function TeknikIndgang({ count }: { count: number }) {
   return (
     <Link
       href="/guides/teknik"
-      className="group flex items-center gap-3.5 overflow-hidden no-underline"
+      className="group relative block overflow-hidden no-underline"
       style={{
-        background: 'linear-gradient(180deg, rgba(86,111,60,0.10) 0%, rgba(86,111,60,0.05) 100%)',
+        background: 'linear-gradient(155deg, rgba(86,111,60,0.14) 0%, rgba(86,111,60,0.05) 68%)',
         border: '1px solid rgba(86,111,60,0.22)',
         borderRadius: 18,
-        padding: '14px 15px',
+        padding: '18px 18px 16px',
+        minHeight: 132,
         color: 'inherit',
       }}
     >
-      <span
-        className="flex shrink-0 items-center justify-center overflow-hidden"
-        style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(86,111,60,0.14)' }}
-      >
-        {/* Eksisterende Potalot-teknik-glyph (planteskovl) — funktionel indgang,
-            derfor ikon-flade (ikke vandmærke som kategorierne). */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/glyphs/planteskovl.png"
-          alt=""
-          aria-hidden="true"
-          className="select-none"
-          style={{ width: 30, height: 30, objectFit: 'contain' }}
-        />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span
-          className="block"
-          style={{ fontFamily: plex, fontWeight: 600, fontSize: 19, lineHeight: 1.1, color: '#233019' }}
-        >
-          Hvad skal du gøre?
-        </span>
-        <span
-          className="mt-0.5 block"
-          style={{ fontFamily: sans, fontSize: 12, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}
-        >
-          Såning · opbinding · beskæring · høst · {count} teknikguider
-        </span>
-      </span>
-      <ChevronRight
+      {/* Stor, beskåret grensaks-glyph som lavkontrast-vandmærke der blør ud over
+          højre kant. Ingen ikon-boks — redaktionelt, ikke "indstilling". */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/glyphs/beskarersaks.png"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+        style={{
+          width: 158,
+          height: 158,
+          right: -34,
+          top: '50%',
+          transform: 'translateY(-50%) rotate(-8deg)',
+          opacity: 0.14,
+          objectFit: 'contain',
+        }}
+      />
+      <ArrowUpRight
         size={18}
         strokeWidth={2}
-        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-        style={{ color: 'rgba(75,102,54,0.5)' }}
+        className="absolute right-4 top-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        style={{ color: 'rgba(75,102,54,0.6)' }}
       />
+      {/* Editorial-hierarki: invitation (serif) → forklaring → eksempler → antal.
+          Serif-titel adskiller "en anden indgang" fra kategoriernes plex-navne. */}
+      <div className="relative" style={{ maxWidth: '76%' }}>
+        <h3
+          style={{
+            fontFamily: serif,
+            fontWeight: 600,
+            fontSize: 26,
+            lineHeight: 1.02,
+            color: '#233019',
+            margin: 0,
+          }}
+        >
+          Hvad skal du gøre?
+        </h3>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 13,
+            fontWeight: 500,
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.6)',
+            margin: '5px 0 0',
+          }}
+        >
+          Teknikguides til arbejdet i haven.
+        </p>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 12,
+            fontWeight: 600,
+            color: 'rgba(36,48,31,0.5)',
+            margin: '13px 0 0',
+          }}
+        >
+          Så · bind op · beskær · høst
+        </p>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 12,
+            fontWeight: 600,
+            color: 'rgba(75,102,54,0.75)',
+            margin: '2px 0 0',
+          }}
+        >
+          {count} guides
+        </p>
+      </div>
     </Link>
   )
 }

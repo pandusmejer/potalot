@@ -83,9 +83,10 @@ export default async function GuidesPage() {
     return {
       guideId: g.id,
       title: isVar ? g.variety ?? g.plantName : g.plantName,
-      subtitle: isVar ? `${it.plantName} · Sortsguide` : 'Artsguide',
+      typeLabel: isVar ? 'Sortsguide' : 'Artsguide',
+      contextLine: isVar ? `${it.plantName} · Sortsguide` : 'Artsguide',
+      summary: g.summary ?? '',
       imageSrc: src ?? null,
-      kind: it.kind,
     }
   })
   const mineHaveTotal = mineHaveAll.length

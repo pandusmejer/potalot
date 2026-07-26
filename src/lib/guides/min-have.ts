@@ -28,9 +28,13 @@ export interface HaveGuideItem {
 export interface HaveCardData {
   guideId: string
   title: string
-  subtitle: string
+  /** Chip på fotoet: "Artsguide" | "Sortsguide". */
+  typeLabel: string
+  /** Panel-kontekst: "Chili · Sortsguide" (sort) eller "Artsguide" (art). */
+  contextLine: string
+  /** Kort redaktionel linje (guidens summary). */
+  summary: string
   imageSrc: string | null
-  kind: 'species' | 'variety'
 }
 
 /** Minimal frøbank-form modellen behøver (afkoblet fra hele InventoryItem). */
