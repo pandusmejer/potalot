@@ -9,6 +9,7 @@ import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
 import type { HaveCardData } from '@/lib/guides/min-have'
 import { IDinHaveCarousel } from './i-din-have-carousel'
+import { DineEgneGuides } from './dine-egne-guides'
 import {
   LIBRARY_CATEGORY_ORDER,
   LIBRARY_CATEGORY_LABEL,
@@ -41,6 +42,8 @@ interface Props {
    */
   mineHaveCards: HaveCardData[]
   mineHaveTotal: number
+  /** Brugerens egne (private/AI) guides — "Dine egne guides"-indgangen nederst. */
+  mineGuides: Guide[]
   /**
    * Atmospheric makro-billede til EditorialBleedCard-broen mellem
    * "Begynd her" og "Guides i felten". Resolved server-side i
@@ -56,6 +59,7 @@ export function GuidesBibliotek({
   aiGuideIds,
   mineHaveCards,
   mineHaveTotal,
+  mineGuides,
 }: Props) {
   const [search, setSearch] = useState('')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
@@ -175,9 +179,12 @@ export function GuidesBibliotek({
         />
       </section>
 
-      {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort. Rykket op fra
-          bunden og navngivet, så det er redaktionelt indhold, ikke en
-          efterladenskab efter biblioteket. */}
+      {/* DINE EGNE GUIDES — AI-genereret fallback-indhold, ÉN kompakt indgang.
+          Bevidst over "Godt at vide", som lukker siden redaktionelt. */}
+      <DineEgneGuides guides={mineGuides} />
+
+      {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort som redaktionel
+          afslutning på siden. */}
       <div className="pb-10">
         <p
           style={{

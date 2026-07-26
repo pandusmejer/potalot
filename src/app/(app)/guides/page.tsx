@@ -1,6 +1,5 @@
 import { GuidesHero } from '@/components/guides/guides-hero'
 import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
-import { DineEgneGuides } from '@/components/guides/dine-egne-guides'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { BookOpen } from 'lucide-react'
 import { getAllGuides } from '@/actions/guides'
@@ -146,12 +145,10 @@ export default async function GuidesPage() {
           parentPlantNameById={parentPlantNameById}
           mineHaveCards={mineHaveCards}
           mineHaveTotal={mineHaveTotal}
+          mineGuides={mineGuides}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />
-        {/* AI-genererede fallback-guides — bevidst UNDER biblioteket og som
-            ÉN kompakt indgang, aldrig top-of-mind (Anna 25/7). */}
-        <DineEgneGuides guides={mineGuides} />
       </div>
     </div>
   )
