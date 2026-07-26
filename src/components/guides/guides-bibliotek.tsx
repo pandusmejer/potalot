@@ -847,7 +847,18 @@ function TeknikIndgang({ count }: { count: number }) {
           {['Så', 'Bind op', 'Beskær', 'Høst'].map((w, i) => (
             <span key={w}>
               {i > 0 && (
-                <span style={{ color: '#7F8F6A', fontWeight: 700, margin: '0 8px' }}>·</span>
+                <span
+                  style={{
+                    color: '#7F8F6A',
+                    fontWeight: 700,
+                    fontSize: 17,
+                    lineHeight: 0,
+                    verticalAlign: '-2px',
+                    margin: '0 8px',
+                  }}
+                >
+                  ·
+                </span>
               )}
               {w}
             </span>
