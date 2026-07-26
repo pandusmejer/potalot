@@ -14,14 +14,18 @@ const serif = 'var(--font-cormorant), Georgia, serif'
  * så listen er svar, ikke støj (modsat på forsiden).
  */
 export function KategoriBibliotek({
+  slug,
   label,
   intro,
   arts,
+  heroes,
   mineArts,
 }: {
+  slug: string
   label: string
   intro: string
   arts: ArtRow[]
+  heroes: { plantName: string; guideId: string; sortCount: number; imageSrc: string | null }[]
   mineArts: { plantName: string; guideId: string }[]
 }) {
   const [q, setQ] = useState('')
@@ -118,7 +122,7 @@ export function KategoriBibliotek({
             {mineArts.map((m, i) => (
               <span key={m.guideId}>
                 <Link
-                  href={`/guides/${m.guideId}`}
+                  href={`/guides/kategori/${slug}/${m.guideId}`}
                   className="no-underline"
                   style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#3D5A26' }}
                 >
@@ -133,8 +137,81 @@ export function KategoriBibliotek({
         </div>
       )}
 
+      {/* START HER — redaktionelle/sæson-arter som store visuelle indgange.
+          Discovery, så brugeren ikke møder 36 ens tekstrækker med det samme. */}
+      {heroes.length > 0 && !query && (
+        <div className="mt-7">
+          <p
+            style={{
+              fontFamily: sans,
+              fontSize: 10.5,
+              fontWeight: 700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: 'rgba(36,48,31,0.5)',
+              margin: '0 0 10px',
+            }}
+          >
+            Start her
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {heroes.map(h => (
+              <Link
+                key={h.guideId}
+                href={`/guides/kategori/${slug}/${h.guideId}`}
+                className="group relative overflow-hidden no-underline"
+                style={{
+                  aspectRatio: '3 / 2.7',
+                  borderRadius: 18,
+                  border: '1px solid rgba(45,42,36,0.10)',
+                  background: '#EAE6D8',
+                  color: 'inherit',
+                }}
+              >
+                {h.imageSrc && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={h.imageSrc}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                )}
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{ background: 'linear-gradient(180deg, rgba(24,20,14,0.02) 40%, rgba(24,20,14,0.68) 100%)' }}
+                />
+                <div className="absolute inset-x-0 bottom-0 p-3">
+                  <span
+                    className="block"
+                    style={{
+                      fontFamily: 'var(--font-plex-condensed), sans-serif',
+                      fontWeight: 600,
+                      fontSize: 22,
+                      lineHeight: 1,
+                      color: '#FFF',
+                      textShadow: '0 2px 12px rgba(20,14,8,0.5)',
+                    }}
+                  >
+                    {h.plantName}
+                  </span>
+                  {h.sortCount > 0 && (
+                    <span
+                      className="mt-0.5 block"
+                      style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,0.88)' }}
+                    >
+                      {h.sortCount} {h.sortCount === 1 ? 'sort' : 'sorter'}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ALLE ARTER — A–Å */}
-      <div className="mt-6">
+      <div className="mt-7">
         <p
           style={{
             fontFamily: sans,
@@ -166,7 +243,7 @@ export function KategoriBibliotek({
               <ArtNode
                 key={a.guideId}
                 plantName={a.plantName}
-                guideId={a.guideId}
+                href={`/guides/kategori/${slug}/${a.guideId}`}
                 sortCount={a.sortCount}
               />
             ))}

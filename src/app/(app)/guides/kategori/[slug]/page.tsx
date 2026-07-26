@@ -12,6 +12,7 @@ import {
 } from '@/data/guide-library-categories'
 import { buildLibraryArts } from '@/lib/guides/library-arts'
 import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import type { ArtRow } from '@/components/guides/guides-bibliotek'
 import { KategoriBibliotek } from './kategori-bibliotek'
 
@@ -60,13 +61,30 @@ export default async function KategoriPage({
     .filter(r => froeKeys.has(normalizeGuideKey(r.plantName)))
     .map(r => ({ plantName: r.plantName, guideId: r.guideId }))
 
+  // START HER — redaktionelle indgange (pt. de 4 første; senere sæson-kurateret).
+  const heroes = artRows.slice(0, 4).map(r => ({
+    plantName: r.plantName,
+    guideId: r.guideId,
+    sortCount: r.sortCount,
+    imageSrc:
+      resolvePotalotImage({
+        guideId: r.guideId,
+        speciesSlug: r.guideId,
+        varietySlug: null,
+        role: 'species-hero',
+        preferredSrc: null,
+      }).src ?? null,
+  }))
+
   return (
     <div className="relative -mx-4 -mt-6 min-h-screen bg-[#EAE6D8] px-4 pb-16 pt-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
       <KategoriBibliotek
+        slug={category}
         label={LIBRARY_CATEGORY_LABEL[category]}
         intro={LIBRARY_CATEGORY_INTRO[category]}
         arts={artRows}
+        heroes={heroes}
         mineArts={mineArts}
       />
     </div>
