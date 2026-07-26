@@ -59,8 +59,9 @@ export function DineEgneGuides({
           margin: 0,
         }}
       >
-        Har du en sort, vi ikke har skrevet om endnu? Potalot laver en personlig
-        guide ud fra det, du dyrker.
+        Har du en sort, vi ikke har skrevet om endnu?
+        <br />
+        Potalot laver en personlig guide ud fra det, du dyrker.
       </p>
 
       <details className="group mt-3.5">
