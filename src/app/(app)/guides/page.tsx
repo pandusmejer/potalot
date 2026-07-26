@@ -10,8 +10,8 @@ import {
   DEMO_AI_GUIDE_IDS,
 } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
-import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
-import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import { resolvePotalotMacro, resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { buildMineHaveGuides, pickForForside } from '@/lib/guides/min-have'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,21 +64,32 @@ export default async function GuidesPage() {
   // fra det redaktionelle Potalot-lag nedenunder.
   const mineGuides = guides.filter(g => g.visibility === 'private')
 
-  // "I din frøbank" grupperet: normalizeGuideKey(plantenavn) → distinkte
-  // sortsnavne. Vi matcher PÅ NAVN, ikke på guide_id — frøbank-varens guide_id
-  // peger på brugerens egen PRIVATE guide (DB-uuid), som aldrig findes i det
-  // redaktionelle IMPORTED_GUIDES-lag "I DIN HAVE" bygges af. normalizeGuideKey
-  // er samme nøgle som master-syncen, så "Tomat" → "tomat" rammer artsguiden.
-  // Sortsnavnene bliver til chips på art-kortet.
-  const inFroebankVarieties = new Map<string, string[]>()
-  for (const i of inventory) {
-    const key = normalizeGuideKey(i.name)
-    if (!key) continue
-    const arr = inFroebankVarieties.get(key) ?? []
-    const v = i.variety?.trim()
-    if (v && !arr.some(x => normalizeGuideKey(x) === normalizeGuideKey(v))) arr.push(v)
-    inFroebankVarieties.set(key, arr)
-  }
+  // "I DIN HAVE" — prioriteret udvalg af GUIDE-OBJEKTER (arts- OG sortsguides)
+  // beregnet ud fra frøbanken + sæson (lib/guides/min-have). Ikke et artsindeks:
+  // findes en kurateret sortsguide til brugerens konkrete sort, vises DEN;
+  // ellers artsguiden. Billedet resolves her (server), så carousel-klienten kun
+  // får en færdig kort-liste. Maks ét kort pr. art på forsiden; det fulde antal
+  // (mineHaveTotal) linker til /guides/min-have.
+  const mineHaveAll = buildMineHaveGuides(visibleGuides, inventory, new Date().getMonth() + 1)
+  const mineHaveCards = pickForForside(mineHaveAll, 4).map(it => {
+    const g = it.guide
+    const isVar = it.kind === 'variety'
+    const { src } = resolvePotalotImage({
+      guideId: g.id,
+      speciesSlug: isVar ? g.parentGuideId ?? g.id : g.id,
+      varietySlug: isVar ? g.id : null,
+      role: isVar ? 'variety-hero' : 'species-hero',
+      preferredSrc: g.primaryImageId,
+    })
+    return {
+      guideId: g.id,
+      title: isVar ? g.variety ?? g.plantName : g.plantName,
+      subtitle: isVar ? `${it.plantName} · Sortsguide` : 'Artsguide',
+      imageSrc: src ?? null,
+      kind: it.kind,
+    }
+  })
+  const mineHaveTotal = mineHaveAll.length
 
   // Lineage-map: for hver afledt guide, hvad hed planten i Potalot-
   // guiden den er baseret på? Bruges til "Baseret på Potalot-guiden om X".
@@ -133,7 +144,8 @@ export default async function GuidesPage() {
           guides={visibleGuides}
           aiGuideIds={aiGuideIds}
           parentPlantNameById={parentPlantNameById}
-          iFroebankVarieties={inFroebankVarieties}
+          mineHaveCards={mineHaveCards}
+          mineHaveTotal={mineHaveTotal}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />

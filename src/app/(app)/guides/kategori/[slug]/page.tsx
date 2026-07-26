@@ -12,6 +12,7 @@ import {
 } from '@/data/guide-library-categories'
 import { buildLibraryArts } from '@/lib/guides/library-arts'
 import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import type { ArtRow } from '@/components/guides/guides-bibliotek'
 import { KategoriBibliotek } from './kategori-bibliotek'
 
@@ -60,13 +61,48 @@ export default async function KategoriPage({
     .filter(r => froeKeys.has(normalizeGuideKey(r.plantName)))
     .map(r => ({ plantName: r.plantName, guideId: r.guideId }))
 
+  // START HER — SÆSON-drevet (ikke alfabetisk): arter hvor der lige nu skal
+  // sås, plantes ud eller høstes. Ingen i sæson → sektionen skjules (bedre end
+  // en tilfældig alfabetisk "kuratering"). Kurateret redaktionel override kan
+  // lægges ovenpå senere.
+  const month = new Date().getMonth() + 1
+  const sortCountById = new Map(artRows.map(r => [r.guideId, r.sortCount]))
+  const inSeason = (g: (typeof catGuides)[number]) => {
+    const q = g.quickFacts
+    return [
+      q.sowingMonths,
+      q.directSowingMonths,
+      q.plantingOutMonths,
+      q.harvestMonths,
+    ].some(a => a.includes(month))
+  }
+  const heroes = catGuides
+    .filter(g => g.guideLevel === 'species' && inSeason(g))
+    .sort((a, b) => a.plantName.localeCompare(b.plantName, 'da'))
+    .slice(0, 4)
+    .map(g => ({
+      plantName: g.plantName,
+      guideId: g.id,
+      sortCount: sortCountById.get(g.id) ?? 0,
+      imageSrc:
+        resolvePotalotImage({
+          guideId: g.id,
+          speciesSlug: g.id,
+          varietySlug: null,
+          role: 'species-hero',
+          preferredSrc: g.primaryImageId,
+        }).src ?? null,
+    }))
+
   return (
     <div className="relative -mx-4 -mt-6 min-h-screen bg-[#EAE6D8] px-4 pb-16 pt-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
       <KategoriBibliotek
+        slug={category}
         label={LIBRARY_CATEGORY_LABEL[category]}
         intro={LIBRARY_CATEGORY_INTRO[category]}
         arts={artRows}
+        heroes={heroes}
         mineArts={mineArts}
       />
     </div>
