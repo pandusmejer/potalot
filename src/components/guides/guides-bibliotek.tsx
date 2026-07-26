@@ -836,21 +836,30 @@ function TeknikIndgang({ count }: { count: number }) {
         <p
           style={{
             fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 600,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
             color: 'rgba(36,48,31,0.5)',
             margin: '13px 0 0',
           }}
         >
-          Så · bind op · beskær · høst
+          {['Så', 'Bind op', 'Beskær', 'Høst'].map((w, i) => (
+            <span key={w}>
+              {i > 0 && (
+                <span style={{ color: '#7F8F6A', fontWeight: 700, margin: '0 8px' }}>·</span>
+              )}
+              {w}
+            </span>
+          ))}
         </p>
         <p
           style={{
             fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 600,
-            color: 'rgba(75,102,54,0.75)',
-            margin: '2px 0 0',
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#4E6138',
+            margin: '6px 0 0',
           }}
         >
           {count} guides
