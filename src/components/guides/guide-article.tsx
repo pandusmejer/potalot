@@ -26,6 +26,7 @@ import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
 import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
 import { TechniqueArticle } from '@/components/guides/technique-article'
+import { BiblioRow } from '@/components/guides/guides-bibliotek'
 import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
@@ -119,6 +120,15 @@ export async function GuideArticle({
   const sortsvarianter =
     original.guideLevel === 'species'
       ? allGuides.filter((g) => g.parentGuideId === original.id)
+      : []
+
+  // Relateret hjælp: teknikguider der gælder denne art (udledt af appliesTo).
+  // Kun på artsguider — brugeren læser om arten, Potalot tilbyder relevant hjælp.
+  const relatedTechniques =
+    original.guideLevel === 'species'
+      ? IMPORTED_GUIDES.filter(
+          (g) => g.guideLevel === 'technique' && (g.appliesTo ?? []).includes(original.id),
+        )
       : []
 
   const linkedInventory = inventory.filter(
@@ -758,7 +768,7 @@ export async function GuideArticle({
                 margin: '0 0 18px 8px',
               }}
             >
-              Sortsvarianter
+              Vælg en sort
             </p>
             <p
               style={{
@@ -947,6 +957,33 @@ export async function GuideArticle({
             )}
           </section>
         </>
+      )}
+
+      {/* RELATERET HJÆLP — teknikguider der gælder arten (additivt; kilde: eget
+          appliesTo). Naturligt sted: brugeren læser om arten, Potalot tilbyder
+          relevant praktisk hjælp. Teknik-hubben er dermed overflødig. */}
+      {relatedTechniques.length > 0 && (
+        <section className="scroll-mt-20">
+          <p
+            className="uppercase"
+            style={{
+              fontFamily: 'var(--font-manrope)',
+              fontSize: 11,
+              fontWeight: 700,
+              lineHeight: 1,
+              letterSpacing: '0.22em',
+              color: 'rgb(113,122,96)',
+              margin: '0 0 16px 8px',
+            }}
+          >
+            Relateret hjælp
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {relatedTechniques.map((t) => (
+              <BiblioRow key={t.id} guide={t} teknik />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Artsguide viser IKKE "Lær af hinanden": bruger-erfaringer er for
