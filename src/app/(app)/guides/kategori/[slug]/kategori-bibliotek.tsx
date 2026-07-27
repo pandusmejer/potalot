@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Search } from 'lucide-react'
+import { ArrowLeft, Search, Leaf } from 'lucide-react'
 import { ArtNode, TopicSquareCard, type ArtRow } from '@/components/guides/guides-bibliotek'
 
 const sans = 'var(--font-manrope)'
@@ -35,6 +35,8 @@ export function KategoriBibliotek({
     () => (query ? arts.filter(a => a.plantName.toLowerCase().includes(query)) : arts),
     [arts, query],
   )
+  const artCount = arts.length
+  const sortCount = arts.reduce((s, a) => s + a.sortCount, 0)
 
   return (
     <div>
@@ -48,18 +50,26 @@ export function KategoriBibliotek({
       </Link>
 
       <header className="mt-4">
+        {/* Eyebrow bærer nu tællingen (metadata), så undertitlen kan være ren
+            redaktionel tekst. Lille internt hierarki: label lidt mørkere end tal,
+            samme størrelse/vægt. Altid én linje. */}
         <p
+          className="truncate"
           style={{
             fontFamily: sans,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: '0.18em',
+            fontSize: 11.5,
+            fontWeight: 600,
+            letterSpacing: '0.13em',
             textTransform: 'uppercase',
-            color: 'rgba(36,48,31,0.5)',
             margin: 0,
           }}
         >
-          Guidebibliotek
+          <span style={{ color: 'rgba(36,48,31,0.6)' }}>Guidebibliotek</span>
+          <span style={{ color: 'rgba(36,48,31,0.4)' }}>
+            {' · '}
+            {artCount} {artCount === 1 ? 'art' : 'arter'}
+            {sortCount > 0 && ` · ${sortCount} ${sortCount === 1 ? 'sort' : 'sorter'}`}
+          </span>
         </p>
         <h1
           style={{
@@ -69,22 +79,22 @@ export function KategoriBibliotek({
             lineHeight: 0.98,
             letterSpacing: '-0.01em',
             color: '#242019',
-            margin: '6px 0 0',
+            margin: '9px 0 0',
           }}
         >
           {label}
         </h1>
         <p
           style={{
-            fontFamily: sans,
-            fontSize: 14,
+            fontFamily: serif,
+            fontSize: 16,
             fontWeight: 500,
-            lineHeight: 1.45,
-            color: 'rgba(36,48,31,0.6)',
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.62)',
             margin: '8px 0 0',
           }}
         >
-          {intro} · {arts.length} {arts.length === 1 ? 'artsguide' : 'artsguider'}
+          {intro}
         </p>
       </header>
 
@@ -168,6 +178,26 @@ export function KategoriBibliotek({
               />
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Lille dekorativ skille-linje mellem AKTUELT NU og ALLE ARTER. mt-10
+          rydder de forskudte korts overhæng. */}
+      {heroes.length > 0 && !query && (
+        <div className="mt-10 flex items-center gap-3" aria-hidden="true">
+          <span
+            className="h-px flex-1"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(45,42,36,0.16))' }}
+          />
+          <Leaf
+            size={14}
+            strokeWidth={1.6}
+            style={{ color: 'rgba(86,111,60,0.55)', transform: 'rotate(-10deg)' }}
+          />
+          <span
+            className="h-px flex-1"
+            style={{ background: 'linear-gradient(90deg, rgba(45,42,36,0.16), transparent)' }}
+          />
         </div>
       )}
 
