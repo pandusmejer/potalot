@@ -1,12 +1,11 @@
 /**
- * Handoff component: compact "Kig mod næste måned" calendar ending.
+ * Compact "Kig mod næste måned" calendar ending.
  *
- * Status: built for review, not wired into the live calendar.
+ * Status: live — the calendar's closing block (see kalender-client.tsx).
  *
  * Product role:
  * - A calm next-chapter teaser.
  * - Not a task list, no status, no admin actions.
- * - Later replacement candidate for the larger `NaesteMaaned` block.
  */
 
 import { ArrowRight } from 'lucide-react'
