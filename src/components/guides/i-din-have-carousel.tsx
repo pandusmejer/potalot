@@ -87,7 +87,7 @@ function HaveGuideCard({ card }: { card: HaveCardData }) {
     <Link
       href={`/guides/${card.guideId}`}
       className="group block shrink-0 snap-start no-underline"
-      style={{ width: '91%', color: 'inherit' }}
+      style={{ width: '80%', color: 'inherit' }}
     >
       <article className="relative">
         {/* Foto — bærer kortet (samme radius/overlay som arts-heroes) */}
