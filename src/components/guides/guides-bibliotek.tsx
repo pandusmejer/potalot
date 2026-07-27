@@ -715,6 +715,10 @@ function UdforskBiblioteket({
  */
 function KategoriKort({ category, arts }: { category: LibraryCategory; arts: LibraryArt[] }) {
   const n = arts.length
+  // Tæl KUN sorter med en kurateret sortsguide i biblioteket (variety-guides),
+  // ikke alle frøbank-/taxonomy-sorter — ellers lover kortet indhold der ikke
+  // kan findes.
+  const sortCount = arts.reduce((sum, a) => sum + a.varieties.length, 0)
   const glyph = LIBRARY_CATEGORY_GLYPH[category]
   return (
     <Link
@@ -759,6 +763,7 @@ function KategoriKort({ category, arts }: { category: LibraryCategory; arts: Lib
           style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(36,48,31,0.5)' }}
         >
           {n} {n === 1 ? 'art' : 'arter'}
+          {sortCount > 0 && ` · ${sortCount} ${sortCount === 1 ? 'sort' : 'sorter'}`}
         </span>
       </span>
     </Link>

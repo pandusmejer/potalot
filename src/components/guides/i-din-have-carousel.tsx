@@ -71,7 +71,7 @@ export function IDinHaveCarousel({
 
       {/* Swipe-række — bleeder til kanten, snapper. Subtil peek af næste kort. */}
       <div
-        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 scroll-px-5 [&::-webkit-scrollbar]:hidden"
         style={{ scrollbarWidth: 'none' }}
       >
         {cards.map(c => (
