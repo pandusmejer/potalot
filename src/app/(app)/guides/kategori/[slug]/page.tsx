@@ -46,7 +46,12 @@ export default async function KategoriPage({
     .map(a => {
       const g = a.hero ?? a.varieties[0]
       return g
-        ? { plantName: a.plantName, guideId: g.id, sortCount: a.varieties.length }
+        ? {
+            plantName: a.plantName,
+            guideId: g.id,
+            sortCount: a.varieties.length,
+            sorts: a.varieties.map(v => ({ id: v.id, variety: v.variety ?? v.plantName })),
+          }
         : null
     })
     .filter((r): r is ArtRow => r !== null)

@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Search, Leaf } from 'lucide-react'
-import { ArtNode, TopicSquareCard, type ArtRow } from '@/components/guides/guides-bibliotek'
+import { ArrowLeft, Search, Leaf, ChevronDown, ChevronRight } from 'lucide-react'
+import { TopicSquareCard, type ArtRow } from '@/components/guides/guides-bibliotek'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -133,7 +133,7 @@ export function KategoriBibliotek({
             {mineArts.map((m, i) => (
               <span key={m.guideId}>
                 <Link
-                  href={`/guides/kategori/${slug}/${m.guideId}`}
+                  href={`/guides/${m.guideId}`}
                   className="no-underline"
                   style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#3D5A26' }}
                 >
@@ -171,7 +171,7 @@ export function KategoriBibliotek({
               <TopicSquareCard
                 key={h.guideId}
                 index={i}
-                href={`/guides/kategori/${slug}/${h.guideId}`}
+                href={`/guides/${h.guideId}`}
                 imageUrl={h.imageSrc ?? ''}
                 navn={h.plantName}
                 byline={h.sortCount > 0 ? `${h.sortCount} ${h.sortCount === 1 ? 'sort' : 'sorter'}` : null}
@@ -231,16 +231,116 @@ export function KategoriBibliotek({
         ) : (
           <div className="space-y-0.5">
             {shown.map(a => (
-              <ArtNode
-                key={a.guideId}
-                plantName={a.plantName}
-                href={`/guides/kategori/${slug}/${a.guideId}`}
-                sortCount={a.sortCount}
-              />
+              <ArtAccordionRow key={a.guideId} art={a} />
             ))}
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+/**
+ * Art-række i ALLE ARTER. FIND-navigation (ikke discovery): ren tekst, ingen
+ * fotos. Har arten kuraterede sorter → foldbar (Artsguide + sortslinjer, hvert
+ * et direkte link). Ingen sorter → rækken ER selv et direkte link til
+ * artsguiden (ingen accordion med ét resultat).
+ */
+function ArtAccordionRow({ art }: { art: ArtRow }) {
+  const [open, setOpen] = useState(false)
+  const plantName = art.plantName
+
+  if (art.sorts.length === 0) {
+    return (
+      <Link
+        href={`/guides/${art.guideId}`}
+        className="group flex items-center gap-2 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-white/50"
+        style={{ textDecoration: 'none', color: 'inherit' }}
+      >
+        <span
+          className="min-w-0 flex-1 truncate"
+          style={{ fontFamily: plex, fontWeight: 600, fontSize: 16, letterSpacing: '-0.01em', color: '#242019' }}
+        >
+          {plantName}
+        </span>
+        <ChevronRight
+          size={16}
+          strokeWidth={2}
+          className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+          style={{ color: 'rgba(36,48,31,0.3)' }}
+        />
+      </Link>
+    )
+  }
+
+  const n = art.sorts.length
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2 rounded-[12px] px-2.5 py-2.5 text-left transition-colors hover:bg-white/50"
+      >
+        <span
+          className="min-w-0 flex-1 truncate"
+          style={{ fontFamily: plex, fontWeight: 600, fontSize: 16, letterSpacing: '-0.01em', color: '#242019' }}
+        >
+          {plantName}
+        </span>
+        <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(36,48,31,0.42)' }}>
+          {n} {n === 1 ? 'sort' : 'sorter'}
+        </span>
+        <ChevronDown
+          size={16}
+          strokeWidth={2}
+          className="shrink-0 transition-transform duration-200"
+          style={{ color: 'rgba(36,48,31,0.4)', transform: open ? 'rotate(180deg)' : 'none' }}
+        />
+      </button>
+      {open && (
+        <div className="mb-1 ml-2.5 space-y-0.5 border-l pl-3" style={{ borderColor: 'rgba(45,42,36,0.12)' }}>
+          <SortLink href={`/guides/${art.guideId}`} navn={plantName} type="Artsguide" />
+          {art.sorts.map(s => (
+            <SortLink key={s.id} href={`/guides/${s.id}`} navn={s.variety} type="Sortsguide" />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SortLink({ href, navn, type }: { href: string; navn: string; type: string }) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center gap-2 rounded-[10px] px-2 py-2 transition-colors hover:bg-white/50"
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
+      <span
+        className="min-w-0 flex-1 truncate"
+        style={{ fontFamily: plex, fontWeight: 600, fontSize: 15, letterSpacing: '-0.01em', color: '#3A382F' }}
+      >
+        {navn}
+      </span>
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: 9.5,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'rgba(86,111,60,0.7)',
+        }}
+      >
+        {type}
+      </span>
+      <ChevronRight
+        size={14}
+        strokeWidth={2}
+        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+        style={{ color: 'rgba(36,48,31,0.3)' }}
+      />
+    </Link>
   )
 }

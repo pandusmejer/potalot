@@ -889,8 +889,11 @@ function TeknikIndgang({ count }: { count: number }) {
 /** Slank art-række til kategorisidens A–Å-liste (serialiserer ikke fulde guides). */
 export interface ArtRow {
   plantName: string
+  /** Artsguidens id (species-hero, ellers første sort). */
   guideId: string
   sortCount: number
+  /** Kuraterede sortsguider under arten (til accordion) — id + sortsnavn. */
+  sorts: { id: string; variety: string }[]
 }
 
 /**
