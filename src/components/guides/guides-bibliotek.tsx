@@ -974,7 +974,16 @@ function SectionLabel({
 }
 
 /** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
-export function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
+export function BiblioRow({
+  guide,
+  teknik = false,
+  returnTo,
+}: {
+  guide: Guide
+  teknik?: boolean
+  /** returnTo-param (encoded) så guiden kan gå "tilbage" til afsenderen. */
+  returnTo?: string
+}) {
   const isVar = guide.guideLevel === 'variety' || !!guide.variety
   const { src } = resolvePotalotImage({
     guideId: guide.id,
@@ -988,7 +997,7 @@ export function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: bo
   const titel = guide.title ?? guide.variety ?? guide.plantName
   return (
     <Link
-      href={`/guides/${guide.id}`}
+      href={returnTo ? `/guides/${guide.id}?returnTo=${returnTo}` : `/guides/${guide.id}`}
       className="group flex items-center overflow-hidden rounded-[13px] border transition-colors hover:border-[rgba(86,111,60,0.28)]"
       style={{
         height: 58,

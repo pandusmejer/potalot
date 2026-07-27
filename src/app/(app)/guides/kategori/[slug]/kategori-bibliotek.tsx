@@ -37,6 +37,8 @@ export function KategoriBibliotek({
   )
   const artCount = arts.length
   const sortCount = arts.reduce((s, a) => s + a.sortCount, 0)
+  // Guides åbnet herfra skal have "tilbage" → denne kategoriside (ikke forsiden).
+  const back = encodeURIComponent(`/guides/kategori/${slug}`)
 
   return (
     <div>
@@ -133,7 +135,7 @@ export function KategoriBibliotek({
             {mineArts.map((m, i) => (
               <span key={m.guideId}>
                 <Link
-                  href={`/guides/${m.guideId}`}
+                  href={`/guides/${m.guideId}?returnTo=${back}`}
                   className="no-underline"
                   style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: '#3D5A26' }}
                 >
@@ -171,7 +173,7 @@ export function KategoriBibliotek({
               <TopicSquareCard
                 key={h.guideId}
                 index={i}
-                href={`/guides/${h.guideId}`}
+                href={`/guides/${h.guideId}?returnTo=${back}`}
                 imageUrl={h.imageSrc ?? ''}
                 navn={h.plantName}
                 byline={h.sortCount > 0 ? `${h.sortCount} ${h.sortCount === 1 ? 'sort' : 'sorter'}` : null}
@@ -231,7 +233,7 @@ export function KategoriBibliotek({
         ) : (
           <div className="space-y-0.5">
             {shown.map(a => (
-              <ArtAccordionRow key={a.guideId} art={a} />
+              <ArtAccordionRow key={a.guideId} art={a} back={back} />
             ))}
           </div>
         )}
@@ -246,14 +248,14 @@ export function KategoriBibliotek({
  * et direkte link). Ingen sorter → rækken ER selv et direkte link til
  * artsguiden (ingen accordion med ét resultat).
  */
-function ArtAccordionRow({ art }: { art: ArtRow }) {
+function ArtAccordionRow({ art, back }: { art: ArtRow; back: string }) {
   const [open, setOpen] = useState(false)
   const plantName = art.plantName
 
   if (art.sorts.length === 0) {
     return (
       <Link
-        href={`/guides/${art.guideId}`}
+        href={`/guides/${art.guideId}?returnTo=${back}`}
         className="group flex items-center gap-2 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-white/50"
         style={{ textDecoration: 'none', color: 'inherit' }}
       >
@@ -300,9 +302,14 @@ function ArtAccordionRow({ art }: { art: ArtRow }) {
       </button>
       {open && (
         <div className="mb-1 ml-2.5 space-y-0.5 border-l pl-3" style={{ borderColor: 'rgba(45,42,36,0.12)' }}>
-          <SortLink href={`/guides/${art.guideId}`} navn={plantName} type="Artsguide" />
+          <SortLink href={`/guides/${art.guideId}?returnTo=${back}`} navn={plantName} type="Artsguide" />
           {art.sorts.map(s => (
-            <SortLink key={s.id} href={`/guides/${s.id}`} navn={s.variety} type="Sortsguide" />
+            <SortLink
+              key={s.id}
+              href={`/guides/${s.id}?returnTo=${back}`}
+              navn={s.variety}
+              type="Sortsguide"
+            />
           ))}
         </div>
       )}

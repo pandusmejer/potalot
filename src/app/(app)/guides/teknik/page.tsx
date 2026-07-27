@@ -135,7 +135,7 @@ export default async function TeknikPage() {
               </p>
               <div className="mt-3 space-y-2">
                 {guides.map(g => (
-                  <BiblioRow key={g.id} guide={g} teknik />
+                  <BiblioRow key={g.id} guide={g} teknik returnTo="%2Fguides%2Fteknik" />
                 ))}
               </div>
             </section>

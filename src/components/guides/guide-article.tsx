@@ -103,6 +103,10 @@ export async function GuideArticle({
       ? returnTo
       : '/guides'
 
+  // Sorter åbnet HERFRA (Vælg en sort / Prøv også) skal have "tilbage" → denne
+  // guide, ikke forsiden.
+  const selfReturn = encodeURIComponent(`/guides/${original.id}`)
+
   const currentUser = await getCurrentUser()
 
   const [allGuides, inventory, plants, myNote] = await Promise.all([
@@ -421,6 +425,7 @@ export async function GuideArticle({
         <ArtsguideRelateret
           plantName={effective.plantName}
           varieties={sortsvarianter}
+          returnTo={selfReturn}
         />
       )}
 
@@ -472,7 +477,7 @@ export async function GuideArticle({
               {effective.variety ?? effective.plantName} særlig.
             </p>
             <Link
-              href={`/guides/${parent.id}`}
+              href={`/guides/${parent.id}?returnTo=${selfReturn}`}
               className="group mt-3.5 ml-auto flex w-fit items-center gap-1.5"
               style={{
                 fontFamily: 'var(--font-manrope)',
@@ -821,7 +826,7 @@ export async function GuideArticle({
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
-                  href={`/guides/${v.id}`}
+                  href={`/guides/${v.id}?returnTo=${selfReturn}`}
                   className="group no-underline transition-colors hover:border-[rgba(153,137,117,0.42)]"
                   style={{
                     // Stort redaktionelt sortkort: foto flush til venstre, tekst
@@ -993,7 +998,7 @@ export async function GuideArticle({
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {relatedTechniques.map((t) => (
-              <BiblioRow key={t.id} guide={t} teknik />
+              <BiblioRow key={t.id} guide={t} teknik returnTo={selfReturn} />
             ))}
           </div>
         </section>

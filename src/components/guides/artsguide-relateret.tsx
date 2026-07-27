@@ -18,9 +18,12 @@ const plex = 'var(--font-plex-condensed), sans-serif'
 export function ArtsguideRelateret({
   plantName,
   varieties,
+  returnTo,
 }: {
   plantName: string
   varieties: Guide[]
+  /** returnTo-param (encoded) så sorten kan gå "tilbage" til artsguiden. */
+  returnTo?: string
 }) {
   const vis = varieties.slice(0, 3)
   return (
@@ -49,7 +52,7 @@ export function ArtsguideRelateret({
             {vis.map(v => (
               <Link
                 key={v.id}
-                href={`/guides/${v.id}`}
+                href={returnTo ? `/guides/${v.id}?returnTo=${returnTo}` : `/guides/${v.id}`}
                 className="group flex items-center gap-2 rounded-[10px] py-1.5 transition-colors hover:bg-[rgba(86,111,60,0.06)]"
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
