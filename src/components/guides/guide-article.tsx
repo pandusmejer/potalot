@@ -117,10 +117,17 @@ export async function GuideArticle({
     allGuides,
   )
 
+  // Species → dens egne sorter ("Vælg en sort"). Variety → søskende-sorter af
+  // samme art ("Prøv også"). SAMME sektion + sortkort + clip-path — kun data +
+  // copy skifter. Én sort-korts-grammatik, ingen ny komponent.
   const sortsvarianter =
     original.guideLevel === 'species'
       ? allGuides.filter((g) => g.parentGuideId === original.id)
-      : []
+      : original.parentGuideId
+        ? allGuides.filter(
+            (g) => g.parentGuideId === original.parentGuideId && g.id !== original.id,
+          )
+        : []
 
   // Relateret hjælp: teknikguider der gælder denne art (udledt af appliesTo).
   // Kun på artsguider — brugeren læser om arten, Potalot tilbyder relevant hjælp.
@@ -768,7 +775,7 @@ export async function GuideArticle({
                 margin: '0 0 18px 8px',
               }}
             >
-              Vælg en sort
+              {isSpecies ? 'Vælg en sort' : 'Prøv også'}
             </p>
             <p
               style={{
@@ -785,11 +792,17 @@ export async function GuideArticle({
                 maxWidth: 310,
               }}
             >
-              Find en sort, der passer til
-              <br />
-              din måde at dyrke og
-              <br />
-              spise {artPlural} på.
+              {isSpecies ? (
+                <>
+                  Find en sort, der passer til
+                  <br />
+                  din måde at dyrke og
+                  <br />
+                  spise {artPlural} på.
+                </>
+              ) : (
+                <>Andre sorter, du måske vil dyrke.</>
+              )}
             </p>
 
             {/* Foto-form: bue KUN i højre side. Venstre + top/bund er helt lige
