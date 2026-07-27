@@ -78,3 +78,27 @@ Beslutningsrækkefølge når noget føles forkert:
 5. Farver    6. Skygger/radius   7. Komponentdetaljer
 
 Store problemer løses næsten aldrig med flere komponenter.
+
+Arbejdsgang — ét sted, undgå branch/worktree-rod (LÅST 27/7 2026)
+Repoet blev 27/7 konsolideret fra ~28 branches + 5 worktrees til ÉN
+branch (main) i ÉN mappe. Hold det sådan:
+
+1. Arbejd og commit DIREKTE på `main` i /Users/anna/potalot. Opret
+   IKKE en ny branch eller worktree ved commit — dette OVERSTYRER
+   standardadfærden "stå på default-branch → branch først". Kun hvis
+   Anna eksplicit beder om at isolere noget stort/risikabelt (og så
+   merge tilbage til main samme dag).
+2. Én agent ad gangen pr. sektion. Kør ALDRIG Claude og Codex på de
+   samme filer samtidig — det gav dublet-versioner (fx to
+   det-kan-du-goere.tsx). Skift først når arbejdet er committet.
+3. Ingen worktrees. Bruges én undtagelsesvis, fjern den med
+   `git worktree remove` straks efter — og ryd ALDRIG destruktivt op
+   uden per-ting-ja (jf. worktree-sprawl-erfaringen).
+4. Push i batches (Netlify-credits er begrænsede), men lad IKKE
+   arbejde hobe sig op upushet i ugevis — push når en sammenhængende
+   bid er færdig, så `main` == `origin/main` og der aldrig er tvivl om
+   "hvad er live".
+5. Auto-genererede filer (src/data/guides-imported.ts,
+   src/data/image-manifest.generated.ts) REGENERERES altid via
+   `npx tsx scripts/import-guides.ts` / `scripts/scan-images.ts` —
+   merges ALDRIG på tværs af branches (det var dér konflikterne sad).
