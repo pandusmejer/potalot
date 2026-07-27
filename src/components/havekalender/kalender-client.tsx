@@ -151,14 +151,22 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   // (wrapperen har scroll-mt).
   const maanedsHeaderRef = useRef<HTMLDivElement>(null)
 
-  // "Se [næste måned]" i bund-teaseren: skift kalenderens valgte måned til
-  // NÆSTE måned (relativt til den aktuelle måned), håndter årsskifte dec→jan,
-  // og scroll roligt op til månedsoversigten. Ingen navigation — vi er allerede
+  // Central måneds-skifter: ÉN kilde til sandhed for hele siden. Alle
+  // kontroller (planner-stepperen ← →, bund-teaseren) går herigennem, så
+  // hero, vejr-billede, "Det kan du gøre", Inspiration og teaser altid viser
+  // SAMME måned. Håndterer årsskifte begge veje (dec→jan = +1 år, jan→dec = −1).
+  const gaaTilMaaned = (next: number) => {
+    if (valgtMaaned === 12 && next === 1) setYear((y) => y + 1)
+    else if (valgtMaaned === 1 && next === 12) setYear((y) => y - 1)
+    setValgtMaaned(next)
+  }
+
+  // "Se [næste måned]" i bund-teaseren: bladr ét skridt frem fra den VISTE
+  // måned (ikke den aktuelle), så man kan bladre længere end ét skridt. Scroll
+  // roligt op til månedsheaderen bagefter. Ingen navigation — vi er allerede
   // på /kalender, så et link dertil ville bare genindlæse samme måned.
   const handleSelectNextMonth = () => {
-    const wrapsToNextYear = nuMaaned >= 12
-    setValgtMaaned(wrapsToNextYear ? 1 : nuMaaned + 1)
-    if (wrapsToNextYear) setYear((y) => y + 1)
+    gaaTilMaaned(valgtMaaned >= 12 ? 1 : valgtMaaned + 1)
     maanedsHeaderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
@@ -175,10 +183,10 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
     .filter(g => !g.isHiddenByMe)
     .map(mapTaskToPlannerItem)
 
-  // Indeværende måned (små bogstaver) til Inspiration-folderen. "Kig mod …"-
-  // teaseren afleder selv NÆSTE måned (label/titel/subtitle/body/hero) ud fra
-  // currentMonth — så vi sender bare kalenderens aktuelle måned ind.
-  const nuMaanedNavn = MONTHS_DA[nuMaaned - 1].full.toLowerCase()
+  // Valgt måned (små bogstaver) til Inspiration-folderen — følger bladringen.
+  // "Kig mod …"-teaseren afleder selv NÆSTE måned (label/titel/subtitle/body/
+  // hero) ud fra currentMonth, så den får bare den viste måned ind.
+  const valgtMaanedNavn = MONTHS_DA[valgtMaaned - 1].full.toLowerCase()
 
   return (
     <div className="space-y-7">
@@ -191,8 +199,15 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
           Ikke et dashboard; rolige observationer fra haven. Sæsonbilledet
-          skifter med måneden. Demo-værdier indtil vejr-API kobles på. */}
-      <WeatherPoolsImage month={nuMaaned} data={VEJR_POOLS_DEMO} note={vejrNote(alerts, nuMaaned)} />
+          skifter med måneden. Demo-værdier indtil vejr-API kobles på.
+          Billedet følger den valgte måned (rent sæson-baseret); men ægte
+          vejr-varsler (alerts) gælder KUN nu — bladrer man væk fra den
+          aktuelle måned, falder noten tilbage til sæson-generisk tekst. */}
+      <WeatherPoolsImage
+        month={valgtMaaned}
+        data={VEJR_POOLS_DEMO}
+        note={vejrNote(valgtMaaned === nuMaaned ? alerts : [], valgtMaaned)}
+      />
 
       {/* 3 · I HAVEN NU — Kalenderens samlede handlingscenter (Anna 30/6,
           "én arbejdsseddel"). Pinned "Fokus lige nu" (BRAIN-toppen) over
@@ -216,7 +231,8 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           på under 5 sekunder. Per spec: placeret efter Denne uge,
           FØR Mine opgaver. */}
       <DetKanDuGoereEditorialPlanner
-        month={nuMaaned}
+        month={valgtMaaned}
+        onMonthChange={gaaTilMaaned}
         items={monthlyPlannerItems}
         onAddToTasks={isLoggedIn
           ? async (item) => {
@@ -309,7 +325,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           samlet i én editorial mappe med tre faner (Frøbank / Juni-greb
           / Guides). Erstatter de tidligere løse inspirationslag. Ingen
           opgavestatus, ingen persistens — ren "dyk ned hvis du har lyst". */}
-      <InspirationFolder monthName={nuMaanedNavn} />
+      <InspirationFolder monthName={valgtMaanedNavn} />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
           SKJULT INDTIL VIDERE: communities + challenges-funktioner
@@ -347,7 +363,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* 9 · PROGRESSION — rolig teaser mod næste måned. Kalenderens
           afslutning ("næste kapitel venter"), ikke endnu en opgaveliste. */}
-      <NextMonthTeaser currentMonth={nuMaaned} onSelectNextMonth={handleSelectNextMonth} />
+      <NextMonthTeaser currentMonth={valgtMaaned} onSelectNextMonth={handleSelectNextMonth} />
     </div>
   )
 }

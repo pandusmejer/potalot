@@ -83,7 +83,13 @@ export function DetKanDuGoereEditorialPlanner({
   onHide,
   onOpenGuide,
 }: Props) {
-  const [viewMonth, setViewMonth] = useState(month)
+  // Controlled når forælderen styrer måneden (onMonthChange sat): viewMonth =
+  // month-prop'en, så EKSTERNE skift (bund-teaser, år-skifte, andre kontroller)
+  // også flytter planneren. Uden onMonthChange (standalone/preview) beholder
+  // planneren sin egen interne måneds-state.
+  const controlled = onMonthChange !== undefined
+  const [internalMonth, setInternalMonth] = useState(month)
+  const viewMonth = controlled ? month : internalMonth
   const [showAll, setShowAll] = useState(false)
   const [selectedItem, setSelectedItem] = useState<EditorialPlannerItem | null>(null)
   const [itemStates, setItemStates] = useState<Record<string, PlannerItemState>>({})
@@ -106,9 +112,9 @@ export function DetKanDuGoereEditorialPlanner({
   }, 0)
 
   const handleMonthChange = (next: number) => {
-    setViewMonth(next)
     setShowAll(false)
-    onMonthChange?.(next)
+    if (controlled) onMonthChange(next)
+    else setInternalMonth(next)
   }
 
   const markState = (item: EditorialPlannerItem, state: PlannerItemState) => {
