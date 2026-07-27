@@ -218,7 +218,7 @@ export function GuidesBibliotek({
  * (default-emner, filter-knap) og "I DIN HAVE" (brugerens planter, link til
  * guiden). Formen er IDENTISK; kun indhold og klik-mål skifter (onClick vs href).
  */
-function TopicSquareCard({
+export function TopicSquareCard({
   imageUrl,
   navn,
   byline,

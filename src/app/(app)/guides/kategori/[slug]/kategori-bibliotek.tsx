@@ -3,10 +3,11 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Search } from 'lucide-react'
-import { ArtNode, type ArtRow } from '@/components/guides/guides-bibliotek'
+import { ArtNode, TopicSquareCard, type ArtRow } from '@/components/guides/guides-bibliotek'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
+const plex = 'var(--font-plex-condensed), sans-serif'
 
 /**
  * Kategoriside — hero + søg-i-kategori + I DIN HAVE + ALLE ARTER (A–Å). Den
@@ -62,10 +63,10 @@ export function KategoriBibliotek({
         </p>
         <h1
           style={{
-            fontFamily: serif,
+            fontFamily: plex,
             fontWeight: 600,
-            fontSize: 'clamp(38px, 12vw, 52px)',
-            lineHeight: 1.02,
+            fontSize: 'clamp(40px, 13vw, 58px)',
+            lineHeight: 0.98,
             letterSpacing: '-0.01em',
             color: '#242019',
             margin: '6px 0 0',
@@ -154,57 +155,17 @@ export function KategoriBibliotek({
           >
             Aktuelt nu
           </p>
-          <div className="grid grid-cols-2 gap-2.5">
-            {heroes.map(h => (
-              <Link
+          {/* Samme forskudte + overlay-kort som på Guides-forsiden (TopicSquareCard). */}
+          <div className="grid grid-cols-2 gap-3">
+            {heroes.map((h, i) => (
+              <TopicSquareCard
                 key={h.guideId}
+                index={i}
                 href={`/guides/kategori/${slug}/${h.guideId}`}
-                className="group relative overflow-hidden no-underline"
-                style={{
-                  aspectRatio: '3 / 2.7',
-                  borderRadius: 18,
-                  border: '1px solid rgba(45,42,36,0.10)',
-                  background: '#EAE6D8',
-                  color: 'inherit',
-                }}
-              >
-                {h.imageSrc && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={h.imageSrc}
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                )}
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{ background: 'linear-gradient(180deg, rgba(24,20,14,0.02) 40%, rgba(24,20,14,0.68) 100%)' }}
-                />
-                <div className="absolute inset-x-0 bottom-0 p-3">
-                  <span
-                    className="block"
-                    style={{
-                      fontFamily: 'var(--font-plex-condensed), sans-serif',
-                      fontWeight: 600,
-                      fontSize: 22,
-                      lineHeight: 1,
-                      color: '#FFF',
-                      textShadow: '0 2px 12px rgba(20,14,8,0.5)',
-                    }}
-                  >
-                    {h.plantName}
-                  </span>
-                  {h.sortCount > 0 && (
-                    <span
-                      className="mt-0.5 block"
-                      style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,0.88)' }}
-                    >
-                      {h.sortCount} {h.sortCount === 1 ? 'sort' : 'sorter'}
-                    </span>
-                  )}
-                </div>
-              </Link>
+                imageUrl={h.imageSrc ?? ''}
+                navn={h.plantName}
+                byline={h.sortCount > 0 ? `${h.sortCount} ${h.sortCount === 1 ? 'sort' : 'sorter'}` : null}
+              />
             ))}
           </div>
         </div>
