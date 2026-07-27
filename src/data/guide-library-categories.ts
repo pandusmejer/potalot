@@ -160,9 +160,25 @@ export function libraryCategoryOf(plantName: string): LibraryCategory {
   return MAP[plantName.toLowerCase().trim()] ?? 'groentsager'
 }
 
+/**
+ * Kategori → EKSISTERENDE Potalot soft-glyph (public/images/glyphs/*.png, samme
+ * familie som frøbanken bruger). Ingen nye ikoner opfindes — kun genbrug. Vises
+ * som afdæmpet vandmærke på kategori-kortet.
+ */
+export const LIBRARY_CATEGORY_GLYPH: Record<LibraryCategory, string> = {
+  groentsager: 'groentsager',
+  'frugt-baer': 'baer',
+  blomster: 'blomster',
+  urter: 'krydderurter',
+  traeer: 'traeer',
+  buske: 'buske',
+  prydgraesser: 'prydgrasser',
+  'loeg-knolde': 'loeg',
+}
+
 /** Kort intro pr. kategori — vises på kategorisidens hero. */
 export const LIBRARY_CATEGORY_INTRO: Record<LibraryCategory, string> = {
-  groentsager: 'Dyrk grøntsager fra frø til høst',
+  groentsager: 'Fra de første frø til det, du høster.',
   'frugt-baer': 'Søde bær og frugter til haven',
   blomster: 'Blomster til bed, krukke og buket',
   urter: 'Krydderurter til køkken og vindueskarm',

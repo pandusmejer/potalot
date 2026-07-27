@@ -26,6 +26,7 @@ import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
 import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
 import { TechniqueArticle } from '@/components/guides/technique-article'
+import { BiblioRow } from '@/components/guides/guides-bibliotek'
 import { erfaringerFor } from '@/data/guides-erfaringer'
 import {
   GuideComparisonList,
@@ -102,6 +103,10 @@ export async function GuideArticle({
       ? returnTo
       : '/guides'
 
+  // Sorter åbnet HERFRA (Vælg en sort / Prøv også) skal have "tilbage" → denne
+  // guide, ikke forsiden.
+  const selfReturn = encodeURIComponent(`/guides/${original.id}`)
+
   const currentUser = await getCurrentUser()
 
   const [allGuides, inventory, plants, myNote] = await Promise.all([
@@ -116,9 +121,25 @@ export async function GuideArticle({
     allGuides,
   )
 
+  // Species → dens egne sorter ("Vælg en sort"). Variety → søskende-sorter af
+  // samme art ("Prøv også"). SAMME sektion + sortkort + clip-path — kun data +
+  // copy skifter. Én sort-korts-grammatik, ingen ny komponent.
   const sortsvarianter =
     original.guideLevel === 'species'
       ? allGuides.filter((g) => g.parentGuideId === original.id)
+      : original.parentGuideId
+        ? allGuides.filter(
+            (g) => g.parentGuideId === original.parentGuideId && g.id !== original.id,
+          )
+        : []
+
+  // Relateret hjælp: teknikguider der gælder denne art (udledt af appliesTo).
+  // Kun på artsguider — brugeren læser om arten, Potalot tilbyder relevant hjælp.
+  const relatedTechniques =
+    original.guideLevel === 'species'
+      ? IMPORTED_GUIDES.filter(
+          (g) => g.guideLevel === 'technique' && (g.appliesTo ?? []).includes(original.id),
+        )
       : []
 
   const linkedInventory = inventory.filter(
@@ -404,6 +425,7 @@ export async function GuideArticle({
         <ArtsguideRelateret
           plantName={effective.plantName}
           varieties={sortsvarianter}
+          returnTo={selfReturn}
         />
       )}
 
@@ -455,7 +477,7 @@ export async function GuideArticle({
               {effective.variety ?? effective.plantName} særlig.
             </p>
             <Link
-              href={`/guides/${parent.id}`}
+              href={`/guides/${parent.id}?returnTo=${selfReturn}`}
               className="group mt-3.5 ml-auto flex w-fit items-center gap-1.5"
               style={{
                 fontFamily: 'var(--font-manrope)',
@@ -758,7 +780,7 @@ export async function GuideArticle({
                 margin: '0 0 18px 8px',
               }}
             >
-              Sortsvarianter
+              {isSpecies ? 'Vælg en sort' : 'Prøv også'}
             </p>
             <p
               style={{
@@ -775,11 +797,17 @@ export async function GuideArticle({
                 maxWidth: 310,
               }}
             >
-              Find en sort, der passer til
-              <br />
-              din måde at dyrke og
-              <br />
-              spise {artPlural} på.
+              {isSpecies ? (
+                <>
+                  Find en sort, der passer til
+                  <br />
+                  din måde at dyrke og
+                  <br />
+                  spise {artPlural} på.
+                </>
+              ) : (
+                <>Andre sorter, du måske vil dyrke.</>
+              )}
             </p>
 
             {/* Foto-form: bue KUN i højre side. Venstre + top/bund er helt lige
@@ -798,7 +826,7 @@ export async function GuideArticle({
               {sortsvarianter.slice(0, 4).map((v) => (
                 <Link
                   key={v.id}
-                  href={`/guides/${v.id}`}
+                  href={`/guides/${v.id}?returnTo=${selfReturn}`}
                   className="group no-underline transition-colors hover:border-[rgba(153,137,117,0.42)]"
                   style={{
                     // Stort redaktionelt sortkort: foto flush til venstre, tekst
@@ -947,6 +975,33 @@ export async function GuideArticle({
             )}
           </section>
         </>
+      )}
+
+      {/* RELATERET HJÆLP — teknikguider der gælder arten (additivt; kilde: eget
+          appliesTo). Naturligt sted: brugeren læser om arten, Potalot tilbyder
+          relevant praktisk hjælp. Teknik-hubben er dermed overflødig. */}
+      {relatedTechniques.length > 0 && (
+        <section className="scroll-mt-20">
+          <p
+            className="uppercase"
+            style={{
+              fontFamily: 'var(--font-manrope)',
+              fontSize: 11,
+              fontWeight: 700,
+              lineHeight: 1,
+              letterSpacing: '0.22em',
+              color: 'rgb(113,122,96)',
+              margin: '0 0 16px 8px',
+            }}
+          >
+            Relateret hjælp
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {relatedTechniques.map((t) => (
+              <BiblioRow key={t.id} guide={t} teknik returnTo={selfReturn} />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Artsguide viser IKKE "Lær af hinanden": bruger-erfaringer er for

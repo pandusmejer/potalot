@@ -3,15 +3,17 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
-import { Search, ChevronRight, Leaf } from 'lucide-react'
+import { Search, ChevronRight, ArrowUpRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
 import type { HaveCardData } from '@/lib/guides/min-have'
 import { IDinHaveCarousel } from './i-din-have-carousel'
+import { DineEgneGuides } from './dine-egne-guides'
 import {
   LIBRARY_CATEGORY_ORDER,
   LIBRARY_CATEGORY_LABEL,
+  LIBRARY_CATEGORY_GLYPH,
   type LibraryCategory,
 } from '@/data/guide-library-categories'
 import { SpoergGartneren } from './spoerg-gartneren'
@@ -41,6 +43,8 @@ interface Props {
    */
   mineHaveCards: HaveCardData[]
   mineHaveTotal: number
+  /** Brugerens egne (private/AI) guides — "Dine egne guides"-indgangen nederst. */
+  mineGuides: Guide[]
   /**
    * Atmospheric makro-billede til EditorialBleedCard-broen mellem
    * "Begynd her" og "Guides i felten". Resolved server-side i
@@ -56,6 +60,7 @@ export function GuidesBibliotek({
   aiGuideIds,
   mineHaveCards,
   mineHaveTotal,
+  mineGuides,
 }: Props) {
   const [search, setSearch] = useState('')
   const [aktivtEmne, setAktivtEmne] = useState<PopulaertEmne | null>(null)
@@ -175,9 +180,12 @@ export function GuidesBibliotek({
         />
       </section>
 
-      {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort. Rykket op fra
-          bunden og navngivet, så det er redaktionelt indhold, ikke en
-          efterladenskab efter biblioteket. */}
+      {/* DINE EGNE GUIDES — AI-genereret fallback-indhold, ÉN kompakt indgang.
+          Bevidst over "Godt at vide", som lukker siden redaktionelt. */}
+      <DineEgneGuides guides={mineGuides} />
+
+      {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort som redaktionel
+          afslutning på siden. */}
       <div className="pb-10">
         <p
           style={{
@@ -210,7 +218,7 @@ export function GuidesBibliotek({
  * (default-emner, filter-knap) og "I DIN HAVE" (brugerens planter, link til
  * guiden). Formen er IDENTISK; kun indhold og klik-mål skifter (onClick vs href).
  */
-function TopicSquareCard({
+export function TopicSquareCard({
   imageUrl,
   navn,
   byline,
@@ -678,7 +686,7 @@ function UdforskBiblioteket({
           </div>
         )
       ) : (
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-5">
           {/* Kategori-indgange: 2-kol grid, KUN kategorier med indhold (ingen
               "0 arter"-byggepladser). Hver → sin egen kategoriside. Brugeren ser
               hele bibliotekets struktur på ~én skærm og vælger, hvor de vil hen. */}
@@ -700,26 +708,43 @@ function UdforskBiblioteket({
 }
 
 /**
- * Kompakt kategori-kort (2-kol grid) → kategorisiden. Navn + antal arter + en
- * lille smagsprøve. Erstatter de gamle fuldbredde-accordions.
+ * Kompakt kategori-kort (2-kol grid) → kategorisiden. Redaktionel botanisk
+ * indgang, ikke database-række: navn + antal arter + afdæmpet soft-glyph som
+ * vandmærke. INGEN chevron/arts-eksempler (hele kortet er klikbart; glyphen
+ * giver identiteten). Glyphen er en EKSISTERENDE Potalot-glyph — ingen ny asset.
  */
 function KategoriKort({ category, arts }: { category: LibraryCategory; arts: LibraryArt[] }) {
   const n = arts.length
-  const teaser = arts.slice(0, 3).map(a => a.plantName).join(', ')
+  // Tæl KUN sorter med en kurateret sortsguide i biblioteket (variety-guides),
+  // ikke alle frøbank-/taxonomy-sorter — ellers lover kortet indhold der ikke
+  // kan findes.
+  const sortCount = arts.reduce((sum, a) => sum + a.varieties.length, 0)
+  const glyph = LIBRARY_CATEGORY_GLYPH[category]
   return (
     <Link
       href={`/guides/kategori/${category}`}
-      className="group relative flex flex-col justify-between overflow-hidden no-underline"
+      className="group relative block overflow-hidden no-underline"
       style={{
         background: 'rgba(244,240,229,0.96)',
         border: '1px solid rgba(45,42,36,0.10)',
         borderRadius: 16,
         padding: '13px 14px',
-        minHeight: 92,
+        minHeight: 84,
         color: 'inherit',
       }}
     >
-      <div>
+      {/* Afdæmpet botanisk vandmærke — større og placeret ekspansivt mod nederste
+          højre hjørne, så det bevidst beskæres af kortets højre + nederste kant.
+          Uændret lav styrke (~18 %) så kategorinavnet beholder første prioritet. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`/images/glyphs/${glyph}.png`}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+        style={{ width: 96, height: 96, right: -18, bottom: -20, opacity: 0.18, objectFit: 'contain' }}
+      />
+      <span className="relative">
         <span
           className="block"
           style={{
@@ -738,22 +763,9 @@ function KategoriKort({ category, arts }: { category: LibraryCategory; arts: Lib
           style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: 'rgba(36,48,31,0.5)' }}
         >
           {n} {n === 1 ? 'art' : 'arter'}
+          {sortCount > 0 && ` · ${sortCount} ${sortCount === 1 ? 'sort' : 'sorter'}`}
         </span>
-      </div>
-      <div className="mt-2.5 flex items-end justify-between gap-1.5">
-        <span
-          className="min-w-0 flex-1 truncate"
-          style={{ fontFamily: sans, fontSize: 11, fontWeight: 500, color: 'rgba(36,48,31,0.42)' }}
-        >
-          {teaser}
-        </span>
-        <ChevronRight
-          size={16}
-          strokeWidth={2}
-          className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-          style={{ color: 'rgba(36,48,31,0.3)' }}
-        />
-      </div>
+      </span>
     </Link>
   )
 }
@@ -766,41 +778,110 @@ function TeknikIndgang({ count }: { count: number }) {
   return (
     <Link
       href="/guides/teknik"
-      className="group flex items-center gap-3.5 overflow-hidden no-underline"
+      className="group relative block overflow-hidden no-underline"
       style={{
-        background: 'linear-gradient(180deg, rgba(86,111,60,0.10) 0%, rgba(86,111,60,0.05) 100%)',
+        background: 'linear-gradient(155deg, rgba(86,111,60,0.14) 0%, rgba(86,111,60,0.05) 68%)',
         border: '1px solid rgba(86,111,60,0.22)',
         borderRadius: 18,
-        padding: '14px 15px',
+        padding: '18px 18px 16px',
+        minHeight: 132,
         color: 'inherit',
       }}
     >
-      <span
-        className="flex shrink-0 items-center justify-center"
-        style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(86,111,60,0.14)' }}
-      >
-        <Leaf size={22} strokeWidth={1.7} style={{ color: '#4B6636' }} aria-hidden />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span
-          className="block"
-          style={{ fontFamily: plex, fontWeight: 600, fontSize: 19, lineHeight: 1.1, color: '#233019' }}
-        >
-          Få hjælp til arbejdet
-        </span>
-        <span
-          className="mt-0.5 block"
-          style={{ fontFamily: sans, fontSize: 12, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}
-        >
-          Såning, opbinding, beskæring, høst … · {count} teknikguider
-        </span>
-      </span>
-      <ChevronRight
+      {/* Stor, beskåret grensaks-glyph som lavkontrast-vandmærke der blør ud over
+          højre kant. Ingen ikon-boks — redaktionelt, ikke "indstilling". */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/glyphs/beskarersaks.png"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute select-none transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+        style={{
+          width: 158,
+          height: 158,
+          right: -34,
+          top: '50%',
+          transform: 'translateY(-50%) rotate(-8deg)',
+          opacity: 0.14,
+          objectFit: 'contain',
+        }}
+      />
+      <ArrowUpRight
         size={18}
         strokeWidth={2}
-        className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-        style={{ color: 'rgba(75,102,54,0.5)' }}
+        className="absolute right-4 top-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        style={{ color: 'rgba(75,102,54,0.6)' }}
       />
+      {/* Editorial-hierarki: invitation (serif) → forklaring → eksempler → antal.
+          Serif-titel adskiller "en anden indgang" fra kategoriernes plex-navne. */}
+      <div className="relative" style={{ maxWidth: '76%' }}>
+        <h3
+          style={{
+            fontFamily: serif,
+            fontWeight: 600,
+            fontSize: 26,
+            lineHeight: 1.02,
+            color: '#233019',
+            margin: 0,
+          }}
+        >
+          Hvad skal du gøre?
+        </h3>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 13,
+            fontWeight: 500,
+            lineHeight: 1.4,
+            color: 'rgba(36,48,31,0.6)',
+            margin: '5px 0 0',
+          }}
+        >
+          Teknikguides til arbejdet i haven.
+        </p>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.5)',
+            margin: '13px 0 0',
+          }}
+        >
+          {['Så', 'Bind op', 'Beskær', 'Høst'].map((w, i) => (
+            <span key={w}>
+              {i > 0 && (
+                <span
+                  style={{
+                    color: '#7F8F6A',
+                    fontWeight: 700,
+                    fontSize: 17,
+                    lineHeight: 0,
+                    verticalAlign: '-2px',
+                    margin: '0 8px',
+                  }}
+                >
+                  ·
+                </span>
+              )}
+              {w}
+            </span>
+          ))}
+        </p>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#4E6138',
+            margin: '6px 0 0',
+          }}
+        >
+          {count} guides
+        </p>
+      </div>
     </Link>
   )
 }
@@ -808,8 +889,11 @@ function TeknikIndgang({ count }: { count: number }) {
 /** Slank art-række til kategorisidens A–Å-liste (serialiserer ikke fulde guides). */
 export interface ArtRow {
   plantName: string
+  /** Artsguidens id (species-hero, ellers første sort). */
   guideId: string
   sortCount: number
+  /** Kuraterede sortsguider under arten (til accordion) — id + sortsnavn. */
+  sorts: { id: string; variety: string }[]
 }
 
 /**
@@ -890,7 +974,16 @@ function SectionLabel({
 }
 
 /** Lille listekort — sortsguider + teknikguider. Thumbnail + navn + chevron. */
-export function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: boolean }) {
+export function BiblioRow({
+  guide,
+  teknik = false,
+  returnTo,
+}: {
+  guide: Guide
+  teknik?: boolean
+  /** returnTo-param (encoded) så guiden kan gå "tilbage" til afsenderen. */
+  returnTo?: string
+}) {
   const isVar = guide.guideLevel === 'variety' || !!guide.variety
   const { src } = resolvePotalotImage({
     guideId: guide.id,
@@ -904,7 +997,7 @@ export function BiblioRow({ guide, teknik = false }: { guide: Guide; teknik?: bo
   const titel = guide.title ?? guide.variety ?? guide.plantName
   return (
     <Link
-      href={`/guides/${guide.id}`}
+      href={returnTo ? `/guides/${guide.id}?returnTo=${returnTo}` : `/guides/${guide.id}`}
       className="group flex items-center overflow-hidden rounded-[13px] border transition-colors hover:border-[rgba(86,111,60,0.28)]"
       style={{
         height: 58,

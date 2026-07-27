@@ -103,7 +103,7 @@ export default async function MinHavePage() {
         {items.map(it => (
           <Link
             key={it.guideId}
-            href={`/guides/${it.guideId}`}
+            href={`/guides/${it.guideId}?returnTo=%2Fguides%2Fmin-have`}
             className="group flex items-center gap-3.5 overflow-hidden no-underline"
             style={{
               background: 'rgba(244,240,229,0.96)',

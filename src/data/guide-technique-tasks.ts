@@ -49,6 +49,21 @@ export const TECHNIQUE_TASK_INTRO: Record<TechniqueTask, string> = {
   overvintr: 'Bring planterne godt gennem vinteren',
 }
 
+/**
+ * Opgave → EKSISTERENDE Potalot soft-glyph (public/images/glyphs/*.png). Kun
+ * genbrug — ingen nye ikoner. Vises ved opgave-overskriften på tekniksiden.
+ */
+export const TECHNIQUE_TASK_GLYPH: Record<TechniqueTask, string> = {
+  saa: 'saaning',
+  'plant-ud': 'udplantning',
+  'vand-goed': 'vandkande',
+  'bind-op': 'opbinding',
+  knib: 'beskarersaks',
+  bestoev: 'bi',
+  hoest: 'hoestkurv',
+  overvintr: 'frostsikring',
+}
+
 /** guide-id → opgave. Guides uden mapping vises under "Andre teknikker". */
 export const TECHNIQUE_TASK_OF: Record<string, TechniqueTask> = {
   // Bind op & støt
