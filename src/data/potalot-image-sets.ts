@@ -41,12 +41,18 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   tomat: {
     speciesHero: { src: '/images/arts/tomat.jpg', alt: 'Tomatmark — artsfoto' },
     macro: [
-      { src: '/images/makro/tomat/blad-lys.jpg', alt: 'Tomatblad mod modlys', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/tomat/kondens.jpg', alt: 'Kondens på tomat', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/tomat/blad.jpg', alt: 'Tomatblad i nærbillede', role: 'leaf', focalPoint: 'left' },
-      { src: '/images/makro/tomat/blomst.jpg', alt: 'Tomatblomst i fuld udfoldelse', role: 'flower', focalPoint: 'center' },
+      { src: '/images/makro/tomat/blad-draaber.jpg', alt: 'Regndråber på tomatblad', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/tomat/blad-y-stilk.jpg', alt: 'Tomatblad ved forgreningen', role: 'leaf', focalPoint: 'left' },
+      { src: '/images/makro/tomat/blomst-closeup.jpg', alt: 'Tomatblomst helt tæt på', role: 'flower', focalPoint: 'center' },
       { src: '/images/makro/tomat/blomster.jpg', alt: 'Flere tomatblomster på klase', role: 'flower', focalPoint: 'right' },
-      { src: '/images/makro/tomat/top-haar.jpg', alt: 'Fine hår på tomatplantens top', role: 'detail', focalPoint: 'top' },
+      { src: '/images/makro/tomat/blomst-haar.jpg', alt: 'Fine hår på tomatblomst', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/tomat/krone-closeup.jpg', alt: 'Grøn krone på tomat', role: 'detail', focalPoint: 'top' },
+      { src: '/images/makro/tomat/top-stilk.jpg', alt: 'Tomatplantens top og stængel', role: 'structure', focalPoint: 'top' },
+      { src: '/images/makro/tomat/klase-modne.jpg', alt: 'Klase af modne tomater', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat/modne-baer.jpg', alt: 'Modne tomater i nærbillede', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat/et-baer.jpg', alt: 'Én tomat på planten', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat/umodne-baer.jpg', alt: 'Umodne, grønne tomater', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat/forspiring.jpg', alt: 'Tomat-forspiring', role: 'detail', focalPoint: 'center' },
     ],
   },
 
@@ -54,11 +60,11 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     speciesHero: { src: '/images/arts/agurk.jpg', alt: 'Agurk — artsfoto' },
     macro: [
       { src: '/images/makro/agurk/blad.jpg', alt: 'Agurkeblad i nærbillede', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/agurk/blade.jpg', alt: 'Flere agurkeblade', role: 'leaf', focalPoint: 'center' },
       { src: '/images/makro/agurk/frugt.jpg', alt: 'Agurkefrugt på planten', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/agurk/frugt-med-blomst.jpg', alt: 'Agurkefrugt med vissen blomst', role: 'fruit', focalPoint: 'left' },
-      { src: '/images/makro/agurk/slyngtraad-haar.jpg', alt: 'Slyngtråd på agurkeplante', role: 'structure', focalPoint: 'top' },
-      { src: '/images/makro/agurk/udfoldet-blomst.jpg', alt: 'Udfoldet agurkeblomst', role: 'flower', focalPoint: 'center' },
+      { src: '/images/makro/agurk/frugt-med-blomst.jpg', alt: 'Agurk med vissen blomst', role: 'fruit', focalPoint: 'left' },
+      { src: '/images/makro/agurk/slyngtraad-haar.jpg', alt: 'Slyngtråd med fine hår', role: 'structure', focalPoint: 'top' },
+      { src: '/images/makro/agurk/plante-jord.jpg', alt: 'Ung agurkeplante i jorden', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/agurk/spirer.jpg', alt: 'Agurke-spirer', role: 'detail', focalPoint: 'center' },
     ],
   },
 
@@ -66,14 +72,11 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     speciesHero: { src: '/images/arts/chili.jpg', alt: 'Chili — artsfoto' },
     macro: [
       { src: '/images/makro/chili/blad-dug.jpg', alt: 'Dug på chiliblad', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/chili/blad.jpg', alt: 'Chiliblad i nærbillede', role: 'leaf', focalPoint: 'left' },
-      { src: '/images/makro/chili/blomst.jpg', alt: 'Chiliblomst åben', role: 'flower', focalPoint: 'center' },
-      { src: '/images/makro/chili/blomsterknop.jpg', alt: 'Chiliblomsterknop på spring', role: 'flower', focalPoint: 'top' },
-      { src: '/images/makro/chili/knop.jpg', alt: 'Knop på chiliplante', role: 'structure', focalPoint: 'center' },
-      { src: '/images/makro/chili/knop-2.jpg', alt: 'Knop på chiliplante, anden vinkel', role: 'structure', focalPoint: 'right' },
-      { src: '/images/makro/chili/froe-1.jpg', alt: 'Chilifrø, fotograferet', role: 'seed', focalPoint: 'center' },
-      { src: '/images/makro/chili/froe-2.jpg', alt: 'Chilifrø, anden komposition', role: 'seed', focalPoint: 'center' },
-      { src: '/images/makro/chili/froe-3.jpg', alt: 'Chilifrø, tredje komposition', role: 'seed', focalPoint: 'center' },
+      { src: '/images/makro/chili/blade-supercloseup.jpg', alt: 'Chiliblade helt tæt på', role: 'leaf', focalPoint: 'center' },
+      { src: '/images/makro/chili/blomst.jpg', alt: 'Åben chiliblomst', role: 'flower', focalPoint: 'center' },
+      { src: '/images/makro/chili/knop.jpg', alt: 'Chili-blomsterknop på spring', role: 'flower', focalPoint: 'top' },
+      { src: '/images/makro/chili/top.jpg', alt: 'Chiliplantens top', role: 'structure', focalPoint: 'top' },
+      { src: '/images/makro/chili/toerrede-froe.jpg', alt: 'Tørrede chilifrø', role: 'seed', focalPoint: 'center' },
     ],
   },
 
@@ -84,16 +87,89 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     // disse 4 fotos viser præcis det.
     speciesHero: { src: '/images/arts/dahlia.jpg', alt: 'Dahlia — artsfoto' },
     macro: [
-      { src: '/images/makro/dahlia/knolde.jpg', alt: 'Dahliaknolde — overvintringsform',           role: 'seed',       focalPoint: 'center' },
-      { src: '/images/makro/dahlia/skud_1.jpg', alt: 'Spirende dahliaskud, oversigt',              role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/dahlia/skud_2.jpg', alt: 'Spirende dahliaskud, struktur',              role: 'structure',  focalPoint: 'top' },
-      { src: '/images/makro/dahlia/skud_3.jpg', alt: 'Spirende dahliaskud, detalje',               role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia/knold.jpg',            alt: 'Dahliaknold — overvintringsform',        role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dahlia/knold-closeup.jpg',    alt: 'Dahliaknold helt tæt på',                role: 'structure',  focalPoint: 'center' },
+      { src: '/images/makro/dahlia/knold-skud.jpg',       alt: 'Spirende skud på dahliaknold',           role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/dahlia/knold-skud-groen.jpg', alt: 'Grønt skud bryder frem på knolden',      role: 'detail',     focalPoint: 'center' },
     ],
   },
 
   // peberfrugt: makro-mappen er endnu tom (V4.1 audit).
   // Per V4.3 vidensniveau-skel er det IKKE et krav — arts-makros er
   // valgfrie bonusfotos. Tilføj entry her hvis billeder lander.
+
+  // ── NYE ARTS-MAKRO-SÆT (27. juli 2026) ──────────────────────
+  // Botaniske makro-sæt for arter uden (endnu) fuld guide/arts-hero.
+  // speciesHero udelades bevidst → resolveren falder til asset-
+  // convention (/images/arts/<slug>.jpg) hvis en arts-hero lander.
+  // Makros vises på guiden når/hvis den kommer; ellers bonus-referencefotos.
+
+  asparges: {
+    macro: [
+      { src: '/images/makro/asparges/bundt.jpg', alt: 'Bundt af friske asparges', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/asparges/hoveder.jpg', alt: 'Aspargeshoveder tæt på', role: 'structure', focalPoint: 'top' },
+    ],
+  },
+
+  basilikum: {
+    macro: [
+      { src: '/images/makro/basilikum/oppefra.jpg', alt: 'Basilikum set oppefra', role: 'atmosphere', focalPoint: 'top' },
+    ],
+  },
+
+  boenne: {
+    macro: [
+      { src: '/images/makro/boenne/planter.jpg', alt: 'Bønneplanter i vækst', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/boenne/blomst.jpg', alt: 'Bønneblomst', role: 'flower', focalPoint: 'center' },
+      { src: '/images/makro/boenne/baelge.jpg', alt: 'Bønnebælge på planten', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/boenne/slyngtraad.jpg', alt: 'Bønnens slyngtråd', role: 'structure', focalPoint: 'top' },
+    ],
+  },
+
+  dild: {
+    macro: [
+      { src: '/images/makro/dild/dug-2.jpg', alt: 'Dug på dild', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dild/oppefra.jpg', alt: 'Dild set oppefra', role: 'atmosphere', focalPoint: 'top' },
+      { src: '/images/makro/dild/skaerm.jpg', alt: 'Dild-blomsterskærm', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/dild/skaerm-closeup.jpg', alt: 'Dild-blomsterskærm tæt på', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/dild/skaerme.jpg', alt: 'Flere dild-blomsterskærme', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/dild/led-stilk.jpg', alt: 'Dild-stængel ved led', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/dild/kvist.jpg', alt: 'Fjerformet dild-kvist', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/dild/closeup-straa.jpg', alt: 'Dild-strå helt tæt på', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/dild/draber.jpg', alt: 'Dråber på dild', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/dild/dug-3.jpg', alt: 'Dugdråber på dild', role: 'detail', focalPoint: 'center' },
+    ],
+  },
+
+  squash: {
+    macro: [
+      { src: '/images/makro/squash/blomst.jpg', alt: 'Squashblomst', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  palmekaal: {
+    macro: [
+      { src: '/images/makro/palmekaal/blad.jpg', alt: 'Palmekål-blad i nærbillede', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  citron: {
+    macro: [
+      { src: '/images/makro/citron/frugter.jpg', alt: 'Citroner på grenen', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  ananas: {
+    macro: [
+      { src: '/images/makro/ananas/skal.jpg', alt: 'Ananas-skal tæt på', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  hindbaer: {
+    macro: [
+      { src: '/images/makro/hindbaer/frugt.jpg', alt: 'Modne hindbær', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
 
   // ── SORTSGUIDER ─────────────────────────────────────────────
   // plantCard og varietyHero peger på samme fil — to roller, samme aktiv.
@@ -103,14 +179,13 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     varietyHero: { src: '/images/plantekort/tomat-san-marzano.jpg', alt: 'San Marzano tomat — sortsfoto' },
     seedCard:    { src: '/images/frokort/tomat-san-marzano.png',    alt: 'San Marzano tomat — frøkort' },
     macro: [
-      { src: '/images/makro/tomat-san-marzano/dug.jpg', alt: 'Dug på San Marzano tomat', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/blad-dug.jpg', alt: 'Dug på San Marzano-blad', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/klase.jpg', alt: 'Klase af San Marzano-frugter', role: 'structure', focalPoint: 'left' },
-      { src: '/images/makro/tomat-san-marzano/y-led.jpg', alt: 'Forgreningspunkt på San Marzano-plante', role: 'structure', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/frugtknop.jpg', alt: 'Ung frugtknop på San Marzano', role: 'fruit', focalPoint: 'top' },
-      { src: '/images/makro/tomat-san-marzano/single-umoden.jpg', alt: 'Én umoden San Marzano-frugt', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/umodne.jpg', alt: 'Flere umodne San Marzano-frugter', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/haar.jpg', alt: 'Fine hår på tomatplante', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/blad.jpg', alt: 'San Marzano-blad i nærbillede', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/klase-modne.jpg', alt: 'Klase af modne San Marzano', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/klase-umodne.jpg', alt: 'Klase af umodne San Marzano', role: 'structure', focalPoint: 'left' },
+      { src: '/images/makro/tomat-san-marzano/led-haar.jpg', alt: 'Fine hår ved San Marzano-forgrening', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/overflade.jpg', alt: 'Overflade på San Marzano-frugt', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/sigle-umoden.jpg', alt: 'Én umoden San Marzano', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/tidlig-frugt.jpg', alt: 'Ung San Marzano-frugt', role: 'fruit', focalPoint: 'top' },
     ],
   },
 
@@ -120,17 +195,14 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     seedCard:    { src: '/images/frokort/chili-habanero-orange.png',    alt: 'Habanero Orange — frøkort' },
     macro: [
       { src: '/images/makro/chili-habanero-orange/blad-dug.jpg', alt: 'Dug på Habanero-blad', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/skin.jpg', alt: 'Overflade på Habanero-frugt', role: 'detail', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/blad.jpg', alt: 'Habanero-blad i nærbillede', role: 'leaf', focalPoint: 'left' },
-      { src: '/images/makro/chili-habanero-orange/blomst-knop.jpg', alt: 'Habanero-blomsterknop', role: 'flower', focalPoint: 'top' },
-      { src: '/images/makro/chili-habanero-orange/single.jpg', alt: 'Én moden Habanero', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/farver.jpg', alt: 'Habanero i forskellige modningsstadier', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/frugter.jpg', alt: 'Flere modne Habanero-frugter', role: 'fruit', focalPoint: 'right' },
-      { src: '/images/makro/chili-habanero-orange/tvarsnit.jpg', alt: 'Tværsnit af Habanero', role: 'structure', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/tvarsnit-2.jpg', alt: 'Tværsnit af Habanero, anden vinkel', role: 'structure', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/y-stilk.jpg', alt: 'Y-formet stilk på Habanero', role: 'structure', focalPoint: 'top' },
-      { src: '/images/makro/chili-habanero-orange/kerner.jpg', alt: 'Habanero-frø og frøkammer', role: 'seed', focalPoint: 'center' },
-      { src: '/images/makro/chili-habanero-orange/skiver.jpg', alt: 'Habanero i skiver', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/blad-indre.jpg', alt: 'Habanero-blad, underside', role: 'leaf', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/blad-stilk-led.jpg', alt: 'Habanero-blad ved stængel-led', role: 'structure', focalPoint: 'top' },
+      { src: '/images/makro/chili-habanero-orange/blomst.jpg', alt: 'Åben Habanero-blomst', role: 'flower', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/to-frugter.jpg', alt: 'To modne Habanero-frugter', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/klase.jpg', alt: 'Klase af Habanero-frugter', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/overflade.jpg', alt: 'Overflade på Habanero-frugt', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/indre-froe.jpg', alt: 'Frø inde i Habanero', role: 'seed', focalPoint: 'center' },
+      { src: '/images/makro/chili-habanero-orange/kernehus.jpg', alt: 'Habanero-kernehus', role: 'seed', focalPoint: 'center' },
     ],
   },
 
@@ -163,7 +235,7 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
       // og Habanero. blad valgt som atmosphere (sanseligt bladlys/dug)
       // for at opfylde R3 — mindst 1 atmosphere pr. sortsguide.
       { src: '/images/makro/agurk-marketmore/blad.jpg',         alt: 'Marketmore-blad i nærbillede',           role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/agurk-marketmore/blomst.jpg',       alt: 'Åben Marketmore-blomst',                 role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/agurk-marketmore/blomst-myre.jpg',  alt: 'Marketmore-blomst med myre',             role: 'flower',     focalPoint: 'center' },
       { src: '/images/makro/agurk-marketmore/slyngtraad.jpg',   alt: 'Slyngtråd på Marketmore-plante',         role: 'structure',  focalPoint: 'top' },
       { src: '/images/makro/agurk-marketmore/tidlig-frugt.jpg', alt: 'Ung Marketmore-agurk på planten',        role: 'fruit',      focalPoint: 'center' },
       { src: '/images/makro/agurk-marketmore/udsnit.jpg',       alt: 'Detalje af Marketmore — udsnit',         role: 'detail',     focalPoint: 'center' },
@@ -180,14 +252,9 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
       // blad-stængel / kerne). kronblade-creme valgt som atmosphere
       // for at opfylde R3 (mindst 1 atmosphere). Pool-størrelse 8
       // giver fuld variation på alle bleed-slots uden duplikater.
-      { src: '/images/makro/dahlia-cafe-au-lait/hoved.jpg',           alt: 'Café au Lait i fuld blomst',              role: 'flower',     focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/kronblade-creme.jpg', alt: 'Bløde creme-kronblade på Café au Lait',   role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/kronblade.jpg',       alt: 'Detalje af Café au Lait-kronblade',        role: 'detail',     focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/kronblade-rosa.jpg',  alt: 'Rosa-skær på Café au Lait-kronblade',      role: 'detail',     focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/bagside.jpg',         alt: 'Bagside af Café au Lait-blomst',           role: 'detail',     focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/knop.jpg',            alt: 'Café au Lait-knop på spring',              role: 'flower',     focalPoint: 'top' },
-      { src: '/images/makro/dahlia-cafe-au-lait/stilk.jpg',           alt: 'Stængel på Café au Lait-plante',           role: 'structure',  focalPoint: 'top' },
-      { src: '/images/makro/dahlia-cafe-au-lait/kerne.jpg',           alt: 'Kerne i Café au Lait-blomst',              role: 'seed',       focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/hoved.jpg',         alt: 'Café au Lait i fuld blomst',            role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/midte.jpg',         alt: 'Midten af Café au Lait-blomst',         role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/blade-closeup.jpg', alt: 'Café au Lait-blade tæt på',             role: 'leaf',       focalPoint: 'center' },
     ],
   },
 
@@ -200,12 +267,12 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
       // Følger frugtbærende sortsguide-template: moden frugt, umoden frugt,
       // tværsnit (indre), blomst, struktur (led), kernehus.
       // indre.jpg behold som atmosphere (R3).
-      { src: '/images/makro/peberfrugt-california-wonder/indre.jpg',       alt: 'Indre struktur i California Wonder',    role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/umoden-frugt.jpg', alt: 'Umoden California Wonder på planten',   role: 'atmosphere', focalPoint: 'center' },
       { src: '/images/makro/peberfrugt-california-wonder/blomst.jpg',      alt: 'California Wonder-blomst',              role: 'flower',     focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-california-wonder/led.jpg',         alt: 'Forgreningsled på California Wonder',   role: 'structure',  focalPoint: 'top' },
-      { src: '/images/makro/peberfrugt-california-wonder/moden-frugt.jpg', alt: 'Moden California Wonder-frugt',         role: 'fruit',      focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-california-wonder/umoden.jpg',      alt: 'Umoden California Wonder-frugt',        role: 'detail',     focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-california-wonder/kernehus.jpg',    alt: 'Kernehus og frø i California Wonder',   role: 'seed',       focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/stilk.jpg',       alt: 'Stængel på California Wonder',          role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/peberfrugt-california-wonder/frugt.jpg',       alt: 'Moden California Wonder-frugt',         role: 'fruit',      focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/kernehus.jpg',    alt: 'Kernehus i California Wonder',          role: 'seed',       focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-california-wonder/froe.jpg',        alt: 'California Wonder-frø',                 role: 'seed',       focalPoint: 'center' },
     ],
   },
 
@@ -236,7 +303,9 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
 
   'tomat-cherrytomat': {
     seedCard: { src: '/images/frokort/tomat-cherrytomat.png', alt: 'Cherrytomat — frøkort' },
-    macro: [],
+    macro: [
+      { src: '/images/makro/tomat-cherrytomat/frugt.jpg', alt: 'Cherrytomater på klase', role: 'atmosphere', focalPoint: 'center' },
+    ],
   },
 
   'chili-jalapeno': {
@@ -286,7 +355,10 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   // på deres egen sorts-slug. Generisk hvidløg falder til placeholder
   // indtil arts-fallback findes (jf. note ovenfor).
   'hvidloeg': {
-    macro: [],
+    macro: [
+      { src: '/images/makro/hvidloeg/knop.jpg', alt: 'Krøllet hvidløgs-scape på spring', role: 'atmosphere', focalPoint: 'top' },
+      { src: '/images/makro/hvidloeg/stilk.jpg', alt: 'Hvidløgs-stængel i nærbillede', role: 'structure', focalPoint: 'center' },
+    ],
   },
 
   // ── FRØKORT-ONLY ENTRIES (12. juni 2026) ────────────────────
@@ -486,10 +558,10 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     varietyHero: { src: '/images/plantekort/tomat-san-marzano.jpg', alt: 'San Marzano tomat — sortsfoto' },
     seedCard:    { src: '/images/frokort/tomat-san-marzano.png',    alt: 'San Marzano tomat — frøkort' },
     macro: [
-      { src: '/images/makro/tomat-san-marzano/dug.jpg', alt: 'Dug på San Marzano tomat', role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/klase.jpg', alt: 'Klase af San Marzano-frugter', role: 'structure', focalPoint: 'left' },
-      { src: '/images/makro/tomat-san-marzano/single-umoden.jpg', alt: 'Én umoden San Marzano-frugt', role: 'fruit', focalPoint: 'center' },
-      { src: '/images/makro/tomat-san-marzano/haar.jpg', alt: 'Fine hår på tomatplante', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/blad.jpg', alt: 'San Marzano-blad i nærbillede', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/klase-umodne.jpg', alt: 'Klase af umodne San Marzano', role: 'structure', focalPoint: 'left' },
+      { src: '/images/makro/tomat-san-marzano/sigle-umoden.jpg', alt: 'Én umoden San Marzano', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/tomat-san-marzano/led-haar.jpg', alt: 'Fine hår ved San Marzano-forgrening', role: 'detail', focalPoint: 'center' },
     ],
   },
 }
