@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 387
+ * Fil-tæller: 392
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -18,6 +18,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/agurk.jpg",
   "/images/arts/aubergine.jpg",
   "/images/arts/basilikum.jpg",
+  "/images/arts/blaabaer.jpg",
   "/images/arts/bladbede.jpg",
   "/images/arts/blomme.jpg",
   "/images/arts/boenne.jpg",
@@ -34,6 +35,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/jordbaer.jpg",
   "/images/arts/kaal.jpg",
   "/images/arts/kartoffel.jpg",
+  "/images/arts/kirsebaer.jpg",
   "/images/arts/knoldfennikel.jpg",
   "/images/arts/koriander.jpg",
   "/images/arts/kornblomst.jpg",
@@ -45,17 +47,20 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/morgenfrue.jpg",
   "/images/arts/mynte.jpg",
   "/images/arts/oregano.jpg",
+  "/images/arts/paere.jpg",
   "/images/arts/peberfrugt.jpg",
   "/images/arts/persille.jpg",
   "/images/arts/porre.jpg",
   "/images/arts/purloeg.jpg",
   "/images/arts/rabarber.jpg",
   "/images/arts/radise.jpg",
+  "/images/arts/ribs.jpg",
   "/images/arts/roedbede.jpg",
   "/images/arts/rosmarin.jpg",
   "/images/arts/salat.jpg",
   "/images/arts/salvie.jpg",
   "/images/arts/selleri.jpg",
+  "/images/arts/solbaer.jpg",
   "/images/arts/solsikke.jpg",
   "/images/arts/spinat.jpg",
   "/images/arts/squash.jpg",

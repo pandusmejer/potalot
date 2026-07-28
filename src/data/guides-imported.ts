@@ -945,7 +945,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/blaabaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/blueberries/grow-your-own"
     ],
@@ -3848,7 +3848,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kirsebaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/cherries/grow-your-own"
     ],
@@ -5184,7 +5184,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/paere.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/pears/grow-your-own"
     ],
@@ -6410,7 +6410,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/ribs.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/redcurrants/grow-your-own"
     ],
@@ -7366,7 +7366,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/solbaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/blackcurrants/grow-your-own"
     ],
