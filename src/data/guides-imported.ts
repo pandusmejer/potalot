@@ -1771,7 +1771,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/cikorie.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/chicory/grow-your-own"
     ],
@@ -2488,7 +2488,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/endivie.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/endive/grow-your-own"
     ],
@@ -2919,7 +2919,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/havrerod.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/salsify/grow-your-own"
     ],
@@ -3617,7 +3617,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kaalroe.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/swede/grow-your-own"
     ],
@@ -4570,7 +4570,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/majroe.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/turnips/grow-your-own"
     ],
@@ -5289,7 +5289,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/pak-choi.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/pak-choi/grow-your-own"
     ],
@@ -5370,7 +5370,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/pastinak.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/parsnips/grow-your-own"
     ],
@@ -5695,7 +5695,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/peberrod.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/horseradish/grow-your-own"
     ],
@@ -6014,7 +6014,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/portulak.jpg",
     "sourceLinks": [
       "https://hort.extension.wisc.edu/articles/common-purslane-portulaca-oleracea/",
       "https://extension.umd.edu/resource/purslane"
@@ -7201,7 +7201,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/skorzonerrod.jpg",
     "sourceLinks": [
       "https://extension.usu.edu/yardandgarden/research/black-salsify-in-the-garden"
     ],
@@ -8470,7 +8470,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/tomatillo.jpg",
     "sourceLinks": [
       "https://plants.ces.ncsu.edu/plants/physalis-philadelphica/common-name/tomatillo/",
       "https://ucanr.edu/site/uc-master-gardeners-santa-clara-county/spring-garden-fair-global-vegetables"
@@ -8557,7 +8557,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/vaarsalat.jpg",
     "sourceLinks": [
       "https://extension.usu.edu/yardandgarden/research/lambs-lettuce-in-the-garden",
       "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own"

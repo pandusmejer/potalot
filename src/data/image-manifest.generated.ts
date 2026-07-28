@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 411
+ * Fil-tæller: 423
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -27,19 +27,23 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/boenne.jpg",
   "/images/arts/brombaer.jpg",
   "/images/arts/chili.jpg",
+  "/images/arts/cikorie.jpg",
   "/images/arts/citronmelisse.jpg",
   "/images/arts/cosmos.jpg",
   "/images/arts/dahlia.jpg",
   "/images/arts/dild.jpg",
   "/images/arts/elefantgraes.jpg",
+  "/images/arts/endivie.jpg",
   "/images/arts/graeskar.jpg",
   "/images/arts/gulerod.jpg",
   "/images/arts/hakonegraes.jpg",
+  "/images/arts/havrerod.jpg",
   "/images/arts/hindbaer.jpg",
   "/images/arts/hvidloeg.jpg",
   "/images/arts/jordbaer.jpg",
   "/images/arts/jordskok.jpg",
   "/images/arts/kaal.jpg",
+  "/images/arts/kaalroe.jpg",
   "/images/arts/kartoffel.jpg",
   "/images/arts/kirsebaer.jpg",
   "/images/arts/knoldfennikel.jpg",
@@ -49,6 +53,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/lampepudsergraes.jpg",
   "/images/arts/loeg.jpg",
   "/images/arts/loevemund.jpg",
+  "/images/arts/majroe.jpg",
   "/images/arts/majs.jpg",
   "/images/arts/melon.jpg",
   "/images/arts/morgenfrue.jpg",
@@ -56,9 +61,13 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/okra.jpg",
   "/images/arts/oregano.jpg",
   "/images/arts/paere.jpg",
+  "/images/arts/pak-choi.jpg",
+  "/images/arts/pastinak.jpg",
   "/images/arts/peberfrugt.jpg",
+  "/images/arts/peberrod.jpg",
   "/images/arts/persille.jpg",
   "/images/arts/porre.jpg",
+  "/images/arts/portulak.jpg",
   "/images/arts/purloeg.jpg",
   "/images/arts/rabarber.jpg",
   "/images/arts/radise.jpg",
@@ -70,6 +79,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/salat.jpg",
   "/images/arts/salvie.jpg",
   "/images/arts/selleri.jpg",
+  "/images/arts/skorzonerrod.jpg",
   "/images/arts/soed-kartoffel.jpg",
   "/images/arts/solbaer.jpg",
   "/images/arts/solsikke.jpg",
@@ -81,6 +91,8 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/tallerkensmaekker.jpg",
   "/images/arts/timian.jpg",
   "/images/arts/tomat.jpg",
+  "/images/arts/tomatillo.jpg",
+  "/images/arts/vaarsalat.jpg",
   "/images/arts/zinnia.jpg",
   "/images/frokort/aeble-ingrid-marie.jpg",
   "/images/frokort/aeble-ingrid-marie.png",
