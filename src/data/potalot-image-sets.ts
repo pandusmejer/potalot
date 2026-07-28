@@ -171,6 +171,57 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     ],
   },
 
+  // ── NYE ARTS-MAKRO-SÆT (28. juli 2026) ──────────────────────
+
+  aeble: {
+    macro: [
+      { src: '/images/makro/aeble/frugt.jpg', alt: 'Moden rød æblefrugt på grenen', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  rose: {
+    macro: [
+      { src: '/images/makro/rose/kronblade.jpg', alt: 'Rosenkronblade tæt på', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  majs: {
+    macro: [
+      { src: '/images/makro/majs/kolbe-haar.jpg', alt: 'Majssilke på kolben', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  jordbaer: {
+    macro: [
+      { src: '/images/makro/jordbaer/moden-umoden.jpg', alt: 'Modne og umodne jordbær', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  groenkaal: {
+    macro: [
+      { src: '/images/makro/groenkaal/blad-dug.jpg', alt: 'Dug på grønkålsblad', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/groenkaal/krus.jpg', alt: 'Kruset grønkålsblad tæt på', role: 'leaf', focalPoint: 'center' },
+    ],
+  },
+
+  valmue: {
+    macro: [
+      { src: '/images/makro/valmue/froestand.jpg', alt: 'Valmue-frøstand tæt på', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  gulerod: {
+    macro: [
+      { src: '/images/makro/gulerod/top-jord.jpg', alt: 'Gulerodstop i jorden', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
+  mynte: {
+    macro: [
+      { src: '/images/makro/mynte/blade.jpg', alt: 'Mynteblade tæt på', role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+
   // ── SORTSGUIDER ─────────────────────────────────────────────
   // plantCard og varietyHero peger på samme fil — to roller, samme aktiv.
 
@@ -217,11 +268,12 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
       // niveau med Tomat-SM og Habanero. ny-knop valgt som atmosphere så
       // R3 (visuel progression) er opfyldt — alle 5 makros får hver sin
       // rolle, ingen dubletter.
-      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/ny-knop.jpg',     alt: 'Spirende blomsterknop på Corno-plante',     role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/blomst.jpg',     alt: 'Åben Corno-blomst',                          role: 'flower',     focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/led.jpg',        alt: 'Forgreningspunkt på Corno-plante',           role: 'structure',  focalPoint: 'top' },
-      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/moden-frugt.jpg', alt: 'Moden Corno di Toro Rosso-frugt',           role: 'fruit',      focalPoint: 'center' },
-      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/kerner.jpg',     alt: 'Corno-frø og frøkammer',                    role: 'seed',       focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/knop.jpg',       alt: 'Spirende blomsterknop på Corno-plante',    role: 'atmosphere', focalPoint: 'top' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/blomst.jpg',     alt: 'Åben Corno-blomst',                         role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/stilk.jpg',      alt: 'Stængel på Corno-plante',                   role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/frugt.jpg',      alt: 'Moden Corno di Toro Rosso-frugt',           role: 'fruit',      focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/forspiring.jpg', alt: 'Corno-forspiring',                          role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/peberfrugt-corno-di-toro-rosso/kernehus.jpg',   alt: 'Corno-kernehus og frø',                     role: 'seed',       focalPoint: 'center' },
     ],
   },
 
@@ -252,9 +304,16 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
       // blad-stængel / kerne). kronblade-creme valgt som atmosphere
       // for at opfylde R3 (mindst 1 atmosphere). Pool-størrelse 8
       // giver fuld variation på alle bleed-slots uden duplikater.
-      { src: '/images/makro/dahlia-cafe-au-lait/hoved.jpg',         alt: 'Café au Lait i fuld blomst',            role: 'atmosphere', focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/midte.jpg',         alt: 'Midten af Café au Lait-blomst',         role: 'detail',     focalPoint: 'center' },
-      { src: '/images/makro/dahlia-cafe-au-lait/blade-closeup.jpg', alt: 'Café au Lait-blade tæt på',             role: 'leaf',       focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/kronblade-close.jpg', alt: 'Bløde creme-kronblade på Café au Lait',  role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/hoved2.jpg',          alt: 'Café au Lait i fuld blomst',            role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/hoved3.jpg',          alt: 'Café au Lait-blomst, anden vinkel',     role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/buket.jpg',           alt: 'Buket af Café au Lait',                 role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/gruppe.jpg',          alt: 'Café au Lait i gruppe',                 role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/knop.jpg',            alt: 'Café au Lait-knop på spring',           role: 'flower',     focalPoint: 'top' },
+      { src: '/images/makro/dahlia-cafe-au-lait/superclose.jpg',      alt: 'Café au Lait-kronblade helt tæt på',    role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/krave.jpg',           alt: 'Bagside og krave på Café au Lait',      role: 'detail',     focalPoint: 'center' },
+      { src: '/images/makro/dahlia-cafe-au-lait/stilk.jpg',           alt: 'Stængel på Café au Lait-plante',        role: 'structure',  focalPoint: 'top' },
+      { src: '/images/makro/dahlia-cafe-au-lait/blade-closeup.jpg',   alt: 'Café au Lait-blade tæt på',             role: 'leaf',       focalPoint: 'center' },
     ],
   },
 
