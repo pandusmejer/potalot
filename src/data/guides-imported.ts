@@ -3372,7 +3372,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/jordskok.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/jerusalem-artichokes/grow-your-own"
     ],
@@ -9716,7 +9716,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/chili-de-cayenne.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/522802/capsicum-annuum-de-cayenne/details",
       "https://www.rhs.org.uk/plants/157405/capsicum-annuum-var-annuum-longum-group/details",
@@ -9843,7 +9843,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/chili-early-jalapeno.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/383264/capsicum-annuum-var-annuum-longum-group-early-jalapeno/details",
       "https://www.johnnyseeds.com/vegetables/peppers/hot-peppers/early-jalapen%CC%83o-organic-jalapeno-pepper-seed-586G.11.html",
@@ -10336,7 +10336,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/hvidloeg-germidour.jpg",
     "sourceLinks": [
       "https://www.aildupontvert.com/en/varieties-garlic/germidour",
       "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
@@ -10460,7 +10460,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/hvidloeg-messidrome.jpg",
     "sourceLinks": [
       "https://www.aildupontvert.com/en/varieties-garlic/messidrome",
       "https://www.theoniongroup.com/products/garlic-for-planting/",
@@ -10577,7 +10577,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/hvidloeg-thermidrome.jpg",
     "sourceLinks": [
       "https://ail-echalote-certifie.org/en/the-official-french-catalogue-of-garlic-varieties/thermidrome/",
       "https://www.rhsplants.co.uk/plants/_/garlic-thermidrme/classid.2000040282/",
@@ -12170,7 +12170,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/radise-french-breakfast.jpg",
     "sourceLinks": [
       "https://www.johnnyseeds.com/vegetables/radishes/long-french-radishes/french-breakfast-radish-seed-4088.html",
       "https://www.rhs.org.uk/vegetables/radishes/grow-your-own"
@@ -12287,7 +12287,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/radise-sora.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
       "https://www.johnnyseeds.com/vegetables/radishes/round-radishes/sora-organic-radish-seed-2160G.html"

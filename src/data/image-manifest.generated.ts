@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 403
+ * Fil-tæller: 411
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -38,6 +38,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/hindbaer.jpg",
   "/images/arts/hvidloeg.jpg",
   "/images/arts/jordbaer.jpg",
+  "/images/arts/jordskok.jpg",
   "/images/arts/kaal.jpg",
   "/images/arts/kartoffel.jpg",
   "/images/arts/kirsebaer.jpg",
@@ -357,6 +358,8 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/agurk-marketmore.png",
   "/images/plantekort/basilikum-genovese.jpg",
   "/images/plantekort/basilikum-genovese.png",
+  "/images/plantekort/chili-de-cayenne.jpg",
+  "/images/plantekort/chili-early-jalapeno.jpg",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/chili-padron.jpg",
   "/images/plantekort/chili-padron.png",
@@ -370,6 +373,9 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/groenkaal-nero-di-toscana.png",
   "/images/plantekort/gulerod-nantes.jpg",
   "/images/plantekort/gulerod-nantes.png",
+  "/images/plantekort/hvidloeg-germidour.jpg",
+  "/images/plantekort/hvidloeg-messidrome.jpg",
+  "/images/plantekort/hvidloeg-thermidrome.jpg",
   "/images/plantekort/jordbaer-korona.jpg",
   "/images/plantekort/jordbaer-korona.png",
   "/images/plantekort/jordbaer-polka.jpg",
@@ -381,6 +387,8 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/plantekort-hvidlog.jpg",
   "/images/plantekort/radise-cherry-belle.jpg",
   "/images/plantekort/radise-cherry-belle.png",
+  "/images/plantekort/radise-french-breakfast.jpg",
+  "/images/plantekort/radise-sora.jpg",
   "/images/plantekort/roedbede-boltardy.jpg",
   "/images/plantekort/roedbede-boltardy.png",
   "/images/plantekort/salat-little-gem.jpg",
