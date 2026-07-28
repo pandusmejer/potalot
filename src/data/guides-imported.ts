@@ -618,7 +618,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/artiskok.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/globe-artichokes/grow-your-own"
     ],
@@ -699,7 +699,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/asparges.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/asparagus/grow-your-own"
     ],
@@ -1026,7 +1026,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/blaatop.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/11169/molinia-caerulea/details"
     ],
@@ -2382,7 +2382,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/elefantgraes.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/miscanthus",
       "https://www.rhs.org.uk/plants/types/grasses/ornamental/selection"
@@ -2832,7 +2832,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/hakonegraes.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/33668/hakonechloa-macra/details",
       "https://www.rhs.org.uk/plants/hakonechloa"
@@ -4236,7 +4236,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/lampepudsergraes.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/523411/cenchrus-alopecuroides/details"
     ],
@@ -5028,7 +5028,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/okra.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/okra/grow-your-own"
     ],
@@ -6573,7 +6573,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/roerhvene.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/calamagrostis/growing-guide",
       "https://www.rhs.org.uk/plants/72074/calamagrostis-x-acutiflora-karl-foerster/details"
@@ -6755,7 +6755,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/rucola.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/rocket/grow-your-own",
       "https://www.rhs.org.uk/plants/61139/diplotaxis-tenuifolia/details"
@@ -7287,7 +7287,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/soed-kartoffel.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/sweet-potatoes/grow-your-own"
     ],
@@ -7784,7 +7784,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/staudehirse.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/71459/panicum-virgatum/details"
     ],

@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 392
+ * Fil-tæller: 403
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -16,9 +16,12 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/aert.jpg",
   "/images/arts/aerteblomst.jpg",
   "/images/arts/agurk.jpg",
+  "/images/arts/artiskok.jpg",
+  "/images/arts/asparges.jpg",
   "/images/arts/aubergine.jpg",
   "/images/arts/basilikum.jpg",
   "/images/arts/blaabaer.jpg",
+  "/images/arts/blaatop.jpg",
   "/images/arts/bladbede.jpg",
   "/images/arts/blomme.jpg",
   "/images/arts/boenne.jpg",
@@ -28,8 +31,10 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/cosmos.jpg",
   "/images/arts/dahlia.jpg",
   "/images/arts/dild.jpg",
+  "/images/arts/elefantgraes.jpg",
   "/images/arts/graeskar.jpg",
   "/images/arts/gulerod.jpg",
+  "/images/arts/hakonegraes.jpg",
   "/images/arts/hindbaer.jpg",
   "/images/arts/hvidloeg.jpg",
   "/images/arts/jordbaer.jpg",
@@ -40,12 +45,14 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/koriander.jpg",
   "/images/arts/kornblomst.jpg",
   "/images/arts/kornvalmue.jpg",
+  "/images/arts/lampepudsergraes.jpg",
   "/images/arts/loeg.jpg",
   "/images/arts/loevemund.jpg",
   "/images/arts/majs.jpg",
   "/images/arts/melon.jpg",
   "/images/arts/morgenfrue.jpg",
   "/images/arts/mynte.jpg",
+  "/images/arts/okra.jpg",
   "/images/arts/oregano.jpg",
   "/images/arts/paere.jpg",
   "/images/arts/peberfrugt.jpg",
@@ -56,14 +63,18 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/radise.jpg",
   "/images/arts/ribs.jpg",
   "/images/arts/roedbede.jpg",
+  "/images/arts/roerhvene.jpg",
   "/images/arts/rosmarin.jpg",
+  "/images/arts/rucola.jpg",
   "/images/arts/salat.jpg",
   "/images/arts/salvie.jpg",
   "/images/arts/selleri.jpg",
+  "/images/arts/soed-kartoffel.jpg",
   "/images/arts/solbaer.jpg",
   "/images/arts/solsikke.jpg",
   "/images/arts/spinat.jpg",
   "/images/arts/squash.jpg",
+  "/images/arts/staudehirse.jpg",
   "/images/arts/stikkelsbaer.jpg",
   "/images/arts/tagetes.jpg",
   "/images/arts/tallerkensmaekker.jpg",
