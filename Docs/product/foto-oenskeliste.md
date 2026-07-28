@@ -4,7 +4,7 @@ Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægge
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
 Status **28/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
-**44 fotos mangler** (24 arter + 20 sorter). 75 er på plads.
+**33 fotos mangler** (13 arter + 20 sorter). 86 er på plads.
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
@@ -20,33 +20,20 @@ får ~17 % af højden skåret væk i top og bund.
 
 ---
 
-## 🥇 Tier 1 — arts-hero (24) · øverst: hver anker en hel familie
+## 🥇 Tier 1 — arts-hero (13) · øverst: hver anker en hel familie
 
-### Prydgræsser · batch 7 (6)
-- [ ] **Blåtop** → `arts/blaatop.jpg`
-- [ ] **Elefantgræs** → `arts/elefantgraes.jpg`
-- [ ] **Hakonegræs** → `arts/hakonegraes.jpg`
-- [ ] **Lampepudsergræs** → `arts/lampepudsergraes.jpg`
-- [ ] **Rørhvene** → `arts/roerhvene.jpg`
-- [ ] **Staudehirse** → `arts/staudehirse.jpg`
-
-### Køkkenhave · batch 8–10 (18)
-- [ ] **Artiskok** → `arts/artiskok.jpg`
-- [ ] **Asparges** → `arts/asparges.jpg`
+### Køkkenhave · batch 8–10 (13)
 - [ ] **Cikorie** → `arts/cikorie.jpg`
 - [ ] **Endivie** → `arts/endivie.jpg`
 - [ ] **Havrerod** → `arts/havrerod.jpg`
 - [ ] **Jordskok** → `arts/jordskok.jpg`
 - [ ] **Kålroe** → `arts/kaalroe.jpg`
 - [ ] **Majroe** → `arts/majroe.jpg`
-- [ ] **Okra** → `arts/okra.jpg`
 - [ ] **Pak choi** → `arts/pak-choi.jpg`
 - [ ] **Pastinak** → `arts/pastinak.jpg`
 - [ ] **Peberrod** → `arts/peberrod.jpg`
 - [ ] **Portulak** → `arts/portulak.jpg`
-- [ ] **Rucola** → `arts/rucola.jpg`
 - [ ] **Skorzonerrod** → `arts/skorzonerrod.jpg`
-- [ ] **Sød kartoffel** → `arts/soed-kartoffel.jpg`
 - [ ] **Tomatillo** → `arts/tomatillo.jpg`
 - [ ] **Vårsalat** → `arts/vaarsalat.jpg`
 
@@ -102,13 +89,15 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ---
 
-## ✅ Allerede på plads (75)
+## ✅ Allerede på plads (86)
 
-58 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
+69 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
 dette dokument regenereres ud fra den.
 
-**Nyt 27–28/7:** morgenfrue + hele frugtbuske/-træer-gruppen (æble, blomme,
-brombær, hindbær, stikkelsbær, blåbær, kirsebær, pære, ribs, solbær) lagt ind.
+**Nyt 27–28/7:** morgenfrue, hele frugtbuske/-træer-gruppen (æble, blomme,
+brombær, hindbær, stikkelsbær, blåbær, kirsebær, pære, ribs, solbær), hele
+prydgræs-gruppen (blåtop, elefantgræs, hakonegræs, lampepudsergræs, rørhvene,
+staudehirse) + 5 køkkenhave (artiskok, asparges, okra, rucola, sød kartoffel).
 Husk: arts-hero kræver `npm run import:guides` bagefter, ellers sætter
 `primaryImageId` sig ikke og guiden viser ingen hero.
 
