@@ -4,7 +4,7 @@ Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægge
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
 Status **28/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
-**33 fotos mangler** (13 arter + 20 sorter). 86 er på plads.
+**25 fotos mangler** (12 arter + 13 sorter). 94 er på plads.
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
@@ -20,13 +20,12 @@ får ~17 % af højden skåret væk i top og bund.
 
 ---
 
-## 🥇 Tier 1 — arts-hero (13) · øverst: hver anker en hel familie
+## 🥇 Tier 1 — arts-hero (12) · øverst: hver anker en hel familie
 
-### Køkkenhave · batch 8–10 (13)
+### Køkkenhave · batch 8–10 (12)
 - [ ] **Cikorie** → `arts/cikorie.jpg`
 - [ ] **Endivie** → `arts/endivie.jpg`
 - [ ] **Havrerod** → `arts/havrerod.jpg`
-- [ ] **Jordskok** → `arts/jordskok.jpg`
 - [ ] **Kålroe** → `arts/kaalroe.jpg`
 - [ ] **Majroe** → `arts/majroe.jpg`
 - [ ] **Pak choi** → `arts/pak-choi.jpg`
@@ -37,7 +36,7 @@ får ~17 % af højden skåret væk i top og bund.
 - [ ] **Tomatillo** → `arts/tomatillo.jpg`
 - [ ] **Vårsalat** → `arts/vaarsalat.jpg`
 
-## 🥈 Tier 2 — plantekort (20) · grupperet pr. familie
+## 🥈 Tier 2 — plantekort (13) · grupperet pr. familie
 
 ### Agurk (3)
 - [ ] Cucino → `plantekort/agurk-cucino.jpg`
@@ -49,11 +48,6 @@ får ~17 % af højden skåret væk i top og bund.
 - [ ] Rødkål → `plantekort/kaal-roedkaal.jpg`
 - [ ] Spidskål → `plantekort/kaal-spidskaal.jpg`
 
-### Hvidløg (3)
-- [ ] Germidour → `plantekort/hvidloeg-germidour.jpg`
-- [ ] Messidrome → `plantekort/hvidloeg-messidrome.jpg`
-- [ ] Thermidrome → `plantekort/hvidloeg-thermidrome.jpg`
-
 ### Ært (2)
 - [ ] Ambrosia → `plantekort/aert-ambrosia.jpg`
 - [ ] Kelvedon Wonder → `plantekort/aert-kelvedon-wonder.jpg`
@@ -62,17 +56,9 @@ får ~17 % af højden skåret væk i top og bund.
 - [ ] Corona → `plantekort/jordbaer-corona.jpg`
 - [ ] Mara des Bois → `plantekort/jordbaer-mara-des-bois.jpg`
 
-### Radise (2)
-- [ ] French Breakfast → `plantekort/radise-french-breakfast.jpg`
-- [ ] Sora → `plantekort/radise-sora.jpg`
-
 ### Salat (2)
 - [ ] Buttercrunch → `plantekort/salat-buttercrunch.jpg`
 - [ ] Rouge Grenobloise → `plantekort/salat-rouge-grenobloise.jpg`
-
-### Chili (2)
-- [ ] De Cayenne → `plantekort/chili-de-cayenne.jpg`
-- [ ] Early Jalapeño → `plantekort/chili-early-jalapeno.jpg`
 
 ### Majs (1)
 - [ ] Incredible → `plantekort/majs-incredible.jpg`  *(kandidat kasseret 24/7 — nyt foto ønskes)*
@@ -89,16 +75,16 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ---
 
-## ✅ Allerede på plads (86)
+## ✅ Allerede på plads (94)
 
-69 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
+70 arter + 24 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
 dette dokument regenereres ud fra den.
 
-**Nyt 27–28/7:** morgenfrue, hele frugtbuske/-træer-gruppen (æble, blomme,
-brombær, hindbær, stikkelsbær, blåbær, kirsebær, pære, ribs, solbær), hele
-prydgræs-gruppen (blåtop, elefantgræs, hakonegræs, lampepudsergræs, rørhvene,
-staudehirse) + 5 køkkenhave (artiskok, asparges, okra, rucola, sød kartoffel).
-Husk: arts-hero kræver `npm run import:guides` bagefter, ellers sætter
+**Nyt 27–28/7:** 23 arts-heroes (morgenfrue + hele frugtbuske/-træer-gruppen +
+hele prydgræs-gruppen + køkkenhave: artiskok, asparges, okra, rucola, sød
+kartoffel, jordskok) og 7 plantekort (hele hvidløg-, radise- og chili-grupperne:
+Germidour, Messidrome, Thermidrome, French Breakfast, Sora, De Cayenne, Early
+Jalapeño). Husk: hero kræver `npm run import:guides` bagefter, ellers sætter
 `primaryImageId` sig ikke og guiden viser ingen hero.
 
 **Forældreløse plantekort-fotos:** 18 fotos ligger i `plantekort/` til sorter der
