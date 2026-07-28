@@ -100,7 +100,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/aeble.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/apples/grow-your-own"
     ],
@@ -1196,7 +1196,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/blomme.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/plums/grow-your-own"
     ],
@@ -1410,7 +1410,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/brombaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/blackberries-and-hybrid-berries/grow-your-own"
     ],
@@ -3023,7 +3023,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/hindbaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/raspberries/grow-your-own"
     ],
@@ -4866,7 +4866,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/morgenfrue.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/62350/calendula-officinalis/details"
     ],
@@ -7864,7 +7864,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/stikkelsbaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/gooseberries/grow-your-own"
     ],
