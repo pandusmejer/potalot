@@ -3,8 +3,8 @@
 Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægges ind.
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
-Status **24/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
-**55 fotos mangler** (35 arter + 20 sorter). 64 er på plads.
+Status **28/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
+**49 fotos mangler** (29 arter + 20 sorter). 70 er på plads.
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
@@ -20,19 +20,14 @@ får ~17 % af højden skåret væk i top og bund.
 
 ---
 
-## 🥇 Tier 1 — arts-hero (35) · øverst: hver anker en hel familie
+## 🥇 Tier 1 — arts-hero (29) · øverst: hver anker en hel familie
 
-### Frugtbuske & frugttræer (10 — batch 5+6, ingen af dem har foto endnu)
-- [ ] **Æble** → `arts/aeble.jpg`
+### Frugtbuske & frugttræer (5 — resten af batch 5+6)
 - [ ] **Blåbær** → `arts/blaabaer.jpg`
-- [ ] **Blomme** → `arts/blomme.jpg`
-- [ ] **Brombær** → `arts/brombaer.jpg`
-- [ ] **Hindbær** → `arts/hindbaer.jpg`
 - [ ] **Kirsebær** → `arts/kirsebaer.jpg`
 - [ ] **Pære** → `arts/paere.jpg`
 - [ ] **Ribs** → `arts/ribs.jpg`
 - [ ] **Solbær** → `arts/solbaer.jpg`
-- [ ] **Stikkelsbær** → `arts/stikkelsbaer.jpg`
 
 ### Prydgræsser · batch 7 (6)
 - [ ] **Blåtop** → `arts/blaatop.jpg`
@@ -61,9 +56,6 @@ får ~17 % af højden skåret væk i top og bund.
 - [ ] **Sød kartoffel** → `arts/soed-kartoffel.jpg`
 - [ ] **Tomatillo** → `arts/tomatillo.jpg`
 - [ ] **Vårsalat** → `arts/vaarsalat.jpg`
-
-### Blomster (1)
-- [ ] **Morgenfrue** → `arts/morgenfrue.jpg`
 
 ## 🥈 Tier 2 — plantekort (20) · grupperet pr. familie
 
@@ -117,10 +109,14 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ---
 
-## ✅ Allerede på plads (64)
+## ✅ Allerede på plads (70)
 
-47 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
+53 arter + 17 sorter — af 119 guides med hero-krav. `npm run guides:status` er den autoritative kilde —
 dette dokument regenereres ud fra den.
+
+**Nyt 27–28/7:** morgenfrue + æble, blomme, brombær, hindbær, stikkelsbær
+(arts-heroes) lagt ind. Husk: arts-hero kræver `npm run import:guides` bagefter,
+ellers sætter `primaryImageId` sig ikke og guiden viser ingen hero.
 
 **Forældreløse plantekort-fotos:** 18 fotos ligger i `plantekort/` til sorter der
 endnu ikke har en guide (fx Gulerod Nantes, Rødbede Boltardy, Stangbønne Cobra).
