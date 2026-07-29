@@ -100,7 +100,7 @@ function SourceMarker({ kind, size = 46, image }: { kind: 'plant' | 'seed' | 'ro
         style={{ width: size, height: size, boxSizing: 'border-box', borderRadius: 999, overflow: 'hidden', display: 'inline-block', border: '2px solid rgba(255,248,234,0.75)', boxShadow: '0 5px 12px rgba(35,45,34,0.16)' }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
+        <img loading="lazy" decoding="async" src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
       </span>
     )
   }

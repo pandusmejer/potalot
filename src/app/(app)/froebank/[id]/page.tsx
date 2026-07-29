@@ -260,7 +260,7 @@ export default async function InventoryDetailPage({ params }: Props) {
                     {/* TEST: billed-aspekt 550:786 (≈0,70). Kilden er 4:5, så
                         object-fit cover beskærer ~6% i siderne. Let at rulle tilbage. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={hero.src}
                       alt={item.name}
                       className="block w-full"
@@ -338,7 +338,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           {galleriFotos.map((url, i) => (
             <div key={url} className="aspect-square rounded-lg overflow-hidden border border-border bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt={`${item.name} billede ${i + 1}`} className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={url} alt={`${item.name} billede ${i + 1}`} className="w-full h-full object-cover" />
             </div>
           ))}
         </div>

@@ -101,7 +101,7 @@ export default async function TeknikPage() {
               <div className="flex items-center gap-2.5">
                 {/* Eksisterende Potalot-glyph pr. opgave — kun genbrug */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <img loading="lazy" decoding="async"
                   src={`/images/glyphs/${TECHNIQUE_TASK_GLYPH[t]}.png`}
                   alt=""
                   aria-hidden="true"

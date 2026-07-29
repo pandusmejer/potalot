@@ -30,7 +30,7 @@ export function ForsideHero({
       style={{ boxShadow: '0 10px 30px -12px rgba(28,38,22,0.42)' }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <img loading="lazy" decoding="async"
         src="/images/heroes-sider/hero-planter-forside.png"
         alt=""
         aria-hidden

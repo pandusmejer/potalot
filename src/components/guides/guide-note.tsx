@@ -66,7 +66,7 @@ export function GuideNote({
           >
             {glyph === false ? null : glyph ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={glyph} alt="" aria-hidden style={{ height: 16, width: 'auto' }} />
+              <img loading="lazy" decoding="async" src={glyph} alt="" aria-hidden style={{ height: 16, width: 'auto' }} />
             ) : (
               <Leaf width={13} height={13} strokeWidth={2} aria-hidden />
             )}
@@ -92,7 +92,7 @@ export function GuideNote({
             style={{ border: '1px solid rgba(45,42,36,0.10)' }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <img loading="lazy" decoding="async"
               src={image.src}
               alt={image.alt}
               className="h-full w-full object-cover"

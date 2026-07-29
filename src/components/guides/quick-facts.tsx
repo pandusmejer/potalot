@@ -167,7 +167,7 @@ export function QuickFactsCard({ guide, inheritedFields, species = false }: Prop
               <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">
                 {/* Soft glyph = næsten vandmærke; pilen er den primære markør. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 16, width: 'auto', opacity: 0.22 }} />
+                <img loading="lazy" decoding="async" src="/images/glyphs/plante.png" alt="" aria-hidden style={{ height: 16, width: 'auto', opacity: 0.22 }} />
                 Flere detaljer
                 <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
               </summary>

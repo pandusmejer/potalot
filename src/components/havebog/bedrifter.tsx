@@ -62,7 +62,7 @@ export function Bedrifter({ bedrifter }: Props) {
                 <div key={i} className="flex items-center" style={{ gap: 14, position: 'relative' }}>
                   <div style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 999, background: '#F5EEDC', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={KIND_GLYPH[b.kind]} alt="" style={{ width: 27, height: 27, objectFit: 'contain' }} />
+                    <img loading="lazy" decoding="async" src={KIND_GLYPH[b.kind]} alt="" style={{ width: 27, height: 27, objectFit: 'contain' }} />
                   </div>
                   <p style={{ fontFamily: serif, fontWeight: 500, fontSize: 'clamp(21px, 5.6cqw, 25px)', lineHeight: 1.05, color: '#1F2D1D', margin: 0, flex: 1, minWidth: 0 }}>
                     {b.titel}

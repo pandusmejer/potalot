@@ -104,7 +104,7 @@ function MindeRaekke({ minde, sidst }: { minde: Minde; sidst: boolean }) {
       >
         {minde.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={minde.imageUrl} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
+          <img loading="lazy" decoding="async" src={minde.imageUrl} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
         ) : (
           <Ikon className="h-8 w-8" style={{ color: k.farve }} aria-hidden strokeWidth={1.5} />
         )}

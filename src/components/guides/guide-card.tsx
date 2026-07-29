@@ -38,7 +38,7 @@ export function GuideCard({
           {guide.primaryImageId ? (
             <div className="w-24 sm:w-32 shrink-0 overflow-hidden bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <img loading="lazy" decoding="async"
                 src={guide.primaryImageId}
                 alt=""
                 className="w-full h-full object-cover"

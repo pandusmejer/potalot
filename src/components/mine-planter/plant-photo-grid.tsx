@@ -26,7 +26,7 @@ export function PlantPhotoGrid({ images }: PlantPhotoGridProps) {
       {images.map(image => (
         <figure key={image.id} className="aspect-square overflow-hidden rounded-2xl bg-pattern-botanical bg-secondary/40 shadow-soft">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={image.src} alt={image.alt} className="h-full w-full object-cover" />
         </figure>
       ))}
     </div>

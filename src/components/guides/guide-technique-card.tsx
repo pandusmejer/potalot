@@ -130,7 +130,7 @@ export function GuideTechniqueCard({ slug, title, description, thumbnail }: Prop
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <img loading="lazy" decoding="async"
               src={thumb.src}
               alt=""
               aria-hidden

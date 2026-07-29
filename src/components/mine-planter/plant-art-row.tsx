@@ -198,7 +198,7 @@ function VarietyCard({ plant }: { plant: Plant }) {
       <div className="relative overflow-hidden" style={{ aspectRatio: '4 / 3' }}>
         {!isPlaceholder ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img
+          <img loading="lazy" decoding="async"
             src={photo}
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
@@ -316,7 +316,7 @@ export function SingleSortRow({ artName, plant }: { artName: string; plant: Plan
       <span className="relative shrink-0 overflow-hidden" style={{ width: 76, height: 76, borderRadius: 14 }}>
         {hasPhoto ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <span className="absolute inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(158deg, #EBEDE2 0%, #CAD4B6 100%)' }}>
             <GlyphSpire size={30} />

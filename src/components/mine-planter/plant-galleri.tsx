@@ -52,7 +52,7 @@ export function PlantGalleri({ billeder }: { billeder: DetailBillede[] }) {
             style={{ boxShadow: '0 6px 16px rgba(26,34,22,0.10)' }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={b.src} alt={b.alt} className="h-full w-full object-cover" />
+            <img loading="lazy" decoding="async" src={b.src} alt={b.alt} className="h-full w-full object-cover" />
           </div>
         ))}
       </div>

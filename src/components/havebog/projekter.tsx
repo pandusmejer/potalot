@@ -77,7 +77,7 @@ export function Projekter({ projekt }: Props) {
         {mode === 'photo' && projekt.foto && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <img loading="lazy" decoding="async"
               src={projekt.foto}
               alt=""
               aria-hidden

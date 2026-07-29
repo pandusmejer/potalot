@@ -176,7 +176,7 @@ export function ForumRepliesPanel({
               <div className="flex items-center gap-2">
                 <div className="h-12 w-12 rounded-md overflow-hidden border border-border shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+                  <img loading="lazy" decoding="async" src={imageUrl} alt="" className="w-full h-full object-cover" />
                 </div>
                 <Button type="button" variant="ghost" size="sm" onClick={() => setImageUrl(null)}>
                   Fjern billede

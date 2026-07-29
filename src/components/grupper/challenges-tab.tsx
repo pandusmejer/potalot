@@ -73,7 +73,7 @@ function ChallengeCard({ challenge, isMember }: { challenge: Challenge; isMember
     <Card className="overflow-hidden">
       {challenge.coverImageUrl && (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img src={challenge.coverImageUrl} alt="" className="w-full h-32 object-cover" />
+        <img loading="lazy" decoding="async" src={challenge.coverImageUrl} alt="" className="w-full h-32 object-cover" />
       )}
       <CardContent className="space-y-2 py-3">
         <div className="flex items-start gap-2 flex-wrap">
@@ -111,7 +111,7 @@ function ChallengeCard({ challenge, isMember }: { challenge: Challenge; isMember
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Dit bidrag</p>
             {challenge.myEntry.imageUrl && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={challenge.myEntry.imageUrl} alt="" className="rounded-md max-h-32 object-cover" />
+              <img loading="lazy" decoding="async" src={challenge.myEntry.imageUrl} alt="" className="rounded-md max-h-32 object-cover" />
             )}
             {challenge.myEntry.caption && (
               <p className="text-xs text-foreground">{challenge.myEntry.caption}</p>

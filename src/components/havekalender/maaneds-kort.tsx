@@ -71,7 +71,7 @@ export function MaanedsKort({ month, factPrimary, factSecondary, compact = false
       {/* Foto — fylder kortet, translateY(-11%) som søsterkortene */}
       <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <img loading="lazy" decoding="async"
           src={heroImage}
           alt=""
           className="h-full w-full object-cover"

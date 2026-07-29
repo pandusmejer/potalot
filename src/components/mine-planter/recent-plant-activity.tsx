@@ -23,7 +23,7 @@ export function RecentPlantActivity({ activities }: RecentPlantActivityProps) {
               <div className="relative h-36 overflow-hidden bg-secondary">
                 {activity.image ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={activity.image} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={activity.image} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-pattern-botanical text-primary/45">
                     <Leaf className="h-8 w-8" />

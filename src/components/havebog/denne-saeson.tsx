@@ -145,7 +145,7 @@ function FirstSeasonBlock({ varieties }: { varieties: number }) {
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <img loading="lazy" decoding="async"
             src="/images/makro/dahlia/skud_1.jpg"
             alt=""
             style={{
@@ -315,7 +315,7 @@ function FactCard({ label, plantName, variety, date, body, image, emptyText }: F
           <>
             {image && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={image} alt="" className="h-32 w-full rounded-lg object-cover" />
+              <img loading="lazy" decoding="async" src={image} alt="" className="h-32 w-full rounded-lg object-cover" />
             )}
             {plantName && (
               <p

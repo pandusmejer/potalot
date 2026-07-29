@@ -156,7 +156,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
           style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: lead ? '3 / 4' : '1 / 1', background: tile.farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={tile.foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={tile.foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div aria-hidden style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${tile.farve}E6 0%, ${tile.farve}66 38%, rgba(0,0,0,0) 72%)` }} />
           <div style={{ position: 'relative', padding: lead ? '0 18px 22px' : '0 16px 18px' }}>
             {eyebrow}
@@ -180,7 +180,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     return (
       <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: '3 / 4', background: '#E6DCC6' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={tile.foto} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
+        <img loading="lazy" decoding="async" src={tile.foto} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
         <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,26,16,0.55) 0%, rgba(20,26,16,0) 42%)' }} />
         <span
           className="uppercase"
@@ -330,7 +330,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
         style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: stor ? '3 / 4' : '1 / 1', background: farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img loading="lazy" decoding="async" src={foto} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <div aria-hidden style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${farve}E6 0%, ${farve}66 38%, rgba(0,0,0,0) 72%)` }} />
         <div style={{ position: 'relative', padding: stor ? '0 18px 22px' : '0 16px 18px' }}>
           {eyebrow}

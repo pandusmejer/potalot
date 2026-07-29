@@ -50,7 +50,7 @@ export default async function VarietyDetailPage({ params }: Props) {
           <div className="flex items-start gap-4 flex-wrap">
             {variety.primaryImageUrl ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={variety.primaryImageUrl} alt="" className="h-24 w-24 rounded-lg object-cover shrink-0" />
+              <img loading="lazy" decoding="async" src={variety.primaryImageUrl} alt="" className="h-24 w-24 rounded-lg object-cover shrink-0" />
             ) : (
               <div className="h-24 w-24 rounded-lg bg-secondary/40 flex items-center justify-center shrink-0">
                 <Sprout className="h-8 w-8 text-muted-foreground" />

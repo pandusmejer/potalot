@@ -128,7 +128,7 @@ function ArkivKort({ plant: p, linkable }: { plant: ArchivedPlant; linkable: boo
       <div style={{ flexShrink: 0, width: 68, height: 70, borderRadius: 14, overflow: 'hidden', background: '#E2D9C1' }}>
         {p.primaryImageId && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.primaryImageId} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
+          <img loading="lazy" decoding="async" src={p.primaryImageId} alt="" className="h-full w-full object-cover" style={{ display: 'block' }} />
         )}
       </div>
 
@@ -196,7 +196,7 @@ function FoersteSaesonSlutning() {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <img loading="lazy" decoding="async"
         src="/images/makro/chili/blad-dug.jpg"
         alt=""
         style={{

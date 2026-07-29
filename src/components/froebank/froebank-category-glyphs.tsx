@@ -24,7 +24,7 @@ const SRC = {
 function GlyphImg({ src, className }: { src: string; className?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" aria-hidden draggable={false} className={className} style={{ objectFit: 'contain' }} />
+    <img loading="lazy" decoding="async" src={src} alt="" aria-hidden draggable={false} className={className} style={{ objectFit: 'contain' }} />
   )
 }
 

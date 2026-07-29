@@ -130,7 +130,7 @@ export function MultiImageUpload({
                 )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt="" className="w-full h-full object-cover" />
+                <img loading="lazy" decoding="async" src={url} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
                   {!isPrimary && (
                     <button

@@ -73,7 +73,7 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
     return (
       <div className="relative w-full rounded-xl overflow-hidden border border-border bg-muted aspect-video">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={value} alt="" className="w-full h-full object-cover" />
+        <img loading="lazy" decoding="async" src={value} alt="" className="w-full h-full object-cover" />
         <button
           type="button"
           onClick={handleRemove}

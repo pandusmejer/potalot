@@ -104,7 +104,7 @@ export function InspirerMig({ forslag }: Props) {
           {billede && (
             <Link href={leadHref} className="no-underline" style={{ flex: '0 0 47%', position: 'relative', background: '#C86A4A', borderTopLeftRadius: 3, borderBottomLeftRadius: 3, overflow: 'hidden', display: 'block' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <img loading="lazy" decoding="async"
                 src={billede}
                 alt=""
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%' }}
@@ -122,7 +122,7 @@ export function InspirerMig({ forslag }: Props) {
                 <Link key={f.top} href={f.href} className="no-underline flex items-center" style={{ gap: 11 }}>
                   <div style={{ flexShrink: 0, width: 42, height: 42, borderRadius: 10, overflow: 'hidden', background: '#E7E0CB' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img loading="lazy" decoding="async" src={f.foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: '#24301F', margin: 0, whiteSpace: 'nowrap' }}>

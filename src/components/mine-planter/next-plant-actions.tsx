@@ -24,7 +24,7 @@ export function NextPlantActions({ actions }: NextPlantActionsProps) {
             <div className="relative h-24 overflow-hidden bg-secondary">
               {action.image ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={action.image} alt="" className="h-full w-full object-cover" />
+                <img loading="lazy" decoding="async" src={action.image} alt="" className="h-full w-full object-cover" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-pattern-botanical text-primary/45">
                   <Leaf className="h-6 w-6" />

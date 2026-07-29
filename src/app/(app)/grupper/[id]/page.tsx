@@ -398,7 +398,7 @@ export default async function GroupDetailPage({ params }: Props) {
                           <div className="aspect-[3/2] bg-pattern-botanical bg-secondary/20 flex items-center justify-center overflow-hidden">
                             {cover ? (
                               /* eslint-disable-next-line @next/next/no-img-element */
-                              <img src={cover} alt={s.ideas.title} className="w-full h-full object-cover" />
+                              <img loading="lazy" decoding="async" src={cover} alt={s.ideas.title} className="w-full h-full object-cover" />
                             ) : (
                               <Lightbulb className="h-8 w-8 text-muted-foreground/40" />
                             )}

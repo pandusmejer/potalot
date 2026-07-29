@@ -42,7 +42,7 @@ export function ForumList({ posts }: Props) {
             <Link href={`/grupper/${p.groupId}/opslag/${p.id}`} className="flex gap-3 p-3">
               {cover && (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={cover} alt="" className="h-16 w-16 rounded-lg object-cover shrink-0" />
+                <img loading="lazy" decoding="async" src={cover} alt="" className="h-16 w-16 rounded-lg object-cover shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start gap-2 flex-wrap">

@@ -250,7 +250,7 @@ export function TopicSquareCard({
   const inner = (
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <img loading="lazy" decoding="async"
         src={imageUrl}
         alt=""
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
@@ -382,7 +382,7 @@ function FortsaetDineGuider({
               <div className="relative h-full w-[74px] shrink-0 overflow-hidden bg-[#EAE6D8]">
                 {hasPhoto ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={src}
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"
@@ -737,7 +737,7 @@ function KategoriKort({ category, arts }: { category: LibraryCategory; arts: Lib
           højre hjørne, så det bevidst beskæres af kortets højre + nederste kant.
           Uændret lav styrke (~18 %) så kategorinavnet beholder første prioritet. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <img loading="lazy" decoding="async"
         src={`/images/glyphs/${glyph}.png`}
         alt=""
         aria-hidden="true"
@@ -791,7 +791,7 @@ function TeknikIndgang({ count }: { count: number }) {
       {/* Stor, beskåret grensaks-glyph som lavkontrast-vandmærke der blør ud over
           højre kant. Ingen ikon-boks — redaktionelt, ikke "indstilling". */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <img loading="lazy" decoding="async"
         src="/images/glyphs/beskarersaks.png"
         alt=""
         aria-hidden="true"
@@ -1010,7 +1010,7 @@ export function BiblioRow({
       <div className="relative h-full w-[58px] shrink-0 overflow-hidden bg-[#EAE6D8]">
         {hasPhoto ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <img loading="lazy" decoding="async"
             src={src}
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.05]"

@@ -41,7 +41,7 @@ export function GuideNextCard({ title, description, slug, label, backgroundImage
       {backgroundImage && (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <img loading="lazy" decoding="async"
             src={backgroundImage}
             alt=""
             aria-hidden

@@ -48,7 +48,7 @@ function VarietyCard({ variety, groupId }: { variety: GroupVariety; groupId: str
       <Link href={`/grupper/${groupId}/sorter/${variety.id}`} className="flex gap-3 p-3">
         {variety.primaryImageUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={variety.primaryImageUrl} alt="" className="h-20 w-20 rounded-md object-cover shrink-0" />
+          <img loading="lazy" decoding="async" src={variety.primaryImageUrl} alt="" className="h-20 w-20 rounded-md object-cover shrink-0" />
         ) : (
           <div className="h-20 w-20 rounded-md bg-secondary/40 flex items-center justify-center shrink-0">
             <Sprout className="h-6 w-6 text-muted-foreground" />

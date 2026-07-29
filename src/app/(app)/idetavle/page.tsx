@@ -34,7 +34,7 @@ function IdeaCard({ idea, shareCount, ownerLabel, viaGroupName }: IdeaCardProps)
       <div className="aspect-[3/2] bg-pattern-botanical bg-secondary/20 flex items-center justify-center overflow-hidden">
         {cover ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={cover} alt={idea.title} className="w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={cover} alt={idea.title} className="w-full h-full object-cover" />
         ) : (
           <Lightbulb className="h-10 w-10 text-muted-foreground/40" />
         )}

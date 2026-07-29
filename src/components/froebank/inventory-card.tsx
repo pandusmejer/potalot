@@ -155,7 +155,7 @@ export function InventoryCard({
       {heroImage ? (
         <div aria-hidden className="absolute inset-0" style={{ transform: 'translateY(-11%)' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <img loading="lazy" decoding="async"
             src={heroImage}
             alt=""
             className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"

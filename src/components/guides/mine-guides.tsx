@@ -103,7 +103,7 @@ export function MineGuides({ guides }: { guides: Guide[] }) {
             >
               {g.primaryImageId ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={g.primaryImageId} alt="" className="h-full w-full object-cover" />
+                <img loading="lazy" decoding="async" src={g.primaryImageId} alt="" className="h-full w-full object-cover" />
               ) : (
                 <Sprout className="h-5 w-5" style={{ color: '#5A7038' }} strokeWidth={1.9} aria-hidden />
               )}

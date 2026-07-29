@@ -54,7 +54,7 @@ export function SpoergGartneren() {
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <img loading="lazy" decoding="async"
             src="/images/glyphs/plante.png"
             alt=""
             aria-hidden

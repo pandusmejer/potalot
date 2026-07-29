@@ -45,7 +45,7 @@ export function MaaskeDuOgsaa({ forslag, billede }: Props) {
           // Fuldt foto — fylder hele boksen. Billedets egen rolige creme-
           // venstreside bærer teksten, så ingen gradient er nødvendig.
           // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <img loading="lazy" decoding="async"
             src={billede}
             alt=""
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}

@@ -142,7 +142,7 @@ export function EditorialBleedCard({
         style={maskStyle}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <img loading="lazy" decoding="async"
           src={imageSrc}
           alt={imageAlt}
           className="h-full w-full object-cover"

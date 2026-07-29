@@ -115,7 +115,7 @@ export default async function MinHavePage() {
             <span className="relative h-[68px] w-[68px] shrink-0 overflow-hidden bg-[#EAE6D8]">
               {it.imageSrc && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <img loading="lazy" decoding="async"
                   src={it.imageSrc}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"

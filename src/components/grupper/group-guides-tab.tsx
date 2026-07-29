@@ -65,7 +65,7 @@ function GuideCard({ guide }: { guide: GroupGuide }) {
       <Link href={`/guides/${guide.id}`} className="flex gap-3 p-3">
         {guide.primaryImageUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={guide.primaryImageUrl} alt="" className="h-16 w-16 rounded-md object-cover shrink-0" />
+          <img loading="lazy" decoding="async" src={guide.primaryImageUrl} alt="" className="h-16 w-16 rounded-md object-cover shrink-0" />
         ) : (
           <div className="h-16 w-16 rounded-md bg-secondary/40 flex items-center justify-center shrink-0">
             <BookOpen className="h-5 w-5 text-muted-foreground" />

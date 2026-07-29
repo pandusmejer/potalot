@@ -286,7 +286,7 @@ function ComparisonPortrait({ item }: { item: ComparisonItem }) {
     <article className="relative z-10 flex min-w-0 flex-col items-center text-center">
       <div className="h-[104px] w-[104px] overflow-hidden rounded-full min-[430px]:h-[124px] min-[430px]:w-[124px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.imageSrc} alt={item.imageAlt} className="h-full w-full object-cover" />
+        <img loading="lazy" decoding="async" src={item.imageSrc} alt={item.imageAlt} className="h-full w-full object-cover" />
       </div>
       <h3
         className="m-0 mt-4"

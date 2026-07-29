@@ -390,7 +390,7 @@ export async function GuideArticle({
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={effective.primaryImageId}
                     alt={effective.plantName}
                     className="block w-full object-cover"
@@ -861,7 +861,7 @@ export async function GuideArticle({
                   >
                     {v.primaryImageId && (
                       /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={v.primaryImageId}
                         alt={v.variety ?? ''}
                         className="h-full w-full object-cover"

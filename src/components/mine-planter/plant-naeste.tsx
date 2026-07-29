@@ -45,7 +45,7 @@ export function PlantNaeste({
         <div className="absolute right-0 top-0 bottom-0" style={{ width: 'calc(58% - 8mm)' }}>
           {naeste.fotoSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <img loading="lazy" decoding="async"
               src={naeste.fotoSrc}
               alt={naeste.fotoAlt}
               className="absolute inset-0 h-full w-full object-cover"

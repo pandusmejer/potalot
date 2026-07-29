@@ -77,7 +77,7 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
             style={{ width: 108, background: '#E7E2D2' }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <img loading="lazy" decoding="async"
               src={MOTIV}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
@@ -132,7 +132,7 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
                 style={{ width: 44, height: 44, borderRadius: 10, background: '#E7E2D2' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <img loading="lazy" decoding="async"
                   src={MOTIV}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"

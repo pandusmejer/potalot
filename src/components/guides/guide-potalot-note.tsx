@@ -36,7 +36,7 @@ export function GuidePotalotNote({ body }: Props) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {/* Potalot plante-glyph som signatur på anbefalings-noten. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <img loading="lazy" decoding="async"
           src="/images/glyphs/plante.png"
           alt=""
           aria-hidden

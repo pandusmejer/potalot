@@ -89,7 +89,7 @@ export function HeroIdentityStack({
           style={{ border: '1px solid rgba(45,42,36,0.08)' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <img loading="lazy" decoding="async"
             src={heroImage}
             alt=""
             className="h-full w-full object-cover"

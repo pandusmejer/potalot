@@ -80,7 +80,7 @@ export default async function HavelandskabPage() {
             <Card key={c.id} className="overflow-hidden">
               {c.coverImageUrl && (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={c.coverImageUrl} alt="" className="w-full h-32 object-cover" />
+                <img loading="lazy" decoding="async" src={c.coverImageUrl} alt="" className="w-full h-32 object-cover" />
               )}
               <CardContent className="py-4 space-y-2">
                 <div className="flex items-start gap-2 flex-wrap">
@@ -118,7 +118,7 @@ export default async function HavelandskabPage() {
                     <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Dit bidrag</p>
                     {c.myEntry.imageUrl && (
                       /* eslint-disable-next-line @next/next/no-img-element */
-                      <img src={c.myEntry.imageUrl} alt="" className="rounded-md max-h-32 object-cover" />
+                      <img loading="lazy" decoding="async" src={c.myEntry.imageUrl} alt="" className="rounded-md max-h-32 object-cover" />
                     )}
                     {c.myEntry.caption && (
                       <p className="text-xs text-foreground">{c.myEntry.caption}</p>

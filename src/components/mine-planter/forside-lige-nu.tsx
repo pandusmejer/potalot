@@ -136,7 +136,7 @@ export function ForsideLigeNu({ plant, forventning }: { plant: Plant; forventnin
       <div className="relative" style={{ width: '42%' }}>
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
+          <img loading="lazy" decoding="async" src={photo} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]" />
         ) : (
           <div
             className="absolute inset-0 flex items-center justify-center"

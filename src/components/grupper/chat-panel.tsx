@@ -91,7 +91,7 @@ export function ChatPanel({ groupId, groupName, messages, myUserId }: Props) {
           <div className="flex items-center gap-2">
             <div className="h-16 w-16 rounded-md overflow-hidden border border-border bg-muted shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={imageUrl} alt="" className="w-full h-full object-cover" />
             </div>
             <Button type="button" variant="ghost" size="sm" onClick={() => setImageUrl(null)}>
               <X className="h-3.5 w-3.5" />
