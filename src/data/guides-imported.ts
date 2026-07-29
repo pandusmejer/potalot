@@ -966,6 +966,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "azalea",
+    "plantName": "Azalea",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rhododendron",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Brugerrettet guide til løvfældende og kompakte rhododendrontyper, dyrket for stærk blomstring og efterårsfarve i surbund.",
+    "difficulty": "medium",
+    "tags": [
+      "surbund",
+      "prydbusk",
+      "forarsblomstring",
+      "efteraarsfarve",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "azalea-er-botanisk-rhododendron",
+        "title": "Azalea er botanisk rhododendron",
+        "body": "Azalea er et brugerrettet navn for bestemte rhododendrontyper, især løvfældende og småbladede former. Guiden bevares separat, fordi brugerne søger efter azalea som en selvstændig plante."
+      },
+      {
+        "key": "sur-humusrig-jord",
+        "title": "Sur, humusrig jord",
+        "body": "Azalea kræver surbund med godt dræn og jævn fugtighed."
+      },
+      {
+        "key": "lys-halvskygge-giver-god-blomstring",
+        "title": "Lys halvskygge giver god blomstring",
+        "body": "Plant lyst, men beskyttet mod hård middagssol og udtørrende vind."
+      },
+      {
+        "key": "plant-ikke-for-dybt",
+        "title": "Plant ikke for dybt",
+        "body": "Rødderne ligger overfladisk. Kronen må ikke dækkes af tung jord."
+      },
+      {
+        "key": "vand-under-knopdannelse-og-toerke",
+        "title": "Vand under knopdannelse og tørke",
+        "body": "Udtørring kan reducere næste sæsons blomstring."
+      },
+      {
+        "key": "beskaer-efter-blomstring",
+        "title": "Beskær efter blomstring",
+        "body": "Let formning foretages efter blomstring, så nye knopper kan dannes."
+      },
+      {
+        "key": "efteraarsfarven-er-en-ekstra-kvalitet",
+        "title": "Efterårsfarven er en ekstra kvalitet",
+        "body": "Løvfældende azalea kan få stærke gule, orange og røde efterårsfarver."
+      },
+      {
+        "key": "sortsguiden-skal-vaere-botanisk-tydelig",
+        "title": "Sortsguiden skal være botanisk tydelig",
+        "body": "Angiv gruppe, løvfældende eller stedsegrøn type, slutstørrelse, duft, blomsterfarve og hårdførhed."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/azaleas",
+      "https://www.rhs.org.uk/plants/rhododendron/growing-guide",
+      "https://www.rhs.org.uk/soil-composts-mulches/acid-soils"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "basilikum",
     "plantName": "Basilikum",
     "title": null,
@@ -1197,6 +1280,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/blaabaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/blueberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "blaaregn",
+    "plantName": "Blåregn",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Wisteria",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Kraftig, træagtig klatreplante med lange blomsterklaser, som kræver solid støtte, sol og regelmæssig beskæring.",
+    "difficulty": "hard",
+    "tags": [
+      "klatreplante",
+      "duft",
+      "pergola",
+      "sol",
+      "kraftig-vaekst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-langsigtet-konstruktion",
+        "title": "En langsigtet konstruktion",
+        "body": "Blåregn bliver tung, kraftig og meget gammel. Støtten skal være dimensioneret som en permanent del af bygningen eller pergolaen."
+      },
+      {
+        "key": "sol-og-varme-fremmer-blomstring",
+        "title": "Sol og varme fremmer blomstring",
+        "body": "Plant i fuld sol på en lun placering. For meget skygge giver ofte kraftig vækst uden tilsvarende blomstring."
+      },
+      {
+        "key": "jorden-skal-vaere-dyb-og-veldraenet",
+        "title": "Jorden skal være dyb og veldrænet",
+        "body": "Blåregn trives i næringsrig jord med jævn fugt, men tåler ikke vedvarende vandmætning."
+      },
+      {
+        "key": "led-hovedgrenene-fra-begyndelsen",
+        "title": "Led hovedgrenene fra begyndelsen",
+        "body": "Vælg få hovedskud og bind dem til stærke vandrette wirer eller en robust ramme."
+      },
+      {
+        "key": "beskaer-to-gange-om-aaret",
+        "title": "Beskær to gange om året",
+        "body": "Sommerbeskæring begrænser lange sideskud, mens vinterbeskæring forkorter dem yderligere og fremmer blomsterknopper."
+      },
+      {
+        "key": "taalmodighed-er-en-del-af-dyrkningen",
+        "title": "Tålmodighed er en del af dyrkningen",
+        "body": "Frøformerede planter kan være længe om at blomstre. Podede eller stiklingeformerede navnesorter er mere forudsigelige."
+      },
+      {
+        "key": "alle-dele-boer-behandles-som-giftige",
+        "title": "Alle dele bør behandles som giftige",
+        "body": "Frø og bælge kan være særligt problematiske ved indtagelse. Placér planten med omtanke omkring små børn og dyr."
+      },
+      {
+        "key": "sortsguiden-skal-vise-blomsterklasens-karakter",
+        "title": "Sortsguiden skal vise blomsterklasens karakter",
+        "body": "Angiv art, blomsterfarve, klaselængde, duft, blomstringstid, vækstkraft og forventet blomstringsalder."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/wisteria",
+      "https://www.rhs.org.uk/plants/wisteria/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
     ],
     "status": "published",
     "visibility": "public",
@@ -2914,6 +3080,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "forsythia",
+    "plantName": "Forsythia",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Forsythia",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Tidligt blomstrende busk med gule blomster på bar gren, bedst i sol og med beskæring umiddelbart efter blomstring.",
+    "difficulty": "easy",
+    "tags": [
+      "prydbusk",
+      "tidlig-blomstring",
+      "sol",
+      "haek",
+      "nem"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "gul-blomstring-foer-loevspring",
+        "title": "Gul blomstring før løvspring",
+        "body": "Forsythia blomstrer tidligt på bare grene og skaber et tydeligt forårssignal i haven."
+      },
+      {
+        "key": "sol-giver-flest-blomster",
+        "title": "Sol giver flest blomster",
+        "body": "Plant i fuld sol eller let halvskygge. I skygge bliver blomstringen mere sparsom."
+      },
+      {
+        "key": "robust-i-almindelig-jord",
+        "title": "Robust i almindelig jord",
+        "body": "Forsythia klarer de fleste veldrænede jorder og er relativt tolerant, når den først er etableret."
+      },
+      {
+        "key": "giv-busken-plads",
+        "title": "Giv busken plads",
+        "body": "Mange sorter bliver brede og buede. Klippes de hårdt som kasser, mister de både blomstring og naturlig form."
+      },
+      {
+        "key": "beskaer-lige-efter-blomstring",
+        "title": "Beskær lige efter blomstring",
+        "body": "Blomsterknopper dannes på ældre ved. Beskær derfor efter blomstring og fjern nogle af de ældste grene ved basis."
+      },
+      {
+        "key": "foryng-gamle-buske",
+        "title": "Foryng gamle buske",
+        "body": "Meget tætte buske kan forynges gradvist over flere år."
+      },
+      {
+        "key": "faa-alvorlige-problemer",
+        "title": "Få alvorlige problemer",
+        "body": "Planten er robust, men tæt vækst og dårlig placering kan give svage skud og mindre blomstring."
+      },
+      {
+        "key": "sorten-afgoer-formen",
+        "title": "Sorten afgør formen",
+        "body": "Sortsguiden bør beskrive højde, bredde, grenform, blomstringstid og egnethed til fri busk eller hæk."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/forsythia",
+      "https://www.rhs.org.uk/plants/types/shrubs/pruning-early-flowering",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "graeskar",
     "plantName": "Græskar",
     "title": null,
@@ -3698,6 +3947,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "humle",
+    "plantName": "Humle",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Humulus lupulus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Meget hurtig flerårig klatreplante, som visner ned om vinteren og skyder kraftigt igen fra roden hvert forår.",
+    "difficulty": "easy",
+    "tags": [
+      "klatreplante",
+      "staude",
+      "hurtig-vaekst",
+      "spiselig",
+      "sol"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "klatrer-fra-nul-hver-saeson",
+        "title": "Klatrer fra nul hver sæson",
+        "body": "Humle er en flerårig plante med underjordiske rødder, mens de overjordiske ranker visner ned om vinteren."
+      },
+      {
+        "key": "sol-og-naeringsrig-jord",
+        "title": "Sol og næringsrig jord",
+        "body": "Plant i sol eller let halvskygge i dyb, fugtbevarende og veldrænet jord."
+      },
+      {
+        "key": "giv-hoeje-lodrette-snore",
+        "title": "Giv høje lodrette snore",
+        "body": "Rankerne snor sig omkring snore, wirer og tynde støtter og kan nå stor højde på én sæson."
+      },
+      {
+        "key": "styr-antallet-af-ranker",
+        "title": "Styr antallet af ranker",
+        "body": "Vælg nogle få stærke skud og fjern overskydende vækst, hvis planten dyrkes for kogler eller et ordnet udtryk."
+      },
+      {
+        "key": "vand-og-goed-under-kraftig-vaekst",
+        "title": "Vand og gød under kraftig vækst",
+        "body": "Den hurtige vækst kræver regelmæssig vandforsyning og næring i foråret og forsommeren."
+      },
+      {
+        "key": "skaer-ned-efter-saesonen",
+        "title": "Skær ned efter sæsonen",
+        "body": "Når rankerne visner, skæres de tilbage til jorden. Støtten kan derefter ryddes."
+      },
+      {
+        "key": "begraens-rodskud",
+        "title": "Begræns rodskud",
+        "body": "Humle kan brede sig fra rødderne. En tydelig plantezone gør senere arbejde væsentligt mindre irriterende."
+      },
+      {
+        "key": "sortsguiden-boer-skelne-pryd-og-bryg",
+        "title": "Sortsguiden bør skelne pryd og bryg",
+        "body": "Angiv anvendelse, køn, kogletype, aroma, vækstkraft, bladfarve og forventet højde."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/hops",
+      "https://www.rhs.org.uk/plants/types/climbers/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "hvidloeg",
     "plantName": "Hvidløg",
     "title": null,
@@ -3818,6 +4150,89 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
       "https://www.rhs.org.uk/plants/858/allium-sativum/details",
       "https://www.rhs.org.uk/education-learning/children-young-people/family-activities/grow-it/garlic"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "japansk-loen",
+    "plantName": "Japansk løn",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Acer palmatum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "traeer",
+    "subcategoryId": null,
+    "summary": "Elegant lille træ eller busk med fint løv og stærke efterårsfarver, bedst i læ og veldrænet, humusrig jord.",
+    "difficulty": "medium",
+    "tags": [
+      "lille-trae",
+      "prydbusk",
+      "efteraarsfarve",
+      "halvskygge",
+      "krukke"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "loevets-form-og-farve-er-hovedsagen",
+        "title": "Løvets form og farve er hovedsagen",
+        "body": "Japansk løn dyrkes for sit fintdelte løv, sin lette vækstform og stærke efterårsfarver. Sorterne varierer fra lave buske til mindre træer."
+      },
+      {
+        "key": "lae-beskytter-bladene",
+        "title": "Læ beskytter bladene",
+        "body": "Placér planten i læ for hård vind og udtørring. Lys halvskygge er ofte ideel, især for lyse og fintløvede sorter."
+      },
+      {
+        "key": "jorden-skal-draene",
+        "title": "Jorden skal dræne",
+        "body": "Brug humusrig, let sur til neutral jord med godt afløb. Rødderne tåler ikke langvarig vintervåd jord."
+      },
+      {
+        "key": "vand-jaevnt-under-etablering",
+        "title": "Vand jævnt under etablering",
+        "body": "Nyplantede træer og krukkeplanter skal vandes regelmæssigt. Ujævn fugt kan give tørre bladkanter."
+      },
+      {
+        "key": "beskaer-forsigtigt",
+        "title": "Beskær forsigtigt",
+        "body": "Beskæring begrænses til døde eller uhensigtsmæssige grene. Den naturlige grenstruktur er en stor del af plantens værdi."
+      },
+      {
+        "key": "krukker-kraever-ekstra-vinterhensyn",
+        "title": "Krukker kræver ekstra vinterhensyn",
+        "body": "Små sorter kan dyrkes i krukker, men rødderne skal beskyttes mod gennemfrysning og vandmætning."
+      },
+      {
+        "key": "bladskader-er-ofte-miljoebetingede",
+        "title": "Bladskader er ofte miljøbetingede",
+        "body": "Svedne kanter skyldes ofte vind, sol eller tørke snarere end sygdom. Flyt eller beskyt planten før kemisk drama sættes i gang."
+      },
+      {
+        "key": "sorten-afgoer-hele-udtrykket",
+        "title": "Sorten afgør hele udtrykket",
+        "body": "Sortsguiden bør beskrive højde, bredde, bladform, sommerfarve, efterårsfarve og tolerance for sol."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/acer/japanese-maples/growing-guide",
+      "https://www.rhs.org.uk/plants/acer/japanese-maples",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
     ],
     "status": "published",
     "visibility": "public",
@@ -4375,6 +4790,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "kaprifolie",
+    "plantName": "Kaprifolie",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Lonicera",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Duftende klatreplante med rørformede blomster, velegnet til espalier, hegn og naturprægede haver.",
+    "difficulty": "easy",
+    "tags": [
+      "klatreplante",
+      "duft",
+      "bestoeversplante",
+      "halvskygge",
+      "hegn"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "duftende-blomster-og-taet-vaekst",
+        "title": "Duftende blomster og tæt vækst",
+        "body": "Klatrende kaprifolie dyrkes for sine rørformede blomster, duft og evne til hurtigt at dække hegn og espalier."
+      },
+      {
+        "key": "sol-eller-halvskygge",
+        "title": "Sol eller halvskygge",
+        "body": "Blomstringen er rigest i lys, men mange sorter trives godt med rødderne i kølig halvskygge."
+      },
+      {
+        "key": "fugtbevarende-veldraenet-jord",
+        "title": "Fugtbevarende, veldrænet jord",
+        "body": "Kaprifolie vokser bedst i humusrig jord, der ikke tørrer helt ud i vækstsæsonen."
+      },
+      {
+        "key": "giv-snonende-skud-noget-at-gribe-om",
+        "title": "Giv snonende skud noget at gribe om",
+        "body": "Brug net, wirer eller et åbent espalier. Bind unge skud løst ind, indtil de selv finder støtten."
+      },
+      {
+        "key": "beskaer-efter-blomstring",
+        "title": "Beskær efter blomstring",
+        "body": "Tidligt blomstrende sorter beskæres efter blomstring. Overgroede planter kan forynges gradvist."
+      },
+      {
+        "key": "tynd-taette-planter",
+        "title": "Tynd tætte planter",
+        "body": "Luft mellem skuddene mindsker meldug og gør blomstringen mere synlig."
+      },
+      {
+        "key": "baer-er-ikke-til-fri-proevesmagning",
+        "title": "Bær er ikke til fri prøvesmagning",
+        "body": "Nogle arter danner dekorative bær, men de bør ikke betragtes som spiselige."
+      },
+      {
+        "key": "sortsguiden-boer-fremhaeve-duft-og-blomstringstid",
+        "title": "Sortsguiden bør fremhæve duft og blomstringstid",
+        "body": "Angiv farve, duft, blomstringstid, væksthøjde, løvtype og behov for beskæring."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/honeysuckle",
+      "https://www.rhs.org.uk/plants/honeysuckle/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "kartoffel",
     "plantName": "Kartoffel",
     "title": null,
@@ -4598,6 +5096,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/kirsebaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/cherries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "klematis",
+    "plantName": "Klematis",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Clematis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Blomstrende klatreplante med meget forskellige vækstformer og beskæringsbehov, afhængigt af gruppe og sort.",
+    "difficulty": "medium",
+    "tags": [
+      "klatreplante",
+      "blomstring",
+      "espalier",
+      "sol",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-slaegt-med-mange-vaekstformer",
+        "title": "En slægt med mange vækstformer",
+        "body": "Klematis spænder fra små kompakte sorter til kraftige klatrere. Blomstringstid og beskæringsgruppe er afgørende for, hvordan planten dyrkes."
+      },
+      {
+        "key": "lys-til-toppen-koeligt-ved-roedderne",
+        "title": "Lys til toppen, køligt ved rødderne",
+        "body": "De fleste klematis blomstrer bedst med lys omkring skuddene og jævnt kølig, fugtbevarende jord omkring rødderne."
+      },
+      {
+        "key": "giv-et-fintmasket-klatrestativ",
+        "title": "Giv et fintmasket klatrestativ",
+        "body": "Bladstilkene griber om tynde støtter. Net, wirer eller smalle tremmer fungerer bedre end tykke stolper."
+      },
+      {
+        "key": "plant-dybt-og-vand-grundigt",
+        "title": "Plant dybt og vand grundigt",
+        "body": "Plant etablerede klematis lidt dybere end de stod i potten, og hold jorden jævnt fugtig under etableringen."
+      },
+      {
+        "key": "beskaer-efter-gruppe",
+        "title": "Beskær efter gruppe",
+        "body": "Klematis deles praktisk i tre beskæringsgrupper. Forkert beskæring kan fjerne blomstringen, selv om planten ellers er sund."
+      },
+      {
+        "key": "goed-moderat",
+        "title": "Gød moderat",
+        "body": "Kompost og en afbalanceret gødning i vækstsæsonen er normalt tilstrækkeligt. Overgødning giver let meget løv og færre blomster."
+      },
+      {
+        "key": "hold-oeje-med-visnesyge",
+        "title": "Hold øje med visnesyge",
+        "body": "Pludseligt sammenfald kan skyldes klematisvisnesyge eller fysisk skade. Fjern angrebne skud og beskyt de nye ved basis."
+      },
+      {
+        "key": "sortsguiden-skal-angive-beskaeringsgruppe",
+        "title": "Sortsguiden skal angive beskæringsgruppe",
+        "body": "Sortsguiden bør vise blomsterform, farve, blomstringstid, højde, beskæringsgruppe og egnet støtte."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/clematis",
+      "https://www.rhs.org.uk/plants/clematis/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
     ],
     "status": "published",
     "visibility": "public",
@@ -4832,6 +5413,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/kornblomst.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/46174/centaurea-cyanus/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "kornel",
+    "plantName": "Kornel",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Cornus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Alsidig busk- og trægruppe med blomster, bær, farvede grene eller efterårsløv, afhængigt af art og sort.",
+    "difficulty": "medium",
+    "tags": [
+      "prydbusk",
+      "lille-trae",
+      "efteraarsfarve",
+      "vinterstruktur",
+      "fuglevenlig"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-slaegt-med-flere-roller",
+        "title": "En slægt med flere roller",
+        "body": "Kornel omfatter både blomstrende småtræer og buske dyrket for farvede vintergrene. Arts- og sortsvalget afgør derfor næsten hele dyrkningen."
+      },
+      {
+        "key": "vaelg-type-foer-voksested",
+        "title": "Vælg type før voksested",
+        "body": "Grenkorneller trives ofte i fugtbevarende jord, mens blomsterkorneller kræver mere beskyttede og veldrænede forhold."
+      },
+      {
+        "key": "plant-med-plads-til-bredden",
+        "title": "Plant med plads til bredden",
+        "body": "Mange korneller bliver brede. Undgå at presse dem ind mellem for mange naboer, hvor både form og luft forsvinder."
+      },
+      {
+        "key": "vand-under-etablering",
+        "title": "Vand under etablering",
+        "body": "Hold jorden jævnt fugtig de første sæsoner. Et organisk dæklag hjælper rødderne."
+      },
+      {
+        "key": "beskaering-afhaenger-af-typen",
+        "title": "Beskæring afhænger af typen",
+        "body": "Grenkorneller kan beskæres hårdt for unge, farvede skud. Blomsterkorneller beskæres kun let."
+      },
+      {
+        "key": "vinterfarve-kraever-unge-skud",
+        "title": "Vinterfarve kræver unge skud",
+        "body": "Hos sorter dyrket for grenfarve er de yngste grene mest intense. Regelmæssig foryngelse holder effekten."
+      },
+      {
+        "key": "problemer-varierer-med-art",
+        "title": "Problemer varierer med art",
+        "body": "Bladplet, grendød og stress ses især ved forkert placering. Brug en art, der passer til jorden, før endnu et kompromis plantes."
+      },
+      {
+        "key": "sortsguiden-skal-vaere-praecis",
+        "title": "Sortsguiden skal være præcis",
+        "body": "Angiv art, slutstørrelse, blomstring, frugt, grenfarve og beskæringsbehov."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/cornus",
+      "https://www.rhs.org.uk/plants/cornus/growing-guide",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
     ],
     "status": "published",
     "visibility": "public",
@@ -5464,6 +6128,89 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/plants/pulmonaria",
       "https://www.rhs.org.uk/garden-inspiration/wildlife/early-pollen-plants",
       "https://www.rhs.org.uk/plants/types/perennials/dividing"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "magnolia",
+    "plantName": "Magnolia",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Magnolia",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Blomstrende busk eller mindre træ med store forårsblomster, bedst på en beskyttet plads i humusrig, veldrænet jord.",
+    "difficulty": "medium",
+    "tags": [
+      "prydbusk",
+      "lille-trae",
+      "forarsblomstring",
+      "sol",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "store-blomster-paa-bar-gren",
+        "title": "Store blomster på bar gren",
+        "body": "Magnolia dyrkes for sine store, markante blomster og sit rolige, skulpturelle vækstudtryk. Gruppen rummer både mindre buske og træer, som over tid kan blive betydeligt større end planteskiltet ser ud til at antyde."
+      },
+      {
+        "key": "vaelg-en-beskyttet-placering",
+        "title": "Vælg en beskyttet placering",
+        "body": "Plant i sol eller lys halvskygge, gerne i læ for kold vind. Tidligt blomstrende sorter kan få frostskader på blomsterne, så en lun placering er en reel fordel."
+      },
+      {
+        "key": "jorden-skal-vaere-humusrig-og-veldraenet",
+        "title": "Jorden skal være humusrig og veldrænet",
+        "body": "Magnolia trives i jord, der holder jævnt på fugten uden at stå våd. Bland kompost eller bladmuld i jorden og undgå hård udtørring omkring unge planter."
+      },
+      {
+        "key": "plant-uden-at-forstyrre-roedderne-unoedigt",
+        "title": "Plant uden at forstyrre rødderne unødigt",
+        "body": "Magnolia har følsomme, overfladiske rødder. Plant med rodklumpen intakt, vand grundigt og undgå senere hård gravning omkring planten."
+      },
+      {
+        "key": "beskaer-kun-let",
+        "title": "Beskær kun let",
+        "body": "Magnolia kræver normalt kun fjernelse af døde, krydsende eller beskadigede grene. Hård beskæring ødelægger let plantens naturlige form."
+      },
+      {
+        "key": "giv-plads-fra-begyndelsen",
+        "title": "Giv plads fra begyndelsen",
+        "body": "Tjek sortens forventede højde og bredde før plantning. En langsomt voksende magnolia er stadig ikke en borddekoration, bare fordi den starter som én."
+      },
+      {
+        "key": "hold-oeje-med-frost-og-toerke",
+        "title": "Hold øje med frost og tørke",
+        "body": "Blomster kan skades af sen frost, og nyplantede magnolia reagerer dårligt på udtørring. Dæk jorden og vand i tørre perioder."
+      },
+      {
+        "key": "sorten-bestemmer-stoerrelse-og-blomstring",
+        "title": "Sorten bestemmer størrelse og blomstring",
+        "body": "Sortsguiden bør beskrive slutstørrelse, blomstringstid, blomsterfarve, vækstform og hårdførhed."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/magnolia/growing-guide",
+      "https://www.rhs.org.uk/plants/magnolia",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
     ],
     "status": "published",
     "visibility": "public",
@@ -7669,6 +8416,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "rhododendron",
+    "plantName": "Rhododendron",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rhododendron",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Stedsegrøn eller løvfældende surbundsbusk med stor forårsblomstring, bedst i humusrig jord og læ.",
+    "difficulty": "medium",
+    "tags": [
+      "surbund",
+      "prydbusk",
+      "halvskygge",
+      "stedsegroen",
+      "forarsblomstring"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-stor-slaegt-af-surbundsplanter",
+        "title": "En stor slægt af surbundsplanter",
+        "body": "Rhododendron rummer både lave, kompakte buske og store, træagtige former. De fleste dyrkes for store blomsterklaser og stedsegrønt løv."
+      },
+      {
+        "key": "sur-jord-er-afgoerende",
+        "title": "Sur jord er afgørende",
+        "body": "Plant i sur, humusrig og veldrænet jord. Kalkrig jord giver ofte gulnende blade og svag vækst."
+      },
+      {
+        "key": "halvskygge-og-lae",
+        "title": "Halvskygge og læ",
+        "body": "Lys halvskygge og beskyttelse mod udtørrende vind giver stabile forhold."
+      },
+      {
+        "key": "plant-hoejt-og-bredt",
+        "title": "Plant højt og bredt",
+        "body": "Rodsystemet ligger overfladisk. Plant ikke dybere end planten stod i potten."
+      },
+      {
+        "key": "vand-med-passende-vand",
+        "title": "Vand med passende vand",
+        "body": "Vand under tørke. I meget kalkrige områder kan regnvand være bedre end hårdt ledningsvand."
+      },
+      {
+        "key": "beskaer-kun-ved-behov",
+        "title": "Beskær kun ved behov",
+        "body": "Fjern døde grene og visne blomsterstande forsigtigt. De fleste sorter har bedst af let beskæring."
+      },
+      {
+        "key": "gule-blade-er-et-signal",
+        "title": "Gule blade er et signal",
+        "body": "Klorose skyldes ofte for høj pH eller dårlige rodforhold, ikke automatisk mangel på mere gødning."
+      },
+      {
+        "key": "sorten-bestemmer-stoerrelse-og-haardfoerhed",
+        "title": "Sorten bestemmer størrelse og hårdførhed",
+        "body": "Sortsguiden bør beskrive højde, blomsterfarve, blomstringstid, løvtype, hårdførhed og jordkrav."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/rhododendron/growing-guide",
+      "https://www.rhs.org.uk/plants/rhododendron",
+      "https://www.rhs.org.uk/soil-composts-mulches/acid-soils"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "ribs",
     "plantName": "Ribs",
     "title": null,
@@ -8872,6 +9702,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "snebolle",
+    "plantName": "Snebolle",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Viburnum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Stor buskgruppe med blomster, duft, bær og efterårsfarve, med arter til både sol, halvskygge og forskellige jordtyper.",
+    "difficulty": "easy",
+    "tags": [
+      "prydbusk",
+      "blomstring",
+      "baer",
+      "fuglevenlig",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "snebolle-daekker-mange-arter",
+        "title": "Snebolle dækker mange arter",
+        "body": "Viburnum rummer både løvfældende og stedsegrønne buske med meget forskellig blomstring, frugt og størrelse."
+      },
+      {
+        "key": "vaelg-efter-lys-og-jord",
+        "title": "Vælg efter lys og jord",
+        "body": "De fleste trives i sol eller halvskygge, men artsvalget afgør tolerance for tørke, kalk og vinterfugt."
+      },
+      {
+        "key": "plant-med-plads",
+        "title": "Plant med plads",
+        "body": "Mange viburnum bliver brede og tætte. Tjek slutstørrelsen før plantning."
+      },
+      {
+        "key": "vand-de-foerste-saesoner",
+        "title": "Vand de første sæsoner",
+        "body": "Hold jorden jævnt fugtig, indtil planten er etableret."
+      },
+      {
+        "key": "beskaer-let-efter-blomstring",
+        "title": "Beskær let efter blomstring",
+        "body": "Fjern døde og krydsende grene. Store indgreb reducerer ofte den naturlige form."
+      },
+      {
+        "key": "baer-kraever-passende-bestoevning",
+        "title": "Bær kræver passende bestøvning",
+        "body": "Nogle arter og sorter sætter bedst frugt med en kompatibel plante i nærheden."
+      },
+      {
+        "key": "hold-oeje-med-bladlus-og-viburnumbille",
+        "title": "Hold øje med bladlus og viburnumbille",
+        "body": "Skadedyr kan beskadige blade og nye skud. Tidlig observation gør indsatsen lettere."
+      },
+      {
+        "key": "sortsguiden-skal-navngive-arten",
+        "title": "Sortsguiden skal navngive arten",
+        "body": "Angiv botanisk art, størrelse, blomstringstid, duft, frugt og stedsegrønhed."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/viburnum",
+      "https://www.rhs.org.uk/plants/viburnum/growing-guide",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "soed-kartoffel",
     "plantName": "Sød kartoffel",
     "title": null,
@@ -9124,6 +10037,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/solsikke.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/helianthus/growing-guide"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "sommerfuglebusk",
+    "plantName": "Sommerfuglebusk",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Buddleja",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Sommerblomstrende busk til fuld sol med nektarrige blomsterstande, bedst i veldrænet jord og med årlig beskæring.",
+    "difficulty": "easy",
+    "tags": [
+      "prydbusk",
+      "bestoeversplante",
+      "sommerblomstring",
+      "sol",
+      "beskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "lang-sommerblomstring",
+        "title": "Lang sommerblomstring",
+        "body": "Sommerfuglebusk danner lange blomsterstande i hvid, rosa, lilla eller blålige nuancer og tiltrækker mange bestøvere."
+      },
+      {
+        "key": "fuld-sol-er-bedst",
+        "title": "Fuld sol er bedst",
+        "body": "Plant varmt og solrigt. For lidt lys giver løs vækst og færre blomster."
+      },
+      {
+        "key": "draen-gennem-vinteren",
+        "title": "Dræn gennem vinteren",
+        "body": "Planten trives i veldrænet jord og kan tage skade i tung, våd vinterjord."
+      },
+      {
+        "key": "beskaer-i-foraaret",
+        "title": "Beskær i foråret",
+        "body": "De almindelige sorter blomstrer på årets nye skud og beskæres derfor kraftigt i foråret."
+      },
+      {
+        "key": "fjern-visne-blomster",
+        "title": "Fjern visne blomster",
+        "body": "Afklipning kan forlænge blomstringen og begrænse frøsætning."
+      },
+      {
+        "key": "vand-unge-planter",
+        "title": "Vand unge planter",
+        "body": "Etablerede planter tåler tørke, men nyplantede buske skal vandes regelmæssigt."
+      },
+      {
+        "key": "vaer-opmaerksom-paa-selvsaaning",
+        "title": "Vær opmærksom på selvsåning",
+        "body": "Buddleja kan selvså i varme, tørre områder. Sterile sorter reducerer problemet."
+      },
+      {
+        "key": "sorten-bestemmer-stoerrelse-og-froesaetning",
+        "title": "Sorten bestemmer størrelse og frøsætning",
+        "body": "Sortsguiden bør beskrive højde, blomsterfarve, blomstringstid, vækstform og om sorten er steril."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/buddleja",
+      "https://www.rhs.org.uk/plants/buddleja/growing-guide",
+      "https://www.rhs.org.uk/plants/buddleja/pruning"
     ],
     "status": "published",
     "visibility": "public",
@@ -9535,6 +10531,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "stjernejasmin",
+    "plantName": "Stjernejasmin",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Trachelospermum jasminoides",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Stedsegrøn, duftende klatreplante til meget lune placeringer eller krukker, med hvide stjerneformede sommerblomster.",
+    "difficulty": "hard",
+    "tags": [
+      "klatreplante",
+      "duft",
+      "stedsegroen",
+      "krukke",
+      "lun-placering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "duftende-stedsegroen-klatrer",
+        "title": "Duftende, stedsegrøn klatrer",
+        "body": "Stjernejasmin har blanke blade og hvide, stjerneformede blomster med tydelig duft."
+      },
+      {
+        "key": "en-meget-lun-placering-er-afgoerende",
+        "title": "En meget lun placering er afgørende",
+        "body": "I dansk klima dyrkes den bedst ved en varm, beskyttet væg eller i en stor krukke, der kan vinterbeskyttes."
+      },
+      {
+        "key": "lys-og-veldraenet-jord",
+        "title": "Lys og veldrænet jord",
+        "body": "Plant i sol eller lys halvskygge i humusrig jord med sikkert vinterdræn."
+      },
+      {
+        "key": "bind-unge-skud-ind",
+        "title": "Bind unge skud ind",
+        "body": "Skuddene snor sig og skal ledes på wirer eller espalier, indtil planten har dækket støtten."
+      },
+      {
+        "key": "vand-jaevnt-i-vaekstsaesonen",
+        "title": "Vand jævnt i vækstsæsonen",
+        "body": "Krukkeplanter må ikke tørre helt ud, men rødderne skal heller ikke stå våde."
+      },
+      {
+        "key": "beskaer-efter-blomstring",
+        "title": "Beskær efter blomstring",
+        "body": "Form planten let og fjern frostskadede skud, når ny vækst er tydelig."
+      },
+      {
+        "key": "vinteren-er-den-kritiske-fase",
+        "title": "Vinteren er den kritiske fase",
+        "body": "Frost, vintervind og våd jord er den største risiko. Krukker bør beskyttes eller flyttes frostfrit."
+      },
+      {
+        "key": "sortsguiden-boer-vise-loev-og-vinteregnethed",
+        "title": "Sortsguiden bør vise løv og vinteregnethed",
+        "body": "Angiv blomsterfarve, løvfarve, duft, vækstkraft, hårdførhed og anbefalet dyrkningsform."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/trachelospermum",
+      "https://www.rhs.org.uk/plants/types/climbers/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "storkenaeb",
     "plantName": "Storkenæb",
     "title": null,
@@ -9610,6 +10689,89 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/plants/geranium",
       "https://www.rhs.org.uk/plants/types/perennials/dividing",
       "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "syren",
+    "plantName": "Syren",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Syringa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Duftende forårsblomstrende busk eller lille træ til sol og veldrænet jord, med sorter i mange farver og størrelser.",
+    "difficulty": "easy",
+    "tags": [
+      "prydbusk",
+      "duft",
+      "forarsblomstring",
+      "sol",
+      "snitblomst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "duft-og-store-blomsterstande",
+        "title": "Duft og store blomsterstande",
+        "body": "Syren blomstrer i foråret med tætte klaser i hvid, rosa, lilla og blålige toner. Mange sorter har kraftig duft."
+      },
+      {
+        "key": "fuld-sol-giver-rigest-blomstring",
+        "title": "Fuld sol giver rigest blomstring",
+        "body": "Plant i sol og med luft omkring busken. For meget skygge giver færre blomster."
+      },
+      {
+        "key": "jorden-maa-ikke-staa-vaad",
+        "title": "Jorden må ikke stå våd",
+        "body": "Syren trives i almindelig, veldrænet havejord. Den tåler ofte kalk bedre end sur, våd jord."
+      },
+      {
+        "key": "plant-med-plads-til-rodskud",
+        "title": "Plant med plads til rodskud",
+        "body": "Nogle syrener sender rodskud og danner brede bestande. Vælg placeringen efter den faktiske vækstform."
+      },
+      {
+        "key": "beskaer-efter-blomstring",
+        "title": "Beskær efter blomstring",
+        "body": "Fjern gamle blomster og enkelte ældre grene efter blomstring. Hård vinterbeskæring fjerner næste sæsons blomsterknopper."
+      },
+      {
+        "key": "foryng-gradvist",
+        "title": "Foryng gradvist",
+        "body": "Gamle buske kan forynges ved at fjerne nogle få af de ældste stammer ad gangen."
+      },
+      {
+        "key": "hold-oeje-med-meldug",
+        "title": "Hold øje med meldug",
+        "body": "Meldug ses ofte sent på sommeren. God luft og passende vand reducerer presset."
+      },
+      {
+        "key": "sorten-styrer-stoerrelse-og-duft",
+        "title": "Sorten styrer størrelse og duft",
+        "body": "Sortsguiden bør beskrive højde, bredde, blomsterfarve, duft, blomstringstid og tendens til rodskud."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/lilac/growing-guide",
+      "https://www.rhs.org.uk/plants/syringa",
+      "https://www.rhs.org.uk/plants/types/trees/planting-trees-shrubs"
     ],
     "status": "published",
     "visibility": "public",
@@ -10225,6 +11387,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "trompetblomst",
+    "plantName": "Trompetblomst",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Campsis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Varmekrævende, kraftig klatreplante med store trompetformede blomster, bedst på en lun og solrig placering.",
+    "difficulty": "medium",
+    "tags": [
+      "klatreplante",
+      "sommerblomstring",
+      "sol",
+      "lun-placering",
+      "kraftig-vaekst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "eksotisk-blomstring-paa-en-varm-vaeg",
+        "title": "Eksotisk blomstring på en varm væg",
+        "body": "Trompetblomst dyrkes for store orange, røde eller gule blomster sent på sommeren."
+      },
+      {
+        "key": "kraever-sol-og-lae",
+        "title": "Kræver sol og læ",
+        "body": "En syd- eller vestvendt, varm placering giver bedst chance for modning af skud og rig blomstring."
+      },
+      {
+        "key": "veldraenet-jord",
+        "title": "Veldrænet jord",
+        "body": "Plant i næringsrig jord med godt vinterdræn. Unge planter bør beskyttes i hårde vintre."
+      },
+      {
+        "key": "solid-stoette-er-noedvendig",
+        "title": "Solid støtte er nødvendig",
+        "body": "Planten bliver tung og kraftig. Selvhæftende luftrødder bør ikke være den eneste støtte på udsatte konstruktioner."
+      },
+      {
+        "key": "beskaer-i-sen-vinter-eller-tidligt-foraar",
+        "title": "Beskær i sen vinter eller tidligt forår",
+        "body": "Forkort sideskud og fjern uønsket vækst for at holde planten tæt på støtten."
+      },
+      {
+        "key": "blomstring-kraever-modne-skud",
+        "title": "Blomstring kræver modne skud",
+        "body": "Unge planter kan være nogle år om at blomstre, især på kølige placeringer."
+      },
+      {
+        "key": "rodskud-kan-dukke-op",
+        "title": "Rodskud kan dukke op",
+        "body": "Campsis kan sende skud fra rødderne. Fjern dem tidligt, hvor planten ikke skal brede sig."
+      },
+      {
+        "key": "sortsguiden-boer-fremhaeve-haardfoerhed",
+        "title": "Sortsguiden bør fremhæve hårdførhed",
+        "body": "Angiv blomsterfarve, højde, blomstringstid, vækstkraft og egnethed til dansk friland."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/campsis",
+      "https://www.rhs.org.uk/plants/types/climbers/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tulipan",
     "plantName": "Tulipan",
     "title": null,
@@ -10387,6 +11632,172 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://extension.usu.edu/yardandgarden/research/lambs-lettuce-in-the-garden",
       "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "vedbend",
+    "plantName": "Vedbend",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Hedera",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Stedsegrøn klatre- og bunddækkeplante til skygge og halvskygge, med selvhæftende rødder og stor vækstkraft.",
+    "difficulty": "easy",
+    "tags": [
+      "klatreplante",
+      "stedsegroen",
+      "skygge",
+      "bunddaekke",
+      "vintergroen"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "stedsegroen-struktur-hele-aaret",
+        "title": "Stedsegrøn struktur hele året",
+        "body": "Vedbend kan bruges som klatreplante, bunddække eller vintergrøn baggrund. Ældre planter kan få en busket, blomstrende voksenform."
+      },
+      {
+        "key": "taaler-skygge",
+        "title": "Tåler skygge",
+        "body": "Vedbend klarer skygge bedre end de fleste klatreplanter. Brogede sorter kræver ofte mere lys for at bevare farverne."
+      },
+      {
+        "key": "tilpasningsdygtig-jordplante",
+        "title": "Tilpasningsdygtig jordplante",
+        "body": "Den trives i de fleste jorder, hvis rødderne ikke står permanent i vand."
+      },
+      {
+        "key": "selvhaeftende-roedder-kraever-omtanke",
+        "title": "Selvhæftende rødder kræver omtanke",
+        "body": "Vedbend hæfter direkte på underlaget. Brug den ikke ukritisk på løse fuger, beskadiget murværk eller træbeklædning."
+      },
+      {
+        "key": "beskaer-naar-den-overskrider-sin-plads",
+        "title": "Beskær når den overskrider sin plads",
+        "body": "Vedbend tåler beskæring godt. Hold den væk fra tagrender, vinduer og konstruktioner, hvor den ikke skal være."
+      },
+      {
+        "key": "vigtig-sen-foedekilde",
+        "title": "Vigtig sen fødekilde",
+        "body": "Voksne, blomstrende skud leverer nektar sent på året og bær senere på vinteren."
+      },
+      {
+        "key": "hold-vaek-fra-utilsigtede-omraader",
+        "title": "Hold væk fra utilsigtede områder",
+        "body": "Den kan brede sig kraftigt som bunddække og kræver klare kanter omkring bede og stier."
+      },
+      {
+        "key": "sortsguiden-skal-vise-loev-og-vaekstform",
+        "title": "Sortsguiden skal vise løv og vækstform",
+        "body": "Angiv bladstørrelse, farve, vinterudtryk, vækstkraft og egnethed som klatrer eller bunddække."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/ivy",
+      "https://www.rhs.org.uk/plants/ivy/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "vildvin",
+    "plantName": "Vildvin",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Parthenocissus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Kraftig løvfældende klatreplante med stærke efterårsfarver, velegnet til store mure, hegn og robuste konstruktioner.",
+    "difficulty": "easy",
+    "tags": [
+      "klatreplante",
+      "efteraarsfarve",
+      "mur",
+      "sol",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "efteraarsfarve-i-stor-skala",
+        "title": "Efterårsfarve i stor skala",
+        "body": "Vildvin dækker hurtigt store flader og får ofte intense røde og orange efterårsfarver."
+      },
+      {
+        "key": "sol-giver-staerkest-farve",
+        "title": "Sol giver stærkest farve",
+        "body": "Planten tåler halvskygge, men efterårsfarven udvikles normalt bedst med god lysmængde."
+      },
+      {
+        "key": "robust-i-de-fleste-jorder",
+        "title": "Robust i de fleste jorder",
+        "body": "Vildvin trives i almindelig, veldrænet havejord og kræver kun begrænset pleje efter etablering."
+      },
+      {
+        "key": "arten-afgoer-haeftemetoden",
+        "title": "Arten afgør hæftemetoden",
+        "body": "Nogle vildvin hæfter med sugeskiver, mens andre har slyngtråde og har brug for støtte."
+      },
+      {
+        "key": "giv-plads-og-beskaer-konsekvent",
+        "title": "Giv plads og beskær konsekvent",
+        "body": "Hold skud væk fra tagrender, vinduer og tagflader. Beskæring kan foretages gennem vækstsæsonen."
+      },
+      {
+        "key": "velegnet-til-store-flader",
+        "title": "Velegnet til store flader",
+        "body": "På små facader bliver den hurtigt et vedligeholdelsesprojekt forklædt som plantevalg."
+      },
+      {
+        "key": "baer-boer-ikke-spises",
+        "title": "Bær bør ikke spises",
+        "body": "De mørke bær er dekorative og fuglevenlige, men ikke egnede som menneskeføde."
+      },
+      {
+        "key": "sortsguiden-skal-forklare-haeftning-og-farve",
+        "title": "Sortsguiden skal forklare hæftning og farve",
+        "body": "Angiv art, bladform, efterårsfarve, vækstkraft, hæftemetode og forventet størrelse."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/parthenocissus",
+      "https://www.rhs.org.uk/plants/types/climbers/growing-guide",
+      "https://www.rhs.org.uk/plants/types/climbers"
     ],
     "status": "published",
     "visibility": "public",
