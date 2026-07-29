@@ -58,7 +58,10 @@ function collectJsonFiles(dir: string): string[] {
   const walk = (d: string) => {
     for (const e of readdirSync(d, { withFileTypes: true })) {
       const p = join(d, e.name)
-      if (e.isDirectory()) walk(p)
+      // Spring arkiverede batches over — de er allerede implementeret. Uden
+      // dette ville intake genimportere parkerede/omdøbte guides (fx den
+      // parkerede ananaskirsebaer eller det gamle blaastop-slug).
+      if (e.isDirectory()) { if (e.name !== 'arkiv') walk(p) }
       else if (e.name.endsWith('.json')) out.push(p)
     }
   }
