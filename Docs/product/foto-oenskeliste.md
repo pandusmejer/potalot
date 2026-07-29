@@ -3,8 +3,8 @@
 Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægges ind.
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
-Status **28/7 2026** (131 guides: 82 arts · 37 sorts · 12 teknik):
-**13 fotos mangler** — alle sortskort (plantekort). **Alle 82 arts-heroes er på plads.** 106 er på plads.
+Status **28/7 2026** (154 guides: 105 arts · 37 sorts · 12 teknik):
+**36 fotos mangler** (23 prydhave-arter + 13 sortskort). **106 af 142 er på plads.**
 
 **Teknikguider tæller ikke med** — de har med vilje intet hero-foto. Farveblok-introen
 ER deres hero, og deres fotos ligger inline ved trinnet via `@foto`
@@ -20,12 +20,42 @@ får ~17 % af højden skåret væk i top og bund.
 
 ---
 
-## 🥇 Tier 1 — arts-hero ✅ FÆRDIG
+## 🥇 Tier 1 — arts-hero (23) · prydhaven (batch 13–16)
 
-Alle 82 arts-guider har nu et hero-foto (28/7). Frugtbuske/-træer,
-prydgræsser, blomster og hele køkkenhave-serien er lukket.
+Køkkenhave, frugt og etårige er 100 % dækket. De nye prydhave-arter mangler nu hero.
 
-## 🥈 Tier 2 — plantekort (13) · grupperet pr. familie · alt der mangler nu
+### Forårsløg · batch 13 (7)
+- [ ] **Tulipan** → `arts/tulipan.jpg`
+- [ ] **Påskelilje** → `arts/paaskelilje.jpg`
+- [ ] **Krokus** → `arts/krokus.jpg`
+- [ ] **Prydallium** → `arts/prydallium.jpg`
+- [ ] **Vintergæk** → `arts/vintergaek.jpg`
+- [ ] **Erantis** → `arts/erantis.jpg`
+- [ ] **Perlehyacint** → `arts/perlehyacint.jpg`
+
+### Stauder · batch 14 (8)
+- [ ] **Hosta** → `arts/hosta.jpg`
+- [ ] **Storkenæb** → `arts/storkenaeb.jpg`
+- [ ] **Purpursolhat** → `arts/purpursolhat.jpg`
+- [ ] **Lavendel** → `arts/lavendel.jpg`
+- [ ] **Sankthansurt** → `arts/sankthansurt.jpg`
+- [ ] **Asters** → `arts/asters.jpg`
+- [ ] **Røllike** → `arts/roellike.jpg`
+- [ ] **Høstanemone** → `arts/hoestanemone.jpg`
+
+### Skyggehaven · batch 15 (7)
+- [ ] **Bregner** → `arts/bregner.jpg`
+- [ ] **Lungeurt** → `arts/lungeurt.jpg`
+- [ ] **Alunrod** → `arts/alunrod.jpg`
+- [ ] **Bispehue** → `arts/bispehue.jpg`
+- [ ] **Kærmindesøster** → `arts/kaermindesoester.jpg`
+- [ ] **Skumblomst** → `arts/skumblomst.jpg`
+- [ ] **Hjerteblomst** → `arts/hjerteblomst.jpg`
+
+### Roser · batch 16 (1)
+- [ ] **Rose** → `arts/rose.jpg`
+
+## 🥈 Tier 2 — plantekort (13) · grupperet pr. familie
 
 ### Agurk (3)
 - [ ] Cucino → `plantekort/agurk-cucino.jpg`
@@ -66,14 +96,14 @@ Lægges direkte i `public/images/makro/<mappe>/` og erstatter automatisk
 
 ## ✅ Allerede på plads (106)
 
-**82 arter (ALLE) + 24 sorter** — af 119 guides med hero-krav. `npm run guides:status`
+**82 arter + 24 sorter** — af 142 guides med hero-krav. `npm run guides:status`
 er den autoritative kilde — dette dokument regenereres ud fra den.
 
-**Nyt 27–28/7:** samtlige 35 manglende arts-heroes lagt ind (frugtbuske/-træer,
-prydgræsser, morgenfrue, hele køkkenhave-serien) + 7 plantekort (hvidløg-, radise-
-og chili-grupperne). Arts-hero-siden er hermed 100 % dækket. Husk: hero kræver
-`npm run import:guides` bagefter, ellers sætter `primaryImageId` sig ikke og
-guiden viser ingen hero.
+**28/7:** køkkenhave/frugt/etårige arts-heroes 100 % dækket (82 arter) + 7 plantekort
+(hvidløg-, radise-, chili-grupperne). Derefter landede **23 nye prydhave-artsguider**
+(batch 13–16 — forårsløg, stauder, skygge, rose) UDEN fotos → de er nu Tier 1 ovenfor.
+Husk: hero kræver `npm run import:guides` bagefter, ellers sætter `primaryImageId`
+sig ikke og guiden viser ingen hero.
 
 **Forældreløse plantekort-fotos:** 18 fotos ligger i `plantekort/` til sorter der
 endnu ikke har en guide (fx Gulerod Nantes, Rødbede Boltardy, Stangbønne Cobra).
