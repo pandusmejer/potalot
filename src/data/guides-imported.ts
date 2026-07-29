@@ -543,6 +543,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "alunrod",
+    "plantName": "Alunrod",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Heuchera",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Bladstaude med stor farvevariation til halvskygge, sol og krukker, bedst i veldrænet, humusrig jord uden vintervåd.",
+    "difficulty": "medium",
+    "tags": [
+      "bladplante",
+      "halvskygge",
+      "krukke",
+      "staude",
+      "lang-saeson"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "farve-gennem-en-lang-saeson",
+        "title": "Farve gennem en lang sæson",
+        "body": "Alunrod dyrkes især for bladene, som findes i grønne, lime, bronzefarvede, lilla, orange og næsten sorte nuancer. Små klokkeformede blomster sidder på lette stængler over bladene.\n\nMange sorter beholder en stor del af løvet gennem milde vintre."
+      },
+      {
+        "key": "lysbehovet-afhaenger-af-bladfarven",
+        "title": "Lysbehovet afhænger af bladfarven",
+        "body": "Grønne og mørke sorter klarer ofte halvskygge godt, mens lyse og orange sorter kan have brug for mere lys for at holde farven. Hård middagssol kan svide bladene, især i tør jord.\n\nSortens anbefaling bør derfor vægte højere end en generel regel for slægten."
+      },
+      {
+        "key": "jorden-skal-have-baade-humus-og-draen",
+        "title": "Jorden skal have både humus og dræn",
+        "body": "Alunrod foretrækker humusrig jord, men kronen og rødderne tåler ikke langvarig vintervåd. Plant i jord, der holder moderat på fugten og samtidig dræner effektivt.\n\nUndgå at dække kronen med et tykt lag jord eller kompost."
+      },
+      {
+        "key": "plant-kronen-i-jordniveau",
+        "title": "Plant kronen i jordniveau",
+        "body": "Sæt planten, så kronen ligger ved jordoverfladen. Med tiden kan den hæve sig og få en kort, træagtig stamme synlig over jorden.\n\nDæk forsigtigt med jord eller løft og genplant planten, hvis rødderne bliver blottede."
+      },
+      {
+        "key": "vand-jaevnt-i-krukker",
+        "title": "Vand jævnt i krukker",
+        "body": "Alunrod fungerer godt i krukker, hvor bladfarven kan bruges gennem flere sæsoner. Pottejorden må ikke tørre helt ud, men krukken skal have frit afløb.\n\nOm vinteren er vedvarende fugt omkring rødderne en større risiko end almindelig kulde."
+      },
+      {
+        "key": "del-for-at-forynge",
+        "title": "Del for at forynge",
+        "body": "Gamle planter kan blive åbne i midten og løfte sig ud af jorden. Del dem i foråret, fjern trætte dele og genplant de stærke rosetter.\n\nDet holder planten kompakt og forlænger dens levetid."
+      },
+      {
+        "key": "hold-oeje-med-snudebiller-og-raad",
+        "title": "Hold øje med snudebiller og råd",
+        "body": "Larver af øresnudebiller kan beskadige rødder, især i krukker. Pludseligt kollaps uden tydelig tørke kan være et tegn.\n\nRåd opstår især i tung, våd jord eller omkring en for dybt plantet krone."
+      },
+      {
+        "key": "sorten-er-den-egentlige-designbeslutning",
+        "title": "Sorten er den egentlige designbeslutning",
+        "body": "Sortsguiden bør beskrive bladfarve gennem sæsonen, tolerance for sol, størrelse, blomsterfarve og vækstkraft.\n\nNogle sorter ændrer farve markant med temperatur og lys. Farveetiketten i butikken er derfor et øjebliksbillede, ikke en juridisk bindende aftale."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/heuchera",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "artiskok",
     "plantName": "Artiskok",
     "title": null,
@@ -710,6 +793,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "asters",
+    "plantName": "Asters",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Symphyotrichum, Eurybia og Aster",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Senblomstrende stauder med margeritlignende blomster, vigtige for efterårets farve og bestøvere i sol til halvskygge.",
+    "difficulty": "medium",
+    "tags": [
+      "staude",
+      "efteraarsblomstring",
+      "bestoeversplante",
+      "sol",
+      "snitblomst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "asters-er-et-brugerord-for-flere-slaegter",
+        "title": "Asters er et brugerord for flere slægter",
+        "body": "Mange klassiske haveasters er botanisk flyttet fra slægten Aster til blandt andet Symphyotrichum og Eurybia. I haven giver det stadig mening at samle dem som asters, fordi dyrkning, anvendelse og blomsterudtryk ligner hinanden.\n\nSortsguiden skal dog altid angive det aktuelle botaniske navn."
+      },
+      {
+        "key": "sen-blomstring-kraever-lys",
+        "title": "Sen blomstring kræver lys",
+        "body": "De fleste asters blomstrer bedst i sol. Nogle skovasters tåler halvskygge, men dyb skygge giver ofte færre blomster og mere åben vækst.\n\nEt luftigt sted reducerer samtidig risikoen for meldug."
+      },
+      {
+        "key": "jorden-afhaenger-af-typen",
+        "title": "Jorden afhænger af typen",
+        "body": "New England- og New York-typer trives ofte i almindelig, fugtbevarende havejord, mens andre asters foretrækker mere tørre forhold.\n\nVælg art og sort efter stedet frem for at forsøge at gøre alle asters tilfredse med den samme jord."
+      },
+      {
+        "key": "plant-tilstraekkeligt-tidligt",
+        "title": "Plant tilstrækkeligt tidligt",
+        "body": "Plant i foråret eller tidligt efterår, så rødderne når at etablere sig. Vand under tørre perioder den første sæson.\n\nHøje sorter skal have plads og kan have gavn af støtte eller naboplanter, der holder dem oppe."
+      },
+      {
+        "key": "klip-eller-knib-for-mere-kompakt-vaekst",
+        "title": "Klip eller knib for mere kompakt vækst",
+        "body": "Høje asters kan knibes eller klippes let tilbage i forsommeren for at blive lavere og mere forgrenede. Det kan udsætte blomstringen lidt.\n\nMetoden bør prøves på en del af planten først, især hvis sortens vækst ikke er kendt."
+      },
+      {
+        "key": "del-regelmaessigt",
+        "title": "Del regelmæssigt",
+        "body": "Mange asters vokser hurtigt og har gavn af deling med nogle års mellemrum. Del i foråret og genplant de stærke yderdele af tuen.\n\nDet holder planten kraftig og begrænser en art, som ellers kan fortolke bedets kant som et vejledende forslag."
+      },
+      {
+        "key": "meldug-er-det-almindelige-problem",
+        "title": "Meldug er det almindelige problem",
+        "body": "Hvid belægning på bladene ses især ved tørke, tæt plantning og dårlig luft. Vand ved roden, del tætte tuer og vælg modstandsdygtige sorter.\n\nFjern stærkt angrebne plantedele, hvis problemet gentager sig."
+      },
+      {
+        "key": "sorten-bestemmer-hoejde-og-sundhed",
+        "title": "Sorten bestemmer højde og sundhed",
+        "body": "Sortsguiden bør beskrive botanisk gruppe, højde, blomstringstid, farve, vækstform, meldugresistens og behov for støtte.\n\nLave kompakte sorter og høje naturlige arter har helt forskellige roller i bedet."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/garden-inspiration/wildlife/top-12-plants-for-autumn-pollinators",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing",
+      "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "aubergine",
     "plantName": "Aubergine",
     "title": null,
@@ -868,6 +1034,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/basilikum.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/basil/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "bispehue",
+    "plantName": "Bispehue",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Epimedium",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Langlivet bunddække til skygge og tør halvskygge, med lette forårsblomster og dekorative blade under træer og buske.",
+    "difficulty": "easy",
+    "tags": [
+      "skygge",
+      "toer-skygge",
+      "bunddaekke",
+      "staude",
+      "skovbund"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-stabilt-bunddaekke-under-traeer",
+        "title": "Et stabilt bunddække under træer",
+        "body": "Bispehue danner tætte tæpper af hjerteformede blade og fine blomster på tynde stængler om foråret. Mange arter får bronzefarvet ungt løv eller efterårsfarve.\n\nPlanten er særlig værdifuld i skygge, hvor rødder fra træer og buske konkurrerer om vandet."
+      },
+      {
+        "key": "halvskygge-og-skygge-passer-bedst",
+        "title": "Halvskygge og skygge passer bedst",
+        "body": "Bispehue trives i lys til moderat skygge. Nogle arter tåler tør skygge bedre end de fleste stauder, mens andre foretrækker mere fugtig skovbund.\n\nVælg derfor art og sort efter jordens fugt, ikke kun efter skyggen."
+      },
+      {
+        "key": "forbedr-jorden-ved-plantning",
+        "title": "Forbedr jorden ved plantning",
+        "body": "Bland kompost eller bladmuld i jorden og vand grundigt, indtil planten er etableret. Selv tørketålende bispehue kræver hjælp i starten.\n\nNår planten har dannet et godt rodsystem, bliver den langt mere selvhjulpen."
+      },
+      {
+        "key": "plant-som-flade-ikke-som-enkeltprikker",
+        "title": "Plant som flade, ikke som enkeltprikker",
+        "body": "Bispehue fungerer bedst i gentagelser eller større grupper. Den spreder sig langsomt til moderat med jordstængler og dækker gradvist jorden.\n\nGiv den tid. Ikke alle planter arbejder efter menneskets kvartalsrapportering."
+      },
+      {
+        "key": "klip-gammelt-loev-foer-blomstring",
+        "title": "Klip gammelt løv før blomstring",
+        "body": "Hos stedsegrønne og halvstedsegrønne typer kan det gamle løv klippes væk sent på vinteren, før blomsterne og de nye blade kommer frem.\n\nKlip ikke for sent, da de fine blomsterstængler let beskadiges."
+      },
+      {
+        "key": "vand-i-laengere-toerke",
+        "title": "Vand i længere tørke",
+        "body": "Etablerede planter tåler en del tørke, men blomstring og løv bliver bedre med vand i længere tørre perioder.\n\nEt lag bladmuld hjælper med at holde rødderne kølige og fugtige."
+      },
+      {
+        "key": "del-eller-flyt-i-foraaret",
+        "title": "Del eller flyt i foråret",
+        "body": "Bispehue kan deles i foråret efter blomstring eller tidligt efterår. Tag stykker med sunde jordstængler og flere skud.\n\nHold delingerne fugtige gennem etableringen."
+      },
+      {
+        "key": "sorten-afgoer-vaekstkraften",
+        "title": "Sorten afgør vækstkraften",
+        "body": "Sortsguiden bør beskrive højde, blomsterfarve, bladets vinterholdbarhed, efterårsfarve, spredningshastighed og tolerance for tør jord.\n\nNogle typer er rolige samlerplanter, mens andre er reelle bunddækkere. Det er forskellen mellem en juvel og en arbejdsstyrke."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/epimedium",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
     ],
     "status": "published",
     "visibility": "public",
@@ -1333,6 +1582,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
       "https://extension.umn.edu/vegetables/growing-beans"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "bregner",
+    "plantName": "Bregner",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Polypodiopsida",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Bladplanter til skygge og halvskygge, dyrket for struktur, tekstur og frodighed i fugtbevarende, humusrig jord.",
+    "difficulty": "easy",
+    "tags": [
+      "skygge",
+      "halvskygge",
+      "bladplante",
+      "skovbund",
+      "staude"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "frodighed-uden-blomster",
+        "title": "Frodighed uden blomster",
+        "body": "Bregner dyrkes for deres blade, som kan være fine, fjerlette, blanke, læderagtige eller næsten arkitektoniske. De skaber ro og dybde i skyggefulde bede, hvor blomstrende planter ofte har en kortere sæson.\n\nGruppen rummer både stedsegrønne og løvfældende arter med meget forskellige krav til fugt og jord."
+      },
+      {
+        "key": "vaelg-art-efter-fugt-og-lys",
+        "title": "Vælg art efter fugt og lys",
+        "body": "De fleste havebregner trives i halvskygge eller skygge, men nogle tåler mere sol, hvis jorden er fugtig. Andre kræver tør skovbund og bryder sig ikke om konstant våd jord.\n\nArtens naturlige voksested er derfor en bedre vejledning end ordet bregne alene."
+      },
+      {
+        "key": "byg-en-humusrig-jord",
+        "title": "Byg en humusrig jord",
+        "body": "Mange bregner foretrækker jord med bladmuld, kompost og en stabil fugtighed. Undgå at begrave plantens krone for dybt, og lad visne blade og organisk materiale blive liggende som et naturligt dæklag.\n\nI tung jord skal overskydende vintervand stadig kunne løbe væk."
+      },
+      {
+        "key": "plant-med-plads-til-bladformen",
+        "title": "Plant med plads til bladformen",
+        "body": "Bregner ser bedst ud, når bladene kan udfolde sig uden at blive klemt. Nogle danner stramme tuer, mens andre breder sig med jordstængler.\n\nTjek den voksne bredde før plantning, især tæt ved stier og små skyggebede."
+      },
+      {
+        "key": "vand-under-etableringen",
+        "title": "Vand under etableringen",
+        "body": "Nyplantede bregner skal holdes jævnt fugtige, indtil rødderne er etableret. Et lag bladmuld eller kompost reducerer udtørring og efterligner skovbundens forhold.\n\nStedsegrønne arter kan også miste vand om vinteren og have brug for beskyttelse mod udtørrende vind."
+      },
+      {
+        "key": "klip-gammelt-loev-paa-det-rette-tidspunkt",
+        "title": "Klip gammelt løv på det rette tidspunkt",
+        "body": "Løvfældende bregner kan ryddes i det sene efterår eller tidlige forår. Hos stedsegrønne arter fjernes kun beskadigede blade, helst lige før de nye ruller frem.\n\nUndgå at skære i de unge, sammenrullede skud."
+      },
+      {
+        "key": "del-kun-robuste-planter",
+        "title": "Del kun robuste planter",
+        "body": "Tuedannende bregner kan ofte deles i foråret, mens jordstængeldannende typer kan formeres med stykker af rhizomet. Nogle arter etablerer sig langsomt og bør forstyrres mindst muligt.\n\nGenplant delinger hurtigt og hold dem fugtige."
+      },
+      {
+        "key": "art-og-sort-afgoer-hele-udtrykket",
+        "title": "Art og sort afgør hele udtrykket",
+        "body": "Sortsguiden bør beskrive løvets højde, farve, tekstur, stedsegrønhed, spredning og krav til fugt.\n\nEn lille japansk regnbuebregne og en stor strudsevinge løser omtrent lige forskellige opgaver som en potteplante og et møbel. Mennesket kalder dem alligevel begge bregner."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/ferns",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
     ],
     "status": "published",
     "visibility": "public",
@@ -2499,6 +2831,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "erantis",
+    "plantName": "Erantis",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Eranthis hyemalis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Lav vinter- og forårsblomstrende knoldplante med gule blomster, som trives i humusrig jord under løvfældende træer og kan brede sig til tæpper.",
+    "difficulty": "medium",
+    "tags": [
+      "knold",
+      "tidlig-blomstring",
+      "halvskygge",
+      "skovbund",
+      "naturalisering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "gule-blomster-foer-haven-vaagner",
+        "title": "Gule blomster før haven vågner",
+        "body": "Erantis åbner lave, gule blomster over en grøn krans af fligede højblade. Den blomstrer meget tidligt og fungerer bedst som en skovbundsplante, der får lov at blive stående gennem mange år.\n\nPlanterne forsvinder helt fra overfladen efter foråret."
+      },
+      {
+        "key": "vaelg-jord-der-ikke-toerrer-ud",
+        "title": "Vælg jord, der ikke tørrer ud",
+        "body": "Erantis trives i humusrig, moderat næringsrig jord, som holder på fugten uden at være vandmættet. Den passer godt under løvfældende buske og træer, hvor jorden er lys og fugtig tidligt på året.\n\nMeget tørre placeringer giver ofte langsom eller mislykket etablering."
+      },
+      {
+        "key": "toerre-knolde-kan-vaere-traege",
+        "title": "Tørre knolde kan være træge",
+        "body": "Erantis sælges ofte som små, tørre knolde, men de kan have svært ved at etablere sig, hvis de er udtørrede. Plant dem hurtigt efter køb, eller brug planter og delinger fra en eksisterende bestand.\n\nPlacér dem i små grupper frem for enkeltvis, så den tidlige blomstring får synlig effekt."
+      },
+      {
+        "key": "forstyr-omraadet-saa-lidt-som-muligt",
+        "title": "Forstyr området så lidt som muligt",
+        "body": "Når erantis først er etableret, bør jorden omkring dem ikke graves unødigt. Knoldene ligger skjult i sommerhalvåret og er lette at beskadige, fordi intet over jorden afslører placeringen.\n\nMarkér eventuelt området diskret, hvis bedet ellers omplantes ofte."
+      },
+      {
+        "key": "lad-froeene-modne",
+        "title": "Lad frøene modne",
+        "body": "Erantis kan danne større tæpper ved selvsåning. Lad frøkapslerne udvikle sig, og undgå at luge alle små spirer væk i området.\n\nFrøplanter bruger tid på at nå blomstringsstørrelse, men giver på sigt en mere naturlig bestand."
+      },
+      {
+        "key": "del-efter-blomstring",
+        "title": "Del efter blomstring",
+        "body": "Etablerede grupper kan deles i det sene forår efter blomstring. Flyt knolde og planter direkte til deres nye sted, mens de stadig er friske.\n\nVand efter genplantning, hvis jorden er tør."
+      },
+      {
+        "key": "snegle-kan-tage-de-tidlige-skud",
+        "title": "Snegle kan tage de tidlige skud",
+        "body": "Snegle kan skade de nye blade og blomster, især i milde, fugtige perioder. Små bestande kan derfor have brug for ekstra opmærksomhed i etableringsårene.\n\nPlanter, der gentagne gange forsvinder uden at brede sig, står ofte for tørt eller er blevet forstyrret."
+      },
+      {
+        "key": "arten-er-vigtigere-end-sorten",
+        "title": "Arten er vigtigere end sorten",
+        "body": "Erantis dyrkes oftest som arten, men der findes udvalgte former med variation i blomsterfarve og størrelse. Sortsguiden bør fokusere på disse forskelle og på, om planten etablerer sig lige så villigt som den almindelige form.\n\nFor de fleste haver er den største designbeslutning ikke sorten, men hvor planten får lov at danne sit tæppe."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/6540/eranthis-hyemalis/details",
+      "https://www.rhs.org.uk/garden-inspiration/seasonal/bee-friendly-winter-plants",
+      "https://www.rhs.org.uk/plants/types/bulbs/propagation"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "graeskar",
     "plantName": "Græskar",
     "title": null,
@@ -3026,6 +3441,255 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/hindbaer.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/fruit/raspberries/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hjerteblomst",
+    "plantName": "Hjerteblomst",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Lamprocapnos spectabilis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Klassisk forårsstaude med buede stængler og hjerteformede blomster, bedst i halvskygge og humusrig, fugtbevarende jord.",
+    "difficulty": "easy",
+    "tags": [
+      "halvskygge",
+      "forarsblomstring",
+      "staude",
+      "skovbund",
+      "klassisk-haveplante"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-markant-plante-i-foraarsbedet",
+        "title": "En markant plante i forårsbedet",
+        "body": "Hjerteblomst danner en bred tue med bløde, fligede blade og buede stængler med hængende, hjerteformede blomster. Den blomstrer om foråret og tidlig sommer.\n\nEfter blomstring kan planten visne helt eller delvist ned, især i tørre forhold."
+      },
+      {
+        "key": "halvskygge-giver-lang-saeson",
+        "title": "Halvskygge giver lang sæson",
+        "body": "Planten trives bedst i halvskygge eller mild morgensol. I fuld sol kræver den mere fugt og går ofte tidligere i hvile.\n\nEn beskyttet placering reducerer også skader på de sprøde stængler."
+      },
+      {
+        "key": "jorden-skal-vaere-humusrig-og-fugtbevarende",
+        "title": "Jorden skal være humusrig og fugtbevarende",
+        "body": "Hjerteblomst foretrækker løs, næringsrig jord med kompost eller bladmuld. Jorden skal holde på fugten om foråret, men må ikke stå vandmættet om vinteren.\n\nTør skygge er mindre egnet."
+      },
+      {
+        "key": "plant-hvor-sommerhullet-kan-skjules",
+        "title": "Plant, hvor sommerhullet kan skjules",
+        "body": "Fordi planten kan forsvinde efter blomstring, er det klogt at placere den mellem senere stauder eller bunddække, som overtager pladsen.\n\nMarkér plantestedet, så kronen ikke graves op under sommerens omplantninger."
+      },
+      {
+        "key": "vand-gennem-vaekstperioden",
+        "title": "Vand gennem vækstperioden",
+        "body": "Vand regelmæssigt i tørre forår, især mens blomsterstænglerne udvikles. Et organisk dæklag holder jorden kølig og reducerer fordampningen.\n\nNår planten er gået i hvile, har den langt mindre vandbehov."
+      },
+      {
+        "key": "undgaa-unoedvendig-flytning",
+        "title": "Undgå unødvendig flytning",
+        "body": "Hjerteblomst kan stå samme sted i mange år og bryder sig ikke om hyppig forstyrrelse. Hvis den skal deles, gøres det forsigtigt i foråret eller efter blomstring.\n\nDe tykke, sprøde rødder knækker let."
+      },
+      {
+        "key": "nye-skud-er-saarbare",
+        "title": "Nye skud er sårbare",
+        "body": "De tidlige skud kan skades af sen frost og snegle. Beskyt planten under udspring, og fjern ikke vinterdækket for tidligt.\n\nStænglerne kan også knække i vind, så undgå udsatte placeringer."
+      },
+      {
+        "key": "sorten-bestemmer-farve-og-stoerrelse",
+        "title": "Sorten bestemmer farve og størrelse",
+        "body": "Sortsguiden bør beskrive blomsterfarve, bladfarve, højde, blomstringstid og hvor tidligt planten går i hvile.\n\nHvide og gyldentløvede sorter kan kræve mere beskyttelse mod sol end den klassiske rosa form."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/lamprocapnos",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hoestanemone",
+    "plantName": "Høstanemone",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Anemone hupehensis, A. tomentosa og hybrider",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Elegant sensommerstaude med høje stængler og åbne blomster, velegnet til sol eller halvskygge i fugtbevarende, veldrænet jord.",
+    "difficulty": "medium",
+    "tags": [
+      "staude",
+      "sensommer",
+      "halvskygge",
+      "lang-blomstring",
+      "naturpraeget"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "blomster-over-en-taet-bladbase",
+        "title": "Blomster over en tæt bladbase",
+        "body": "Høstanemoner danner lave bladtuer og sender høje, forgrenede stængler op med hvide eller rosa blomster fra sensommer til efterår.\n\nDe giver lethed i bedet og blomstrer på et tidspunkt, hvor mange andre stauder er ved at lukke sæsonen."
+      },
+      {
+        "key": "sol-eller-lys-halvskygge",
+        "title": "Sol eller lys halvskygge",
+        "body": "Høstanemone trives i sol eller halvskygge. I meget dyb skygge blomstrer den svagere, mens meget tør, varm sol kan få bladene til at hænge.\n\nEn placering med morgensol eller filtreret lys fungerer ofte godt."
+      },
+      {
+        "key": "jorden-skal-vaere-fugtig-men-veldraenet",
+        "title": "Jorden skal være fugtig men veldrænet",
+        "body": "Planten foretrækker humusrig jord, som holder jævnt på fugten. Den bryder sig ikke om hverken udtørring eller kold, vandmættet vinterjord.\n\nEt lag kompost eller bladmuld hjælper med at stabilisere fugten."
+      },
+      {
+        "key": "plant-i-foraar-eller-tidligt-efteraar",
+        "title": "Plant i forår eller tidligt efterår",
+        "body": "Plant, mens jorden er lun og fugtig, så rødderne kan etablere sig før ekstrem varme eller vinter. Vand grundigt efter plantning og gennem den første tørre sæson.\n\nUndgå unødige flytninger, når planten først har etableret sig."
+      },
+      {
+        "key": "giv-den-plads-til-at-brede-sig",
+        "title": "Giv den plads til at brede sig",
+        "body": "Høstanemone kan sprede sig med rodskud og danne større bestande. Placér den, hvor en bred tue er en fordel, eller brug en rodbarriere, hvis bedet er stramt disponeret.\n\nSmå rodstykker kan skyde igen efter flytning, fordi planten har en imponerende ringe respekt for ejendomsgrænser."
+      },
+      {
+        "key": "stoet-hoeje-sorter-diskret",
+        "title": "Støt høje sorter diskret",
+        "body": "Høje sorter kan lægge sig i vind og kraftig regn. Brug en lav, tidlig støtte, som planten kan vokse igennem, eller plant den mellem stabile nabostauder.\n\nStøtten skal være på plads før blomsterstænglerne er fuldt udviklede."
+      },
+      {
+        "key": "klip-ned-efter-vinteren",
+        "title": "Klip ned efter vinteren",
+        "body": "De visne stængler kan blive stående vinteren over og klippes ned i det tidlige forår. Fjern dødt materiale, før de nye skud bryder frem.\n\nDel kun planten, når det er nødvendigt, og vand delingerne omhyggeligt."
+      },
+      {
+        "key": "sorten-bestemmer-hoejde-og-spredning",
+        "title": "Sorten bestemmer højde og spredning",
+        "body": "Sortsguiden bør beskrive højde, blomsterfarve, enkel eller fyldt blomst, blomstringstid, behov for støtte og tendens til at brede sig.\n\nKompakte sorter kan fungere i mindre bede, mens kraftige typer bør få en rolle, der matcher deres ambitioner."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/anemone/japanese/growing-guide",
+      "https://www.rhs.org.uk/plants/anemone/japanese",
+      "https://www.rhs.org.uk/plants/anemone"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "hosta",
+    "plantName": "Hosta",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Hosta",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Bladstaude til skygge og halvskygge, dyrket for sine markante blade og rolige vækst i fugtbevarende, veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "skygge",
+      "halvskygge",
+      "bladplante",
+      "krukke"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "bladene-er-hovedattraktionen",
+        "title": "Bladene er hovedattraktionen",
+        "body": "Hosta dyrkes først og fremmest for bladene, som kan være grønne, blågrønne, gule eller brogede og variere fra små og smalle til meget store og bølgede.\n\nBlomsterne kommer på oprette stængler om sommeren, men plantens vigtigste rolle er at skabe ro, fylde og struktur i skyggefulde bede."
+      },
+      {
+        "key": "lys-skygge-giver-ofte-den-bedste-balance",
+        "title": "Lys skygge giver ofte den bedste balance",
+        "body": "De fleste hosta trives bedst i halvskygge eller lys skygge. Mørkegrønne og blå sorter tåler ofte mindre direkte sol, mens gulbladede sorter kan have brug for lidt mere lys for at holde farven.\n\nHård middagssol kan svide bladene, især hvis jorden samtidig tørrer ud."
+      },
+      {
+        "key": "jorden-skal-holde-paa-fugten",
+        "title": "Jorden skal holde på fugten",
+        "body": "Hosta foretrækker humusrig, næringsholdig jord, som er fugtbevarende men ikke vandmættet. Bland kompost eller bladmuld i jorden ved plantning, og læg et lag organisk materiale omkring planten.\n\nEtablerede planter er robuste, men tørke giver hurtigt slappe blade og brune kanter."
+      },
+      {
+        "key": "plant-med-plads-til-den-voksne-tue",
+        "title": "Plant med plads til den voksne tue",
+        "body": "Sorter varierer voldsomt i størrelse. En miniaturehosta kan stå i en lille krukke, mens en stor sort kan brede sig over mere end en meter.\n\nTjek derfor sortens forventede bredde før plantning. For tæt plantning giver dårligt overblik og mere konkurrence om vand."
+      },
+      {
+        "key": "vand-om-morgenen-og-beskyt-de-nye-skud",
+        "title": "Vand om morgenen og beskyt de nye skud",
+        "body": "Vand grundigt i tørre perioder, helst tidligt på dagen. De unge skud er særligt udsatte, når de bryder frem om foråret.\n\nSnegle og dræbersnegle kan hurtigt ødelægge de friske blade, så indsatsen skal begynde tidligt, før planten ligner et botanisk dørslag."
+      },
+      {
+        "key": "del-gamle-tuer",
+        "title": "Del gamle tuer",
+        "body": "Hosta kan stå urørt i mange år, men tætte planter kan deles i foråret eller tidligt efterår. Løft tuen og del den i mindre stykker med flere skud og gode rødder.\n\nGenplant straks og vand grundigt, mens delingerne etablerer sig."
+      },
+      {
+        "key": "krukker-er-gode-til-smaa-sorter",
+        "title": "Krukker er gode til små sorter",
+        "body": "Hosta egner sig godt til krukker, især små og mellemstore sorter. Vælg en rummelig beholder med drænhul, og vær opmærksom på, at pottejord tørrer hurtigere end havejord.\n\nKrukken kan stå ude om vinteren, men rødderne skal beskyttes mod langvarig gennemfrysning og vintervåd jord."
+      },
+      {
+        "key": "sorten-bestemmer-naesten-alt-det-synlige",
+        "title": "Sorten bestemmer næsten alt det synlige",
+        "body": "Sortsguiden bør beskrive bladfarve, størrelse, form, tekstur, væksthastighed, blomsterfarve og tolerance for sol.\n\nHosta er en art, hvor sortsvalget i praksis afgør, om planten bliver en diskret kant eller et grønt møbel."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/hosta",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing",
+      "https://www.rhs.org.uk/plants/for-places/cold-climate"
     ],
     "status": "published",
     "visibility": "public",
@@ -3628,6 +4292,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "kaermindesoester",
+    "plantName": "Kærmindesøster",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Brunnera macrophylla",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Skyggestaude med blå forårsblomster og store hjerteformede blade, velegnet til humusrig, fugtbevarende jord.",
+    "difficulty": "easy",
+    "tags": [
+      "skygge",
+      "halvskygge",
+      "tidlig-blomstring",
+      "bladplante",
+      "staude"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "blaa-blomster-over-store-blade",
+        "title": "Blå blomster over store blade",
+        "body": "Kærmindesøster blomstrer om foråret med små blå blomster, der minder om forglemmigej. Senere fylder de store, hjerteformede blade pladsen og danner en rolig bund i skyggebedet.\n\nSorter med sølvfarvede blade kan lyse mørke områder op gennem hele sommeren."
+      },
+      {
+        "key": "halvskygge-giver-det-sikreste-resultat",
+        "title": "Halvskygge giver det sikreste resultat",
+        "body": "Planten trives bedst i halvskygge eller lys skygge. Den kan tåle mere sol, hvis jorden er fugtig, men varme og tørke giver let svedne blade.\n\nUnder løvfældende træer får den ofte gode forhold tidligt på sæsonen."
+      },
+      {
+        "key": "jorden-skal-vaere-humusrig",
+        "title": "Jorden skal være humusrig",
+        "body": "Kærmindesøster foretrækker fugtbevarende, veldrænet jord med kompost eller bladmuld. Den er ikke egnet til meget tør skygge uden regelmæssig vanding.\n\nEt organisk jorddække hjælper gennem sommeren."
+      },
+      {
+        "key": "plant-med-plads-til-bladene",
+        "title": "Plant med plads til bladene",
+        "body": "En voksen plante danner en bred tue. Sæt den ikke for tæt på små, langsomme naboer, som hurtigt forsvinder under bladene.\n\nBrug den som gentaget bund eller som rolig kontrast til finere løv."
+      },
+      {
+        "key": "fjern-slidte-blade",
+        "title": "Fjern slidte blade",
+        "body": "Efter blomstring kan enkelte gamle eller beskadigede blade fjernes ved basis. Planten danner nyt løv gennem sæsonen, hvis den har fugt nok.\n\nKlip ikke hele planten ned uden grund."
+      },
+      {
+        "key": "selvsaaning-kan-give-variation",
+        "title": "Selvsåning kan give variation",
+        "body": "Arten kan selvså, men frøplanter fra sølvbladede sorter får ikke nødvendigvis samme bladtegning som moderplanten.\n\nFjern frøstande, hvis du vil bevare en stram sortssamling, eller lad dem stå, hvis lidt botanisk anarki er acceptabelt."
+      },
+      {
+        "key": "del-etablerede-tuer",
+        "title": "Del etablerede tuer",
+        "body": "Planten kan deles i det tidlige forår eller efter blomstring. Løft tuen, del den i kraftige stykker og genplant med samme dybde.\n\nVand regelmæssigt efter deling."
+      },
+      {
+        "key": "sorten-styrer-bladets-lysvirkning",
+        "title": "Sorten styrer bladets lysvirkning",
+        "body": "Sortsguiden bør beskrive mængden af sølv, bladstørrelse, blomsterfarve, vækstkraft og tolerance for sol.\n\nSølvbladede sorter er ofte mere dekorative i dyb skygge, mens grønbladede former kan virke mere naturlige i en skovbundsplantning."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/brunnera",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "kartoffel",
     "plantName": "Kartoffel",
     "title": null,
@@ -4166,6 +4913,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "krokus",
+    "plantName": "Krokus",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Crocus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Lav knoldplante med tidlige bægerformede blomster, velegnet til græs, bede og krukker i sol og veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "foraarsloeg",
+      "knold",
+      "crocus",
+      "naturalisering",
+      "tidlig-blomstring"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "smaa-blomster-med-stor-saesoneffekt",
+        "title": "Små blomster med stor sæsoneffekt",
+        "body": "Krokus bryder frem tæt ved jorden og kan skabe farve, mens resten af haven stadig er næsten bar. De dyrkes fra knolde, selv om de i daglig tale ofte samles med havens øvrige løgplanter.\n\nSlægten rummer både forårs- og efterårsblomstrende arter. Denne guide tager udgangspunkt i de almindelige forårsblomstrende krokus."
+      },
+      {
+        "key": "sol-giver-de-mest-aabne-blomster",
+        "title": "Sol giver de mest åbne blomster",
+        "body": "Krokus trives bedst på et lyst sted med veldrænet jord. Blomsterne åbner sig tydeligst i sol og lukker ofte mere sammen i mørkt eller vådt vejr.\n\nDe kan også plantes under løvfældende træer, hvor der er lys tidligt på året."
+      },
+      {
+        "key": "plant-knoldene-i-efteraaret",
+        "title": "Plant knoldene i efteråret",
+        "body": "Forårsblomstrende krokus plantes, mens knoldene er i hvile om efteråret. Læg dem i grupper eller spred dem uregelmæssigt i græs og bede.\n\nI krukker kan de bruges som et øvre lag over større løg, så flere blomstringsniveauer udnytter den samme beholder."
+      },
+      {
+        "key": "graes-kraever-taalmodighed-efter-blomstring",
+        "title": "Græs kræver tålmodighed efter blomstring",
+        "body": "Krokus naturaliserer ofte fint i en plæne, men løvet skal have tid til at gulne, før området slås kort. Det smalle løv kan ligne græs, hvilket gør det let at fjerne for tidligt.\n\nPlant dem i områder, hvor en lidt senere første klipning er acceptabel."
+      },
+      {
+        "key": "lad-dem-brede-sig",
+        "title": "Lad dem brede sig",
+        "body": "Sunde krokus kan danne flere knolde og i nogle tilfælde sprede sig med frø. Lad frøkapslerne udvikle sig, hvis målet er en mere naturlig drift over tid.\n\nTætte grupper kan løftes og deles, når planterne er i hvile."
+      },
+      {
+        "key": "krukker-maa-ikke-staa-gennemvaade",
+        "title": "Krukker må ikke stå gennemvåde",
+        "body": "Krokus egner sig til lave krukker og lagplantninger. Brug en beholder med godt afløb, og undgå at knoldene står konstant våde gennem vinteren.\n\nEfter blomstring kan krukken stå mere diskret, mens bladene modner."
+      },
+      {
+        "key": "dyr-kan-finde-knoldene",
+        "title": "Dyr kan finde knoldene",
+        "body": "Fugle og gnavere kan grave knolde op eller beskadige blomsterne. Et diskret net over nyplantede krukker eller bede kan være nyttigt, indtil jorden har sat sig.\n\nRåd er især et problem i kompakt, vandmættet jord."
+      },
+      {
+        "key": "sorten-bestemmer-stoerrelse-og-blomstring",
+        "title": "Sorten bestemmer størrelse og blomstring",
+        "body": "Sortsguiden bør skelne mellem botaniske krokus og større havekrokus samt beskrive farve, blomstringstid, højde og evne til at naturalisere.\n\nEfterårsblomstrende krokus bør markeres tydeligt, fordi deres rytme og plantetid ikke er den samme som de almindelige forårstyper."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/crocus/growing-guide",
+      "https://www.rhs.org.uk/plants/types/bulbs/naturalising-in-grass",
+      "https://www.rhs.org.uk/plants/types/bulbs/propagation"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "lampepudsergraes",
     "plantName": "Lampepudsergræs",
     "title": null,
@@ -4239,6 +5069,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/lampepudsergraes.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/523411/cenchrus-alopecuroides/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "lavendel",
+    "plantName": "Lavendel",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Lavandula",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Aromatisk, stedsegrøn halvbusk til sol og mager, veldrænet jord, med sommerblomster for bestøvere og behov for regelmæssig beskæring.",
+    "difficulty": "medium",
+    "tags": [
+      "halvbusk",
+      "sol",
+      "duft",
+      "bestoeversplante",
+      "veldraenet-jord"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-halvbusk-ikke-en-almindelig-staude",
+        "title": "En halvbusk, ikke en almindelig staude",
+        "body": "Lavendel beholder en træagtig basis og noget løv gennem vinteren. Den skal derfor ikke behandles som en staude, der bare skæres helt ned til jorden.\n\nBlomsteraksene og det aromatiske løv gør planten nyttig i både tørre bede, kanter og krukker."
+      },
+      {
+        "key": "sol-og-draen-er-afgoerende",
+        "title": "Sol og dræn er afgørende",
+        "body": "Lavendel kræver et solrigt, varmt sted og jord med meget godt afløb. Den klarer mager jord bedre end tung, våd og stærkt gødet jord.\n\nI kompakt ler er en hævet placering eller krukke ofte mere sikker end jordforbedring alene."
+      },
+      {
+        "key": "plant-med-luft-omkring-planten",
+        "title": "Plant med luft omkring planten",
+        "body": "Sæt lavendel, så luft kan bevæge sig omkring løvet. Tætte plantninger i fugtige omgivelser øger risikoen for svamp og tilbagefrysning.\n\nVand under etableringen, men reducer vandingen, når rødderne har fået fat."
+      },
+      {
+        "key": "beskaer-hvert-aar",
+        "title": "Beskær hvert år",
+        "body": "Klip de visne blomsterstængler og en del af årets grønne vækst tilbage efter blomstring eller i foråret, afhængigt af klima og sort.\n\nUndgå at skære hårdt ned i gammelt, bladløst ved, da planten ofte har svært ved at skyde igen derfra."
+      },
+      {
+        "key": "krukker-kraever-vinterdisciplin",
+        "title": "Krukker kræver vinterdisciplin",
+        "body": "Lavendel fungerer godt i krukker med gruset, veldrænet pottemuld. Krukken skal have et stort drænhul og må ikke stå i vand.\n\nOm vinteren er beskyttelse mod regn og gennemfrysning vigtigere end varm indpakning alene."
+      },
+      {
+        "key": "hoest-blomsterne-paa-det-rette-tidspunkt",
+        "title": "Høst blomsterne på det rette tidspunkt",
+        "body": "Til tørring høstes blomsterstænglerne, når de nederste blomster netop er åbnet. Bind små bundter og tør dem mørkt og luftigt.\n\nTil bestøvere kan en større del af blomstringen blive siddende på planten."
+      },
+      {
+        "key": "vinterfugt-er-den-stoerste-fjende",
+        "title": "Vinterfugt er den største fjende",
+        "body": "Planter, der bliver sorte og kollapser efter vinteren, har ofte stået for vådt. Frost kan også skade mindre hårdføre arter og sorter.\n\nUdskift ikke automatisk planten på samme sted uden først at løse jordens afløb."
+      },
+      {
+        "key": "arten-og-sorten-afgoer-haardfoerheden",
+        "title": "Arten og sorten afgør hårdførheden",
+        "body": "Engelsk lavendel er normalt mere vinterhårdfør end fransk og spansk lavendel. Sortsguiden bør beskrive art, højde, blomsterfarve, duft, vækstform og dokumenteret hårdførhed.\n\nLavendel er et glimrende eksempel på, at alle lilla planter ikke nødvendigvis har læst den samme vintermanual."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/lavender",
+      "https://www.rhs.org.uk/plants/lavender/growing-guide",
+      "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
     ],
     "status": "published",
     "visibility": "public",
@@ -4468,6 +5381,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/loevemund.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/69565/antirrhinum-majus/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "lungeurt",
+    "plantName": "Lungeurt",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Pulmonaria",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Tidligt blomstrende skygge- og halvskyggeplante med plettede blade, velegnet til humusrig jord under buske og træer.",
+    "difficulty": "easy",
+    "tags": [
+      "skygge",
+      "halvskygge",
+      "tidlig-blomstring",
+      "bunddaekke",
+      "bestoeversplante"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "tidlige-blomster-og-dekorative-blade",
+        "title": "Tidlige blomster og dekorative blade",
+        "body": "Lungeurt blomstrer tidligt med små tragtformede blomster, ofte i nuancer af blå, rosa og lilla. Efter blomstring fortsætter bladene som en lav, tæt bund med sølvpletter eller næsten helt sølvfarvet overflade.\n\nDen er værdifuld tidligt på året, hvor få andre skyggeplanter blomstrer."
+      },
+      {
+        "key": "lys-skygge-er-ideel",
+        "title": "Lys skygge er ideel",
+        "body": "Lungeurt trives bedst i halvskygge eller lys skygge. For meget sol kan svide bladene og udtørre jorden, mens meget dyb skygge reducerer blomstringen.\n\nUnder løvfældende buske får planten ofte den rigtige balance mellem forårslys og sommerskygge."
+      },
+      {
+        "key": "hold-jorden-humusrig-og-jaevnt-fugtig",
+        "title": "Hold jorden humusrig og jævnt fugtig",
+        "body": "Planten foretrækker jord med kompost eller bladmuld, som holder på fugten uden at være vandmættet. Tørke giver hurtigt brune bladkanter og et slidt udtryk.\n\nEt organisk dæklag omkring planten hjælper gennem sommeren."
+      },
+      {
+        "key": "plant-som-gentagne-tuer",
+        "title": "Plant som gentagne tuer",
+        "body": "Lungeurt fungerer godt i små grupper eller gentagelser gennem et skyggebed. Den dækker jorden uden normalt at blive voldsomt invasiv.\n\nGiv planten plads til at danne en bred roset af blade."
+      },
+      {
+        "key": "klip-gammelt-loev-efter-blomstring",
+        "title": "Klip gammelt løv efter blomstring",
+        "body": "Efter blomstring kan slidte eller meldugramte blade klippes væk. Planten danner ofte friskere sommerløv bagefter.\n\nVand efter klipning, hvis jorden er tør, så genvæksten ikke går i stå."
+      },
+      {
+        "key": "del-taette-tuer",
+        "title": "Del tætte tuer",
+        "body": "Lungeurt kan deles i foråret efter blomstring eller tidligt efterår. Del planten i stykker med sunde rødder og flere vækstpunkter.\n\nGenplant hurtigt i fugtig jord."
+      },
+      {
+        "key": "meldug-kommer-ved-stress",
+        "title": "Meldug kommer ved stress",
+        "body": "Meldug ses ofte på planter, der står for tørt eller for tæt. Forbedr jordfugtigheden, del store tuer og fjern stærkt angrebne blade.\n\nEn mere tolerant sort er ofte en bedre løsning end en årlig kamp med symptomerne."
+      },
+      {
+        "key": "sorten-bestemmer-loevets-moenster",
+        "title": "Sorten bestemmer løvets mønster",
+        "body": "Sortsguiden bør beskrive bladfarve, mængden af sølv, blomsterfarve, højde, vækstkraft og modstandsdygtighed mod meldug.\n\nHos lungeurt er bladene mindst lige så vigtige som blomsterne, hvilket planten heldigvis har forstået bedre end de fleste planteskilte."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/pulmonaria",
+      "https://www.rhs.org.uk/garden-inspiration/wildlife/early-pollen-plants",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
     ],
     "status": "published",
     "visibility": "public",
@@ -5115,6 +6111,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "paaskelilje",
+    "plantName": "Påskelilje",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Narcissus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Pålideligt forårsløg til bede, græs og krukker, som ofte kommer igen år efter år, når bladene får lov at visne ned i fred.",
+    "difficulty": "easy",
+    "tags": [
+      "foraarsloeg",
+      "narcissus",
+      "naturalisering",
+      "sol",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-af-havens-mest-stabile-foraarsloeg",
+        "title": "Et af havens mest stabile forårsløg",
+        "body": "Påskeliljer er kendt for at vende tilbage gennem mange sæsoner. De findes som lave og høje former, med små eller store blomster og med vidt forskellige kroner, men dyrkningsbehovene er forholdsvis ens.\n\nDe passer i bede, under løvfældende træer, i græs og i krukker."
+      },
+      {
+        "key": "sol-eller-lys-halvskygge-fungerer",
+        "title": "Sol eller lys halvskygge fungerer",
+        "body": "Påskeliljer blomstrer godt i sol, men mange klarer også lys halvskygge, især under træer og buske, der først får tæt løv senere på foråret.\n\nJorden bør være veldrænet, men må gerne holde en vis fugt gennem plantens aktive vækst."
+      },
+      {
+        "key": "plant-i-efteraaret",
+        "title": "Plant i efteråret",
+        "body": "Løgene lægges i efteråret og skal nå at danne rødder før vinteren. Plant dem samlet i grupper eller i uregelmæssige drifter, hvis de skal se naturlige ud.\n\nI græs giver spredte klynger et roligere udtryk end lige rækker. Undgå områder, der står våde gennem vinteren."
+      },
+      {
+        "key": "vand-under-vaeksten-hvis-foraaret-er-toert",
+        "title": "Vand under væksten, hvis foråret er tørt",
+        "body": "Etablerede planter kræver sjældent meget pasning, men en tør periode under knopudvikling og blomstring kan svække både årets og næste års resultat.\n\nKrukker skal kontrolleres oftere, fordi de tørrer hurtigere end jorden i haven."
+      },
+      {
+        "key": "vent-med-at-klippe-loevet",
+        "title": "Vent med at klippe løvet",
+        "body": "Efter blomstring skal bladene fortsætte med at samle energi til løget. Fjern eventuelt de visne blomsterhoveder, men lad bladene gulne naturligt.\n\nI en græsplæne betyder det, at området ikke bør slås helt ned, før løvet er færdigt."
+      },
+      {
+        "key": "del-taette-grupper",
+        "title": "Del tætte grupper",
+        "body": "Når en gammel klump får mange blade men færre blomster, kan den være blevet for tæt. Løft og del gruppen, når løvet er ved at visne ned, og genplant de sunde løg med mere plads.\n\nDet fornyer beplantningen uden at gøre påskeliljen til en årlig indkøbsvare. En sjælden sejr over havecentrets forretningsmodel."
+      },
+      {
+        "key": "problemer-opstaar-oftest-omkring-loeget",
+        "title": "Problemer opstår oftest omkring løget",
+        "body": "Vedvarende våd jord kan give råd, og enkelte skadedyr og sygdomme kan skade løg og blade. Kasser bløde, misfarvede eller tydeligt syge løg frem for at plante dem.\n\nBrug raske løg fra en pålidelig leverandør, og undgå at flytte mistænkeligt materiale rundt i haven."
+      },
+      {
+        "key": "sorten-styrer-blomstens-form-og-tidspunkt",
+        "title": "Sorten styrer blomstens form og tidspunkt",
+        "body": "Sortsguiden bør beskrive blomstringstid, højde, duft, farve, kronens form og om sorten egner sig til krukke, bed, afskæring eller naturalisering.\n\nMiniaturetyper, trompetpåskeliljer og fyldte sorter kan se ud som næsten forskellige planter, selv om grundplejen er den samme."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/daffodils/growing-guide",
+      "https://www.rhs.org.uk/plants/daffodils",
+      "https://www.rhs.org.uk/plants/types/bulbs/naturalising-in-grass"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "paere",
     "plantName": "Pære",
     "title": null,
@@ -5706,6 +6785,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "perlehyacint",
+    "plantName": "Perlehyacint",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Muscari",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Robust lille forårsløg med tætte blomsterklaser, velegnet til bede, krukker og naturalisering i sol eller lys halvskygge.",
+    "difficulty": "easy",
+    "tags": [
+      "foraarsloeg",
+      "muscari",
+      "naturalisering",
+      "krukker",
+      "bestoeversplante"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "smaa-klaser-tydelig-farve",
+        "title": "Små klaser, tydelig farve",
+        "body": "Perlehyacinter danner korte stængler med tætte klaser af små klokke- eller urneformede blomster. Blå er den klassiske farve, men slægten rummer også hvide, lyseblå, rosa og mere usædvanlige former.\n\nDe er hårdføre og vender normalt tilbage gennem mange sæsoner."
+      },
+      {
+        "key": "de-fleste-steder-fungerer",
+        "title": "De fleste steder fungerer",
+        "body": "Perlehyacinter vokser i mange jordtyper, men foretrækker veldrænet jord. De blomstrer godt i sol og kan også bruges under løvfældende træer og buske, fordi de er aktive, før sommerskyggen bliver tæt.\n\nPermanent våd jord er mindre egnet."
+      },
+      {
+        "key": "plant-loegene-om-efteraaret",
+        "title": "Plant løgene om efteråret",
+        "body": "Løgene lægges i efteråret i grupper. De små løg kan samles forholdsvis tæt i krukker og som lave felter i bedet, men skal stadig have jord omkring sig og et sikkert afløb.\n\nKombinér dem med højere løg eller stauder, som overtager pladsen senere på sæsonen."
+      },
+      {
+        "key": "loevet-kan-komme-tidligt",
+        "title": "Løvet kan komme tidligt",
+        "body": "Nogle perlehyacinter sender blade op allerede i efteråret. Det er normalt og betyder ikke nødvendigvis, at planten er kommet forkert i gang.\n\nLad bladene blive stående efter blomstring, til de visner naturligt."
+      },
+      {
+        "key": "de-kan-brede-sig-mere-end-forventet",
+        "title": "De kan brede sig mere end forventet",
+        "body": "Perlehyacinter formerer sig både med sideløg og hos nogle typer med frø. Det kan være en fordel i en naturpræget beplantning, men mindre praktisk i et stramt bed.\n\nFjern afblomstrede hoveder, før frøene modner, hvis spredningen skal begrænses."
+      },
+      {
+        "key": "del-taette-grupper",
+        "title": "Del tætte grupper",
+        "body": "Gamle klumper kan blive så tætte, at blomstringen svækkes. Løft og del løgene i hvileperioden, og genplant de sunde løg med frisk plads.\n\nDet er også en enkel måde at flytte planten til flere steder i haven."
+      },
+      {
+        "key": "krukker-giver-kontrol",
+        "title": "Krukker giver kontrol",
+        "body": "I krukker er perlehyacint let at kombinere med andre forårsløg. Brug en beholder med drænhul, og lad ikke komposten stå vandmættet gennem vinteren.\n\nEfter blomstring skal bladene fortsat have lys, selv om krukken flyttes væk fra den mest synlige plads."
+      },
+      {
+        "key": "sorten-styrer-farve-og-vaekstkraft",
+        "title": "Sorten styrer farve og vækstkraft",
+        "body": "Sortsguiden bør beskrive blomsterfarve, højde, duft, blomstringstid og tendens til at brede sig. Nogle arter og sorter er kompakte og rolige, mens andre hurtigt naturaliserer.\n\nDet er forskellen mellem et velafgrænset blåt bånd og en plante, der stille overtager matriklen uden at udfylde en eneste formular."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/muscari",
+      "https://www.rhs.org.uk/plants/trials-awards/plant-trial-results/muscari",
+      "https://www.rhs.org.uk/plants/11247/muscari-armeniacum/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "persille",
     "plantName": "Persille",
     "title": null,
@@ -6026,6 +7188,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "prydallium",
+    "plantName": "Prydallium",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Allium",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Arkitektonisk prydløg med kugleformede blomsterstande, som trives bedst i sol og veldrænet jord og binder forårs- og sommerbedet sammen.",
+    "difficulty": "easy",
+    "tags": [
+      "prydloeg",
+      "allium",
+      "sol",
+      "bestoeversplante",
+      "afskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "prydloeg-med-tydelig-struktur",
+        "title": "Prydløg med tydelig struktur",
+        "body": "Prydallium samler mange arter og sorter med stjerneformede blomster i tætte kugler, løse skærme eller hængende klaser. De høje typer fungerer som lodrette punkter i bedet, mens lave arter passer i forkant, grusbed og krukker.\n\nDe tørre frøstande kan bevare formen længe efter blomstring."
+      },
+      {
+        "key": "sol-og-draen-er-det-sikre-udgangspunkt",
+        "title": "Sol og dræn er det sikre udgangspunkt",
+        "body": "De fleste prydallium blomstrer bedst i fuld sol og i jord, der ikke står våd om vinteren. Tung lerjord kan forbedres lokalt, men et højt eller gruset bed er ofte en mere varig løsning.\n\nNogle arter tåler lys halvskygge, men tæt skygge giver normalt færre blomster."
+      },
+      {
+        "key": "plant-loegene-i-efteraaret",
+        "title": "Plant løgene i efteråret",
+        "body": "Løgene lægges i efteråret med spidsen opad. Plant dem i grupper, så blomsterstandene læses som en bevidst gentagelse gennem bedet.\n\nDe største løg kræver mere dybde og afstand end små arter. Følg løgets størrelse og leverandørens oplysninger frem for at give alle prydløg den samme standardbehandling."
+      },
+      {
+        "key": "skjul-loevet-blandt-andre-planter",
+        "title": "Skjul løvet blandt andre planter",
+        "body": "Hos mange store prydallium begynder bladene at gulne omkring blomstringen. Plant dem derfor mellem stauder eller lave græsser, som kan skjule løvet uden at dække blomsterstænglerne.\n\nKlip ikke bladene væk, før de er visnet naturligt."
+      },
+      {
+        "key": "vand-ved-etablering-men-undgaa-vintervaad-jord",
+        "title": "Vand ved etablering, men undgå vintervåd jord",
+        "body": "Nyplantede løg har brug for kontakt med fugtig jord, så rødderne kan etableres. Senere klarer mange typer forholdsvis tørre perioder, når de først er i vækst.\n\nDet vigtigste er forskellen mellem sæsonfugt og permanent våd jord: prydallium tåler det første langt bedre end det sidste."
+      },
+      {
+        "key": "lad-froestandene-staa-eller-fjern-dem",
+        "title": "Lad frøstandene stå eller fjern dem",
+        "body": "De tørre hoveder kan stå som struktur i bedet og bruges i buketter. Vil du begrænse selvsåning, klippes frøstandene af, før frøene modner.\n\nNogle arter breder sig villigt, mens andre forbliver rolige klumper."
+      },
+      {
+        "key": "rust-og-raad-er-de-vigtigste-faresignaler",
+        "title": "Rust og råd er de vigtigste faresignaler",
+        "body": "Prydallium kan rammes af rust på bladene, og løgene kan rådne i for våd jord. God luft omkring planterne og passende dræn reducerer presset.\n\nFjern stærkt angrebne blade, og lad ikke sygt grønt materiale blive liggende omkring beslægtede løgplanter."
+      },
+      {
+        "key": "sorten-bestemmer-proportionerne",
+        "title": "Sorten bestemmer proportionerne",
+        "body": "Sortsguiden bør beskrive højde, blomsterstandens størrelse og form, blomstringstid, bladkvalitet og tendens til at brede sig.\n\nEt lavt trommestikprydløg og en høj, storblomstret haveallium løser helt forskellige opgaver, selv om begge ender som lilla kugler på planteskiltet."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/allium/growing-guide",
+      "https://www.rhs.org.uk/plants/allium",
+      "https://www.rhs.org.uk/plants/allium/border"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "purloeg",
     "plantName": "Purløg",
     "title": null,
@@ -6094,6 +7339,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/purloeg.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/chives/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "purpursolhat",
+    "plantName": "Purpursolhat",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Echinacea",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Solkrævende sensommerstaude med markante blomster og stor værdi for bestøvere, bedst i veldrænet jord uden vintervåd.",
+    "difficulty": "medium",
+    "tags": [
+      "staude",
+      "sol",
+      "bestoeversplante",
+      "sensommer",
+      "praeriebed"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-staude-til-sensommerens-bed",
+        "title": "En staude til sensommerens bed",
+        "body": "Purpursolhat danner oprette stængler med store kurvblomster og en tydelig kegleformet midte. Blomstringen ligger fra sommer til efterår og tiltrækker bier, sommerfugle og andre bestøvere.\n\nDe tørre frøstande kan blive stående som vinterstruktur og føde for fugle."
+      },
+      {
+        "key": "giv-den-fuld-sol",
+        "title": "Giv den fuld sol",
+        "body": "Purpursolhat blomstrer bedst i fuld sol. I skygge bliver planterne ofte mere åbne, blomstrer svagere og kan have brug for støtte.\n\nPlacér den i et åbent bed, hvor bladene kan tørre efter regn."
+      },
+      {
+        "key": "draen-er-vigtigere-end-ekstra-naering",
+        "title": "Dræn er vigtigere end ekstra næring",
+        "body": "Jorden bør være veldrænet og må ikke stå kold og våd gennem vinteren. Tung jord kan forbedres med struktur og organisk materiale, men et hævet bed er ofte den sikreste løsning.\n\nOverdreven gødning kan give blød vækst og færre blomster."
+      },
+      {
+        "key": "plant-helst-i-foraar-eller-tidlig-sommer",
+        "title": "Plant helst i forår eller tidlig sommer",
+        "body": "Purpursolhat etablerer sig bedst, når jorden er varm nok til aktiv rodvækst. Planter sat sent i efteråret er mere udsatte for råd i våd jord.\n\nVand regelmæssigt den første sæson, men lad ikke planten stå konstant våd."
+      },
+      {
+        "key": "undgaa-unoedig-flytning",
+        "title": "Undgå unødig flytning",
+        "body": "Echinacea udvikler et kraftigt rodsystem og bryder sig ikke om gentagne flytninger. Vælg placeringen med omtanke og lad planten danne en stabil tue.\n\nDeling er mulig, men bør ikke være en årlig rutine."
+      },
+      {
+        "key": "klip-selektivt",
+        "title": "Klip selektivt",
+        "body": "Fjern visne blomster, hvis du ønsker en renere plante og mulig forlænget blomstring. Lad nogle frøstande stå til vinteren for struktur og dyreliv.\n\nHele planten kan klippes ned sent på vinteren eller tidligt om foråret."
+      },
+      {
+        "key": "hold-oeje-med-svage-planter",
+        "title": "Hold øje med svage planter",
+        "body": "Rodråd er det største problem i våd jord. Meldug og bladplet kan opstå ved stress eller tæt plantning.\n\nEn plante, der bliver mindre år for år, mangler ofte sol eller dræn snarere end flere produkter i en farvestrålende flaske."
+      },
+      {
+        "key": "nye-sorter-varierer-i-stabilitet",
+        "title": "Nye sorter varierer i stabilitet",
+        "body": "Sortsguiden bør beskrive højde, farve, blomsterform, vækstkraft, vinterhårdførhed og om sorten holder sig opret.\n\nKlassiske enkeltblomstrede sorter er ofte mere robuste end stærkt forædlede fyldte eller eksotisk farvede typer."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/echinacea",
+      "https://www.rhs.org.uk/garden-design/prairie-planting-creation-maintenance",
+      "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
     ],
     "status": "published",
     "visibility": "public",
@@ -6503,6 +7831,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "roellike",
+    "plantName": "Røllike",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Achillea",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Solstærk staude med flade blomsterskærme og fint løv, velegnet til tørre bede, afskæring og bestøvervenlige plantninger.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "sol",
+      "toerketalende",
+      "bestoeversplante",
+      "snitblomst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "flade-skaerme-og-let-loev",
+        "title": "Flade skærme og let løv",
+        "body": "Røllike danner flade eller let hvælvede blomsterstande over fintdelte, aromatiske blade. Farverne spænder fra hvid og gul til rosa, rød og terrakotta.\n\nBlomsterformen giver en nyttig kontrast til spir, kugler og store margeritblomster."
+      },
+      {
+        "key": "fuld-sol-giver-staerke-staengler",
+        "title": "Fuld sol giver stærke stængler",
+        "body": "Røllike trives bedst i sol. I skygge bliver planterne ofte løse og blomstrer mindre.\n\nDen passer naturligt i tørre staudebede, prærieplantninger og grusede områder."
+      },
+      {
+        "key": "mager-jord-er-ofte-en-fordel",
+        "title": "Mager jord er ofte en fordel",
+        "body": "Jorden skal være veldrænet og behøver ikke være særlig næringsrig. For meget gødning og vand kan give høje, bløde stængler, som vælter.\n\nTung vintervåd jord er mere problematisk end almindelig sommertørke."
+      },
+      {
+        "key": "vand-ved-etablering",
+        "title": "Vand ved etablering",
+        "body": "Nyplantede rølliker vandes regelmæssigt den første sæson. Når rødderne er etableret, klarer de tørre perioder godt.\n\nKrukker kræver mere vand, men må stadig have effektivt afløb."
+      },
+      {
+        "key": "fjern-visne-blomster-efter-behov",
+        "title": "Fjern visne blomster efter behov",
+        "body": "Afklipning af visne blomster kan forlænge sæsonen og holde planten pæn. Til tørrede buketter høstes blomsterstandene, når de er fuldt udviklede.\n\nNogle hoveder kan blive stående som vinterstruktur."
+      },
+      {
+        "key": "del-brede-bestande",
+        "title": "Del brede bestande",
+        "body": "Røllike kan brede sig med underjordiske skud og danne store flader. Del planten i foråret eller efteråret, hvis den bliver for dominerende eller blomstrer svagere.\n\nGenplant kun de kraftigste dele."
+      },
+      {
+        "key": "hold-den-opret-med-de-rette-forhold",
+        "title": "Hold den opret med de rette forhold",
+        "body": "Væltning skyldes ofte for lidt lys eller for rig jord. Støtte kan bruges midlertidigt, men en bedre placering løser normalt problemet mere elegant.\n\nBladlus kan forekomme på nye skud, men planten er generelt robust."
+      },
+      {
+        "key": "farven-aendrer-sig-gennem-blomstringen",
+        "title": "Farven ændrer sig gennem blomstringen",
+        "body": "Sortsguiden bør beskrive højde, blomsterfarve, farvens holdbarhed, vækstkraft og tendens til at brede sig.\n\nMange sorter falmer smukt, mens andre bare bliver beige. Det er ikke helt den samme designstrategi."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/achillea",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing",
+      "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "roerhvene",
     "plantName": "Rørhvene",
     "title": null,
@@ -6577,6 +7988,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/calamagrostis/growing-guide",
       "https://www.rhs.org.uk/plants/72074/calamagrostis-x-acutiflora-karl-foerster/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "rose",
+    "plantName": "Rose",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Rosa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "buske",
+    "subcategoryId": null,
+    "summary": "Artsguide til roser med fælles dyrkningsprincipper og introduktion til de vigtigste rosetyper.",
+    "difficulty": "medium",
+    "tags": [
+      "rose",
+      "busk",
+      "klatrer",
+      "duft",
+      "prydhave"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "n-art-mange-typer",
+        "title": "Én art, mange typer",
+        "body": "Denne artsguide samler roser som art. Buketroser, storblomstrede roser, buskroser, klatreroser, bunddækkeroser og historiske roser behandles som typer under arten og senere som sortsguides."
+      },
+      {
+        "key": "placering",
+        "title": "Placering",
+        "body": "Plant roser i fuld sol med god luftcirkulation og veldrænet, næringsrig jord."
+      },
+      {
+        "key": "plantning",
+        "title": "Plantning",
+        "body": "Plant i løs jord med kompost og følg producentens anbefaling for podestedets placering."
+      },
+      {
+        "key": "vanding",
+        "title": "Vanding",
+        "body": "Vand dybt og sjældnere frem for lidt og ofte."
+      },
+      {
+        "key": "goedning",
+        "title": "Gødning",
+        "body": "Tilfør organisk materiale og rosegødning i vækstsæsonen."
+      },
+      {
+        "key": "beskaering",
+        "title": "Beskæring",
+        "body": "Principperne er fælles, men beskæring afhænger af rosetypen."
+      },
+      {
+        "key": "sygdomme",
+        "title": "Sygdomme",
+        "body": "Hold øje med meldug, rust og stråleplet. Sund vækst og luft er bedre end endnu en magisk flaske fra havecenteret."
+      },
+      {
+        "key": "sortsguider",
+        "title": "Sortsguider",
+        "body": "Sortsguider bør beskrive type, duft, blomstring, remontering, højde, sundhed og hårdførhed."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/roses",
+      "https://www.rhs.org.uk/plants/roses/growing-guide",
+      "https://www.rhs.org.uk/plants/roses/pruning"
     ],
     "status": "published",
     "visibility": "public",
@@ -6994,6 +8488,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "sankthansurt",
+    "plantName": "Sankthansurt",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Hylotelephium",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Tørketålende sensommerstaude med sukkulente blade og flade blomsterskærme, bedst i sol og veldrænet jord.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "sol",
+      "toerketalende",
+      "sensommer",
+      "bestoeversplante"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "struktur-fra-foraar-til-vinter",
+        "title": "Struktur fra forår til vinter",
+        "body": "Sankthansurt danner kompakte tuer med sukkulente blade og oprette stængler. De flade blomsterstande udvikler sig fra grønne knopper til rosa, røde eller hvide blomster og senere brune vinterstande.\n\nPlanten holder formen længe og fungerer godt i sensommer- og efterårsbede."
+      },
+      {
+        "key": "plant-den-i-fuld-sol",
+        "title": "Plant den i fuld sol",
+        "body": "Sankthansurt bliver mest kompakt og blomstrer rigest i sol. I skygge bliver stænglerne længere og har større tendens til at vælte.\n\nDen passer godt i tørre bede, grusplantninger og solrige skråninger."
+      },
+      {
+        "key": "undgaa-for-fed-og-vaad-jord",
+        "title": "Undgå for fed og våd jord",
+        "body": "Jorden skal være veldrænet. Meget næringsrig jord og kraftig vanding giver blød vækst, som lettere kollapser.\n\nPå tung jord bør planten placeres højt eller blandes med mineralsk materiale, så vintervandet kan komme væk."
+      },
+      {
+        "key": "vand-kun-efter-behov",
+        "title": "Vand kun efter behov",
+        "body": "Nyplantede sankthansurt skal vandes, indtil rødderne er etableret. Derefter klarer planten almindelige tørre perioder godt.\n\nLangvarig tørke kan dog reducere blomstringen, især i krukker."
+      },
+      {
+        "key": "lad-blomsterstandene-staa",
+        "title": "Lad blomsterstandene stå",
+        "body": "De tørre hoveder giver struktur gennem vinteren og kan klippes ned i det tidlige forår. De er samtidig værdifulde som skjul og føde i haven.\n\nVil du have et meget stramt udtryk, kan de fjernes tidligere, men planten har ingen biologisk interesse i menneskets kalenderæstetik."
+      },
+      {
+        "key": "del-store-tuer",
+        "title": "Del store tuer",
+        "body": "Gamle planter kan deles i foråret. Løft tuen, skær den i flere sunde dele og genplant i veldrænet jord.\n\nDeling holder væksten tæt og giver nye planter uden vanskelige formeringsmetoder."
+      },
+      {
+        "key": "forebyg-vaeltning-med-de-rette-forhold",
+        "title": "Forebyg væltning med de rette forhold",
+        "body": "Hvis stænglerne gentagne gange lægger sig ned, står planten sandsynligvis for mørkt, for fugtigt eller for næringsrigt. Flyt eller del planten frem for blot at binde den sammen hvert år.\n\nStærkt angrebne eller rådne stængler fjernes ved basis."
+      },
+      {
+        "key": "sorten-styrer-blad-og-blomsterfarve",
+        "title": "Sorten styrer blad og blomsterfarve",
+        "body": "Sortsguiden bør beskrive højde, vækstform, løvfarve, blomsterfarve, blomstringstid og stabilitet.\n\nMørkbladede sorter kan være mindre kraftige end klassiske grønbladede typer og har ofte større behov for sol."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/hylotelephium",
+      "https://www.rhs.org.uk/garden-inspiration/wildlife/top-12-plants-for-autumn-pollinators",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "selleri",
     "plantName": "Selleri",
     "title": null,
@@ -7204,6 +8781,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/skorzonerrod.jpg",
     "sourceLinks": [
       "https://extension.usu.edu/yardandgarden/research/black-salsify-in-the-garden"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "skumblomst",
+    "plantName": "Skumblomst",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Tiarella",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Let og skovbundspræget staude med fine blomsterspir og dekorative blade til halvskygge og fugtbevarende jord.",
+    "difficulty": "easy",
+    "tags": [
+      "halvskygge",
+      "skygge",
+      "skovbund",
+      "bunddaekke",
+      "staude"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "lette-blomster-over-dekorative-blade",
+        "title": "Lette blomster over dekorative blade",
+        "body": "Skumblomst danner lave rosetter eller løse tæpper af fligede blade. Om foråret og forsommeren bæres små hvide eller rosa blomster i fine spir over løvet.\n\nBladene kan have mørke tegninger og får hos nogle sorter bronzefarver i køligt vejr."
+      },
+      {
+        "key": "lys-skygge-og-halvskygge-er-bedst",
+        "title": "Lys skygge og halvskygge er bedst",
+        "body": "Skumblomst trives under buske, i skovbundsbede og på steder med filtreret lys. Direkte varm sol kan svide bladene, især hvis jorden tørrer ud.\n\nMeget mørk skygge reducerer blomstringen."
+      },
+      {
+        "key": "hold-jorden-koelig-og-fugtig",
+        "title": "Hold jorden kølig og fugtig",
+        "body": "Jorden bør være humusrig, veldrænet og jævnt fugtig. Bladmuld og kompost giver gode forhold omkring de fine rødder.\n\nPlanten bryder sig ikke om langvarig tørke."
+      },
+      {
+        "key": "brug-den-som-bloed-bund",
+        "title": "Brug den som blød bund",
+        "body": "Tuedannende sorter fungerer i små grupper, mens udløberdannende typer kan skabe et sammenhængende bunddække.\n\nPlant den mellem bregner, hosta, kærmindesøster og andre skyggeplanter med større blade."
+      },
+      {
+        "key": "vand-nyplantede-planter-omhyggeligt",
+        "title": "Vand nyplantede planter omhyggeligt",
+        "body": "Skumblomst har brug for stabil fugt gennem etableringen. Vand ved roden og læg et tyndt organisk dæklag omkring planten.\n\nUndgå at begrave kronen."
+      },
+      {
+        "key": "klip-kun-det-slidte-vaek",
+        "title": "Klip kun det slidte væk",
+        "body": "Fjern visne blomsterstængler og beskadigede blade efter behov. Mange sorter er halvstedsegrønne og behøver ikke en fuld nedklipning hvert efterår.\n\nRyd forsigtigt omkring nye skud i foråret."
+      },
+      {
+        "key": "del-eller-tag-udloebere",
+        "title": "Del eller tag udløbere",
+        "body": "Tætte planter kan deles i foråret eller efter blomstring. Udløberdannende typer kan formeres ved at flytte rodfæstede småplanter.\n\nHold dem fugtige, indtil de vokser videre."
+      },
+      {
+        "key": "sorten-bestemmer-bunddaekket",
+        "title": "Sorten bestemmer bunddækket",
+        "body": "Sortsguiden bør beskrive bladtegning, efterårsfarve, blomsterfarve, højde og om planten danner tuer eller udløbere.\n\nDen forskel afgør, om skumblomst bliver en høflig detalje eller faktisk udfører det bunddækkende arbejde, den er blevet ansat til."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/tiarella",
+      "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing"
     ],
     "status": "published",
     "visibility": "public",
@@ -7875,6 +9535,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "storkenaeb",
+    "plantName": "Storkenæb",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Geranium",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Robust blomstrende staude med lang sæson, god bunddækning og sorter til både sol, halvskygge og let skygge.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "bunddaekke",
+      "lang-blomstring",
+      "sol",
+      "halvskygge"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-stor-gruppe-af-haardfoere-stauder",
+        "title": "En stor gruppe af hårdføre stauder",
+        "body": "Storkenæb dækker mange arter og sorter med forskellige højder, blade og blomstringstider. De fleste danner tuer eller lave måtter med skålformede blomster i rosa, lilla, blå eller hvid.\n\nDe må ikke forveksles med pelargonier, som ofte fejlagtigt kaldes geranier i handel og daglig tale."
+      },
+      {
+        "key": "vaelg-efter-voksestedet",
+        "title": "Vælg efter voksestedet",
+        "body": "Nogle storkenæb trives i fuld sol og veldrænet jord, mens andre er stærke i halvskygge og under buske. Arts- og sortsvalget er derfor vigtigere end en universel lysregel.\n\nLæs sortens behov, især hvis planten skal fungere som bunddække i tør eller fugtig skygge."
+      },
+      {
+        "key": "plant-i-almindelig-havejord",
+        "title": "Plant i almindelig havejord",
+        "body": "De fleste storkenæb etablerer sig i veldrænet, rimeligt næringsrig jord. Vand regelmæssigt den første sæson, så rodsystemet kan udvikle sig.\n\nNår planten er etableret, er mange sorter overraskende tørketålende, men vedvarende tørke forkorter blomstringen."
+      },
+      {
+        "key": "klip-tilbage-for-et-nyt-loev",
+        "title": "Klip tilbage for et nyt løv",
+        "body": "Sorter, der bliver trætte eller flade efter den første blomstring, kan klippes tilbage. Det giver ofte friskere blade og i nogle tilfælde en ny, lettere blomstring senere på sæsonen.\n\nFjern kun det nødvendige, og vand efter klipning i tørt vejr."
+      },
+      {
+        "key": "brug-dem-som-sammenbindende-planter",
+        "title": "Brug dem som sammenbindende planter",
+        "body": "Storkenæb er gode mellem roser, buske og højere stauder, hvor bladene dækker jorden og blomsterne binder bedet sammen.\n\nDe lave typer kan bruges i forkant og mellem sten, mens kraftige sorter hurtigt fylder større flader."
+      },
+      {
+        "key": "del-naar-tuen-bliver-grov",
+        "title": "Del, når tuen bliver grov",
+        "body": "Mange storkenæb kan deles i foråret eller efteråret. Løft planten, skær eller træk tuen i mindre stykker, og genplant de stærkeste dele.\n\nDeling kan forynge planten og holde en bredt voksende sort inden for det område, mennesket optimistisk mente var afsat til den."
+      },
+      {
+        "key": "faa-problemer-men-hold-oeje-med-meldug",
+        "title": "Få problemer, men hold øje med meldug",
+        "body": "Storkenæb er generelt sunde, men tørke og dårlig luftcirkulation kan give meldug på bladene. Fjern stærkt angrebne blade og forbedr vandingen ved roden.\n\nSnegle kan tage nye skud, men veletablerede planter kommer som regel hurtigt videre."
+      },
+      {
+        "key": "sorten-bestemmer-vaekstformen",
+        "title": "Sorten bestemmer vækstformen",
+        "body": "Sortsguiden bør beskrive højde, bredde, blomstringstid, genblomstring, bladfarve om efteråret og evne til at brede sig.\n\nNogle sorter er ordentlige tuer, andre er effektive fladebesættere. Det er en nyttig forskel at kende før plantning."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/geranium",
+      "https://www.rhs.org.uk/plants/types/perennials/dividing",
+      "https://www.rhs.org.uk/plants/types/perennials/cutting-back"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "tagetes",
     "plantName": "Tagetes",
     "title": null,
@@ -8482,6 +10225,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "tulipan",
+    "plantName": "Tulipan",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Tulipa",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Forårsblomstrende løgplante med stor variation i højde, farve og blomsterform, bedst i veldrænet jord og med en rolig eftermodning.",
+    "difficulty": "medium",
+    "tags": [
+      "foraarsloeg",
+      "tulipa",
+      "sol",
+      "krukker",
+      "afskaering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "en-stor-slaegt-med-mange-udtryk",
+        "title": "En stor slægt med mange udtryk",
+        "body": "Tulipaner spænder fra lave botaniske typer til høje sorter med enkle, fyldte, frynsede eller papegøjelignende blomster. Forskellene er store nok til, at sorten har betydning for både placering, blomstringstid og brug.\n\nArtsguiden handler om det fælles fundament: et forårsløg, som lagrer næste sæsons blomstring under jorden og derfor er afhængigt af gode forhold både før og efter blomstring."
+      },
+      {
+        "key": "vaelg-et-lyst-sted-med-afloeb",
+        "title": "Vælg et lyst sted med afløb",
+        "body": "De fleste tulipaner blomstrer bedst i sol og i jord, hvor overskydende vand kan løbe væk. Stående vinterfugt øger risikoen for, at løgene svækkes eller rådner.\n\nI tung jord kan en hævet placering, grusbed eller krukke være lettere at styre end et lavt, vådt bed."
+      },
+      {
+        "key": "plant-loegene-om-efteraaret",
+        "title": "Plant løgene om efteråret",
+        "body": "Tulipanløg lægges i efteråret med spidsen opad. Plant dem i grupper frem for som isolerede prikker, hvis du ønsker et mere samlet forårsudtryk.\n\nEn almindelig tommelfingerregel er at dække løget med jord svarende til omtrent to til tre gange løgets egen højde. Den konkrete dybde må tilpasses løgstørrelse og jordtype."
+      },
+      {
+        "key": "krukker-kraever-saerlig-opmaerksomhed",
+        "title": "Krukker kræver særlig opmærksomhed",
+        "body": "Tulipaner fungerer godt i krukker, hvor farver og blomstring kan sammensættes præcist. Krukken skal have drænhul, og overskydende vand må ikke blive stående omkring løgene.\n\nKrukker tørrer hurtigere end bede under væksten, men kan samtidig blive for våde gennem en regnfuld vinter. Begge dele kan svække blomstringen."
+      },
+      {
+        "key": "lad-bladene-arbejde-faerdigt",
+        "title": "Lad bladene arbejde færdigt",
+        "body": "Efter blomstring fortsætter bladene med at opbygge løgets reserver. Fjern gerne den visne blomst, men lad løv og stængel stå, til de gulner naturligt.\n\nKlippes bladene væk for tidligt, bliver næste års blomstring ofte svagere."
+      },
+      {
+        "key": "ikke-alle-tulipaner-vender-lige-sikkert-tilbage",
+        "title": "Ikke alle tulipaner vender lige sikkert tilbage",
+        "body": "Mange storblomstrede havetulipaner er mest imponerende den første sæson og kan derefter blive færre eller mindre. Botaniske tulipaner og visse robuste grupper er ofte bedre til at komme igen.\n\nDet er derfor nyttigt at vælge mellem to mål: et præcist sæsondisplay, der fornyes, eller en mere varig beplantning med typer, der naturaliserer bedre."
+      },
+      {
+        "key": "hold-oeje-med-svage-eller-afvigende-planter",
+        "title": "Hold øje med svage eller afvigende planter",
+        "body": "Løg kan gå til i våd jord, og blomster eller blade kan også blive beskadiget af snegle, dyr eller sygdom. Fjern planter, der udvikler tydeligt forvrængede eller usædvanligt stribede blade og blomster, hvis mønstret ikke hører til sorten.\n\nGenplant ikke nye løg i et område, hvor mange løg gentagne gange rådner, før drænet er forbedret."
+      },
+      {
+        "key": "sorten-bestemmer-saeson-og-rolle",
+        "title": "Sorten bestemmer sæson og rolle",
+        "body": "Sortsguiden bør forklare blomstringstid, højde, blomsterform, farve, holdbarhed og om tulipanen primært egner sig til bed, krukke, afskæring eller naturalisering.\n\nTulipan er derfor en art, hvor sortsvalget ikke kun handler om farve, men om hele plantens funktion i haven."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/tulip/growing-guide",
+      "https://www.rhs.org.uk/plants/tulip",
+      "https://www.rhs.org.uk/plants/types/bulbs/planting"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "vaarsalat",
     "plantName": "Vårsalat",
     "title": null,
@@ -8561,6 +10387,89 @@ export const IMPORTED_GUIDES: Guide[] = [
     "sourceLinks": [
       "https://extension.usu.edu/yardandgarden/research/lambs-lettuce-in-the-garden",
       "https://www.rhs.org.uk/vegetables/salad-leaves/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "vintergaek",
+    "plantName": "Vintergæk",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Galanthus",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "loeg",
+    "subcategoryId": null,
+    "summary": "Tidlig skovbundsplante med hvide hængende blomster, som trives i humusrig, fugtbevarende jord under løvfældende træer og buske.",
+    "difficulty": "easy",
+    "tags": [
+      "foraarsloeg",
+      "galanthus",
+      "halvskygge",
+      "skovbund",
+      "naturalisering"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": []
+    },
+    "sections": [
+      {
+        "key": "et-tidligt-tegn-paa-vaekst",
+        "title": "Et tidligt tegn på vækst",
+        "body": "Vintergækker blomstrer, mens haven stadig er i vintertilstand. De hængende hvide blomster står over smalle blade og kan med tiden danne tætte grupper eller brede drifter.\n\nSlægten rummer flere arter og mange sorter med små forskelle i højde, tegning og blomsterform."
+      },
+      {
+        "key": "efterlign-en-lys-skovbund",
+        "title": "Efterlign en lys skovbund",
+        "body": "Vintergækker trives i humusrig jord, som er fugtig men veldrænet og ikke tørrer helt ud om sommeren. Lys halvskygge under løvfældende træer og buske er ofte ideel.\n\nDe kan vokse i sol, hvis jorden fortsat holder tilstrækkeligt på fugten."
+      },
+      {
+        "key": "plant-loeg-eller-planter-i-vaekst",
+        "title": "Plant løg eller planter i vækst",
+        "body": "Tørre løg kan plantes i hvileperioden, men vintergækker handles også ofte som planter i vækst eller lige efter blomstring. Friske, sunde planter etablerer sig normalt mere sikkert end løg, der har ligget længe og tørret ud.\n\nPlant dem i små grupper med plads til, at klumpen kan udvide sig."
+      },
+      {
+        "key": "lad-loevet-visne-ned",
+        "title": "Lad løvet visne ned",
+        "body": "Efter blomstring skal bladene blive stående, mens løget opbygger reserver. Fjern først løvet, når det er gult og slipper let.\n\nI græs eller underplantning bør den øvrige pleje tilpasses denne korte eftermodning."
+      },
+      {
+        "key": "del-klumper-paa-det-rigtige-tidspunkt",
+        "title": "Del klumper på det rigtige tidspunkt",
+        "body": "Når grupperne bliver tætte, kan de deles, mens løvet stadig er synligt eller netop er ved at dø tilbage. Genplant delingerne med det samme, så rødder og løg ikke tørrer ud.\n\nDet er den hurtigste vej fra en beskeden tue til en overbevisende drift."
+      },
+      {
+        "key": "fugtig-er-ikke-det-samme-som-vandmaettet",
+        "title": "Fugtig er ikke det samme som vandmættet",
+        "body": "Vintergækker bryder sig ikke om permanent sumpet jord. Omvendt kan meget tør, sandet jord give svag etablering og langsom spredning.\n\nEt lag bladmuld eller kompost omkring planterne hjælper med at efterligne skovbundens stabile forhold."
+      },
+      {
+        "key": "hold-oeje-med-graaskimmel-og-loegskader",
+        "title": "Hold øje med gråskimmel og løgskader",
+        "body": "Tætte, fugtige bestande kan udvikle svampeproblemer, og løg kan angribes af skadedyr. Fjern kollapsede eller tydeligt syge planter, og undgå at flytte dem til nye områder.\n\nKøb planter fra dyrket bestand frem for materiale indsamlet i naturen."
+      },
+      {
+        "key": "sorten-viser-sig-i-detaljen",
+        "title": "Sorten viser sig i detaljen",
+        "body": "Sortsguiden bør beskrive blomstringstid, højde, enkelt eller fyldt blomst og de grønne eller gule markeringer på de indre blomsterblade.\n\nForskellene er små på afstand, men tydelige tæt på. Vintergæksamleren har derfor opfundet en hel verden af variation, hvor resten af menneskeheden ser en hvid blomst."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/snowdrops/growing-guide",
+      "https://www.rhs.org.uk/plants/snowdrops",
+      "https://www.rhs.org.uk/plants/types/bulbs/propagation"
     ],
     "status": "published",
     "visibility": "public",
