@@ -17,3 +17,19 @@ automatisk i rigtig mappe efter guidens niveau, med guidens egen slug.
 Placerede foto-originaler FLYTTES til _foto-arkiv/ (aldrig slettet) — den
 komprimerede jpg i public/images/ er det appen bruger. Indbakker committes
 aldrig (står i .gitignore).
+
+ARKIV
+=====
+Når en batch er implementeret (guiderne ligger i content/guides/), FLYTTES
+hele batch-mappen til _guide-indbakke/arkiv/ — aldrig slettet. Så viser
+top-niveauet kun det der endnu ikke er bygget. (28/7: alle 12 hidtidige
+batches arkiveret — de var alle implementeret. 82 arts + 37 sorts + 12 teknik.)
+
+ÅBNE BESLUTNINGER (ikke bygget endnu)
+=====================================
+- Ananaskirsebær: PARKERET i content/guide-production/parkeret/ananaskirsebaer.json.
+  Guiden beskriver Physalis peruviana = kapstikkelsbær, ikke ananaskirsebær
+  (P. grisea). Afventer: omskriv indhold ELLER omdøb til kapstikkelsbaer.
+- Majs 'Incredible': batch-json'en (nu i arkiv/potalot-fotoindbakke-…) er en
+  UDSKUDT opdatering af den allerede-live majs-incredible-guide. Kræver Annas
+  ja + `npm run guides:intake -- --update majs-incredible`.
