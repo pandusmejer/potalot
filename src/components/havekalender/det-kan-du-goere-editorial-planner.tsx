@@ -38,6 +38,15 @@ const serif = 'var(--font-cormorant), Georgia, serif'
 const rust = '#B75C3E'
 const gold = '#C99A24'
 
+// Korte månedsetiketter til månedsvælgeren (Annas faste liste). Ved at
+// bruge korte navne får ALLE måneder samme store titel-størrelse og fulde
+// smugkig-look som JUNI — ingen skal skaleres ned for at passe i kortet.
+// Fulde navne (MONTHS_DA.full) bruges stadig i prosa + aria til skærmlæsere.
+const MONTH_SHORT_LABELS = [
+  'JAN', 'FEB', 'MAR', 'APR', 'MAJ', 'JUNI',
+  'JULI', 'AUG', 'SEPT', 'OKT', 'NOV', 'DEC',
+] as const
+
 type PlannerGroupId = 'goer_nu' | 'hold_oeje_med' | 'hvis_du_har_tid'
 type PlannerItemState = 'idle' | 'added' | 'hidden'
 
@@ -96,10 +105,15 @@ export function DetKanDuGoereEditorialPlanner({
   const groupLimits = { ...DEFAULT_GROUP_LIMITS, ...initialGroupLimits }
 
   const monthName = MONTHS_DA[viewMonth - 1]?.full ?? 'Juni'
+  const monthLabel = MONTH_SHORT_LABELS[viewMonth - 1] ?? monthName
   const prevMonth = viewMonth === 1 ? 12 : viewMonth - 1
   const nextMonth = viewMonth === 12 ? 1 : viewMonth + 1
   const prevLabel = MONTHS_DA[prevMonth - 1]?.full ?? 'Forrige'
   const nextLabel = MONTHS_DA[nextMonth - 1]?.full ?? 'Næste'
+  // Smugkig-etiketter: samme korte liste som centermåneden, så alle måneder
+  // ser ens ud. Fuldt navn beholdes til aria-label (skærmlæser).
+  const prevShort = MONTH_SHORT_LABELS[prevMonth - 1] ?? prevLabel
+  const nextShort = MONTH_SHORT_LABELS[nextMonth - 1] ?? nextLabel
 
   const visibleItems = useMemo(
     () => items.filter(item => itemStates[item.id] !== 'hidden' && (!item.month || item.month === viewMonth)),
@@ -199,9 +213,12 @@ export function DetKanDuGoereEditorialPlanner({
           </div>
 
           <MonthLoopHeader
-            activeLabel={monthName}
+            activeLabel={monthLabel}
+            activeFull={monthName}
             prevLabel={prevLabel}
             nextLabel={nextLabel}
+            prevShort={prevShort}
+            nextShort={nextShort}
             onPrev={() => handleMonthChange(prevMonth)}
             onNext={() => handleMonthChange(nextMonth)}
           />
@@ -355,21 +372,27 @@ export function DetKanDuGoereEditorialPlanner({
 
 function MonthLoopHeader({
   activeLabel,
+  activeFull,
   prevLabel,
   nextLabel,
+  prevShort,
+  nextShort,
   onPrev,
   onNext,
 }: {
   activeLabel: string
+  activeFull: string
   prevLabel: string
   nextLabel: string
+  prevShort: string
+  nextShort: string
   onPrev: () => void
   onNext: () => void
 }) {
   return (
     <div
       id="editorial-planner-title"
-      aria-label={`Månedsvælger: ${activeLabel}`}
+      aria-label={`Månedsvælger: ${activeFull}`}
       className="grid items-center"
       style={{
         position: 'relative',
@@ -483,7 +506,7 @@ function MonthLoopHeader({
             aria-hidden
             style={{ color: '#46482F', flex: '0 0 auto' }}
           />
-          <span>{prevLabel.toLowerCase()}</span>
+          <span>{prevShort.toLowerCase()}</span>
         </span>
       </button>
 
@@ -616,7 +639,7 @@ function MonthLoopHeader({
             minWidth: 0,
           }}
         >
-          <span>{nextLabel.toLowerCase()}</span>
+          <span>{nextShort.toLowerCase()}</span>
           <ChevronRight
             width={20}
             height={20}

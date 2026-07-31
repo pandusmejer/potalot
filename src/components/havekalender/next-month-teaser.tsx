@@ -57,6 +57,12 @@ export function NextMonthTeaser({
         overflow: 'hidden',
         padding: '24px 22px 26px',
         position: 'relative',
+        // Gør kortet til en query-container, så titlen kan skalere efter
+        // KORTETS bredde (cqw) i stedet for skærmbredden. Kortet er en fast
+        // mobil-kolonne (~360-390px), så en vw-baseret titel voksede til 80px
+        // på brede skærme og fik lange navne (September/November/December)
+        // hårdt klippet af kortkanten. Med cqw følger titlen kolonnen.
+        containerType: 'inline-size',
       }}
     >
       {/* Diskret hero-preview af næste måned i højre side — fader blødt mod
@@ -84,7 +90,10 @@ export function NextMonthTeaser({
           style={{
             color: '#314328',
             fontFamily: serif,
-            fontSize: 'clamp(56px, 16vw, 80px)',
+            // Skalerer efter kortets bredde (cqw), ikke skærmbredden. Loftet
+            // (66px) er valgt, så selv "September" (det bredeste navn) altid
+            // bliver inde i kortet — også på store telefoner/tablets/desktop.
+            fontSize: 'clamp(46px, 18.5cqw, 66px)',
             fontWeight: 600,
             letterSpacing: '0',
             lineHeight: 0.86,
