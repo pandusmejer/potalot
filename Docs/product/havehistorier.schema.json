@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PotAlot Havehistorie",
+  "description": "Kontrakt for en redaktionel Havehistorie (læsestof til Havebogens venteværelse). Producenten returnerer JSON der matcher dette; et menneske/Claude renser, optimerer og registrerer den i src/data/havehistorier.ts. Se Docs/product/havehistorier.md for masterprompt og redaktionelle regler.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slug",
+    "contentType",
+    "series",
+    "title",
+    "summary",
+    "readingTimeMinutes",
+    "seasonMonths",
+    "relatedSpecies",
+    "tags",
+    "shortAnswer",
+    "sections",
+    "lookFor",
+    "gardenAdvice",
+    "relatedGuides",
+    "sourceLinks",
+    "reviewRequired"
+  ],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "kebab-case, ae/oe/aa, ingen accenter. Fx 'skal-alle-lupiner-doe'."
+    },
+    "contentType": {
+      "const": "gardenStory",
+      "description": "Skiller Havehistorier fra dyrkningsguider. Altid 'gardenStory'."
+    },
+    "series": {
+      "enum": [
+        "myten",
+        "ven-eller-fjende",
+        "fremmed-i-haven",
+        "herfra",
+        "det-usynlige",
+        "haven-diskuterer"
+      ],
+      "description": "Præcis én redaktionel serie."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Spørgsmål eller tydelig påstand. Fx 'Skal alle lupiner dø?'. Ingen clickbait."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 320,
+      "description": "Manchet: 1-2 sætninger. Vises på venteværelse-kortet — hold den kort."
+    },
+    "readingTimeMinutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12,
+      "description": "Beregnes ud fra ca. 220 danske ord/minut."
+    },
+    "seasonMonths": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1, "maximum": 12 },
+      "description": "Måneder med særlig sæsonrelevans. [] = relevant hele året."
+    },
+    "relatedSpecies": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+      "description": "Kun EKSISTERENDE arts/plante-slugs. [] hvis ingen bestemt art."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+      "minItems": 3,
+      "maxItems": 8,
+      "description": "3-8 korte tags i kebab-case."
+    },
+    "shortAnswer": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Det korte svar (2-4 sætninger). Læseren skal kunne forstå konklusionen af dette alene. Må begynde med Ja./Nej./Som regel./Det kommer an på."
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 6,
+      "description": "4-6 prosa-sektioner i rækkefølge. content er markdown-let (afsnit, GFM-tabel, *kursiv*).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["heading", "content"],
+        "properties": {
+          "heading": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Konkret overskrift der fortæller hvad sektionen handler om. Ikke 'Introduktion'/'Baggrund'/'Konklusion'."
+          },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "lookFor": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 6,
+      "description": "0-6 konkrete observationer læseren kan genkende i egen have. [] hvis emnet ikke kan observeres meningsfuldt."
+    },
+    "gardenAdvice": {
+      "type": "string",
+      "minLength": 10,
+      "description": "I din have: 2-5 sætninger der oversætter stoffet til brugerens situation. Kun handlinger kilderne understøtter."
+    },
+    "relatedGuides": {
+      "type": "array",
+      "description": "Kun VERIFICEREDE guide-slugs. [] hvis ingen passer. Opfind aldrig et link.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "title", "description"],
+        "properties": {
+          "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sourceLinks": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "minItems": 2,
+      "description": "Fulde URL'er. Mindst to uafhængige faglige kilder; mindst én primær/officiel kilde ved invasive arter, giftighed, lovgivning eller sundhedsrisiko."
+    },
+    "reviewRequired": {
+      "type": "boolean",
+      "description": "Altid true indtil et menneske har fakta-kontrolleret historien."
+    }
+  }
+}

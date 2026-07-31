@@ -15,7 +15,13 @@
 
 # next.js
 /.next/
+/.next-preview/
 /out/
+
+# ephemeral agent-worktrees — MÅ IKKE scannes af Tailwind v4 (auto-content
+# detection følger .gitignore). En kopi af src/ her fik Turbopack til at
+# generere korrupt CSS ("Parsing CSS source code failed" i globals.css).
+/.claude/worktrees/
 
 # production
 /build

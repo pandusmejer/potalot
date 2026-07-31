@@ -863,7 +863,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/asters.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/garden-inspiration/wildlife/top-12-plants-for-autumn-pollinators",
       "https://www.rhs.org.uk/plants/types/perennials/dividing",
@@ -3067,7 +3067,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/erantis.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/6540/eranthis-hyemalis/details",
       "https://www.rhs.org.uk/garden-inspiration/seasonal/bee-friendly-winter-plants",
@@ -3934,7 +3934,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/hosta.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/hosta",
       "https://www.rhs.org.uk/plants/types/perennials/dividing",
@@ -5174,7 +5174,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/klematis.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/clematis",
       "https://www.rhs.org.uk/plants/clematis/growing-guide",
@@ -5647,7 +5647,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/krokus.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/crocus/growing-guide",
       "https://www.rhs.org.uk/plants/types/bulbs/naturalising-in-grass",
@@ -5811,7 +5811,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/lavendel.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/lavender",
       "https://www.rhs.org.uk/plants/lavender/growing-guide",
@@ -8005,7 +8005,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/prydallium.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/allium/growing-guide",
       "https://www.rhs.org.uk/plants/allium",
@@ -8896,7 +8896,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/rose.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/roses",
       "https://www.rhs.org.uk/plants/roses/growing-guide",
@@ -9388,7 +9388,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/sankthansurt.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/hylotelephium",
       "https://www.rhs.org.uk/garden-inspiration/wildlife/top-12-plants-for-autumn-pollinators",
@@ -10684,7 +10684,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/storkenaeb.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/geranium",
       "https://www.rhs.org.uk/plants/types/perennials/dividing",
@@ -11540,7 +11540,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/tulipan.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/tulip/growing-guide",
       "https://www.rhs.org.uk/plants/tulip",
@@ -11876,7 +11876,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/vintergaek.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/snowdrops/growing-guide",
       "https://www.rhs.org.uk/plants/snowdrops",
