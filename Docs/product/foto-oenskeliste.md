@@ -4,7 +4,7 @@ Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægge
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
 Status **1/8 2026** (171 guides: 122 arts · 37 sorts · 12 teknik):
-**40 fotos mangler** (28 prydhave/busk/klatre-arter + 12 sortskort). **119 af 159 er på plads.**
+**31 fotos mangler** (19 prydhave/busk/klatre-arter + 12 sortskort). **128 af 159 er på plads.**
 
 **Hero-sort:** hver prydhave-art har en anbefalet flagskibs-sort at fotografere
 (fra `Docs/product/sortsplan-batch-13-19.md` — som også holder de ~240 prioriterede
@@ -31,29 +31,29 @@ Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fang
 
 ### Forårsløg · batch 13 (7)
 - [x] **Tulipan** → `arts/tulipan.jpg` · *hero: Queen of Night*
-- [ ] **Påskelilje** → `arts/paaskelilje.jpg` · *hero: Dutch Master*
+- [x] **Påskelilje** → `arts/paaskelilje.jpg` · *hero: Dutch Master*
 - [x] **Krokus** → `arts/krokus.jpg` · *hero: Jeanne d'Arc*
 - [x] **Prydallium** → `arts/prydallium.jpg` · *hero: Purple Sensation*
 - [x] **Vintergæk** → `arts/vintergaek.jpg` · *hero: arten*
 - [x] **Erantis** → `arts/erantis.jpg` · *hero: arten*
-- [ ] **Perlehyacint** → `arts/perlehyacint.jpg` · *hero: Armeniacum*
+- [x] **Perlehyacint** → `arts/perlehyacint.jpg` · *hero: Armeniacum*
 
 ### Stauder · batch 14 (8)
 - [x] **Hosta** → `arts/hosta.jpg` · *hero: Halcyon*
 - [x] **Storkenæb** → `arts/storkenaeb.jpg` · *hero: Rozanne*
-- [ ] **Purpursolhat** → `arts/purpursolhat.jpg` · *hero: Magnus*
+- [x] **Purpursolhat** → `arts/purpursolhat.jpg` · *hero: Magnus*
 - [x] **Lavendel** → `arts/lavendel.jpg` · *hero: Hidcote*
 - [x] **Sankthansurt** → `arts/sankthansurt.jpg` · *hero: Herbstfreude*
 - [x] **Asters** → `arts/asters.jpg` · *hero: Little Carlow*
-- [ ] **Røllike** → `arts/roellike.jpg` · *hero: Terracotta*
-- [ ] **Høstanemone** → `arts/hoestanemone.jpg` · *hero: Honorine Jobert*
+- [x] **Røllike** → `arts/roellike.jpg` · *hero: Terracotta*
+- [x] **Høstanemone** → `arts/hoestanemone.jpg` · *hero: Honorine Jobert*
 
 ### Skyggehaven · batch 15 (7)
-- [ ] **Bregner** → `arts/bregner.jpg` · *hero: Dryopteris filix-mas*
+- [x] **Bregner** → `arts/bregner.jpg` · *hero: Dryopteris filix-mas*
 - [ ] **Lungeurt** → `arts/lungeurt.jpg` · *hero: Blue Ensign*
 - [ ] **Alunrod** → `arts/alunrod.jpg` · *hero: Caramel*
 - [ ] **Bispehue** → `arts/bispehue.jpg` · *hero: Frohnleiten*
-- [ ] **Kærmindesøster** → `arts/kaermindesoester.jpg` · *hero: Jack Frost*
+- [x] **Kærmindesøster** → `arts/kaermindesoester.jpg` · *hero: Jack Frost*
 - [ ] **Skumblomst** → `arts/skumblomst.jpg` · *hero: Spring Symphony*
 - [ ] **Hjerteblomst** → `arts/hjerteblomst.jpg` · *hero: Alba*
 
@@ -61,10 +61,10 @@ Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fang
 - [x] **Rose** → `arts/rose.jpg` · *hero: Bonica*
 
 ### Prydbuske & små træer · batch 18 (9)
-- [ ] **Magnolia** → `arts/magnolia.jpg` · *hero: Susan*
+- [x] **Magnolia** → `arts/magnolia.jpg` · *hero: Susan*
 - [ ] **Japansk løn** → `arts/japansk-loen.jpg` · *hero: Bloodgood*
 - [ ] **Kornel** → `arts/kornel.jpg` · *hero: Midwinter Fire*
-- [ ] **Syren** → `arts/syren.jpg` · *hero: Beauty of Moscow*
+- [x] **Syren** → `arts/syren.jpg` · *hero: Beauty of Moscow*
 - [ ] **Forsythia** → `arts/forsythia.jpg` · *hero: Lynwood Gold*
 - [ ] **Snebolle** → `arts/snebolle.jpg` · *hero: Carlesii*
 - [ ] **Sommerfuglebusk** → `arts/sommerfuglebusk.jpg` · *hero: Black Knight*

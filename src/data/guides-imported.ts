@@ -1826,7 +1826,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/bregner.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/ferns",
       "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
@@ -3851,7 +3851,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/hoestanemone.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/anemone/japanese/growing-guide",
       "https://www.rhs.org.uk/plants/anemone/japanese",
@@ -4777,7 +4777,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/kaermindesoester.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/brunnera",
       "https://www.rhs.org.uk/plants/for-places/shade-planting-annuals-bulbs-perennials",
@@ -6206,7 +6206,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/magnolia.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/magnolia/growing-guide",
       "https://www.rhs.org.uk/plants/magnolia",
@@ -6928,7 +6928,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/paaskelilje.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/daffodils/growing-guide",
       "https://www.rhs.org.uk/plants/daffodils",
@@ -7602,7 +7602,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/perlehyacint.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/muscari",
       "https://www.rhs.org.uk/plants/trials-awards/plant-trial-results/muscari",
@@ -8164,7 +8164,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/purpursolhat.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/echinacea",
       "https://www.rhs.org.uk/garden-design/prairie-planting-creation-maintenance",
@@ -8731,7 +8731,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/roellike.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/achillea",
       "https://www.rhs.org.uk/plants/types/perennials/dividing",
@@ -10767,7 +10767,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/syren.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/lilac/growing-guide",
       "https://www.rhs.org.uk/plants/syringa",
