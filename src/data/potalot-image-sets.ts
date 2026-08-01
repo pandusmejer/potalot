@@ -501,8 +501,8 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
-  'chili-cayenne': {
-    seedCard: { src: '/images/frokort/chili-cayenne.png', alt: 'Cayenne chili — frøkort' },
+  'chili-de-cayenne': {
+    seedCard: { src: '/images/frokort/chili-de-cayenne.png', alt: 'Cayenne chili — frøkort' },
     macro: [],
   },
 

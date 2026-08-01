@@ -1,5 +1,5 @@
 ---
-slug: jordbaer-corona
+slug: jordbaer-korona
 guideLevel: variety
 parentSlug: jordbaer
 plantName: Jordbær

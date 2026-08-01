@@ -4360,7 +4360,7 @@ export const IMPORTED_GUIDES: Guide[] = [
         "items": [
           {
             "heading": "Corona",
-            "slug": "jordbaer-corona",
+            "slug": "jordbaer-korona",
             "description": "En sommerbærende sort med store, mørkerøde frugter."
           }
         ]
@@ -13911,7 +13911,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
-    "id": "jordbaer-corona",
+    "id": "jordbaer-korona",
     "plantName": "Jordbær",
     "title": null,
     "appliesTo": [],
@@ -14013,7 +14013,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/plantekort/jordbaer-korona.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/70213/fragaria-x-ananassa-korona-pbr-f/details",
       "https://www.rhs.org.uk/fruit/strawberries/grow-your-own"

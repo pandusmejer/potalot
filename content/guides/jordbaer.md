@@ -102,6 +102,6 @@ Flyt et nyt jordbærbed til frisk jord frem for direkte at genplante i et gammel
 
 :::related-guides
 #### Corona
-slug: jordbaer-corona
+slug: jordbaer-korona
 En sommerbærende sort med store, mørkerøde frugter.
 :::

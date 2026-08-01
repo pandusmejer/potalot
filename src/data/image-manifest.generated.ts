@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 445
+ * Fil-tæller: 441
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -121,7 +121,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/blomme-victoria.jpg",
   "/images/frokort/blomme-victoria.png",
   "/images/frokort/broccoli-calabrese.jpg",
-  "/images/frokort/chili-cayenne.png",
+  "/images/frokort/chili-de-cayenne.png",
   "/images/frokort/chili-habanero-orange.png",
   "/images/frokort/chili-jalapeno.png",
   "/images/frokort/chili-lemon-drop.png",
@@ -141,7 +141,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/hindbaer-autumn-bliss.png",
   "/images/frokort/hvidkaal-ditmarsker.jpg",
   "/images/frokort/hvidloeg-germidour.png",
-  "/images/frokort/hvidloeg-messidor.png",
+  "/images/frokort/hvidloeg-messidrome.png",
   "/images/frokort/hvidloeg-printanor.png",
   "/images/frokort/hvidloeg-sabadrome.png",
   "/images/frokort/hvidloeg-thermidrome.png",
@@ -319,6 +319,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/dahlia-cafe-au-lait/blade-closeup.jpg",
   "/images/makro/dahlia-cafe-au-lait/buket.jpg",
   "/images/makro/dahlia-cafe-au-lait/gruppe.jpg",
+  "/images/makro/dahlia-cafe-au-lait/helplante.jpg",
   "/images/makro/dahlia-cafe-au-lait/hoved2.jpg",
   "/images/makro/dahlia-cafe-au-lait/hoved3.jpg",
   "/images/makro/dahlia-cafe-au-lait/knop.jpg",
@@ -391,15 +392,12 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/agurk-marketmore.png",
   "/images/plantekort/basilikum-genovese.jpg",
   "/images/plantekort/basilikum-genovese.png",
-  "/images/plantekort/chili-cayenne.jpg",
   "/images/plantekort/chili-de-cayenne.jpg",
   "/images/plantekort/chili-early-jalapeno.jpg",
   "/images/plantekort/chili-habanero-orange.jpg",
   "/images/plantekort/chili-padron.jpg",
   "/images/plantekort/chili-padron.png",
   "/images/plantekort/cosmos-candy-stripe.jpg",
-  "/images/plantekort/dahlia-cafe-au-lait-lys-kaffe.jpg",
-  "/images/plantekort/dahlia-cafe-au-lait-lys-kaffe.png",
   "/images/plantekort/dahlia-cafe-au-lait.jpg",
   "/images/plantekort/dild-bouquet.jpg",
   "/images/plantekort/graeskar-butternut-waltham.jpg",
@@ -418,7 +416,6 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg",
   "/images/plantekort/persille-bredbladet.jpg",
   "/images/plantekort/persille-bredbladet.png",
-  "/images/plantekort/plantekort-hvidlog.jpg",
   "/images/plantekort/radise-cherry-belle.jpg",
   "/images/plantekort/radise-cherry-belle.png",
   "/images/plantekort/radise-french-breakfast.jpg",
@@ -430,7 +427,6 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/plantekort/salat-lollo-bionda.jpg",
   "/images/plantekort/salat-lollo-bionda.png",
   "/images/plantekort/salat-lollo-rossa.jpg",
-  "/images/plantekort/salat-lollo-rosso.png",
   "/images/plantekort/squash-tromboncino.jpg",
   "/images/plantekort/squash-tromboncino.png",
   "/images/plantekort/stangboenne-cobra.jpg",

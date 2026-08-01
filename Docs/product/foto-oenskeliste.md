@@ -3,8 +3,8 @@
 Afkrydsningsliste. Vinge af (`- [ ]` → `- [x]`), efterhånden som fotos lægges ind.
 **Interaktiv version:** https://claude.ai/code/artifact/91207c15-3fb0-419a-8bf7-d8008b2ea441
 
-Status **30/7 2026** (171 guides: 122 arts · 37 sorts · 12 teknik):
-**53 fotos mangler** (40 prydhave/busk/klatre-arter + 13 sortskort). **106 af 159 er på plads.**
+Status **1/8 2026** (171 guides: 122 arts · 37 sorts · 12 teknik):
+**40 fotos mangler** (28 prydhave/busk/klatre-arter + 12 sortskort). **119 af 159 er på plads.**
 
 **Hero-sort:** hver prydhave-art har en anbefalet flagskibs-sort at fotografere
 (fra `Docs/product/sortsplan-batch-13-19.md` — som også holder de ~240 prioriterede
@@ -30,21 +30,21 @@ Køkkenhave, frugt og etårige er 100 % dækket. Prydhave-arterne mangler hero.
 Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fanges.
 
 ### Forårsløg · batch 13 (7)
-- [ ] **Tulipan** → `arts/tulipan.jpg` · *hero: Queen of Night*
+- [x] **Tulipan** → `arts/tulipan.jpg` · *hero: Queen of Night*
 - [ ] **Påskelilje** → `arts/paaskelilje.jpg` · *hero: Dutch Master*
-- [ ] **Krokus** → `arts/krokus.jpg` · *hero: Jeanne d'Arc*
-- [ ] **Prydallium** → `arts/prydallium.jpg` · *hero: Purple Sensation*
-- [ ] **Vintergæk** → `arts/vintergaek.jpg` · *hero: arten*
-- [ ] **Erantis** → `arts/erantis.jpg` · *hero: arten*
+- [x] **Krokus** → `arts/krokus.jpg` · *hero: Jeanne d'Arc*
+- [x] **Prydallium** → `arts/prydallium.jpg` · *hero: Purple Sensation*
+- [x] **Vintergæk** → `arts/vintergaek.jpg` · *hero: arten*
+- [x] **Erantis** → `arts/erantis.jpg` · *hero: arten*
 - [ ] **Perlehyacint** → `arts/perlehyacint.jpg` · *hero: Armeniacum*
 
 ### Stauder · batch 14 (8)
-- [ ] **Hosta** → `arts/hosta.jpg` · *hero: Halcyon*
-- [ ] **Storkenæb** → `arts/storkenaeb.jpg` · *hero: Rozanne*
+- [x] **Hosta** → `arts/hosta.jpg` · *hero: Halcyon*
+- [x] **Storkenæb** → `arts/storkenaeb.jpg` · *hero: Rozanne*
 - [ ] **Purpursolhat** → `arts/purpursolhat.jpg` · *hero: Magnus*
-- [ ] **Lavendel** → `arts/lavendel.jpg` · *hero: Hidcote*
-- [ ] **Sankthansurt** → `arts/sankthansurt.jpg` · *hero: Herbstfreude*
-- [ ] **Asters** → `arts/asters.jpg` · *hero: Little Carlow*
+- [x] **Lavendel** → `arts/lavendel.jpg` · *hero: Hidcote*
+- [x] **Sankthansurt** → `arts/sankthansurt.jpg` · *hero: Herbstfreude*
+- [x] **Asters** → `arts/asters.jpg` · *hero: Little Carlow*
 - [ ] **Røllike** → `arts/roellike.jpg` · *hero: Terracotta*
 - [ ] **Høstanemone** → `arts/hoestanemone.jpg` · *hero: Honorine Jobert*
 
@@ -58,7 +58,7 @@ Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fang
 - [ ] **Hjerteblomst** → `arts/hjerteblomst.jpg` · *hero: Alba*
 
 ### Roser · batch 16 (1)
-- [ ] **Rose** → `arts/rose.jpg` · *hero: Bonica*
+- [x] **Rose** → `arts/rose.jpg` · *hero: Bonica*
 
 ### Prydbuske & små træer · batch 18 (9)
 - [ ] **Magnolia** → `arts/magnolia.jpg` · *hero: Susan*
@@ -72,7 +72,7 @@ Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fang
 - [ ] **Azalea** → `arts/azalea.jpg` · *hero: Gibraltar*
 
 ### Klatreplanter · batch 19 (8)
-- [ ] **Klematis** → `arts/klematis.jpg` · *hero: Nelly Moser*
+- [x] **Klematis** → `arts/klematis.jpg` · *hero: Nelly Moser*
 - [ ] **Blåregn** → `arts/blaaregn.jpg` · *hero: Prolific*
 - [ ] **Kaprifolie** → `arts/kaprifolie.jpg` · *hero: Serotina*
 - [ ] **Vedbend** → `arts/vedbend.jpg` · *hero: Woerner*
@@ -98,7 +98,7 @@ Format: `arts/<slug>.jpg`, 4:3 liggende 1600×1200. *Hero:* sorten der skal fang
 - [ ] Kelvedon Wonder → `plantekort/aert-kelvedon-wonder.jpg`
 
 ### Jordbær (2)
-- [ ] Corona → `plantekort/jordbaer-corona.jpg`
+- [x] Korona → `plantekort/jordbaer-korona.jpg`
 - [ ] Mara des Bois → `plantekort/jordbaer-mara-des-bois.jpg`
 
 ### Salat (2)
