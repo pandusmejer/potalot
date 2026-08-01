@@ -259,7 +259,7 @@ bedst?"* hører den i sortsguiden.
 ## Når noget er færdigt
 
 1. Kør tjeklisten (5 min)
-2. Send filen til Anna eller commit den i `/Users/anna/Documents/`
+2. Send filen til Anna eller commit den i `/Users/mejervind/Documents/`
 3. Anna eller import-scriptet håndterer resten
 
 ---

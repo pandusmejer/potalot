@@ -83,7 +83,7 @@ Arbejdsgang — ét sted, undgå branch/worktree-rod (LÅST 27/7 2026)
 Repoet blev 27/7 konsolideret fra ~28 branches + 5 worktrees til ÉN
 branch (main) i ÉN mappe. Hold det sådan:
 
-1. Arbejd og commit DIREKTE på `main` i /Users/anna/potalot. Opret
+1. Arbejd og commit DIREKTE på `main` i /Users/mejervind/potalot. Opret
    IKKE en ny branch eller worktree ved commit — dette OVERSTYRER
    standardadfærden "stå på default-branch → branch først". Kun hvis
    Anna eksplicit beder om at isolere noget stort/risikabelt (og så

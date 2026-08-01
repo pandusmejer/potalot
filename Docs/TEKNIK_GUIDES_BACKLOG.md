@@ -8,7 +8,7 @@
 
 **Status:** Schema-fundamentet er parkeret som V1.5 (se
 [`GUIDES_ARCHITECTURE.md`](./GUIDES_ARCHITECTURE.md)). Templaten ligger
-klar i `/Users/anna/Documents/_TEMPLATE-teknikguide.md`. Indtil V1.5
+klar i `/Users/mejervind/Documents/_TEMPLATE-teknikguide.md`. Indtil V1.5
 aktiveres, skrives teknikguider på samme måde som sortsguider og afventer
 i Anna's lokale mappe.
 

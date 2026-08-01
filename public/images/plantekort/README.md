@@ -18,7 +18,7 @@ Fx `Tomat` + `San Marzano` → `tomat-san-marzano.jpg`.
 
 ## Tilføj et nyt foto — brug scriptet (anbefalet)
 
-Fra projektroden `/Users/anna/potalot`:
+Fra projektroden `/Users/mejervind/potalot`:
 
 ```bash
 npm run add:photo <fil> <plantekort|frokort|arts> "Art" ["Sort"]

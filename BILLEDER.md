@@ -14,7 +14,7 @@ Du skal **aldrig** trække billeder ind i chatten. Læg dem i indbakken og skriv
 
 1. **Læg filerne i indbakken** (i Finder: ⌘⇧G og indsæt stien):
    ```
-   /Users/anna/potalot/_foto-indbakke/
+   /Users/mejervind/potalot/_foto-indbakke/
    ```
 2. **Skriv i chatten hvad hver fil er:**
    ```
@@ -48,7 +48,7 @@ Kommandoen slugger navnet, komprimerer (≤1800px), lægger filen rigtigt og
 opdaterer registret — alt i ét. Kør fra projektroden:
 
 ```bash
-cd /Users/anna/potalot
+cd /Users/mejervind/potalot
 npm run add:photo <fil> <plantekort|frokort|arts> "Art" ["Sort"]
 ```
 
@@ -139,7 +139,7 @@ originaler — de gør siden langsom.
 
 **Fælder:**
 - Læg **aldrig** fotos i en *worktree* — kun i hovedmappen
-  `/Users/anna/potalot` (branch `feature/havebog`). Worktrees deployer ikke.
+  `/Users/mejervind/potalot` (branch `feature/havebog`). Worktrees deployer ikke.
 - Lægger du en fil i hånden uden at køre `scan:images`, viser appen et
   fallback-billede i stedet.
 

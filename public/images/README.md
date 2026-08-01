@@ -8,7 +8,7 @@ Denne fil ligger sammen med mapperne, så du har den hvor du arbejder.
 ## Hvor ligger billed-mapperne?
 
 ```
-/Users/anna/potalot/.claude/worktrees/romantic-chatelet-9908e2/public/images/
+/Users/mejervind/potalot/.claude/worktrees/romantic-chatelet-9908e2/public/images/
 ```
 
 Sådan åbner du mappen i Finder:
@@ -18,7 +18,7 @@ Sådan åbner du mappen i Finder:
 3. Tryk Enter
 
 > **Vigtigt:** Du har to "potalot"-mapper på computeren. Brug ALTID
-> mappen ovenfor (worktree'en) — ikke `/Users/anna/potalot/` direkte.
+> mappen ovenfor (worktree'en) — ikke `/Users/mejervind/potalot/` direkte.
 > Hvorfor: alt det arbejde vi har lavet i denne session lever i
 > worktree'en. Billeder lagt der bliver fanget af vores commits og
 > ender automatisk i appen senere.

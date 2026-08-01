@@ -523,8 +523,8 @@ Disse to mapper er **kun til dig** — de kommer aldrig på live-appen:
 
 | Mappe | Hvad ligger der |
 |---|---|
-| `/Users/anna/potalot/Photo references design/` | Mood boards, ChatGPT-inspiration, design-referencer |
-| `/Users/anna/Documents/` | Markdown-drafts til guides, screenshots til ChatGPT, personlige arbejdsfiler |
+| `/Users/mejervind/potalot/Photo references design/` | Mood boards, ChatGPT-inspiration, design-referencer |
+| `/Users/mejervind/Documents/` | Markdown-drafts til guides, screenshots til ChatGPT, personlige arbejdsfiler |
 
 **Bland dem aldrig sammen.** Hvis et billede er klar til appen, skal
 det flyttes ind i `public/images/` med det rigtige navn og den
