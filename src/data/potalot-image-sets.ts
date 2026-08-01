@@ -610,6 +610,23 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
+  // ── KRYDDERURTER — makro-sæt (batch 1/8) ───────────────────
+  'purloeg': {
+    macro: [
+      { src: '/images/makro/purloeg/lilla-hoved.jpg', alt: 'Purløgs lilla blomsterhoved i nærbillede', role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/purloeg/knopper.jpg',     alt: 'Purløgsknopper på spring',                 role: 'flower',     focalPoint: 'center' },
+      { src: '/images/makro/purloeg/stilke-dug.jpg',  alt: 'Purløgsstilke med dugdråber',              role: 'atmosphere', focalPoint: 'center' },
+    ],
+  },
+  'salvie': {
+    macro: [
+      { src: '/images/makro/salvie/stemning.jpg',     alt: 'Salvieblade i dæmpet lys',        role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/salvie/oppefra.jpg',      alt: 'Salvieplante set oppefra',        role: 'leaf',       focalPoint: 'center' },
+      { src: '/images/makro/salvie/top.jpg',          alt: 'Salvieplantens top set tæt på',   role: 'leaf',       focalPoint: 'top' },
+      { src: '/images/makro/salvie/bladstruktur.jpg', alt: 'Salviebladets knudrede tekstur',  role: 'detail',     focalPoint: 'center' },
+    ],
+  },
+
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
   'demo-guide-tomat-sm': {
