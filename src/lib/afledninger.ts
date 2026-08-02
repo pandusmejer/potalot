@@ -59,7 +59,7 @@ const MAANED_KORT = [
  */
 const guideById = new Map(IMPORTED_GUIDES.map(g => [g.id, g]))
 
-function slugify(text: string): string {
+export function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[æ]/g, 'ae')
