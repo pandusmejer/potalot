@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 457
+ * Fil-tæller: 463
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -126,6 +126,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/basilikum-genovese.png",
   "/images/frokort/blaabaer-bluecrop.png",
   "/images/frokort/blaabaer-duke.png",
+  "/images/frokort/bladselleri-tango.jpg",
   "/images/frokort/blomkaal-snowball.jpg",
   "/images/frokort/blomme-victoria.jpg",
   "/images/frokort/blomme-victoria.png",
@@ -156,8 +157,12 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/hvidloeg-thermidrome.png",
   "/images/frokort/jordbaer-korona.png",
   "/images/frokort/jordbaer-polka.png",
+  "/images/frokort/kaalroe-wilhelmsburger.jpg",
   "/images/frokort/kartoffel-solist.jpg",
+  "/images/frokort/knoldselleri-monarch.jpg",
+  "/images/frokort/koriander-leisure.jpg",
   "/images/frokort/loeg-sturon.png",
+  "/images/frokort/majroe-purple-top-milan.jpg",
   "/images/frokort/majs-golden-bantam.png",
   "/images/frokort/majs-incredible-f1.png",
   "/images/frokort/majs-sweet-nugget.png",
@@ -173,6 +178,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/frokort/peberfrugt-yolo-wonder.png",
   "/images/frokort/persille-bredbladet.jpg",
   "/images/frokort/persille-bredbladet.png",
+  "/images/frokort/persillerod.jpg",
   "/images/frokort/radise-cherry-belle.png",
   "/images/frokort/radise-french-breakfast.png",
   "/images/frokort/radise-saxa-2.png",
