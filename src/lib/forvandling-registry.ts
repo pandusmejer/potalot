@@ -104,6 +104,15 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   // chili
   { crop: 'chili', cropLabel: 'Chili', path: '/images/makro/chili/blomst.jpg', role: 'flower', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 60 },
   { crop: 'chili', cropLabel: 'Chili', path: '/images/makro/chili/blad.jpg', role: 'leaf', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 45 },
+  // gulerod — forvandlinger (batch 1/8). Resultatfotos bundet pr. forvandlingId;
+  // skiver = delt råvarebillede uden binding (afgrøde-fallback for gulerod).
+  { crop: 'gulerod', cropLabel: 'Gulerodskage',        path: '/assets/forvandlinger/crops/gulerod/gulerodskage-hero.jpg',          role: 'kitchen', mood: 'warm',  useCases: ['forvandling'], forvandlingId: 'guleroedskage',        priority: 90 },
+  { crop: 'gulerod', cropLabel: 'Gulerodskage',        path: '/assets/forvandlinger/crops/gulerod/gulerodskage-secondary.jpg',     role: 'kitchen', mood: 'warm',  useCases: ['forvandling'], forvandlingId: 'guleroedskage',        priority: 80 },
+  { crop: 'gulerod', cropLabel: 'Ovnbagte gulerødder', path: '/assets/forvandlinger/crops/gulerod/ovnbagte-guleroedder-hero.jpg',   role: 'kitchen', mood: 'warm',  useCases: ['forvandling'], forvandlingId: 'ovnbagte-guleroedder',  priority: 90 },
+  { crop: 'gulerod', cropLabel: 'Glaserede gulerødder',path: '/assets/forvandlinger/crops/gulerod/glaserede-guleroedder-hero.jpg',  role: 'kitchen', mood: 'warm',  useCases: ['forvandling'], forvandlingId: 'glaserede-guleroedder', priority: 90 },
+  { crop: 'gulerod', cropLabel: 'Syltede gulerødder',  path: '/assets/forvandlinger/crops/gulerod/syltede-guleroedder-hero.jpg',    role: 'kitchen', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'syltede-guleroedder',   priority: 90 },
+  { crop: 'gulerod', cropLabel: 'Gulerodsjuice',       path: '/assets/forvandlinger/crops/gulerod/guleroedsjuice-hero.jpg',         role: 'kitchen', mood: 'fresh', useCases: ['forvandling'], forvandlingId: 'guleroedsjuice',       priority: 90 },
+  { crop: 'gulerod', cropLabel: 'Gulerødder',          path: '/assets/forvandlinger/crops/gulerod/gulerod-skiver-detail.jpg',       role: 'fruit',   mood: 'fresh', useCases: ['forvandling'],                                        priority: 70 },
 ]
 
 function norm(s: string): string {
