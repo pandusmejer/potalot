@@ -177,6 +177,7 @@ export interface CreateInventoryInput {
   harvestMonths?: number[]
   light?: 'full_sun' | 'partial_shade' | 'shade'
   water?: 'low' | 'regular' | 'high'
+  soil?: string
   germinationDays?: string
   germinationTemperature?: string
   plantSpacing?: string
@@ -214,6 +215,7 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
       harvest_months: input.harvestMonths ?? [],
       light: input.light ?? null,
       water: input.water ?? null,
+      soil: input.soil || null,
       germination_days: input.germinationDays ?? null,
       germination_temperature: input.germinationTemperature ?? null,
       plant_spacing: input.plantSpacing ?? null,
@@ -276,6 +278,7 @@ export async function updateInventoryItem(
   if (input.harvestMonths !== undefined) update.harvest_months = input.harvestMonths
   if (input.light !== undefined) update.light = input.light
   if (input.water !== undefined) update.water = input.water
+  if (input.soil !== undefined) update.soil = input.soil || null
   if (input.growingLocations !== undefined) update.growing_locations = input.growingLocations
   if (input.germinationDays !== undefined) update.germination_days = input.germinationDays || null
   if (input.germinationTemperature !== undefined) update.germination_temperature = input.germinationTemperature || null

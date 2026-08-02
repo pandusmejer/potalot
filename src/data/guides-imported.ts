@@ -163,6 +163,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "7-14 dage",
       "plantSpacing": "5-8 cm",
       "rowSpacing": "45-60 cm",
+      "sowingDepthMm": 30,
       "growthType": "klatrende eller kompakt bælgplante",
       "height": "40-200 cm afhængigt af sort",
       "maturityDays": "ca. 55-90 dage afhængigt af type",
@@ -1489,6 +1490,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "soil": "Næringsrig, fugtighedsbevarende og veldrænet jord",
       "plantSpacing": "Ca. 30 cm til fulde planter; tættere til babyblade",
       "rowSpacing": "Ca. 45 cm",
+      "sowingDepthMm": 25,
       "growthType": "kraftig bladroset med brede bladstilke",
       "primaryUse": "Blade og bladstilke til løbende høst"
     },
@@ -1671,6 +1673,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "7-14 dage",
       "plantSpacing": "15-25 cm afhængigt af væksttype",
       "rowSpacing": "40-60 cm",
+      "sowingDepthMm": 50,
       "growthType": "busk- eller klatreplante",
       "height": "ca. 40 cm til over 2 m afhængigt af type",
       "primaryUse": "Friske bælge, bælgede bønner eller tørrede bønner"
@@ -3209,6 +3212,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "5-10 dage",
       "plantSpacing": "100-150 cm eller mere afhængigt af type",
       "rowSpacing": "150-200 cm",
+      "sowingDepthMm": 25,
       "growthType": "lang ranke eller kompakt busk",
       "height": "ca. 40-80 cm over jorden, med ranker på flere meter",
       "primaryUse": "Modne frugter til madlavning og lagring"
@@ -3341,6 +3345,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "10-21 dage",
       "plantSpacing": "3-8 cm afhængigt af ønsket rodstørrelse",
       "rowSpacing": "20-30 cm",
+      "sowingDepthMm": 10,
       "growthType": "roset med pælerod",
       "height": "ca. 25-50 cm inkl. top",
       "primaryUse": "Frisk brug, madlavning og lagring"
@@ -4072,6 +4077,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "soil": "Let, næringsrig og veldrænet jord uden frisk gødning",
       "plantSpacing": "10-15 cm",
       "rowSpacing": "25-30 cm",
+      "sowingDepthMm": 50,
       "growthType": "løgplante",
       "height": "30-60 cm",
       "primaryUse": "Madlavning, tørring og lagring"
@@ -4518,6 +4524,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "5-10 dage",
       "plantSpacing": "35-60 cm afhængigt af type",
       "rowSpacing": "45-75 cm",
+      "sowingDepthMm": 15,
       "growthType": "bladroset eller hoveddannende",
       "height": "30-100 cm afhængigt af type",
       "primaryUse": "Friske eller tilberedte blade og hoveder"
@@ -5872,6 +5879,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "7-14 dage",
       "plantSpacing": "8-10 cm",
       "rowSpacing": "25-30 cm",
+      "sowingDepthMm": 10,
       "growthType": "opret løgplante",
       "height": "ca. 30-50 cm",
       "primaryUse": "Friske løg og tørrede lagerløg"
@@ -6372,6 +6380,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "7-14 dage",
       "plantSpacing": "30-45 cm",
       "rowSpacing": "45-60 cm",
+      "sowingDepthMm": 30,
       "growthType": "opret græsplante med kolber på stænglen",
       "height": "150-250 cm afhængigt af sort",
       "maturityDays": "ca. 70-110 dage afhængigt af sort og varme",
@@ -7746,6 +7755,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "soil": "Dyb, frugtbar og fugtighedsbevarende jord",
       "plantSpacing": "Ca. 15-20 cm til fulde porrer",
       "rowSpacing": "Ca. 30 cm",
+      "sowingDepthMm": 15,
       "growthType": "opret løgplante med lang bladskede",
       "maturityDays": "Omkring seks måneder for modne porrer, afhængigt af sort",
       "primaryUse": "Efterårs- og vinterhøst"
@@ -8318,6 +8328,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "3-10 dage",
       "plantSpacing": "2.5-5 cm",
       "rowSpacing": "15 cm",
+      "sowingDepthMm": 10,
       "growthType": "hurtig rodafgroede",
       "height": "10-25 cm",
       "maturityDays": "ca. 20-45 dage for salatradiser",
@@ -9155,6 +9166,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "4-10 dage",
       "plantSpacing": "15-30 cm",
       "rowSpacing": "25-35 cm",
+      "sowingDepthMm": 5,
       "growthType": "bladroset",
       "height": "10-30 cm",
       "maturityDays": "ca. 28-100 dage afhængigt af type",
@@ -10161,6 +10173,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationTemperature": "Bedst ved milde temperaturer; planten trives især omkring 15-20 °C",
       "plantSpacing": "Ca. 7,5 cm først; op til ca. 15 cm til større planter",
       "rowSpacing": "Ca. 20 cm",
+      "sowingDepthMm": 25,
       "growthType": "lav bladroset",
       "primaryUse": "Babyblade, større blade og løbende bladhøst"
     },
@@ -10286,6 +10299,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "germinationDays": "5-10 dage",
       "plantSpacing": "80-100 cm",
       "rowSpacing": "100-120 cm",
+      "sowingDepthMm": 25,
       "growthType": "kraftig busk eller kort ranke",
       "height": "ca. 50-100 cm",
       "primaryUse": "Unge frugter til frisk brug og madlavning"

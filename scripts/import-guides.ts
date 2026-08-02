@@ -713,6 +713,10 @@ function buildGuide(
   if (qfRaw.germinationDays) quickFacts.germinationDays = asString(qfRaw.germinationDays)
   if (qfRaw.plantSpacing) quickFacts.plantSpacing = asString(qfRaw.plantSpacing)
   if (qfRaw.rowSpacing) quickFacts.rowSpacing = asString(qfRaw.rowSpacing)
+  // != null (ikke truthiness): 0 mm = "overflade" er en gyldig, meningsfuld værdi.
+  if (qfRaw.sowingDepthMm != null && Number.isFinite(Number(qfRaw.sowingDepthMm))) {
+    quickFacts.sowingDepthMm = Math.round(Number(qfRaw.sowingDepthMm))
+  }
   if (qfRaw.growthType) quickFacts.growthType = asString(qfRaw.growthType)
   if (qfRaw.height) quickFacts.height = asString(qfRaw.height)
   if (qfRaw.maturityDays) quickFacts.maturityDays = asString(qfRaw.maturityDays)
