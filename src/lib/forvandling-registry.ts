@@ -113,6 +113,9 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'gulerod', cropLabel: 'Syltede gulerødder',  path: '/assets/forvandlinger/crops/gulerod/syltede-guleroedder-hero.jpg',    role: 'kitchen', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'syltede-guleroedder',   priority: 90 },
   { crop: 'gulerod', cropLabel: 'Gulerodsjuice',       path: '/assets/forvandlinger/crops/gulerod/guleroedsjuice-hero.jpg',         role: 'kitchen', mood: 'fresh', useCases: ['forvandling'], forvandlingId: 'guleroedsjuice',       priority: 90 },
   { crop: 'gulerod', cropLabel: 'Gulerødder',          path: '/assets/forvandlinger/crops/gulerod/gulerod-skiver-detail.jpg',       role: 'fruit',   mood: 'fresh', useCases: ['forvandling'],                                        priority: 70 },
+  // insekthotel — foto fandtes (næste-projekt-kortet) men var aldrig bundet til
+  // forvandlingen → mosaik-tilen faldt til farve. Binder det eksisterende foto.
+  { crop: 'insekthotel', cropLabel: 'Insekthotel', path: '/images/havebog/naeste-projekt-insekthotel.jpg', role: 'texture', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'insekthotel', priority: 90 },
 ]
 
 function norm(s: string): string {

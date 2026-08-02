@@ -277,8 +277,11 @@ function SpisekammerBliveTil() {
       >
         Det kan haven blive til
       </p>
-      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.18, color: '#5F6658', margin: '0 0 18px', maxWidth: '28ch' }}>
-        Tomater kan blive sauce. Blomster kan blive duft. Frø kan blive næste sæson.
+      <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.18, color: '#5F6658', margin: '0 0 8px', maxWidth: '28ch' }}>
+        Drømmer du om noget bestemt?
+      </p>
+      <p style={{ fontFamily: sans, fontWeight: 400, fontSize: 14, lineHeight: 1.5, color: '#6E7568', margin: '0 0 18px', maxWidth: '34ch' }}>
+        Du behøver ikke have noget i haven endnu. Vælg en idé, så viser Potalot hvilke planter og sorter, der kan føre dig derhen.
       </p>
       <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
         {[venstre, hoejre].map((soejle, si) => (
