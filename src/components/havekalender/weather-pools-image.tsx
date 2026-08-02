@@ -259,7 +259,8 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
             fontWeight: 500,
             color: 'rgba(38, 53, 31, 0.68)',
             maxWidth: 'none',
-            whiteSpace: 'nowrap',
+            whiteSpace: 'normal',
+            textWrap: 'balance',
             margin: '0 auto',
           }}
         >
