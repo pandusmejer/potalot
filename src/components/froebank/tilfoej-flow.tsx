@@ -333,6 +333,9 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 </button>
               </div>
             )}
+            {scanTarget === 'oenskeliste' && (
+              <p className="text-[11px] text-muted-foreground -mt-2">Sorter på ønskelisten tæller ikke som frø, du allerede ejer.</p>
+            )}
 
             {scanStage === 'idle' && (
               <>
@@ -512,6 +515,9 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                     Ønskeliste
                   </button>
                 </div>
+                {scanTarget === 'oenskeliste' && (
+                  <p className="text-[11px] text-muted-foreground -mt-2">Sorter på ønskelisten tæller ikke som frø, du allerede ejer.</p>
+                )}
 
                 <form onSubmit={handleLinkSubmit} className="space-y-3">
                   <div>

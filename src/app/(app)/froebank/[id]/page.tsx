@@ -574,6 +574,16 @@ export default async function InventoryDetailPage({ params }: Props) {
         </Card>
       )}
 
+      {/* Frø→plante-broen (adaptive onboarding): frøet ligger i banken, men
+          intet er sået endnu — forklar næste naturlige skridt og gevinsten.
+          Væk så snart en plante er koblet (hjælp gentager sig aldrig). */}
+      {item.status === 'i_froebank' && item.primaryCategoryId !== 'indkoebsliste' && linkedPlants.length === 0 && (
+        <p className="text-xs text-muted-foreground" style={{ marginTop: 26, maxWidth: '42ch' }}>
+          Frøet er lagt i din Frøbank. Når du sår det, kan du oprette en plante
+          og følge den fra spiring til høst.
+        </p>
+      )}
+
       {/* Dyrkningsguide — lidt mere luft over end de tætte datakort (30px). */}
       <div style={{ marginTop: 30 }}>
         <GuideLink item={item} currentGuide={guide} allGuides={allGuides} />

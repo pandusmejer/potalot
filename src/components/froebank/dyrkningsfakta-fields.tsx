@@ -95,6 +95,11 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
     <div>
       <FeltLabel tekst="Sås (måneder)" felt="sowingMonths" />
       <MonthsPicker value={value.sowingMonths} onChange={m => patch('sowingMonths', m)} />
+      {autofillPlaceholders && fieldBadges?.sowingMonths && fieldBadges.sowingMonths !== 'egen' && (
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Potalots forslag tager udgangspunkt i danske dyrkningsforhold — ret dem, hvis dine er anderledes.
+        </p>
+      )}
     </div>
   )
 

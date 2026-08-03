@@ -273,6 +273,9 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
             <MultiImageUpload value={images} primary={primaryImage}
               onChange={(imgs, p) => { setImages(imgs); setPrimaryImage(p) }}
               folder="froebank" label="Tag eller vælg eget foto" />
+            {images.length > 0 && (
+              <p className="text-[11px] text-muted-foreground">Det primære foto vises på kortet i Frøbanken.</p>
+            )}
             {harFroekort && primaryImage && (
               <p className="text-sm text-muted-foreground">
                 Dit billede bruges nu som primært foto. Du kan stadig skifte tilbage til Potalots foto.{' '}
@@ -312,8 +315,13 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
                   <Input type="number" value={isFroe ? seedCount : quantity}
                     onChange={e => isFroe ? setSeedCount(e.target.value) : setQuantity(e.target.value)}
                     className="mt-1.5" />
+                  <p className="text-[11px] text-muted-foreground mt-1">Et omtrentligt antal er fint.</p>
                 </div>
-                <div><Label>Købsår</Label><Input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} className="mt-1.5" /></div>
+                <div>
+                  <Label>Købsår</Label>
+                  <Input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} className="mt-1.5" />
+                  <p className="text-[11px] text-muted-foreground mt-1">Hjælper dig med at bruge de ældste frø først.</p>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Udløb</Label><Input type="date" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} className="mt-1.5" /></div>
