@@ -20,6 +20,10 @@ import { Projekter } from '@/components/havebog/projekter'
 import { Bedrifter } from '@/components/havebog/bedrifter'
 import { HistorienFortsaetter } from '@/components/havebog/historien-fortsaetter'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { KomGodtIGang } from '@/components/havebog/kom-godt-i-gang'
+import { getAllInventoryItems } from '@/actions/froebank'
+import { getAllPlants } from '@/actions/mine-planter'
+import { getGardenLocations } from '@/actions/garden-locations'
 import { BookHeart } from 'lucide-react'
 import { kurater, type RumId } from '@/lib/havebog-kurator'
 import { kompetenceAntal } from '@/lib/havebog-kompetencer'
@@ -70,6 +74,13 @@ export const dynamic = 'force-dynamic'
 export default async function HavebogPage() {
   const data = await getHavebogData()
   const isDemo = data === null
+
+  // Kom godt i gang-status (adaptive onboarding): kun counts sendes videre —
+  // komponenten er fuldstændig isoleret og styrer selv sin synlighed.
+  const [inventoryForStatus, plantsForStatus, locationsForStatus] = isDemo
+    ? [[], [], []]
+    : await Promise.all([getAllInventoryItems(), getAllPlants(), getGardenLocations()])
+  const wishlistCount = inventoryForStatus.filter(i => i.primaryCategoryId === 'indkoebsliste').length
 
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats
   const tidslinje = isDemo ? DEMO_TIDSLINJE : data.tidslinje
@@ -205,6 +216,16 @@ export default async function HavebogPage() {
         <div id="det-kan-haven-blive-til" className="scroll-mt-24">
           <Spisekammer data={spisekammerData} mode={spisekammerMode} />
         </div>
+        {/* Kom godt i gang — diskret opstartsstatus, kun for indloggede.
+            Komponenten gater sig selv (dismiss + fuldført + etableret). */}
+        {!isDemo && (
+          <KomGodtIGang
+            inventoryCount={inventoryForStatus.filter(i => i.primaryCategoryId !== 'indkoebsliste').length}
+            wishlistCount={wishlistCount}
+            plantCount={plantsForStatus.length}
+            locationCount={locationsForStatus.length}
+          />
+        )}
         {/* Havebog-intronote — sat efter mosaikken, så den ikke bryder det
             faste top-lag (hero/dato/Dagens historie). Kun for indloggede;
             demoen fortæller allerede historien via sit fyldte indhold. */}
