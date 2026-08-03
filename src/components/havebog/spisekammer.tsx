@@ -18,6 +18,7 @@ import {
   type BasisMosaikElement,
 } from '@/lib/havebog-forvandlinger'
 import { selectForvandlingAssets } from '@/lib/forvandling-assets'
+import { FORVANDLINGER_ROUTE } from '@/lib/constants'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -151,7 +152,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     if (tile.foto) {
       return (
         <Link
-          href={medFra(`/havebog/forvandlinger/${tile.id}`)}
+          href={medFra(`${FORVANDLINGER_ROUTE}/${tile.id}`)}
           className="no-underline block"
           style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', aspectRatio: lead ? '3 / 4' : '1 / 1', background: tile.farve, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
         >
@@ -167,7 +168,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
     }
     return (
       <Link
-        href={medFra(`/havebog/forvandlinger/${tile.id}`)}
+        href={medFra(`${FORVANDLINGER_ROUTE}/${tile.id}`)}
         className="no-underline block"
         style={{ background: tile.farve, borderRadius: 20, padding: lead ? '34px 18px 40px' : '20px 18px 24px', overflow: 'hidden' }}
       >
@@ -223,7 +224,7 @@ function MosaikTile({ tile }: { tile: Tile }) {
   }
   // cta → oversigten over forvandlinger
   return (
-    <Link href={medFra('/havebog/forvandlinger')} className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
+    <Link href={medFra(FORVANDLINGER_ROUTE)} className="no-underline block" style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}>
       <span className="flex items-center" style={{ gap: 4, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#3B4A2F' }}>
         {tile.tekst}
         <ChevronRight style={{ width: 16, height: 16 }} strokeWidth={2.4} aria-hidden />
@@ -300,7 +301,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
   if (tile.slag === 'cta') {
     return (
       <Link
-        href={medFra('/havebog/forvandlinger')}
+        href={medFra(FORVANDLINGER_ROUTE)}
         className="no-underline block"
         style={{ borderRadius: 20, padding: '16px 16px', border: '1px solid rgba(36,48,31,0.16)' }}
       >

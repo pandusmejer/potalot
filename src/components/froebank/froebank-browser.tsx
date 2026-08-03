@@ -362,7 +362,7 @@ export function FroebankBrowser({ inventory }: Props) {
             />
           </div>
         )}
-        <InventoryArchiveStack inventory={filtered} />
+        <InventoryArchiveStack inventory={filtered} erTomBank={inventory.length === 0} />
       </div>
 
       {/* Filterknappen i mappen åbner dette bottom sheet (ikke længere et

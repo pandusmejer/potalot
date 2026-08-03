@@ -30,9 +30,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
 import { InventoryCard } from './inventory-card'
 import type { InventoryItem } from '@/lib/types'
+import { FORVANDLINGER_ROUTE } from '@/lib/constants'
 
 // ── Folder geometry — bredde matcher hero-frøkortet ─────────────
 // Mapperne har samme bredde som InventoryCard (= 390 px ved max),
@@ -941,12 +942,55 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
   )
 }
 
+/**
+ * Tom frøbank → tre naturlige veje ind (Annas adaptive onboarding, SPEC 3).
+ * Gevinst før funktion; positiv formulering (aldrig "Jeg ved ikke…").
+ * Kun ved ÆGTE tom bank — aldrig ved søge-/filter-miss.
+ */
+function TomBankTreVeje() {
+  const veje = [
+    { titel: 'Jeg har frøposer', tekst: 'Scan, tag billede eller opret manuelt.', href: '/froebank/tilfoej' },
+    { titel: 'Hvad kan haven blive til?', tekst: 'Find idéer til det, du drømmer om at lave.', href: FORVANDLINGER_ROUTE },
+    { titel: 'Jeg vil gemme idéer', tekst: 'Gem sorter, du overvejer, på ønskelisten.', href: '/froebank?kategori=indkoebsliste' },
+  ]
+  return (
+    <div className="px-1.5 pb-5 space-y-2">
+      <p className="text-sm text-muted-foreground" style={{ maxWidth: '36ch' }}>
+        Potalot lærer din have at kende. Når du tilføjer frø og planter, kan vi
+        vise råd, opgaver og idéer, der passer til netop det, du dyrker.
+      </p>
+      {veje.map(v => (
+        <Link
+          key={v.href}
+          href={v.href}
+          className="no-underline flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 hover:border-primary/50 transition-colors"
+        >
+          <span className="flex-1 min-w-0">
+            <span className="block text-sm font-medium text-foreground">{v.titel}</span>
+            <span className="block text-xs text-muted-foreground">{v.tekst}</span>
+          </span>
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+        </Link>
+      ))}
+    </div>
+  )
+}
+
 // ── Main component ──────────────────────────────────────────────
-export function InventoryArchiveStack({ inventory }: { inventory: InventoryItem[] }) {
-  // Hvis ingen frø: vis kun den tomme mappestak (ingen hero).
+export function InventoryArchiveStack({
+  inventory,
+  erTomBank,
+}: {
+  inventory: InventoryItem[]
+  /** Hele banken er tom (ikke bare et filter/en søgning uden match). */
+  erTomBank?: boolean
+}) {
+  // Ingen frø at vise: skeln ÆGTE tom bank (→ tre veje ind, adaptive
+  // onboarding) fra et filter/en søgning uden match (håndteres af kalderen).
   if (inventory.length === 0) {
     return (
       <div style={{ width: '100%' }} aria-label="Tomt frøbank-arkiv">
+        {erTomBank && <TomBankTreVeje />}
         <ArchiveContainer
           items={[]}
           hoveredSlot={null}

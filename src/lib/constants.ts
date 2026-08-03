@@ -12,6 +12,9 @@
  */
 export const FROEPOSE_UDEN_NAVN = 'Frøpose uden navn'
 
+/** Delt indgang til Forvandlinger — brug denne, aldrig hardcodede strenge. */
+export const FORVANDLINGER_ROUTE = '/havebog/forvandlinger'
+
 /** Sandt for et foto-kun-kort der endnu ikke er identificeret. */
 export function manglerOplysninger(item: { name: string }): boolean {
   return item.name.trim() === FROEPOSE_UDEN_NAVN
