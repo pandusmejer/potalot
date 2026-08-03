@@ -17,6 +17,8 @@ import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
+import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
 import {
   FilterBottomSheet,
   type SmartFilter,
@@ -59,7 +61,13 @@ const HERO_SUBCATEGORIES: { id: string; label: string; match: string[]; iconSrc?
 
 export function FroebankBrowser({ inventory }: Props) {
   const searchParams = useSearchParams()
-  const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>('fro')
+  // ?kategori= som startkategori — så CTA'er ("Gem til ønskelisten" m.fl.)
+  // kan lande direkte i den rigtige kategori. Ingen blindgyder-reglen.
+  const [activeCategory, setActiveCategory] = useState<PrimaryCategoryId>(() => {
+    const k = searchParams.get('kategori')
+    if (k && (PRIMARY_CATEGORY_IDS as readonly string[]).includes(k)) return k as PrimaryCategoryId
+    return 'fro'
+  })
   const [search, setSearch] = useState('')
   const [subcat, setSubcat] = useState<string>('alle')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -205,7 +213,7 @@ export function FroebankBrowser({ inventory }: Props) {
     function count(id: PrimaryCategoryId) {
       return inventory.filter((item) => item.primaryCategoryId === id).length
     }
-    return [
+    const base = [
       { id: 'fro', label: 'Frø', count: count('fro') },
       { id: 'loeg', label: 'Løg', count: count('loeg') },
       { id: 'knolde', label: 'Knolde', count: count('knolde') },
@@ -213,7 +221,14 @@ export function FroebankBrowser({ inventory }: Props) {
       { id: 'traeer', label: 'Træer', count: count('traeer') },
       { id: 'stauder', label: 'Stauder', count: count('stauder') },
     ]
-  }, [inventory])
+    // Ønskelisten vises som kategori når den har indhold (eller er aktiv via
+    // direkte link) — "Gem til ønskelisten" skal have en synlig destination.
+    const oensker = count('indkoebsliste')
+    if (oensker > 0 || activeCategory === 'indkoebsliste') {
+      base.push({ id: 'indkoebsliste', label: 'Ønskeliste', count: oensker })
+    }
+    return base
+  }, [inventory, activeCategory])
 
   // Underkategori-valg lever nu i filter-bottom-sheet (ikke som hero-chips).
   // Vi viser kun de underkategorier der FAKTISK findes i den aktive hovedkategori
@@ -336,6 +351,17 @@ export function FroebankBrowser({ inventory }: Props) {
           hero-kortet lægger sig oven på panelets creme-mappe (Anna): hero ~6mm
           under skulderens top, creme fortsætter ned bag kortet. */}
       <div style={{ marginTop: -145, position: 'relative', zIndex: 10 }}>
+        {/* Ønskelistens engangsforklaring: parkeringsplads for idéer, ikke
+            endnu en database. Vises første gange kategorien åbnes. */}
+        {activeCategory === 'indkoebsliste' && (
+          <div className="px-1.5 pb-3">
+            <PageIntroNote
+              id="oenskeliste"
+              title="Din ønskeliste"
+              body="Gem sorter, du overvejer at dyrke. Når du er klar, kan du flytte dem direkte til Frøbanken."
+            />
+          </div>
+        )}
         <InventoryArchiveStack inventory={filtered} />
       </div>
 

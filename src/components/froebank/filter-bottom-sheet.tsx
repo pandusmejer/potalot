@@ -39,6 +39,7 @@ const TYPE_OPTIONS: { id: PrimaryCategoryId; label: string }[] = [
   { id: 'buske', label: 'Buske' },
   { id: 'traeer', label: 'Træer' },
   { id: 'stauder', label: 'Stauder' },
+  { id: 'indkoebsliste', label: 'Ønskeliste' },
 ]
 
 const SORT_OPTIONS: { id: SortOrder; label: string }[] = [

@@ -677,13 +677,16 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
       {/* MANUEL — to-trins flow med autofill, eget komponent */}
       {mode === 'manuel' && <ManuelOpret returnTo={returnTo} />}
 
-      {/* ØNSKELISTE */}
+      {/* ØNSKELISTE — bor som kategori i Frøbanken (ingen blindgyder). */}
       {mode === 'oenskeliste' && (
         <Card>
           <CardContent className="py-8 text-center space-y-3">
             <Sparkles className="h-10 w-10 text-muted-foreground/40 mx-auto" />
-            <p className="text-sm text-muted-foreground">Kommer senere — ingen elementer på ønskelisten endnu.</p>
-            <Button asChild variant="outline"><Link href="/froebank">Tilbage</Link></Button>
+            <p className="text-sm text-muted-foreground">
+              Din ønskeliste bor i Frøbanken. Gem sorter, du overvejer — og flyt
+              dem til Frøbanken, når du er klar.
+            </p>
+            <Button asChild><Link href="/froebank?kategori=indkoebsliste">Se din ønskeliste</Link></Button>
           </CardContent>
         </Card>
       )}

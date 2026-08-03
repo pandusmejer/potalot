@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { FavoritePinButtons } from '@/components/froebank/favorite-pin-buttons'
 import { DeleteInventoryButton } from '@/components/froebank/delete-button'
 import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog'
+import { FlytTilFroebank } from '@/components/froebank/flyt-til-froebank'
 import { SowDialog } from '@/components/froebank/sow-dialog'
 import { GuideLink } from '@/components/froebank/guide-link'
 import { getInventoryItem } from '@/actions/froebank'
@@ -577,6 +578,13 @@ export default async function InventoryDetailPage({ params }: Props) {
       <div style={{ marginTop: 30 }}>
         <GuideLink item={item} currentGuide={guide} allGuides={allGuides} />
       </div>
+
+      {/* Ønskeliste-items: broen videre til Frøbanken (kategori-skifte, alt bevares). */}
+      {item.primaryCategoryId === 'indkoebsliste' && (
+        <div style={{ marginTop: 30 }}>
+          <FlytTilFroebank itemId={item.id} />
+        </div>
+      )}
 
       {/* Rediger / slet — sekundære handlinger, rolige. */}
       <div className="flex items-center justify-end" style={{ gap: 18, marginTop: 38, marginBottom: 104 }}>
