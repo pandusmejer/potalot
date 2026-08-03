@@ -30,9 +30,12 @@ interface Props {
   returnTo?: string
   /** Menneske-læsbar etiket for returmålet (fx "frøbank" / "opsætning"). */
   returnLabel?: string
+  /** Forudfyld manuel oprettelse (fra søgning-uden-match / guide-CTA'er). */
+  initialName?: string
+  initialVariety?: string
 }
 
-export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel = 'frøbank' }: Props) {
+export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel = 'frøbank', initialName, initialVariety }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(initialMode)
   const [pending, startTransition] = useTransition()
@@ -675,7 +678,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
       )}
 
       {/* MANUEL — to-trins flow med autofill, eget komponent */}
-      {mode === 'manuel' && <ManuelOpret returnTo={returnTo} />}
+      {mode === 'manuel' && <ManuelOpret returnTo={returnTo} initialName={initialName} initialVariety={initialVariety} />}
 
       {/* ØNSKELISTE — bor som kategori i Frøbanken (ingen blindgyder). */}
       {mode === 'oenskeliste' && (

@@ -37,6 +37,9 @@ type PrefillValg = 'ubesvaret' | 'potalot' | 'selv'
 
 interface Props {
   returnTo?: string
+  /** Forudfyldning (fra søgning-uden-match / guide-CTA'er) — ingen blindgyder. */
+  initialName?: string
+  initialVariety?: string
 }
 
 function erEns(a: unknown, b: unknown): boolean {
@@ -46,7 +49,7 @@ function erEns(a: unknown, b: unknown): boolean {
   return a === b
 }
 
-export function ManuelOpret({ returnTo = '/froebank' }: Props) {
+export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariety }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -54,8 +57,8 @@ export function ManuelOpret({ returnTo = '/froebank' }: Props) {
   const [trin, setTrin] = useState<Trin>('identitet')
 
   // ── Trin 1: identitet ──
-  const [name, setName] = useState('')
-  const [variety, setVariety] = useState('')
+  const [name, setName] = useState(initialName ?? '')
+  const [variety, setVariety] = useState(initialVariety ?? '')
   const [latinName, setLatinName] = useState('')
   const [supplier, setSupplier] = useState('')
   const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>('fro')

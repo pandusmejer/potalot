@@ -15,6 +15,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
@@ -351,6 +352,23 @@ export function FroebankBrowser({ inventory }: Props) {
           hero-kortet lægger sig oven på panelets creme-mappe (Anna): hero ~6mm
           under skulderens top, creme fortsætter ned bag kortet. */}
       <div style={{ marginTop: -145, position: 'relative', zIndex: 10 }}>
+        {/* Søgning uden match ≠ tom bank (var før visuelt identiske). Ærligt
+            svar + direkte vej videre: opret sorten manuelt, forudfyldt. */}
+        {filtered.length === 0 && inventory.length > 0 && search.trim() !== '' && (
+          <div className="px-1.5 pb-4 space-y-3">
+            <p className="text-sm text-muted-foreground" style={{ maxWidth: '36ch' }}>
+              Vi kender ikke sorten endnu. Du kan stadig oprette den manuelt,
+              og vi hjælper med de oplysninger, vi har.
+            </p>
+            <Link
+              href={`/froebank/tilfoej?mode=manuel&navn=${encodeURIComponent(search.trim())}`}
+              className="no-underline inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground hover:border-primary/50 transition-colors"
+            >
+              Opret &quot;{search.trim()}&quot;
+            </Link>
+          </div>
+        )}
+
         {/* Ønskelistens engangsforklaring: parkeringsplads for idéer, ikke
             endnu en database. Vises første gange kategorien åbnes. */}
         {activeCategory === 'indkoebsliste' && (
