@@ -6,20 +6,20 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import {
   Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles, Link2,
-  Plus, Loader2, ArrowLeft, Upload, Download, Check, Wand2, AlertTriangle,
+  Loader2, ArrowLeft, Upload, Download, Check, Wand2, AlertTriangle,
 } from 'lucide-react'
-import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES, FROEPOSE_UDEN_NAVN } from '@/lib/constants'
+import { FROEPOSE_UDEN_NAVN } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
 import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
 import { parseInventoryFile, confirmImportInventory, type ImportRow } from '@/actions/inventory-import'
+import { ManuelOpret } from './manuel-opret'
 import { cn } from '@/lib/utils'
 
 type Mode = 'select' | 'camera' | 'library' | 'link' | 'excel' | 'manuel' | 'oenskeliste'
@@ -38,21 +38,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  // Manuel
-  const [name, setName] = useState('')
-  const [latinName, setLatinName] = useState('')
-  const [variety, setVariety] = useState('')
-  const [supplier, setSupplier] = useState('')
-  const [primaryCat, setPrimaryCat] = useState<PrimaryCategoryId>('fro')
-  const [subcat, setSubcat] = useState('')
-  const [quantity, setQuantity] = useState('')
-  const [seedCount, setSeedCount] = useState('')
-  const [purchaseYear, setPurchaseYear] = useState('')
-  const [purchaseUrl, setPurchaseUrl] = useState('')
-  const [expiryDate, setExpiryDate] = useState('')
-  const [notes, setNotes] = useState('')
-  const [images, setImages] = useState<string[]>([])
-  const [primaryImage, setPrimaryImage] = useState<string | null>(null)
+  // Manuel oprettelse bor i <ManuelOpret> (to-trins flow med autofill).
 
   // Foto
   const [scanName, setScanName] = useState('')
@@ -75,9 +61,6 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const [excelRows, setExcelRows] = useState<ImportRow[]>([])
   const [excelUnmapped, setExcelUnmapped] = useState<string[]>([])
   const [excelResult, setExcelResult] = useState<{ imported: number; skipped: number } | null>(null)
-
-  const isFroe = primaryCat === 'fro'
-  const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
 
   // ── FASE 1: LÆS posen. Opretter ALDRIG her — hverken ved API-fejl eller tom
   //    udlæsning (spejler F5's ærlige adfærd). Fører til 'review' (navn aflæst)
@@ -249,31 +232,6 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     const trimmed = linkUrl.trim()
     if (!trimmed) return
     startTransition(() => runLinkAndCreate(trimmed, scanTarget))
-  }
-
-  function handleManualSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    startTransition(async () => {
-      const res = await createInventoryItem({
-        name: name.trim(),
-        latinName: latinName.trim() || undefined,
-        variety: variety.trim() || undefined,
-        supplier: supplier.trim() || undefined,
-        primaryCategoryId: primaryCat,
-        subcategoryId: subcat || undefined,
-        quantity: !isFroe && quantity ? parseInt(quantity, 10) : undefined,
-        seedCount: isFroe && seedCount ? parseInt(seedCount, 10) : undefined,
-        purchaseYear: purchaseYear ? parseInt(purchaseYear, 10) : undefined,
-        purchaseUrl: purchaseUrl.trim() || undefined,
-        expiryDate: expiryDate || undefined,
-        notes: notes.trim() || undefined,
-        imageUrls: images,
-        primaryImageUrl: primaryImage ?? undefined,
-      })
-      if ('error' in res) { setError(res.error); return }
-      router.push(`/froebank/${res.id}`)
-    })
   }
 
   async function handleExcelFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -716,62 +674,8 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         </Card>
       )}
 
-      {/* MANUEL */}
-      {mode === 'manuel' && (
-        <Card>
-          <CardContent className="py-5">
-            <form onSubmit={handleManualSubmit} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div><Label>Navn *</Label><Input value={name} onChange={e => setName(e.target.value)} required className="mt-1.5" /></div>
-                <div><Label>Sort</Label><Input value={variety} onChange={e => setVariety(e.target.value)} className="mt-1.5" /></div>
-              </div>
-              <div><Label>Latinsk navn</Label><Input value={latinName} onChange={e => setLatinName(e.target.value)} className="mt-1.5" /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Primær kategori</Label>
-                  <select value={primaryCat} onChange={e => { setPrimaryCat(e.target.value as PrimaryCategoryId); setSubcat('') }}
-                    className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm">
-                    {PRIMARY_CATEGORY_IDS.filter(id => id !== 'favoritter').map(id => (
-                      <option key={id} value={id}>{PRIMARY_CATEGORIES[id].name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <Label>Underkategori</Label>
-                  <select value={subcat} onChange={e => setSubcat(e.target.value)}
-                    className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm">
-                    <option value="">Ingen</option>
-                    {tilgaengeligeSubs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div><Label>Leverandør</Label><Input value={supplier} onChange={e => setSupplier(e.target.value)} className="mt-1.5" /></div>
-                <div>
-                  <Label>{isFroe ? 'Antal frø' : 'Antal'}</Label>
-                  <Input type="number" value={isFroe ? seedCount : quantity}
-                    onChange={e => isFroe ? setSeedCount(e.target.value) : setQuantity(e.target.value)}
-                    className="mt-1.5" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div><Label>Købsår</Label><Input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} className="mt-1.5" /></div>
-                <div><Label>Udløb</Label><Input type="date" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} className="mt-1.5" /></div>
-              </div>
-              <div><Label>Købt her</Label><Input type="url" value={purchaseUrl} onChange={e => setPurchaseUrl(e.target.value)} className="mt-1.5" /></div>
-              <div><Label>Noter</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="mt-1.5" /></div>
-              <MultiImageUpload value={images} primary={primaryImage}
-                onChange={(imgs, p) => { setImages(imgs); setPrimaryImage(p) }}
-                folder="froebank" label="Tilføj billede(r)" />
-              {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" disabled={pending} className="w-full">
-                <Plus className="h-4 w-4" />
-                {pending ? 'Opretter…' : 'Opret'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+      {/* MANUEL — to-trins flow med autofill, eget komponent */}
+      {mode === 'manuel' && <ManuelOpret returnTo={returnTo} />}
 
       {/* ØNSKELISTE */}
       {mode === 'oenskeliste' && (
