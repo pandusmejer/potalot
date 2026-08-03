@@ -12,8 +12,14 @@ export function PlantEmptyState() {
         </span>
         <div className="min-w-0">
           <h2 className="font-serif text-2xl leading-tight">Ingen aktive planter endnu</h2>
+          {/* Gevinst før funktion (adaptive onboarding): forklar HVAD brugeren
+              får — og fjern tvivlen om at frøet skal ligge i Frøbanken først. */}
           <p className="mt-2 text-sm leading-6 text-white/76">
-            Tilføj det, du allerede dyrker — skriv en plante, scan en frøpose eller importér en liste.
+            Når du opretter en plante, kan Potalot hjælpe dig gennem hele sæsonen
+            med opgaver, guides og påmindelser.
+          </p>
+          <p className="mt-1.5 text-xs leading-5 text-white/60">
+            Du behøver ikke have frøet i Frøbanken — planten kan følges alene.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button asChild variant="secondary" size="sm" className="bg-white/90 text-primary hover:bg-white">

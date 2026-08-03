@@ -151,19 +151,20 @@ const MAANED_NAVN = [
 ]
 
 /**
- * Tydelig markør så pladsholder-almanakken er triviel at gribe (grep) når den
- * endelige Potalot-stemme-copy skal skrives. Skift IKKE markøren uden at
- * opdatere den, der skriver teksterne.
+ * Niveau-bevidst almanak-linje (adaptive onboarding, Anna 3/8). Erstatter den
+ * gamle ⟦almanak⟧-pladsholder med ærlig gevinst-copy: forklar hvad kalenderen
+ * KAN, når brugeren fortæller mere — aldrig krav om registrering. Månedsspecifik
+ * sæson-prosa (Potalot-stemmen) er stadig et separat redaktionelt spor og kan
+ * overtage trin 0-linjen, når den skrives.
  */
-export const ALMANAK_PLACEHOLDER_MARK = '⟦almanak⟧'
-
-/**
- * Neutral almanak-PLADSHOLDER pr. måned. Bevidst tom for stemme/poesi — den
- * rigtige sæsontekst skrives separat. Funktionen findes kun så degradations-
- * logikken (trin 0/1) kan testes og UI'et har et felt at rendere.
- */
-function almanakPlaceholder(month: number): string {
-  return `${ALMANAK_PLACEHOLDER_MARK} ${MAANED_NAVN[month - 1]} — sæsontekst skrives senere.`
+function adaptivAlmanak(trin: DegradationsTrin, plantCount: number): string {
+  if (trin === 0) {
+    return 'Kalenderen bliver mere personlig, når du fortæller os, hvad du dyrker. Indtil da viser vi sæsonens generelle opgaver.'
+  }
+  if (trin === 1) {
+    return 'Dine frø er klar i Frøbanken. Når du sår dem, følger kalenderen dem hele vejen fra spiring til høst.'
+  }
+  return `Vi viser nu råd for ${plantCount === 1 ? 'din plante' : `dine ${plantCount} planter`}. Tilføj flere, når du er klar.`
 }
 
 /** YYYY-MM-DD i lokal tid (samme format som actions/plant-tasks.ts' todayISO). */
@@ -607,12 +608,16 @@ export function byggDagensFokus(input: DagensFokusInput): DagensFokus {
   // ── Degradations-stigen: almanak-fallback for nye brugere ────────
   // Trin 0 (ingen data) får ALTID almanakken — den er hele indholdet.
   // Trin 1 (frøbank, ingen planter) får den KUN når der ikke er aktuelle
-  // handlinger denne måned, så siden ikke står tom. Trin ≥ 2 bruger
-  // personligt indhold + stilhed i stedet (ingen almanak).
+  // handlinger denne måned, så siden ikke står tom. Trin 2 med FÅ planter
+  // (1-3) får en rolig "vi følger dine N planter"-linje på stille dage —
+  // etablerede brugere (>3 planter) får ingen onboarding-tekst (hjælp må
+  // aldrig gentage sig selv).
   const almanak =
     trin === 0 || (trin === 1 && akut.length === 0)
-      ? almanakPlaceholder(month)
-      : undefined
+      ? adaptivAlmanak(trin, aktivePlanter.length)
+      : trin === 2 && aktivePlanter.length <= 3 && stilhed
+        ? adaptivAlmanak(trin, aktivePlanter.length)
+        : undefined
 
   return { trin, fokus, flere, rytme, stilhed, almanak }
 }
