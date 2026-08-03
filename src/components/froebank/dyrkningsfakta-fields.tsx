@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -60,10 +60,17 @@ function harIndhold(key: keyof DyrkningsfaktaState, v: DyrkningsfaktaState): boo
 }
 
 export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPlaceholders, groupAdvanced }: Props) {
-  const avanceretStart = groupAdvanced
-    ? AVANCEREDE.some(k => harIndhold(k, value) || fieldBadges?.[k])
-    : true
-  const [visAvanceret, setVisAvanceret] = useState(avanceretStart)
+  // Autofyldt må aldrig gemmes væk: folden auto-åbner når et avanceret felt
+  // FÅR indhold/badge (også efter mount — fx når "Udfyld med Potalots forslag"
+  // lander senere). Kun ved overgangen tom→indhold, så brugeren stadig selv
+  // kan folde sammen bagefter.
+  const harAvanceretIndhold = AVANCEREDE.some(k => harIndhold(k, value) || fieldBadges?.[k])
+  const [visAvanceret, setVisAvanceret] = useState(groupAdvanced ? harAvanceretIndhold : true)
+  const forrigeIndhold = useRef(harAvanceretIndhold)
+  useEffect(() => {
+    if (groupAdvanced && harAvanceretIndhold && !forrigeIndhold.current) setVisAvanceret(true)
+    forrigeIndhold.current = harAvanceretIndhold
+  }, [groupAdvanced, harAvanceretIndhold])
 
   function patch<K extends keyof DyrkningsfaktaState>(key: K, v: DyrkningsfaktaState[K]) {
     onChange({ ...value, [key]: v })
