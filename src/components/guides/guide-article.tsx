@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { QuickFactsCard } from '@/components/guides/quick-facts'
+import { GemTilOenskeliste } from '@/components/guides/gem-til-oenskeliste'
 import { GuideNotesCard } from '@/components/guides/guide-notes-card'
 import { UserGuideEditDialog } from '@/components/guides/user-guide-edit-dialog'
 import { TrustBadge, guideKindFor } from '@/components/guides/trust-badge'
@@ -681,8 +682,8 @@ export async function GuideArticle({
               }}
             >
               {isSpecies
-                ? `Dyrk ${artPlural} i din have`
-                : `Dyrk ${effective.variety ?? effective.plantName}`}
+                ? `Dyrker du ${artPlural}?`
+                : `Dyrker du ${effective.variety ?? effective.plantName}?`}
             </h3>
             <p
               style={{
@@ -705,7 +706,13 @@ export async function GuideArticle({
                 også når arts-labels som "Opret tomatplante" er lange. */}
             <div className="mt-5 flex gap-2">
               <Link
-                href={isSpecies ? '#sortsvarianter' : '/froebank/tilfoej'}
+                href={
+                  isSpecies
+                    ? '#sortsvarianter'
+                    : // Sortsguide → forudfyld BÅDE art og sort i manuel oprettelse
+                      // (autofill-motoren tager over). Ingen blindgyder.
+                      `/froebank/tilfoej?mode=manuel&navn=${encodeURIComponent(effective.plantName)}${effective.variety ? `&sort=${encodeURIComponent(effective.variety)}` : ''}`
+                }
                 className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:opacity-90 transition"
                 style={{
                   background: '#7F8F6A',
@@ -744,6 +751,12 @@ export async function GuideArticle({
                   : 'Opret plante'}
               </Link>
             </div>
+            {/* Tredje vej: parkér idéen på ønskelisten (broen Forvandlinger →
+                Guides → Frøbank). Kun for indloggede (OBS: isDemo betyder her
+                "statisk importeret guide" — IKKE anonym bruger). */}
+            {currentUser && (
+              <GemTilOenskeliste name={effective.plantName} variety={effective.variety} />
+            )}
           </section>
           </div>
         </div>
