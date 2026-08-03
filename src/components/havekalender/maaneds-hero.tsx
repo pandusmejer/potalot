@@ -1,7 +1,7 @@
 import { MONTHS_DA } from '@/lib/constants'
 import { MAANEDS_STEMNING } from '@/lib/maaneds-stemning'
 import { saeson } from '@/lib/datetime'
-import { Leaf, Sprout, Flower2, Bug, Droplets, Scissors, Carrot } from 'lucide-react'
+import { Leaf, Sprout, Flower2, Bug, Droplets, Scissors, Carrot, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ComponentType, SVGProps } from 'react'
 
 /** Drivhus-ikon (lucide har ingen) — i samme streg-stil som resten. */
@@ -201,12 +201,19 @@ const MAANED_SLUG = [
  */
 export function MaanedsHero({
   month, year, focusTags = [],
+  onForrige, onNaeste,
 }: {
   month: number
   year: number
   focusTags?: string[]
+  /** Diskret måneds-navigation i eyebrow-linjen (valgfri — uden callbacks
+   *  rendres heroen præcis som før). Skifter måned og BLIVER ved heroen. */
+  onForrige?: () => void
+  onNaeste?: () => void
 }) {
   const monthName = MONTHS_DA[month - 1].full
+  const forrigeNavn = MONTHS_DA[(month + 10) % 12].full.toLowerCase()
+  const naesteNavn = MONTHS_DA[month % 12].full.toLowerCase()
   const stemning = MAANEDS_STEMNING[month]
   const sa = saeson(month)
   const foto = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1]}-foto.png`
@@ -258,12 +265,45 @@ export function MaanedsHero({
         className="relative w-[90%] max-w-[520px] px-6 pb-[176px] sm:pb-[206px] lg:pb-[236px]"
         style={{ paddingTop: 'clamp(48px, 8vw, 96px)' }}
       >
-        <p
-          className="text-[11px] font-semibold uppercase"
-          style={{ fontFamily: sans, letterSpacing: '0.28em', color: 'rgba(246,243,234,0.85)', textShadow: skygge }}
-        >
-          {sa} · {year}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p
+            className="text-[11px] font-semibold uppercase"
+            style={{ fontFamily: sans, letterSpacing: '0.28em', color: 'rgba(246,243,234,0.85)', textShadow: skygge }}
+          >
+            {sa} · {year}
+          </p>
+          {/* Diskret måneds-navigation (Anna 3/8): mindst mulige tilføjelse —
+              tekstlinks i eyebrow-rækken, ingen ny header/faner/sticky linje.
+              Skifter måned og bliver ved heroen (ingen scroll-hop). */}
+          {(onForrige || onNaeste) && (
+            <span className="flex items-center gap-2.5 whitespace-nowrap">
+              {onForrige && (
+                <button
+                  type="button"
+                  onClick={onForrige}
+                  aria-label={`Gå til ${forrigeNavn}`}
+                  className="flex items-center gap-0.5 uppercase hover:opacity-100 transition-opacity"
+                  style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(246,243,234,0.72)', textShadow: skygge, opacity: 0.85 }}
+                >
+                  <ChevronLeft className="h-3 w-3" aria-hidden />
+                  {forrigeNavn}
+                </button>
+              )}
+              {onNaeste && (
+                <button
+                  type="button"
+                  onClick={onNaeste}
+                  aria-label={`Gå til ${naesteNavn}`}
+                  className="flex items-center gap-0.5 uppercase hover:opacity-100 transition-opacity"
+                  style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(246,243,234,0.72)', textShadow: skygge, opacity: 0.85 }}
+                >
+                  {naesteNavn}
+                  <ChevronRight className="h-3 w-3" aria-hidden />
+                </button>
+              )}
+            </span>
+          )}
+        </div>
 
         <h2
           className="mt-6"

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Aarshjul } from '@/components/havekalender/aarshjul'
 // DetKanDuNu er erstattet af det nye 4-lags Inspiration-card. Importen
 // bevares som kommentar i tilfælde af genaktivering.
@@ -152,22 +152,40 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   const maanedsHeaderRef = useRef<HTMLDivElement>(null)
 
   // Central måneds-skifter: ÉN kilde til sandhed for hele siden. Alle
-  // kontroller (planner-stepperen ← →, bund-teaseren) går herigennem, så
-  // hero, vejr-billede, "Det kan du gøre", Inspiration og teaser altid viser
-  // SAMME måned. Håndterer årsskifte begge veje (dec→jan = +1 år, jan→dec = −1).
+  // kontroller (planner-stepperen ← →, bund-teaseren, hero-navigationen)
+  // går herigennem, så hero, vejr-billede, "Det kan du gøre", Inspiration
+  // og teaser altid viser SAMME måned. Håndterer årsskifte begge veje
+  // (dec→jan = +1 år, jan→dec = −1).
   const gaaTilMaaned = (next: number) => {
     if (valgtMaaned === 12 && next === 1) setYear((y) => y + 1)
     else if (valgtMaaned === 1 && next === 12) setYear((y) => y - 1)
     setValgtMaaned(next)
   }
 
-  // "Se [næste måned]" i bund-teaseren: bladr ét skridt frem fra den VISTE
-  // måned (ikke den aktuelle), så man kan bladre længere end ét skridt. Scroll
-  // roligt op til månedsheaderen bagefter. Ingen navigation — vi er allerede
-  // på /kalender, så et link dertil ville bare genindlæse samme måned.
+  // Fælles månedsskift (Anna 3/8): "Kig mod [måned]" nederst skal vise den
+  // nye måned FRA BEGYNDELSEN — scroll sker i en effect EFTER at den nye
+  // måned er renderet (ikke synkront i handleren, hvor gammelt indhold
+  // stadig står i DOM'en). Hero-navigationen skifter uden scroll (brugeren
+  // står allerede ved heroen — ingen hop).
+  const [scrollTilHero, setScrollTilHero] = useState(false)
+  const skiftMaaned = (next: number, scroll: boolean) => {
+    gaaTilMaaned(next)
+    if (scroll) setScrollTilHero(true)
+  }
+  useEffect(() => {
+    if (!scrollTilHero) return
+    const reduceret = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    maanedsHeaderRef.current?.scrollIntoView({
+      behavior: reduceret ? 'auto' : 'smooth',
+      block: 'start',
+    })
+    setScrollTilHero(false)
+  }, [valgtMaaned, scrollTilHero])
+
+  // "Kig mod [næste måned]" i bund-teaseren: bladr ét skridt frem fra den
+  // VISTE måned (ikke den aktuelle), så man kan bladre længere end ét skridt.
   const handleSelectNextMonth = () => {
-    gaaTilMaaned(valgtMaaned >= 12 ? 1 : valgtMaaned + 1)
-    maanedsHeaderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    skiftMaaned(valgtMaaned >= 12 ? 1 : valgtMaaned + 1, true)
   }
 
   const aktivePlanter = plants
@@ -194,7 +212,13 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           Heroen er fredet per KALENDER_MASTER_SPEC.md (critical rule).
           scroll-mt giver plads til den sticky topbar, når teaseren scroller herop. */}
       <div ref={maanedsHeaderRef} className="scroll-mt-20">
-        <MaanedsHero month={valgtMaaned} year={year} focusTags={focusTags} />
+        <MaanedsHero
+          month={valgtMaaned}
+          year={year}
+          focusTags={focusTags}
+          onForrige={() => skiftMaaned(valgtMaaned <= 1 ? 12 : valgtMaaned - 1, false)}
+          onNaeste={() => skiftMaaned(valgtMaaned >= 12 ? 1 : valgtMaaned + 1, false)}
+        />
       </div>
 
       {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
@@ -294,7 +318,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         <section id="aarshjul" className="space-y-2 scroll-mt-20">
           <Aarshjul
             active={valgtMaaned}
-            onChange={setValgtMaaned}
+            onChange={gaaTilMaaned}
             tasks={tasks}
             generelle={generalTasks.filter(g => !g.isHiddenByMe)}
             renderActive={(m) => (
