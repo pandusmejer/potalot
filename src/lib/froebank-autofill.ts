@@ -54,6 +54,7 @@ export function tomDyrkning(): DyrkningsfaktaState {
     harvestMonths: [],
     light: null,
     water: null,
+    soil: '',
     germinationDays: '',
     germinationTemperature: '',
     plantSpacing: '',
@@ -123,6 +124,7 @@ export function findFroebankAutofill(
   saet('harvestMonths')
   saet('light')
   saet('water')
+  saet('soil')
   saet('germinationDays')
   saet('germinationTemperature')
   saet('plantSpacing')
