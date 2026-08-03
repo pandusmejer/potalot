@@ -32,6 +32,7 @@
 import type { Guide, GuideCalendarRule, InventoryItem, Plant, TaskPriority } from '@/lib/types'
 import type { GardenAlert } from '@/actions/weather'
 import { forventetSpiring, quickFactsForNavn } from '@/lib/afledninger'
+import { brugerNiveau, type BrugerNiveau } from '@/lib/bruger-niveau'
 
 /** Prioriteringslag fra kalender-v2.md §Prioriteringsmodellen. */
 export type FokusLag = 1 | 2 | 3 | 4 | 5
@@ -93,8 +94,11 @@ export interface FokusHandling {
  * inkrement 3.
  *   0 = ingen data (almanak)   1 = frøbank har indhold
  *   2 = aktive planter         3 = flere sæsoners historik (senere)
+ *
+ * Definitionen bor nu i det delte src/lib/bruger-niveau.ts (adaptive
+ * onboarding bruger samme stige) — typen genudstilles her for bagudkompat.
  */
-export type DegradationsTrin = 0 | 1 | 2 | 3
+export type DegradationsTrin = BrugerNiveau
 
 export interface DagensFokus {
   trin: DegradationsTrin
@@ -428,12 +432,10 @@ function lag5Vedligehold(p: Plant, guide: Guide | null, month: number, dato: str
 
 /**
  * Ærligt degradations-trin ud fra hvilke data brugeren faktisk har.
- * (Trin 3 — historik — afgøres senere på arkiv-data.)
+ * Delegerer til den delte stige i src/lib/bruger-niveau.ts.
  */
 function bestemTrin(aktivePlanter: Plant[], inventory: InventoryItem[]): DegradationsTrin {
-  if (aktivePlanter.length > 0) return 2
-  if (inventory.length > 0) return 1
-  return 0
+  return brugerNiveau(aktivePlanter.length, inventory.length)
 }
 
 /**

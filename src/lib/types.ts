@@ -23,6 +23,8 @@ export interface Profile {
   latitude?: number | null
   longitude?: number | null
   locationName?: string | null
+  /** Onboarding V2-præference (mindful|rolig|aktiv) — null hvis aldrig valgt */
+  notificationProfile?: string | null
   createdAt: string
   updatedAt: string
 }

@@ -16,6 +16,7 @@ interface ProfileRow {
   latitude: number | null
   longitude: number | null
   location_name: string | null
+  notification_profile?: string | null
   created_at: string
   updated_at: string
 }
@@ -32,6 +33,7 @@ function rowToProfile(row: ProfileRow, email: string | null): Profile {
     latitude: row.latitude ?? null,
     longitude: row.longitude ?? null,
     locationName: row.location_name ?? null,
+    notificationProfile: row.notification_profile ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
