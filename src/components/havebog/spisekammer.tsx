@@ -12,6 +12,7 @@ import {
   KATEGORI_FARVE,
   KATEGORI_LABEL,
   BASIS_MOSAIK,
+  redaktionensValg,
   basisKategoriFarve,
   basisKategoriLabel,
   type ForvandlingKategori,
@@ -23,6 +24,7 @@ import { FORVANDLINGER_ROUTE } from '@/lib/constants'
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 const CREME = '#F7F1DF'
+const MAANED_NAVNE = ['januar','februar','marts','april','maj','juni','juli','august','september','oktober','november','december']
 
 /** Markér at et tile-klik kom fra Havebog-mosaikken, så detailsidens tilbage-
  *  link kan føre tilbage TIL mosaikken (#det-kan-haven-blive-til) i stedet for
@@ -248,12 +250,14 @@ function SpisekammerBliveTil() {
   const maaned = new Date().getMonth() + 1
   const saeson = saesonForMaaned(maaned)
 
-  // Byg tile-listen i Annas rækkefølge. Foto resolves gennem det eksisterende
-  // asset-system for de katalog-bundne elementer (crop-match → farve-fallback);
-  // crop-løse projekter (insekthotel) får bevidst en farve-tile. Mosaikken
-  // knækker aldrig på et manglende billede.
+  // REDAKTIONENS VALG (Anna 3/8): redaktionen bestemmer månedens drømme;
+  // BASIS_MOSAIK er fallback hvis måneden mangler. Foto resolves gennem det
+  // eksisterende asset-system (crop-match → farve-fallback); crop-løse
+  // projekter (insekthotel) får bevidst en farve-tile — med mindre et foto
+  // er bundet. Mosaikken knækker aldrig på et manglende billede.
+  const valgte = redaktionensValg(maaned)
   const tiles: BasisTile[] = []
-  BASIS_MOSAIK.forEach((el, i) => {
+  valgte.forEach((el, i) => {
     const f = el.forvandlingId ? findForvandling(el.forvandlingId) : undefined
     const asset = f ? selectForvandlingAssets(f, { season: saeson }) : undefined
     tiles.push({
@@ -281,8 +285,12 @@ function SpisekammerBliveTil() {
       <p style={{ fontFamily: serif, fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 5.6cqw, 26px)', lineHeight: 1.18, color: '#5F6658', margin: '0 0 8px', maxWidth: '28ch' }}>
         Drømmer du om noget bestemt?
       </p>
-      <p style={{ fontFamily: sans, fontWeight: 400, fontSize: 14, lineHeight: 1.5, color: '#6E7568', margin: '0 0 18px', maxWidth: '34ch' }}>
+      <p style={{ fontFamily: sans, fontWeight: 400, fontSize: 14, lineHeight: 1.5, color: '#6E7568', margin: '0 0 8px', maxWidth: '34ch' }}>
         Du behøver ikke have noget i haven endnu. Vælg en idé, så viser Potalot hvilke planter og sorter, der kan føre dig derhen.
+      </p>
+      {/* Redaktionens valg er måneds-kurateret → sæsonaktuelt uden ny IA. */}
+      <p className="uppercase" style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(36,48,31,0.38)', margin: '0 0 18px' }}>
+        Et godt sted at begynde i {MAANED_NAVNE[maaned - 1]}
       </p>
       <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
         {[venstre, hoejre].map((soejle, si) => (
@@ -324,6 +332,15 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
       {el.title}
     </span>
   )
+  // Diskret informationschip: "hvis jeg trykker her, får jeg forslag".
+  // Antal = forvandlingens afgrøder (art-niveau i dag → 'forslag', ikke
+  // 'sorter'; opgraderes når sort-anbefalinger pr. forvandling findes).
+  const antalForslag = el.forvandlingId ? (findForvandling(el.forvandlingId)?.crops.length ?? 0) : 0
+  const chip = antalForslag > 0 ? (
+    <span style={{ display: 'inline-block', marginTop: stor ? 10 : 7, fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', color: 'rgba(255,255,255,0.82)', background: 'rgba(0,0,0,0.18)', borderRadius: 999, padding: '3px 8px' }}>
+      {antalForslag} {antalForslag === 1 ? 'forslag' : 'forslag'}
+    </span>
+  ) : null
 
   // Foto-tile (asset fundet) — foto i bund, kategori-tonet gradient over.
   if (foto) {
@@ -339,6 +356,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
         <div style={{ position: 'relative', padding: stor ? '0 18px 22px' : '0 16px 18px' }}>
           {eyebrow}
           {titel}
+          {chip}
         </div>
       </Link>
     )
@@ -353,6 +371,7 @@ function BasisMosaikTile({ tile }: { tile: BasisTile }) {
     >
       {eyebrow}
       {titel}
+      {chip}
     </Link>
   )
 }

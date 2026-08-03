@@ -155,6 +155,50 @@ export const BASIS_MOSAIK: BasisMosaikElement[] = [
   { id: 'insekthotel', title: 'Byg et insekthotel', category: 'natur', kind: 'project', description: 'Nogle af havens bedste gæster skal bare have et sted at bo.', cta: 'Se projekt', href: '/havebog/forvandlinger/insekthotel', forvandlingId: 'insekthotel', basis: true },
 ]
 
+/**
+ * Ekstra mosaik-elementer uden for den faste BASIS_MOSAIK — pool som
+ * REDAKTIONENS_VALG kan trække på (fx sæsonens gulerod-forvandlinger).
+ */
+export const EKSTRA_MOSAIK_ELEMENTER: BasisMosaikElement[] = [
+  { id: 'guleroedskage', title: 'Gulerodskage', category: 'spis', kind: 'recipe_idea', description: 'Når høsten bliver større end aftensmaden, kan den blive til kage.', cta: 'Se idé', href: '/havebog/forvandlinger/guleroedskage', forvandlingId: 'guleroedskage', basis: true },
+  { id: 'syltede-guleroedder', title: 'Syltede gulerødder', category: 'gem', kind: 'recipe_idea', description: 'En syrlig lage holder på høsten til vinterens måltider.', cta: 'Se idé', href: '/havebog/forvandlinger/syltede-guleroedder', forvandlingId: 'syltede-guleroedder', basis: true },
+  { id: 'guleroedsjuice', title: 'Gulerodsjuice', category: 'bryg', kind: 'recipe_idea', description: 'Saftige rødder kan blive til en frisk, solgul juice.', cta: 'Se idé', href: '/havebog/forvandlinger/guleroedsjuice', forvandlingId: 'guleroedsjuice', basis: true },
+]
+
+/**
+ * REDAKTIONENS VALG (Anna 3/8): redaktionen bestemmer hvilke drømme der møder
+ * nye brugere — måneden er blot standard-filter for opslaget. Id'er skal
+ * findes i BASIS_MOSAIK ∪ EKSTRA_MOSAIK_ELEMENTER; ukendte id'er springes
+ * over. Mangler måneden helt, falder mosaikken tilbage til BASIS_MOSAIK
+ * (robust når en måned glemmes).
+ */
+export const REDAKTIONENS_VALG: Partial<Record<number, string[]>> = {
+  1: ['guleroedskage', 'guleroedsjuice', 'insekthotel', 'tomatsauce', 'toer-basilikum', 'gem-tomatfroe'],
+  2: ['guleroedskage', 'guleroedsjuice', 'insekthotel', 'tomatsauce', 'toer-basilikum', 'gem-tomatfroe'],
+  3: ['spiselige-blomster', 'jordbaersorbet', 'insekthotel', 'toer-basilikum', 'agurkesalat', 'tomatsauce'],
+  4: ['spiselige-blomster', 'jordbaersorbet', 'insekthotel', 'toer-basilikum', 'agurkesalat', 'tomatsauce'],
+  5: ['jordbaersorbet', 'spiselige-blomster', 'agurkesalat', 'lavendelposer', 'toer-basilikum', 'tomatsauce'],
+  6: ['jordbaersorbet', 'spiselige-blomster', 'agurkesalat', 'lavendelposer', 'toer-basilikum', 'tomatsauce'],
+  7: ['jordbaersorbet', 'agurkesalat', 'lavendelposer', 'tomatsauce', 'spiselige-blomster', 'toer-basilikum'],
+  8: ['tomatsauce', 'jordbaersorbet', 'toer-basilikum', 'gem-tomatfroe', 'agurkesalat', 'lavendelposer'],
+  9: ['tomatsauce', 'guleroedskage', 'syltede-guleroedder', 'gem-tomatfroe', 'guleroedsjuice', 'insekthotel'],
+  10: ['tomatsauce', 'guleroedskage', 'syltede-guleroedder', 'gem-tomatfroe', 'guleroedsjuice', 'insekthotel'],
+  11: ['guleroedskage', 'syltede-guleroedder', 'guleroedsjuice', 'insekthotel', 'lavendelposer', 'toer-basilikum'],
+  12: ['guleroedskage', 'syltede-guleroedder', 'guleroedsjuice', 'insekthotel', 'lavendelposer', 'toer-basilikum'],
+}
+
+/**
+ * Slå redaktionens valg op for en måned. Ukendte id'er filtreres fra;
+ * tomt/utilstrækkeligt resultat → BASIS_MOSAIK (fallback-reglen).
+ */
+export function redaktionensValg(maaned: number): BasisMosaikElement[] {
+  const ids = REDAKTIONENS_VALG[maaned]
+  if (!ids || ids.length === 0) return BASIS_MOSAIK
+  const pool = new Map([...BASIS_MOSAIK, ...EKSTRA_MOSAIK_ELEMENTER].map(e => [e.id, e]))
+  const valgte = ids.map(id => pool.get(id)).filter((e): e is BasisMosaikElement => !!e)
+  return valgte.length > 0 ? valgte : BASIS_MOSAIK
+}
+
 const KAT_ORDEN: ForvandlingKategori[] = ['spis', 'gem', 'toer', 'bryg', 'duft', 'plej', 'pynt', 'saa-igen']
 
 /**
