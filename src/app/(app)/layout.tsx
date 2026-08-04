@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { Topbar } from '@/components/layout/topbar'
 import { DemoBanner } from '@/components/layout/demo-banner'
@@ -5,6 +6,12 @@ import { getProfile } from '@/actions/profil'
 import { getNavState } from '@/actions/nav-state'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
+
+/** Async ø: opgave-badgen streames ind — navigationen venter ikke på tælleren. */
+async function BottomNavMedTal() {
+  const nav = await getNavState()
+  return <BottomNav criticalTaskCount={nav.criticalTaskCount} />
+}
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile()
@@ -16,8 +23,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (profile && !profile.onboarded && !pathname.startsWith('/froebank')) {
     redirect('/onboarding')
   }
-
-  const nav = await getNavState()
 
   // Kompromisløst mobile-first: HELE appen låst til én centreret telefon-
   // ramme. På mobil fylder rammen skærmen (uændret); på desktop står den som
@@ -40,7 +45,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             {children}
           </div>
         </main>
-        <BottomNav criticalTaskCount={nav.criticalTaskCount} />
+        <Suspense fallback={<BottomNav criticalTaskCount={0} />}>
+          <BottomNavMedTal />
+        </Suspense>
       </div>
     </div>
   )

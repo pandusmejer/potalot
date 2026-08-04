@@ -12,7 +12,10 @@ import {
   type TechniqueTask,
 } from '@/data/guide-technique-tasks'
 
-export const dynamic = 'force-dynamic'
+// Ren indholdsside (kun IMPORTED_GUIDES, ingen brugerdata) — statisk ved
+// build, serveres fra CDN uden serverfunktion. Skallen bages anonym; det er
+// samme trade-off som forvandlinger-siderne.
+export const dynamic = 'force-static'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'

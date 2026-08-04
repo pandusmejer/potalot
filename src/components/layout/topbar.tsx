@@ -4,25 +4,41 @@ import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
 import { TrykOgTalKnap } from '@/components/havebog/tryk-og-tal-knap'
+import { Suspense } from 'react'
 import { getUnreadCount } from '@/actions/notifications'
 import { getGardenWeather } from '@/actions/weather'
 import type { Profile } from '@/lib/types'
 
-export async function Topbar({ profile }: { profile: Profile | null }) {
+/** Async ø: badge-tallet streames ind — klokken selv venter ikke. */
+async function BellMedTal() {
+  const unreadCount = await getUnreadCount()
+  return <NotificationBell initialUnreadCount={unreadCount} />
+}
+
+/** Async ø: vejrlinjen streames ind under topbaren.
+ * Vejret er KONTEKST, ikke en handling (Annas retning 13/7): ingen chip,
+ * ingen baggrund, ingen ikon — en diskret redaktionel statuslinje under
+ * topbaren. "22° · Let støvregn i Brabrand" (bynavn uden postnummer). */
+async function VejrLinje() {
+  const weather = await getGardenWeather()
+  if (!weather) return null
+  const by = weather.locationName?.replace(/^\d{3,4}\s*/, '').trim() || null
+  const vejrLinje = `${weather.tempC}° · ${weather.label}${by ? ` i ${by}` : ''}`
+  return (
+    <Link
+      href="/indstillinger"
+      title={weather.summary}
+      className="mt-0.5 block max-w-full truncate text-[12.5px] leading-[1.45] text-muted-foreground tabular-nums hover:text-foreground transition-colors"
+    >
+      {vejrLinje}
+    </Link>
+  )
+}
+
+export function Topbar({ profile }: { profile: Profile | null }) {
   // syncTaskReminders (DB-write) kører IKKE længere her — den blokerede hver
   // eneste navigation. NotificationBell fyrer den fra klienten, throttlet.
-  const [unreadCount, weather] = profile
-    ? await Promise.all([getUnreadCount(), getGardenWeather()])
-    : [0, null]
-
-  // Vejret er KONTEKST, ikke en handling (Annas retning 13/7): ingen chip,
-  // ingen baggrund, ingen ikon — en diskret redaktionel statuslinje under
-  // topbaren. "22° · Let støvregn i Brabrand" (bynavn uden postnummer).
-  const by = weather?.locationName?.replace(/^\d{3,4}\s*/, '').trim() || null
-  const vejrLinje = weather
-    ? `${weather.tempC}° · ${weather.label}${by ? ` i ${by}` : ''}`
-    : null
-
+  // Ulæste-tal og vejr er Suspense-øer, så første byte ikke venter på dem.
   return (
     <header
       className="sticky top-0 z-30 border-b border-[color-mix(in_oklab,var(--primary)_22%,var(--border))] backdrop-blur-md"
@@ -43,7 +59,9 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
           {profile ? (
             <div className="flex items-center gap-1.5">
               <TrykOgTalKnap />
-              <NotificationBell initialUnreadCount={unreadCount} />
+              <Suspense fallback={<NotificationBell initialUnreadCount={0} />}>
+                <BellMedTal />
+              </Suspense>
               <ProfileMenu profile={profile} />
             </div>
           ) : (
@@ -65,15 +83,19 @@ export async function Topbar({ profile }: { profile: Profile | null }) {
           )}
         </div>
 
-        {/* Række 2 — vejret som stille redaktionel linje (kun m. lokation) */}
-        {vejrLinje && (
-          <Link
-            href="/indstillinger"
-            title={weather!.summary}
-            className="mt-0.5 block max-w-full truncate text-[12.5px] leading-[1.45] text-muted-foreground tabular-nums hover:text-foreground transition-colors"
+        {/* Række 2 — vejret som stille redaktionel linje (kun m. lokation).
+            Fallback holder linjens højde, så indholdet ikke hopper når vejret
+            streames ind (kun brugere MED lokation får linjen). */}
+        {profile?.latitude != null && profile?.longitude != null && (
+          <Suspense
+            fallback={
+              <span aria-hidden className="mt-0.5 block max-w-full truncate text-[12.5px] leading-[1.45]">
+                &nbsp;
+              </span>
+            }
           >
-            {vejrLinje}
-          </Link>
+            <VejrLinje />
+          </Suspense>
         )}
       </div>
     </header>

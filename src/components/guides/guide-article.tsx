@@ -10,6 +10,7 @@
  * sektion med komponentnavnet. Det er kun synligt på QA-routes.
  */
 
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
@@ -79,6 +80,240 @@ function DebugBlock({ name, note }: { name: string; note?: string }) {
   )
 }
 
+
+/**
+ * Din have-sektionen ("Dine egne" / "Dyrker du denne?") som async Suspense-ø:
+ * brugerens frøbank + planter hentes HER, så artiklens statiske indhold kan
+ * streames uden at vente på dem. Markup er flyttet 1:1 fra hovedflowet
+ * (ANNA-LÅST C6-design) — kun variabelnavne er parameteriseret.
+ */
+async function DinHaveSektion({
+  effectiveId,
+  parentId,
+  plantName,
+  variety,
+  isSpecies,
+  artPlural,
+  debug,
+}: {
+  effectiveId: string
+  parentId: string | null
+  plantName: string
+  variety: string | null
+  isSpecies: boolean
+  artPlural: string
+  debug: boolean
+}) {
+  const [currentUser, inventory, plants] = await Promise.all([
+    getCurrentUser(),
+    getAllInventoryItems(),
+    getAllPlants(),
+  ])
+  const linkedInventory = inventory.filter(
+    (i) => i.guideId === effectiveId || (parentId !== null && i.guideId === parentId),
+  )
+  const linkedPlants = plants.filter(
+    (p) => p.guideId === effectiveId || (parentId !== null && p.guideId === parentId),
+  )
+  return (
+    <>
+      {linkedInventory.length > 0 || linkedPlants.length > 0 ? (
+        <>
+          {debug && (
+            <DebugBlock
+              name="DineEgne"
+              note={`4. Frøbank ${linkedInventory.length} + planter ${linkedPlants.length}`}
+            />
+          )}
+          <Card className="bg-secondary/20 border-secondary">
+            <CardContent className="space-y-3 py-4">
+              <p
+                style={{
+                  fontFamily: 'var(--font-manrope)',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(36,48,31,0.55)',
+                  margin: 0,
+                }}
+              >
+                Dine egne
+              </p>
+              {linkedInventory.length > 0 && (
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">
+                    I din frøbank
+                  </p>
+                  <div className="space-y-1.5">
+                    {linkedInventory.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={`/froebank/${item.id}`}
+                        className="flex items-center gap-2 text-sm hover:underline"
+                      >
+                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                        {item.name}
+                        {item.variety ? ` — ${item.variety}` : ''}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {linkedPlants.length > 0 && (
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Aktive dyrkninger
+                  </p>
+                  <div className="space-y-1.5">
+                    {linkedPlants.map((plant) => (
+                      <Link
+                        key={plant.id}
+                        href={`/mine-planter/${plant.id}`}
+                        className="flex items-center gap-2 text-sm hover:underline"
+                      >
+                        <Sprout className="h-3.5 w-3.5 text-muted-foreground" />
+                        {plant.name}
+                        {plant.variety ? ` — ${plant.variety}` : ''}
+                        {plant.isArchived && plant.archivedYear && (
+                          <Badge variant="muted" className="text-[9px]">
+                            Arkiv {plant.archivedYear}
+                          </Badge>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </>
+      ) : (
+        // Formindsket fuge til kalender-sektionen ovenfor (12px, samme som
+        // Din have↔Tip). Nested -mt så space-y-fugen overskrives.
+        <div>
+          <div className="-mt-2">
+          {debug && (
+            <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
+          )}
+          <section
+            className="rounded-[28px] px-6 py-6"
+            style={{
+              background: '#F4F0E5',
+              border: '1px solid rgba(36,48,31,0.10)',
+            }}
+          >
+            <p
+              className="m-0 uppercase"
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                lineHeight: 1.25,
+                color: '#7F8F6A',
+              }}
+            >
+              Din have
+            </p>
+            <h3
+              style={{
+                fontFamily: 'var(--font-plex-condensed), sans-serif',
+                fontSize: 'clamp(23px, 5.5vw, 27px)',
+                fontWeight: 600,
+                letterSpacing: '-0.01em',
+                lineHeight: 1.08,
+                color: '#2D2A24',
+                // Luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi en
+                // mt-klasse ville blive overskrevet af margin herunder.)
+                margin: '15px 0 0',
+                maxWidth: '24ch',
+              }}
+            >
+              {isSpecies
+                ? `Dyrker du ${artPlural}?`
+                : `Dyrker du ${variety ?? plantName}?`}
+            </h3>
+            <p
+              style={{
+                fontFamily: 'var(--font-manrope)',
+                fontSize: 12,
+                fontWeight: 500,
+                lineHeight: 1.5,
+                color: 'rgba(36,48,31,0.62)',
+                // Luft mellem heading og brødtekst (inline, da mt-klasse ellers
+                // overskrives af margin herunder).
+                margin: '7px 0 0',
+                maxWidth: '46ch',
+              }}
+            >
+              {isSpecies
+                ? `Vælg en sort til frøbanken, eller opret en ${plantName.toLowerCase()}plante du allerede dyrker.`
+                : 'Tilføj sorten til din frøbank eller opret den som plante.'}
+            </p>
+            {/* Piller deler bredden ligeligt (flex-1) og bliver på én linje —
+                også når arts-labels som "Opret tomatplante" er lange. */}
+            <div className="mt-5 flex gap-2">
+              <Link
+                href={
+                  isSpecies
+                    ? '#sortsvarianter'
+                    : // Sortsguide → forudfyld BÅDE art og sort i manuel oprettelse
+                      // (autofill-motoren tager over). Ingen blindgyder.
+                      `/froebank/tilfoej?mode=manuel&navn=${encodeURIComponent(plantName)}${variety ? `&sort=${encodeURIComponent(variety)}` : ''}`
+                }
+                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:opacity-90 transition"
+                style={{
+                  background: '#7F8F6A',
+                  color: '#F4F0E5',
+                  fontFamily: 'var(--font-manrope)',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
+                  lineHeight: 1,
+                  textDecoration: 'none',
+                }}
+              >
+                <Package className="h-3.5 w-3.5" />
+                {isSpecies
+                  ? `Se ${plantName.toLowerCase()}sorter`
+                  : 'Tilføj til frøbank'}
+              </Link>
+              <Link
+                href="/mine-planter"
+                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:bg-secondary/30 transition"
+                style={{
+                  background: 'transparent',
+                  color: '#2D2A24',
+                  border: '1px solid rgba(36,48,31,0.20)',
+                  fontFamily: 'var(--font-manrope)',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
+                  lineHeight: 1,
+                  textDecoration: 'none',
+                }}
+              >
+                <Sprout className="h-3.5 w-3.5" />
+                {isSpecies
+                  ? `Opret ${plantName.toLowerCase()}plante`
+                  : 'Opret plante'}
+              </Link>
+            </div>
+            {/* Tredje vej: parkér idéen på ønskelisten (broen Forvandlinger →
+                Guides → Frøbank). Kun for indloggede (OBS: isDemo betyder her
+                "statisk importeret guide" — IKKE anonym bruger). */}
+            {currentUser && (
+              <GemTilOenskeliste name={plantName} variety={variety} />
+            )}
+          </section>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export async function GuideArticle({
   id,
   returnTo,
@@ -108,12 +343,14 @@ export async function GuideArticle({
   // guide, ikke forsiden.
   const selfReturn = encodeURIComponent(`/guides/${original.id}`)
 
-  const currentUser = await getCurrentUser()
+  // Brugerens frøbank/planter (Din have-sektionen) hentes i en Suspense-ø
+  // længere nede — de blokerer ikke artiklens første byte. currentUser
+  // behøves kun i hovedflowet for DB-guides (ejer-affordance + noter);
+  // for statisk importerede guides bor login-afhængighederne i øen.
+  const currentUser = isDemo ? null : await getCurrentUser()
 
-  const [allGuides, inventory, plants, myNote] = await Promise.all([
+  const [allGuides, myNote] = await Promise.all([
     isDemo ? Promise.resolve(ALL_GUIDES) : getAllGuides(),
-    getAllInventoryItems(),
-    getAllPlants(),
     !isDemo && currentUser ? getMyGuideNote(id) : Promise.resolve(null),
   ])
 
@@ -142,13 +379,6 @@ export async function GuideArticle({
           (g) => g.guideLevel === 'technique' && (g.appliesTo ?? []).includes(original.id),
         )
       : []
-
-  const linkedInventory = inventory.filter(
-    (i) => i.guideId === effective.id || i.guideId === parent?.id,
-  )
-  const linkedPlants = plants.filter(
-    (p) => p.guideId === effective.id || p.guideId === parent?.id,
-  )
 
   const isOwner = !!currentUser && original.visibility === 'private'
 
@@ -568,199 +798,17 @@ export async function GuideArticle({
         )
       })()}
 
-      {linkedInventory.length > 0 || linkedPlants.length > 0 ? (
-        <>
-          {debug && (
-            <DebugBlock
-              name="DineEgne"
-              note={`4. Frøbank ${linkedInventory.length} + planter ${linkedPlants.length}`}
-            />
-          )}
-          <Card className="bg-secondary/20 border-secondary">
-            <CardContent className="space-y-3 py-4">
-              <p
-                style={{
-                  fontFamily: 'var(--font-manrope)',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(36,48,31,0.55)',
-                  margin: 0,
-                }}
-              >
-                Dine egne
-              </p>
-              {linkedInventory.length > 0 && (
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">
-                    I din frøbank
-                  </p>
-                  <div className="space-y-1.5">
-                    {linkedInventory.map((item) => (
-                      <Link
-                        key={item.id}
-                        href={`/froebank/${item.id}`}
-                        className="flex items-center gap-2 text-sm hover:underline"
-                      >
-                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
-                        {item.name}
-                        {item.variety ? ` — ${item.variety}` : ''}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {linkedPlants.length > 0 && (
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">
-                    Aktive dyrkninger
-                  </p>
-                  <div className="space-y-1.5">
-                    {linkedPlants.map((plant) => (
-                      <Link
-                        key={plant.id}
-                        href={`/mine-planter/${plant.id}`}
-                        className="flex items-center gap-2 text-sm hover:underline"
-                      >
-                        <Sprout className="h-3.5 w-3.5 text-muted-foreground" />
-                        {plant.name}
-                        {plant.variety ? ` — ${plant.variety}` : ''}
-                        {plant.isArchived && plant.archivedYear && (
-                          <Badge variant="muted" className="text-[9px]">
-                            Arkiv {plant.archivedYear}
-                          </Badge>
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </>
-      ) : (
-        // Formindsket fuge til kalender-sektionen ovenfor (12px, samme som
-        // Din have↔Tip). Nested -mt så space-y-fugen overskrives.
-        <div>
-          <div className="-mt-2">
-          {debug && (
-            <DebugBlock name="DinHave (tom-tilstand)" note="4F — buffer" />
-          )}
-          <section
-            className="rounded-[28px] px-6 py-6"
-            style={{
-              background: '#F4F0E5',
-              border: '1px solid rgba(36,48,31,0.10)',
-            }}
-          >
-            <p
-              className="m-0 uppercase"
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: '0.2em',
-                lineHeight: 1.25,
-                color: '#7F8F6A',
-              }}
-            >
-              Din have
-            </p>
-            <h3
-              style={{
-                fontFamily: 'var(--font-plex-condensed), sans-serif',
-                fontSize: 'clamp(23px, 5.5vw, 27px)',
-                fontWeight: 600,
-                letterSpacing: '-0.01em',
-                lineHeight: 1.08,
-                color: '#2D2A24',
-                // Luft mellem DIN HAVE-eyebrow og heading. (Inline, fordi en
-                // mt-klasse ville blive overskrevet af margin herunder.)
-                margin: '15px 0 0',
-                maxWidth: '24ch',
-              }}
-            >
-              {isSpecies
-                ? `Dyrker du ${artPlural}?`
-                : `Dyrker du ${effective.variety ?? effective.plantName}?`}
-            </h3>
-            <p
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: 12,
-                fontWeight: 500,
-                lineHeight: 1.5,
-                color: 'rgba(36,48,31,0.62)',
-                // Luft mellem heading og brødtekst (inline, da mt-klasse ellers
-                // overskrives af margin herunder).
-                margin: '7px 0 0',
-                maxWidth: '46ch',
-              }}
-            >
-              {isSpecies
-                ? `Vælg en sort til frøbanken, eller opret en ${effective.plantName.toLowerCase()}plante du allerede dyrker.`
-                : 'Tilføj sorten til din frøbank eller opret den som plante.'}
-            </p>
-            {/* Piller deler bredden ligeligt (flex-1) og bliver på én linje —
-                også når arts-labels som "Opret tomatplante" er lange. */}
-            <div className="mt-5 flex gap-2">
-              <Link
-                href={
-                  isSpecies
-                    ? '#sortsvarianter'
-                    : // Sortsguide → forudfyld BÅDE art og sort i manuel oprettelse
-                      // (autofill-motoren tager over). Ingen blindgyder.
-                      `/froebank/tilfoej?mode=manuel&navn=${encodeURIComponent(effective.plantName)}${effective.variety ? `&sort=${encodeURIComponent(effective.variety)}` : ''}`
-                }
-                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:opacity-90 transition"
-                style={{
-                  background: '#7F8F6A',
-                  color: '#F4F0E5',
-                  fontFamily: 'var(--font-manrope)',
-                  fontSize: 12,
-                  fontWeight: 700,
-                  letterSpacing: '0.02em',
-                  lineHeight: 1,
-                  textDecoration: 'none',
-                }}
-              >
-                <Package className="h-3.5 w-3.5" />
-                {isSpecies
-                  ? `Se ${effective.plantName.toLowerCase()}sorter`
-                  : 'Tilføj til frøbank'}
-              </Link>
-              <Link
-                href="/mine-planter"
-                className="flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 hover:bg-secondary/30 transition"
-                style={{
-                  background: 'transparent',
-                  color: '#2D2A24',
-                  border: '1px solid rgba(36,48,31,0.20)',
-                  fontFamily: 'var(--font-manrope)',
-                  fontSize: 12,
-                  fontWeight: 700,
-                  letterSpacing: '0.02em',
-                  lineHeight: 1,
-                  textDecoration: 'none',
-                }}
-              >
-                <Sprout className="h-3.5 w-3.5" />
-                {isSpecies
-                  ? `Opret ${effective.plantName.toLowerCase()}plante`
-                  : 'Opret plante'}
-              </Link>
-            </div>
-            {/* Tredje vej: parkér idéen på ønskelisten (broen Forvandlinger →
-                Guides → Frøbank). Kun for indloggede (OBS: isDemo betyder her
-                "statisk importeret guide" — IKKE anonym bruger). */}
-            {currentUser && (
-              <GemTilOenskeliste name={effective.plantName} variety={effective.variety} />
-            )}
-          </section>
-          </div>
-        </div>
-      )}
+      <Suspense fallback={null}>
+        <DinHaveSektion
+          effectiveId={effective.id}
+          parentId={parent?.id ?? null}
+          plantName={effective.plantName}
+          variety={effective.variety ?? null}
+          isSpecies={isSpecies}
+          artPlural={artPlural}
+          debug={debug}
+        />
+      </Suspense>
 
       {currentUser && !isDemo && myNote !== null && (
         <>
