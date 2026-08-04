@@ -125,18 +125,34 @@ uden `.limit()` — vokser ubegrænset med kontoens alder.
 - **Klient-fetches on mount**: ingen på de 5 hovedruter.
 - **Supabase-instansens størrelse / økonomi**: intet tegn på at det er flaskehalsen.
 
-## Prioriteret fix-plan (næste fase — IKKE udført)
+## Fix-plan og status
 
-| # | Fix | Indsats | Forventet gevinst |
-|---|---|---|---|
-| 1 | Wrap `getCurrentUser` (og `createClient`) i React `cache()` | ~2 linjer | fjerner 6–13 round-trips/side |
-| 2 | Flyt `sync_task_reminders` ud af render (interaktion/cron eller cookie-throttle) | lille | fjerner write + join pr. navigation |
-| 3 | Del layout/side-fetches via `cache()` (profiles, plants_v2, inventory_items) | mellem | fjerner 4–6 dublet-queries/side |
-| 4 | Ret de 5 waterfalls + `/`-barrieren (parallelisér) | mellem | halverer sekventiel dybde |
-| 5 | Cache-headers på `/images/*` i netlify.toml (immutable) | ~5 linjer | fjerner billed-revalidering |
-| 6 | /guides: undlad DB-query der smides væk; overvej pagineret/statisk bibliotek | mellem | −300 kB HTML + 2 queries |
-| 7 | `.limit()` på plant_logs_v2 (+ udskyd image_urls) | lille | bounded forside |
-| 8 | Genbesøg force-dynamic: statiske/ISR-kandidater (guides, forvandlinger) | større | CDN-cache → dræber kold-start-smerten |
-| 9 | next/image / WebP på måneds-heroes | mellem | −300–400 kB pr. side |
+| # | Fix | Status |
+|---|---|---|
+| 1 | Wrap `getCurrentUser` + `createClient` i React `cache()` | **GJORT 4/8** (d3861df) — 1 auth-hop pr. request i stedet for 7–15 |
+| 2 | `sync_task_reminders` ud af render | **GJORT 4/8** — klient-fyret fra NotificationBell, 30 min localStorage-throttle |
+| 3 | Del profiles-fetch via `cache()` på `getProfile` | **GJORT 4/8** — layout + begge vejr-funktioner deler nu ét kald (×3 → ×1) |
+| 4 | Waterfalls parallelliseret (froebank, havekalender, aarshjul, `/`-barrieren) | **GJORT 4/8** — vejr-kæden kollapsede via #3 |
+| 5 | Cache-headers på `/images/*` + `/icons/*` (7 dage + SWR, bevidst ikke immutable pga. in-place-reshoots) | **GJORT 4/8** — verificér på live efter deploy |
+| 6 | /guides: DB-query der smides væk + 300 kB HTML (pagineret/opdelt bibliotek) | UDESTÅR — rører produktadfærd (isDemo-semantik: logget ind uden guides ser demo-bibliotek), tages med Anna |
+| 7 | `.limit(1000)` på plant_logs_v2 | **GJORT 4/8** |
+| 8 | Genbesøg force-dynamic: statiske/ISR-kandidater (guides, forvandlinger) → CDN-cache mod kold-start | UDESTÅR — størst tilbageværende gevinst (8,4 s kold start) |
+| 9 | next/image / WebP på måneds-heroes (570 kB PNG) | UDESTÅR |
+| 10 | plants_v2/calendar_tasks-dubletter mellem nav-state-counts og siderne | UDESTÅR (lavere prioritet efter #1) |
 
-Mål efter fasen: gentag ALLE målinger i dette dokument og skriv før/efter.
+## Efter-måling 4/8 (lokal prod, anonym — samme metode)
+
+| Route | TTFB varm FØR | TTFB varm EFTER |
+|---|---|---|
+| /kalender | 280–390 ms | **150–190 ms** |
+| / , /froebank, /mine-planter, /guides | 5–18 ms | uændret (var allerede DB-frie anonymt) |
+
+De store gevinster (#1–#4) kan IKKE måles anonymt — de fjerner 10–15
+Supabase-round-trips pr. sideåbning for **logget ind** bruger. Skønnet
+effekt på /kalender logget ind: 32 → ~17 round-trips, og sekventiel
+dybde markant ned. **Skal verificeres af Anna på live efter deploy**
+(hurtigste test: føles navigation mellem Havebog/Kalender/Frøbank
+mærkbart lettere?).
+
+QA: tsc + tests + build grønne; /, /froebank, /kalender røgtestet i
+browser (demo-tilstand, ingen konsolfejl, låste designs urørte).
