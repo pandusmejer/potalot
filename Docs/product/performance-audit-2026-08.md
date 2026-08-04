@@ -183,6 +183,40 @@ Teknisk (DevTools/Netlify function log): TTFB pr. route, antal
 requests mod Supabase (`/auth/v1/user`-kald bør være ~1 pr. navigation,
 før 7–15), samlet overført data.
 
+## Fase 2 (4/8, commit c0a1aee): streaming + første statiske sider
+
+Kontekst: Annas logget-ind-test efter fase 1 = "stadig langsom". Diagnose:
+hvert eneste fanetryk kostede stadig en fuld dynamisk server-render
+(Next-default router-cache = 0 s), og første byte ventede på badge-,
+vejr- og tæller-queries.
+
+Gjort:
+- **Router-cache** (`staleTimes: dynamic 30 s / static 300 s`): fane-hop
+  og tilbage-navigation rendrer fra klientens cache. Server actions
+  revaliderer, så mutationer slår igennem. Dette er sandsynligvis den
+  største FØLTE forbedring for navigation.
+- **Skallen streames**: ulæste-badge, vejrlinje og bundnav-tæller er
+  Suspense-øer — første byte venter ikke på dem.
+- **Guide-artiklens Din have-sektion** = async Suspense-ø (markup 1:1);
+  brugerens frøbank/planter blokerer ikke artiklen.
+- **/guides/teknik statisk** (○, CDN, ingen serverfunktion) — første
+  guide-side uden lambda.
+- getNavState: død plants_v2-count fjernet (aftager var uimporteret
+  Sidebar).
+
+Arkitektur-fund der blokerer fuld ISR på /guides/[id]: ruten hoster BÅDE
+de 171 statiske redaktionelle guides OG brugerens private/AI-guides
+(RLS, kræver cookies). Blanket force-static ville knække private guides.
+Fuld løsning kræver URL-adskillelse (fx /guides/mine/[id]) — rører
+froebank/notifikations-links → Annas beslutning. Streaming-øen er
+mellemtrinnet, der virker uden URL-ændringer.
+
+Testnote: automatiseret browser-QA af streamede sektioner er upålidelig —
+React 19.2 batcher segment-reveal via requestAnimationFrame, som
+throttles i baggrunds-/headless-paner (verificeret: samme adfærd på
+gammelt deploy). DOM-checks bekræfter korrekthed; visuel bekræftelse
+skal ske i en rigtig browser.
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |
