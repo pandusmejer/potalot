@@ -140,6 +140,49 @@ uden `.limit()` — vokser ubegrænset med kontoens alder.
 | 9 | next/image / WebP på måneds-heroes (570 kB PNG) | UDESTÅR |
 | 10 | plants_v2/calendar_tasks-dubletter mellem nav-state-counts og siderne | UDESTÅR (lavere prioritet efter #1) |
 
+## Tre cache-begreber — bland dem ikke sammen
+
+Fix #1/#3 bruger React `cache()`. Det er **request-memoisering**: samme
+opslag genbruges inden for ÉN render af ÉT request — og intet andet.
+Hold de tre lag adskilt, når nogen læser "cached" i dette dokument:
+
+1. **Request-memoisering** (React `cache()`) — fjerner dubletter i én
+   sideåbning. GJORT for auth/klient/profil. Løser IKKE kold start.
+2. **Data-cache** (`unstable_cache`/`revalidate` på queries) — genbruger
+   kontrollerede resultater MELLEM requests. Findes stadig ikke i appen
+   (kun Open-Meteo-fetches, 30 min).
+3. **CDN/ISR** — serverfunktionen startes slet ikke; CDN'en svarer.
+   Findes ikke endnu. Det er DETTE lag, der dræber 8,4 s-koldstarten
+   (fix #8). Koldstarten er altså IKKE løst endnu.
+
+## Påmindelses-sync på klienten — kanttilfælde (verificeret 4/8)
+
+- **Flere faner**: throttle-timestampen bor i localStorage (delt på
+  tværs af faner) og sættes FØR kaldet — første fane vinder, resten
+  skipper. Race-vinduet på få ms er ufarligt, se næste punkt.
+- **Samtidige kald er idempotente**: RPC'en indsætter via `dedup_key` +
+  `INSERT … ON CONFLICT DO NOTHING` (migration 00059) — race-sikkert.
+- **Fane lukkes hurtigt / kaldet fejler**: timestampen er allerede sat,
+  så næste forsøg er først efter 30 min. Bevidst trade-off: påmindelser
+  er dags-kadence, og alternativet (sæt timestamp efter succes) åbner
+  for flerfane-stampede. Ingen retry-loops: ét skud pr. vindue, fejl
+  sluges både server-side (try/catch i actionen) og client-side (.catch).
+- **Anonym/demo udløser ingen writes**: NotificationBell rendres kun når
+  `profile` findes (topbar.tsx), og `syncTaskReminders` returnerer tidligt
+  uden bruger. RLS ligger bagved som sidste værn.
+- **Dev StrictMode dobbelt-effect**: andet run ser den friske timestamp
+  og skipper — ingen dobbeltkald.
+
+## Måleprotokol — logget ind på live (Annas del efter deploy)
+
+Samme scenarier før/efter, mobil på almindelig forbindelse:
+1. Første åbning efter pause (koldt) — er den stadig ~8 s?
+2. Havebog → Kalender → Frøbank → plante/guide → tilbage.
+3. Mærkbart: føles navigationen lettere end i går?
+Teknisk (DevTools/Netlify function log): TTFB pr. route, antal
+requests mod Supabase (`/auth/v1/user`-kald bør være ~1 pr. navigation,
+før 7–15), samlet overført data.
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |
