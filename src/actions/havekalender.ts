@@ -98,17 +98,37 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
   const user = await getCurrentUser()
   if (!user) return []
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('calendar_tasks')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: true })
+  // Opgaver + brugerens plantenavne hentes parallelt (i stedet for tasks →
+  // enrich-waterfall): plants_v2-tabellen pr. bruger er lille, og /kalenders
+  // samlede Promise.all venter ellers på to serielle hop her.
+  const [{ data, error }, { data: plants }] = await Promise.all([
+    supabase
+      .from('calendar_tasks')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('date', { ascending: true }),
+    supabase
+      .from('plants_v2')
+      .select('id, name, variety')
+      .eq('user_id', user.id),
+  ])
 
   if (error) {
     console.error('getAllTasks error:', error)
     return []
   }
-  return enrichWithPlantNames((data as TaskRow[]).map(rowToTask), supabase)
+
+  const byId = new Map<string, { name: string; variety: string | null }>()
+  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null }[]) {
+    byId.set(p.id, { name: p.name, variety: p.variety })
+  }
+  return (data as TaskRow[]).map(rowToTask).map(t => {
+    if (!t.linkedPlantId) return t
+    const info = byId.get(t.linkedPlantId)
+    return info
+      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety }
+      : t
+  })
 }
 
 export async function getTasksForPlant(plantId: string): Promise<CalendarTask[]> {

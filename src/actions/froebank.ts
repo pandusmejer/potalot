@@ -98,13 +98,21 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
   if (!user) return []
   const userId = user.id
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('inventory_items')
-    .select('*')
-    .eq('user_id', userId)
-    .order('is_pinned', { ascending: false })
-    .order('is_favorite', { ascending: false })
-    .order('name', { ascending: true })
+  // items + counts er uafhængige (begge filtreret på user_id) — parallelt,
+  // ikke som waterfall: denne funktion rammer 4 af 5 hovedruter.
+  const [{ data, error }, { data: counts }] = await Promise.all([
+    supabase
+      .from('inventory_items')
+      .select('*')
+      .eq('user_id', userId)
+      .order('is_pinned', { ascending: false })
+      .order('is_favorite', { ascending: false })
+      .order('name', { ascending: true }),
+    supabase
+      .from('inventory_seed_counts')
+      .select('inventory_item_id, seeds_sown, seeds_remaining')
+      .eq('user_id', userId),
+  ])
 
   if (error) {
     console.error('getAllInventoryItems error:', error)
@@ -112,11 +120,6 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
   }
 
   const rows = data as InventoryRow[]
-  // Hent counts samlet
-  const { data: counts } = await supabase
-    .from('inventory_seed_counts')
-    .select('inventory_item_id, seeds_sown, seeds_remaining')
-    .eq('user_id', userId)
   const countMap = new Map(
     (counts ?? []).map((c: { inventory_item_id: string; seeds_sown: number; seeds_remaining: number }) =>
       [c.inventory_item_id, { seedsSown: c.seeds_sown, seedsRemaining: c.seeds_remaining }]

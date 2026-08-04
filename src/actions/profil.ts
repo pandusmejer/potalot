@@ -1,5 +1,6 @@
 'use server'
 
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
@@ -39,7 +40,10 @@ function rowToProfile(row: ProfileRow, email: string | null): Profile {
   }
 }
 
-export async function getProfile(): Promise<Profile | null> {
+// cache(): profilen læses af layout, vejr OG sider i samme request —
+// memoiseres så én sideåbning kun rammer profiles én gang. Ikke eksporteret
+// ('use server' må kun eksportere async-funktioner).
+const getProfileCached = cache(async (): Promise<Profile | null> => {
   const user = await getCurrentUser()
   if (!user) return null
 
@@ -52,6 +56,10 @@ export async function getProfile(): Promise<Profile | null> {
 
   if (error || !data) return null
   return rowToProfile(data as ProfileRow, user.email)
+})
+
+export async function getProfile(): Promise<Profile | null> {
+  return getProfileCached()
 }
 
 export interface UpdateProfileInput {

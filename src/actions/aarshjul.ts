@@ -90,20 +90,24 @@ export async function getGeneralGardenTasks(opts?: { includeInactive?: boolean }
   let query = supabase.from('general_garden_tasks').select('*').order('month', { ascending: true })
   if (!opts?.includeInactive) query = query.eq('is_active', true)
 
-  const { data, error } = await query
+  // Gøremål + brugerens skjulte ids er uafhængige — parallelt, ikke waterfall.
+  const [{ data, error }, hiddenRes] = await Promise.all([
+    query,
+    user
+      ? supabase
+          .from('user_hidden_general_tasks')
+          .select('general_task_id')
+          .eq('user_id', user.id)
+      : Promise.resolve({ data: null }),
+  ])
   if (error) {
     console.error('getGeneralGardenTasks:', error)
     return []
   }
 
-  let hiddenIds = new Set<string>()
-  if (user) {
-    const { data: hidden } = await supabase
-      .from('user_hidden_general_tasks')
-      .select('general_task_id')
-      .eq('user_id', user.id)
-    hiddenIds = new Set((hidden ?? []).map((h: { general_task_id: string }) => h.general_task_id))
-  }
+  const hiddenIds = new Set(
+    ((hiddenRes.data ?? []) as { general_task_id: string }[]).map(h => h.general_task_id)
+  )
 
   return (data as GeneralRow[]).map(r => rowToGeneral(r, hiddenIds))
 }

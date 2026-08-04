@@ -6,12 +6,20 @@ import { Button } from '@/components/ui/button'
 import { Bell, CheckCheck, X, Loader2 } from 'lucide-react'
 import {
   getMyNotifications,
+  getUnreadCount,
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
+  syncTaskReminders,
   type Notification,
 } from '@/actions/notifications'
 import { cn } from '@/lib/utils'
+
+// Påmindelses-sync er idempotent (dedup pr. opgave/dag) — en gang pr.
+// halve time er rigeligt. Throttlen bor i localStorage så navigationer
+// og genindlæsninger ikke udløser en DB-write hver gang.
+const SYNC_THROTTLE_MS = 30 * 60 * 1000
+const SYNC_STORAGE_KEY = 'potalot-reminder-sync-at'
 
 interface Props {
   initialUnreadCount: number
@@ -34,6 +42,18 @@ export function NotificationBell({ initialUnreadCount }: Props) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
   const [loading, setLoading] = useState(false)
+
+  // Generér opgave-påmindelser i baggrunden (flyttet fra Topbarens render-sti):
+  // best-effort, throttlet, og badge opdateres bagefter hvis der kom nye.
+  useEffect(() => {
+    const last = Number(localStorage.getItem(SYNC_STORAGE_KEY) ?? 0)
+    if (Date.now() - last < SYNC_THROTTLE_MS) return
+    localStorage.setItem(SYNC_STORAGE_KEY, String(Date.now()))
+    syncTaskReminders()
+      .then(() => getUnreadCount())
+      .then(count => setUnreadCount(count))
+      .catch(() => {})
+  }, [])
 
   // Hent når dropdown'en åbnes
   useEffect(() => {

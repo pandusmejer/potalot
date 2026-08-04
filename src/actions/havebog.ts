@@ -612,7 +612,10 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .from('plant_logs_v2')
         .select('id, plant_id, date, type, title, note, image_urls')
         .eq('user_id', me.id)
-        .order('date', { ascending: false }),
+        .order('date', { ascending: false })
+        // Bounded: historikken vokser med kontoens alder; 1000 nyeste er
+        // rigeligt til alle forside-afledninger uden at hente alt for evigt.
+        .limit(1000),
       supabase
         .from('plants_v2')
         .select('id, name, variety, status, is_archived, archived_year, archived_at, primary_image_url, location')

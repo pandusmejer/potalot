@@ -7,3 +7,17 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Billeder skifter sjældent (og bevidst IKKE immutable: recompress/reshoot
+# sker af og til in-place med samme filnavn). 7 dages cache + SWR erstatter
+# default'ens max-age=0/must-revalidate, der revaliderede hvert billede ved
+# hvert besøg — worst case er et billede op til en uge gammelt efter reshoot.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=2592000"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=2592000"

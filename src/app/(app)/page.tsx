@@ -72,14 +72,21 @@ export const dynamic = 'force-dynamic'
  * gangen når deres deriver/kilde lander (ærligheds-reglen).
  */
 export default async function HavebogPage() {
-  const data = await getHavebogData()
+  // Alle fire loaders er uafhængige og tåler anonym bruger (returnerer
+  // null/tom) — ét parallelt hop i stedet for to serielle bølger.
+  const [data, inventoryRes, plantsRes, locationsRes] = await Promise.all([
+    getHavebogData(),
+    getAllInventoryItems(),
+    getAllPlants(),
+    getGardenLocations(),
+  ])
   const isDemo = data === null
 
   // Kom godt i gang-status (adaptive onboarding): kun counts sendes videre —
   // komponenten er fuldstændig isoleret og styrer selv sin synlighed.
   const [inventoryForStatus, plantsForStatus, locationsForStatus] = isDemo
     ? [[], [], []]
-    : await Promise.all([getAllInventoryItems(), getAllPlants(), getGardenLocations()])
+    : [inventoryRes, plantsRes, locationsRes]
   const wishlistCount = inventoryForStatus.filter(i => i.primaryCategoryId === 'indkoebsliste').length
 
   const heroStats = isDemo ? DEMO_HERO_STATS : data.heroStats

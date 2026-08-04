@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -7,8 +8,9 @@ import type { SupabaseClient } from '@supabase/supabase-js'
  *
  * Bruger cookies til session — dvs. RLS-policies (auth.uid() = user_id) håndhæves
  * automatisk pr. logged-in user. Anvend altid denne i stedet for service-role.
+ * cache(): én klient-instans pr. request (deler cookieStore; ingen delt state på tværs).
  */
-export async function createClient(): Promise<SupabaseClient> {
+export const createClient = cache(async (): Promise<SupabaseClient> => {
   const cookieStore = await cookies()
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -33,4 +35,4 @@ export async function createClient(): Promise<SupabaseClient> {
       },
     },
   })
-}
+})
