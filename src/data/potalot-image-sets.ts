@@ -369,6 +369,11 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
 
   'chili-jalapeno': {
     seedCard: { src: '/images/frokort/chili-jalapeno.png', alt: 'Jalapeño chili — frøkort' },
+    // Alias (Anna 5/8): plantekortet er fotograferet som sorten "Early
+    // Jalapeno" (fil chili-early-jalapeno), men brugere registrerer typisk
+    // bare "Jalapeno". Samme sortsfamilie, samme frugt — manuel mapping her
+    // frem for at producere et dubletfoto.
+    plantCard: { src: '/images/plantekort/chili-early-jalapeno.jpg', alt: 'Jalapeño chili — plantekort' },
     macro: [],
   },
 

@@ -2,16 +2,33 @@ import Link from 'next/link'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { Guide } from '@/lib/types'
 import { guideHref } from '@/lib/guides/guide-href'
+import { resolvePlantCard, resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
 
 // Fast redaktionelt "personlig guide"-motiv: ægte plante der fortsætter som
 // botanisk blyantsskitse på cremet papir ("din plante → Potalots guide").
-// Personlige guides opstår netop hvor Potalot IKKE har kurateret materiale — så
-// der findes typisk heller ikke et plantekortfoto. Derfor ét fast motiv, ikke en
-// foto-collage (der ville antyde verificerede sort-billeder vi ikke har).
+// Bruges som FALLBACK — flere personlige guides dækker sorter hvor der
+// faktisk findes kurateret materiale (plantekort/frøkort), og det skal vinde.
 const MOTIV = '/images/guides/personlig-guide.jpg'
+
+// Billedprioritet for en personlig guide (Anna 5/8):
+//   guidens eget primary_image_url → plantekort → frøkort → fast motiv.
+// resolvePlantCard dækker de to første lag (preferredSrc valideres mod
+// manifestet og vinder; ellers plantekort via image-set/asset-convention).
+function guideMotiv(g: Guide): { src: string; erFallback: boolean } {
+  const plant = resolvePlantCard({
+    guideId: g.id,
+    name: g.plantName,
+    variety: g.variety,
+    preferredSrc: g.primaryImageId,
+  })
+  if (plant.source !== 'fallback') return { src: plant.src, erFallback: false }
+  const seed = resolveSeedCard({ guideId: g.id, name: g.plantName, variety: g.variety })
+  if (seed.source !== 'fallback') return { src: seed.src, erFallback: false }
+  return { src: MOTIV, erFallback: true }
+}
 
 /**
  * DINE EGNE GUIDES — brugerens PRIVATE/AI-genererede guides som lille editorial
@@ -114,7 +131,9 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
         </summary>
 
         <div className="mt-3 space-y-2">
-          {sorted.map(g => (
+          {sorted.map(g => {
+            const motiv = guideMotiv(g)
+            return (
             <Link
               key={g.id}
               href={guideHref(g.id)}
@@ -127,17 +146,18 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
                 color: 'inherit',
               }}
             >
-              {/* Lille botanisk markør — beskåret skitse-del af samme motiv */}
+              {/* Sortens eget kort-foto når det findes — ellers beskåret
+                  skitse-del af det faste personlige motiv */}
               <span
                 className="relative shrink-0 overflow-hidden"
                 style={{ width: 44, height: 44, borderRadius: 10, background: '#E7E2D2' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img loading="lazy" decoding="async"
-                  src={MOTIV}
+                  src={motiv.src}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
-                  style={{ objectPosition: '62% 42%' }}
+                  style={{ objectPosition: motiv.erFallback ? '62% 42%' : '50% 50%' }}
                 />
               </span>
               <span className="min-w-0 flex-1">
@@ -161,7 +181,8 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
                 aria-hidden
               />
             </Link>
-          ))}
+            )
+          })}
         </div>
       </details>
     </section>
