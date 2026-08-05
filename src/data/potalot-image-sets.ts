@@ -632,6 +632,226 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     ],
   },
 
+  // ── FRØKORT-BATCH 5/8 2026 (50 nye sorter fra foto-indbakken) ──
+  // Flade farveblok-studiofotos, 760px palette-PNG + webp-søskende.
+  // dild-bouquet + graeskar-uchiki-kuri fik nye/udfyldte FILER men
+  // havde allerede entries ovenfor.
+
+  'abrikos-hargrand': {
+    seedCard: { src: '/images/frokort/abrikos-hargrand.png', alt: 'Hargrand abrikos — frøkort' },
+    macro: [],
+  },
+  'aerteblomst-matucana': {
+    seedCard: { src: '/images/frokort/aerteblomst-matucana.png', alt: 'Matucana ærteblomst — frøkort' },
+    macro: [],
+  },
+  'ananas-salvie-scarlet-pineapple': {
+    seedCard: { src: '/images/frokort/ananas-salvie-scarlet-pineapple.png', alt: 'Scarlet Pineapple ananassalvie — frøkort' },
+    macro: [],
+  },
+  'blaabaer-bluecrop': {
+    seedCard: { src: '/images/frokort/blaabaer-bluecrop.png', alt: 'Bluecrop blåbær — frøkort' },
+    macro: [],
+  },
+  'blaahat-perfecta': {
+    seedCard: { src: '/images/frokort/blaahat-perfecta.png', alt: 'Perfecta blåhat — frøkort' },
+    macro: [],
+  },
+  'bonderose-sarah-bernhardt': {
+    seedCard: { src: '/images/frokort/bonderose-sarah-bernhardt.png', alt: 'Sarah Bernhardt bonderose — frøkort' },
+    macro: [],
+  },
+  'brombaer-loch-ness': {
+    seedCard: { src: '/images/frokort/brombaer-loch-ness.png', alt: 'Loch Ness brombær — frøkort' },
+    macro: [],
+  },
+  'citronmelisse-citronella': {
+    seedCard: { src: '/images/frokort/citronmelisse-citronella.png', alt: 'Citronella citronmelisse — frøkort' },
+    macro: [],
+  },
+  'citrontimian-silver-queen': {
+    seedCard: { src: '/images/frokort/citrontimian-silver-queen.png', alt: 'Silver Queen citrontimian — frøkort' },
+    macro: [],
+  },
+  'cosmos-rubenza': {
+    seedCard: { src: '/images/frokort/cosmos-rubenza.png', alt: 'Rubenza cosmos — frøkort' },
+    macro: [],
+  },
+  // To glemte filer fra formiddagens batch (arkiveret 5/8 uden at være
+  // lagt ind) — samlet op sammen med eftermiddagens 52.
+  'estragon-french': {
+    seedCard: { src: '/images/frokort/estragon-french.png', alt: 'French estragon — frøkort' },
+    macro: [],
+  },
+  'salvie-berggarten': {
+    seedCard: { src: '/images/frokort/salvie-berggarten.png', alt: 'Berggarten salvie — frøkort' },
+    macro: [],
+  },
+  'fersken-redhaven': {
+    seedCard: { src: '/images/frokort/fersken-redhaven.png', alt: 'Redhaven fersken — frøkort' },
+    macro: [],
+  },
+  'fransk-anemone-de-caen-red': {
+    seedCard: { src: '/images/frokort/fransk-anemone-de-caen-red.png', alt: 'De Caen Red fransk anemone — frøkort' },
+    macro: [],
+  },
+  'graeskar-honey-boat': {
+    seedCard: { src: '/images/frokort/graeskar-honey-boat.png', alt: 'Honey Boat græskar — frøkort' },
+    macro: [],
+  },
+  'graeskar-musquee-de-provence': {
+    seedCard: { src: '/images/frokort/graeskar-musquee-de-provence.png', alt: 'Musquée de Provence græskar — frøkort' },
+    macro: [],
+  },
+  'graeskar-table-queen': {
+    seedCard: { src: '/images/frokort/graeskar-table-queen.png', alt: 'Table Queen græskar — frøkort' },
+    macro: [],
+  },
+  'graeskar-waltham-butternut': {
+    seedCard: { src: '/images/frokort/graeskar-waltham-butternut.png', alt: 'Waltham Butternut græskar — frøkort' },
+    macro: [],
+  },
+  'hassel-cosford': {
+    seedCard: { src: '/images/frokort/hassel-cosford.png', alt: 'Cosford hassel — frøkort' },
+    macro: [],
+  },
+  'hindbaer-tulameen': {
+    seedCard: { src: '/images/frokort/hindbaer-tulameen.png', alt: 'Tulameen hindbær — frøkort' },
+    macro: [],
+  },
+  'hybenrose-rosa-rugosa-rubra': {
+    seedCard: { src: '/images/frokort/hybenrose-rosa-rugosa-rubra.png', alt: 'Rosa rugosa rubra hybenrose — frøkort' },
+    macro: [],
+  },
+  'hyld-haschberg': {
+    seedCard: { src: '/images/frokort/hyld-haschberg.png', alt: 'Haschberg hyld — frøkort' },
+    macro: [],
+  },
+  'kirsebaer-stella': {
+    seedCard: { src: '/images/frokort/kirsebaer-stella.png', alt: 'Stella kirsebær — frøkort' },
+    macro: [],
+  },
+  'koervel-vertissimo': {
+    seedCard: { src: '/images/frokort/koervel-vertissimo.png', alt: 'Vertissimo kørvel — frøkort' },
+    macro: [],
+  },
+  'kornblomst-blue-boy': {
+    seedCard: { src: '/images/frokort/kornblomst-blue-boy.png', alt: 'Blue Boy kornblomst — frøkort' },
+    macro: [],
+  },
+  'kruspersille-moss-curled-2': {
+    seedCard: { src: '/images/frokort/kruspersille-moss-curled-2.png', alt: 'Moss Curled 2 kruspersille — frøkort' },
+    macro: [],
+  },
+  'krybetimian-coccineus': {
+    seedCard: { src: '/images/frokort/krybetimian-coccineus.png', alt: 'Coccineus krybetimian — frøkort' },
+    macro: [],
+  },
+  'kvaede-vranja': {
+    seedCard: { src: '/images/frokort/kvaede-vranja.png', alt: 'Vranja kvæde — frøkort' },
+    macro: [],
+  },
+  'lupin-russell-blue': {
+    seedCard: { src: '/images/frokort/lupin-russell-blue.png', alt: 'Russell Blue lupin — frøkort' },
+    macro: [],
+  },
+  'mirabel-nancy': {
+    seedCard: { src: '/images/frokort/mirabel-nancy.png', alt: 'Nancy mirabel — frøkort' },
+    macro: [],
+  },
+  'morgenfrue-indian-prince': {
+    seedCard: { src: '/images/frokort/morgenfrue-indian-prince.png', alt: 'Indian Prince morgenfrue — frøkort' },
+    macro: [],
+  },
+  'mynte-after-eight': {
+    seedCard: { src: '/images/frokort/mynte-after-eight.png', alt: 'After Eight mynte — frøkort' },
+    macro: [],
+  },
+  'mynte-spearmint': {
+    seedCard: { src: '/images/frokort/mynte-spearmint.png', alt: 'Spearmint mynte — frøkort' },
+    macro: [],
+  },
+  'nigella-miss-jekyll-blue': {
+    seedCard: { src: '/images/frokort/nigella-miss-jekyll-blue.png', alt: 'Miss Jekyll Blue nigella — frøkort' },
+    macro: [],
+  },
+  'oregano-greek': {
+    seedCard: { src: '/images/frokort/oregano-greek.png', alt: 'Greek oregano — frøkort' },
+    macro: [],
+  },
+  'purloeg-prager': {
+    seedCard: { src: '/images/frokort/purloeg-prager.png', alt: 'Prager purløg — frøkort' },
+    macro: [],
+  },
+  'ranunkel-amandine-salmon': {
+    seedCard: { src: '/images/frokort/ranunkel-amandine-salmon.png', alt: 'Amandine Salmon ranunkel — frøkort' },
+    macro: [],
+  },
+  'ridderspore-blue-bird': {
+    seedCard: { src: '/images/frokort/ridderspore-blue-bird.png', alt: 'Blue Bird ridderspore — frøkort' },
+    macro: [],
+  },
+  'rosmarin-tuscan-blue': {
+    seedCard: { src: '/images/frokort/rosmarin-tuscan-blue.png', alt: 'Tuscan Blue rosmarin — frøkort' },
+    macro: [],
+  },
+  'solbaer-ben-sarek': {
+    seedCard: { src: '/images/frokort/solbaer-ben-sarek.png', alt: 'Ben Sarek solbær — frøkort' },
+    macro: [],
+  },
+  'squash-bianca-di-trieste': {
+    seedCard: { src: '/images/frokort/squash-bianca-di-trieste.png', alt: 'Bianca di Trieste squash — frøkort' },
+    macro: [],
+  },
+  'squash-black-beauty': {
+    seedCard: { src: '/images/frokort/squash-black-beauty.png', alt: 'Black Beauty squash — frøkort' },
+    macro: [],
+  },
+  'squash-gold-rush': {
+    seedCard: { src: '/images/frokort/squash-gold-rush.png', alt: 'Gold Rush squash — frøkort' },
+    macro: [],
+  },
+  'squash-sunburst': {
+    seedCard: { src: '/images/frokort/squash-sunburst.png', alt: 'Sunburst squash — frøkort' },
+    macro: [],
+  },
+  'statice-qis-lavender': {
+    seedCard: { src: '/images/frokort/statice-qis-lavender.png', alt: 'QIS Lavender statice — frøkort' },
+    macro: [],
+  },
+  // Kanonisk slug pr. resolverens slugify: ä→a (NFD), ø→oe — filen fra
+  // indbakken hed "hinnonmaeki" og er omdøbt så opslaget matcher.
+  'stikkelsbaer-hinnonmaki-roed': {
+    seedCard: { src: '/images/frokort/stikkelsbaer-hinnonmaki-roed.png', alt: 'Hinnonmäki Rød stikkelsbær — frøkort' },
+    macro: [],
+  },
+  'stokrose-simplex-rosea': {
+    seedCard: { src: '/images/frokort/stokrose-simplex-rosea.png', alt: 'Simplex Rosea stokrose — frøkort' },
+    macro: [],
+  },
+  'storkenaeb-rozanne': {
+    seedCard: { src: '/images/frokort/storkenaeb-rozanne.png', alt: 'Rozanne storkenæb — frøkort' },
+    macro: [],
+  },
+  'tagetes-lemon-gem': {
+    seedCard: { src: '/images/frokort/tagetes-lemon-gem.png', alt: 'Lemon Gem tagetes — frøkort' },
+    macro: [],
+  },
+  'timian-german-winter': {
+    seedCard: { src: '/images/frokort/timian-german-winter.png', alt: 'German Winter timian — frøkort' },
+    macro: [],
+  },
+  'valmue-danish-flag': {
+    seedCard: { src: '/images/frokort/valmue-danish-flag.png', alt: 'Danish Flag valmue — frøkort' },
+    macro: [],
+  },
+  // Kanonisk slug pr. resolverens slugify: apostrof → bindestreg
+  // ("Benary's" → benary-s) — filen er omdøbt så opslaget matcher.
+  'zinnia-benary-s-giant-salmon-rose': {
+    seedCard: { src: '/images/frokort/zinnia-benary-s-giant-salmon-rose.png', alt: "Benary's Giant Salmon Rose zinnia — frøkort" },
+    macro: [],
+  },
+
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
   'demo-guide-tomat-sm': {
