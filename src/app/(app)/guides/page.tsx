@@ -62,15 +62,27 @@ export default function GuidesPage() {
     preferredRoles: ['atmosphere'],
   })
 
+  // Hero-baggrundswash (opacity 0.13, multiply). Var hardcodet til
+  // /images/makro/guides-hero-baggrund.jpg som aldrig har eksisteret (404) —
+  // nu manifest-valideret via resolveren. Bro-makroen udelukkes så de to
+  // flader aldrig viser samme foto (tomat har kun én atmosphere-makro).
+  const heroMacro = resolvePotalotMacro({
+    guideId: 'tomat',
+    slot: 'guides-hero-baggrund',
+    preferredRoles: ['atmosphere', 'leaf', 'structure'],
+    avoidSrcs: new Set(bridgeMacro ? [bridgeMacro.src] : []),
+  })
+
   return (
     <div className="relative -mx-4 -mt-6 overflow-hidden bg-[#EAE6D8] px-4 pb-6">
       <style>{`.app-canvas{background-color:#EAE6D8;}`}</style>
       {/* Layered hero field: one macro photo crosses from title area into "Begynd her". */}
+      {heroMacro && (
       <div
         aria-hidden
         className="pointer-events-none absolute left-[-42%] right-[-42%] top-0 h-[820px]"
         style={{
-          backgroundImage: 'url(/images/makro/guides-hero-baggrund.jpg)',
+          backgroundImage: `url(${heroMacro.src})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.13,
@@ -84,6 +96,7 @@ export default function GuidesPage() {
             'radial-gradient(ellipse 94% 64% at 50% 34%, black 24%, rgba(0,0,0,0.6) 58%, transparent 90%)',
         }}
       />
+      )}
       <div className="relative z-10 space-y-10 pt-6 sm:space-y-12">
         <GuidesHero />
         <PageIntroNote

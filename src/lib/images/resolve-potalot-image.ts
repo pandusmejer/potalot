@@ -387,8 +387,13 @@ export function resolvePotalotMacro(
       : []
   const preferred = byRole.length > 0 ? byRole : usable
 
-  // Undgå allerede brugte makros hvis muligt
-  const notAvoided = preferred.filter((m) => !avoidSrcs?.has(m.src))
+  // Undgå allerede brugte makros hvis muligt. Callers bygger typisk
+  // avoidSrcs af tidligere outputs, som er webp-opgraderede
+  // (medWebpSibling) — macro-listens srcs er rå .jpg/.png. Sammenlign
+  // derfor begge former, ellers matcher filteret aldrig.
+  const notAvoided = preferred.filter(
+    (m) => !avoidSrcs?.has(m.src) && !avoidSrcs?.has(medWebpSibling(m.src)),
+  )
   const pool = notAvoided.length > 0 ? notAvoided : preferred
 
   const seed = `${candidateIds.join(':')}:${slot}`
