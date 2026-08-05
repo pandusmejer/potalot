@@ -312,6 +312,36 @@ verificeret identisk (sort-match/arts-fallback/nul-match).
 Sidste JS-post: kalenderens egen 687 kB-chunk (editorial-planner +
 12 måneders copy) — kræver dynamic() i et Anna-låst flow, tages separat.
 
+## Fase 9 (5/8): kalenderens chunk — undersøgt og lukket ærligt
+
+Dissektion af 686 kB-chunken: kun 27 kB er tekst/data — resten er
+KODE for hele kalender-universet (~20 sektioner, planner, inspiration,
+årshjul, dialoger, inlinede ikoner). Ingen biblioteks-hval fundet
+(framer/recharts/xlsx m.fl. er IKKE i chunken; maaneds-copy er
+ubetydelig). Over ledningen koster den **175 kB gzip**.
+
+Gjort: den døde det-kan-du-goere.tsx (931 linjer, Claude/Codex-
+dubletten) slettet efter grep-verifikation — var allerede tree-shaket,
+så ren hygiejne. UserTaskDialog (8 kB) er for lille til dynamic()-
+kirurgi at være det værd.
+
+Konklusion: chunken er ÆGTE sideindhold, ikke spild. Yderligere
+reduktion kræver PRODUKTBESLUTNINGER (færre sektioner i første visning,
+lazy-tabs i låste designs — fx Inspiration-mappens 12 måneder) og skal
+kun tages, hvis Kalenderen stadig føles tung på telefonen efter alt
+det øvrige. Teknik-sporet er udtømt her.
+
+## Sprint-facit 4-5/8
+
+Server: 1 auth-hop (før 7-15) · ingen layout-writes · 233 CDN-sider ·
+streaming + keep-warm (koldstart død) · dubletter/waterfalls væk.
+Klient: heroes −93 % · kort-billeder −72 % · /guides-HTML −79 % ·
+guide-datasæt ud af klient-JS (−25-38 % på 4 ruter) · fonte trimmet.
+Tilbage (produkt, ikke teknik): /guides' demo-oplevelse er ændret
+(redaktionelt for alle — Annas beslutning implementeret), kalenderens
+indholdsmængde, plantekort-PNG'ernes DB-stier (løst via resolver-
+sibling i stedet). AI Gartneren kan nu bygges på et hurtigt fundament.
+
 ## Fase 6 (5/8, commit 6bbd58f): resolver-webp — kort/arts/frø/makro −72 %
 
 DB-auditten bekræftede mistanken: primary_image_url holder repo-stier
