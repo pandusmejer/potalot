@@ -15,8 +15,8 @@ export async function getNavState(): Promise<NavState> {
 
   const today = new Date().toISOString().split('T')[0]
 
-  // Tidligere lå her også en plants_v2-count til heroHref — dens eneste
-  // aftager var den uimporterede Sidebar (død kode), så den query er fjernet.
+  // Tidligere lå her også en plants_v2-count til et heroHref-koncept — dets
+  // eneste aftager var en død Sidebar-komponent (slettet 5/8 2026).
   const { count } = await supabase
     .from('calendar_tasks')
     .select('id', { count: 'exact', head: true })
