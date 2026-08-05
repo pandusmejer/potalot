@@ -9,7 +9,7 @@
  * i både Supabase-kald og funktionstid.
  */
 export default async () => {
-  const base = process.env.URL || 'https://potalot.netlify.app'
+  const base = process.env.URL || 'https://potalot.app'
   await Promise.allSettled([
     fetch(`${base}/`, { headers: { 'user-agent': 'potalot-keep-warm' } }),
     fetch(`${base}/kalender`, { headers: { 'user-agent': 'potalot-keep-warm' } }),
