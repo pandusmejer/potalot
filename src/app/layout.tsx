@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, DM_Serif_Display, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono, Libre_Baskerville } from 'next/font/google'
+import { Inter, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono, Libre_Baskerville } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-})
-
-const dmSerif = DM_Serif_Display({
-  variable: '--font-dm-serif',
-  subsets: ['latin'],
-  weight: '400',
 })
 
 // Cormorant Garamond — hero-månedsnavn (normal 600), kursiv 600 til
@@ -37,7 +31,9 @@ const manrope = Manrope({
 const gabarito = Gabarito({
   variable: '--font-gabarito',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  // Font-audit 5/8: kun 500 (plantekort-navne) og 800 (dagens fokus) bruges
+  // reelt — de øvrige vægte kostede filer/preloads uden at blive renderet.
+  weight: ['500', '800'],
 })
 
 // IBM Plex Sans Condensed + Mono — KUN Guides-fanen i kalenderen: giver
@@ -46,9 +42,9 @@ const gabarito = Gabarito({
 const plexCondensed = IBM_Plex_Sans_Condensed({
   variable: '--font-plex-condensed',
   subsets: ['latin'],
-  // 200/300 tilføjet så tynde guide-linjer (fx Lær af hinanden-intro) faktisk
-  // kan rendere let — uden dem faldt vægt 200/300 tilbage til 500.
-  weight: ['200', '300', '500', '600', '700'],
+  // 300 bruges af tynde guide-linjer (Lær af hinanden-intro); 200 blev
+  // aldrig taget i brug og er fjernet igen (font-audit 5/8).
+  weight: ['300', '500', '600', '700'],
 })
 
 const plexMono = IBM_Plex_Mono({
@@ -97,7 +93,7 @@ function aktuelSaesonSlug(): 'vinter' | 'foraar' | 'sommer' | 'efteraar' {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-season={aktuelSaesonSlug()}>
-      <body className={`${inter.variable} ${dmSerif.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} ${libreBaskerville.variable} antialiased`}>
+      <body className={`${inter.variable} ${cormorant.variable} ${manrope.variable} ${gabarito.variable} ${plexCondensed.variable} ${plexMono.variable} ${libreBaskerville.variable} antialiased`}>
         {children}
       </body>
     </html>
