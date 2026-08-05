@@ -293,6 +293,23 @@ UDESTÅR i billed-sporet: plantekort (~400-500 kB/stk) — kræver audit af
 DB-lagrede stier (frøkort-foto-præcedens) før omdøbning; fonte (13
 filer/299 kB) og JS-bundle-analyse (kalender 2,2 MB) er næste bidder.
 
+## Fase 6 (5/8, commit 6bbd58f): resolver-webp — kort/arts/frø/makro −72 %
+
+DB-auditten bekræftede mistanken: primary_image_url holder repo-stier
+(7 inventory + 7 planter + 106 guides) → omdøbning udelukket. Løsning:
+**resolveren foretrækker en .webp-søster, når den findes i manifestet**
+(medWebpSibling) — filnavne og DB-stier forbliver urørte, kun det
+serverede format opgraderes. Dækker alle resolver-lag + de direkte
+primaryImageId-brug (guide-artikel, guide-card, mine-guides, emnekort).
+
+342 filer konverteret (plantekort 640px / arts 780px / frokort 520px
+m. alpha / makro 780px): **48,6 → 13,7 MB (−72 %)**. Webp der blev
+større end originalen droppes automatisk. Statisk guide-HTML verificeret:
+0 gamle formater i img-tags.
+
+Billed-sporet er hermed reelt lukket for de kuraterede biblioteker.
+Tilbage: fonte (13 filer/299 kB) og JS-bundle-analyse (kalender 2,2 MB).
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |
