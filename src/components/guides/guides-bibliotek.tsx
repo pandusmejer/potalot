@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
 import { Search, ChevronRight, ArrowUpRight, Leaf } from 'lucide-react'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotImage, medWebpSibling } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
 import type { HaveCardData } from '@/lib/guides/min-have'
@@ -273,7 +273,7 @@ export function TopicSquareCard({
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img loading="lazy" decoding="async"
-        src={imageUrl}
+        src={medWebpSibling(imageUrl)}
         alt=""
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
       />

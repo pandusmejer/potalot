@@ -1,3 +1,4 @@
+import { medWebpSibling } from '@/lib/images/resolve-potalot-image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { DIFFICULTY_META, MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
@@ -39,7 +40,7 @@ export function GuideCard({
             <div className="w-24 sm:w-32 shrink-0 overflow-hidden bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img loading="lazy" decoding="async"
-                src={guide.primaryImageId}
+                src={medWebpSibling(guide.primaryImageId)}
                 alt=""
                 className="w-full h-full object-cover"
               />

@@ -164,6 +164,19 @@ function setAssetForRole(
   }
 }
 
+
+/**
+ * Foretræk .webp-søster når den findes i manifestet. Filnavne — og dermed
+ * DB-lagrede stier (7 inventory + 7 planter + 106 guides pr. audit 5/8) —
+ * forbliver .png/.jpg; kun det serverede format opgraderes. Nye webp-filer
+ * genereres som søskende og registreres via npm run scan:images.
+ */
+export function medWebpSibling(src: string): string {
+  const webp = src.replace(/\.(png|jpe?g)$/i, '.webp')
+  if (webp !== src && IMAGE_MANIFEST.has(webp)) return webp
+  return src
+}
+
 // ─── Hoved-resolver ────────────────────────────────────────────
 
 /**
@@ -189,7 +202,7 @@ export function resolvePotalotImage(
     }
     if (isLocal && IMAGE_MANIFEST.has(preferredSrc)) {
       return {
-        src: preferredSrc,
+        src: medWebpSibling(preferredSrc),
         alt: varietySlug ?? speciesSlug ?? PLACEHOLDER_ALT,
         type: role,
         source: 'user-upload',
@@ -214,7 +227,7 @@ export function resolvePotalotImage(
     const asset = setAssetForRole(set, role)
     if (asset && IMAGE_MANIFEST.has(asset.src)) {
       return {
-        src: asset.src,
+        src: medWebpSibling(asset.src),
         alt: asset.alt,
         type: role,
         source: 'guide-images',
@@ -233,7 +246,7 @@ export function resolvePotalotImage(
     const imported = IMPORTED_GUIDES.find((g) => g.id === guideId)
     if (imported?.primaryImageId && IMAGE_MANIFEST.has(imported.primaryImageId)) {
       return {
-        src: imported.primaryImageId,
+        src: medWebpSibling(imported.primaryImageId),
         alt: imported.variety ?? imported.plantName,
         type: role,
         source: 'guide-images',
@@ -246,7 +259,7 @@ export function resolvePotalotImage(
   for (const path of paths) {
     if (IMAGE_MANIFEST.has(path)) {
       return {
-        src: path,
+        src: medWebpSibling(path),
         alt: varietySlug ?? speciesSlug ?? PLACEHOLDER_ALT,
         type: role,
         source: 'asset-convention',
@@ -384,7 +397,7 @@ export function resolvePotalotMacro(
   const profile = cropProfiles[profileName]
 
   return {
-    src: macro.src,
+    src: medWebpSibling(macro.src),
     alt: macro.alt,
     type: 'macro',
     source: 'guide-images',

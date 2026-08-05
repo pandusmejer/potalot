@@ -43,7 +43,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
-import { resolvePotalotMacro } from '@/lib/images/resolve-potalot-image'
+import { resolvePotalotMacro, medWebpSibling } from '@/lib/images/resolve-potalot-image'
 import { ArrowLeft, Package, Sprout, ArrowRight } from 'lucide-react'
 
 interface GuideArticleProps {
@@ -395,7 +395,7 @@ export async function GuideArticle({
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img loading="lazy" decoding="async"
-                    src={effective.primaryImageId}
+                    src={medWebpSibling(effective.primaryImageId)}
                     alt={effective.plantName}
                     className="block w-full object-cover"
                     style={{ height: 'clamp(260px, 72vw, 330px)' }}
@@ -694,7 +694,7 @@ export async function GuideArticle({
                     {v.primaryImageId && (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img loading="lazy" decoding="async"
-                        src={v.primaryImageId}
+                        src={medWebpSibling(v.primaryImageId)}
                         alt={v.variety ?? ''}
                         className="h-full w-full object-cover"
                       />
@@ -912,7 +912,9 @@ export async function GuideArticle({
               slug={nextGuide.slug}
               label={nextGuide.label}
               backgroundImage={
-                noteImage?.src ?? factImage?.src ?? effective.primaryImageId
+                noteImage?.src ??
+                factImage?.src ??
+                (effective.primaryImageId ? medWebpSibling(effective.primaryImageId) : undefined)
               }
             />
           </>
