@@ -293,6 +293,25 @@ UDESTÅR i billed-sporet: plantekort (~400-500 kB/stk) — kræver audit af
 DB-lagrede stier (frøkort-foto-præcedens) før omdøbning; fonte (13
 filer/299 kB) og JS-bundle-analyse (kalender 2,2 MB) er næste bidder.
 
+## Fase 8 (5/8, commit 74e7950): guide-datasættet ud af klient-JS
+
+JS-audit fandt guides-imported.ts (775 kB kilde, al guideprosa) i
+klient-chunks på fire hovedruter via tre uskyldige importe: bibliotek→
+guides-demo (kun POPULAERE_EMNER), billed-resolveren (2b-fallback, tre
+felter) og froebank-autofill/afledninger (kun quickFacts).
+
+Fix: POPULAERE_EMNER i egen fil; import-guides.ts genererer nu to slanke
+indekser — guide-image-index (8 kB) og guide-facts-index (46 kB) — som
+resolver hhv. autofill/afledninger bruger. **Regel fremadrettet:
+klient-kode må ALDRIG importere guides-imported/guides-demo.**
+
+Målt (ukomprimeret klient-JS): kalender 2.347→1.756 kB (−25 %) ·
+frøbank −33 % · planter −33 % · guides −38 %. Autofill funktionelt
+verificeret identisk (sort-match/arts-fallback/nul-match).
+
+Sidste JS-post: kalenderens egen 687 kB-chunk (editorial-planner +
+12 måneders copy) — kræver dynamic() i et Anna-låst flow, tages separat.
+
 ## Fase 6 (5/8, commit 6bbd58f): resolver-webp — kort/arts/frø/makro −72 %
 
 DB-auditten bekræftede mistanken: primary_image_url holder repo-stier
