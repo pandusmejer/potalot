@@ -22,7 +22,7 @@
  * Når brugeren gemmer, er alle værdier brugerens egne.
  */
 
-import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { GUIDE_FACTS, type GuideFactsEntry } from '@/data/guide-facts-index.generated'
 import { slugify } from '@/lib/afledninger'
 import type { Guide, GuideQuickFacts } from '@/lib/types'
 import type { DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
@@ -42,7 +42,7 @@ export interface FroebankAutofill {
   sourceDetail: string | null
 }
 
-const guideById = new Map(IMPORTED_GUIDES.map(g => [g.id, g]))
+const guideById = new Map(GUIDE_FACTS.map(g => [g.id, g]))
 
 /** Tom dyrknings-state — genbruges af manuel oprettelse som udgangspunkt. */
 export function tomDyrkning(): DyrkningsfaktaState {
@@ -93,11 +93,11 @@ export function findFroebankAutofill(
   if (!navn) return null
 
   // 1) Sortsguide?
-  let sortsGuide: Guide | null = null
+  let sortsGuide: GuideFactsEntry | null = null
   if (sort) sortsGuide = guideById.get(slugify(`${navn} ${sort}`)) ?? null
 
   // 2) Artsguide — direkte match, eller sortsguidens parent.
-  let artsGuide: Guide | null = null
+  let artsGuide: GuideFactsEntry | null = null
   if (sortsGuide?.parentGuideId) {
     artsGuide = guideById.get(sortsGuide.parentGuideId) ?? null
   }

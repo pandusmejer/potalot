@@ -29,7 +29,7 @@
 
 import { IMAGE_MANIFEST } from '@/data/image-manifest.generated'
 import { POTALOT_IMAGE_SETS_BY_ID } from '@/data/potalot-image-sets'
-import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { GUIDE_IMAGE_INDEX } from '@/data/guide-image-index.generated'
 import type {
   PotalotImageInput,
   PotalotImageOutput,
@@ -236,18 +236,19 @@ export function resolvePotalotImage(
   }
 
   // ── 2b. imported-guide fallback (kun for variety/species hero) ─
-  // IMPORTED_GUIDES sætter primaryImageId ved import. Det dækker
-  // tilfælde hvor potalot-image-sets endnu ikke har en entry.
-  // Bruges KUN på samme rolle-niveau (variety→variety, species→species).
+  // Importerede guiders primaryImageId — via det SLANKE generede indeks
+  // (guide-image-index.generated.ts, 8 kB), IKKE guides-imported.ts
+  // (775 kB): resolveren lever i klient-bundlen, og datasættet kostede
+  // en 656 kB-chunk på fire hovedruter (JS-audit 5/8).
   if (
     guideId &&
     (role === 'variety-hero' || role === 'species-hero' || role === 'plant-card')
   ) {
-    const imported = IMPORTED_GUIDES.find((g) => g.id === guideId)
-    if (imported?.primaryImageId && IMAGE_MANIFEST.has(imported.primaryImageId)) {
+    const indexed = GUIDE_IMAGE_INDEX[guideId]
+    if (indexed && IMAGE_MANIFEST.has(indexed[0])) {
       return {
-        src: medWebpSibling(imported.primaryImageId),
-        alt: imported.variety ?? imported.plantName,
+        src: medWebpSibling(indexed[0]),
+        alt: indexed[1],
         type: role,
         source: 'guide-images',
       }

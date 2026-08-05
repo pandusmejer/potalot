@@ -867,6 +867,34 @@ function main() {
   mkdirSync('src/data', { recursive: true })
   writeFileSync(outFile, emitTypescript(guides))
 
+  // Slankt id→billede-indeks til billed-resolveren (JS-audit 5/8):
+  // resolveren kørte i KLIENT-bundlen og importerede hele guides-imported
+  // (656 kB chunk på 4 hovedruter) for tre felters skyld. Indekset holder
+  // kun de felter, 2b-fallbacken bruger.
+  const imageIndexFile = 'src/data/guide-image-index.generated.ts'
+  const indexEntries = guides
+    .filter((g) => g.primaryImageId)
+    .map((g) => `  ${JSON.stringify(g.id)}: [${JSON.stringify(g.primaryImageId)}, ${JSON.stringify(g.variety ?? g.plantName ?? g.id)}],`)
+    .join('\n')
+  writeFileSync(
+    imageIndexFile,
+    `/**\n * AUTO-GENERATED af scripts/import-guides.ts — rør ikke direkte.\n *\n * Slankt opslag guideId → [primaryImageId, alt-tekst] til\n * resolve-potalot-image's imported-guide-fallback, så klient-bundlen\n * ikke skal bære hele guides-imported.ts.\n */\nexport const GUIDE_IMAGE_INDEX: Record<string, readonly [string, string]> = {\n${indexEntries}\n}\n`,
+  )
+  console.log(`✓ Billed-indeks (${guides.filter((g) => g.primaryImageId).length} entries) → ${imageIndexFile}`)
+
+  // Slankt fakta-indeks til klient-libs (froebank-autofill, afledninger):
+  // de bruger kun id/variety/parentGuideId/quickFacts, men importerede hele
+  // guides-imported (600 kB chunk på frøbank/planter). Prosaen bliver her.
+  const factsFile = 'src/data/guide-facts-index.generated.ts'
+  const factsEntries = guides
+    .map((g) => `  { id: ${JSON.stringify(g.id)}, variety: ${JSON.stringify(g.variety ?? null)}, parentGuideId: ${JSON.stringify(g.parentGuideId ?? null)}, quickFacts: ${JSON.stringify(g.quickFacts)} },`)
+    .join('\n')
+  writeFileSync(
+    factsFile,
+    `/**\n * AUTO-GENERATED af scripts/import-guides.ts — rør ikke direkte.\n *\n * Slankt guide-fakta-indeks (id/variety/parentGuideId/quickFacts) til\n * klient-side libs (froebank-autofill, afledninger), så de ikke bærer\n * hele guides-imported.ts (inkl. al prosa) med i klient-bundlen.\n */\nimport type { GuideQuickFacts } from '@/lib/types'\n\nexport interface GuideFactsEntry {\n  id: string\n  variety: string | null\n  parentGuideId: string | null\n  quickFacts: GuideQuickFacts\n}\n\nexport const GUIDE_FACTS: GuideFactsEntry[] = [\n${factsEntries}\n]\n`,
+  )
+  console.log(`✓ Fakta-indeks (${guides.length} entries) → ${factsFile}`)
+
   console.log(`✓ Importeret ${guides.length} guides → ${outFile}`)
   console.log(`  ${guides.filter((g) => g.guideLevel === 'species').length} species, ${guides.filter((g) => g.guideLevel === 'variety').length} variety`)
 

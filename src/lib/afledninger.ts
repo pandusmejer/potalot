@@ -18,7 +18,7 @@
  */
 
 import type { Plant } from '@/lib/types'
-import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { GUIDE_FACTS, type GuideFactsEntry } from '@/data/guide-facts-index.generated'
 import { dageSiden } from '@/lib/datetime'
 
 /**
@@ -57,7 +57,7 @@ const MAANED_KORT = [
  * bliver et problem, udtrækkes et quickFacts-only manifest ved
  * import-tid (samme mønster som POTALOT_IMAGE_SETS).
  */
-const guideById = new Map(IMPORTED_GUIDES.map(g => [g.id, g]))
+const guideById = new Map(GUIDE_FACTS.map(g => [g.id, g]))
 
 export function slugify(text: string): string {
   return text

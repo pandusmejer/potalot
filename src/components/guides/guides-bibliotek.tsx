@@ -25,7 +25,7 @@ import { guideKindFor } from './trust-badge'
 import {
   POPULAERE_EMNER,
   type PopulaertEmne,
-} from '@/data/guides-demo'
+} from '@/data/populaere-emner'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
