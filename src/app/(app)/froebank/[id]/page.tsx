@@ -24,6 +24,7 @@ import {
   ArrowLeft, Calendar, BookOpen, Sprout, ArrowRight,
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
+import { guideHref } from '@/lib/guides/guide-href'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -347,7 +348,7 @@ export default async function InventoryDetailPage({ params }: Props) {
 
       {guide && (
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/guides/${guide.id}?returnTo=${encodeURIComponent(`/froebank/${item.id}`)}`}>
+          <Link href={guideHref(guide.id, `/froebank/${item.id}`)}>
             <BookOpen className="h-4 w-4" />
             Se guide
           </Link>

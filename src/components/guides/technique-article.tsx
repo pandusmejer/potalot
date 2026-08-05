@@ -12,6 +12,8 @@
  */
 
 import Link from 'next/link'
+import { Suspense } from 'react'
+import { GuideTilbageLink, TilbageKnapVisning } from '@/components/guides/guide-tilbage-link'
 import { ArrowLeft } from 'lucide-react'
 import type { Guide } from '@/lib/types'
 import { SaadanDyrkerDu } from './saadan-dyrker-du'
@@ -45,13 +47,9 @@ export function TechniqueArticle({
     <article className="max-w-3xl space-y-6 overflow-x-clip pb-6">
       <header className="space-y-4">
         <div className="flex items-center">
-          <Link
-            href={safeReturnTo}
-            aria-label="Tilbage"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(45,42,36,0.12)] bg-[rgba(255,255,255,0.45)] text-[#2D2A24] transition-colors hover:bg-[rgba(45,42,36,0.06)] active:scale-[0.97]"
-          >
-            <ArrowLeft className="h-[18px] w-[18px]" strokeWidth={2} />
-          </Link>
+          <Suspense fallback={<TilbageKnapVisning href={safeReturnTo} />}>
+            <GuideTilbageLink fallbackHref={safeReturnTo} />
+          </Suspense>
         </div>
 
         {/* Farveblok-hero — tonet sand/oliven i stedet for foto. Signalerer

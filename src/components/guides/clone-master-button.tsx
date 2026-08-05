@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Copy, Loader2 } from 'lucide-react'
 import { cloneGuideToOwn } from '@/actions/guides'
+import { guideHref } from '@/lib/guides/guide-href'
 
 interface Props {
   guideId: string
@@ -28,7 +29,7 @@ export function CloneMasterButton({ guideId }: Props) {
         setError(res.error)
         return
       }
-      router.push(`/guides/${res.id}`)
+      router.push(guideHref(res.id))
     })
   }
 

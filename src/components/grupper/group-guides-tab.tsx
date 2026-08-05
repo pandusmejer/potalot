@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { BookOpen, Sparkles } from 'lucide-react'
 import type { GroupGuide } from '@/actions/group-content'
+import { guideHref } from '@/lib/guides/guide-href'
 
 interface Props {
   guides: GroupGuide[]
@@ -62,7 +63,7 @@ export function GroupGuidesTab({ guides, focusPlants }: Props) {
 function GuideCard({ guide }: { guide: GroupGuide }) {
   return (
     <Card className="overflow-hidden hover:bg-accent/20 transition-colors">
-      <Link href={`/guides/${guide.id}`} className="flex gap-3 p-3">
+      <Link href={guideHref(guide.id)} className="flex gap-3 p-3">
         {guide.primaryImageUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img loading="lazy" decoding="async" src={guide.primaryImageUrl} alt="" className="h-16 w-16 rounded-md object-cover shrink-0" />

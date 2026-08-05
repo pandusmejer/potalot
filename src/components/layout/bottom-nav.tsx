@@ -1,7 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { getNavState } from '@/actions/nav-state'
+import { harAuthCookie } from '@/lib/auth-cookie'
 import {
   NotebookText, Sprout, Package, CalendarDays, BookOpen,
 } from 'lucide-react'
@@ -42,8 +45,21 @@ const BASE_ITEMS = [
  * - Kompakt sokkel: lav capsule, tungere ikon-stroke (primært anker nu
  *   hvor capsule/streg er væk).
  */
-export function BottomNav({ criticalTaskCount }: Props) {
+export function BottomNav({ criticalTaskCount: initialCount }: Props) {
   const pathname = usePathname()
+  const [criticalTaskCount, setCriticalTaskCount] = useState(initialCount)
+
+  // Statiske sider bager 0 ind (build uden cookies) — hent det rigtige tal
+  // efter mount, men kun for logget ind-brugere og kun når serveren gav 0.
+  useEffect(() => {
+    if (initialCount !== 0 || !harAuthCookie()) return
+    let active = true
+    getNavState()
+      .then(nav => { if (active) setCriticalTaskCount(nav.criticalTaskCount) })
+      .catch(() => {})
+    return () => { active = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function isActive(href: string) {
     if (href === '/') return pathname === '/'

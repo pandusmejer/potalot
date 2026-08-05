@@ -1,9 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Search, Leaf, ChevronDown, ChevronRight } from 'lucide-react'
 import { TopicSquareCard, type ArtRow } from '@/components/guides/guides-bibliotek'
+import { getMineFroeNavne } from '@/actions/froe-navne'
+import { harAuthCookie } from '@/lib/auth-cookie'
+import { normalizeGuideKey } from '@/lib/guides/normalize-key'
 
 const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
@@ -20,15 +23,37 @@ export function KategoriBibliotek({
   intro,
   arts,
   heroes,
-  mineArts,
+  mineArts: mineArtsProp,
 }: {
   slug: string
   label: string
   intro: string
   arts: ArtRow[]
   heroes: { plantName: string; guideId: string; sortCount: number; imageSrc: string | null }[]
-  mineArts: { plantName: string; guideId: string }[]
+  mineArts?: { plantName: string; guideId: string }[]
 }) {
+  // MINE FRØ-chippen: siden er statisk, så serveren kender ikke frøbanken.
+  // Hydreres efter mount, kun med auth-cookie. Prop-varianten beholdes til
+  // callere der allerede har data.
+  const [mineArts, setMineArts] = useState(mineArtsProp ?? [])
+  useEffect(() => {
+    if (mineArtsProp !== undefined || !harAuthCookie()) return
+    let active = true
+    getMineFroeNavne()
+      .then(navne => {
+        if (!active) return
+        const froeKeys = new Set(navne.map(n => normalizeGuideKey(n)).filter(Boolean))
+        setMineArts(
+          arts
+            .filter(r => froeKeys.has(normalizeGuideKey(r.plantName)))
+            .map(r => ({ plantName: r.plantName, guideId: r.guideId })),
+        )
+      })
+      .catch(() => {})
+    return () => { active = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const [q, setQ] = useState('')
   const query = q.trim().toLowerCase()
   const shown = useMemo(

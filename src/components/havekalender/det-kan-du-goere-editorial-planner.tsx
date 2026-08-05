@@ -25,6 +25,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
 import { MONTHLY_GARDEN_COPY } from '@/lib/kalender/maaneds-copy'
+import { guideHref } from '@/lib/guides/guide-href'
 import {
   Dialog,
   DialogContent,
@@ -1051,7 +1052,7 @@ export function mapTaskToPlannerItem(task: GeneralGardenTask): EditorialPlannerI
     group: plannerGroupFromTask(task),
     category: humanCategory(task.category),
     priority: task.priority,
-    guideHref: task.linkedGuideIds[0] ? `/guides/${task.linkedGuideIds[0]}` : undefined,
+    guideHref: task.linkedGuideIds[0] ? guideHref(task.linkedGuideIds[0]) : undefined,
   }
 }
 

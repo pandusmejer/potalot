@@ -8,6 +8,8 @@ import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
 import { artsByCategory, type LibraryArt } from '@/lib/guides/library-arts'
 import type { HaveCardData } from '@/lib/guides/min-have'
+import { getGuidesPersona } from '@/actions/guides-persona'
+import { harAuthCookie } from '@/lib/auth-cookie'
 import { IDinHaveCarousel } from './i-din-have-carousel'
 import { DineEgneGuides } from './dine-egne-guides'
 import {
@@ -70,6 +72,26 @@ export function GuidesBibliotek({
   useEffect(() => {
     setRecent(getRecentlyRead())
   }, [])
+
+  // Personlige sektioner (I DIN HAVE + Dine egne guides): siden er statisk,
+  // så serveren kender ikke brugeren. Hydreres her — kun med auth-cookie.
+  // Props fra serveren beholdes som udgangspunkt (QA-ruter sender data ind).
+  const [persona, setPersona] = useState<{
+    mineHaveCards: HaveCardData[]
+    mineHaveTotal: number
+    mineGuides: Guide[]
+  } | null>(null)
+  useEffect(() => {
+    if (!harAuthCookie()) return
+    let active = true
+    getGuidesPersona()
+      .then(r => { if (active) setPersona(r) })
+      .catch(() => {})
+    return () => { active = false }
+  }, [])
+  const effMineHaveCards = persona?.mineHaveCards ?? mineHaveCards
+  const effMineHaveTotal = persona?.mineHaveTotal ?? mineHaveTotal
+  const effMineGuides = persona && persona.mineGuides.length > 0 ? persona.mineGuides : mineGuides
 
   // Delt af BÅDE quick-search (øverst) og biblioteks-søgning (nederst), så de
   // to inputs styrer præcis samme query. At skrive rydder et aktivt emne-filter.
@@ -149,8 +171,8 @@ export function GuidesBibliotek({
       {/* Top-sektion: har brugeren guides der matcher frøbank/planter → personlig
           "I DIN HAVE" (kurateret udvalg af guide-objekter, swipe). Ellers falder
           vi tilbage til det redaktionelle "Et godt sted at starte". */}
-      {mineHaveCards.length > 0 ? (
-        <IDinHaveCarousel cards={mineHaveCards} total={mineHaveTotal} />
+      {effMineHaveCards.length > 0 ? (
+        <IDinHaveCarousel cards={effMineHaveCards} total={effMineHaveTotal} />
       ) : (
         <PopulaereEmner
           emner={POPULAERE_EMNER}
@@ -182,7 +204,7 @@ export function GuidesBibliotek({
 
       {/* DINE EGNE GUIDES — AI-genereret fallback-indhold, ÉN kompakt indgang.
           Bevidst over "Godt at vide", som lukker siden redaktionelt. */}
-      <DineEgneGuides guides={mineGuides} />
+      <DineEgneGuides guides={effMineGuides} />
 
       {/* GODT AT VIDE — ét redaktionelt "Kort forklaret"-kort som redaktionel
           afslutning på siden. */}
@@ -627,6 +649,13 @@ function UdforskBiblioteket({
   // ── Søgning overtager hele hierarkiet (flade resultater) ─────────
   const q = search.trim().toLowerCase()
   const searching = q.length > 0
+  // Progressiv liste: brede søgninger kan matche 100+ guides — vis et
+  // overskueligt udsnit og lad brugeren hente resten ("Vis flere" frem for
+  // uendelig liste). Ny søgning folder sammen igen. Søgningen matcher
+  // fortsat HELE biblioteket — kun visningen er begrænset.
+  const VIS_FOERST = 20
+  const [visAlle, setVisAlle] = useState(false)
+  useEffect(() => { setVisAlle(false) }, [q])
   const matches = (g: Guide) =>
     g.plantName.toLowerCase().includes(q) ||
     (g.variety?.toLowerCase().includes(q) ?? false) ||
@@ -671,8 +700,27 @@ function UdforskBiblioteket({
               <div>
                 <SectionLabel>Planter</SectionLabel>
                 <div className="mt-3 space-y-2">
-                  {planteHits.map(g => <BiblioRow key={g.id} guide={g} />)}
+                  {(visAlle ? planteHits : planteHits.slice(0, VIS_FOERST)).map(g => (
+                    <BiblioRow key={g.id} guide={g} />
+                  ))}
                 </div>
+                {!visAlle && planteHits.length > VIS_FOERST && (
+                  <button
+                    type="button"
+                    onClick={() => setVisAlle(true)}
+                    className="mt-3 w-full rounded-full border py-2 transition-colors hover:bg-[rgba(45,42,36,0.04)]"
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      color: 'rgba(36,48,31,0.62)',
+                      borderColor: 'rgba(45,42,36,0.16)',
+                      background: 'transparent',
+                    }}
+                  >
+                    Vis {planteHits.length - VIS_FOERST} flere
+                  </button>
+                )}
               </div>
             )}
             {teknikHits.length > 0 && (

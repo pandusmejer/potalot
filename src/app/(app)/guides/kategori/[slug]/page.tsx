@@ -1,6 +1,4 @@
 import { notFound } from 'next/navigation'
-import { getAllGuides } from '@/actions/guides'
-import { getAllInventoryItems } from '@/actions/froebank'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import {
@@ -16,7 +14,16 @@ import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import type { ArtRow } from '@/components/guides/guides-bibliotek'
 import { KategoriBibliotek } from './kategori-bibliotek'
 
-export const dynamic = 'force-dynamic'
+// Redaktionel indholdsside — statisk for alle (demo-fallback-semantik fjernet
+// 5/8). MINE FRØ-chippen hydreres klient-side i KategoriBibliotek. Dagligt
+// revalidate så START HER (sæson-måneden) ikke fryser på build-tidspunktet.
+export const dynamic = 'force-static'
+export const dynamicParams = false
+export const revalidate = 86400
+
+export function generateStaticParams() {
+  return (LIBRARY_CATEGORY_ORDER as readonly string[]).map((slug) => ({ slug }))
+}
 
 /**
  * Kategoriside — /guides/kategori/[slug]. Her bor den lange A–Å-liste, som IKKE
@@ -32,12 +39,7 @@ export default async function KategoriPage({
   if (!(LIBRARY_CATEGORY_ORDER as readonly string[]).includes(slug)) notFound()
   const category = slug as LibraryCategory
 
-  const [guides, inventory] = await Promise.all([
-    getAllGuides(),
-    getAllInventoryItems(),
-  ])
-  const isDemo = guides.length === 0
-  const visibleGuides = isDemo ? ALL_GUIDES : IMPORTED_GUIDES
+  const visibleGuides = ALL_GUIDES
 
   const catGuides = visibleGuides.filter(
     g => g.guideLevel !== 'technique' && libraryCategoryOf(g.plantName) === category,
@@ -59,12 +61,6 @@ export default async function KategoriPage({
   // Tom kategori → 404 (ingen byggeplads-sider).
   if (artRows.length === 0) notFound()
 
-  const froeKeys = new Set(
-    inventory.map(i => normalizeGuideKey(i.name)).filter(Boolean),
-  )
-  const mineArts = artRows
-    .filter(r => froeKeys.has(normalizeGuideKey(r.plantName)))
-    .map(r => ({ plantName: r.plantName, guideId: r.guideId }))
 
   // START HER — SÆSON-drevet (ikke alfabetisk): arter hvor der lige nu skal
   // sås, plantes ud eller høstes. Ingen i sæson → sektionen skjules (bedre end
@@ -108,7 +104,6 @@ export default async function KategoriPage({
         intro={LIBRARY_CATEGORY_INTRO[category]}
         arts={artRows}
         heroes={heroes}
-        mineArts={mineArts}
       />
     </div>
   )

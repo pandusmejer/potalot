@@ -2,17 +2,14 @@ import { GuidesHero } from '@/components/guides/guides-hero'
 import { GuidesBibliotek } from '@/components/guides/guides-bibliotek'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { BookOpen } from 'lucide-react'
-import { getAllGuides } from '@/actions/guides'
-import { getAllInventoryItems } from '@/actions/froebank'
-import {
-  ALL_GUIDES,
-  DEMO_AI_GUIDE_IDS,
-} from '@/data/guides-demo'
-import { IMPORTED_GUIDES } from '@/data/guides-imported'
+import { ALL_GUIDES } from '@/data/guides-demo'
 import { resolvePotalotMacro, resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
-import { buildMineHaveGuides, pickForForside } from '@/lib/guides/min-have'
 
-export const dynamic = 'force-dynamic'
+// Statisk bibliotek: samme redaktionelle oplevelse for ALLE (Anna 5/8 —
+// demo-fallback-semantikken er fjernet). Personlige sektioner (I DIN HAVE,
+// Dine egne guides) hentes klient-side via getGuidesPersona.
+export const dynamic = 'force-static'
+export const revalidate = 86400
 
 /**
  * 📖 DYRKNINGSGUIDES — Potalots videnslag.
@@ -42,54 +39,13 @@ export const dynamic = 'force-dynamic'
  * Demo-fallback: hvis brugeren er anonym/ikke har data, vises lokal
  * demo-data fra src/data/guides-demo.ts. Ingen global mekanisme.
  */
-export default async function GuidesPage() {
-  const [guides, inventory] = await Promise.all([
-    getAllGuides(),
-    getAllInventoryItems(),
-  ])
-
-  // Oprydning (vidensmodel — rollefordeling): /guides ER biblioteket og
-  // viser KUN redaktionelle MD-guides (IMPORTED_GUIDES fra content/guides/
-  // *.md). AI-udkast og bruger-guider hører til arbejdsrummet — de åbnes
-  // fra det konkrete frø/plante/notifikation, IKKE her. Derfor flettes
-  // database-guides ikke ind i biblioteket. I demo vises demo-bibliotekets
-  // redaktionelle lag (bibliotek-komponenten render kun 'potalot'-kind).
-  const isDemo = guides.length === 0
-  const visibleGuides = isDemo ? ALL_GUIDES : IMPORTED_GUIDES
-  const aiGuideIds = isDemo ? DEMO_AI_GUIDE_IDS : null
-
-  // Brugerens EGNE (private) guides — dem de selv har lavet, klonet eller fået
-  // autogenereret. Vises foldet øverst i biblioteket (Anna 16/7), klart adskilt
-  // fra det redaktionelle Potalot-lag nedenunder.
-  const mineGuides = guides.filter(g => g.visibility === 'private')
-
-  // "I DIN HAVE" — prioriteret udvalg af GUIDE-OBJEKTER (arts- OG sortsguides)
-  // beregnet ud fra frøbanken + sæson (lib/guides/min-have). Ikke et artsindeks:
-  // findes en kurateret sortsguide til brugerens konkrete sort, vises DEN;
-  // ellers artsguiden. Billedet resolves her (server), så carousel-klienten kun
-  // får en færdig kort-liste. Maks ét kort pr. art på forsiden; det fulde antal
-  // (mineHaveTotal) linker til /guides/min-have.
-  const mineHaveAll = buildMineHaveGuides(visibleGuides, inventory, new Date().getMonth() + 1)
-  const mineHaveCards = pickForForside(mineHaveAll, 4).map(it => {
-    const g = it.guide
-    const isVar = it.kind === 'variety'
-    const { src } = resolvePotalotImage({
-      guideId: g.id,
-      speciesSlug: isVar ? g.parentGuideId ?? g.id : g.id,
-      varietySlug: isVar ? g.id : null,
-      role: isVar ? 'variety-hero' : 'species-hero',
-      preferredSrc: g.primaryImageId,
-    })
-    return {
-      guideId: g.id,
-      title: isVar ? g.variety ?? g.plantName : g.plantName,
-      typeLabel: isVar ? 'Sortsguide' : 'Artsguide',
-      contextLine: isVar ? `${it.plantName} · Sortsguide` : 'Artsguide',
-      summary: g.summary ?? '',
-      imageSrc: src ?? null,
-    }
-  })
-  const mineHaveTotal = mineHaveAll.length
+export default function GuidesPage() {
+  // Det redaktionelle bibliotek — ALL_GUIDES = importerede guides + de få
+  // demo-fallbacks for slugs importen ikke dækker endnu (deduperet).
+  // Payload-slankning: biblioteket viser KORT; artikel-sektionerne (langt det
+  // tungeste felt — før: ~300 kB gzip pr. sideåbning) sendes ikke med.
+  const visibleGuides = ALL_GUIDES
+  const guidesForClient = visibleGuides.map(g => ({ ...g, sections: [] }))
 
   // Lineage-map: for hver afledt guide, hvad hed planten i Potalot-
   // guiden den er baseret på? Bruges til "Baseret på Potalot-guiden om X".
@@ -99,11 +55,7 @@ export default async function GuidesPage() {
   }
 
   // Editorial bro mellem "Begynd her" og "Guides i felten" — én
-  // EditorialBleedCard med atmospheric makrofoto. Resolved server-side
-  // så client-component kan vise billed-stien uden at kalde resolveren
-  // selv. Tomat valgt fordi sættet har den mest udbyggede atmosphere-
-  // pool (2 makros: blad-lys, kondens). Returnerer null hvis ingen
-  // makro kunne findes → broen skjules helt i client-laget.
+  // EditorialBleedCard med atmospheric makrofoto (statisk manifest-opslag).
   const bridgeMacro = resolvePotalotMacro({
     guideId: 'tomat',
     slot: 'landing-bridge',
@@ -141,12 +93,12 @@ export default async function GuidesPage() {
           body="Start med arten, dyk ned i sorter, og gem erfaringer undervejs."
         />
         <GuidesBibliotek
-          guides={visibleGuides}
-          aiGuideIds={aiGuideIds}
+          guides={guidesForClient}
+          aiGuideIds={null}
           parentPlantNameById={parentPlantNameById}
-          mineHaveCards={mineHaveCards}
-          mineHaveTotal={mineHaveTotal}
-          mineGuides={mineGuides}
+          mineHaveCards={[]}
+          mineHaveTotal={0}
+          mineGuides={[]}
           bridgeMacroSrc={bridgeMacro?.src}
           bridgeMacroAlt={bridgeMacro?.alt}
         />

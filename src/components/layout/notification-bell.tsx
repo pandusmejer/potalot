@@ -23,6 +23,8 @@ const SYNC_STORAGE_KEY = 'potalot-reminder-sync-at'
 
 interface Props {
   initialUnreadCount: number
+  /** Statiske sider kender ikke tallet server-side — hent det efter mount. */
+  fetchCountOnMount?: boolean
 }
 
 function venligTid(iso: string): string {
@@ -35,13 +37,24 @@ function venligTid(iso: string): string {
   return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })
 }
 
-export function NotificationBell({ initialUnreadCount }: Props) {
+export function NotificationBell({ initialUnreadCount, fetchCountOnMount = false }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
   const [loading, setLoading] = useState(false)
+
+  // Statisk side: server-tallet var 0 pr. definition — hent det rigtige.
+  useEffect(() => {
+    if (!fetchCountOnMount) return
+    let active = true
+    getUnreadCount()
+      .then(count => { if (active) setUnreadCount(count) })
+      .catch(() => {})
+    return () => { active = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Generér opgave-påmindelser i baggrunden (flyttet fra Topbarens render-sti):
   // best-effort, throttlet, og badge opdateres bagefter hvis der kom nye.

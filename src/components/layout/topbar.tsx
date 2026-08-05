@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { Sprout } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
+import { TopbarAuthOmraade } from './topbar-auth-omraade'
 import { TrykOgTalKnap } from '@/components/havebog/tryk-og-tal-knap'
 import { Suspense } from 'react'
 import { getUnreadCount } from '@/actions/notifications'
@@ -65,21 +65,9 @@ export function Topbar({ profile }: { profile: Profile | null }) {
               <ProfileMenu profile={profile} />
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm" className="font-medium text-foreground">
-                <Link href="/login">Log ind</Link>
-              </Button>
-              {/* Dæmpet oliven CTA (Annas spec) — mindre farvemættet end den
-                  tidligere mørkegrønne, matcher Havebog-creme-universet. */}
-              <Button
-                asChild
-                size="sm"
-                className="rounded-full px-5 text-[#F7F4EA] hover:opacity-90"
-                style={{ background: '#6D7752' }}
-              >
-                <Link href="/opret">Opret bruger</Link>
-              </Button>
-            </div>
+            // Anonym ELLER statisk side: klient-komponenten viser login-
+            // knapperne og opgraderer selv til auth-kontroller via cookie.
+            <TopbarAuthOmraade />
           )}
         </div>
 

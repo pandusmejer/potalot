@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ChevronDown, ChevronRight, Sprout } from 'lucide-react'
 import type { Guide } from '@/lib/types'
+import { guideHref } from '@/lib/guides/guide-href'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
@@ -86,7 +87,7 @@ export function MineGuides({ guides }: { guides: Guide[] }) {
         {sorted.map(g => (
           <Link
             key={g.id}
-            href={`/guides/${g.id}`}
+            href={guideHref(g.id)}
             className="flex items-center gap-3.5 no-underline transition-transform active:scale-[0.995]"
             style={{
               background: '#F4F0E5',

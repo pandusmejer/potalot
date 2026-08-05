@@ -9,6 +9,7 @@ import { MONTHS_DA, PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { InventoryItem, Guide, Plant } from '@/lib/types'
 import { Sprout, Lightbulb, ArrowRight, X, Eye, EyeOff, CheckCircle2, Leaf } from 'lucide-react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { guideHref } from '@/lib/guides/guide-href'
 
 interface Props {
   month: number
@@ -316,7 +317,7 @@ function GuideCard({ guide }: { guide: Guide }) {
   })
   return (
     <Link
-      href={`/guides/${guide.id}`}
+      href={guideHref(guide.id)}
       className="snap-start shrink-0 w-44 rounded-xl border border-border bg-card overflow-hidden flex flex-col hover:shadow-sm transition-shadow group"
     >
       <Thumb url={thumbSource !== 'fallback' ? thumbSrc : null} />
