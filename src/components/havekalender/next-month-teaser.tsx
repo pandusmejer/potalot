@@ -45,7 +45,7 @@ export function NextMonthTeaser({
   const fullBody = MAANEDS_STEMNING[nextMonth]?.description ?? ''
   const body = fullBody.match(/^[^.]*\./)?.[0] ?? fullBody
   const heroSrc =
-    heroImage ?? `/images/heroes-maaneder/hero-${monthName.toLowerCase()}-foto.png`
+    heroImage ?? `/images/heroes-maaneder/hero-${monthName.toLowerCase()}-foto.webp`
   return (
     <section
       aria-labelledby="next-month-teaser-title"

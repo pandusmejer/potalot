@@ -485,7 +485,7 @@ function FocusTaskRow({
     return <ConfirmationRow status="demo" title={task.title} />
   }
 
-  const heroSrc = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1] ?? 'maj'}-foto.png`
+  const heroSrc = `/images/heroes-maaneder/hero-${MAANED_SLUG[month - 1] ?? 'maj'}-foto.webp`
   const stripOffsets = ['12%', '38%', '64%', '88%', '24%', '52%', '76%', '4%']
   const stripPos = stripOffsets[stripIndex % stripOffsets.length]
   const cat = categoryLabel(task.category)

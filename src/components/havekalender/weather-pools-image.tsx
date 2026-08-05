@@ -35,10 +35,10 @@ export function monthToSeason(month: number): Season {
 }
 
 const SEASON_IMAGE: Record<Season, string> = {
-  spring: '/images/weather-pools/weather-pools-spring.png',
-  summer: '/images/weather-pools/weather-pools-summer.png',
-  autumn: '/images/weather-pools/weather-pools-autumn.png',
-  winter: '/images/weather-pools/weather-pools-winter.png',
+  spring: '/images/weather-pools/weather-pools-spring.webp',
+  summer: '/images/weather-pools/weather-pools-summer.webp',
+  autumn: '/images/weather-pools/weather-pools-autumn.webp',
+  winter: '/images/weather-pools/weather-pools-winter.webp',
 }
 const SEASON_ALT: Record<Season, string> = {
   spring: 'Forårets vejr-pools', summer: 'Sommerens vejr-pools',

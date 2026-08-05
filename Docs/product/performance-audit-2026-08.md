@@ -281,6 +281,18 @@ Restpost efter fasen: JS-/font-vægten (844 kB JS, 13 fontfiler) og
 hero-PNG'en (557 kB) er nu den dominerende del af "fra URL til færdig
 side" — det er fix #9 (next/image/WebP) + evt. font-subsetting.
 
+## Fase 5 (5/8): hero-billeder → WebP (−93 %)
+
+De 20 tunge først-visnings-billeder (heroes-maaneder ×13, heroes-sider
+×3, weather-pools ×4) konverteret fra 1400px-PNG til 780px-WebP q82
+(2× af 390px-rammen): **10,8 MB → 0,8 MB (−93 %)**. August-heroen
+557 → 48 kB. Originale PNG'er ligger urørt som kilde/rollback; alle
+kodereferencer + manifest peger på .webp. Visuelt verificeret identisk.
+
+UDESTÅR i billed-sporet: plantekort (~400-500 kB/stk) — kræver audit af
+DB-lagrede stier (frøkort-foto-præcedens) før omdøbning; fonte (13
+filer/299 kB) og JS-bundle-analyse (kalender 2,2 MB) er næste bidder.
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |

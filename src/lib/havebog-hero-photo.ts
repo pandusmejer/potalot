@@ -96,7 +96,7 @@ export function pickHavebogHero(
   // Sidste fallback: brug kalenderens måneds-hero. Ikke perfekt
   // (det er katalogfoto, ikke minde-foto), men forhindrer at vi
   // viser broken-image på en måned der ikke er produceret endnu.
-  return `/images/heroes-maaneder/hero-${MAANED_SLUG[m - 1]}-foto.png`
+  return `/images/heroes-maaneder/hero-${MAANED_SLUG[m - 1]}-foto.webp`
 }
 
 /**

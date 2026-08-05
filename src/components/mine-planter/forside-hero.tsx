@@ -31,7 +31,7 @@ export function ForsideHero({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img loading="lazy" decoding="async"
-        src="/images/heroes-sider/hero-planter-forside.png"
+        src="/images/heroes-sider/hero-planter-forside.webp"
         alt=""
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"

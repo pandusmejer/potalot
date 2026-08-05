@@ -59,7 +59,7 @@ export function MaanedsKort({ month, factPrimary, factSecondary, compact = false
   const navn = MONTHS_DA[month - 1]?.full ?? ''
   const slug = MAANED_SLUG[month - 1]
   const stemning = MAANEDS_STEMNING[month]
-  const heroImage = `/images/heroes-maaneder/hero-${slug}-foto.png`
+  const heroImage = `/images/heroes-maaneder/hero-${slug}-foto.webp`
 
   return (
     <div

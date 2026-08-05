@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 463
+ * Fil-tæller: 483
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -272,21 +272,37 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/heroes-havebog/juni/havebog-hero-juni-bruger2.jpg",
   "/images/heroes-havebog/juni/havebog-hero-juni-ny.jpg",
   "/images/heroes-maaneder/hero-april-foto.png",
+  "/images/heroes-maaneder/hero-april-foto.webp",
   "/images/heroes-maaneder/hero-august-foto.png",
+  "/images/heroes-maaneder/hero-august-foto.webp",
   "/images/heroes-maaneder/hero-december-foto.png",
+  "/images/heroes-maaneder/hero-december-foto.webp",
   "/images/heroes-maaneder/hero-februar-foto.png",
+  "/images/heroes-maaneder/hero-februar-foto.webp",
   "/images/heroes-maaneder/hero-foraar.png",
+  "/images/heroes-maaneder/hero-foraar.webp",
   "/images/heroes-maaneder/hero-januar-foto.png",
+  "/images/heroes-maaneder/hero-januar-foto.webp",
   "/images/heroes-maaneder/hero-juli-foto.png",
+  "/images/heroes-maaneder/hero-juli-foto.webp",
   "/images/heroes-maaneder/hero-juni-foto.png",
+  "/images/heroes-maaneder/hero-juni-foto.webp",
   "/images/heroes-maaneder/hero-maj-foto.png",
+  "/images/heroes-maaneder/hero-maj-foto.webp",
   "/images/heroes-maaneder/hero-marts-foto.png",
+  "/images/heroes-maaneder/hero-marts-foto.webp",
   "/images/heroes-maaneder/hero-november-foto.png",
+  "/images/heroes-maaneder/hero-november-foto.webp",
   "/images/heroes-maaneder/hero-oktober-foto.png",
+  "/images/heroes-maaneder/hero-oktober-foto.webp",
   "/images/heroes-maaneder/hero-september-foto.png",
+  "/images/heroes-maaneder/hero-september-foto.webp",
   "/images/heroes-sider/hero-froebank-foto.png",
+  "/images/heroes-sider/hero-froebank-foto.webp",
   "/images/heroes-sider/hero-planter-forside.png",
+  "/images/heroes-sider/hero-planter-forside.webp",
   "/images/heroes-sider/hero-planter-spirer.png",
+  "/images/heroes-sider/hero-planter-spirer.webp",
   "/images/kalender/guides/saaning.jpg",
   "/images/kalender/guides/tomat-ranke.jpg",
   "/images/kalender/havekalender-februar.png",
@@ -472,9 +488,13 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/ui/folder-path-shape.svg",
   "/images/ui/placeholder-card.svg",
   "/images/weather-pools/weather-pools-autumn.png",
+  "/images/weather-pools/weather-pools-autumn.webp",
   "/images/weather-pools/weather-pools-spring.png",
+  "/images/weather-pools/weather-pools-spring.webp",
   "/images/weather-pools/weather-pools-summer.png",
+  "/images/weather-pools/weather-pools-summer.webp",
   "/images/weather-pools/weather-pools-winter.png",
+  "/images/weather-pools/weather-pools-winter.webp",
 ])
 
 export function hasImage(path: string): boolean {
