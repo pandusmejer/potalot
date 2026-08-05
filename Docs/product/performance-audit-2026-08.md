@@ -217,6 +217,41 @@ throttles i baggrunds-/headless-paner (verificeret: samme adfærd på
 gammelt deploy). DOM-checks bekræfter korrekthed; visuel bekræftelse
 skal ske i en rigtig browser.
 
+## Fase 3 (5/8, commit 9fa5540): rute-split + statisk guide-univers
+
+Annas to produktbeslutninger implementeret:
+
+**1. Privat ↔ redaktionel rute-split.** `/guides/[id]` er nu KUN
+redaktionelle guides — force-static, alle slugs prerendered, revalidate
+1 døgn. Egne/AI-guides bor på `/guides/mine/[id]` (dynamisk, login + RLS).
+Gamle `/guides/<uuid>`-links 308-redirectes af proxyen. Alle interne
+link-steder bruger `guideHref()` (uuid ⇒ mine).
+
+**2. Biblioteket: redaktionelt for alle + progressivt.** Demo-fallback-
+semantikken er væk — logget ind uden egne guides ser det almindelige
+bibliotek. Artikel-sektionerne sendes ikke længere med til klienten:
+**/guides 188 → 42,5 kB gzip (−77 %)**. Søgeresultater viser 20 +
+"Vis N flere" (søgningen matcher hele biblioteket). Personlige sektioner
+(I DIN HAVE, Dine egne guides, MINE FRØ) er klient-øer, der kun henter
+med auth-cookie.
+
+**Auth-adaptiv skal**: statiske sider bager den anonyme skal ind;
+DemoBanner skjules præ-paint via inline cookie-script, topbaren swapper
+klient-side til klokke/profil, bundnav-badgen selvopfrisker. Proxyen
+springer auth.getUser HELT over uden auth-cookies.
+
+**Resultat (lokal prod)**: 233 statiske sider (før 49); alle guide-ruter
+5–10 ms TTFB. Kold åbning af en guide på live = CDN-svar uden lambda og
+uden Supabase — det var målet med ISR-fasen.
+
+**Trade-offs, bevidste:**
+- Build-tid ~1 → ~5 min (233 sider) — koster Netlify build-minutter pr. push.
+- Statiske sider viser vejrlinjen o.l. først efter klient-hydrering;
+  logget ind-kontroller i topbaren kommer ~100–300 ms efter load på
+  guide-sider (anonyme ser ingen forskel).
+- Onboarding-gaten (redirect til /onboarding) håndhæves ikke på statiske
+  guide-sider — vurderet acceptabelt (læse-indhold).
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |
