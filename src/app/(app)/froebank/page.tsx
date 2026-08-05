@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getAllInventoryItems, getCustomSubcategories } from '@/actions/froebank'
 import { getCurrentUser } from '@/lib/auth'
 import { DEMO_INVENTORY } from '@/lib/demo-inventory'
@@ -10,7 +11,21 @@ import { aktuelMaaned } from '@/lib/datetime'
 
 export const dynamic = 'force-dynamic'
 
-export default async function FroebankPage() {
+/**
+ * Streaming-skal (koldstart-fix 5/8): siden flusher første byte med det
+ * samme, så browseren henter CSS/JS/fonte/billeder PARALLELT med serverens
+ * datahentning — i stedet for en hvid fane, til alt er færdigt. Indholdet
+ * (uændret markup) streames ind, når dataene lander.
+ */
+export default function FroebankPage() {
+  return (
+    <Suspense fallback={null}>
+      <FroebankIndhold />
+    </Suspense>
+  )
+}
+
+async function FroebankIndhold() {
   const [realInventory, customSubcategories, user] = await Promise.all([
     getAllInventoryItems(),
     getCustomSubcategories(),

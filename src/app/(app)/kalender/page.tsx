@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { KalenderClient } from '@/components/havekalender/kalender-client'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { CalendarDays } from 'lucide-react'
@@ -16,7 +17,21 @@ import { IMPORTED_GUIDES } from '@/data/guides-imported'
 
 export const dynamic = 'force-dynamic'
 
-export default async function KalenderPage() {
+/**
+ * Streaming-skal (koldstart-fix 5/8): siden flusher første byte med det
+ * samme, så browseren henter CSS/JS/fonte/billeder PARALLELT med serverens
+ * datahentning — i stedet for en hvid fane, til alt er færdigt. Indholdet
+ * (uændret markup) streames ind, når dataene lander.
+ */
+export default function KalenderPage() {
+  return (
+    <Suspense fallback={null}>
+      <KalenderIndhold />
+    </Suspense>
+  )
+}
+
+async function KalenderIndhold() {
   const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, me, completions] = await Promise.all([
     getAllTasks(),
     getAllPlants(),

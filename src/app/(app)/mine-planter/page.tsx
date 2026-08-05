@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { MinePlanterClient } from '@/components/mine-planter/mine-planter-client'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
@@ -22,7 +23,21 @@ export const dynamic = 'force-dynamic'
  *   Havebog  = hukommelse
  *   Guides   = viden
  */
-export default async function MinePlanterPage() {
+/**
+ * Streaming-skal (koldstart-fix 5/8): siden flusher første byte med det
+ * samme, så browseren henter CSS/JS/fonte/billeder PARALLELT med serverens
+ * datahentning — i stedet for en hvid fane, til alt er færdigt. Indholdet
+ * (uændret markup) streames ind, når dataene lander.
+ */
+export default function MinePlanterPage() {
+  return (
+    <Suspense fallback={null}>
+      <MinePlanterIndhold />
+    </Suspense>
+  )
+}
+
+async function MinePlanterIndhold() {
   const today = new Date().toISOString().slice(0, 10)
   const [plants, doneTaskKeys, gardenLocations, user] = await Promise.all([
     getAllPlants(),

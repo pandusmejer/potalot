@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { getHavebogData } from '@/actions/havebog'
 import { HavebogHero } from '@/components/havebog/havebog-hero'
 import { HavensStemme } from '@/components/havebog/havens-stemme'
@@ -71,7 +71,21 @@ export const dynamic = 'force-dynamic'
  * data og er derfor gated false for indloggede — de tændes ét ad
  * gangen når deres deriver/kilde lander (ærligheds-reglen).
  */
-export default async function HavebogPage() {
+/**
+ * Streaming-skal (koldstart-fix 5/8): siden flusher første byte med det
+ * samme, så browseren henter CSS/JS/fonte/billeder PARALLELT med serverens
+ * datahentning — i stedet for en hvid fane, til alt er færdigt. Indholdet
+ * (uændret markup) streames ind, når dataene lander.
+ */
+export default function HavebogPage() {
+  return (
+    <Suspense fallback={null}>
+      <HavebogIndhold />
+    </Suspense>
+  )
+}
+
+async function HavebogIndhold() {
   // Alle fire loaders er uafhængige og tåler anonym bruger (returnerer
   // null/tom) — ét parallelt hop i stedet for to serielle bølger.
   const [data, inventoryRes, plantsRes, locationsRes] = await Promise.all([
