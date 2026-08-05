@@ -244,6 +244,13 @@ springer auth.getUser HELT over uden auth-cookies.
 5–10 ms TTFB. Kold åbning af en guide på live = CDN-svar uden lambda og
 uden Supabase — det var målet med ISR-fasen.
 
+**Live-verificeret 5/8 efter deploy**: guide-ruterne serveres fra Netlify
+Edge (`cache-status: hit`, ttl = 1 døgn) med **80–115 ms TTFB** — uanset
+lambda-koldstart og uden ét eneste Supabase-kald. Første besøg pr. rute
+efter deploy primer edgen (0,6–1,9 s), derefter er den varm for ALLE
+brugere. /guides = 64 kB gzip på live (før 300 kB, −79 %).
+uuid-redirect: /guides/&lt;uuid&gt; → 308 → /guides/mine/&lt;uuid&gt; verificeret.
+
 **Trade-offs, bevidste:**
 - Build-tid ~1 → ~5 min (233 sider) — koster Netlify build-minutter pr. push.
 - Statiske sider viser vejrlinjen o.l. først efter klient-hydrering;
