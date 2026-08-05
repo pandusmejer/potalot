@@ -259,6 +259,28 @@ uuid-redirect: /guides/&lt;uuid&gt; → 308 → /guides/mine/&lt;uuid&gt; verifi
 - Onboarding-gaten (redirect til /onboarding) håndhæves ikke på statiske
   guide-sider — vurderet acceptabelt (læse-indhold).
 
+## Fase 4 (5/8, commit 2872f43): koldstart på forsiden — Annas 13 s-fund
+
+Anna målte 13 s fra URL-indtastning til Havebog i ny fane (logget ind).
+Anatomien: kold lambda 6–10 s → FØRST derefter begynder browseren at
+hente CSS/JS/fonte/hero (844 kB JS + 299 kB fonte + 557 kB hero-PNG),
+serielt oveni. SW frikendt (ingen fetch-interception, ingen cache);
+ingen enkeltstående boot-synder i server-bundlen (guides-data 760 kB).
+
+To modtræk:
+1. **Streaming-skal på Havebog/Kalender/Frøbank/Planter**: sidens indhold
+   bor nu i en async komponent bag Suspense — første byte flusher straks,
+   og asset-download kører PARALLELT med serverens DB-arbejde. Målt
+   lokalt: /kalender TTFB 150–600 ms → 5–13 ms. Markup/design uændret.
+2. **Keep-warm** (netlify/functions/keep-warm.mjs): scheduled ping hvert
+   5. minut af / og /kalender — anonymt og nær-gratis (proxy springer
+   auth over; anonyme sider springer DB over). Lambdaen når reelt aldrig
+   at blive kold i dagtimerne.
+
+Restpost efter fasen: JS-/font-vægten (844 kB JS, 13 fontfiler) og
+hero-PNG'en (557 kB) er nu den dominerende del af "fra URL til færdig
+side" — det er fix #9 (next/image/WebP) + evt. font-subsetting.
+
 ## Efter-måling 4/8 (lokal prod, anonym — samme metode)
 
 | Route | TTFB varm FØR | TTFB varm EFTER |
