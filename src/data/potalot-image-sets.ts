@@ -677,6 +677,45 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     seedCard: { src: '/images/frokort/cosmos-rubenza.png', alt: 'Rubenza cosmos — frøkort' },
     macro: [],
   },
+  // Formiddagens 5/8-batch lå i frokort-mappen ukommitteret og UDEN
+  // entries — efterregistreret her så alle har alt-tekster.
+  'blomme-victoria': {
+    seedCard: { src: '/images/frokort/blomme-victoria.png', alt: 'Victoria blomme — frøkort' },
+    macro: [],
+  },
+  'broendkarse-aqua': {
+    seedCard: { src: '/images/frokort/broendkarse-aqua.png', alt: 'Aqua brøndkarse — frøkort' },
+    macro: [],
+  },
+  'engblomme-golden-queen': {
+    seedCard: { src: '/images/frokort/engblomme-golden-queen.png', alt: 'Golden Queen engblomme — frøkort' },
+    macro: [],
+  },
+  'figen-brown-turkey': {
+    seedCard: { src: '/images/frokort/figen-brown-turkey.png', alt: 'Brown Turkey figen — frøkort' },
+    macro: [],
+  },
+  'gulerod-purple-haze': {
+    seedCard: { src: '/images/frokort/gulerod-purple-haze.png', alt: 'Purple Haze gulerod — frøkort' },
+    macro: [],
+  },
+  'jungleagurk-mexican-sour-gherkin': {
+    seedCard: { src: '/images/frokort/jungleagurk-mexican-sour-gherkin.png', alt: 'Mexican Sour Gherkin jungleagurk — frøkort' },
+    macro: [],
+  },
+  'marguerit-alaska': {
+    seedCard: { src: '/images/frokort/marguerit-alaska.png', alt: 'Alaska marguerit — frøkort' },
+    macro: [],
+  },
+  'roedbede-boldor': {
+    seedCard: { src: '/images/frokort/roedbede-boldor.png', alt: 'Boldor rødbede — frøkort' },
+    macro: [],
+  },
+  'sommerridderspore-imperial-blue-spire': {
+    seedCard: { src: '/images/frokort/sommerridderspore-imperial-blue-spire.png', alt: 'Imperial Blue Spire sommerridderspore — frøkort' },
+    macro: [],
+  },
+
   // To glemte filer fra formiddagens batch (arkiveret 5/8 uden at være
   // lagt ind) — samlet op sammen med eftermiddagens 52.
   'estragon-french': {
