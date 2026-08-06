@@ -23,6 +23,39 @@ export interface GartnerKontekst {
 
 type Tilstand = 'idle' | 'streamer' | 'faerdig' | 'login' | 'fejl'
 
+/**
+ * Svar-strukturen (Annas retning 5/8): "Sandsynlig årsag / Gør dette nu /
+ * Hold øje med / Relevant guide" som scannbare sektions-labels. Prompten
+ * beder Haiku skrive labels på egne linjer; her løftes de typografisk.
+ */
+const SEKTIONS_LABELS = new Set([
+  'Sandsynlig årsag',
+  'Gør dette nu',
+  'Hold øje med',
+  'Relevant guide',
+])
+
+function formaterSvar(svar: string): React.ReactNode[] {
+  return svar.split('\n').map((linje, i) => {
+    if (SEKTIONS_LABELS.has(linje.trim())) {
+      return (
+        <span
+          key={i}
+          style={{
+            display: 'block',
+            fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em',
+            textTransform: 'uppercase', color: 'rgba(78,97,56,0.85)',
+            marginTop: i === 0 ? 0 : 10, marginBottom: 2,
+          }}
+        >
+          {linje.trim()}
+        </span>
+      )
+    }
+    return <span key={i}>{linje + '\n'}</span>
+  })
+}
+
 /** Selve svar-panelet + hook til at starte en vurdering. */
 export function useGartner() {
   const [tilstand, setTilstand] = useState<Tilstand>('idle')
@@ -121,17 +154,17 @@ export function GartnerSvarPanel({
       )}
 
       {(tilstand === 'streamer' || tilstand === 'faerdig') && (
-        <p
+        <div
           style={{
             fontFamily: sans, fontSize: 14, fontWeight: 450, lineHeight: 1.55,
-            color: '#2E2A21', margin: 0, whiteSpace: 'pre-wrap',
+            color: '#2E2A21', whiteSpace: 'pre-wrap',
           }}
         >
-          {svar}
+          {formaterSvar(svar)}
           {tilstand === 'streamer' && (
             <span aria-hidden style={{ opacity: 0.45 }}>{svar ? ' ▍' : 'Gartneren kigger på det …'}</span>
           )}
-        </p>
+        </div>
       )}
     </div>
   )
