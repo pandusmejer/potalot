@@ -10,6 +10,7 @@ import { PlantFotoManager } from '@/components/mine-planter/plant-foto-manager'
 import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
+import { GartnerHandling } from '@/components/ai/gartner-svar'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
 import { overrideFor, type PlantDetail } from '@/data/plant-detail'
 import { buildPlantDetail } from '@/lib/plant-detail/build-plant-detail'
@@ -345,6 +346,19 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
         <div className="mt-4 flex flex-wrap gap-2">
           <LogForm plantId={plant.id} defaultType="health" trigger={quickLogChip(<Activity className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Trivsel')} />
           <LogForm plantId={plant.id} defaultType="height_measurement" trigger={quickLogChip(<Ruler className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />, 'Højde')} />
+        </div>
+      )}
+
+      {/* Undersøg denne plante (AI Gartner-spec): teksthandling med fuld
+          kontekst-pakke — art, sort, sådato, sted og log følger automatisk.
+          Kun for ægte planter (canLog); aldrig automatisk. */}
+      {canLog && (
+        <div style={{ marginTop: 14 }}>
+          <GartnerHandling
+            label="Undersøg denne plante"
+            question="Hvordan står det til med denne plante, og hvad bør jeg gøre nu for at hjælpe den bedst videre?"
+            kontekst={{ plantId: plant.id }}
+          />
         </div>
       )}
 

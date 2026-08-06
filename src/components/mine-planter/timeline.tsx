@@ -1,4 +1,5 @@
 import { formatDatoMedAar, venligDato } from '@/lib/datetime'
+import { GartnerHandling } from '@/components/ai/gartner-svar'
 import type { Plant, PlantLog } from '@/lib/types'
 import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug, Activity, Ruler } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -121,6 +122,19 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false 
                 {item.log.note && (
                   <p className="text-xs text-muted-foreground mt-0.5">{item.log.note}</p>
                 )}
+                {/* Yndlingsflowet (AI Gartner-spec): efter en problem-log
+                    TILBYDES Gartnerens vurdering — aldrig automatisk. Diskret
+                    teksthandling, kun på pest_disease + trivsel 'attention'. */}
+                {!readOnly &&
+                  (item.log.type === 'pest_disease' ||
+                    (item.log.type === 'health' && item.log.valueText === 'attention')) && (
+                    <div className="mt-1.5">
+                      <GartnerHandling
+                        label="Få Gartnerens vurdering"
+                        kontekst={{ plantId: plant.id, logId: item.log.id }}
+                      />
+                    </div>
+                  )}
                 {item.log.imageIds.length > 0 && (
                   <div className="mt-2 grid grid-cols-3 gap-1.5">
                     {item.log.imageIds.map(url => (

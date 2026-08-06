@@ -7,21 +7,27 @@
  * kort mellem "Begynd her" og resten af siden: brugeren er stadig i "lær mig
  * noget"-mode, og her kan man stille et konkret havespørgsmål.
  *
- * Bevidst uden backend/AI-endpoint endnu — det er en visuel CTA/søge-agtig
- * komponent, der kan wires til en rigtig rådgiver senere. Ingen robot-ikon,
- * ingen glitrende AI-cirkus. Et blødt Potalot-plante-glyph + rolig copy gør
- * arbejdet — botanisk havehjælp, ikke supportchat.
+ * Wiret til Gartner-motoren (/api/ai/gartner) 5/8 — svaret streames ind i
+ * et roligt panel under feltet. Ingen robot-ikon, ingen glitrende AI-cirkus.
+ * Et blødt Potalot-plante-glyph + rolig copy gør arbejdet — botanisk
+ * havehjælp, ikke supportchat.
  */
 
 import { useState } from 'react'
+import { GartnerSvarPanel, useGartner } from '@/components/ai/gartner-svar'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
 
 export function SpoergGartneren() {
-  // Kun lokal state, så feltet føles ægte. Ingen submit-logik endnu — CTA'en
-  // er visuel og kan kobles til et AI-/rådgiver-endpoint senere.
   const [spoergsmaal, setSpoergsmaal] = useState('')
+  const { tilstand, svar, spoerg } = useGartner()
+
+  function stil() {
+    const q = spoergsmaal.trim()
+    if (!q) return
+    spoerg(q)
+  }
 
   return (
     <section
@@ -122,6 +128,7 @@ export function SpoergGartneren() {
           onChange={e => setSpoergsmaal(e.target.value)}
           placeholder="Hvorfor krøller mine tomatblade?"
           aria-label="Skriv dit havespørgsmål"
+          onKeyDown={e => { if (e.key === 'Enter') stil() }}
           style={{
             flex: 1,
             minWidth: 0,
@@ -137,7 +144,8 @@ export function SpoergGartneren() {
         />
         <button
           type="button"
-          // TODO: wire til rådgiver-/AI-endpoint. Indtil da: ren visuel CTA.
+          onClick={stil}
+          disabled={tilstand === 'streamer'}
           style={{
             flexShrink: 0,
             fontFamily: sans,
@@ -154,6 +162,8 @@ export function SpoergGartneren() {
           Spørg
         </button>
       </div>
+
+      <GartnerSvarPanel tilstand={tilstand} svar={svar} />
     </section>
   )
 }
