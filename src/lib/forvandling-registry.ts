@@ -116,6 +116,22 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   // insekthotel — foto fandtes (næste-projekt-kortet) men var aldrig bundet til
   // forvandlingen → mosaik-tilen faldt til farve. Binder det eksisterende foto.
   { crop: 'insekthotel', cropLabel: 'Insekthotel', path: '/images/havebog/naeste-projekt-insekthotel.jpg', role: 'texture', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'insekthotel', priority: 90 },
+  // asparges + ært — Forvandlinger-leverance 6/8 2026. Retterne (tærte,
+  // blancheret+æg, puré, suppe) er RESULTATFOTOS til asparges-/ærte-
+  // forvandlinger der endnu ikke er skrevet — de er bevidst IKKE tagget
+  // 'forvandling' (forkert billede er værre end intet billede); bind dem
+  // med forvandlingId når posterne kommer. Råvarefotoet er generisk.
+  { crop: 'asparges', cropLabel: 'Asparges', path: '/assets/forvandlinger/crops/asparges/asparges-raa-01.jpg', role: 'fruit', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'cropTile', 'forvandling'], priority: 90 },
+  { crop: 'asparges', cropLabel: 'Blancherede asparges med æg', path: '/assets/forvandlinger/crops/asparges/asparges-blancheret-aeg-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
+  { crop: 'asparges', cropLabel: 'Aspargestærte', path: '/assets/forvandlinger/crops/asparges/asparges-taerte-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['spring'], useCases: ['mosaic', 'recipeTile'], priority: 86 },
+  { crop: 'aert', cropLabel: 'Ærtepuré', path: '/assets/forvandlinger/crops/aert/aert-pure-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
+  { crop: 'aert', cropLabel: 'Ærtesuppe', path: '/assets/forvandlinger/crops/aert/aert-suppe-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 86 },
+  // pynt-til-drikke — fire varianter bundet til den nye drikke-forvandling
+  // (P0b i forvandlinger-copy-specen). Jordbær-rosmarin fører.
+  { crop: 'drikke', cropLabel: 'Vand med jordbær og rosmarin', path: '/assets/forvandlinger/crops/drikke/vand-jordbaer-rosmarin-01.jpg', role: 'kitchen', mood: 'summer', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 90 },
+  { crop: 'drikke', cropLabel: 'Vand med citron og mynte', path: '/assets/forvandlinger/crops/drikke/vand-citron-mynte-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 80 },
+  { crop: 'drikke', cropLabel: 'Vand med agurk, lime og timian', path: '/assets/forvandlinger/crops/drikke/vand-agurk-lime-timian-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 70 },
+  { crop: 'drikke', cropLabel: 'Vand med timian', path: '/assets/forvandlinger/crops/drikke/vand-timian-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 60 },
 ]
 
 function norm(s: string): string {

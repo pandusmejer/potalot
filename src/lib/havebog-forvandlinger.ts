@@ -82,6 +82,9 @@ export const FORVANDLINGER: HavebogForvandling[] = [
   // ── Pynt ──
   { id: 'dahlia-vase', title: 'Dahlia i vase', category: 'pynt', crops: ['dahlia'], body: 'Dahliaerne blomstrer og vil gerne indenfor.', steps: ['Klip tidligt om morgenen.', 'Skær stilken skråt.', 'Skift vand hver anden dag.'], season: 'summer' },
   { id: 'spiselige-blomster', title: 'Spiselige blomster', category: 'pynt', crops: ['morgenfrue', 'tallerkensmaekker'], body: 'Nogle blomster pynter både tallerken og kage.', steps: ['Pluk friske, rene blomster.', 'Dryp dem forsigtigt tørre.', 'Læg dem på salat, kage eller i isterninger.'], season: 'summer' },
+  // P0b fra forvandlinger-copy-specen (Docs/product/forvandlinger-copy-
+  // inspiration.md) — body-sætningen er Annas valgte og LÅST.
+  { id: 'pynt-til-drikke', title: 'Pynt til drikke', category: 'pynt', crops: ['mynte', 'jordbaer', 'agurk', 'morgenfrue'], body: 'Forskøn vand, drinks og cocktails med frugt, blomster og krydderurter fra haven.', steps: ['Pluk og skyl bær, blade og blomster.', 'Frys dem eventuelt i isterninger.', 'Læg dem i glasset lige før servering.'], season: 'summer' },
   // ── Så igen ──
   { id: 'gem-tomatfroe', title: 'Gem tomatfrø', category: 'saa-igen', crops: ['tomat'], body: 'De bedste tomater giver frø til næste sæson.', steps: ['Skrab frø og gelé ud i et glas.', 'Lad gære et par dage og skyl rent.', 'Tør frøene og gem dem mørkt.'], season: 'autumn' },
   { id: 'gem-aertefroe', title: 'Gem ærtefrø', category: 'saa-igen', crops: ['aert'], body: 'Lad nogle bælge modne helt på planten.', steps: ['Lad bælgene tørre på planten.', 'Bælg ærterne, når de rasler.', 'Gem tørt og mørkt til foråret.'], season: 'autumn' },

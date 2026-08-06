@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 1009
+ * Fil-tæller: 1017
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -686,6 +686,10 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/kalender/saeson/vand.jpg",
   "/images/makro/aeble/frugt.jpg",
   "/images/makro/aeble/frugt.webp",
+  "/images/makro/aert/aerter.jpg",
+  "/images/makro/aert/aerter.webp",
+  "/images/makro/aert/baelge.jpg",
+  "/images/makro/aert/baelge.webp",
   "/images/makro/agurk-marketmore/blad.jpg",
   "/images/makro/agurk-marketmore/blad.webp",
   "/images/makro/agurk-marketmore/blomst-myre.jpg",
@@ -712,8 +716,12 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/makro/ananas/skal.webp",
   "/images/makro/asparges/bundt.jpg",
   "/images/makro/asparges/bundt.webp",
+  "/images/makro/asparges/dug-2.jpg",
+  "/images/makro/asparges/dug.jpg",
   "/images/makro/asparges/hoveder.jpg",
   "/images/makro/asparges/hoveder.webp",
+  "/images/makro/asparges/vokser.jpg",
+  "/images/makro/asparges/vokser.webp",
   "/images/makro/basilikum/oppefra.jpg",
   "/images/makro/basilikum/oppefra.webp",
   "/images/makro/boenne/baelge.jpg",

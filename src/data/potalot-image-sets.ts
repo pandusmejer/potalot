@@ -107,6 +107,9 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   asparges: {
     macro: [
       { src: '/images/makro/asparges/bundt.jpg', alt: 'Bundt af friske asparges', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/asparges/dug.jpg', alt: 'Dugdråber på aspargestop', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/asparges/dug-2.jpg', alt: 'Aspargestop med vanddråber tæt på', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/asparges/vokser.jpg', alt: 'Aspargesskud på vej op af jorden', role: 'structure', focalPoint: 'center' },
       { src: '/images/makro/asparges/hoveder.jpg', alt: 'Aspargeshoveder tæt på', role: 'structure', focalPoint: 'top' },
     ],
   },
@@ -435,6 +438,14 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   'aert-sugar-snap': {
     seedCard: { src: '/images/frokort/aert-sugar-snap.png', alt: 'Sugar Snap ært — frøkort' },
     macro: [],
+  },
+
+  // Arts-makro-sæt for ært (nyt 6/8 2026 — Forvandlinger-leverancen)
+  aert: {
+    macro: [
+      { src: '/images/makro/aert/baelge.jpg', alt: 'Friske ærtebælge tæt på', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/aert/aerter.jpg', alt: 'Bælgede ærter i bunke', role: 'fruit', focalPoint: 'center' },
+    ],
   },
 
   'basilikum-genovese': {
