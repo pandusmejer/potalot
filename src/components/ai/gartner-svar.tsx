@@ -12,6 +12,8 @@
 import { useCallback, useRef, useState } from 'react'
 import Link from 'next/link'
 import { harAuthCookie } from '@/lib/auth-cookie'
+import { createPlantLog } from '@/actions/mine-planter'
+import { createTask } from '@/actions/havekalender'
 
 const sans = 'var(--font-manrope)'
 
@@ -99,13 +101,158 @@ export function useGartner() {
   return { tilstand, svar, spoerg, nulstil }
 }
 
+/** Lokal dags-dato som YYYY-MM-DD (ikke UTC — 23:30 i DK er stadig i dag). */
+function iDag(): string {
+  return new Date().toLocaleDateString('sv-SE')
+}
+
+/** Første punkt under "Gør dette nu" → opgavetitel. Fallback: generisk. */
+function foersteHandling(svar: string): string {
+  const linjer = svar.split('\n')
+  const start = linjer.findIndex(l => l.trim() === 'Gør dette nu')
+  if (start >= 0) {
+    for (const linje of linjer.slice(start + 1)) {
+      const t = linje.trim()
+      if (t.startsWith('-')) return t.replace(/^-\s*/, '').slice(0, 80)
+      if (SEKTIONS_LABELS.has(t)) break
+    }
+  }
+  return 'Følg op på Gartnerens råd'
+}
+
+type HandlingStatus = 'klar' | 'gemmer' | 'gjort' | 'fejl'
+
+/**
+ * Cirkel-lukningen (Annas backlog-top 5/8): svaret fører direkte til
+ * handling — log vurderingen, opret opgave, eller markér problemet løst.
+ * Kun når vurderingen handler om en konkret plante. Teksthandlinger i
+ * samme register som resten; ingen knap-krom.
+ *
+ * "Markér som løst" logger en note — ALDRIG en auto-trivsel (låst regel:
+ * trivsel er brugerens egen vurdering).
+ */
+function EfterHandlinger({ plantId, svar }: { plantId: string; svar: string }) {
+  const [log, setLog] = useState<HandlingStatus>('klar')
+  const [opgave, setOpgave] = useState<HandlingStatus>('klar')
+  const [loest, setLoest] = useState<HandlingStatus>('klar')
+
+  async function koer(
+    saet: (s: HandlingStatus) => void,
+    fn: () => Promise<{ error?: string } | { id: string }>,
+  ) {
+    saet('gemmer')
+    try {
+      const res = await fn()
+      saet('error' in res && res.error ? 'fejl' : 'gjort')
+    } catch {
+      saet('fejl')
+    }
+  }
+
+  const handlinger: {
+    status: HandlingStatus
+    label: string
+    bekraeftelse: string
+    onClick: () => void
+  }[] = [
+    {
+      status: log,
+      label: 'Log denne vurdering',
+      bekraeftelse: 'Logget i plantens historik.',
+      onClick: () =>
+        koer(setLog, () =>
+          createPlantLog({
+            plantId,
+            date: iDag(),
+            type: 'note',
+            title: 'Gartnerens vurdering',
+            note: svar.trim(),
+          }),
+        ),
+    },
+    {
+      status: opgave,
+      label: 'Opret som opgave',
+      bekraeftelse: 'Opgave oprettet i kalenderen.',
+      onClick: () =>
+        koer(setOpgave, () =>
+          createTask({
+            title: foersteHandling(svar),
+            date: iDag(),
+            linkedPlantId: plantId,
+          }),
+        ),
+    },
+    {
+      status: loest,
+      label: 'Markér problemet som løst',
+      bekraeftelse: 'Markeret som løst i loggen.',
+      onClick: () =>
+        koer(setLoest, () =>
+          createPlantLog({
+            plantId,
+            date: iDag(),
+            type: 'note',
+            title: 'Problemet er løst',
+            note: 'Fulgte Gartnerens råd — problemet er løst.',
+          }),
+        ),
+    },
+  ]
+
+  return (
+    <div
+      style={{
+        marginTop: 12,
+        paddingTop: 10,
+        borderTop: '1px solid rgba(86, 111, 60, 0.16)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '6px 14px',
+      }}
+    >
+      {handlinger.map(h => (
+        <span key={h.label}>
+          {h.status === 'gjort' ? (
+            <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>
+              {h.bekraeftelse}
+            </span>
+          ) : h.status === 'fejl' ? (
+            <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(120,60,40,0.8)' }}>
+              Kunne ikke gemme — prøv igen fra planten.
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={h.onClick}
+              disabled={h.status === 'gemmer'}
+              style={{
+                background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                fontFamily: sans, fontSize: 12.5, fontWeight: 600,
+                color: h.status === 'gemmer' ? 'rgba(78,97,56,0.5)' : '#4E6138',
+                textDecoration: 'underline', textUnderlineOffset: 3,
+                textDecorationColor: 'rgba(78,97,56,0.3)',
+              }}
+            >
+              {h.label}
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 /** Panelet der viser det streamede svar — rolig salvie-flade, ingen chat-UI. */
 export function GartnerSvarPanel({
   tilstand,
   svar,
+  plantId,
 }: {
   tilstand: Tilstand
   svar: string
+  /** Sat → cirkel-lukningen vises efter svaret (log/opgave/løst). */
+  plantId?: string
 }) {
   if (tilstand === 'idle') return null
 
@@ -166,6 +313,8 @@ export function GartnerSvarPanel({
           )}
         </div>
       )}
+
+      {tilstand === 'faerdig' && plantId && <EfterHandlinger plantId={plantId} svar={svar} />}
     </div>
   )
 }
@@ -202,7 +351,7 @@ export function GartnerHandling({
           {label}
         </button>
       )}
-      <GartnerSvarPanel tilstand={tilstand} svar={svar} />
+      <GartnerSvarPanel tilstand={tilstand} svar={svar} plantId={kontekst?.plantId} />
     </div>
   )
 }
