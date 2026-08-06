@@ -51,7 +51,15 @@ export interface ForvandlingKategoriAsset {
   season?: Saeson
 }
 export const FORVANDLING_KATEGORI_ASSETS: ForvandlingKategoriAsset[] = [
-  // fx { kategori: 'bryg', path: '/assets/forvandlinger/mood/bryg-stemning-01.jpg', season: 'summer' },
+  // Skønheds-/olie-leverance 6/8 2026. FØRSTE match pr. kategori vinder —
+  // primærfotoet står øverst; resten er registreret som reserve.
+  { kategori: 'plej', path: '/assets/forvandlinger/mood/plej-hudpleje-01.jpg' },
+  { kategori: 'plej', path: '/assets/forvandlinger/mood/plej-wellness-01.jpg' },
+  { kategori: 'plej', path: '/assets/forvandlinger/mood/plej-wellness-02.jpg' },
+  { kategori: 'plej', path: '/assets/forvandlinger/mood/plej-olier-bred-01.jpg' },
+  { kategori: 'plej', path: '/assets/forvandlinger/mood/plej-olier-hoej-01.jpg' },
+  { kategori: 'duft', path: '/assets/forvandlinger/mood/duft-olier-01.jpg' },
+  { kategori: 'duft', path: '/assets/forvandlinger/mood/duft-olier-02.jpg' },
 ]
 
 // Frugt/køkken/plante-roller egner sig bedst til et forvandlings-foto.

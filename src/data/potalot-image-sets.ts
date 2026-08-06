@@ -191,6 +191,26 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   majs: {
     macro: [
       { src: '/images/makro/majs/kolbe-haar.jpg', alt: 'Majssilke på kolben', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/majs/close-dug.jpg', alt: 'Dug på majskolbe', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/majs/kolbe.jpg', alt: 'Frisk majskolbe tæt på', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/majs/kolbe-mark.jpg', alt: 'Majskolbe på planten i marken', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/majs/superclose-dug.jpg', alt: 'Majskerner med dugdråber helt tæt på', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/majs/forskellige-farver.jpg', alt: 'Majskolber i forskellige farver', role: 'fruit', focalPoint: 'center' },
+    ],
+  },
+
+  // Arts-makro-sæt for blåbær (nyt 6/8 2026 — Forvandlinger-leverancen)
+  blaabaer: {
+    macro: [
+      { src: '/images/makro/blaabaer/dug.jpg', alt: 'Dugdråber på blåbær', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/bunke.jpg', alt: 'Bunke af friske blåbær', role: 'atmosphere', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/frugter.jpg', alt: 'Modne blåbær tæt på', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/klase.jpg', alt: 'Blåbærklase på busken', role: 'fruit', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/klase-loev.jpg', alt: 'Blåbærklase med løv', role: 'leaf', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/busk.jpg', alt: 'Blåbærbusk med bær', role: 'structure', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/detalje.jpg', alt: 'Blåbær i nærbillede', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/superclose.jpg', alt: 'Blåbær helt tæt på', role: 'detail', focalPoint: 'center' },
+      { src: '/images/makro/blaabaer/skind.jpg', alt: 'Blåbærrets dug og skind tæt på', role: 'detail', focalPoint: 'center' },
     ],
   },
 
@@ -1043,6 +1063,37 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
   },
   'trommestikker-golf-beauty': {
     seedCard: { src: '/images/frokort/trommestikker-golf-beauty.png', alt: 'Golf Beauty trommestikker — frøkort' },
+    macro: [],
+  },
+
+  // ── FRØKORT-DROP 6/8 AFTEN (7 tomat-sorter) ────────────────
+
+  'tomat-brandywine-pink': {
+    seedCard: { src: '/images/frokort/tomat-brandywine-pink.png', alt: 'Brandywine Pink tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-roma-vf': {
+    seedCard: { src: '/images/frokort/tomat-roma-vf.png', alt: 'Roma VF tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-tigerella': {
+    seedCard: { src: '/images/frokort/tomat-tigerella.png', alt: 'Tigerella tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-cherokee-purple': {
+    seedCard: { src: '/images/frokort/tomat-cherokee-purple.png', alt: 'Cherokee Purple tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-indigo-rose': {
+    seedCard: { src: '/images/frokort/tomat-indigo-rose.png', alt: 'Indigo Rose tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-yellow-pear': {
+    seedCard: { src: '/images/frokort/tomat-yellow-pear.png', alt: 'Yellow Pear tomat — frøkort' },
+    macro: [],
+  },
+  'tomat-costoluto-fiorentino': {
+    seedCard: { src: '/images/frokort/tomat-costoluto-fiorentino.png', alt: 'Costoluto Fiorentino tomat — frøkort' },
     macro: [],
   },
 
