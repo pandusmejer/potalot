@@ -891,6 +891,150 @@ export const POTALOT_IMAGE_SETS_BY_ID: Record<string, PotalotImageSet> = {
     macro: [],
   },
 
+  // ── FRØKORT-BATCH 6/8 2026 (34 nye sorter fra foto-indbakken) ──
+  // Leveret som 6 løse + 29 i frokort/-undermappe. Manuelle slug-greb:
+  // "Matthiola incana 'Vintage Peach'" → levkoej-vintage-peach (dansk
+  // artsnavn, matcher levkoej-søskende) og "Prichard's Variety" →
+  // maelkeklokke-prichard-s-variety (kanonisk apostrof-slug).
+  // tomat-green-zebra var en fil-erstatning (entry fandtes).
+
+  'aeble-cox-orange': {
+    seedCard: { src: '/images/frokort/aeble-cox-orange.png', alt: 'Cox Orange æble — frøkort' },
+    macro: [],
+  },
+  'aeble-discovery': {
+    seedCard: { src: '/images/frokort/aeble-discovery.png', alt: 'Discovery æble — frøkort' },
+    macro: [],
+  },
+  'aeble-filippa': {
+    seedCard: { src: '/images/frokort/aeble-filippa.png', alt: 'Filippa æble — frøkort' },
+    macro: [],
+  },
+  'aeble-ingrid-marie': {
+    seedCard: { src: '/images/frokort/aeble-ingrid-marie.png', alt: 'Ingrid Marie æble — frøkort' },
+    macro: [],
+  },
+  'aert-ambrosia': {
+    seedCard: { src: '/images/frokort/aert-ambrosia.png', alt: 'Ambrosia ært — frøkort' },
+    macro: [],
+  },
+  'aert-kelvedon-wonder': {
+    seedCard: { src: '/images/frokort/aert-kelvedon-wonder.png', alt: 'Kelvedon Wonder ært — frøkort' },
+    macro: [],
+  },
+  'agurk-cucino': {
+    seedCard: { src: '/images/frokort/agurk-cucino.png', alt: 'Cucino agurk — frøkort' },
+    macro: [],
+  },
+  'agurk-lemon': {
+    seedCard: { src: '/images/frokort/agurk-lemon.png', alt: 'Lemon agurk — frøkort' },
+    macro: [],
+  },
+  'agurk-mini-stars': {
+    seedCard: { src: '/images/frokort/agurk-mini-stars.png', alt: 'Mini Stars agurk — frøkort' },
+    macro: [],
+  },
+  'blomsterkoervel-white-lace': {
+    seedCard: { src: '/images/frokort/blomsterkoervel-white-lace.png', alt: 'White Lace blomsterkørvel — frøkort' },
+    macro: [],
+  },
+  'jordbaer-mara-des-bois': {
+    seedCard: { src: '/images/frokort/jordbaer-mara-des-bois.png', alt: 'Mara des Bois jordbær — frøkort' },
+    macro: [],
+  },
+  'klematis-princess-diana': {
+    seedCard: { src: '/images/frokort/klematis-princess-diana.png', alt: 'Princess Diana klematis — frøkort' },
+    macro: [],
+  },
+  'levkoej-cinderella-appleblossom': {
+    seedCard: { src: '/images/frokort/levkoej-cinderella-appleblossom.png', alt: 'Cinderella Appleblossom levkøj — frøkort' },
+    macro: [],
+  },
+  'levkoej-vintage-lavender': {
+    seedCard: { src: '/images/frokort/levkoej-vintage-lavender.png', alt: 'Vintage Lavender levkøj — frøkort' },
+    macro: [],
+  },
+  'levkoej-vintage-peach': {
+    seedCard: { src: '/images/frokort/levkoej-vintage-peach.png', alt: 'Vintage Peach levkøj — frøkort' },
+    macro: [],
+  },
+  'levkoej-vintage-rose': {
+    seedCard: { src: '/images/frokort/levkoej-vintage-rose.png', alt: 'Vintage Rose levkøj — frøkort' },
+    macro: [],
+  },
+  'levkoej-white-goddess': {
+    seedCard: { src: '/images/frokort/levkoej-white-goddess.png', alt: 'White Goddess levkøj — frøkort' },
+    macro: [],
+  },
+  'loevemund-potomac-appleblossom': {
+    seedCard: { src: '/images/frokort/loevemund-potomac-appleblossom.png', alt: 'Potomac Appleblossom løvemund — frøkort' },
+    macro: [],
+  },
+  'maelkeklokke-prichard-s-variety': {
+    seedCard: { src: '/images/frokort/maelkeklokke-prichard-s-variety.png', alt: "Prichard's Variety mælkeklokke — frøkort" },
+    macro: [],
+  },
+  'nigella-african-bride': {
+    seedCard: { src: '/images/frokort/nigella-african-bride.png', alt: 'African Bride nigella — frøkort' },
+    macro: [],
+  },
+  'paeonvalmue-coral-reef': {
+    seedCard: { src: '/images/frokort/paeonvalmue-coral-reef.png', alt: 'Coral Reef pæonvalmue — frøkort' },
+    macro: [],
+  },
+  'radise-sora': {
+    seedCard: { src: '/images/frokort/radise-sora.png', alt: 'Sora radise — frøkort' },
+    macro: [],
+  },
+  'ramsloeg-wild-garlic': {
+    seedCard: { src: '/images/frokort/ramsloeg-wild-garlic.png', alt: 'Wild Garlic ramsløg — frøkort' },
+    macro: [],
+  },
+  'rose-gertrude-jekyll': {
+    seedCard: { src: '/images/frokort/rose-gertrude-jekyll.png', alt: 'Gertrude Jekyll rose — frøkort' },
+    macro: [],
+  },
+  'rose-lykkefund': {
+    seedCard: { src: '/images/frokort/rose-lykkefund.png', alt: 'Lykkefund rose — frøkort' },
+    macro: [],
+  },
+  'rose-queen-elizabeth': {
+    seedCard: { src: '/images/frokort/rose-queen-elizabeth.png', alt: 'Queen Elizabeth rose — frøkort' },
+    macro: [],
+  },
+  'rose-rosa-mundi': {
+    seedCard: { src: '/images/frokort/rose-rosa-mundi.png', alt: 'Rosa Mundi rose — frøkort' },
+    macro: [],
+  },
+  'rose-rose-de-rescht': {
+    seedCard: { src: '/images/frokort/rose-rose-de-rescht.png', alt: 'Rose de Rescht rose — frøkort' },
+    macro: [],
+  },
+  'rose-victor-borge': {
+    seedCard: { src: '/images/frokort/rose-victor-borge.png', alt: 'Victor Borge rose — frøkort' },
+    macro: [],
+  },
+  'russisk-mandstro-blue-hobbit': {
+    seedCard: { src: '/images/frokort/russisk-mandstro-blue-hobbit.png', alt: 'Blue Hobbit russisk mandstro — frøkort' },
+    macro: [],
+  },
+  'setaria-red-jewel': {
+    seedCard: { src: '/images/frokort/setaria-red-jewel.png', alt: 'Red Jewel setaria — frøkort' },
+    macro: [],
+  },
+  'skovanemone-alba': {
+    seedCard: { src: '/images/frokort/skovanemone-alba.png', alt: 'Alba skovanemone — frøkort' },
+    macro: [],
+  },
+  'stjerneskaerm-roma': {
+    seedCard: { src: '/images/frokort/stjerneskaerm-roma.png', alt: 'Roma stjerneskærm — frøkort' },
+    macro: [],
+  },
+  'trommestikker-golf-beauty': {
+    seedCard: { src: '/images/frokort/trommestikker-golf-beauty.png', alt: 'Golf Beauty trommestikker — frøkort' },
+    macro: [],
+  },
+
   // ── DEMO (kompatibilitet med eksisterende demo-data) ───────
 
   'demo-guide-tomat-sm': {
