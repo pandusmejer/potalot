@@ -66,6 +66,10 @@ export const CROP_FARVE: Record<string, string> = {
   mynte: '#6C8A65',
   kamille: '#D6B85A',
   morgenfrue: '#D18946',
+  fersken: '#D39A72',
+  rabarber: '#B85C63',
+  hyldeblomst: '#C9CBA3',
+  syren: '#9B7FA6',
 }
 const STANDARD_FARVE = '#8B9774'
 
@@ -157,6 +161,37 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'majs', cropLabel: 'Grillede majskolber', path: '/assets/forvandlinger/crops/majs/majs-grillede-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'grillede-majskolber', priority: 90 },
   { crop: 'majs', cropLabel: 'Majs på grillen', path: '/assets/forvandlinger/crops/majs/majs-grill-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'grillede-majskolber', priority: 80 },
   { crop: 'majs', cropLabel: 'Tørrede majskorn', path: '/assets/forvandlinger/crops/majs/majs-toerrede-korn-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['autumn'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'popcorn-fra-haven', priority: 78 },
+  // kartoffel/kamille/fersken/rabarber/hyldeblomst/syren + pesto-ekstra —
+  // Forvandlinger-batch 7/8 2026 (højformat 3:4). Retterne er RESULTATFOTOS
+  // til endnu uskrevne forvandlinger → bevidst IKKE 'forvandling'-tagget
+  // (README-reglen); bind med forvandlingId når katalogposterne skrives.
+  // Kun kamille-bryg + pesto-fotos er bundet — deres poster findes allerede.
+  { crop: 'kartoffel', cropLabel: 'Hasselback-kartofler', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-hasselback-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 88 },
+  { crop: 'kartoffel', cropLabel: 'Kartoffelmos', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-mos-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 87 },
+  { crop: 'kartoffel', cropLabel: 'Kartoffelsuppe', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-suppe-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 86 },
+  { crop: 'kartoffel', cropLabel: 'Hjemmelavede chips', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-chips-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 84 },
+  { crop: 'kartoffel', cropLabel: 'Stegte kartofler med hvidløg og urter', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-stegte-hvidloeg-urter-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 83 },
+  { crop: 'kartoffel', cropLabel: 'Hjemmelavede fritter', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-fritter-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 82 },
+  { crop: 'kartoffel', cropLabel: 'Kartoffelmos med rosmarin', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-mos-rosmarin-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 80 },
+  { crop: 'kartoffel', cropLabel: 'Kogte kartofler med krydderier', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-kogte-krydderier-01.jpg', role: 'kitchen', mood: 'fresh', useCases: ['mosaic', 'recipeTile'], priority: 78 },
+  { crop: 'kartoffel', cropLabel: 'Kartofler undervejs', path: '/assets/forvandlinger/crops/kartoffel/kartoffel-proces-01.jpg', role: 'kitchen', mood: 'quiet', useCases: ['mosaic', 'recipeTile'], priority: 72 },
+  { crop: 'kamille', cropLabel: 'Kamille-te', path: '/assets/forvandlinger/crops/kamille/kamille-bryg-01.jpg', role: 'kitchen', mood: 'quiet', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'kamille-te', priority: 85 },
+  { crop: 'kamille', cropLabel: 'Tørret kamille', path: '/assets/forvandlinger/crops/kamille/kamille-toerret-01.jpg', role: 'flower', mood: 'quiet', useCases: ['mosaic', 'recipeTile'], priority: 84 },
+  { crop: 'kamille', cropLabel: 'Kamille-tebreve', path: '/assets/forvandlinger/crops/kamille/kamille-te-brev-01.jpg', role: 'kitchen', mood: 'quiet', useCases: ['mosaic', 'recipeTile'], priority: 82 },
+  { crop: 'kamille', cropLabel: 'Kamille-tebreve', path: '/assets/forvandlinger/crops/kamille/kamille-te-brev-02.jpg', role: 'kitchen', mood: 'quiet', useCases: ['mosaic', 'recipeTile'], priority: 72 },
+  { crop: 'kamille', cropLabel: 'Kamille undervejs', path: '/assets/forvandlinger/crops/kamille/kamille-proces-01.jpg', role: 'flower', mood: 'quiet', useCases: ['mosaic', 'recipeTile'], priority: 70 },
+  { crop: 'fersken', cropLabel: 'Ferskner på glas', path: '/assets/forvandlinger/crops/fersken/fersken-glas-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
+  { crop: 'fersken', cropLabel: 'Tørrede ferskner', path: '/assets/forvandlinger/crops/fersken/fersken-toerret-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 84 },
+  { crop: 'fersken', cropLabel: 'Ferskner undervejs', path: '/assets/forvandlinger/crops/fersken/fersken-proces-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 78 },
+  { crop: 'fersken', cropLabel: 'Ferskner undervejs', path: '/assets/forvandlinger/crops/fersken/fersken-proces-02.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 76 },
+  { crop: 'rabarber', cropLabel: 'Rabarber undervejs', path: '/assets/forvandlinger/crops/rabarber/rabarber-proces-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['spring', 'summer'], useCases: ['mosaic', 'recipeTile'], priority: 80 },
+  { crop: 'hyldeblomst', cropLabel: 'Hyldeblomstsaft', path: '/assets/forvandlinger/crops/hyldeblomst/hyldeblomst-saft-01.jpg', role: 'kitchen', mood: 'summer', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
+  { crop: 'hyldeblomst', cropLabel: 'Hyldeblomstsaft med isterninger', path: '/assets/forvandlinger/crops/hyldeblomst/hyldeblomst-saft-isterninger-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 84 },
+  { crop: 'hyldeblomst', cropLabel: 'Hyldeblomster', path: '/assets/forvandlinger/crops/hyldeblomst/hyldeblomst-blomster-proces-01.jpg', role: 'flower', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 78 },
+  { crop: 'hyldeblomst', cropLabel: 'Hyldeblomst undervejs', path: '/assets/forvandlinger/crops/hyldeblomst/hyldeblomst-proces-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 74 },
+  { crop: 'syren', cropLabel: 'Syren-is', path: '/assets/forvandlinger/crops/syren/syren-is-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'recipeTile'], priority: 86 },
+  { crop: 'basilikum', cropLabel: 'Basilikumpesto på glas', path: '/assets/forvandlinger/crops/basilikum/basilikum-pesto-glas-01.jpg', role: 'kitchen', mood: 'green', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'basilikumpesto', priority: 86 },
+  { crop: 'basilikum', cropLabel: 'Basilikumpesto', path: '/assets/forvandlinger/crops/basilikum/basilikum-pesto-02.jpg', role: 'kitchen', mood: 'green', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'basilikumpesto', priority: 82 },
 ]
 
 function norm(s: string): string {
