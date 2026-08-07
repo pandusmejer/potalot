@@ -58,6 +58,14 @@ export const CROP_FARVE: Record<string, string> = {
   kartoffel: '#B99A6B',
   lavendel: '#7E6480',
   dahlia: '#C87F94',
+  gulerod: '#C27842',
+  asparges: '#8FA17A',
+  aert: '#8FAF72',
+  blaabaer: '#6E6C9D',
+  majs: '#D0B34A',
+  mynte: '#6C8A65',
+  kamille: '#D6B85A',
+  morgenfrue: '#D18946',
 }
 const STANDARD_FARVE = '#8B9774'
 
@@ -116,44 +124,39 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   // insekthotel — foto fandtes (næste-projekt-kortet) men var aldrig bundet til
   // forvandlingen → mosaik-tilen faldt til farve. Binder det eksisterende foto.
   { crop: 'insekthotel', cropLabel: 'Insekthotel', path: '/images/havebog/naeste-projekt-insekthotel.jpg', role: 'texture', mood: 'quiet', useCases: ['forvandling'], forvandlingId: 'insekthotel', priority: 90 },
-  // asparges + ært — Forvandlinger-leverance 6/8 2026. Retterne (tærte,
-  // blancheret+æg, puré, suppe) er RESULTATFOTOS til asparges-/ærte-
-  // forvandlinger der endnu ikke er skrevet — de er bevidst IKKE tagget
-  // 'forvandling' (forkert billede er værre end intet billede); bind dem
-  // med forvandlingId når posterne kommer. Råvarefotoet er generisk.
-  { crop: 'asparges', cropLabel: 'Asparges', path: '/assets/forvandlinger/crops/asparges/asparges-raa-01.jpg', role: 'fruit', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'cropTile', 'forvandling'], priority: 90 },
-  { crop: 'asparges', cropLabel: 'Blancherede asparges med æg', path: '/assets/forvandlinger/crops/asparges/asparges-blancheret-aeg-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
-  { crop: 'asparges', cropLabel: 'Aspargestærte', path: '/assets/forvandlinger/crops/asparges/asparges-taerte-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['spring'], useCases: ['mosaic', 'recipeTile'], priority: 86 },
-  { crop: 'aert', cropLabel: 'Ærtepuré', path: '/assets/forvandlinger/crops/aert/aert-pure-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
-  { crop: 'aert', cropLabel: 'Ærtesuppe', path: '/assets/forvandlinger/crops/aert/aert-suppe-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 86 },
+  // asparges + ært — resultatfotos er nu bundet til konkrete forvandlinger;
+  // råvarefotoet for asparges bevares som generisk afgrøde-/fallback-billede.
+  { crop: 'asparges', cropLabel: 'Asparges', path: '/assets/forvandlinger/crops/asparges/asparges-raa-01.jpg', role: 'fruit', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'cropTile'], priority: 90 },
+  { crop: 'asparges', cropLabel: 'Asparges med æg', path: '/assets/forvandlinger/crops/asparges/asparges-blancheret-aeg-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['spring'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'asparges-med-aeg', priority: 88 },
+  { crop: 'asparges', cropLabel: 'Aspargestærte', path: '/assets/forvandlinger/crops/asparges/asparges-taerte-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['spring'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'asparges-taerte', priority: 86 },
+  { crop: 'aert', cropLabel: 'Ærtepuré', path: '/assets/forvandlinger/crops/aert/aert-pure-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'aertepure', priority: 88 },
+  { crop: 'aert', cropLabel: 'Ærtesuppe', path: '/assets/forvandlinger/crops/aert/aert-suppe-01.jpg', role: 'kitchen', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'aertesuppe', priority: 86 },
   // pynt-til-drikke — fire varianter bundet til den nye drikke-forvandling
   // (P0b i forvandlinger-copy-specen). Jordbær-rosmarin fører.
   { crop: 'drikke', cropLabel: 'Vand med jordbær og rosmarin', path: '/assets/forvandlinger/crops/drikke/vand-jordbaer-rosmarin-01.jpg', role: 'kitchen', mood: 'summer', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 90 },
   { crop: 'drikke', cropLabel: 'Vand med citron og mynte', path: '/assets/forvandlinger/crops/drikke/vand-citron-mynte-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 80 },
   { crop: 'drikke', cropLabel: 'Vand med agurk, lime og timian', path: '/assets/forvandlinger/crops/drikke/vand-agurk-lime-timian-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 70 },
   { crop: 'drikke', cropLabel: 'Vand med timian', path: '/assets/forvandlinger/crops/drikke/vand-timian-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['summer'], useCases: ['forvandling'], forvandlingId: 'pynt-til-drikke', priority: 60 },
-  // blåbær + majs — Forvandlinger-leverance 6/8 aften. Samme regel som
-  // asparges/ærter: retterne er resultatfotos til endnu uskrevne
-  // forvandlinger og er IKKE 'forvandling'-tagget — bind med
-  // forvandlingId når posterne kommer.
+  // blåbær + majs — de kuraterede forvandlinger er nu skrevet og bundet.
+  // Topping/proces/sidevariationer uden egen katalogpost forbliver generiske.
   { crop: 'blaabaer', cropLabel: 'Blåbær-topping', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-topping-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 90 },
   { crop: 'blaabaer', cropLabel: 'Blåbær-topping', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-topping-02.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 80 },
   { crop: 'blaabaer', cropLabel: 'Blåbær-topping', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-topping-03.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 70 },
   { crop: 'blaabaer', cropLabel: 'Blåbær-cookies', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-cookies-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 84 },
-  { crop: 'blaabaer', cropLabel: 'Blåbær-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-proces-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 76 },
-  { crop: 'blaabaer', cropLabel: 'Blåbær-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-proces-02.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 74 },
-  { crop: 'blaabaer', cropLabel: 'Blåbærmarmelade', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-marmelade-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 88 },
-  { crop: 'blaabaer', cropLabel: 'Blåbær-mynte-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-mynte-marmelade-proces-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 72 },
+  { crop: 'blaabaer', cropLabel: 'Blåbær-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-proces-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaermarmelade', priority: 76 },
+  { crop: 'blaabaer', cropLabel: 'Blåbær-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-proces-02.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaermarmelade', priority: 74 },
+  { crop: 'blaabaer', cropLabel: 'Blåbærmarmelade', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-marmelade-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaermarmelade', priority: 88 },
+  { crop: 'blaabaer', cropLabel: 'Blåbær-mynte-marmelade undervejs', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-mynte-marmelade-proces-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaermarmelade', priority: 72 },
   { crop: 'blaabaer', cropLabel: 'Blåbærpandekager', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-pandekager-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 86 },
   { crop: 'blaabaer', cropLabel: 'Blåbær-cheesecake', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-cheesecake-01.jpg', role: 'kitchen', mood: 'fresh', useCases: ['mosaic', 'recipeTile'], priority: 85 },
-  { crop: 'blaabaer', cropLabel: 'Blåbær-is', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-is-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 87 },
-  { crop: 'blaabaer', cropLabel: 'Blåbærtærte', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-taerte-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 89 },
-  { crop: 'blaabaer', cropLabel: 'Blåbærmuffins', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-muffins-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 83 },
+  { crop: 'blaabaer', cropLabel: 'Blåbæris', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-is-01.jpg', role: 'kitchen', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaeris', priority: 87 },
+  { crop: 'blaabaer', cropLabel: 'Blåbærtærte', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-taerte-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaertaerte', priority: 89 },
+  { crop: 'blaabaer', cropLabel: 'Blåbærmuffins', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-muffins-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'blaabaermuffins', priority: 83 },
   { crop: 'blaabaer', cropLabel: 'French toast med blåbær', path: '/assets/forvandlinger/crops/blaabaer/blaabaer-french-toast-01.jpg', role: 'kitchen', mood: 'warm', useCases: ['mosaic', 'recipeTile'], priority: 82 },
-  { crop: 'majs', cropLabel: 'Poppede majs', path: '/assets/forvandlinger/crops/majs/majs-poppede-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['autumn'], useCases: ['mosaic', 'recipeTile'], priority: 88 },
-  { crop: 'majs', cropLabel: 'Grillede majskolber', path: '/assets/forvandlinger/crops/majs/majs-grillede-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 90 },
-  { crop: 'majs', cropLabel: 'Majs på grillen', path: '/assets/forvandlinger/crops/majs/majs-grill-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile'], priority: 80 },
-  { crop: 'majs', cropLabel: 'Tørrede majskorn', path: '/assets/forvandlinger/crops/majs/majs-toerrede-korn-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['autumn'], useCases: ['mosaic', 'recipeTile'], priority: 78 },
+  { crop: 'majs', cropLabel: 'Popcorn fra haven', path: '/assets/forvandlinger/crops/majs/majs-poppede-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['autumn'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'popcorn-fra-haven', priority: 88 },
+  { crop: 'majs', cropLabel: 'Grillede majskolber', path: '/assets/forvandlinger/crops/majs/majs-grillede-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'grillede-majskolber', priority: 90 },
+  { crop: 'majs', cropLabel: 'Majs på grillen', path: '/assets/forvandlinger/crops/majs/majs-grill-01.jpg', role: 'kitchen', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'grillede-majskolber', priority: 80 },
+  { crop: 'majs', cropLabel: 'Tørrede majskorn', path: '/assets/forvandlinger/crops/majs/majs-toerrede-korn-01.jpg', role: 'kitchen', mood: 'quiet', seasons: ['autumn'], useCases: ['mosaic', 'recipeTile', 'forvandling'], forvandlingId: 'popcorn-fra-haven', priority: 78 },
 ]
 
 function norm(s: string): string {
