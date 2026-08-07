@@ -58,12 +58,39 @@ Redder mosaikken når intet cropfoto findes; bruges til kategori-/stemnings-tile
 | 29 | Pressede blomster på papir | `mood/pressede-blomster-01.jpg` | FORVANDLING_KATEGORI_ASSETS (pynt) |
 | 30 | Blandet høst på køkkenbord | `mood/koekkenbord-hoest-01.jpg` | FORVANDLING_KATEGORI_ASSETS (spis/gem) |
 
+## Format (VIGTIGT — tiles beskærer hårdt)
+
+Forvandlings-fotos vises KUN som mosaik-tiles, og de beskæres altid med
+object-cover fra midten til to faste formater:
+
+- **Lead-tile (den store): 3:4 højformat**
+- **Almindelige tiles: 1:1 kvadrat**
+- Detail-siden viser INTET foto (kun tekst)
+
+Derfor, i prioriteret rækkefølge:
+
+1. **3:4 højformat** (fx 1200×1600) — passer lead-tilen 1:1, kvadratet
+   koster kun lidt top/bund. Dette er standarden.
+2. **1:1 kvadrat** — fint til almindelige tiles.
+3. 4:3 bredformat er MINDST optimalt: lead-tilen skærer ~44 % af bredden
+   væk. Kun acceptabelt hvis motivet står centreret med god luft omkring.
+
+Uanset format: **motivet centreret med margin** — der er ingen focal
+point-styring på tiles.
+
+**Undtagelse — makrofotos** (`public/images/makro/`, IKKE denne mappe):
+de bruges som atmosfæriske baggrunde med resolver-styrede beskærings-
+profiler, så dér er 4:3/3:2 bredformat standarden (matcher det
+eksisterende makro-bibliotek).
+
 ## Billedstil (hold konsekvent)
 
 Premium botanisk/editorial · naturligt sidelys · creme/salvie/terracotta/støvet
 rosa · lav kontrast · shallow depth of field · taktile overflader. **Ingen** hård
 food styling, mennesker/hænder (i pakke 1), logoer/emballage eller tekst i
 billedet (bortset fra evt. håndskrevet frøpose-label).
+Undtagelse fra pakke 2+: hænder er OK på kategori-/mood-fotos (fx plej/
+hudpleje), hvor handlingen ER motivet — aldrig på afgrøde-fotos.
 
 ## Foto vs. farvefelt
 

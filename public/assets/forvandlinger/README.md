@@ -1,8 +1,15 @@
 # Forvandlinger-billedbibliotek
 
 Asset-system til Forvandlinger-mosaikken i Havebog. **Ikke** en løs billedmappe:
-registret (`src/lib/forvandlinger-assets.ts`) beskriver hvert billedes rolle, så
-mosaikken kan vælge smart og falde pænt tilbage.
+registret (`FORVANDLING_ASSETS` i `src/lib/forvandling-registry.ts`) beskriver
+hvert billedes rolle, så mosaikken kan vælge smart og falde pænt tilbage.
+
+## Format
+
+Tiles beskærer object-cover fra midten til **3:4 højformat** (lead) og
+**1:1 kvadrat** (alm. tiles). Levér **3:4 højformat (fx 1200×1600) eller
+kvadrat, motiv centreret med margin** — bredformat mister op mod halvdelen
+af billedet. Fuld formatspec: se SHOOTLIST.md.
 
 ## Mappestruktur
 
@@ -31,9 +38,15 @@ Pr. afgrøde: 1 frugt/afgrøde · 1 plante · 1 detalje · 1 køkken.
 ## Registrér nye billeder
 
 Læg filen i den rette mappe og tilføj én linje i `FORVANDLING_ASSETS`
-(`src/lib/forvandlinger-assets.ts`) med `crop`, `role`, `path`, `useCases`.
-Ingen komponent-ændring nødvendig — helper'en `selectForvandlingerAssets` opdager
-det automatisk.
+(`src/lib/forvandling-registry.ts`) med `crop`, `role`, `path`, `useCases`.
+Ingen komponent-ændring nødvendig — selektorerne opdager det automatisk.
+
+**Resultatfotos til forvandlinger, der endnu ikke er skrevet** (fx en
+tærte til en kommende blåbær-forvandling): registrér dem UDEN
+`'forvandling'`-tagget (kun `mosaic`/`recipeTile`), så de ikke crop-matcher
+ind på et forkert kort (fx en suppe på "Gem ærtefrø"). Når forvandlingen
+skrives, bindes fotoet med `forvandlingId` + `useCases: ['forvandling']`.
+Forkert billede er værre end intet billede.
 
 ## Fallback (mosaikken knækker aldrig)
 
@@ -54,8 +67,10 @@ crop-foto-tiles) skal det **eksplicit tagges**:
 
 - **Afgrøde-/sort-foto:** læg i `crops/{afgrøde}/` og registrér i
   `FORVANDLING_ASSETS` med `useCases: ['forvandling', …]`.
-- **Kategori/mood-foto:** læg i `mood/` som `{kategori}-stemning-01.jpg` og
-  tilføj en linje i `FORVANDLING_KATEGORI_ASSETS` (`forvandling-assets.ts`).
+- **Kategori/mood-foto:** læg i `mood/` som `{kategori}-{beskrivelse}-{nr}.jpg`
+  (fx `plej-hudpleje-01.jpg`, `duft-olier-01.jpg`) og tilføj en linje i
+  `FORVANDLING_KATEGORI_ASSETS` (`src/lib/forvandling-assets.ts`).
+  FØRSTE match pr. kategori vinder — primærfotoet skal stå øverst.
 
 Uden `'forvandling'`-taggede fotos falder alle forvandlings-tiles til farve-
 posteren (kategori-farve) — det nuværende, godkendte udseende. Læg ét foto ind
