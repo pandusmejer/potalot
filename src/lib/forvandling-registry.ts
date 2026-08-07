@@ -102,16 +102,16 @@ export const FORVANDLING_ASSETS: SpisekammerAsset[] = [
   { crop: 'agurk', cropLabel: 'Syltede agurker', path: '/assets/forvandlinger/crops/agurk/agurk-sylt-01.jpg', role: 'kitchen', mood: 'green', useCases: ['forvandling'], forvandlingId: 'syltede-agurker', priority: 90 },
   { crop: 'agurk', cropLabel: 'Agurkesalat', path: '/assets/forvandlinger/crops/agurk/agurk-salat-01.jpg', role: 'kitchen', mood: 'green', useCases: ['forvandling'], forvandlingId: 'agurkesalat', priority: 90 },
   // tomat — makro-fallback (bevaret, lavere prioritet)
-  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
-  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-lys.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
+  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat-san-marzano/klase-modne.jpg', role: 'fruit', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 70 },
+  { crop: 'tomat', cropLabel: 'Tomater', path: '/images/makro/tomat/blad-draaber.jpg', role: 'leaf', mood: 'fresh', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 55 },
   // agurk
   { crop: 'agurk', cropLabel: 'Agurker', path: '/images/makro/agurk/frugt.jpg', role: 'fruit', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile', 'recipeTile'], priority: 88 },
   { crop: 'agurk', cropLabel: 'Agurker', path: '/images/makro/agurk/blad.jpg', role: 'leaf', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 50 },
   // basilikum
-  { crop: 'basilikum', cropLabel: 'Basilikum', path: '/images/makro/basilikum/bundt.jpg', role: 'plant', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 80 },
+  { crop: 'basilikum', cropLabel: 'Basilikum', path: '/images/makro/basilikum/oppefra.jpg', role: 'plant', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'cropTile'], priority: 80 },
   // chili
   { crop: 'chili', cropLabel: 'Chili', path: '/images/makro/chili/blomst.jpg', role: 'flower', mood: 'warm', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 60 },
-  { crop: 'chili', cropLabel: 'Chili', path: '/images/makro/chili/blad.jpg', role: 'leaf', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 45 },
+  { crop: 'chili', cropLabel: 'Chili', path: '/images/makro/chili/blad-dug.jpg', role: 'leaf', mood: 'green', seasons: ['summer'], useCases: ['mosaic', 'background'], priority: 45 },
   // gulerod — forvandlinger (batch 1/8). Resultatfotos bundet pr. forvandlingId;
   // skiver = delt råvarebillede uden binding (afgrøde-fallback for gulerod).
   { crop: 'gulerod', cropLabel: 'Gulerodskage',        path: '/assets/forvandlinger/crops/gulerod/gulerodskage-hero.jpg',          role: 'kitchen', mood: 'warm',  useCases: ['forvandling'], forvandlingId: 'guleroedskage',        priority: 90 },
