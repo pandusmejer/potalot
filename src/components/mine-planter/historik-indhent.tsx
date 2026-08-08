@@ -1,45 +1,34 @@
 'use client'
 
 import { useState, useSyncExternalStore } from 'react'
-import { History, Activity, Ruler, X, Sprout, ArrowUpRight, TreePine, Wheat } from 'lucide-react'
+import { X, History, Sprout, ArrowUpRight, TreePine, Wheat } from 'lucide-react'
 import { LogForm } from '@/components/mine-planter/log-form'
 import type { PlantLogType } from '@/lib/types'
 
 const sans = 'var(--font-manrope)'
-
-// Ingen abonnement — "sprunget over" ændrer sig kun via denne komponents egen
-// skip() (lokal state), så vi behøver ikke lytte på storage-events.
 const noSubscribe = () => () => {}
 
 /**
- * "Hvordan har planten det i dag?" — indhentning efter en TILBAGEVIRKENDE
- * oprettelse.
+ * "Din plante er i gang" — det lille retroaktive kort (Anna 8/8, 3. runde):
+ * ét roligt kort, én handling. Første møde med en plante skal føles som
+ * "her er din plante", ikke "færdiggør venligst journalføringen".
  *
- * Når en bruger registrerer en plante med en sådato langt i fortiden, bliver
- * planten pludselig fx 164 dage gammel, kalenderen rykker, og loggen er tom.
- * Systemet opfører sig korrekt, men det føles forkert fordi intet forklares
- * (Anna 16/7). Dette kort forklarer hvad Potalot har udledt, og inviterer —
- * frivilligt — til at registrere plantens AKTUELLE tilstand.
- *
- * Vigtigt: trivsel/højde logges via LogForm, som dateres til I DAG (idag()),
- * altså som aktuelle observationer — ikke som hændelser på den historiske
- * sådato. Kortet forsvinder når brugeren har vurderet planten eller trykker
- * "Ikke nu" (husket pr. plante i localStorage).
+ * - INGEN trivsel/højde her — de handler om NU og bor i Log nyt på planten.
+ * - Milepælene vises først EFTER tryk på "Tilføj tidligere milepæle"
+ *   (progressiv afsløring) og åbner den eksisterende logdialog med typen
+ *   forvalgt — aldrig en miniatureudgave af logsystemet.
+ * - Kortet forsvinder PERMANENT når en tidligere milepæl er tilføjet,
+ *   eller brugeren lukker det.
  */
 export function HistorikIndhent({
   plantId,
-  ageDays,
   registrerede,
 }: {
   plantId: string
-  ageDays: number
-  /** Log-typer (+ syntetisk 'planting_out'/'harvest' fra plantens felter) der
-   * allerede er registreret. Hver CTA forsvinder når dens oplysning findes —
-   * kortet er onboarding og skal gradvist gøre sig selv overflødigt. */
+  /** Allerede registrerede log-typer (+ syntetisk planting_out/harvest fra
+   * plantens felter) — bruges til at skjule kortet og filtrere valgene. */
   registrerede: string[]
 }) {
-  // Læs "sprunget over"-flaget fra localStorage hydrerings-sikkert: serveren
-  // (og første klient-render) ser false, hvorefter klient-snapshot slår igennem.
   const skippedBefore = useSyncExternalStore(
     noSubscribe,
     () => {
@@ -48,53 +37,82 @@ export function HistorikIndhent({
     () => false,
   )
   const [dismissed, setDismissed] = useState(false)
+  const [viserValg, setViserValg] = useState(false)
 
   const har = new Set(registrerede)
-  const tilstandsChips = [
-    { type: 'health', label: 'Registrér trivsel' },
-    { type: 'height_measurement', label: 'Mål højden' },
-  ].filter(c => !har.has(c.type))
-  const milepaelsChips = [
-    { type: 'germination', label: 'Spiret' },
-    { type: 'repotting', label: 'Pottet om' },
-    { type: 'planting_out', label: 'Udplantet' },
-    { type: 'harvest', label: 'Høstet' },
-  ].filter(c => !har.has(c.type))
+  const alleMilepaele: { type: PlantLogType; label: string; ikon: React.ReactNode }[] = [
+    { type: 'germination', label: 'Spiret', ikon: <Sprout className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> },
+    { type: 'repotting', label: 'Pottet om', ikon: <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> },
+    { type: 'planting_out', label: 'Udplantet', ikon: <TreePine className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> },
+    { type: 'harvest', label: 'Høstet', ikon: <Wheat className="h-3.5 w-3.5" strokeWidth={2} aria-hidden /> },
+  ]
+  const milepaele = alleMilepaele.filter(m => !har.has(m.type))
 
-  // Alt indhentet → kortet har gjort sit arbejde og forsvinder helt.
-  if (skippedBefore || dismissed || (tilstandsChips.length === 0 && milepaelsChips.length === 0)) return null
+  // Én tilføjet milepæl (eller alle kendte) → kortet har gjort sit og forsvinder.
+  const harTilfoejetMilepael = ['germination', 'repotting', 'planting_out', 'harvest'].some(t => har.has(t))
+  if (skippedBefore || dismissed || harTilfoejetMilepael || milepaele.length === 0) return null
 
-  function skip() {
-    try {
-      localStorage.setItem(`indhent-skip-${plantId}`, '1')
-    } catch { /* ignore */ }
+  function luk() {
+    try { localStorage.setItem(`indhent-skip-${plantId}`, '1') } catch { /* ignore */ }
     setDismissed(true)
   }
 
   return (
     <section
-      style={{ background: '#F2EFE2', border: '1px solid rgba(36,48,31,0.12)', borderRadius: 20, padding: '18px 18px 16px' }}
+      style={{ background: '#F2EFE2', border: '1px solid rgba(36,48,31,0.12)', borderRadius: 20, padding: '16px 18px' }}
     >
       <div className="flex items-start gap-3">
         <span
           className="flex shrink-0 items-center justify-center"
-          style={{ width: 38, height: 38, borderRadius: 12, background: '#E7ECDD', color: '#3D4A2C' }}
+          style={{ width: 34, height: 34, borderRadius: 11, background: '#E7ECDD', color: '#3D4A2C' }}
         >
-          <History className="h-[18px] w-[18px]" strokeWidth={1.9} aria-hidden />
+          <History className="h-4 w-4" strokeWidth={1.9} aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <p style={{ fontFamily: sans, fontSize: 15.5, fontWeight: 700, color: '#24301F', margin: 0, lineHeight: 1.2 }}>
-            Planten har allerede været i gang i {ageDays} {ageDays === 1 ? 'dag' : 'dage'}
+          <p style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: '#24301F', margin: 0, lineHeight: 1.2 }}>
+            Din plante er i gang
           </p>
-          <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.5, color: 'rgba(36,48,31,0.65)', margin: '6px 0 0' }}>
-            Vi har sat alderen ud fra din sådato og placeret planten på det
-            aktuelle stadie. Vi kan ikke vide hvornår den spirede, blev udplantet
-            eller hvordan den har det nu — men det kan du fortælle.
+          <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.5, color: 'rgba(36,48,31,0.65)', margin: '5px 0 0' }}>
+            Vi har sat alderen ud fra din sådato. Du kan tilføje det, der
+            allerede er sket, når det passer dig.
           </p>
+
+          {!viserValg ? (
+            <button
+              type="button"
+              onClick={() => setViserValg(true)}
+              style={{
+                background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                marginTop: 10, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#4E6138',
+              }}
+            >
+              Tilføj tidligere milepæle →
+            </button>
+          ) : (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {milepaele.map(m => (
+                <LogForm
+                  key={m.type}
+                  plantId={plantId}
+                  defaultType={m.type}
+                  trigger={
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1.5 rounded-full transition-transform active:scale-[0.97]"
+                      style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#3D4A2C', background: '#FFFFFF', border: '1px solid rgba(61,74,44,0.18)', padding: '8px 14px' }}
+                    >
+                      {m.ikon}
+                      {m.label}
+                    </button>
+                  }
+                />
+              ))}
+            </div>
+          )}
         </div>
         <button
           type="button"
-          onClick={skip}
+          onClick={luk}
           aria-label="Ikke nu"
           className="shrink-0 rounded-full p-1 transition-colors hover:bg-[rgba(36,48,31,0.06)]"
           style={{ color: 'rgba(36,48,31,0.4)' }}
@@ -102,68 +120,6 @@ export function HistorikIndhent({
           <X className="h-4 w-4" strokeWidth={2} />
         </button>
       </div>
-
-      {tilstandsChips.length > 0 && (
-        <>
-          <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.5)', margin: '16px 0 8px' }}>
-            Hvordan har den det i dag? <span style={{ fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>(frivilligt)</span>
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {tilstandsChips.map(c => (
-              <LogForm
-                key={c.type}
-                plantId={plantId}
-                defaultType={c.type as PlantLogType}
-                trigger={indhentChip(
-                  c.type === 'health'
-                    ? <Activity className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-                    : <Ruler className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />,
-                  c.label,
-                )}
-              />
-            ))}
-          </div>
-        </>
-      )}
-
-      {milepaelsChips.length > 0 && (
-        <>
-          <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(36,48,31,0.5)', margin: '16px 0 8px' }}>
-            Kendte milepæle <span style={{ fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>(vælg den dato de skete)</span>
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {milepaelsChips.map(c => (
-              <LogForm
-                key={c.type}
-                plantId={plantId}
-                defaultType={c.type as PlantLogType}
-                trigger={indhentChip(MILEPAELS_IKON[c.type], c.label)}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </section>
-  )
-}
-
-const MILEPAELS_IKON: Record<string, React.ReactNode> = {
-  germination: <Sprout className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />,
-  repotting: <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />,
-  planting_out: <TreePine className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />,
-  harvest: <Wheat className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />,
-}
-
-/** Native <button> så Radix' asChild-clone på LogForm-triggeren virker. */
-function indhentChip(icon: React.ReactNode, label: string) {
-  return (
-    <button
-      type="button"
-      className="inline-flex items-center gap-1.5 rounded-full transition-transform active:scale-[0.97]"
-      style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: '#3D4A2C', background: '#FFFFFF', border: '1px solid rgba(61,74,44,0.18)', padding: '8px 14px' }}
-    >
-      {icon}
-      {label}
-    </button>
   )
 }

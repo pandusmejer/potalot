@@ -65,6 +65,10 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
     log?.type === 'height_measurement' && log.valueNumeric != null ? String(log.valueNumeric) : '',
   )
 
+  // Særligt valg i dropdownen (Anna 8/8: plantesiden har ÉN primær indgang;
+  // den generelle Gartner bor HER som mulighed, ikke som egen CTA ved heroen).
+  const [gartnerValgt, setGartnerValgt] = useState(false)
+
   const isHealth = type === 'health'
   const isHeight = type === 'height_measurement'
   const erProblem = !isEdit && (type === 'pest_disease' || (isHealth && health === 'attention'))
@@ -100,6 +104,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
       }
       reset()
       setGartnerOensket(false)
+      setGartnerValgt(false)
       setViserVurdering(false)
       gartner.nulstil()
     }
@@ -108,6 +113,13 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+
+    if (gartnerValgt) {
+      // Generel vurdering — ingen logpost oprettes, intet problem opfindes.
+      setViserVurdering(true)
+      gartner.spoerg('', { plantId, intent: 'general' })
+      return
+    }
 
     // Validér de to måletyper — de skal have en værdi.
     if (isHealth && !health) { setError('Vælg hvordan planten trives.'); return }
@@ -171,15 +183,17 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
       <DialogContent>
         {viserVurdering ? (
           <>
-            <DialogTitle>Gemt — Gartneren kigger på det</DialogTitle>
+            <DialogTitle>{gartnerValgt ? 'Gartnerens vurdering' : 'Gemt — Gartneren kigger på det'}</DialogTitle>
             <DialogDescription>
-              Din registrering ligger i plantens historik. Her er vurderingen.
+              {gartnerValgt
+                ? 'Gartneren ser på sort, alder, sted og plantens historik.'
+                : 'Din registrering ligger i plantens historik. Her er vurderingen.'}
             </DialogDescription>
             <GartnerSvarPanel
               tilstand={gartner.tilstand}
               svar={gartner.svar}
               plantId={plantId}
-              intent="problem"
+              intent={gartnerValgt ? 'general' : 'problem'}
             />
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
@@ -201,28 +215,44 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
             <div>
               <Label>Type</Label>
               <select
-                value={type}
-                onChange={e => setType(e.target.value as PlantLogType)}
+                value={gartnerValgt ? '__gartner' : type}
+                onChange={e => {
+                  if (e.target.value === '__gartner') { setGartnerValgt(true); return }
+                  setGartnerValgt(false)
+                  setType(e.target.value as PlantLogType)
+                }}
                 className="mt-1.5 flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm"
               >
                 {TYPE_ORDER.map(t => (
                   <option key={t} value={t}>{PLANT_LOG_LABEL[t]}</option>
                 ))}
+                {!isEdit && (
+                  <optgroup label="Gartneren">
+                    <option value="__gartner">Få en vurdering af planten</option>
+                  </optgroup>
+                )}
               </select>
             </div>
-            <div>
-              <Label>Dato</Label>
-              <Input
-                type="date"
-                value={date}
-                onChange={e => setDate(e.target.value)}
-                className="mt-1.5"
-                required
-              />
-            </div>
+            {!gartnerValgt && (
+              <div>
+                <Label>Dato</Label>
+                <Input
+                  type="date"
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                  className="mt-1.5"
+                  required
+                />
+              </div>
+            )}
           </div>
 
-          {isHealth ? (
+          {gartnerValgt ? (
+            <p className="text-sm" style={{ color: 'rgba(36,48,31,0.65)' }}>
+              Gartneren giver et generelt blik på planten ud fra sort, alder,
+              sted og historik — du behøver ikke udfylde mere.
+            </p>
+          ) : isHealth ? (
             <div>
               <Label>Hvordan trives planten?</Label>
               <div className="mt-1.5 flex flex-col gap-1.5">
@@ -281,6 +311,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
             </div>
           )}
 
+          {!gartnerValgt && (
           <div>
             <Label>Note{isHealth || isHeight ? ' (valgfri)' : ''}</Label>
             <Textarea
@@ -291,7 +322,9 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               className="mt-1.5"
             />
           </div>
+          )}
 
+          {!gartnerValgt && (
           <div>
             <Label>Fotos</Label>
             <div className="mt-1.5">
@@ -311,6 +344,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               />
             </div>
           </div>
+          )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -348,7 +382,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               Annullér
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : erProblem && gartnerOensket ? 'Gem og få vurdering' : 'Gem'}
+              {pending ? 'Gemmer…' : gartnerValgt ? 'Få vurdering' : isEdit ? 'Gem ændringer' : erProblem && gartnerOensket ? 'Gem og få vurdering' : 'Gem'}
             </Button>
           </DialogFooter>
         </form>

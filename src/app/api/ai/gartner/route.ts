@@ -182,6 +182,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'tomt_spoergsmaal' }, { status: 400 })
   }
 
+  // Regel (Anna 8/8): én logpost = højst én initial vurdering. Findes der
+  // allerede en gemt vurdering for denne log, returneres DEN — genåbning må
+  // aldrig udløse et nyt AI-kald, og samme bladlus må aldrig få to svar.
+  if (body.logId) {
+    const { data: eksisterende } = await supabase
+      .from('ai_conversations')
+      .select('messages')
+      .eq('log_id', body.logId)
+      .maybeSingle()
+    if (eksisterende) {
+      const msgs = eksisterende.messages as { role: string; content: string }[]
+      const svar = msgs.find(m => m.role === 'assistant')?.content
+      if (svar) {
+        return new Response(svar, {
+          headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
+        })
+      }
+    }
+  }
+
   const { kontekst, plantIds } = await bygKontekst(body)
 
   const intent = body.intent ?? (body.logId ? 'problem' : 'general')
@@ -231,6 +251,9 @@ export async function POST(request: NextRequest) {
               { role: 'assistant', content: fuldtSvar },
             ],
             context_plant_ids: plantIds.length ? plantIds : null,
+            // Binding til logposten (unikt indeks håndhæver én pr. log —
+            // taber et racende kald, er den første vurdering sandheden).
+            log_id: body.logId ?? null,
           })
         } catch {
           // stille — historik er sekundær

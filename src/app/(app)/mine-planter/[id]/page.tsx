@@ -10,7 +10,7 @@ import { PlantFotoManager } from '@/components/mine-planter/plant-foto-manager'
 import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
-import { GartnerHandling } from '@/components/ai/gartner-svar'
+import { getGartnerVurderinger } from '@/actions/gartner-vurderinger'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
 import { overrideFor, type PlantDetail } from '@/data/plant-detail'
 import { buildPlantDetail } from '@/lib/plant-detail/build-plant-detail'
@@ -42,6 +42,8 @@ import {
 interface LogContext {
   logs: PlantLog[]
   canLog: boolean
+  /** Gemte Gartner-vurderinger pr. logId (Anna 8/8: child-indhold i tidslinjen). */
+  vurderinger?: Record<string, string>
 }
 
 interface Props {
@@ -74,8 +76,11 @@ export default async function PlanteDetailPage({ params }: Props) {
   const realPlant = await getPlant(id)
   if (realPlant) {
     // Logget ind med egen plante → hent rigtige logs + tillad logging.
-    const logs = await getPlantLogs(realPlant.id)
-    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true })
+    const [logs, vurderinger] = await Promise.all([
+      getPlantLogs(realPlant.id),
+      getGartnerVurderinger(realPlant.id),
+    ])
+    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true, vurderinger })
   }
 
   // 2) Demo-fallback: kig i mock-bibliotek (anonym → ingen skrivning).
@@ -195,19 +200,6 @@ function renderEditorial(
             Trivsel) — ligger ovenpå hero-fotoet (Annas valg 14. juni). */}
         <PlantCard plant={plant} nextTask={nextTask} maal={detail.maal} logPlantId={log.canLog ? plant.id : undefined} />
 
-        {/* Den generelle Gartner (Anna 8/8): diskret sekundær teksthandling
-            ved statuskortet — "hvordan har planten det nu?"-laget. Intent
-            'general': intet problem er meldt, så Gartneren opfinder ikke ét,
-            og "Markér som løst" tilbydes ikke. */}
-        {log.canLog && (
-          <div style={{ marginTop: 10, paddingLeft: 4 }}>
-            <GartnerHandling
-              label="Få en vurdering af planten"
-              visGlyf
-              kontekst={{ plantId: plant.id, intent: 'general' }}
-            />
-          </div>
-        )}
       </div>
 
       {/* Billeder ligger DIREKTE under plantekortet (Anna 16/7) — foto-tilføjelse
@@ -241,7 +233,7 @@ function renderEditorial(
 
       {/* Indhent historik ved tilbagevirkende oprettelse (frivilligt, skippbart). */}
       {visIndhent && (
-        <HistorikIndhent plantId={plant.id} ageDays={ageDays} registrerede={registrerede} />
+        <HistorikIndhent plantId={plant.id} registrerede={registrerede} />
       )}
 
       {/* KARAKTER = sektion 2, lige efter hero (Annas valg). */}
@@ -352,7 +344,7 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
       {canLog ? (
         <div className="mt-5">
           {logs.length > 0 ? (
-            <Timeline plant={plant} logs={logs} showMilestones={false} />
+            <Timeline plant={plant} logs={logs} showMilestones={false} vurderinger={log.vurderinger} />
           ) : (
             <p className="py-2 text-sm italic text-muted-foreground">
               Ingen historie endnu. Tilføj dit første kapitel.

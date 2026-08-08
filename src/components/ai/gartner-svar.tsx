@@ -341,6 +341,72 @@ export function GartnerSvarPanel({
 }
 
 /**
+ * Gemt vurdering vist INDE i sin logpost (Annas model 8/8): child-indhold,
+ * ikke en selvstændig hændelse — ingen egen prik/dato/redigér/slet.
+ * Sammenfoldet som standard (CSS line-clamp, IKKE et separat AI-resumé —
+ * præcis samme tekst, blot forkortet visuelt). Genåbning kalder aldrig AI.
+ */
+export function GartnerVurderingVisning({ svar }: { svar: string }) {
+  const [udfoldet, setUdfoldet] = useState(false)
+  return (
+    <div
+      style={{
+        background: 'rgba(232, 236, 218, 0.45)',
+        border: '1px solid rgba(86, 111, 60, 0.18)',
+        borderRadius: 14,
+        padding: '10px 12px',
+        marginTop: 8,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 5 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img loading="lazy" decoding="async"
+          src="/images/glyphs/plante.png" alt="" aria-hidden
+          style={{ width: 'auto', height: 13, display: 'block' }}
+        />
+        <span
+          style={{
+            fontFamily: sans, fontSize: 10, fontWeight: 700,
+            letterSpacing: '0.16em', textTransform: 'uppercase',
+            color: 'rgba(36,48,31,0.5)',
+          }}
+        >
+          Gartnerens vurdering
+        </span>
+      </div>
+
+      {udfoldet ? (
+        <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 450, lineHeight: 1.5, color: '#2E2A21', whiteSpace: 'pre-wrap' }}>
+          {formaterSvar(svar)}
+        </div>
+      ) : (
+        <p
+          style={{
+            fontFamily: sans, fontSize: 13.5, fontWeight: 450, lineHeight: 1.5,
+            color: '#2E2A21', margin: 0, overflow: 'hidden',
+            display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 3,
+          }}
+        >
+          {svar.split('\n').filter(l => l.trim() && !SEKTIONS_LABELS.has(l.trim())).join(' ')}
+        </p>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setUdfoldet(u => !u)}
+        style={{
+          background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+          marginTop: 6, fontFamily: sans, fontSize: 12, fontWeight: 600,
+          color: '#4E6138',
+        }}
+      >
+        {udfoldet ? 'Skjul vurderingen ↑' : 'Vis hele vurderingen ↓'}
+      </button>
+    </div>
+  )
+}
+
+/**
  * Teksthandling → vurdering. Samme ordlyd pr. flade (spec-tabellen):
  * "Få Gartnerens vurdering" (log), "Undersøg denne plante" (plante) osv.
  * Ren tekst i oliven — ingen ikoner, ingen knap-krom.

@@ -1,5 +1,5 @@
 import { formatDatoMedAar, venligDato } from '@/lib/datetime'
-import { GartnerHandling } from '@/components/ai/gartner-svar'
+import { GartnerHandling, GartnerVurderingVisning } from '@/components/ai/gartner-svar'
 import type { Plant, PlantLog } from '@/lib/types'
 import { Sprout, Leaf, ArrowUpRight, TreePine, Wheat, Flag, FileText, Droplets, Scissors, Bug, Activity, Ruler } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -57,13 +57,16 @@ interface Props {
   showMilestones?: boolean
   /** Skjul redigér/slet — fx i demo (anonym, kan ikke skrive). */
   readOnly?: boolean
+  /** Gemte Gartner-vurderinger pr. logId — vises INDE i logposten (child-
+   * indhold). Findes en vurdering, vises CTA'en aldrig igen (én pr. log). */
+  vurderinger?: Record<string, string>
 }
 
 /**
  * Plante-tidslinje. Viser strukturerede milepæle (sået/spiret/udplantet/første høst)
  * + alle log-events i kronologisk rækkefølge.
  */
-export function Timeline({ plant, logs, showMilestones = true, readOnly = false }: Props) {
+export function Timeline({ plant, logs, showMilestones = true, readOnly = false, vurderinger = {} }: Props) {
   // Strukturerede milepæle fra plant fields
   const milepaele = (showMilestones
     ? [
@@ -122,10 +125,14 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false 
                 {item.log.note && (
                   <p className="text-xs text-muted-foreground mt-0.5">{item.log.note}</p>
                 )}
-                {/* Yndlingsflowet (AI Gartner-spec): efter en problem-log
-                    TILBYDES Gartnerens vurdering — aldrig automatisk. Diskret
-                    teksthandling, kun på pest_disease + trivsel 'attention'. */}
-                {!readOnly &&
+                {/* Samme state-machine uanset indgang (Anna 8/8): har loggen
+                    en gemt vurdering → vis den (sammenfoldet, child-indhold,
+                    aldrig nyt AI-kald). Ellers, ved problem-typer → CTA'en,
+                    som genererer og gemmer ÉN gang. */}
+                {vurderinger[item.log.id] ? (
+                  <GartnerVurderingVisning svar={vurderinger[item.log.id]} />
+                ) : (
+                  !readOnly &&
                   (item.log.type === 'pest_disease' ||
                     (item.log.type === 'health' && item.log.valueText === 'attention')) && (
                     <div className="mt-1.5">
@@ -134,7 +141,8 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false 
                         kontekst={{ plantId: plant.id, logId: item.log.id }}
                       />
                     </div>
-                  )}
+                  )
+                )}
                 {item.log.imageIds.length > 0 && (
                   <div className="mt-2 grid grid-cols-3 gap-1.5">
                     {item.log.imageIds.map(url => (
