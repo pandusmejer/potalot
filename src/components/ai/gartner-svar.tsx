@@ -21,6 +21,9 @@ export interface GartnerKontekst {
   plantId?: string
   logId?: string
   guideId?: string
+  /** 'problem' = konkret registreret problem (log). 'general' = generelt blik
+   * — Gartneren opfinder ikke problemer, og "Markér som løst" tilbydes IKKE. */
+  intent?: 'general' | 'problem'
 }
 
 type Tilstand = 'idle' | 'streamer' | 'faerdig' | 'login' | 'fejl'
@@ -131,7 +134,15 @@ type HandlingStatus = 'klar' | 'gemmer' | 'gjort' | 'fejl'
  * "Markér som løst" logger en note — ALDRIG en auto-trivsel (låst regel:
  * trivsel er brugerens egen vurdering).
  */
-function EfterHandlinger({ plantId, svar }: { plantId: string; svar: string }) {
+function EfterHandlinger({
+  plantId,
+  svar,
+  intent = 'problem',
+}: {
+  plantId: string
+  svar: string
+  intent?: 'general' | 'problem'
+}) {
   const [log, setLog] = useState<HandlingStatus>('klar')
   const [opgave, setOpgave] = useState<HandlingStatus>('klar')
   const [loest, setLoest] = useState<HandlingStatus>('klar')
@@ -149,10 +160,11 @@ function EfterHandlinger({ plantId, svar }: { plantId: string; svar: string }) {
     }
   }
 
-  const handlinger: {
+  const alleHandlinger: {
     status: HandlingStatus
     label: string
     bekraeftelse: string
+    kunProblem?: boolean
     onClick: () => void
   }[] = [
     {
@@ -185,6 +197,7 @@ function EfterHandlinger({ plantId, svar }: { plantId: string; svar: string }) {
     },
     {
       status: loest,
+      kunProblem: true,
       label: 'Markér problemet som løst',
       bekraeftelse: 'Markeret som løst i loggen.',
       onClick: () =>
@@ -199,6 +212,10 @@ function EfterHandlinger({ plantId, svar }: { plantId: string; svar: string }) {
         ),
     },
   ]
+
+  // General vurdering: intet registreret problem → "Markér som løst" ville
+  // lade Gartneren diagnosticere sin egen diagnose. Kun log + opgave.
+  const handlinger = alleHandlinger.filter(h => intent === 'problem' || !h.kunProblem)
 
   return (
     <div
@@ -248,11 +265,13 @@ export function GartnerSvarPanel({
   tilstand,
   svar,
   plantId,
+  intent = 'problem',
 }: {
   tilstand: Tilstand
   svar: string
   /** Sat → cirkel-lukningen vises efter svaret (log/opgave/løst). */
   plantId?: string
+  intent?: 'general' | 'problem'
 }) {
   if (tilstand === 'idle') return null
 
@@ -314,7 +333,9 @@ export function GartnerSvarPanel({
         </div>
       )}
 
-      {tilstand === 'faerdig' && plantId && <EfterHandlinger plantId={plantId} svar={svar} />}
+      {tilstand === 'faerdig' && plantId && (
+        <EfterHandlinger plantId={plantId} svar={svar} intent={intent} />
+      )}
     </div>
   )
 }
@@ -328,10 +349,13 @@ export function GartnerHandling({
   label,
   question,
   kontekst,
+  visGlyf = false,
 }: {
   label: string
   question?: string
   kontekst?: GartnerKontekst
+  /** Plante-glyffen foran labelen — til den generelle indgang ved statuskortet. */
+  visGlyf?: boolean
 }) {
   const { tilstand, svar, spoerg } = useGartner()
 
@@ -343,15 +367,35 @@ export function GartnerHandling({
           onClick={() => spoerg(question ?? '', kontekst)}
           style={{
             background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+            display: 'inline-flex', alignItems: 'center', gap: 7,
             fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#4E6138',
-            textDecoration: 'underline', textUnderlineOffset: 3,
-            textDecorationColor: 'rgba(78,97,56,0.35)',
           }}
         >
-          {label}
+          {visGlyf && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img loading="lazy" decoding="async"
+              src="/images/glyphs/plante.png"
+              alt=""
+              aria-hidden
+              style={{ width: 'auto', height: 15, display: 'block' }}
+            />
+          )}
+          <span
+            style={{
+              textDecoration: 'underline', textUnderlineOffset: 3,
+              textDecorationColor: 'rgba(78,97,56,0.35)',
+            }}
+          >
+            {label}
+          </span>
         </button>
       )}
-      <GartnerSvarPanel tilstand={tilstand} svar={svar} plantId={kontekst?.plantId} />
+      <GartnerSvarPanel
+        tilstand={tilstand}
+        svar={svar}
+        plantId={kontekst?.plantId}
+        intent={kontekst?.intent ?? 'problem'}
+      />
     </div>
   )
 }

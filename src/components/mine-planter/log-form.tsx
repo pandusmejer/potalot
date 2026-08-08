@@ -16,6 +16,7 @@ import { idag } from '@/lib/datetime'
 import { createPlantLog, updatePlantLog } from '@/actions/mine-planter'
 import { deleteImage } from '@/actions/storage'
 import { HEALTH_OPTIONS, PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
+import { GartnerSvarPanel, useGartner } from '@/components/ai/gartner-svar'
 
 // Rækkefølge i dropdownen. Labels kommer fra den DELTE PLANT_LOG_LABEL (samme
 // kilde som historikken bruger), så formular og tidslinje aldrig kan sige to
@@ -39,6 +40,14 @@ interface Props {
  * Log-form til at oprette/redigere en dyrkningslog.
  */
 export function LogForm({ plantId, log, trigger, defaultType }: Props) {
+  // Gartneren i logflowet (Anna 8/8): registrerer brugeren et PROBLEM
+  // (skadedyr/sygdom, eller trivsel = kræver opmærksomhed), tilbyder
+  // formularen selv Gartnerens vurdering — gem én gang, så gemmes loggen
+  // OG vurderingen streames ind i samme dialog. Aldrig automatisk:
+  // tilvalget er altid fravalgt som udgangspunkt.
+  const gartner = useGartner()
+  const [gartnerOensket, setGartnerOensket] = useState(false)
+  const [viserVurdering, setViserVurdering] = useState(false)
   const router = useRouter()
   const isEdit = !!log
   const [open, setOpen] = useState(false)
@@ -58,6 +67,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
 
   const isHealth = type === 'health'
   const isHeight = type === 'height_measurement'
+  const erProblem = !isEdit && (type === 'pest_disease' || (isHealth && health === 'attention'))
 
   function reset() {
     if (isEdit && log) {
@@ -83,11 +93,15 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
   function handleOpenChange(next: boolean) {
     setOpen(next)
     if (!next) {
-      // Ved create-mode: ryd uploadede billeder der ikke blev gemt
-      if (!isEdit) {
+      // Ved create-mode: ryd uploadede billeder der ikke blev gemt — men IKKE
+      // når loggen faktisk blev gemt og vi blot viser vurderingen.
+      if (!isEdit && !viserVurdering) {
         images.forEach(url => { deleteImage(url).catch(() => {}) })
       }
       reset()
+      setGartnerOensket(false)
+      setViserVurdering(false)
+      gartner.nulstil()
     }
   }
 
@@ -125,9 +139,16 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
         setError(res.error)
         return
       }
+      router.refresh()
+      if (!isEdit && erProblem && gartnerOensket && 'id' in res) {
+        // Én sammenhængende handling: loggen er gemt — vurderingen streames
+        // nu ind i samme dialog, koblet til den nye logpost.
+        setViserVurdering(true)
+        gartner.spoerg('', { plantId, logId: res.id, intent: 'problem' })
+        return
+      }
       setOpen(false)
       if (!isEdit) reset()
-      router.refresh()
     })
   }
 
@@ -148,6 +169,26 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
         )}
       </DialogTrigger>
       <DialogContent>
+        {viserVurdering ? (
+          <>
+            <DialogTitle>Gemt — Gartneren kigger på det</DialogTitle>
+            <DialogDescription>
+              Din registrering ligger i plantens historik. Her er vurderingen.
+            </DialogDescription>
+            <GartnerSvarPanel
+              tilstand={gartner.tilstand}
+              svar={gartner.svar}
+              plantId={plantId}
+              intent="problem"
+            />
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
+                Luk
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+        <>
         <DialogTitle>{isEdit ? 'Redigér log-event' : 'Tilføj til log'}</DialogTitle>
         <DialogDescription>
           {isEdit
@@ -273,15 +314,46 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
+          {erProblem && (
+            <div
+              style={{
+                background: 'rgba(232, 236, 218, 0.45)',
+                border: '1px solid rgba(86, 111, 60, 0.22)',
+                borderRadius: 14,
+                padding: '12px 14px',
+              }}
+            >
+              <label className="flex cursor-pointer items-start gap-2.5">
+                <input
+                  type="checkbox"
+                  checked={gartnerOensket}
+                  onChange={e => setGartnerOensket(e.target.checked)}
+                  className="mt-0.5 accent-[#4E6138]"
+                />
+                <span>
+                  <span className="block text-sm font-semibold" style={{ color: '#3D4A2C' }}>
+                    Få Gartnerens vurdering, når du gemmer
+                  </span>
+                  <span className="mt-0.5 block text-xs" style={{ color: 'rgba(36,48,31,0.6)' }}>
+                    Gartneren bruger det, du har skrevet, sammen med plantens
+                    sort, alder, sted og historik.
+                  </span>
+                </span>
+              </label>
+            </div>
+          )}
+
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
               Annullér
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : 'Gem'}
+              {pending ? 'Gemmer…' : isEdit ? 'Gem ændringer' : erProblem && gartnerOensket ? 'Gem og få vurdering' : 'Gem'}
             </Button>
           </DialogFooter>
         </form>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   )

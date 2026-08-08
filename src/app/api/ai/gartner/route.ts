@@ -26,6 +26,14 @@ interface GartnerRequest {
   plantId?: string
   logId?: string
   guideId?: string
+  /**
+   * Semantisk skel (Annas retning 8/8): 'problem' = brugeren har registreret
+   * noget konkret (log) og vil have hjælp til dét — problem-strukturen bruges.
+   * 'general' = brugeren beder om et generelt blik på planten UDEN at have
+   * meldt et problem — Gartneren må IKKE opfinde et problem eller bruge
+   * "Sandsynlig årsag"-strukturen medmindre historikken reelt viser et.
+   */
+  intent?: 'general' | 'problem'
 }
 
 const MAX_QUESTION_LENGTH = 1000
@@ -52,6 +60,7 @@ Relevant guide
 (Selve linjen "Relevant guide" er labelen. På næste linje: KUN artens navn, fx "Tomat" — intet andet. Findes ingen art i konteksten, udelades label og sektion helt.)
 
 - Ved almindelige videns-spørgsmål (ikke problemer) svarer du i 1-3 korte afsnit uden labels — stadig kort og konkret.
+- Ved en GENEREL plantevurdering (brugeren har IKKE meldt et problem): start med 1-2 sætninger om plantens overordnede tilstand ud fra alder, sort, sted og historik. Brug derefter labelen "Hold øje med" med 2-3 punkter over det vigtigste fremadrettet. Brug KUN "Sandsynlig årsag"/"Gør dette nu" hvis historikken faktisk viser et konkret problem. Opfind aldrig et problem.
 - Brug den medsendte kontekst om brugerens plante (art, sort, alder, sted, log) aktivt — henvis til den i stedet for at spørge om ting, du allerede har fået.
 - Mangler en AFGØRENDE oplysning, så giv dit bedste bud først og slut med ét enkelt opklarende spørgsmål (efter strukturen, som sidste linje).
 - Ren tekst uden markdown: ingen **fed**, ingen overskrifter med #, ingen emojis.
@@ -175,10 +184,14 @@ export async function POST(request: NextRequest) {
 
   const { kontekst, plantIds } = await bygKontekst(body)
 
-  // Log-indgangen uden eksplicit spørgsmål: Gartneren vurderer hændelsen.
+  const intent = body.intent ?? (body.logId ? 'problem' : 'general')
+
+  // Uden eksplicit spørgsmål: default pr. intent.
   const effektivtSpoergsmaal =
     question ||
-    'Giv din vurdering af hændelsen ovenfor: sandsynlige årsager, hvad jeg bør gøre nu, og hvad jeg skal holde øje med.'
+    (intent === 'problem'
+      ? 'Giv din vurdering af hændelsen ovenfor: sandsynlige årsager, hvad jeg bør gøre nu, og hvad jeg skal holde øje med.'
+      : 'Giv en generel vurdering af planten ud fra dens alder, sort, sted og historik — og hvad jeg især bør holde øje med fremover. Jeg har ikke meldt noget problem.')
 
   const brugerBesked = kontekst
     ? `<kontekst>\n${kontekst}\n</kontekst>\n\n${effektivtSpoergsmaal}`
