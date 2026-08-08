@@ -17,8 +17,9 @@ import { KategoriBibliotek } from './kategori-bibliotek'
 // Redaktionel indholdsside — statisk for alle (demo-fallback-semantik fjernet
 // 5/8). MINE FRØ-chippen hydreres klient-side i KategoriBibliotek. Dagligt
 // revalidate så START HER (sæson-måneden) ikke fryser på build-tidspunktet.
+// INGEN dynamicParams=false: på Netlify endte ISR-regenerering efter 24 t som
+// cachet 404 (prod-nedbrud 8/8). Ukendte slugs 404'er via guarden nedenfor.
 export const dynamic = 'force-static'
-export const dynamicParams = false
 export const revalidate = 86400
 
 export function generateStaticParams() {

@@ -8,7 +8,9 @@
  *
  * Siden er force-static: ingen cookies/DB i render-stien. Bruger-bidder
  * (Din have-sektionen, back-knappens ?returnTo) er klient-/Suspense-øer.
- * dynamicParams=false: ukendte slugs → 404 ved build-kendte parametre.
+ * Ukendte slugs → 404 via GuideArticles notFound() — IKKE dynamicParams=false:
+ * den kombination fik Netlifys ISR-regenerering til at cache 404 efter 24 t
+ * (prod-nedbrud 8/8, ramte alle guide- og kategorisider).
  *
  * Master-spec krav:
  *   - Ingen "Master", "Mine", "Promote", "Flag", "Clone" på siden
@@ -21,7 +23,6 @@ import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { ALL_GUIDES } from '@/data/guides-demo'
 
 export const dynamic = 'force-static'
-export const dynamicParams = false
 // ISR: dagligt — redaktionelt indhold skifter reelt kun ved deploy, men
 // sæsonafhængige afledninger (måned) må ikke fryse på build-tidspunktet.
 export const revalidate = 86400
