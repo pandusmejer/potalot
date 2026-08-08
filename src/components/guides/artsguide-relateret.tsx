@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import type { Guide } from '@/lib/types'
-import { SpoergGartneren } from './spoerg-gartneren'
 
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
@@ -102,7 +101,6 @@ export function ArtsguideRelateret({
         className="my-4 h-px"
         style={{ background: 'rgba(45,42,36,0.10)' }}
       />
-      <SpoergGartneren />
     </div>
   )
 }

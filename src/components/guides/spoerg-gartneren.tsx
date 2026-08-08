@@ -19,14 +19,44 @@ import { GartnerSvarPanel, useGartner } from '@/components/ai/gartner-svar'
 const sans = 'var(--font-manrope)'
 const plex = 'var(--font-plex-condensed), sans-serif'
 
-export function SpoergGartneren() {
+/**
+ * Kontekst-trappen (Anna 9/8): samme komponent, samme design — kun
+ * hjælpetekst, placeholder og den kontekst endpointet modtager varierer.
+ * Placering ER kontekst: Gartneren må aldrig spørge om det, Potalot
+ * allerede ved fra hvor brugeren står.
+ *   Forside: universel · Artsguide: arten kendt · Sortsguide: sort + art.
+ */
+export function SpoergGartneren({
+  guideId,
+  artPlural,
+  sortNavn,
+}: {
+  /** Guide-id sendes med til motoren — placering er kontekst. */
+  guideId?: string
+  /** Artsguide: flertalsnavn til copy ("tomater"). */
+  artPlural?: string
+  /** Sortsguide: sortsnavnet ("Sungold"). */
+  sortNavn?: string
+} = {}) {
   const [spoergsmaal, setSpoergsmaal] = useState('')
   const { tilstand, svar, spoerg } = useGartner()
+
+  const artLav = artPlural?.toLowerCase()
+  const beskrivelse = sortNavn
+    ? `Spørg om ${sortNavn}. Gartneren tager allerede udgangspunkt i sorten.`
+    : artLav
+      ? `Spørg om dyrkning, problemer eller pleje af ${artLav}.`
+      : 'Har du et spørgsmål om haven? Fortæl, hvad du dyrker, eller hvad du er i tvivl om.'
+  const pladsholder = sortNavn
+    ? `Spørg om ${sortNavn}…`
+    : artLav
+      ? `Spørg om ${artLav}…`
+      : 'Hvad vil du have hjælp til?'
 
   function stil() {
     const q = spoergsmaal.trim()
     if (!q) return
-    spoerg(q)
+    spoerg(q, guideId ? { guideId } : undefined)
   }
 
   return (
@@ -107,8 +137,7 @@ export function SpoergGartneren() {
           maxWidth: 420,
         }}
       >
-        Står du ved en plante og er i tvivl? Skriv hvad du ser, så hjælper
-        Potalot dig videre.
+        {beskrivelse}
       </p>
 
       <div
@@ -126,7 +155,7 @@ export function SpoergGartneren() {
           type="text"
           value={spoergsmaal}
           onChange={e => setSpoergsmaal(e.target.value)}
-          placeholder="Hvorfor krøller mine tomatblade?"
+          placeholder={pladsholder}
           aria-label="Skriv dit havespørgsmål"
           onKeyDown={e => { if (e.key === 'Enter') stil() }}
           style={{

@@ -887,11 +887,11 @@ function main() {
   // guides-imported (600 kB chunk på frøbank/planter). Prosaen bliver her.
   const factsFile = 'src/data/guide-facts-index.generated.ts'
   const factsEntries = guides
-    .map((g) => `  { id: ${JSON.stringify(g.id)}, variety: ${JSON.stringify(g.variety ?? null)}, parentGuideId: ${JSON.stringify(g.parentGuideId ?? null)}, quickFacts: ${JSON.stringify(g.quickFacts)} },`)
+    .map((g) => `  { id: ${JSON.stringify(g.id)}, plantName: ${JSON.stringify(g.plantName ?? null)}, variety: ${JSON.stringify(g.variety ?? null)}, parentGuideId: ${JSON.stringify(g.parentGuideId ?? null)}, quickFacts: ${JSON.stringify(g.quickFacts)} },`)
     .join('\n')
   writeFileSync(
     factsFile,
-    `/**\n * AUTO-GENERATED af scripts/import-guides.ts — rør ikke direkte.\n *\n * Slankt guide-fakta-indeks (id/variety/parentGuideId/quickFacts) til\n * klient-side libs (froebank-autofill, afledninger), så de ikke bærer\n * hele guides-imported.ts (inkl. al prosa) med i klient-bundlen.\n */\nimport type { GuideQuickFacts } from '@/lib/types'\n\nexport interface GuideFactsEntry {\n  id: string\n  variety: string | null\n  parentGuideId: string | null\n  quickFacts: GuideQuickFacts\n}\n\nexport const GUIDE_FACTS: GuideFactsEntry[] = [\n${factsEntries}\n]\n`,
+    `/**\n * AUTO-GENERATED af scripts/import-guides.ts — rør ikke direkte.\n *\n * Slankt guide-fakta-indeks (id/variety/parentGuideId/quickFacts) til\n * klient-side libs (froebank-autofill, afledninger), så de ikke bærer\n * hele guides-imported.ts (inkl. al prosa) med i klient-bundlen.\n */\nimport type { GuideQuickFacts } from '@/lib/types'\n\nexport interface GuideFactsEntry {\n  id: string\n  plantName: string | null\n  variety: string | null\n  parentGuideId: string | null\n  quickFacts: GuideQuickFacts\n}\n\nexport const GUIDE_FACTS: GuideFactsEntry[] = [\n${factsEntries}\n]\n`,
   )
   console.log(`✓ Fakta-indeks (${guides.length} entries) → ${factsFile}`)
 

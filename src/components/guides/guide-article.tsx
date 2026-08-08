@@ -26,6 +26,7 @@ import { GuideNextCard } from '@/components/guides/guide-next-card'
 import { KalenderRytmeKapitel } from '@/components/guides/kalender-rytme-kapitel'
 import { LaerAfHinanden } from '@/components/guides/laer-af-hinanden'
 import { ArtsguideRelateret } from '@/components/guides/artsguide-relateret'
+import { SpoergGartneren } from '@/components/guides/spoerg-gartneren'
 import { TechniqueArticle } from '@/components/guides/technique-article'
 import { BiblioRow } from '@/components/guides/guides-bibliotek'
 import { erfaringerFor } from '@/data/guides-erfaringer'
@@ -432,6 +433,16 @@ export async function GuideArticle({
           returnTo={selfReturn}
         />
       )}
+
+      {/* Spørg Potalot-gartneren — SAMME komponent og design på arts- OG
+          sortsguides (Anna 9/8: forskellen var en implementeringsrest).
+          Placering er kontekst: guideId følger med, og copy/placeholder
+          matcher niveauet — art ("tomater") eller sort ("Sungold"). */}
+      <SpoergGartneren
+        guideId={effective.id}
+        artPlural={isSpecies ? artPlural : undefined}
+        sortNavn={!isSpecies ? (effective.variety ?? undefined) : undefined}
+      />
 
       {parent && (
         <>

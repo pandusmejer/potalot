@@ -61,7 +61,7 @@ Relevant guide
 
 - Ved almindelige videns-spørgsmål (ikke problemer) svarer du i 1-3 korte afsnit uden labels — stadig kort og konkret.
 - Ved en GENEREL plantevurdering (brugeren har IKKE meldt et problem): start med 1-2 sætninger om plantens overordnede tilstand ud fra alder, sort, sted og historik. Brug derefter labelen "Hold øje med" med 2-3 punkter over det vigtigste fremadrettet. Brug KUN "Sandsynlig årsag"/"Gør dette nu" hvis historikken faktisk viser et konkret problem. Opfind aldrig et problem.
-- Brug den medsendte kontekst om brugerens plante (art, sort, alder, sted, log) aktivt — henvis til den i stedet for at spørge om ting, du allerede har fået.
+- Du hjælper brugeren fra en bestemt placering i Potalot. Brug altid den medsendte kontekst som allerede kendt information. Spørg ALDRIG brugeren om art, sort, plante eller problem, hvis oplysningerne findes i konteksten. Stil kun et opklarende spørgsmål, når en nødvendig oplysning reelt mangler. Svar på det niveau, brugeren befinder sig på.
 - Mangler en AFGØRENDE oplysning, så giv dit bedste bud først og slut med ét enkelt opklarende spørgsmål (efter strukturen, som sidste linje).
 - Ren tekst uden markdown: ingen **fed**, ingen overskrifter med #, ingen emojis.
 - Du kan IKKE se billeder i denne samtale — bed i stedet brugeren beskrive, hvad de ser, hvis det er nødvendigt.
@@ -125,9 +125,26 @@ async function bygKontekst(input: GartnerRequest): Promise<{
   if (input.guideId) {
     const guide = GUIDE_FACTS.find(g => g.id === input.guideId)
     if (guide) {
-      dele.push(`Brugeren læser guiden om: ${input.guideId}${guide.variety ? ` (sorten '${guide.variety}')` : ''}`)
-      const qf = kompaktQuickFacts(guide.quickFacts)
-      if (qf) dele.push(qf)
+      if (guide.variety) {
+        // Sortsguide: sortens egne fakta + NEDARVEDE artsfakta (Anna 9/8:
+        // "Tomat · Sungold" er bedre kontekst end "tomat" alene).
+        const parent = guide.parentGuideId
+          ? GUIDE_FACTS.find(g => g.id === guide.parentGuideId)
+          : null
+        const artNavn = parent?.plantName ?? guide.plantName ?? input.guideId
+        dele.push(`Brugeren står på sortsguiden for '${guide.variety}' under arten ${artNavn}. Spørgsmålet handler om denne sort, medmindre brugeren siger andet.`)
+        const sortQf = kompaktQuickFacts(guide.quickFacts)
+        if (sortQf) dele.push(`Sortens fakta: ${sortQf}`)
+        if (parent) {
+          const artQf = kompaktQuickFacts(parent.quickFacts)
+          if (artQf) dele.push(`Artens fakta (${artNavn}): ${artQf}`)
+        }
+      } else {
+        const artNavn = guide.plantName ?? input.guideId
+        dele.push(`Brugeren står på artsguiden om ${artNavn}. Spørgsmålet handler om ${artNavn.toLowerCase()}, medmindre brugeren siger andet.`)
+        const qf = kompaktQuickFacts(guide.quickFacts)
+        if (qf) dele.push(qf)
+      }
     }
   }
 
