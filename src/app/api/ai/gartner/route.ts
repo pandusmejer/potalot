@@ -195,7 +195,11 @@ export async function POST(request: NextRequest) {
   }
 
   const question = (body.question ?? '').trim().slice(0, MAX_QUESTION_LENGTH)
-  if (!question && !body.logId) {
+  // Tomt spørgsmål er OK når Gartneren selv skal vurdere noget konkret:
+  // en logpost (problem) eller en plante (generel vurdering fra dialogen).
+  const kanVurdereUdenSpoergsmaal =
+    !!body.logId || (body.intent === 'general' && !!body.plantId)
+  if (!question && !kanVurdereUdenSpoergsmaal) {
     return NextResponse.json({ error: 'tomt_spoergsmaal' }, { status: 400 })
   }
 
