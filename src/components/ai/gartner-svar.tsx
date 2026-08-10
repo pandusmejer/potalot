@@ -15,6 +15,7 @@ import { harAuthCookie } from '@/lib/auth-cookie'
 import { resolveGuideLink } from '@/lib/gartner-guide-link'
 import { createPlantLog } from '@/actions/mine-planter'
 import { createTask } from '@/actions/havekalender'
+import { saveGartnerSvar } from '@/actions/gartner-gemte'
 
 const sans = 'var(--font-manrope)'
 
@@ -106,6 +107,24 @@ function formaterSvar(svar: string): React.ReactNode[] {
   return noder
 }
 
+/**
+ * Delt visning af et Gartner-svar UDEN panel-krom — bruges hvor gemte svar
+ * vises igen (Gemt fra Gartneren, Dine gemte noter). Samme formatering som
+ * live-svaret: labels løftes, guide-linket resolves og forbliver klikbart.
+ */
+export function GartnerSvarTekst({ svar }: { svar: string }) {
+  return (
+    <div
+      style={{
+        fontFamily: sans, fontSize: 13.5, fontWeight: 450, lineHeight: 1.5,
+        color: '#2E2A21', whiteSpace: 'pre-wrap',
+      }}
+    >
+      {formaterSvar(svar)}
+    </div>
+  )
+}
+
 /** Selve svar-panelet + hook til at starte en vurdering. */
 export function useGartner() {
   const [tilstand, setTilstand] = useState<Tilstand>('idle')
@@ -171,6 +190,78 @@ function foersteHandling(svar: string): string {
 type HandlingStatus = 'klar' | 'gemmer' | 'gjort' | 'fejl'
 
 /**
+ * "Gem til senere" (Annas design 10/8, spec: Docs/product/gem-fra-gartneren.md):
+ * én diskret teksthandling — IKKE auto-gem af alle samtaler. Gemmer ALTID
+ * spørgsmål + svar + kontekst sammen; findes igen under Guides → Gemt fra
+ * Gartneren og som "Dine gemte noter" på den relevante guide.
+ */
+function GemTilSenere({
+  question,
+  svar,
+  guideId,
+  plantId,
+  intent,
+}: {
+  question?: string
+  svar: string
+  guideId?: string
+  plantId?: string
+  intent: 'general' | 'problem'
+}) {
+  const [status, setStatus] = useState<HandlingStatus>('klar')
+
+  // Uden eksplicit spørgsmål (auto-vurderinger fra log-flowet) gemmes en
+  // læsbar overskrift — "Når hvad er klar?"-problemet må aldrig opstå.
+  const effektivtSpoergsmaal =
+    question?.trim() ||
+    (intent === 'general' ? 'Generel vurdering af planten' : 'Vurdering af et registreret problem')
+
+  if (status === 'gjort') {
+    return (
+      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>
+        ✓ Gemt — find det igen under Gemt fra Gartneren.
+      </span>
+    )
+  }
+  if (status === 'fejl') {
+    return (
+      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(120,60,40,0.8)' }}>
+        Kunne ikke gemme — prøv igen om lidt.
+      </span>
+    )
+  }
+  return (
+    <button
+      type="button"
+      disabled={status === 'gemmer'}
+      onClick={async () => {
+        setStatus('gemmer')
+        try {
+          const res = await saveGartnerSvar({
+            question: effektivtSpoergsmaal,
+            answer: svar.trim(),
+            guideId: guideId ?? null,
+            plantId: plantId ?? null,
+          })
+          setStatus('error' in res ? 'fejl' : 'gjort')
+        } catch {
+          setStatus('fejl')
+        }
+      }}
+      style={{
+        background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+        fontFamily: sans, fontSize: 12.5, fontWeight: 600,
+        color: status === 'gemmer' ? 'rgba(78,97,56,0.5)' : '#4E6138',
+        textDecoration: 'underline', textUnderlineOffset: 3,
+        textDecorationColor: 'rgba(78,97,56,0.3)',
+      }}
+    >
+      Gem til senere
+    </button>
+  )
+}
+
+/**
  * Cirkel-lukningen (Annas backlog-top 5/8): svaret fører direkte til
  * handling — log vurderingen, opret opgave, eller markér problemet løst.
  * Kun når vurderingen handler om en konkret plante. Teksthandlinger i
@@ -183,10 +274,13 @@ function EfterHandlinger({
   plantId,
   svar,
   intent = 'problem',
+  ekstra,
 }: {
   plantId: string
   svar: string
   intent?: 'general' | 'problem'
+  /** Ekstra teksthandling(er) i samme række — fx "Gem til senere". */
+  ekstra?: React.ReactNode
 }) {
   const [log, setLog] = useState<HandlingStatus>('klar')
   const [opgave, setOpgave] = useState<HandlingStatus>('klar')
@@ -301,6 +395,7 @@ function EfterHandlinger({
           )}
         </span>
       ))}
+      {ekstra}
     </div>
   )
 }
@@ -311,12 +406,18 @@ export function GartnerSvarPanel({
   svar,
   plantId,
   intent = 'problem',
+  question,
+  guideId,
 }: {
   tilstand: Tilstand
   svar: string
   /** Sat → cirkel-lukningen vises efter svaret (log/opgave/løst). */
   plantId?: string
   intent?: 'general' | 'problem'
+  /** Det stillede spørgsmål — gemmes SAMMEN med svaret ved "Gem til senere". */
+  question?: string
+  /** Guide-konteksten svaret blev stillet fra — binder det gemte til guiden. */
+  guideId?: string
 }) {
   if (tilstand === 'idle') return null
 
@@ -378,8 +479,33 @@ export function GartnerSvarPanel({
         </div>
       )}
 
-      {tilstand === 'faerdig' && plantId && (
-        <EfterHandlinger plantId={plantId} svar={svar} intent={intent} />
+      {tilstand === 'faerdig' && svar.trim() && (
+        plantId ? (
+          <EfterHandlinger
+            plantId={plantId}
+            svar={svar}
+            intent={intent}
+            ekstra={
+              <GemTilSenere
+                question={question}
+                svar={svar}
+                guideId={guideId}
+                plantId={plantId}
+                intent={intent}
+              />
+            }
+          />
+        ) : (
+          <div
+            style={{
+              marginTop: 12,
+              paddingTop: 10,
+              borderTop: '1px solid rgba(86, 111, 60, 0.16)',
+            }}
+          >
+            <GemTilSenere question={question} svar={svar} guideId={guideId} intent={intent} />
+          </div>
+        )
       )}
     </div>
   )
@@ -506,6 +632,8 @@ export function GartnerHandling({
         svar={svar}
         plantId={kontekst?.plantId}
         intent={kontekst?.intent ?? 'problem'}
+        question={question}
+        guideId={kontekst?.guideId}
       />
     </div>
   )

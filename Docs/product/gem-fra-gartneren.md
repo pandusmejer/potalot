@@ -1,6 +1,9 @@
 # Gem fra Gartneren — personlig, kontekstbundet viden (spec, Anna 10/8 2026)
 
-**Status: SPEC — kræver DB-migration. Byg i en frisk tråd (jf. migrations-reglen: aldrig ad-hoc mod live DB).**
+**Status: BYGGET 10/8 2026 — migration 00064 anvendt mod live med Annas
+godkendelse og verificeret (tabel, RLS enabled, ejer-policy på alle
+operationer, begge indeks, cross-user-test: fremmed bruger ser 0 rækker,
+kan intet slette, og WITH CHECK afviser insert i andres navn).**
 
 ## Idéen
 

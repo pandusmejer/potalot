@@ -19,6 +19,7 @@ import {
   type LibraryCategory,
 } from '@/data/guide-library-categories'
 import { SpoergGartneren } from './spoerg-gartneren'
+import { GemtFraGartnerenLink } from './gemt-fra-gartneren-link'
 import { layeredGuideSampleData } from './layered-guide'
 import { KortForklaret } from './kort-forklaret'
 import { guideKindFor } from './trust-badge'
@@ -189,6 +190,9 @@ export function GuidesBibliotek({
       {/* Lavmælt hjælpe-modul lige efter "Begynd her" — brugeren er stadig i
           "lær mig noget"-mode. Ikke chatbot, ikke stor sektion. */}
       <SpoergGartneren />
+
+      {/* Gemt fra Gartneren — toner kun ind når brugeren har gemte noter. */}
+      <GemtFraGartnerenLink />
 
       {/* UDFORSK GUIDEBIBLIOTEKET — her skifter siden karakter fra rolig
           redaktionel indgang til effektivt ARKIV. Foldbare grupper (kun én åben

@@ -39,6 +39,9 @@ export function SpoergGartneren({
   sortNavn?: string
 } = {}) {
   const [spoergsmaal, setSpoergsmaal] = useState('')
+  // Det FAKTISK stillede spørgsmål (inputfeltet kan redigeres bagefter) —
+  // gemmes sammen med svaret ved "Gem til senere".
+  const [stillet, setStillet] = useState('')
   const { tilstand, svar, spoerg } = useGartner()
 
   const artLav = artPlural?.toLowerCase()
@@ -56,6 +59,7 @@ export function SpoergGartneren({
   function stil() {
     const q = spoergsmaal.trim()
     if (!q) return
+    setStillet(q)
     spoerg(q, guideId ? { guideId } : undefined)
   }
 
@@ -192,7 +196,7 @@ export function SpoergGartneren({
         </button>
       </div>
 
-      <GartnerSvarPanel tilstand={tilstand} svar={svar} />
+      <GartnerSvarPanel tilstand={tilstand} svar={svar} question={stillet} guideId={guideId} />
     </section>
   )
 }

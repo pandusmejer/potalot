@@ -39,6 +39,7 @@ import { getGuide, getAllGuides } from '@/actions/guides'
 import { guideHref } from '@/lib/guides/guide-href'
 import { GuideTilbageLink, TilbageKnapVisning } from '@/components/guides/guide-tilbage-link'
 import { DinHaveSektion } from '@/components/guides/din-have-sektion'
+import { GemteGartnerNoter } from '@/components/guides/gemte-gartner-noter'
 import { getMyGuideNote } from '@/actions/guide-notes'
 import { getCurrentUser } from '@/lib/auth'
 import { ALL_GUIDES } from '@/data/guides-demo'
@@ -591,6 +592,11 @@ export async function GuideArticle({
         artPlural={artPlural}
         debug={debug}
       />
+
+      {/* Dine gemte noter fra Gartneren — personligt lag, klient-ø (renderer
+          intet for anonyme/uden gemte). Bevidst ADSKILT fra det redaktionelle:
+          gemte AI-svar må aldrig ligne guide-indhold. */}
+      <GemteGartnerNoter guideId={effective.id} />
 
       {currentUser && !isDemo && myNote !== null && (
         <>
