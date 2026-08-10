@@ -12,6 +12,7 @@
 import { useCallback, useRef, useState } from 'react'
 import Link from 'next/link'
 import { harAuthCookie } from '@/lib/auth-cookie'
+import { resolveGuideLink } from '@/lib/gartner-guide-link'
 import { createPlantLog } from '@/actions/mine-planter'
 import { createTask } from '@/actions/havekalender'
 
@@ -29,36 +30,80 @@ export interface GartnerKontekst {
 type Tilstand = 'idle' | 'streamer' | 'faerdig' | 'login' | 'fejl'
 
 /**
- * Svar-strukturen (Annas retning 5/8): "Sandsynlig årsag / Gør dette nu /
- * Hold øje med / Relevant guide" som scannbare sektions-labels. Prompten
- * beder Haiku skrive labels på egne linjer; her løftes de typografisk.
+ * Svar-strukturen (Annas retning 5/8 + 10/8): scannbare sektions-labels.
+ * Første label graduerer efter Gartnerens reelle sikkerhed ("Det ligner" /
+ * "Mulige årsager" / "Jeg mangler lidt for at vurdere det") — prompten
+ * forbyder skråsikre diagnoser. "Sandsynlig årsag" beholdes af hensyn til
+ * gemte vurderinger fra før 10/8.
  */
 const SEKTIONS_LABELS = new Set([
   'Sandsynlig årsag',
+  'Det ligner',
+  'Mulige årsager',
+  'Jeg mangler lidt for at vurdere det',
   'Gør dette nu',
   'Hold øje med',
   'Relevant guide',
 ])
 
+function sektionsLabel(tekst: string, foerste: boolean, key: React.Key): React.ReactNode {
+  return (
+    <span
+      key={key}
+      style={{
+        display: 'block',
+        fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em',
+        textTransform: 'uppercase', color: 'rgba(78,97,56,0.85)',
+        marginTop: foerste ? 0 : 10, marginBottom: 2,
+      }}
+    >
+      {tekst}
+    </span>
+  )
+}
+
 function formaterSvar(svar: string): React.ReactNode[] {
-  return svar.split('\n').map((linje, i) => {
-    if (SEKTIONS_LABELS.has(linje.trim())) {
-      return (
-        <span
-          key={i}
-          style={{
-            display: 'block',
-            fontSize: 10.5, fontWeight: 700, letterSpacing: '0.16em',
-            textTransform: 'uppercase', color: 'rgba(78,97,56,0.85)',
-            marginTop: i === 0 ? 0 : 10, marginBottom: 2,
-          }}
-        >
-          {linje.trim()}
-        </span>
-      )
+  const linjer = svar.split('\n')
+  const noder: React.ReactNode[] = []
+  for (let i = 0; i < linjer.length; i++) {
+    const trimmet = linjer[i].trim()
+
+    // "Relevant guide" renderes KUN når navnet på næste linje resolver mod en
+    // faktisk Potalot-guide (Anna 10/8): AI'en må aldrig opfinde et guidenavn
+    // eller et link. Uresolvet navn (eller midt i stream) → hele sektionen ud.
+    if (trimmet === 'Relevant guide') {
+      let j = i + 1
+      while (j < linjer.length && !linjer[j].trim()) j++
+      const navn = j < linjer.length ? linjer[j].trim() : ''
+      const link = navn ? resolveGuideLink(navn) : null
+      if (link) {
+        noder.push(sektionsLabel('Relevant guide', noder.length === 0, i))
+        noder.push(
+          <Link
+            key={`guide-${i}`}
+            href={`/guides/${link.id}`}
+            style={{
+              display: 'inline-block',
+              fontFamily: sans, fontWeight: 600, color: '#4E6138',
+              textDecoration: 'underline', textUnderlineOffset: 3,
+              textDecorationColor: 'rgba(78,97,56,0.35)',
+            }}
+          >
+            {link.titel} →
+          </Link>,
+        )
+      }
+      i = j
+      continue
     }
-    return <span key={i}>{linje + '\n'}</span>
-  })
+
+    if (SEKTIONS_LABELS.has(trimmet)) {
+      noder.push(sektionsLabel(trimmet, i === 0, i))
+      continue
+    }
+    noder.push(<span key={i}>{linjer[i] + '\n'}</span>)
+  }
+  return noder
 }
 
 /** Selve svar-panelet + hook til at starte en vurdering. */
