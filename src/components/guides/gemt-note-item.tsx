@@ -56,11 +56,18 @@ export function GemtNoteItem({
           display: 'block', width: '100%', textAlign: 'left',
         }}
       >
-        <span style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 650, lineHeight: 1.4, color: '#24301F', display: 'block' }}>
+        {/* Læseorden (Anna 10/8): kontekst → problem → dato — et råd skal
+            kunne aflæses på et halvt sekund, også med 20 gemte kort. */}
+        {note.kontekst && (
+          <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 650, color: 'rgba(78,97,56,0.9)', display: 'block' }}>
+            {note.kontekst}
+          </span>
+        )}
+        <span style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 650, lineHeight: 1.4, color: '#24301F', display: 'block', marginTop: note.kontekst ? 2 : 0 }}>
           {note.question}
         </span>
         <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', display: 'block', marginTop: 3 }}>
-          {note.kontekst ? `${note.kontekst} · ` : ''}{dato}
+          {dato}
         </span>
       </button>
 
