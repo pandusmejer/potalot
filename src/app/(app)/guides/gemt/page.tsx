@@ -57,8 +57,9 @@ export default async function GemtFraGartnerenPage() {
             color: 'rgba(36,48,31,0.6)', margin: '10px 0 0', maxWidth: 420,
           }}
         >
-          Svar, du har valgt at huske — sammen med det spørgsmål, de hører
-          til. Din egen viden oven på Potalots guides.
+          Svar, du har valgt at huske fra guides — sammen med det spørgsmål,
+          de hører til. Råd om en konkret plante bor på plantens egen side
+          under Gemte råd.
         </p>
       </header>
 

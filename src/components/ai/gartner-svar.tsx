@@ -201,14 +201,18 @@ function GemTilSenere({
   guideId,
   plantId,
   intent,
+  fraLog = false,
 }: {
   question?: string
   svar: string
   guideId?: string
   plantId?: string
   intent: 'general' | 'problem'
+  /** Svaret hører til en konkret logpost — feedbacken peger på historikken. */
+  fraLog?: boolean
 }) {
   const [status, setStatus] = useState<HandlingStatus>('klar')
+  const [bekraeftelse, setBekraeftelse] = useState('')
 
   // Uden eksplicit spørgsmål (auto-vurderinger fra log-flowet) gemmes en
   // læsbar overskrift — "Når hvad er klar?"-problemet må aldrig opstå.
@@ -219,7 +223,7 @@ function GemTilSenere({
   if (status === 'gjort') {
     return (
       <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>
-        ✓ Gemt — find det igen under Gemt fra Gartneren.
+        {bekraeftelse}
       </span>
     )
   }
@@ -243,7 +247,18 @@ function GemTilSenere({
             guideId: guideId ?? null,
             plantId: plantId ?? null,
           })
-          setStatus('error' in res ? 'fejl' : 'gjort')
+          if ('error' in res) { setStatus('fejl'); return }
+          // Gem-feedback skal ALTID fortælle, hvor svaret findes igen
+          // (Annas regel 10/8): plante-svar bor på planten, guide-svar
+          // under Guides → Gemt fra Gartneren.
+          setBekraeftelse(
+            res.sted === 'plante'
+              ? fraLog
+                ? '✓ Gemt på planten — du finder vurderingen igen i plantens historik og under Gemte råd.'
+                : `✓ Gemt på planten — du finder svaret igen på ${res.planteNavn ? `${res.planteNavn}s` : 'plantens'} side under Gemte råd.`
+              : '✓ Gemt — du finder svaret igen under Guides → Gemt fra Gartneren.',
+          )
+          setStatus('gjort')
         } catch {
           setStatus('fejl')
         }
@@ -408,6 +423,7 @@ export function GartnerSvarPanel({
   intent = 'problem',
   question,
   guideId,
+  fraLog = false,
 }: {
   tilstand: Tilstand
   svar: string
@@ -418,6 +434,8 @@ export function GartnerSvarPanel({
   question?: string
   /** Guide-konteksten svaret blev stillet fra — binder det gemte til guiden. */
   guideId?: string
+  /** Svaret hører til en konkret logpost — styrer gem-feedbackens copy. */
+  fraLog?: boolean
 }) {
   if (tilstand === 'idle') return null
 
@@ -492,6 +510,7 @@ export function GartnerSvarPanel({
                 guideId={guideId}
                 plantId={plantId}
                 intent={intent}
+                fraLog={fraLog}
               />
             }
           />
@@ -587,12 +606,16 @@ export function GartnerHandling({
   question,
   kontekst,
   visGlyf = false,
+  gemTitel,
 }: {
   label: string
   question?: string
   kontekst?: GartnerKontekst
   /** Plante-glyffen foran labelen — til den generelle indgang ved statuskortet. */
   visGlyf?: boolean
+  /** Overskrift til "Gem til senere" når intet spørgsmål stilles (fx logpostens
+   * titel, "Lus på blade") — så det gemte kort aldrig er anonymt. */
+  gemTitel?: string
 }) {
   const { tilstand, svar, spoerg } = useGartner()
 
@@ -632,8 +655,9 @@ export function GartnerHandling({
         svar={svar}
         plantId={kontekst?.plantId}
         intent={kontekst?.intent ?? 'problem'}
-        question={question}
+        question={question ?? gemTitel}
         guideId={kontekst?.guideId}
+        fraLog={!!kontekst?.logId}
       />
     </div>
   )

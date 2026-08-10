@@ -38,6 +38,27 @@ teksthandlinger (Log denne vurdering / Opret som opgave). Ingen stor CTA.
    spørgsmål/svar ud. Potalot bringer brugerens viden tilbage i den
    sammenhæng, hvor den er nyttig.
 
+## Kontekst-routing (Annas regel 10/8 aften — LÅST)
+
+**Gemt Gartner-viden skal beholde den kontekst, den blev skabt i.** Brugeren
+skal altid kunne svare på: *Hvad handlede det her om?* og *Hvorfor ligger
+det her?*
+
+- **Guide-svar** (arts-/sortsguide, forsiden) → `Guides → Gemt fra
+  Gartneren` (`plant_id IS NULL`). Kort viser art/sort + spørgsmål + dato.
+- **Plante-/log-svar** → den konkrete plantes side, diskret "Gemte råd · N"
+  ved historien. Kort viser plante ("Dahlia · Café au Lait") + spørgsmål/
+  problemtitel + dato. Vises ALDRIG i guide-arkivet.
+- Gem-titlen bærer problemets egne ord ("Lus på blade") — aldrig et anonymt
+  "Generel vurdering af planten" uden plantekontekst ved siden af.
+- **Gem-feedback siger altid, hvor svaret findes igen** ("Gemt på planten —
+  find det igen på Café au Laits side under Gemte råd").
+- Idempotent: samme svar i samme kontekst gemmes aldrig to gange.
+- Samme `gartner_saved`-tabel bagved — routing/query/UI, ingen ny migration.
+  KENDT BEGRÆNSNING: tabellen har ikke `log_id`, så et gemt råd linker ikke
+  hårdt til selve logposten (titlen bæres i `question`). Tilføjes kun, hvis
+  behovet opstår.
+
 ## Hård adskillelse (vigtigst efter "hvid fluesmaddike"-fundet)
 
 **Potalots guide = redaktionel, kontrolleret viden. Gemt fra Gartneren =

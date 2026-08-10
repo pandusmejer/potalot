@@ -10,6 +10,7 @@ import { PlantFotoManager } from '@/components/mine-planter/plant-foto-manager'
 import { PlantSammenligning } from '@/components/mine-planter/plant-sammenligning'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { Timeline } from '@/components/mine-planter/timeline'
+import { GemteRaad } from '@/components/mine-planter/gemte-raad'
 import { getGartnerVurderinger } from '@/actions/gartner-vurderinger'
 import { karakterFor, type PlantKarakter as Karakter } from '@/data/plant-karakter'
 import { overrideFor, type PlantDetail } from '@/data/plant-detail'
@@ -241,6 +242,10 @@ function renderEditorial(
       <PlantNaeste naeste={detail.naeste} />
       <PlantTidslinje milestones={detail.tidslinje} />
       {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
+
+        {/* Gemte Gartner-svar hører til PLANTEN (Annas kontekst-regel 10/8) —
+            diskret adgang ved historien; renderer intet uden gemte råd. */}
+        {log.canLog && <GemteRaad plantId={plant.id} />}
 
         <DagbogSektion plant={plant} log={log} />
 

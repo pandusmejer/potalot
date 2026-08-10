@@ -139,6 +139,7 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false,
                       <GartnerHandling
                         label="Få Gartnerens vurdering"
                         kontekst={{ plantId: plant.id, logId: item.log.id }}
+                        gemTitel={item.log.title ?? undefined}
                       />
                     </div>
                   )

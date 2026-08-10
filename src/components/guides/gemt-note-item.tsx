@@ -60,7 +60,7 @@ export function GemtNoteItem({
           {note.question}
         </span>
         <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 500, color: 'rgba(36,48,31,0.5)', display: 'block', marginTop: 3 }}>
-          {note.guideTitel ? `${note.guideTitel} · ` : ''}{dato}
+          {note.kontekst ? `${note.kontekst} · ` : ''}{dato}
         </span>
       </button>
 

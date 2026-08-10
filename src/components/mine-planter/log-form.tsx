@@ -194,6 +194,12 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               svar={gartner.svar}
               plantId={plantId}
               intent={gartnerValgt ? 'general' : 'problem'}
+              // Gem-titlen bærer problemets egne ord ("Lus på blade") — et
+              // gemt kort må aldrig være anonymt (Annas regel 10/8).
+              question={gartnerValgt
+                ? 'Generel vurdering af planten'
+                : (title.trim() || PLANT_LOG_LABEL[type])}
+              fraLog={!gartnerValgt}
             />
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
