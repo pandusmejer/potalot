@@ -183,7 +183,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
       <DialogContent>
         {viserVurdering ? (
           <>
-            <DialogTitle>{gartnerValgt ? 'Gartnerens vurdering' : 'Gemt — Gartneren kigger på det'}</DialogTitle>
+            <DialogTitle>{gartnerValgt ? 'Gartnerens vurdering' : 'Gemt. Gartneren ser på det …'}</DialogTitle>
             <DialogDescription>
               {gartnerValgt
                 ? 'Gartneren ser på sort, alder, sted og plantens historik.'

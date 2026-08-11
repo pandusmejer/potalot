@@ -40,7 +40,7 @@ Felter at udtrække:
 - sowingMonths: array af måned-numre (1-12) hvor frøet sås
 - plantingOutMonths: array af måned-numre (1-12) hvor det udplantes
 - harvestMonths: array af måned-numre (1-12) hvor det høstes
-- sowingDepthMm: sådybde i mm som **heltal** (rund af hvis det er et interval — fx '2-5 mm' → 3). **VIGTIGT: 0 mm er en gyldig værdi (overflade-såning, fx for basilikum og salat). Brug 0, ikke null, hvis frøet skal lægges på overfladen.**
+- sowingDepthMm: sådybde i mm som **heltal** — KUN hvis posen angiver ÉN entydig værdi (fx "5 mm" → 5). Angiver posen et INTERVAL (fx "2-5 mm"), skal feltet være null: konvertér ALDRIG et interval til ét tal — intet gennemsnit, minimum, maksimum eller afrunding. Posen ved "2-5 mm"; den ved ikke "3 mm". **VIGTIGT: 0 mm er en gyldig værdi (overflade-såning, fx for basilikum og salat). Brug 0, ikke null, hvis frøet skal lægges på overfladen.**
 - preCultivation: true hvis posen anbefaler forspiring/indendørs forspiring/forkultivering, false hvis direkte såning anbefales, null hvis ikke nævnt
 - germinationDays: spiretid som tekst (fx "7-14 dage")
 - germinationTemperature: spiretemperatur som tekst (fx "18-22°C")

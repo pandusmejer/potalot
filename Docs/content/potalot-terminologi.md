@@ -34,6 +34,15 @@ som blind masse-erstatning.
   Læggekartofler *forspires* (kartoffel.md bruger termen korrekt).
 - Interne id'er/slugs (fx `vinduskarm`, tags som `rodafgroede`) ændres
   ikke — kun de viste labels skal have korrekt dansk.
+- **Statuscopy-princip (Anna 11/8):** *"Handling lykkedes. Hvad sker der
+  nu?"* — bekræftelse først, dernæst næste tilstand, adskilt med punktum.
+  Aldrig tankestreg, der får to systemtilstande til at ligne én overskrift
+  (fx "Gemt. Gartneren ser på det …", ikke "Gemt — Gartneren kigger på det").
+- **Datagæt-princip (Anna 11/8, GAR-0017):** et interval fra en kilde
+  (fx sådybde "2-5 mm") må ALDRIG konverteres til ét tal — intet
+  gennemsnit/min/maks. Enkeltværdi → strukturert felt; interval → null
+  (v1: værdien importeres ikke; maskinudtrukket metadata må ikke fylde
+  brugerens eget notatfelt).
 
 ## Status
 
