@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { X, History, Check, Sprout, ArrowUpRight, TreePine, Wheat } from 'lucide-react'
+import { X, History, Check, ChevronRight, Sprout, ArrowUpRight, TreePine, Wheat } from 'lucide-react'
 import { LogForm } from '@/components/mine-planter/log-form'
 import type { PlantLogType } from '@/lib/types'
 
@@ -116,7 +116,7 @@ export function HistorikIndhent({
           </p>
           <p style={{ fontFamily: sans, fontSize: 13, fontWeight: 500, lineHeight: 1.5, color: 'rgba(36,48,31,0.65)', margin: '5px 0 0' }}>
             {succes
-              ? 'Har der allerede været andre milepæle, kan du tilføje dem nu. Du kan også altid gøre det senere under Plantens historie → Tilføj.'
+              ? 'Har der allerede været andre milepæle, kan du tilføje dem nu. Du kan også altid gøre det senere via Tilføj under Plantens historie.'
               : 'Vi har sat alderen ud fra din sådato. Du kan tilføje det, der allerede er sket, når det passer dig.'}
           </p>
 
@@ -126,10 +126,12 @@ export function HistorikIndhent({
               onClick={() => { setViserValg(true); setEngageret(true) }}
               style={{
                 background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 3,
                 marginTop: 10, fontFamily: sans, fontSize: 13, fontWeight: 600, color: '#4E6138',
               }}
             >
-              Tilføj tidligere milepæle →
+              Tilføj tidligere milepæle
+              <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </button>
           ) : (
             <>
@@ -182,7 +184,9 @@ export function HistorikIndhent({
         <button
           type="button"
           onClick={luk}
-          aria-label={succes ? 'Færdig' : 'Ikke nu'}
+          // Lukningen er PERMANENT — "Ikke nu" ville love en gensynstid,
+          // UI'et ikke holder (Anna PLT-0077).
+          aria-label={succes ? 'Færdig' : 'Luk'}
           className="shrink-0 rounded-full p-1 transition-colors hover:bg-[rgba(36,48,31,0.06)]"
           style={{ color: 'rgba(36,48,31,0.4)' }}
         >

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Trash2, Loader2 } from 'lucide-react'
 import { LogForm } from '@/components/mine-planter/log-form'
 import { deletePlantLog } from '@/actions/mine-planter'
+import { PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
 import type { PlantLog } from '@/lib/types'
 
 interface Props {
@@ -47,7 +48,7 @@ export function LogActions({ plantId, log }: Props) {
           onClick={() => setConfirmOpen(true)}
           className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7 p-0"
           aria-label="Slet log"
-          title="Slet log-event"
+          title="Slet log"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
@@ -55,10 +56,10 @@ export function LogActions({ plantId, log }: Props) {
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
-          <DialogTitle>Slet log-event?</DialogTitle>
+          <DialogTitle>Slet log?</DialogTitle>
           <DialogDescription>
-            &ldquo;{log.title ?? log.note ?? log.type}&rdquo; bliver slettet permanent
-            sammen med eventuelle tilhørende fotos. Kan ikke fortrydes.
+            &ldquo;{log.title ?? log.note ?? PLANT_LOG_LABEL[log.type]}&rdquo; slettes
+            permanent sammen med eventuelle fotos. Det kan ikke fortrydes.
           </DialogDescription>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

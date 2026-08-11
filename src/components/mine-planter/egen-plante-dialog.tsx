@@ -18,7 +18,7 @@ import type { GardenLocation } from '@/lib/types'
 interface Props {
   /** Brugerens eksisterende dyrkningssteder — til hurtig-valg. */
   gardenLocations: GardenLocation[]
-  /** Custom trigger (default: en "Tilføj en plante du allerede har"-knap). */
+  /** Custom trigger (default: en "Tilføj en plante, du allerede har"-knap). */
   children?: React.ReactNode
   /**
    * Hvis sat: kaldes ved oprettelse i stedet for at navigere til plantesiden.
@@ -102,16 +102,16 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
       <DialogTrigger asChild>
         {children ?? (
           <Button variant="outline" className="gap-2">
-            <Plus className="h-4 w-4" /> Tilføj en plante du allerede har
+            <Plus className="h-4 w-4" /> Tilføj en plante, du allerede har
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogTitle className="flex items-center gap-2">
-          <Sprout className="h-4 w-4 text-primary" /> En plante du allerede har
+          <Sprout className="h-4 w-4 text-primary" /> En plante, du allerede har
         </DialogTitle>
         <DialogDescription>
-          Til det, der allerede står i haven. Du behøver ikke kende sorten eller
+          Tilføj det, der allerede står i haven. Du behøver ikke kende sorten eller
           den præcise dato — udfyld det, du ved.
         </DialogDescription>
 
@@ -121,7 +121,7 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
             <Input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="Fx. Tomat, Agurk, Dahlia"
+              placeholder="fx Tomat, Agurk, Dahlia"
               autoFocus
               required
               className="mt-1.5"
@@ -131,11 +131,11 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Type <span className="text-muted-foreground font-normal">(valgfri)</span></Label>
-              <Input value={type} onChange={e => setType(e.target.value)} placeholder="Fx. Cherrytomat" className="mt-1.5" />
+              <Input value={type} onChange={e => setType(e.target.value)} placeholder="fx Cherrytomat" className="mt-1.5" />
             </div>
             <div>
               <Label>Sort <span className="text-muted-foreground font-normal">(valgfri)</span></Label>
-              <Input value={sort} onChange={e => setSort(e.target.value)} placeholder="Fx. San Marzano" className="mt-1.5" />
+              <Input value={sort} onChange={e => setSort(e.target.value)} placeholder="fx San Marzano" className="mt-1.5" />
             </div>
           </div>
           <p className="text-[11px] text-muted-foreground -mt-1.5">
@@ -156,7 +156,7 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
             <Input
               value={location}
               onChange={e => setLocation(e.target.value)}
-              placeholder="Fx. Drivhus, Højbed 2, Krukke på terrassen"
+              placeholder="fx Drivhus, Højbed 2, Krukke på terrassen"
               className="mt-1.5"
               list="egen-plante-locations"
             />
@@ -205,12 +205,12 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
                 onChange={e => setExactDate(e.target.value)} className="mt-2" />
             )}
             {datoMode === 'unknown' && (
-              <p className="text-[11px] text-muted-foreground mt-2">Vi opfinder ikke en dato — planten oprettes uden startdato.</p>
+              <p className="text-[11px] text-muted-foreground mt-2">Det er helt fint. Du kan oprette planten uden startdato.</p>
             )}
           </div>
 
           <div>
-            <Label>Billede <span className="text-muted-foreground font-normal">(valgfri)</span></Label>
+            <Label>Billede <span className="text-muted-foreground font-normal">(valgfrit)</span></Label>
             <div className="mt-1.5">
               <MultiImageUpload
                 value={images} primary={primary}
@@ -224,7 +224,7 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
             <Label>Kort observation <span className="text-muted-foreground font-normal">(valgfri)</span></Label>
             <Textarea
               value={observation} onChange={e => setObservation(e.target.value)}
-              placeholder="Fx. 'Ser sund ud, første blomster'"
+              placeholder="fx “Ser sund ud, første blomster”"
               rows={2} className="mt-1.5"
             />
           </div>

@@ -25,12 +25,12 @@ export function PlantEmptyState() {
             <Button asChild variant="secondary" size="sm" className="bg-white/90 text-primary hover:bg-white">
               <Link href="/onboarding/have">
                 <Plus className="h-4 w-4" />
-                Tilføj planter
+                Tilføj min første plante
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="border-white/28 bg-white/10 text-white hover:bg-white/16 hover:text-white">
               <Link href="/froebank">
-                Se frøbanken
+                Se Frøbanken
               </Link>
             </Button>
           </div>

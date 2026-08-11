@@ -210,7 +210,7 @@ export function MineSteder({
             </select>
           </div>
           <p style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 400, color: 'rgba(36,48,31,0.45)', margin: '8px 0 0' }}>
-            {canPersist ? 'Foto kan tilføjes senere.' : 'Demo — stedet gemmes ikke.'}
+            {canPersist ? 'Du kan tilføje et foto senere.' : 'Demo — stedet gemmes ikke.'}
           </p>
           {error && (
             <p style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: '#A1483A', margin: '6px 0 0' }}>
@@ -231,7 +231,7 @@ export function MineSteder({
               onClick={() => { setShowForm(false); setNavn('') }}
               style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: 'rgba(36,48,31,0.6)', background: 'transparent', border: 'none', padding: '9px 8px', cursor: 'pointer' }}
             >
-              Annuller
+              Annullér
             </button>
           </div>
         </div>
@@ -244,7 +244,7 @@ export function MineSteder({
             style={{ background: '#FBF8EC', border: '1px dashed rgba(36,48,31,0.16)', borderRadius: 20, padding: '22px 20px' }}
           >
             <p style={{ fontFamily: sans, fontSize: 14.5, fontWeight: 400, lineHeight: 1.45, color: 'rgba(36,48,31,0.7)', margin: 0, maxWidth: '34ch' }}>
-              Organisér dine planter efter hvor de vokser.
+              Organisér dine planter efter dyrkningssted.
             </p>
             <button
               type="button"

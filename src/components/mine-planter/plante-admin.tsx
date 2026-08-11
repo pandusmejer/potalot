@@ -88,7 +88,7 @@ export function PlanteAdmin({ plantId, name, variety, location, isArchived }: Pr
 
       <div className="mt-2 flex flex-col items-start gap-0.5">
         <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={() => { setError(null); setEditOpen(true) }}>
-          <Pencil className="h-4 w-4" /> Rediger plante
+          <Pencil className="h-4 w-4" /> Redigér plante
         </Button>
         {isArchived ? (
           <Button variant="ghost" size="sm" className="-ml-2 text-muted-foreground" onClick={gendan} disabled={pending}>
@@ -107,7 +107,7 @@ export function PlanteAdmin({ plantId, name, variety, location, isArchived }: Pr
       {/* Rediger */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
-          <DialogTitle>Rediger plante</DialogTitle>
+          <DialogTitle>Redigér plante</DialogTitle>
           <DialogDescription>Ret navn, sort eller sted. Status og log ændres andre steder.</DialogDescription>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
@@ -138,8 +138,9 @@ export function PlanteAdmin({ plantId, name, variety, location, isArchived }: Pr
         <DialogContent>
           <DialogTitle>Slet {name}?</DialogTitle>
           <DialogDescription>
-            Planten og dens log slettes permanent — det kan ikke fortrydes. Vil du
-            bare have den væk fra dine aktive planter, så brug Arkivér i stedet.
+            Planten og dens historie slettes permanent — det kan ikke fortrydes. Vil
+            du bare have planten væk fra dine aktive planter, kan du arkivere
+            den i stedet.
           </DialogDescription>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

@@ -72,7 +72,7 @@ export function PlantFotoManager({ plantId, initialImages, initialPrimary }: Pro
       </div>
 
       <p className="mt-1" style={{ fontFamily: sans, fontSize: 13, lineHeight: 1.4, color: 'rgba(36,48,31,0.5)' }}>
-        Dine egne fotos af planten. Det første bliver forsidebilledet.
+        Dine egne fotos af planten. Det første foto bruges som forsidebillede.
       </p>
 
       <div className="mt-4">

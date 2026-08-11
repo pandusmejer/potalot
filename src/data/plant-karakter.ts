@@ -46,7 +46,7 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
       'Den italienske oksehjerte-peber — lang, sød og tyndskindet. Bliver knaldrød og smager solmodent af sommer.',
     essens: 'Sød · Varmekær · Tålmodig',
     uddybning:
-      'Corno di Toro bliver knaldrød og solmodent sød — hvis du giver den varme og tid nok. Et af haveens største slik.',
+      'Corno di Toro bliver knaldrød og solmodent sød — hvis du giver den varme og tid nok. Et af havens største slik.',
     traits: [
       { label: 'Sværhedsgrad', value: 'Middel' },
       { label: 'Temperament', value: 'Varmekær' },
@@ -72,7 +72,7 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
       'En af de stærke. Frugtig hede bag flammen, og en plante der kræver varme, tid og en smule respekt.',
     essens: 'Hidsig · Frugtig · Krævende',
     uddybning:
-      'Frugtig hede bag flammen. Habanero kræver varme, tid og en smule respekt — men giver en af haveens stærkeste smage.',
+      'Frugtig hede bag flammen. Habanero kræver varme, tid og en smule respekt — men giver en af havens stærkeste smage.',
     traits: [
       { label: 'Sværhedsgrad', value: 'Svær' },
       { label: 'Temperament', value: 'Hidsig' },

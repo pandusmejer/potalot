@@ -33,6 +33,7 @@ import type {
   PlantDetailOverride,
 } from '@/data/plant-detail'
 import { PLANT_STATUS_META } from '@/lib/constants'
+import { GUIDE_FACTS } from '@/data/guide-facts-index.generated'
 import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import { healthShort, heightLabel } from '@/lib/plant-log-meta'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
@@ -56,6 +57,23 @@ function slugify(text: string): string {
     .replace(/[æ]/g, 'ae').replace(/[ø]/g, 'oe').replace(/[å]/g, 'aa')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+/**
+ * Artens/sortens guidefakta (sort → art) — bruges til at erstatte generiske
+ * dyrkningspåstande med artens egne data (Anna PLT-0317/0325/0331/0333):
+ * findes ingen data, siger Potalot MINDRE — aldrig et universelt gæt.
+ */
+function guideFakta(plant: MockPlant) {
+  const kandidater = [
+    plant.variety ? slugify(`${plant.name} ${plant.variety}`.replace(/['’]/g, '')) : null,
+    slugify(plant.name),
+  ].filter((s): s is string => !!s)
+  for (const id of kandidater) {
+    const g = GUIDE_FACTS.find(x => x.id === id)
+    if (g) return g.quickFacts
+  }
+  return null
 }
 
 function plantCardImage(plant: MockPlant): { src: string; hasPhoto: boolean } {
@@ -138,8 +156,8 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
   },
   saaet: {
     overskrift: 'Spiringsfasen',
-    beskrivelse: 'Hold jorden let fugtig og lun. De første spirer bør snart vise sig.',
-    denneUge: ['Hold jorden fugtig', 'Hold den lunt', 'Undgå direkte udtørring'],
+    beskrivelse: 'Hold jorden let fugtig, mens du venter på spiring.',
+    denneUge: ['Hold jorden fugtig', 'Hold den lun', 'Undgå direkte udtørring'],
   },
   spirer: {
     overskrift: 'Spirerne er oppe',
@@ -149,11 +167,13 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
   i_vaekst: {
     overskrift: 'I fuld vækst',
     beskrivelse: 'Planten vokser. Hold jorden jævnt fugtig og gød efter behov.',
-    denneUge: ['Hold jorden fugtig', 'Gød hver 1.–2. uge', 'Fjern visne blade'],
+    denneUge: ['Hold jorden fugtig', 'Gød efter behov', 'Fjern visne blade'],
   },
   klar_til_udplantning: {
+    // Frost-varianten — bruges KUN når arten faktisk er frostfølsom
+    // (justeres i deriveNaeste; Anna PLT-0317/0318: intet universelt frost-råd).
     overskrift: 'Klar til at flytte ud',
-    beskrivelse: 'Hærd planten gradvist, og plant ud når frosten er ovre.',
+    beskrivelse: 'Hærd planten gradvist, og plant ud, når frosten er ovre.',
     denneUge: ['Hærd af udendørs', 'Tjek frostvarsel', 'Forbered bedet'],
   },
   udplantet: {
@@ -164,7 +184,7 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
   hoestklar: {
     overskrift: 'Klar til høst',
     beskrivelse: 'Tjek planten jævnligt og høst løbende, mens den er på sit bedste.',
-    denneUge: ['Høst løbende', 'Tjek for modne frugter', 'Vand jævnt'],
+    denneUge: ['Høst løbende', 'Tjek, hvad der er høstklart', 'Vand jævnt'],
   },
   afsluttet: {
     overskrift: 'Sæsonen er slut',
@@ -174,7 +194,11 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
 }
 
 function deriveTiming(plant: MockPlant): string {
-  if (plant.status === 'saaet') return 'spirer typisk om 1–2 uger'
+  if (plant.status === 'saaet') {
+    // Artens egen spiretid — aldrig et generisk "1–2 uger" (Anna PLT-0325).
+    const dage = guideFakta(plant)?.germinationDays
+    return dage ? `spirer typisk efter ${dage}` : STATUS_NOTE.saaet
+  }
   if (plant.status === 'planlagt') return 'så når jorden er klar'
   if (plant.expectedHarvestStart && STATUS_RANK[plant.status] < STATUS_RANK.hoestklar) {
     return `høst forventes omkring ${formatDatoKort(plant.expectedHarvestStart)}`
@@ -184,7 +208,16 @@ function deriveTiming(plant: MockPlant): string {
 }
 
 export function deriveNaeste(plant: MockPlant): DetailNaeste {
-  const rule = STATUS_NAESTE[plant.status]
+  let rule = STATUS_NAESTE[plant.status]
+  // Frost-rådet er ikke universelt (Anna PLT-0317/0318): mange planter tåler
+  // kulde. Kun arter, guiden KENDER som frostfølsomme, får frost-copy.
+  if (plant.status === 'klar_til_udplantning' && guideFakta(plant)?.frostSensitive !== true) {
+    rule = {
+      ...rule,
+      beskrivelse: 'Hærd planten gradvist af, før du planter ud.',
+      denneUge: ['Hærd af udendørs', 'Forbered bedet'],
+    }
+  }
   // "Lige nu" er sidens magasin-moment. resolveNowImage vælger det bedst
   // egnede makro (sort → art → sikker crossover) ud fra fase + motivrolle;
   // ellers falder vi til plantekort-fotoet; ellers tom streng → botanisk fyld.
@@ -241,9 +274,11 @@ export function deriveTidslinje(
       historie: note('Spiret', 'De første skud brød jorden.'),
     })
   } else if (rank < STATUS_RANK.spirer) {
+    // Artens egen spiretid, eller ingen tidsangivelse (Anna PLT-0331).
+    const dage = guideFakta(plant)?.germinationDays
     ms.push({
       label: 'Spiret', dato: null, ikon: 'spire',
-      historie: note('Spiret', 'Forventes 1–2 uger efter såning.'),
+      historie: note('Spiret', dage ? `Forventes ${dage} efter såning.` : 'Venter på spiring.'),
     })
   }
 
@@ -252,12 +287,15 @@ export function deriveTidslinje(
   if (udplantet) {
     ms.push({
       label: 'Udplantet', dato: formatDatoKort(udplantet), ikon: 'plante',
-      historie: note('Udplantet', 'Flyttet ud i sit blivende bed.'),
+      historie: note('Udplantet', 'Plantet ud på sit dyrkningssted.'),
     })
   } else if (rank < STATUS_RANK.udplantet && plant.status !== 'planlagt') {
     ms.push({
       label: 'Udplantet', dato: null, ikon: 'plante',
-      historie: note('Udplantet', 'Forventes når frosten er ovre.'),
+      // Frost-forventning kun for frostfølsomme arter (Anna PLT-0333).
+      historie: note('Udplantet', guideFakta(plant)?.frostSensitive === true
+        ? 'Forventes, når frosten er ovre.'
+        : 'Venter på udplantning.'),
     })
   }
 
@@ -272,7 +310,8 @@ export function deriveTidslinje(
       label: 'Første høst', dato: null, ikon: 'frugt',
       historie: note('Høst', plant.expectedHarvestStart
         ? `Forventes omkring ${formatDatoKort(plant.expectedHarvestStart)}.`
-        : 'Forventes sidst på sæsonen.'),
+        // Ukendt er bedre end fyldtekst forklædt som viden (Anna PLT-0336).
+        : 'Høsttidspunktet kendes ikke endnu.'),
     })
   }
 

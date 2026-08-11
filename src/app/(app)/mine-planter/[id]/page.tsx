@@ -226,7 +226,7 @@ function renderEditorial(
         >
           <Package className="h-4 w-4 shrink-0" strokeWidth={1.9} style={{ color: '#5A7038' }} aria-hidden />
           <span style={{ fontFamily: sansFont, fontSize: 13.5, fontWeight: 600, color: 'rgba(36,48,31,0.72)' }}>
-            Oprettet fra frøbanken · <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>Se frøposten</span>
+            Oprettet fra Frøbanken · <span style={{ fontWeight: 500, color: 'rgba(36,48,31,0.55)' }}>Se frøposten</span>
           </span>
           <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.4)', marginLeft: 'auto' }} aria-hidden />
         </Link>
@@ -318,7 +318,7 @@ function DagbogSektion({ plant, log }: { plant: MockPlant; log: LogContext }) {
               Plantens historie
             </p>
             <p style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 400, color: 'rgba(36,48,31,0.55)', margin: '3px 0 0' }}>
-              Din logbog for {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
+              Det, der er sket med {plant.variety ?? plant.name}{aar ? ` i ${aar}` : ''}.
             </p>
           </div>
         </div>

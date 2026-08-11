@@ -126,7 +126,7 @@ export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
       overskrift: 'Første blomster',
       timing: 'forventes om 8–14 dage',
       beskrivelse: 'San Marzano går nu fra vegetativ vækst til blomstring.',
-      denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7–10 dag'],
+      denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7.–10. dag'],
       fotoSrc: `${MAKRO_SM}/frugtknop.jpg`,
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },

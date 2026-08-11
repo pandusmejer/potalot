@@ -4,7 +4,7 @@ import type { CalendarTask, Plant, PlantStatus } from '@/lib/types'
  * Handlings-orienterede filtre (V2.2 — Annas feedback).
  *
  * Efter art-opdelingen blev de gamle status-chips (Sået/Spiret/
- * Ompottet/Udplantet/Klar til høst) en anden måde at organisere de
+ * Pottet om/Udplantet/Klar til høst) en anden måde at organisere de
  * samme ting på — database-sprog. De nye chips svarer i stedet på
  * "hvad vil jeg se?":
  *
@@ -121,7 +121,7 @@ export const mockPlants: MockPlant[] = [
       id: 'activity-tomat',
       plantId: 'tomat-san-marzano',
       plantName: 'Tomat San Marzano',
-      action: 'Ompottet for 9 dage siden',
+      action: 'Pottet om for 9 dage siden',
       when: '20. april',
       image: '/images/plantekort/tomat-san-marzano.jpg',
     },
@@ -134,7 +134,7 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.', konsekvens: 'Varmen under bakken vækkede frøene på under en uge.' },
-      { id: 'log-tomat-2', date: '2026-04-20', action: 'Ompottet', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.', konsekvens: 'Den ekstra plads satte straks gang i ny vækst ovenpå.' },
+      { id: 'log-tomat-2', date: '2026-04-20', action: 'Pottet om', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.', konsekvens: 'Den ekstra plads satte straks gang i ny vækst ovenpå.' },
       { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten bruger nu mere energi på frugterne end på ny bladvækst.' },
     ],
     guide: {
@@ -171,7 +171,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-05-14T07:30:00.000Z',
     updatedAt: '2026-05-29T07:40:00.000Z',
-    notes: 'Spirer hurtigt. Skal ikke stå for vådt omkring rothalsen.',
+    notes: 'Spirer hurtigt. Skal ikke stå for vådt omkring rodhalsen.',
     pictures: [
       { id: 'agurk-img-1', src: '/images/plantekort/agurk-marketmore.jpg', alt: 'Agurk Marketmore' },
     ],
@@ -294,7 +294,7 @@ export const mockPlants: MockPlant[] = [
       id: 'activity-dahlia',
       plantId: 'dahlia-cafe-au-lait',
       plantName: 'Dahlia Café au Lait',
-      action: 'Ompottet i går',
+      action: 'Pottet om i går',
       when: 'I går',
       image: '/images/plantekort/dahlia-cafe-au-lait.jpg',
     },
@@ -307,7 +307,7 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-dahlia-1', date: '2026-04-05', action: 'Forspiret', note: 'Knold sat lyst og lunt.' },
-      { id: 'log-dahlia-2', date: '2026-05-12', action: 'Ompottet', note: 'Fik større potte før afhærdning.' },
+      { id: 'log-dahlia-2', date: '2026-05-12', action: 'Pottet om', note: 'Fik større potte før afhærdning.' },
     ],
     guide: {
       title: 'Dahlia gennem sommeren',
@@ -536,7 +536,7 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-calwonder-1', date: '2026-03-02', action: 'Sået', note: '3 frø med varme under.' },
-      { id: 'log-calwonder-2', date: '2026-04-12', action: 'Ompottet', note: '11 cm potter, alle tre stærke.' },
+      { id: 'log-calwonder-2', date: '2026-04-12', action: 'Pottet om', note: '11 cm potter, alle tre stærke.' },
     ],
     guide: {
       title: 'Blokpeber i drivhus',
@@ -580,7 +580,7 @@ export const mockPlants: MockPlant[] = [
       id: 'activity-corno',
       plantId: 'peberfrugt-corno-di-toro-rosso',
       plantName: 'Peberfrugt Corno di Toro Rosso',
-      action: 'Ompottet',
+      action: 'Pottet om',
       when: '14. april',
       image: '/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg',
     },
@@ -593,11 +593,11 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-corno-1', date: '2026-03-02', action: 'Sået', note: '4 frø med varme under.' },
-      { id: 'log-corno-2', date: '2026-04-14', action: 'Ompottet', note: 'Alle fire klarede flytningen.' },
+      { id: 'log-corno-2', date: '2026-04-14', action: 'Pottet om', note: 'Alle fire klarede flytningen.' },
     ],
     guide: {
       title: 'Snackpeber med horn',
-      body: 'Corno di Toro vil have varme og taalmodighed — frugterne er det vaerd.',
+      body: 'Corno di Toro vil have varme og tålmodighed — frugterne er det værd.',
       href: '/guides/peberfrugt-corno-di-toro-rosso',
     },
   },

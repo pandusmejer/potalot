@@ -28,17 +28,7 @@ export function PlantGalleri({ billeder }: { billeder: DetailBillede[] }) {
         >
           Billeder
         </h2>
-        <span
-          className="flex items-center gap-1"
-          style={{
-            fontFamily: sans,
-            fontSize: 12.5,
-            fontWeight: 600,
-            color: 'rgba(36,48,31,0.50)',
-          }}
-        >
-          Se alle <span aria-hidden>→</span>
-        </span>
+        {/* "Se alle" fjernet (Anna PLT-0188): var et dødt span uden handling. */}
       </div>
 
       <div

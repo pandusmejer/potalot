@@ -92,7 +92,7 @@ export function Timeline({ plant, logs, showMilestones = true, readOnly = false,
   if (items.length === 0) {
     return (
       <p className="text-sm text-muted-foreground italic py-4">
-        Ingen log-events endnu.
+        Ingen historie endnu.
       </p>
     )
   }

@@ -30,7 +30,7 @@ interface Props {
   plantId: string
   /** Hvis sat: edit-mode. Felterne forudfyldes fra logget og 'Gem' opdaterer i stedet for at oprette. */
   log?: PlantLog
-  /** Custom trigger (fx en lille pencil-knap i timeline). Default er stor "Ny lognote"-knap. */
+  /** Custom trigger (fx en lille pencil-knap i timeline). Default er stor "Log nyt på planten"-knap. */
   trigger?: React.ReactNode
   /** Start-type — bruges når feltet åbnes direkte fra fx "Højde"-feltet på kortet. */
   defaultType?: PlantLogType
@@ -175,7 +175,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
           ) : (
             <Button variant="outline" size="sm">
               <Plus className="h-4 w-4" />
-              Ny lognote
+              Log nyt på planten
             </Button>
           )
         )}
@@ -186,8 +186,8 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
             <DialogTitle>{gartnerValgt ? 'Gartnerens vurdering' : 'Gemt. Gartneren ser på det …'}</DialogTitle>
             <DialogDescription>
               {gartnerValgt
-                ? 'Gartneren ser på sort, alder, sted og plantens historik.'
-                : 'Din registrering ligger i plantens historik. Her er vurderingen.'}
+                ? 'Gartneren tager udgangspunkt i sort, alder, sted og det, du tidligere har logget.'
+                : 'Din registrering er gemt i Plantens historie. Her er Gartnerens vurdering.'}
             </DialogDescription>
             <GartnerSvarPanel
               tilstand={gartner.tilstand}
@@ -197,7 +197,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               // Gem-titlen bærer problemets egne ord ("Lus på blade") — et
               // gemt kort må aldrig være anonymt (Annas regel 10/8).
               question={gartnerValgt
-                ? 'Generel vurdering af planten'
+                ? 'Vurdering af planten'
                 : (title.trim() || PLANT_LOG_LABEL[type])}
               fraLog={!gartnerValgt}
             />
@@ -209,10 +209,10 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
           </>
         ) : (
         <>
-        <DialogTitle>{isEdit ? 'Redigér log-event' : 'Tilføj til log'}</DialogTitle>
+        <DialogTitle>{isEdit ? 'Redigér log' : 'Tilføj til log'}</DialogTitle>
         <DialogDescription>
           {isEdit
-            ? 'Ret detaljerne. Ændringer påvirker historikken på din plante.'
+            ? 'Ret detaljerne i loggen. Ændringerne vises også i Plantens historie.'
             : 'Skriv en observation eller registrér en handling.'}
         </DialogDescription>
 
@@ -255,8 +255,8 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
 
           {gartnerValgt ? (
             <p className="text-sm" style={{ color: 'rgba(36,48,31,0.65)' }}>
-              Gartneren giver et generelt blik på planten ud fra sort, alder,
-              sted og historik — du behøver ikke udfylde mere.
+              Gartneren vurderer planten ud fra sort, alder, sted og det, du
+              tidligere har logget. Du behøver ikke udfylde mere.
             </p>
           ) : isHealth ? (
             <div>
@@ -299,7 +299,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
                   step="0.1"
                   value={heightCm}
                   onChange={e => setHeightCm(e.target.value)}
-                  placeholder="Fx. 24"
+                  placeholder="fx 24"
                   className="w-32"
                 />
                 <span className="text-sm text-muted-foreground">cm</span>
@@ -311,7 +311,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
               <Input
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder="Fx. Bladene blev gule"
+                placeholder="fx Bladene blev gule"
                 className="mt-1.5"
               />
             </div>
@@ -323,7 +323,7 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
             <Textarea
               value={note}
               onChange={e => setNote(e.target.value)}
-              placeholder="Skriv hvad du observerede eller gjorde…"
+              placeholder="Skriv, hvad du observerede eller gjorde …"
               rows={3}
               className="mt-1.5"
             />
@@ -375,8 +375,8 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
                     Få Gartnerens vurdering, når du gemmer
                   </span>
                   <span className="mt-0.5 block text-xs" style={{ color: 'rgba(36,48,31,0.6)' }}>
-                    Gartneren bruger det, du har skrevet, sammen med plantens
-                    sort, alder, sted og historik.
+                    Gartneren bruger det, du har skrevet, sammen med det, Potalot
+                    allerede ved om planten.
                   </span>
                 </span>
               </label>

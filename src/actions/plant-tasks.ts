@@ -89,7 +89,8 @@ export async function markDerivedTaskDone(
     if (logEntryId) {
       await supabase.from('plant_logs_v2').delete().eq('id', logEntryId).eq('user_id', userId)
     }
-    return { error: error?.message ?? 'Kunne ikke gemme udført-status' }
+    console.error('markDerivedTaskDone fejlede:', error)
+    return { error: 'Kunne ikke markere opgaven som udført. Prøv igen.' }
   }
 
   revalidatePath('/mine-planter')
@@ -120,7 +121,10 @@ export async function unmarkDerivedTaskDone(
     .delete()
     .eq('id', row.id as string)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('unmarkDerivedTaskDone fejlede:', error)
+    return { error: 'Kunne ikke fortryde udført-markeringen. Prøv igen.' }
+  }
 
   // Fjern den tilhørende log-note.
   if (row.log_entry_id) {

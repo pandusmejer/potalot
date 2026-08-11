@@ -30,12 +30,7 @@ export function PlantTidslinje({ milestones }: { milestones: DetailMilestone[] }
         >
           Tidslinje
         </h2>
-        <span
-          className="flex items-center gap-1"
-          style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: 'rgba(36,48,31,0.5)' }}
-        >
-          Se alle <span aria-hidden>→</span>
-        </span>
+        {/* "Se alle" fjernet (Anna PLT-0202): var et dødt span uden handling. */}
       </div>
 
       <ol className="relative mt-5" style={{ paddingLeft: 28 }}>

@@ -14,6 +14,8 @@ import {
 } from '@/actions/badges'
 import { resolveOrCreateGardenLocation } from '@/actions/garden-locations'
 import type { Plant, PlantImageSource, PlantLog, PlantStatus, PlantLogType } from '@/lib/types'
+import { PLANT_STATUS_META } from '@/lib/constants'
+import { PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
 
 // ============================================
 // Mappers
@@ -195,7 +197,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
     .eq('user_id', userId)
     .single()
 
-  if (invErr || !invItem) return { error: 'Frøbank-element ikke fundet' }
+  if (invErr || !invItem) return { error: 'Frøposten blev ikke fundet.' }
   const inv = invItem as { id: string; name: string; variety: string | null; guide_id: string | null; status: string }
   let guideImageUrl: string | null = null
   if (inv.guide_id) {
@@ -230,7 +232,10 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   } else if (existing && input.mergeStrategy === 'new') {
     // Brugeren har valgt "opret nyt hold"
     const { data: newPlant, error: plantErr } = await createNewPlantEntry()
-    if (plantErr || !newPlant) return { error: plantErr ?? 'Kunne ikke oprette plante' }
+    if (plantErr || !newPlant) {
+      console.error('opret plante fejlede:', plantErr)
+      return { error: 'Kunne ikke oprette planten. Prøv igen.' }
+    }
     plantId = newPlant.id
   } else if (existing && !input.mergeStrategy) {
     // Eksisterer og brugeren har ikke valgt — bed UI om valg
@@ -241,7 +246,10 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
   } else {
     // Ingen eksisterende — opret ny
     const { data: newPlant, error: plantErr } = await createNewPlantEntry()
-    if (plantErr || !newPlant) return { error: plantErr ?? 'Kunne ikke oprette plante' }
+    if (plantErr || !newPlant) {
+      console.error('opret plante fejlede:', plantErr)
+      return { error: 'Kunne ikke oprette planten. Prøv igen.' }
+    }
     plantId = newPlant.id
   }
 
@@ -538,7 +546,10 @@ export async function createPlantLog(input: {
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme log' }
+  if (error || !data) {
+    console.error('createPlantLog fejlede:', error)
+    return { error: 'Kunne ikke gemme loggen. Prøv igen.' }
+  }
 
   // Auto-stage-advance: hvis loggen afspejler en livscyklus-event,
   // ryk plantens status frem (men aldrig tilbage)
@@ -564,7 +575,7 @@ export async function createPlantLog(input: {
         user_id: userId,
         date: input.date,
         type: 'status_change',
-        note: `Auto-skift til "${targetStage}" pga. ${input.type}-log`,
+        note: `Status ændret automatisk til "${PLANT_STATUS_META[targetStage].label}" efter loggen "${PLANT_LOG_LABEL[input.type]}"`,
       })
       stageAdvancedTo = targetStage
     }
@@ -610,8 +621,11 @@ export async function updatePlantLog(input: {
     .select('plant_id')
     .maybeSingle()
 
-  if (error) return { error: error.message }
-  if (!data) return { error: 'Log ikke fundet eller ingen adgang' }
+  if (error) {
+    console.error('updatePlantLog fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
+  if (!data) return { error: 'Loggen blev ikke fundet, eller du har ikke adgang til den.' }
 
   const plantId = data.plant_id as string
   revalidatePath(`/mine-planter/${plantId}`)
@@ -630,8 +644,11 @@ export async function deletePlantLog(
     .eq('id', logId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (fetchErr) return { error: fetchErr.message }
-  if (!row) return { error: 'Log ikke fundet' }
+  if (fetchErr) {
+    console.error('deletePlantLog opslag fejlede:', fetchErr)
+    return { error: 'Kunne ikke slette loggen. Prøv igen.' }
+  }
+  if (!row) return { error: 'Loggen blev ikke fundet.' }
 
   const { error: delErr } = await supabase
     .from('plant_logs_v2')
@@ -667,7 +684,10 @@ export async function updatePlantStatus(
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updatePlantStatus fejlede:', error)
+    return { error: 'Kunne ikke ændre status. Prøv igen.' }
+  }
 
   // Skriv også en log-entry så historikken er sporet — brug effective-date
   // så 'X dage i dette stadie' regnes korrekt selv hvis brugeren logger
@@ -679,7 +699,7 @@ export async function updatePlantStatus(
       user_id: userId,
       date: logDate,
       type: 'status_change',
-      note: `Status ændret til "${status}"`,
+      note: `Status ændret til "${PLANT_STATUS_META[status].label}"`,
     })
 
   // Badge-checks baseret på det nye stadie
@@ -713,7 +733,10 @@ export async function archivePlant(plantId: string): Promise<{ ok: true } | { er
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('archivePlant fejlede:', error)
+    return { error: 'Kunne ikke arkivere planten. Prøv igen.' }
+  }
 
   await supabase.from('plant_logs_v2').insert({
     plant_id: plantId,
@@ -751,7 +774,10 @@ export async function restorePlant(plantId: string): Promise<{ ok: true } | { er
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('restorePlant fejlede:', error)
+    return { error: 'Kunne ikke gendanne planten. Prøv igen.' }
+  }
 
   revalidatePath('/mine-planter')
   revalidatePath('/mine-planter/arkiv')
@@ -795,7 +821,10 @@ export async function updatePlant(
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updatePlant fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
 
   revalidatePath(`/mine-planter/${plantId}`)
   revalidatePath('/mine-planter')
@@ -840,7 +869,10 @@ export async function updatePlantPhotos(
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updatePlantPhotos fejlede:', error)
+    return { error: 'Kunne ikke gemme fotos. Prøv igen.' }
+  }
 
   revalidatePath(`/mine-planter/${plantId}`)
   revalidatePath('/mine-planter')
@@ -865,7 +897,10 @@ export async function deletePlant(plantId: string): Promise<{ ok: true } | { err
     .eq('id', plantId)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deletePlant fejlede:', error)
+    return { error: 'Kunne ikke slette planten. Prøv igen.' }
+  }
 
   revalidatePath('/mine-planter')
   return { ok: true }
