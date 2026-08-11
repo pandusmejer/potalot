@@ -66,9 +66,9 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           marginBottom: 46,
         }}
       >
-        Tryk og tal
+        Fortæl om
         <br />
-        til din have
+        din have
       </p>
 
       {/* Mikrofonen med glød-halo. Snæver container (haloen pulser frit

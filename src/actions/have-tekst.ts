@@ -65,9 +65,10 @@ VIGTIGT: Opfind ALDRIG planter/frø der ikke er nævnt. Er teksten tom for haveh
 returnér {"items":[]}. Del sammensatte udsagn op (fx "tomater og agurker" → to items).
 
 Får du et FOTO af håndskrevne noter, lister eller skitser: læs det du kan, og udled
-arter, sorter, antal, steder og status. Er håndskriften svær, så gæt forsigtigt og
-sæt certainty="lav" — hellere et usikkert forslag brugeren kan rette end opfundet
-sikkerhed. Kan du slet ikke læse noget, så udelad det.`
+arter, sorter, antal, steder og status. Er håndskriften svær, må du kun returnere
+noget, du faktisk kan aflæse med rimelig sikkerhed — markér usikker aflæsning med
+certainty="lav". Kan du ikke identificere planten eller teksten, så udelad den.
+Gæt ALDRIG et plantenavn for at udfylde et felt.`
 
 export async function fortolkHaveTekst(
   text: string,

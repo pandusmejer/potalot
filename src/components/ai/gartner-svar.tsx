@@ -11,6 +11,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 import Link from 'next/link'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { harAuthCookie } from '@/lib/auth-cookie'
 import { resolveGuideLink } from '@/lib/gartner-guide-link'
 import { createPlantLog } from '@/actions/mine-planter'
@@ -218,7 +219,7 @@ function GemTilSenere({
   // læsbar overskrift — "Når hvad er klar?"-problemet må aldrig opstå.
   const effektivtSpoergsmaal =
     question?.trim() ||
-    (intent === 'general' ? 'Generel vurdering af planten' : 'Vurdering af et registreret problem')
+    (intent === 'general' ? 'Vurdering af planten' : 'Vurdering af problemet')
 
   if (status === 'gjort') {
     return (
@@ -254,11 +255,11 @@ function GemTilSenere({
           setBekraeftelse(
             res.sted === 'plante'
               ? fraLog
-                ? '✓ Gemt på planten — du finder vurderingen igen i plantens historik og under Gemte råd.'
+                ? '✓ Gemt på planten. Du finder vurderingen igen i Plantens historie og under Gemte råd.'
                 : // Ingen dynamisk genitiv (Anna GAR-0058): "på siden for X",
                   // aldrig "${navn}s side" — dansk genitiv skal ikke bygges maskinelt.
                   `✓ Gemt på planten. Du finder svaret igen under Gemte råd${res.planteNavn ? ` på siden for ${res.planteNavn}` : ' på plantens side'}.`
-              : '✓ Gemt — du finder svaret igen under Guides → Gemt fra Gartneren.',
+              : '✓ Gemt. Du finder svaret igen under Guides → Gemt fra Gartneren.',
           )
           setStatus('gjort')
         } catch {
@@ -321,12 +322,17 @@ function EfterHandlinger({
     label: string
     bekraeftelse: string
     kunProblem?: boolean
+    kunGeneral?: boolean
     onClick: () => void
   }[] = [
     {
       status: log,
+      // KUN ved generel vurdering (Anna GAR-0061): ved problem-intent er
+      // vurderingen allerede vedhæftet logposten — at logge den igen ville
+      // genskabe præcis den dubletmodel, én-logpost-én-vurdering fjernede.
+      kunGeneral: true,
       label: 'Log denne vurdering',
-      bekraeftelse: 'Logget i plantens historik.',
+      bekraeftelse: 'Føjet til Plantens historie.',
       onClick: () =>
         koer(setLog, () =>
           createPlantLog({
@@ -354,24 +360,28 @@ function EfterHandlinger({
     {
       status: loest,
       kunProblem: true,
-      label: 'Markér problemet som løst',
-      bekraeftelse: 'Markeret som løst i loggen.',
+      label: 'Markér som løst',
+      bekraeftelse: 'Markeret som løst i Plantens historie.',
       onClick: () =>
         koer(setLoest, () =>
           createPlantLog({
             plantId,
             date: iDag(),
             type: 'note',
-            title: 'Problemet er løst',
-            note: 'Fulgte Gartnerens råd — problemet er løst.',
+            title: 'Problem løst',
+            // Potalot ved kun dette, fordi brugeren netop har markeret det —
+            // læg ikke "Fulgte rådet" i brugerens mund (Anna GAR-0069).
+            note: 'Problemet blev løst efter Gartnerens råd.',
           }),
         ),
     },
   ]
 
-  // General vurdering: intet registreret problem → "Markér som løst" ville
-  // lade Gartneren diagnosticere sin egen diagnose. Kun log + opgave.
-  const handlinger = alleHandlinger.filter(h => intent === 'problem' || !h.kunProblem)
+  // Problem: vurderingen er allerede i logposten → intet "Log denne vurdering".
+  // General: intet registreret problem → intet "Markér som løst".
+  const handlinger = alleHandlinger.filter(h =>
+    intent === 'problem' ? !h.kunGeneral : !h.kunProblem,
+  )
 
   return (
     <div
@@ -392,7 +402,7 @@ function EfterHandlinger({
             </span>
           ) : h.status === 'fejl' ? (
             <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 500, color: 'rgba(120,60,40,0.8)' }}>
-              Kunne ikke gemme — prøv igen fra planten.
+              Kunne ikke gemme. Prøv igen.
             </span>
           ) : (
             <button
@@ -472,7 +482,7 @@ export function GartnerSvarPanel({
 
       {tilstand === 'login' && (
         <p style={{ fontFamily: sans, fontSize: 13.5, lineHeight: 1.5, color: '#4A4438', margin: 0 }}>
-          Gartneren hjælper dig, når du er logget ind — så kender den din have.{' '}
+          Log ind for at bruge Gartneren. Så kan Gartneren tage udgangspunkt i din have.{' '}
           <Link href="/opret" style={{ color: '#4E6138', fontWeight: 600 }}>Opret bruger</Link>
           {' '}eller{' '}
           <Link href="/login" style={{ color: '#4E6138', fontWeight: 600 }}>log ind</Link>.
@@ -494,7 +504,7 @@ export function GartnerSvarPanel({
         >
           {formaterSvar(svar)}
           {tilstand === 'streamer' && (
-            <span aria-hidden style={{ opacity: 0.45 }}>{svar ? ' ▍' : 'Gartneren kigger på det …'}</span>
+            <span aria-hidden style={{ opacity: 0.45 }}>{svar ? ' ▍' : 'Gartneren ser på det …'}</span>
           )}
         </div>
       )}
@@ -589,10 +599,13 @@ export function GartnerVurderingVisning({ svar }: { svar: string }) {
         style={{
           background: 'none', border: 'none', padding: 0, cursor: 'pointer',
           marginTop: 6, fontFamily: sans, fontSize: 12, fontWeight: 600,
-          color: '#4E6138',
+          color: '#4E6138', display: 'inline-flex', alignItems: 'center', gap: 4,
         }}
       >
-        {udfoldet ? 'Skjul vurderingen ↑' : 'Vis hele vurderingen ↓'}
+        {udfoldet ? 'Skjul vurderingen' : 'Se hele vurderingen'}
+        {udfoldet
+          ? <ChevronUp className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+          : <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />}
       </button>
     </div>
   )

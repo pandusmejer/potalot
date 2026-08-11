@@ -53,9 +53,9 @@ async function transskriber(
   fd.append('file', blob, filnavn)
   if (prompt) fd.append('prompt', prompt)
   const { data, error } = await supabase.functions.invoke('transcribe', { body: fd })
-  if (error) return { error: 'Kunne ikke transskribere lige nu — prøv igen.' }
+  if (error) return { error: 'Kunne ikke skrive din tale ned lige nu. Prøv igen.' }
   const d = data as { text?: string; error?: { message?: string } } | null
-  if (d?.error) return { error: d.error.message ?? 'Transskription mislykkedes.' }
+  if (d?.error) return { error: 'Kunne ikke skrive din tale ned.' }
   return { text: (d?.text ?? '').trim() }
 }
 
@@ -252,7 +252,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
       setFase('fejl')
       return
     }
-    setResultat('Gemt i dit optagelses-arkiv.')
+    setResultat('Gemt som note.')
     setFase('gemt')
   }
 
@@ -276,7 +276,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
       setFase('fejl')
       return
     }
-    setResultat('Gemt i din havebog.')
+    setResultat('Gemt i Havebogen.')
     setFase('gemt')
   }
 
@@ -350,7 +350,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
             <button
               type="button"
               onClick={micKlik}
-              aria-label={optager ? 'Stop optagelse' : 'Tryk og tal til din have'}
+              aria-label={optager ? 'Stop optagelse' : 'Tryk for at fortælle om din have'}
               className={optager ? undefined : 'tal-breath'}
               style={{
                 position: 'relative',
@@ -449,7 +449,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
             value={tekst}
             onChange={e => setTekst(e.target.value)}
             rows={3}
-            placeholder="Fx: De første agurker er kommet, og husk at så mere salat i næste uge."
+            placeholder="Fx: De første agurker er kommet. Husk også at så mere salat i næste uge."
             style={{
               width: '100%',
               fontFamily: serif,
@@ -479,7 +479,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
               cursor: 'pointer',
             }}
           >
-            Fortolk
+            Fortsæt
           </button>
         </div>
       )}
@@ -492,14 +492,14 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
 
       {fase === 'fortolker' && (
         <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 22, color: 'rgba(36,48,31,0.6)', margin: '20px 0' }}>
-          Lytter efter, hvad du mener…
+          Finder det vigtigste…
         </p>
       )}
 
       {fase === 'forslag' && (
         <div style={{ width: '100%', textAlign: 'left' }}>
           <p style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 'clamp(18px,4cqw,22px)', color: 'rgba(36,48,31,0.7)', margin: '0 0 18px' }}>
-            Skal jeg gemme det her?
+            Hvad vil du gemme?
           </p>
           <div className="space-y-3">
             {forslag.map(f => {
@@ -551,7 +551,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
                     </span>
                     {f.evidence.sourceText && f.evidence.sourceText !== f.text && (
                       <span style={{ display: 'block', fontFamily: serif, fontStyle: 'italic', fontSize: 14, color: 'rgba(36,48,31,0.5)', lineHeight: 1.35, marginTop: 6 }}>
-                        Du sagde: «{f.evidence.sourceText}»
+                        Fra din optagelse: “{f.evidence.sourceText}”
                       </span>
                     )}
                   </span>
@@ -583,7 +583,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
               onClick={nulstil}
               style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}
             >
-              Fortryd
+              Annullér
             </button>
           </div>
         </div>
@@ -622,7 +622,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
               onClick={nulstil}
               style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}
             >
-              Annuller
+              Annullér
             </button>
           </div>
         </div>
@@ -639,7 +639,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
               onClick={nulstil}
               style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: 'rgba(36,48,31,0.55)', background: 'none', border: 'none', marginTop: 16, cursor: 'pointer', textDecoration: 'underline' }}
             >
-              Fortæl mere
+              Ny optagelse
             </button>
           )}
         </div>

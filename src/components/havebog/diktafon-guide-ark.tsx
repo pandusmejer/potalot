@@ -24,11 +24,11 @@ const KOMPAKT_EKSEMPLER = [
 
 /** Hvad den usynlige AI gør bagefter — dét er den egentlige værdi. */
 const HVAD_POTALOT_GOER: { emoji: string; titel: string; tekst: string }[] = [
-  { emoji: '🌱', titel: 'Genkender planterne', tekst: '…og kobler noten til de rigtige planter.' },
-  { emoji: '📝', titel: 'Gemmer observationer', tekst: '…så du kan finde dem igen måneder senere.' },
+  { emoji: '🌱', titel: 'Kobler det til de rigtige planter', tekst: '…ud fra det, du fortæller.' },
+  { emoji: '📝', titel: 'Gemmer observationer', tekst: '…så du kan finde dem igen senere.' },
   { emoji: '📅', titel: 'Foreslår opgaver', tekst: '…hvis du nævner noget, der kræver handling.' },
-  { emoji: '📖', titel: 'Opbygger din Havebog', tekst: '…så årets historie skrives automatisk.' },
-  { emoji: '🧠', titel: 'Husker det hele', tekst: '…så du ikke behøver.' },
+  { emoji: '📖', titel: 'Føjer det relevante til din Havebog', tekst: '…så din havehistorie samler sig undervejs.' },
+  { emoji: '🧠', titel: 'Holder styr på det', tekst: '…så du ikke behøver.' },
 ]
 
 const eyebrow = {
@@ -157,7 +157,7 @@ export function DiktafonGuideArk({
             <p style={{ fontFamily: sans, fontSize: 15, lineHeight: 1.5, color: 'rgba(36,48,31,0.75)', margin: 0 }}>
               Fortæl bare, hvad du ser, gør eller kommer i tanke om.
             </p>
-            <p style={{ ...eyebrow, margin: '22px 0 10px' }}>Prøv f.eks.</p>
+            <p style={{ ...eyebrow, margin: '22px 0 10px' }}>Prøv fx</p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               {KOMPAKT_EKSEMPLER.map(e => (
                 <li key={e} style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 18, lineHeight: 1.3, color: '#2C3A22', background: 'rgba(59,74,47,0.06)', borderRadius: 12, padding: '10px 14px' }}>
@@ -177,10 +177,10 @@ export function DiktafonGuideArk({
             </h2>
             <p style={{ fontFamily: sans, fontSize: 15, lineHeight: 1.5, color: 'rgba(36,48,31,0.75)', margin: 0 }}>
               <strong style={{ color: '#3B4A2F' }}>Det er ikke en chat.</strong> Fortæl bare, hvad du ser, gør eller
-              tænker. Du behøver ikke huske plantenavne, datoer eller den rigtige rækkefølge.
+              tænker. Du behøver ikke sige det i en bestemt rækkefølge.
             </p>
 
-            <p style={{ ...eyebrow, margin: '26px 0 12px' }}>Prøv for eksempel at sige</p>
+            <p style={{ ...eyebrow, margin: '26px 0 12px' }}>Prøv fx at sige</p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               {EKSEMPLER.map(e => (
                 <li key={e} style={{ fontFamily: serif, fontStyle: 'italic', fontSize: 18, lineHeight: 1.3, color: '#2C3A22', background: 'rgba(59,74,47,0.06)', borderRadius: 12, padding: '10px 14px' }}>
