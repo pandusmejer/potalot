@@ -116,7 +116,7 @@ export function SeedBankFolderPanel({
   totalVarieties = 8,
   expiringSoonCount = 2,
   recentItemName = 'Salat Crispy Mint',
-  recentItemTimeLabel = '2 dage siden',
+  recentItemTimeLabel,
   activeCategory = 'fro',
   categories = DEFAULT_CATEGORIES,
   activeSubcategoryLabel,
@@ -343,7 +343,7 @@ export function SeedBankFolderPanel({
               {(totalVarieties ?? 0) === 0 ? (
                 // Tom frøbank (indlogget, endnu ingen frø) → blød kom-i-gang,
                 // ALDRIG et opdigtet "senest tilføjet".
-                <span>Din frøbank er tom — tilføj dit første frø, så samler vi dine sorter her.</span>
+                <span>Din Frøbank er tom. Tilføj dit første frø, så samler vi dine sorter her.</span>
               ) : (
                 <span className="truncate">
                   <span>Senest tilføjet:</span>{' '}
@@ -511,11 +511,11 @@ export function SeedBankFolderPanel({
               <ChevronRight aria-hidden className="ml-auto h-5 w-5 shrink-0 text-[#7A806F] opacity-[0.85]" strokeWidth={2} />
             </Link>
 
-            {/* "Bladr i din frøbank" — divider i mappens bundflade; lead-in til
+            {/* "Bladr i din Frøbank" — divider i mappens bundflade; lead-in til
                 frøkort-stakken nedenfor: eyebrow-tekst + tynde streger + blad-glyph. */}
             <div className="mt-7 flex flex-col items-center gap-[7px]">
               <p className="text-center font-sans text-[0.68rem] font-medium uppercase tracking-[0.26em] text-[#646B5A]">
-                Bladr i din frøbank
+                Bladr i din Frøbank
               </p>
               <div className="flex w-full items-center gap-4 px-[19px]">
                 <span aria-hidden className="h-px flex-1 bg-[#5F6758]/30" />

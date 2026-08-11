@@ -51,8 +51,6 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const [scanExtracted, setScanExtracted] = useState<ExtractedSeedFields | null>(null)
   const [scanTarget, setScanTarget] = useState<'froebank' | 'oenskeliste'>('froebank')
   const [scanCreatedId, setScanCreatedId] = useState<string | null>(null)
-  const [scanError, setScanError] = useState<string | null>(null)
-  const [scanFailReason, setScanFailReason] = useState<'error' | 'empty'>('empty')
   const [scanIncomplete, setScanIncomplete] = useState(false)
 
   // Link
@@ -70,13 +68,12 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   //    eller 'failed' (fejl / ingen brugbar identifikation). ──────────────────
   async function runScan(imgs: string[]) {
     setError(null)
-    setScanError(null)
     setScanStage('reading')
     const ext = await extractSeedPacketFields(imgs)
     if ('error' in ext) {
       // Rigtig AI/API-fejl må ALDRIG sluges eller ende som "succes".
-      setScanError(ext.error)
-      setScanFailReason('error')
+      // Detaljen logges internt — aldrig i UI'et (FRB-0227).
+      console.error('frøpose-skanning fejlede:', ext.error)
       setScanStage('failed')
       return
     }
@@ -85,7 +82,6 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     const aflaestNavn = fields.name?.trim() ?? ''
     if (!aflaestNavn) {
       // Gyldigt billede, men ingen brugbar identifikation → opret intet.
-      setScanFailReason('empty')
       setScanStage('failed')
       return
     }
@@ -139,8 +135,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     })
 
     if ('error' in res) {
-      setScanError(`Kunne ikke oprette: ${res.error}`)
-      setScanFailReason('error')
+      console.error('oprettelse efter skanning fejlede:', res.error)
       setScanStage('failed')
       return
     }
@@ -164,7 +159,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   // Failed-trin-handlinger.
   function resetScan(toMode?: 'camera' | 'library') {
     setScanImages([]); setScanPrimary(null); setScanExtracted(null)
-    setScanError(null); setScanName(''); setScanStage('idle')
+    setScanName(''); setScanStage('idle')
     if (toMode) setMode(toMode)
   }
   function handleSkrivNavnSelv() {
@@ -289,7 +284,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
           </Button>
         )}
         <h1 className="text-2xl font-serif text-foreground">
-          {mode === 'select' && 'Tilføj til frøbank'}
+          {mode === 'select' && 'Tilføj til Frøbanken'}
           {mode === 'camera' && 'Scan frøpose'}
           {mode === 'library' && 'Scan frøpose'}
           {mode === 'link' && 'Indsæt link'}
@@ -316,7 +311,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         <Card>
           <CardContent className="space-y-4 py-5">
             <p className="text-sm text-muted-foreground">
-              {mode === 'camera' ? 'Tag billede' : 'Upload billeder'} af frøposens forside og bagside, så PotAlot kan udfylde {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbanken'} automatisk.
+              {mode === 'camera' ? 'Tag et billede af frøposen' : 'Vælg billeder af frøposens forside og bagside'}, så Potalot kan læse oplysningerne og oprette frøet i {scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}.
             </p>
 
             {scanStage === 'idle' && scanImages.length === 0 && (
@@ -351,7 +346,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 {scanImages.length > 0 && (
                   <Button onClick={handleScanStart} disabled={pending} className="w-full">
                     <Wand2 className="h-4 w-4" />
-                    Læs {scanImages.length} billede{scanImages.length > 1 ? 'r' : ''} med AI
+                    Læs {scanImages.length} billede{scanImages.length > 1 ? 'r' : ''}
                   </Button>
                 )}
               </>
@@ -362,10 +357,10 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
                 <div>
                   <p className="font-medium text-foreground">
-                    {scanStage === 'reading' ? 'Læser billedet med AI…' : 'Opretter…'}
+                    {scanStage === 'reading' ? 'Læser billedet …' : 'Opretter…'}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {scanStage === 'reading' ? 'Genkender navn, sort, leverandør osv.' : `Gemmer i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                    {scanStage === 'reading' ? 'Genkender navn, sort, leverandør osv.' : `Gemmer i ${scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}`}
                   </p>
                 </div>
               </div>
@@ -378,12 +373,12 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 <div className="bg-secondary/30 rounded-lg p-4 space-y-3">
                   <p className="text-sm text-muted-foreground">
                     {scanExtracted?.name
-                      ? 'PotAlot læste posen. Tjek navnet og ret det, hvis det er nødvendigt, før du opretter.'
+                      ? 'Potalot læste posen. Tjek navnet, og ret det om nødvendigt, før du opretter.'
                       : 'Giv frøposen et navn, så du kan oprette den. Resten kan du udfylde på kortet bagefter.'}
                   </p>
                   <div className="space-y-1.5">
                     <Label htmlFor="scan-review-name">Navn</Label>
-                    <Input id="scan-review-name" value={scanName} onChange={e => setScanName(e.target.value)} placeholder="Fx Tomat, Gulerod…" autoFocus />
+                    <Input id="scan-review-name" value={scanName} onChange={e => setScanName(e.target.value)} placeholder="fx Tomat, Gulerod …" autoFocus />
                   </div>
                   {scanExtracted && (scanExtracted.latinName || scanExtracted.variety || scanExtracted.supplier || scanExtracted.seedCount != null) && (
                     <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-border/60">
@@ -396,7 +391,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   <Button onClick={handleReviewOpret} disabled={pending || !scanName.trim()}>
-                    {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Opretter…</> : `Opret i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                    {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Opretter…</> : `Opret i ${scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}`}
                   </Button>
                   <Button variant="outline" onClick={() => resetScan()} disabled={pending}>Scan igen</Button>
                 </div>
@@ -418,9 +413,6 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                       <p className="text-sm text-muted-foreground">
                         Prøv med et skarpere billede i bedre lys, eller skriv plantens navn selv.
                       </p>
-                      {scanFailReason === 'error' && scanError && (
-                        <p className="text-xs text-muted-foreground/80 mt-1">Teknisk: {scanError}</p>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -449,7 +441,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-serif text-lg text-foreground">
-                      {scanIncomplete ? 'Foto gemt som kladde' : `Oprettet i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                      {scanIncomplete ? 'Foto gemt som kladde' : `Oprettet i ${scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}`}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {scanIncomplete ? 'Mangler oplysninger — åbn kortet og udfyld navn og detaljer.' : scanName}
@@ -471,7 +463,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                   <Button variant="outline" onClick={() => {
                     setScanImages([]); setScanPrimary(null); setScanStage('idle')
                     setScanExtracted(null); setScanCreatedId(null); setScanName('')
-                    setScanError(null); setScanIncomplete(false)
+                    setScanIncomplete(false)
                   }}>
                     Scan en til
                   </Button>
@@ -498,7 +490,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         <Card>
           <CardContent className="space-y-4 py-5">
             <p className="text-sm text-muted-foreground">
-              Indsæt link til en webshop-side med frø — fx Impecta, Nelson Garden, Solhatt. AI læser siden og opretter automatisk i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbanken'}.
+              Indsæt et link til en frøside hos fx Impecta, Nelson Garden eller Solhatt. Potalot læser oplysningerne og opretter frøet i {scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}.
             </p>
 
             {scanStage === 'idle' && (
@@ -534,7 +526,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                   </div>
                   <Button type="submit" disabled={pending || !linkUrl.trim()} className="w-full">
                     <Wand2 className="h-4 w-4" />
-                    Læs link med AI
+                    Læs oplysninger fra link
                   </Button>
                 </form>
               </>
@@ -545,10 +537,10 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
                 <div>
                   <p className="font-medium text-foreground">
-                    {scanStage === 'reading' ? 'Læser siden med AI…' : 'Opretter…'}
+                    {scanStage === 'reading' ? 'Læser siden …' : 'Opretter…'}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {scanStage === 'reading' ? 'Henter side, billede og data.' : `Gemmer i ${scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}`}
+                    {scanStage === 'reading' ? 'Henter side, billede og data.' : `Gemmer i ${scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}`}
                   </p>
                 </div>
               </div>
@@ -628,7 +620,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
             {excelStep === 'preview' && (
               <>
                 <p className="text-sm">
-                  {excelRows.length} rækker fundet. {excelReady} klar, {excelWarn} med advarsler, {excelErr} med fejl.
+                  {excelRows.length} {excelRows.length === 1 ? 'række' : 'rækker'} fundet. {excelReady} klar, {excelWarn} med advarsler, {excelErr} med fejl.
                 </p>
                 {excelUnmapped.length > 0 && (
                   <div className="bg-warning/10 border border-warning/30 rounded-lg p-3 text-xs">
@@ -663,7 +655,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 <div className="flex gap-2 justify-end">
                   <Button variant="ghost" onClick={() => setExcelStep('upload')} disabled={pending}>Vælg anden fil</Button>
                   <Button onClick={handleExcelConfirm} disabled={pending || excelReady + excelWarn === 0}>
-                    {pending ? 'Importerer…' : `Importér ${excelReady + excelWarn} rækker`}
+                    {pending ? 'Importerer…' : `Importér ${excelReady + excelWarn} ${excelReady + excelWarn === 1 ? 'række' : 'rækker'}`}
                   </Button>
                 </div>
               </>
@@ -674,7 +666,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 <Check className="h-7 w-7 text-primary" />
                 <p className="font-serif text-xl text-foreground">Import gennemført</p>
                 <p className="text-sm text-muted-foreground">
-                  {excelResult.imported} rækker importeret{excelResult.skipped > 0 && `, ${excelResult.skipped} sprunget over`}.
+                  {excelResult.imported} {excelResult.imported === 1 ? 'række' : 'rækker'} importeret{excelResult.skipped > 0 && `, ${excelResult.skipped} sprunget over`}.
                 </p>
                 <Button asChild><Link href={returnTo}>Tilbage til {returnLabel}</Link></Button>
               </div>

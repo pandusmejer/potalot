@@ -99,7 +99,7 @@ export function EditInventoryDialog({ item }: Props) {
     try {
       const res = await extractSeedPacketFields(images)
       if ('error' in res) {
-        setError(`AI: ${res.error}`)
+        setError('Kunne ikke læse billederne. Prøv igen.')
         return
       }
       const f = res.fields
@@ -127,8 +127,8 @@ export function EditInventoryDialog({ item }: Props) {
       if (dyrkChanged) setDyrkning(nextDyrkning)
 
       setAiInfo(filled.length > 0
-        ? `Udfyldte: ${filled.join(', ')}. Klik Gem for at gemme.`
-        : 'AI fandt ikke ny info som ikke allerede er udfyldt.')
+        ? `Felter udfyldt: ${filled.join(', ')}. Husk at gemme ændringerne.`
+        : 'Vi fandt ikke nye oplysninger ud over dem, der allerede er udfyldt.')
     } finally {
       setAiPending(false)
     }
@@ -148,15 +148,9 @@ export function EditInventoryDialog({ item }: Props) {
     try {
       const res = await extractSeedFromUrl(url, { skipImageDownload: true })
       if ('error' in res) {
-        const friendly =
-          res.error === 'Ugyldig URL' || res.error.startsWith('Kun http')
-            ? res.error
-            : res.error.startsWith('Kunne ikke hente') || res.error.startsWith('Fetch fejlede')
-              ? 'Linket kunne ikke læses. Prøv et andet link eller upload et foto af frøposen.'
-              : res.error.startsWith('AI-fejl') || res.error.startsWith('AI returnerede')
-                ? 'AI kunne ikke læse siden. Prøv et andet link eller upload et foto af frøposen.'
-                : res.error
-        setUrlAiError(friendly)
+        // Serveren returnerer nu altid færdige danske beskeder (aldrig rå
+        // API-tekst) — ingen prefix-oversættelse nødvendig længere.
+        setUrlAiError(res.error)
         return
       }
       const f = res.fields
@@ -316,16 +310,17 @@ export function EditInventoryDialog({ item }: Props) {
       setSuggestions(newSuggestions)
 
       if (filled.length === 0 && newSuggestions.length === 0) {
-        setUrlAiInfo('AI kunne ikke finde nok information på linket.')
+        setUrlAiInfo('Potalot kunne ikke finde nok oplysninger på siden.')
       } else {
         const parts: string[] = []
-        if (filled.length > 0) parts.push(`AI udfyldte ${filled.length} ${filled.length === 1 ? 'felt' : 'felter'} (${filled.join(', ')})`)
+        if (filled.length > 0) parts.push(`Potalot udfyldte ${filled.length} ${filled.length === 1 ? 'felt' : 'felter'}: ${filled.join(', ')}.`)
         if (newSuggestions.length > 0) parts.push(`${newSuggestions.length} forslag til ændring nedenfor`)
         setUrlAiInfo(parts.join('. ') + '.')
       }
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'ukendt fejl'
-      setUrlAiError(`AI-fejl: ${msg}`)
+      // Rå fejltekst må aldrig nå brugeren — log den (FRB-0075).
+      console.error('autoudfyld fra link fejlede:', e)
+      setUrlAiError('Noget gik galt under læsningen af linket. Prøv igen.')
     } finally {
       setUrlAiPending(false)
     }
@@ -484,7 +479,7 @@ export function EditInventoryDialog({ item }: Props) {
                 disabled={urlAiPending}
               >
                 {urlAiPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <LinkIcon className="h-4 w-4" />}
-                {urlAiPending ? 'Læser link…' : 'Autoudfyld med AI fra link'}
+                {urlAiPending ? 'Læser link…' : 'Autoudfyld fra link'}
               </Button>
             )}
             {urlAiInfo && <p className="mt-2 text-xs text-muted-foreground">{urlAiInfo}</p>}
@@ -495,7 +490,7 @@ export function EditInventoryDialog({ item }: Props) {
             )}
             {suggestions.length > 0 && (
               <div className="mt-3 space-y-2 border border-border rounded-lg p-3 bg-muted/30">
-                <p className="text-xs font-medium text-foreground">AI-forslag til felter du allerede har udfyldt</p>
+                <p className="text-xs font-medium text-foreground">Forslag til ændringer</p>
                 {suggestions.map(s => (
                   <div key={s.key} className="flex items-start justify-between gap-2 text-xs">
                     <div className="min-w-0 flex-1">
@@ -539,12 +534,12 @@ export function EditInventoryDialog({ item }: Props) {
                 primary={primaryImage}
                 onChange={(imgs, p) => { setImages(imgs); setPrimaryImage(p) }}
                 folder="froebank"
-                label="Tilføj billede(r)"
+                label="Tilføj billeder"
               />
               {images.length > 0 && (
                 <Button type="button" variant="outline" className="w-full" onClick={handleReadWithAI} disabled={aiPending}>
                   {aiPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                  {aiPending ? 'Læser…' : 'Genlæs billeder med AI'}
+                  {aiPending ? 'Læser…' : 'Genlæs billeder'}
                 </Button>
               )}
               {aiInfo && <p className="text-xs text-muted-foreground">{aiInfo}</p>}

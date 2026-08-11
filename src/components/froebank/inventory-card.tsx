@@ -123,7 +123,7 @@ export function InventoryCard({
   })
   const { field } = plantColor(item.name, item.variety)
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'
-  const eyebrow = `Min frøbank · ${kategori}`
+  const eyebrow = `Min Frøbank · ${kategori}`
 
   const harSeed = item.seedCount != null
   const tilbage = harSeed ? (item.seedsRemaining ?? item.seedCount ?? 0) : null

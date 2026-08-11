@@ -1013,7 +1013,7 @@ export function InventoryArchiveStack({
         paddingBottom: 0,
         overflow: 'visible',
       }}
-      aria-label="Frøbank arkiv"
+      aria-label="Frøbank-arkiv"
     >
       {/* FolderItem 1 — Salat hero-kort i sin EGEN creme folder-shell. */}
       <HeroFolder item={hero} />

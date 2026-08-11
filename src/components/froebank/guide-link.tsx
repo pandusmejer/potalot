@@ -192,7 +192,7 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
           <div style={{ flex: 1, minWidth: 160 }}>
             <p style={{ fontSize: 20, lineHeight: 1.1, fontWeight: 700, color: '#263321', margin: 0 }}>Ingen guide tilknyttet</p>
             <p style={{ marginTop: 5, fontSize: 16, lineHeight: 1.3, fontWeight: 400, color: 'rgba(38,51,33,0.68)' }}>
-              Tilknyt en eksisterende guide eller generér en ny med AI.
+              Tilknyt en eksisterende guide, eller lad Potalot oprette en ny.
             </p>
           </div>
           <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -217,10 +217,10 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
         <div className="flex flex-col items-center gap-3 py-8 text-center">
           <Loader2 className="h-7 w-7 text-primary animate-spin" />
           <div>
-            <p className="font-serif text-lg text-foreground">Genererer guide…</p>
+            <p className="font-serif text-lg text-foreground">Opretter guide …</p>
             <p className="text-sm text-muted-foreground mt-1">
-              AI laver dyrkningsguide for {item.name}{item.variety ? ` (${item.variety})` : ''}.
-              Tager 5-15 sekunder.
+              Potalot opretter en dyrkningsguide til {item.name}{item.variety ? ` (${item.variety})` : ''}.
+              Det tager normalt 5-15 sekunder.
             </p>
           </div>
         </div>
@@ -289,7 +289,7 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
                           {isMaster ? (
                             <span className="inline-flex items-center gap-0.5 rounded-full bg-green-700 text-white text-[10px] font-semibold px-1.5 py-0.5 shrink-0">
                               <ShieldCheck className="h-2.5 w-2.5" />
-                              Master
+                              Potalot
                             </span>
                           ) : isTilpasning ? (
                             <span className="inline-flex items-center gap-0.5 rounded-full border border-green-300 bg-green-50 text-green-900 text-[10px] font-medium px-1.5 py-0.5 shrink-0">
@@ -324,7 +324,7 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
       <>
         <DialogTitle>{currentGuide ? 'Skift guide' : 'Tilknyt guide'}</DialogTitle>
         <DialogDescription>
-          Vælg en eksisterende guide eller lad AI generere en ny.
+          Vælg en eksisterende guide, eller lad Potalot oprette en ny.
         </DialogDescription>
 
         <div className="grid gap-2 py-2">
@@ -338,9 +338,9 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
               <Sparkles className="h-5 w-5" />
             </span>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Generér med AI</p>
+              <p className="font-medium text-foreground">Lad Potalot oprette en guide</p>
               <p className="text-xs text-muted-foreground">
-                Skræddersyet guide for {item.name}{item.variety ? ` (${item.variety})` : ''} — varer 5-15 sek.
+                Guide til {item.name}{item.variety ? ` (${item.variety})` : ''} · tager normalt 5-15 sekunder.
               </p>
             </div>
           </button>
@@ -357,7 +357,7 @@ export function GuideLink({ item, currentGuide, allGuides }: Props) {
             <div className="flex-1">
               <p className="font-medium text-foreground">Vælg eksisterende</p>
               <p className="text-xs text-muted-foreground">
-                Fra dine egne {allGuides.length} guides.
+                Fra biblioteket · {allGuides.length} guides.
               </p>
             </div>
           </button>

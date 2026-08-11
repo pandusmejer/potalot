@@ -84,7 +84,7 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
 
   const file = formData.get('file')
   if (!(file instanceof File)) return { error: 'Ingen fil' }
-  if (file.size > 5 * 1024 * 1024) return { error: 'Fil for stor (max 5MB)' }
+  if (file.size > 5 * 1024 * 1024) return { error: 'Filen er for stor (maks. 5 MB).' }
 
   const buffer = await file.arrayBuffer()
   let workbook: XLSX.WorkBook
@@ -186,7 +186,10 @@ export async function confirmImportInventory(rows: ImportRow[]): Promise<
   }))
 
   const { error } = await supabase.from('inventory_items').insert(inserts)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('importInventoryRows fejlede:', error)
+    return { error: 'Kunne ikke importere rækkerne. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   return { imported: inserts.length, skipped: rows.length - inserts.length }

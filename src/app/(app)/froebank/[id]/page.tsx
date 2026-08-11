@@ -391,7 +391,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           {item.soil && <Fact label="Jord" value={item.soil} />}
           {item.germinationTemperature && <Fact label="Spiretemp" value={item.germinationTemperature} />}
           {item.germinationDays && <Fact label="Spiretid" value={formatDays(item.germinationDays)} />}
-          {item.plantSpacing && <Fact label="Afstand" value={item.plantSpacing} icon={<Ruler className="h-4 w-4" strokeWidth={1.9} />} />}
+          {item.plantSpacing && <Fact label="Planteafstand" value={item.plantSpacing} icon={<Ruler className="h-4 w-4" strokeWidth={1.9} />} />}
           {item.rowSpacing && <Fact label="Rækkeafstand" value={item.rowSpacing} />}
         </CardContent>
       </Card>

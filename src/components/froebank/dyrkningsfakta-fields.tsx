@@ -188,7 +188,7 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
         />
       </div>
       <div>
-        <FeltLabel tekst="Spiretemp." felt="germinationTemperature" />
+        <FeltLabel tekst="Spiretemperatur" felt="germinationTemperature" />
         <Input
           value={value.germinationTemperature}
           onChange={e => patch('germinationTemperature', e.target.value)}

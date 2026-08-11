@@ -138,7 +138,10 @@ export async function createSwapListing(input: {
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette opslag' }
+  if (error || !data) {
+    console.error('createSwapListing fejlede:', error)
+    return { error: 'Kunne ikke oprette opslaget. Prøv igen.' }
+  }
   revalidatePath(`/grupper/${input.groupId}`)
   if (input.kind === 'offer') {
     const { maybeAwardSeedKeeper } = await import('@/actions/badges')
@@ -159,7 +162,10 @@ export async function updateSwapListingStatus(
     .eq('id', listingId)
     .select('group_id')
     .maybeSingle()
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updateSwapListingStatus fejlede:', error)
+    return { error: 'Kunne ikke opdatere opslaget. Prøv igen.' }
+  }
   if (data?.group_id) revalidatePath(`/grupper/${data.group_id}`)
   return { ok: true }
 }
@@ -178,7 +184,10 @@ export async function deleteSwapListing(
     .from('seed_swap_listings')
     .delete()
     .eq('id', listingId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deleteSwapListing fejlede:', error)
+    return { error: 'Kunne ikke slette opslaget. Prøv igen.' }
+  }
   if (listing?.group_id) revalidatePath(`/grupper/${listing.group_id}`)
   return { ok: true }
 }
@@ -205,7 +214,8 @@ export async function requestSwap(input: {
     })
   if (error) {
     if (error.code === '23505') return { error: 'Du har allerede en ventende forespørgsel på dette opslag' }
-    return { error: error.message }
+    console.error('requestSwap fejlede:', error)
+    return { error: 'Kunne ikke sende forespørgslen. Prøv igen.' }
   }
 
   revalidatePath(`/grupper/${listing.group_id}`)
@@ -230,7 +240,10 @@ export async function resolveSwapRequest(
     .from('seed_swap_requests')
     .update({ status: decision, resolved_at: new Date().toISOString() })
     .eq('id', requestId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('resolveSwapRequest fejlede:', error)
+    return { error: 'Kunne ikke opdatere forespørgslen. Prøv igen.' }
+  }
 
   // Hvis accepteret: marker listing som reserveret
   if (decision === 'accepted') {
@@ -256,7 +269,10 @@ export async function cancelSwapRequest(
     .from('seed_swap_requests')
     .update({ status: 'cancelled', resolved_at: new Date().toISOString() })
     .eq('id', requestId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('cancelSwapRequest fejlede:', error)
+    return { error: 'Kunne ikke annullere forespørgslen. Prøv igen.' }
+  }
   return { ok: true }
 }
 

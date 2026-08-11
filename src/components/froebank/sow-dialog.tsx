@@ -231,7 +231,7 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel,
             <Input
               value={location}
               onChange={e => setLocation(e.target.value)}
-              placeholder="Fx. Drivhus, Vindueskarm, Højbed 2"
+              placeholder="fx Drivhus, Vindueskarm, Højbed 2"
               className="mt-1.5"
             />
             {suggestedLocations.length > 0 && (
@@ -258,7 +258,7 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel,
             <Textarea
               value={note}
               onChange={e => setNote(e.target.value)}
-              placeholder="Fx. 'I forspiringsbakke med bundvarme'"
+              placeholder="fx “I forspiringsbakke med bundvarme”"
               rows={2}
               className="mt-1.5"
             />

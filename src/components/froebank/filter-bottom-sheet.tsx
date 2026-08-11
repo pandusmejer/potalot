@@ -117,7 +117,7 @@ export function FilterBottomSheet({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Filtrér frøbank"
+        aria-label="Filtrér Frøbanken"
         className="relative mx-auto w-full max-w-[440px] px-5 pb-[max(18px,env(safe-area-inset-bottom))] pt-[10px]"
         style={{
           maxHeight: '86vh',
@@ -140,7 +140,7 @@ export function FilterBottomSheet({
             className="text-[18px] font-semibold leading-none text-[#2E3A23]"
             style={{ fontFamily: 'var(--font-manrope)' }}
           >
-            Filtrér frøbank
+            Filtrér Frøbanken
           </h2>
           <button
             type="button"

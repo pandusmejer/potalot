@@ -231,7 +231,10 @@ export async function createInventoryItem(input: CreateInventoryInput): Promise<
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+  if (error || !data) {
+    console.error('createInventoryItem fejlede:', error)
+    return { error: 'Kunne ikke oprette frøposten. Prøv igen.' }
+  }
 
   const newId = data.id as string
   revalidatePath('/froebank')
@@ -296,7 +299,10 @@ export async function updateInventoryItem(
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updateInventoryItem fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   revalidatePath(`/froebank/${id}`)
@@ -313,7 +319,10 @@ export async function deleteInventoryItem(id: string): Promise<{ ok: true } | { 
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deleteInventoryItem fejlede:', error)
+    return { error: 'Kunne ikke slette frøposten. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   return { ok: true }
@@ -330,7 +339,10 @@ export async function bulkDeleteInventoryItems(ids: string[]): Promise<{ deleted
     .in('id', ids)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('bulkDeleteInventoryItems fejlede:', error)
+    return { error: 'Kunne ikke slette de valgte frøposer. Prøv igen.' }
+  }
   revalidatePath('/froebank')
   return { deleted: count ?? 0 }
 }
@@ -364,7 +376,10 @@ export async function bulkUpdateInventoryItems(
     .in('id', ids)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('bulkUpdateInventoryItems fejlede:', error)
+    return { error: 'Kunne ikke opdatere de valgte frøposer. Prøv igen.' }
+  }
   revalidatePath('/froebank')
   return { updated: count ?? 0 }
 }
@@ -380,7 +395,7 @@ export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite
     .eq('user_id', userId)
     .single()
 
-  if (!current) return { error: 'Element ikke fundet' }
+  if (!current) return { error: 'Frøposten blev ikke fundet.' }
 
   const newValue = !current.is_favorite
   const { error } = await supabase
@@ -389,7 +404,10 @@ export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('toggleFavorite fejlede:', error)
+    return { error: 'Kunne ikke gemme favoritten. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   revalidatePath(`/froebank/${id}`)
@@ -407,7 +425,7 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
     .eq('user_id', userId)
     .single()
 
-  if (!current) return { error: 'Element ikke fundet' }
+  if (!current) return { error: 'Frøposten blev ikke fundet.' }
 
   const newValue = !current.is_pinned
   const { error } = await supabase
@@ -416,7 +434,10 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('togglePinned fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringen. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   revalidatePath(`/froebank/${id}`)
@@ -460,7 +481,10 @@ export async function createCustomSubcategory(input: {
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+  if (error || !data) {
+    console.error('createCustomSubcategory fejlede:', error)
+    return { error: 'Kunne ikke oprette kategorien. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   return { id: data.id as string }

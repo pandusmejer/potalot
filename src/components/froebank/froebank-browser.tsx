@@ -208,7 +208,7 @@ export function FroebankBrowser({ inventory }: Props) {
         if (days === 1) return 'i går'
         return `${days} dage siden`
       })()
-    : '2 dage siden'
+    : undefined // ukendt dato -> ingen opdigtet tidsangivelse (FRB-0106)
 
   const categoryCounts = useMemo(() => {
     function count(id: PrimaryCategoryId) {
