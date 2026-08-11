@@ -140,7 +140,7 @@ export function TalTilDinHave({ eksempler, optagelser = [] }: Props) {
           maxWidth: '22ch',
         }}
       >
-        Log ind for at bruge din havediktafon.<br />Indtal hvad du ser, så gemmer Potalot det rigtige sted.
+        Log ind for at bruge din havediktafon.<br />Indtal, hvad du ser, så gemmer Potalot det rigtige sted.
       </p>
       <div className="flex items-center" style={{ gap: 18, marginTop: 16 }}>
         <Link

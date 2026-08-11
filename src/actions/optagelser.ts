@@ -245,6 +245,10 @@ export async function beholdSomNote(
     .update({ status: 'log', processed_at: nu })
     .eq('id', optagelseId)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) {
+    // Rå DB-fejltekst (engelsk) må aldrig nå brugeren — log den.
+    console.error('beholdSomNote fejlede:', error)
+    return { error: 'Kunne ikke gemme noten. Prøv igen om lidt.' }
+  }
   return { status: 'log' }
 }

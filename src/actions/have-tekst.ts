@@ -107,7 +107,7 @@ export async function fortolkHaveTekst(
 
     const textBlock = response.content.find(b => b.type === 'text')
     if (!textBlock || textBlock.type !== 'text') {
-      return { error: 'Intet svar fra AI. Prøv igen.' }
+      return { error: 'Kunne ikke læse teksten. Prøv igen.' }
     }
 
     let raw = textBlock.text.trim()
@@ -118,7 +118,7 @@ export async function fortolkHaveTekst(
     try {
       parsed = JSON.parse(raw)
     } catch {
-      return { error: 'AI returnerede ugyldigt svar. Prøv at omformulere.' }
+      return { error: 'Kunne ikke tyde beskrivelsen. Prøv at formulere den på en anden måde.' }
     }
 
     const items = (parsed as { items?: unknown }).items
@@ -130,8 +130,9 @@ export async function fortolkHaveTekst(
 
     return { forslag }
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Ukendt fejl'
-    return { error: `AI-fejl: ${msg}` }
+    // Rå fejltekst (ofte engelsk API-tekst) må aldrig nå brugeren — log den.
+    console.error('have-tekst fejlede:', e)
+    return { error: 'Noget gik galt. Prøv igen om lidt.' }
   }
 }
 

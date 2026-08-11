@@ -436,7 +436,7 @@ export function TalOptager({ kontekst = 'havebog' }: { kontekst?: 'havebog' | 'h
                   textDecoration: 'underline',
                 }}
               >
-                {kanOptage ? 'Skriv i stedet' : 'Skriv hvad der skete'}
+                {kanOptage ? 'Skriv i stedet' : 'Skriv, hvad der skete'}
               </button>
             </>
           )}

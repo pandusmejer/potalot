@@ -93,7 +93,7 @@ export async function extractSeedPacketFields(imageUrls: string[]): Promise<
 
     const textBlock = response.content.find(b => b.type === 'text')
     if (!textBlock || textBlock.type !== 'text') {
-      return { error: 'Intet tekst-svar fra AI' }
+      return { error: 'Kunne ikke læse frøposen. Prøv igen.' }
     }
 
     // Strip evt. markdown code fence
@@ -102,11 +102,12 @@ export async function extractSeedPacketFields(imageUrls: string[]): Promise<
     if (fenceMatch) raw = fenceMatch[1].trim()
 
     const parsed = parseJsonOrNull(raw)
-    if (!parsed) return { error: 'AI returnerede ugyldig JSON' }
+    if (!parsed) return { error: 'Kunne ikke tyde frøposen. Prøv igen, eller udfyld oplysningerne selv.' }
     return { fields: parseFieldsFromJson(parsed) }
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Ukendt fejl'
-    return { error: `AI-fejl: ${msg}` }
+    // Rå fejltekst (ofte engelsk API-tekst) må aldrig nå brugeren — log den.
+    console.error('seed-packet-extract (foto) fejlede:', e)
+    return { error: 'Noget gik galt under læsningen. Prøv igen om lidt.' }
   }
 }
 
@@ -170,7 +171,7 @@ export async function extractSeedFromUrl(
     return { error: 'Ugyldig URL' }
   }
   if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:') {
-    return { error: 'Kun http/https-URLs er understøttet' }
+    return { error: 'Kun http- og https-adresser understøttes.' }
   }
 
   let html: string
@@ -182,8 +183,9 @@ export async function extractSeedFromUrl(
     if (!res.ok) return { error: `Kunne ikke hente side (HTTP ${res.status})` }
     html = await res.text()
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Ukendt fejl'
-    return { error: `Fetch fejlede: ${msg}` }
+    // Rå fejltekst (ofte engelsk netværkstekst) må aldrig nå brugeren — log den.
+    console.error('seed-packet-extract (hent side) fejlede:', e)
+    return { error: 'Kunne ikke hente siden. Tjek adressen, og prøv igen.' }
   }
 
   const ogImageRaw =
@@ -240,13 +242,14 @@ export async function extractSeedFromUrl(
       messages: [{ role: 'user', content: userBlocks }],
     })
     const textBlock = response.content.find(b => b.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') return { error: 'Intet tekst-svar fra AI' }
+    if (!textBlock || textBlock.type !== 'text') return { error: 'Kunne ikke læse siden. Prøv igen.' }
     const parsed = parseJsonOrNull(textBlock.text)
-    if (!parsed) return { error: 'AI returnerede ugyldig JSON' }
+    if (!parsed) return { error: 'Kunne ikke tyde oplysningerne på siden. Prøv igen.' }
     fields = parseFieldsFromJson(parsed)
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Ukendt fejl'
-    return { error: `AI-fejl: ${msg}` }
+    // Rå fejltekst (ofte engelsk API-tekst) må aldrig nå brugeren — log den.
+    console.error('seed-packet-extract (url) fejlede:', e)
+    return { error: 'Noget gik galt under læsningen. Prøv igen om lidt.' }
   }
 
   // Hvis der allerede findes et kurateret frøkort for sorten, skal DET

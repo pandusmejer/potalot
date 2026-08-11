@@ -255,7 +255,9 @@ function GemTilSenere({
             res.sted === 'plante'
               ? fraLog
                 ? '✓ Gemt på planten — du finder vurderingen igen i plantens historik og under Gemte råd.'
-                : `✓ Gemt på planten — du finder svaret igen på ${res.planteNavn ? `${res.planteNavn}s` : 'plantens'} side under Gemte råd.`
+                : // Ingen dynamisk genitiv (Anna GAR-0058): "på siden for X",
+                  // aldrig "${navn}s side" — dansk genitiv skal ikke bygges maskinelt.
+                  `✓ Gemt på planten. Du finder svaret igen under Gemte råd${res.planteNavn ? ` på siden for ${res.planteNavn}` : ' på plantens side'}.`
               : '✓ Gemt — du finder svaret igen under Guides → Gemt fra Gartneren.',
           )
           setStatus('gjort')
