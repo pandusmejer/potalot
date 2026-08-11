@@ -23,7 +23,7 @@ Blomstringen er rigest i lys, men mange sorter trives godt med rødderne i køli
 
 Kaprifolie vokser bedst i humusrig jord, der ikke tørrer helt ud i vækstsæsonen.
 
-## Giv snonende skud noget at gribe om
+## Giv snoende skud noget at gribe om
 
 Brug net, wirer eller et åbent espalier. Bind unge skud løst ind, indtil de selv finder støtten.
 

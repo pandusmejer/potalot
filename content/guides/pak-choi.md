@@ -65,6 +65,4 @@ Du behøver altså ikke vente på én bestemt 'færdig' størrelse.
 
 ## Pak choi er ikke tatsoi
 
-Pak choi, tatsoi, mizuna og andre asiatiske bladkål er nært beslægtede, men de bør ikke behandles som sorter af én art i Potalot alene fordi de står ved siden af hinanden i frøkataloget.
-
-Navngivne pak choi-sorter skal have `parentSlug: pak-choi`; andre asiatiske kåltyper får deres egen brugerrettede guide, når de tilføjes.
+Pak choi, tatsoi og mizuna er nært beslægtede asiatiske bladkål, men de har forskellig vækstform og dyrkes ikke helt ens.

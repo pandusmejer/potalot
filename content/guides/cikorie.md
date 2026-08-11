@@ -68,8 +68,3 @@ Snegle kan angribe unge planter og gemme sig i hovederne. Varmt eller tørt vejr
 
 Jævn vækst og passende såtid er vigtigere end avancerede indgreb.
 
-## Sorter skal ligge under den rigtige type
-
-Navne som Palla Rossa, Pan di Zucchero og Witloof beskriver ikke bare farvevariationer; de repræsenterer forskellige dyrkningsformer.
-
-Informationsarkitekturen bør derfor være `Cikorie → type → sort`, mens alle sorter stadig bruger `parentSlug: cikorie`.

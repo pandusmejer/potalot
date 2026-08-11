@@ -20,7 +20,7 @@ quickFacts:
   rowSpacing: 15 cm
   sowingDepthMm: 10
   frostSensitive: false
-  growthType: hurtig rodafgroede
+  growthType: hurtig rodafgrøde
   height: 10-25 cm
   maturityDays: ca. 20-45 dage for salatradiser
   primaryUse: Friske rødder, salater og garniture

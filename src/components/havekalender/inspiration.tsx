@@ -338,7 +338,7 @@ const CURATED_INSPIRATION: Record<number, KurateretItem[]> = {
   ],
   5: [
     { title: 'Så noget hurtigt voksende', text: 'Radise, salat og bønner kan stadig nå hele cyklussen.' },
-    { title: 'Start sensommerens planer', text: 'Sov grønkål, pak choi og vinterportulak nu.' },
+    { title: 'Start sensommerens planer', text: 'Så grønkål, pak choi og vinterportulak nu.' },
     { title: 'Giv krydderurterne mere plads', text: 'Persille, basilikum og dild trives når de står frit.' },
   ],
   6: [

@@ -2263,11 +2263,6 @@ export const IMPORTED_GUIDES: Guide[] = [
         "key": "typiske-problemer",
         "title": "Typiske problemer",
         "body": "Snegle kan angribe unge planter og gemme sig i hovederne. Varmt eller tørt vejr kan fremme stokløbning, og råd kan opstå i tætte planter eller under forkert blanchering.\n\nJævn vækst og passende såtid er vigtigere end avancerede indgreb."
-      },
-      {
-        "key": "sorter-skal-ligge-under-den-rigtige-type",
-        "title": "Sorter skal ligge under den rigtige type",
-        "body": "Navne som Palla Rossa, Pan di Zucchero og Witloof beskriver ikke bare farvevariationer; de repræsenterer forskellige dyrkningsformer.\n\nInformationsarkitekturen bør derfor være `Cikorie → type → sort`, mens alle sorter stadig bruger `parentSlug: cikorie`."
       }
     ],
     "calendarRules": [],
@@ -4840,8 +4835,8 @@ export const IMPORTED_GUIDES: Guide[] = [
         "body": "Kaprifolie vokser bedst i humusrig jord, der ikke tørrer helt ud i vækstsæsonen."
       },
       {
-        "key": "giv-snonende-skud-noget-at-gribe-om",
-        "title": "Giv snonende skud noget at gribe om",
+        "key": "giv-snoende-skud-noget-at-gribe-om",
+        "title": "Giv snoende skud noget at gribe om",
         "body": "Brug net, wirer eller et åbent espalier. Bind unge skud løst ind, indtil de selv finder støtten."
       },
       {
@@ -7119,7 +7114,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "pak-choi-er-ikke-tatsoi",
         "title": "Pak choi er ikke tatsoi",
-        "body": "Pak choi, tatsoi, mizuna og andre asiatiske bladkål er nært beslægtede, men de bør ikke behandles som sorter af én art i Potalot alene fordi de står ved siden af hinanden i frøkataloget.\n\nNavngivne pak choi-sorter skal have `parentSlug: pak-choi`; andre asiatiske kåltyper får deres egen brugerrettede guide, når de tilføjes."
+        "body": "Pak choi, tatsoi og mizuna er nært beslægtede asiatiske bladkål, men de har forskellig vækstform og dyrkes ikke helt ens."
       }
     ],
     "calendarRules": [],
@@ -8329,7 +8324,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       "plantSpacing": "2.5-5 cm",
       "rowSpacing": "15 cm",
       "sowingDepthMm": 10,
-      "growthType": "hurtig rodafgroede",
+      "growthType": "hurtig rodafgrøde",
       "height": "10-25 cm",
       "maturityDays": "ca. 20-45 dage for salatradiser",
       "primaryUse": "Friske rødder, salater og garniture"

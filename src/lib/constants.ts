@@ -220,7 +220,7 @@ export const TAG_AXES = [
       { id: 'kolonihave',    label: 'Kolonihave' },
       { id: 'sommerhushave', label: 'Sommerhushave' },
       { id: 'indendoers',    label: 'Indendørs' },
-      { id: 'vinduskarm',    label: 'Vinduskarm' },
+      { id: 'vinduskarm',    label: 'Vindueskarm' },
       { id: 'tagterrasse',   label: 'Tagterrasse' },
       { id: 'hydroponics',   label: 'Hydroponics' },
     ],
