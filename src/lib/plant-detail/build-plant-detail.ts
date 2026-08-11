@@ -165,9 +165,11 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
     denneUge: ['Giv masser af lys', 'Vand forsigtigt', 'Vend mod lyset dagligt'],
   },
   i_vaekst: {
+    // Ingen gødnings-cadence uden artsdata (Anna PLT-0316): en universel
+    // rytme er ikke meningsfuld — hellere tavshed end opdigtet præcision.
     overskrift: 'I fuld vækst',
-    beskrivelse: 'Planten vokser. Hold jorden jævnt fugtig og gød efter behov.',
-    denneUge: ['Hold jorden fugtig', 'Gød efter behov', 'Fjern visne blade'],
+    beskrivelse: 'Planten vokser. Hold jorden jævnt fugtig.',
+    denneUge: ['Hold jorden fugtig', 'Fjern visne blade'],
   },
   klar_til_udplantning: {
     // Frost-varianten — bruges KUN når arten faktisk er frostfølsom
@@ -209,13 +211,23 @@ function deriveTiming(plant: MockPlant): string {
 
 export function deriveNaeste(plant: MockPlant): DetailNaeste {
   let rule = STATUS_NAESTE[plant.status]
-  // Frost-rådet er ikke universelt (Anna PLT-0317/0318): mange planter tåler
-  // kulde. Kun arter, guiden KENDER som frostfølsomme, får frost-copy.
-  if (plant.status === 'klar_til_udplantning' && guideFakta(plant)?.frostSensitive !== true) {
-    rule = {
-      ...rule,
-      beskrivelse: 'Hærd planten gradvist af, før du planter ud.',
-      denneUge: ['Hærd af udendørs', 'Forbered bedet'],
+  // Hverken frost- eller afhærdningsråd er universelle (Anna PLT-0317/0318):
+  // frost-copy kun for arter, guiden KENDER som frostfølsomme; afhærdning
+  // kun når planten med rimelighed er forkultiveret (preCultivation).
+  if (plant.status === 'klar_til_udplantning') {
+    const fakta = guideFakta(plant)
+    if (fakta?.frostSensitive !== true) {
+      rule = fakta?.preCultivation === true
+        ? {
+            ...rule,
+            beskrivelse: 'Hærd planten gradvist af, før du planter ud.',
+            denneUge: ['Hærd af udendørs', 'Forbered bedet'],
+          }
+        : {
+            ...rule,
+            beskrivelse: 'Gør klar til udplantning.',
+            denneUge: ['Forbered bedet'],
+          }
     }
   }
   // "Lige nu" er sidens magasin-moment. resolveNowImage vælger det bedst
@@ -308,10 +320,11 @@ export function deriveTidslinje(
   } else {
     ms.push({
       label: 'Første høst', dato: null, ikon: 'frugt',
+      // Uden kendt tidspunkt: TAVS milepæl — ukendt skal ikke verbaliseres
+      // (Anna PLT-0336: ukendt er bedre end fyldtekst forklædt som viden).
       historie: note('Høst', plant.expectedHarvestStart
         ? `Forventes omkring ${formatDatoKort(plant.expectedHarvestStart)}.`
-        // Ukendt er bedre end fyldtekst forklædt som viden (Anna PLT-0336).
-        : 'Høsttidspunktet kendes ikke endnu.'),
+        : ''),
     })
   }
 

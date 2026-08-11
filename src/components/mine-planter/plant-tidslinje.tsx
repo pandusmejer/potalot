@@ -81,8 +81,9 @@ export function PlantTidslinje({ milestones }: { milestones: DetailMilestone[] }
               >
                 {m.dato ?? m.label}
               </p>
-              {/* Historien — hovedteksten, i varm serif. */}
-              <p
+              {/* Historien — hovedteksten, i varm serif. Uden tekst = tavs
+                  milepæl (ukendt skal ikke verbaliseres, Anna PLT-0336). */}
+              {m.historie && <p
                 className="mt-1 max-w-[40ch]"
                 style={{
                   fontFamily: serif,
@@ -95,7 +96,7 @@ export function PlantTidslinje({ milestones }: { milestones: DetailMilestone[] }
                 }}
               >
                 {m.historie}
-              </p>
+              </p>}
             </li>
           )
         })}

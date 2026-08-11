@@ -24,8 +24,9 @@ export interface DetailMilestone {
   dato: string | null
   /** Ikon-nøgle — afgør hvilken glyph der tegnes. */
   ikon: 'fro' | 'spire' | 'blad' | 'plante' | 'frugt'
-  /** Den narrative linje — historie, ikke proces. Hovedteksten. */
-  historie: string
+  /** Den narrative linje — historie, ikke proces. Hovedteksten. Tom/udeladt
+   * = milepælen står uden tekst (ukendt skal ikke verbaliseres overalt). */
+  historie?: string
 }
 
 /** De fire rolige instrument-tal i toppen (Status · Alder · Højde · Trivsel). */
@@ -144,9 +145,11 @@ export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
       { src: `${MAKRO_SM}/umodne.jpg`, alt: 'Umodne grønne San Marzano' },
     ],
     sammenligning: {
-      overskrift: 'Din plante er lidt foran',
+      // Ingen "de fleste San Marzano"-sammenligning uden kontrolleret
+      // datakilde (Anna PLT-0283) — kun det observerbare.
+      overskrift: 'Første blomster er på vej',
       broedtekst:
-        'De fleste San Marzano får først blomster om 14–20 dage. Dine forventes tidligere — et tegn på en god, varm start.',
+        'Planten er begyndt at sætte blomster — et tegn på en god, varm start.',
     },
   },
 }

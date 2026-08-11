@@ -43,7 +43,7 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
   },
   'peberfrugt-corno-di-toro-rosso': {
     beskrivelse:
-      'Den italienske oksehjerte-peber — lang, sød og tyndskindet. Bliver knaldrød og smager solmodent af sommer.',
+      'En lang, hornformet italiensk sød peber med tyndt skind. Bliver knaldrød og smager solmodent af sommer.',
     essens: 'Sød · Varmekær · Tålmodig',
     uddybning:
       'Corno di Toro bliver knaldrød og solmodent sød — hvis du giver den varme og tid nok. Et af havens største slik.',

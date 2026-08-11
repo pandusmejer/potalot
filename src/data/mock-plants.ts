@@ -135,7 +135,7 @@ export const mockPlants: MockPlant[] = [
     logs: [
       { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.', konsekvens: 'Varmen under bakken vækkede frøene på under en uge.' },
       { id: 'log-tomat-2', date: '2026-04-20', action: 'Pottet om', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.', konsekvens: 'Den ekstra plads satte straks gang i ny vækst ovenpå.' },
-      { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sidegrene knebet af. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten bruger nu mere energi på frugterne end på ny bladvækst.' },
+      { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sideskud fjernet. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten fortsætter med én hovedstamme.' },
     ],
     guide: {
       title: 'Tomat i krukke og drivhus',
@@ -238,8 +238,11 @@ export const mockPlants: MockPlant[] = [
       id: 'activity-chili',
       plantId: 'chili-habanero',
       plantName: 'Chili Habanero',
-      action: 'Spirede i dag',
-      when: '22. februar',
+      // Seneste AKTUELLE hændelse — skal følge loggens kronologi (Anna
+      // PLT-0253: 'Spirede i dag' + synlige blomsterknopper var en
+      // biologisk umulig tidslinje).
+      action: 'Udplantet',
+      when: '22. maj',
       image: '/images/plantekort/chili-habanero-orange.jpg',
     },
     nextAction: {
@@ -653,7 +656,7 @@ export const mockPlants: MockPlant[] = [
     logs: [],
     guide: {
       title: 'Jalapeño fra frø',
-      body: 'Mild chili der kan nå en sen sommerhøst selv ved junisåning.',
+      body: 'Junisåning er sent for jalapeño. Giv planten så meget varme og lys som muligt, og regn med, at høsten kan blive sen.',
       href: '/guides',
     },
   },
