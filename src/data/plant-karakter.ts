@@ -59,7 +59,7 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
       'Den sprøde sukkerært, man spiser med bælg og det hele. Vokser hurtigt, klatrer ivrigt og smager bedst lige fra planten.',
     essens: 'Sprød · Ivrig · Hurtig',
     uddybning:
-      'Sukkerærten klatrer ivrigt og spises med bælg og det hele — sødest et minut efter du har plukket den.',
+      'Sukkerærten klatrer ivrigt og spises med bælg og det hele — bedst mens bælgene er unge og sprøde.',
     traits: [
       { label: 'Sværhedsgrad', value: 'Let' },
       { label: 'Temperament', value: 'Ivrig' },
@@ -82,10 +82,10 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
   },
   'agurk-marketmore': {
     beskrivelse:
-      'Den pålidelige frilandsagurk. Sprød, bitterfri og storproducerende — en taknemmelig favorit for den utålmodige.',
+      'Den pålidelige frilandsagurk. Sprød og storproducerende — en taknemmelig favorit for den utålmodige.',
     essens: 'Sprød · Gavmild · Pålidelig',
     uddybning:
-      'Den pålidelige frilandsagurk: bitterfri, storproducerende og taknemmelig — en favorit for den utålmodige.',
+      'Den pålidelige frilandsagurk: storproducerende og taknemmelig — en favorit for den utålmodige.',
     traits: [
       { label: 'Sværhedsgrad', value: 'Let' },
       { label: 'Temperament', value: 'Gavmild' },
@@ -96,7 +96,7 @@ export const PLANT_KARAKTER: Record<string, PlantKarakter> = {
   'tomat-cherrytomat': {
     beskrivelse:
       'Små søde cherrytomater i lange klaser. Hurtig til at modne, gavmild hele sommeren og svær at gå forbi uden at smage.',
-    essens: 'Sød · Gavmild · Nem',
+    essens: 'Sød · Gavmild',
     uddybning:
       'Små søde cherrytomater i lange klaser — gavmild hele sommeren og svær at gå forbi uden at smage.',
     traits: [

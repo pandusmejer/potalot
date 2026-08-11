@@ -1,4 +1,4 @@
-import type { CalendarTask, Plant, PlantStatus } from '@/lib/types'
+import type { CalendarTask, Plant } from '@/lib/types'
 
 /**
  * Handlings-orienterede filtre (V2.2 — Annas feedback).
@@ -13,11 +13,6 @@ import type { CalendarTask, Plant, PlantStatus } from '@/lib/types'
  *   Kræver handling  → klar_til_udplantning (du skal gøre noget)
  *   Klar til høst    → hoestklar (belønningen venter)
  */
-export type PlantFilterStatus =
-  | 'lige_nu'
-  | 'i_vaekst'
-  | 'kraever_handling'
-  | 'klar_til_hoest'
 
 export interface MockPlantImage {
   id: string
@@ -77,13 +72,6 @@ export interface MockPlant extends Plant {
 
 const DEMO_USER_ID = 'demo-user'
 
-export const plantStatusFilters: Array<{ id: PlantFilterStatus; label: string }> = [
-  { id: 'lige_nu', label: 'Lige nu' },
-  { id: 'i_vaekst', label: 'I vækst' },
-  { id: 'kraever_handling', label: 'Kræver handling' },
-  { id: 'klar_til_hoest', label: 'Klar til høst' },
-]
-
 export const mockPlants: MockPlant[] = [
   {
     id: 'tomat-san-marzano',
@@ -113,7 +101,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-03-18T08:00:00.000Z',
     updatedAt: '2026-05-28T18:30:00.000Z',
-    notes: 'Stærke planter efter ompotning. Hold øje med vanding på solrige dage.',
+    notes: 'Stærke planter efter ompotning. Hold øje med jorden på varme, solrige dage.',
     pictures: [
       { id: 'tomat-img-1', src: '/images/plantekort/tomat-san-marzano.jpg', alt: 'Tomat San Marzano' },
     ],
@@ -129,17 +117,17 @@ export const mockPlants: MockPlant[] = [
       id: 'next-tomat',
       plantId: 'tomat-san-marzano',
       plantName: 'Tomat San Marzano',
-      action: 'Ompot de største planter',
+      action: 'Fjern sideskud',
       timing: 'I denne uge',
     },
     logs: [
-      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket med plastik for at holde på fugten.', konsekvens: 'Varmen under bakken vækkede frøene på under en uge.' },
+      { id: 'log-tomat-1', date: '2026-03-18', action: 'Sået', note: 'Seks frø lagt i bakke på varmemåtte. Dækket for at holde på fugten.' },
       { id: 'log-tomat-2', date: '2026-04-20', action: 'Pottet om', note: 'Flyttet til 11 cm potter. Rødderne havde fyldt hele den gamle potte.', konsekvens: 'Den ekstra plads satte straks gang i ny vækst ovenpå.' },
       { id: 'log-tomat-3', date: '2026-06-09', action: 'Bundet op', note: 'Første sideskud fjernet. Bundet til snor, så stænglen kan bære vægten.', konsekvens: 'Planten fortsætter med én hovedstamme.' },
     ],
     guide: {
       title: 'Tomat i krukke og drivhus',
-      body: 'Hold jævn fugt, giv lys og vent med udplantning til nætterne er lune.',
+      body: 'Hold jorden jævnt fugtig, giv planten godt med lys, og plant først ud, når forholdene passer til tomater.',
       href: '/guides',
     },
   },
@@ -187,7 +175,7 @@ export const mockPlants: MockPlant[] = [
       id: 'next-agurk',
       plantId: 'agurk-marketmore',
       plantName: 'Agurk Marketmore',
-      action: 'Tjek fugt ved spirerne',
+      action: 'Tjek fugten ved spirerne',
       timing: 'I morgen',
     },
     logs: [
@@ -196,7 +184,7 @@ export const mockPlants: MockPlant[] = [
     ],
     guide: {
       title: 'Agurk med lune rødder',
-      body: 'Agurk vil have varme, jævn vanding og læ. Plant først ud når jorden er lun.',
+      body: 'Agurk trives med varme, jævn vanding og læ. Plant først ud, når jorden er lun.',
       href: '/guides',
     },
   },
@@ -258,7 +246,7 @@ export const mockPlants: MockPlant[] = [
     ],
     guide: {
       title: 'Chili under glas',
-      body: 'Chili trives med varme, moderat gødning og god luft omkring bladene.',
+      body: 'Chili trives med varme og god luft omkring bladene.',
       href: '/guides',
     },
   },
@@ -289,7 +277,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-04-05T12:00:00.000Z',
     updatedAt: '2026-05-28T17:00:00.000Z',
-    notes: 'Hærdet af i skygge. Vent med udplantning ved kolde nætter.',
+    notes: 'Hærdet af i skygge. Vent med udplantning, hvis nætterne er kolde.',
     pictures: [
       { id: 'dahlia-img-1', src: '/images/plantekort/dahlia-cafe-au-lait.jpg', alt: 'Dahlia Cafe au Lait' },
     ],
@@ -309,8 +297,8 @@ export const mockPlants: MockPlant[] = [
       timing: 'Når nætterne er milde',
     },
     logs: [
-      { id: 'log-dahlia-1', date: '2026-04-05', action: 'Forspiret', note: 'Knold sat lyst og lunt.' },
-      { id: 'log-dahlia-2', date: '2026-05-12', action: 'Pottet om', note: 'Fik større potte før afhærdning.' },
+      { id: 'log-dahlia-1', date: '2026-04-05', action: 'Forspiret', note: 'Knolden blev sat lyst og lunt.' },
+      { id: 'log-dahlia-2', date: '2026-05-12', action: 'Pottet om', note: 'Fik en større potte før afhærdning.' },
     ],
     guide: {
       title: 'Dahlia gennem sommeren',
@@ -349,7 +337,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-04-01T08:00:00.000Z',
     updatedAt: '2026-05-29T08:20:00.000Z',
-    notes: 'Klar til løbende høst af sprøde yderblade.',
+    notes: 'Klar til løbende høst. Pluk yderblade efter behov.',
     pictures: [],
     latestActivity: {
       id: 'activity-salat',
@@ -367,11 +355,11 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-salat-1', date: '2026-04-01', action: 'Sået', note: 'Direkte i bakke.' },
-      { id: 'log-salat-2', date: '2026-05-29', action: 'Høstklar', note: 'Første faste hoveder.' },
+      { id: 'log-salat-2', date: '2026-05-29', action: 'Høstklar', note: 'Yderbladene er klar til løbende høst.' },
     ],
     guide: {
       title: 'Salat hele sæsonen',
-      body: 'Så lidt og ofte, hold jævn fugt og høst yderblade for løbende forsyning.',
+      body: 'Så lidt og ofte, hold jorden jævnt fugtig, og høst efter den type salat, du dyrker.',
       href: '/guides',
     },
   },
@@ -405,7 +393,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-05-25T09:00:00.000Z',
     updatedAt: '2026-05-25T09:00:00.000Z',
-    notes: 'Venter på spiring. Skal have stativ ved udplantning.',
+    notes: 'Venter på spiring. Giv planten støtte, når den begynder at klatre.',
     pictures: [],
     latestActivity: {
       id: 'activity-boenne',
@@ -426,7 +414,7 @@ export const mockPlants: MockPlant[] = [
     ],
     guide: {
       title: 'Bønner med højde',
-      body: 'Bønner vil have lun jord, støtte fra starten og regelmæssig høst senere.',
+      body: 'Stangbønner har brug for støtte, når de begynder at klatre.',
       href: '/guides',
     },
   },
@@ -465,7 +453,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-05-02T08:00:00.000Z',
     updatedAt: '2026-05-10T08:00:00.000Z',
-    notes: 'Cherrytomat til altankassen. Spirer fint.',
+    notes: 'Cherrytomat til altankassen. Spirerne er godt på vej.',
     pictures: [],
     latestActivity: {
       id: 'activity-sweetie',
@@ -486,7 +474,7 @@ export const mockPlants: MockPlant[] = [
     ],
     guide: {
       title: 'Cherrytomater i krukke',
-      body: 'Sweetie er en let busktomat — perfekt til krukker og altankasser.',
+      body: 'Sweetie trives i krukker og altankasser.',
       href: '/guides',
     },
   },
@@ -518,7 +506,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-03-02T08:00:00.000Z',
     updatedAt: '2026-06-05T08:00:00.000Z',
-    notes: 'Kompakte, kraftige planter. Klar til drivhusbedet.',
+    notes: 'Kompakte, kraftige planter. Klar til drivhuset.',
     pictures: [
       { id: 'calwonder-img-1', src: '/images/plantekort/peberfrugt-california-wonder.jpg', alt: 'Peberfrugt California Wonder' },
     ],
@@ -539,7 +527,7 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-calwonder-1', date: '2026-03-02', action: 'Sået', note: '3 frø med varme under.' },
-      { id: 'log-calwonder-2', date: '2026-04-12', action: 'Pottet om', note: '11 cm potter, alle tre stærke.' },
+      { id: 'log-calwonder-2', date: '2026-04-12', action: 'Pottet om', note: '11 cm potter. Alle tre planter ser stærke ud.' },
     ],
     guide: {
       title: 'Blokpeber i drivhus',
@@ -575,7 +563,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-03-02T08:00:00.000Z',
     updatedAt: '2026-06-01T08:00:00.000Z',
-    notes: 'Lidt langsommere end California Wonder, men sunde planter.',
+    notes: 'Vokser lidt langsommere end California Wonder, men planterne ser sunde ud.',
     pictures: [
       { id: 'corno-img-1', src: '/images/plantekort/peberfrugt-corno-di-toro-rosso.jpg', alt: 'Peberfrugt Corno di Toro Rosso' },
     ],
@@ -596,7 +584,7 @@ export const mockPlants: MockPlant[] = [
     },
     logs: [
       { id: 'log-corno-1', date: '2026-03-02', action: 'Sået', note: '4 frø med varme under.' },
-      { id: 'log-corno-2', date: '2026-04-14', action: 'Pottet om', note: 'Alle fire klarede flytningen.' },
+      { id: 'log-corno-2', date: '2026-04-14', action: 'Pottet om', note: 'Alle fire planter klarede flytningen.' },
     ],
     guide: {
       title: 'Snackpeber med horn',
@@ -687,7 +675,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2026-06-04T08:00:00.000Z',
     updatedAt: '2026-06-04T08:00:00.000Z',
-    notes: 'Til drivhusets tomat-bed — sås direkte mellem planterne.',
+    notes: 'Skal stå i drivhusets tomat-bed, når der bliver plads.',
     pictures: [],
     latestActivity: {
       id: 'activity-genovese',
@@ -738,7 +726,7 @@ export const mockPlants: MockPlant[] = [
     isArchived: false,
     createdAt: '2025-10-12T08:00:00.000Z',
     updatedAt: '2026-06-05T08:00:00.000Z',
-    notes: 'Hele bedet høstet og hængt til tørre. Flot udbytte.',
+    notes: 'Hele bedet er høstet, og hvidløgene hænger til tørre. Flot udbytte.',
     pictures: [],
     latestActivity: {
       id: 'activity-hvidloeg',
@@ -760,7 +748,7 @@ export const mockPlants: MockPlant[] = [
     ],
     guide: {
       title: 'Hvidløg fra efterår til sommer',
-      body: 'Sat i oktober, høstet i juni — den tålmodiges afgrøde.',
+      body: 'Sæt feddene om efteråret, og høst, når planten viser, at løgene er ved at være klar.',
       href: '/guides',
     },
   },
@@ -806,14 +794,3 @@ export function formatPlantDate(date: string | null | undefined): string {
   return new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
 }
 
-/**
- * Map en plante-status til den handlings-chip den hører under.
- * planlagt/afsluttet rammer aldrig denne funktion i praksis (de er
- * udenfor Aktive-bucket'en), men mapper harmløst til 'lige_nu'.
- */
-export function statusToFilter(status: PlantStatus): PlantFilterStatus {
-  if (status === 'hoestklar') return 'klar_til_hoest'
-  if (status === 'klar_til_udplantning') return 'kraever_handling'
-  if (status === 'planlagt' || status === 'afsluttet') return 'lige_nu'
-  return 'i_vaekst' // saaet, spirer, i_vaekst, udplantet
-}

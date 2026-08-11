@@ -127,8 +127,10 @@ export function PlantNaeste({
         </svg>
       </section>
 
-      {/* ── KORT 2: DENNE UGE — værktøj ──────────────────────── */}
-      <section
+      {/* ── KORT 2: DENNE UGE — værktøj ────────────────────────
+          Intet minimumsantal råd (Anna, motor-regel): ved Potalot ikke
+          noget relevant, vises kortet slet ikke — aldrig fyld-chips. */}
+      {naeste.denneUge.length > 0 && <section
         className="rounded-[22px]"
         style={{ background: CREME, border: RAMME, padding: 22 }}
       >
@@ -193,7 +195,7 @@ export function PlantNaeste({
             <ChevronRight className="h-4 w-4" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
           </Link>
         </div>
-      </section>
+      </section>}
     </>
   )
 }

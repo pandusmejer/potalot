@@ -23,6 +23,9 @@ som blind masse-erstatning.
 | Registreringshandling | **Log** / **Log nyt på planten** er OK |
 | Tekniske tags/slugs | translitteration (ae/oe/aa) er OK internt |
 | Synlige tags/navne | altid korrekt dansk **æ/ø/å** |
+| Såsted/såtid | **såsted / såtid** (aldrig "så-sted", "så-timing") |
+| Voksested | **voksested/dyrkningssted** — aldrig automatisk "bed" |
+| Spiringsfase | **Venter på spiring** (brugerorienteret, ikke "Spiringsfasen") |
 
 ## Nuancer (Annas afgørelser)
 
@@ -38,6 +41,21 @@ som blind masse-erstatning.
   nu?"* — bekræftelse først, dernæst næste tilstand, adskilt med punktum.
   Aldrig tankestreg, der får to systemtilstande til at ligne én overskrift
   (fx "Gemt. Gartneren ser på det …", ikke "Gemt — Gartneren kigger på det").
+- **Intet minimumsantal råd (Anna 11/8, motor-regel):** "Lige nu"/"Denne
+  uge" må vise 0-3 punkter. Ved Potalot kun én relevant ting, vises én
+  ting; ved ingenting vises intet — aldrig "Bind op ved behov"/"Vand
+  jævnt"-fyld for at nå tre linjer. Software har en dyb eksistentiel
+  angst for tom plads; Potalot har ikke.
+- **Karakterlaget (Anna 11/8, redaktionel regel):** Potalot må gerne
+  personificere planten ("Hidsig · Frugtig · Krævende", "Temperament:
+  Rolig") — det er en del af brandet. Men personificeringen må ALDRIG
+  snige faglige påstande ind: "Nem", "bitterfri", "sødest et minut
+  efter" er dyrknings-/sortspåstande og skal være groundet i data —
+  ellers ud. Faktafelter præcise og datadrevne; karaktertekster legende.
+  Vi polerer IKKE Potalot ned til en neutral havebog.
+- **Demo-reglen (Anna 11/8):** Demo-observationer må være konkrete
+  ("Alle fire planter klarede flytningen"); demo-RÅD og sammenligninger
+  skal følge samme faglige standard som resten af Potalot.
 - **Datagæt-princip (Anna 11/8, GAR-0017):** et interval fra en kilde
   (fx sådybde "2-5 mm") må ALDRIG konverteres til ét tal — intet
   gennemsnit/min/maks. Enkeltværdi → strukturert felt; interval → null

@@ -151,25 +151,26 @@ interface NaesteRule {
 const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
   planlagt: {
     overskrift: 'Klar til at så',
-    beskrivelse: 'Find en plads og kom i gang — sæsonen venter ikke.',
-    denneUge: ['Vælg så-sted', 'Find såbakke og jord', 'Tjek så-timing i guiden'],
+    beskrivelse: 'Find et passende sted, og gør klar til såning.',
+    // 'Find såbakke og jord' tilføjes dynamisk KUN ved forkultivering.
+    denneUge: ['Vælg såsted', 'Tjek såtid i guiden'],
   },
   saaet: {
-    overskrift: 'Spiringsfasen',
+    overskrift: 'Venter på spiring',
     beskrivelse: 'Hold jorden let fugtig, mens du venter på spiring.',
     denneUge: ['Hold jorden fugtig', 'Hold den lun', 'Undgå direkte udtørring'],
   },
   spirer: {
     overskrift: 'Spirerne er oppe',
-    beskrivelse: 'Giv masser af lys, så de ikke strækker sig, og vand forsigtigt.',
-    denneUge: ['Giv masser af lys', 'Vand forsigtigt', 'Vend mod lyset dagligt'],
+    beskrivelse: 'Giv dem godt med lys, og hold øje med fugten.',
+    denneUge: ['Giv godt med lys', 'Hold øje med fugten'],
   },
   i_vaekst: {
     // Ingen gødnings-cadence uden artsdata (Anna PLT-0316): en universel
     // rytme er ikke meningsfuld — hellere tavshed end opdigtet præcision.
-    overskrift: 'I fuld vækst',
-    beskrivelse: 'Planten vokser. Hold jorden jævnt fugtig.',
-    denneUge: ['Hold jorden fugtig', 'Fjern visne blade'],
+    overskrift: 'I vækst',
+    beskrivelse: 'Planten er godt i gang. Følg med i vandbehov og ny vækst.',
+    denneUge: ['Hold øje med vandbehovet'],
   },
   klar_til_udplantning: {
     // Frost-varianten — bruges KUN når arten faktisk er frostfølsom
@@ -179,19 +180,22 @@ const STATUS_NAESTE: Record<PlantStatus, NaesteRule> = {
     denneUge: ['Hærd af udendørs', 'Tjek frostvarsel', 'Forbered bedet'],
   },
   udplantet: {
-    overskrift: 'Etableret i bedet',
-    beskrivelse: 'Hold øje med væksten og vand i tørre perioder.',
-    denneUge: ['Vand i tørke', 'Bind op ved behov', 'Hold øje med skadedyr'],
+    // Ingen universelle chips her (Anna PLT-0320): opbinding/skadedyr/
+    // tørkevanding er artsafhængigt — tom liste er bedre end fyld.
+    overskrift: 'Godt i gang på voksestedet',
+    beskrivelse: 'Hold øje med vækst og vandbehov.',
+    denneUge: [],
   },
   hoestklar: {
+    // Beskrivelsen bærer rådet; en identisk chip ville være gentagelse.
     overskrift: 'Klar til høst',
-    beskrivelse: 'Tjek planten jævnligt og høst løbende, mens den er på sit bedste.',
-    denneUge: ['Høst løbende', 'Tjek, hvad der er høstklart', 'Vand jævnt'],
+    beskrivelse: 'Tjek, hvad der er høstklart.',
+    denneUge: [],
   },
   afsluttet: {
     overskrift: 'Sæsonen er slut',
-    beskrivelse: 'Gem dine noter og fotos til næste år — de bliver guld værd.',
-    denneUge: ['Ryd op i bedet', 'Gem dine noter', 'Planlæg næste sæson'],
+    beskrivelse: 'Gem gerne noter og fotos, hvis du vil bruge erfaringerne næste sæson.',
+    denneUge: ['Gem dine noter'],
   },
 }
 
@@ -214,6 +218,11 @@ export function deriveNaeste(plant: MockPlant): DetailNaeste {
   // Hverken frost- eller afhærdningsråd er universelle (Anna PLT-0317/0318):
   // frost-copy kun for arter, guiden KENDER som frostfølsomme; afhærdning
   // kun når planten med rimelighed er forkultiveret (preCultivation).
+  // Forkultiverings-chippen kun når arten faktisk forkultiveres (Anna
+  // PLT-0309): "Find såbakke og jord" er meningsløs for direkte såning.
+  if (plant.status === 'planlagt' && guideFakta(plant)?.preCultivation === true) {
+    rule = { ...rule, denneUge: ['Vælg såsted', 'Find såbakke og jord', 'Tjek såtid i guiden'] }
+  }
   if (plant.status === 'klar_til_udplantning') {
     const fakta = guideFakta(plant)
     if (fakta?.frostSensitive !== true) {
