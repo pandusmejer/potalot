@@ -54,7 +54,7 @@ export function Topbar({ profile }: { profile: Profile | null }) {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-1.5">
             <Sprout className="h-[18px] w-[18px] text-primary" />
-            <span className="font-serif text-lg text-foreground">PotAlot</span>
+            <span className="font-serif text-lg text-foreground">Potalot</span>
           </Link>
           {profile ? (
             <div className="flex items-center gap-1.5">

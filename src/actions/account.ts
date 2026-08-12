@@ -25,16 +25,19 @@ export async function deleteAccount(confirm: string): Promise<{ ok: true } | { e
   // 1. Slet al brugerens data. Funktionen returnerer blokerede tabeller.
   const { data: blocked, error: dataErr } = await admin.rpc('delete_account', { p_user: userId })
   if (dataErr) {
-    return { error: `Kunne ikke slette dine data lige nu — prøv igen om lidt. (${dataErr.message})` }
+    console.error('delete_account (data) fejlede:', dataErr)
+    return { error: 'Kunne ikke slette dine data lige nu. Prøv igen om lidt.' }
   }
   if (Array.isArray(blocked) && blocked.length > 0) {
-    return { error: 'Noget data kunne ikke slettes fuldstændigt. Din konto er IKKE slettet — prøv igen eller kontakt os.' }
+    console.error('delete_account: blokerede tabeller:', blocked)
+    return { error: 'Ikke alle data kunne slettes. Din konto er ikke slettet. Prøv igen, eller kontakt os, hvis problemet fortsætter.' }
   }
 
   // 2. Slet selve login-brugeren (session bliver derefter ugyldig).
   const { error: authErr } = await admin.auth.admin.deleteUser(userId)
   if (authErr) {
-    return { error: `Dine data er slettet, men login-kontoen kunne ikke fjernes helt — prøv igen. (${authErr.message})` }
+    console.error('delete_account (auth) fejlede:', authErr)
+    return { error: 'Dine data er slettet, men selve kontoen kunne ikke fjernes. Prøv igen, eller kontakt os, hvis problemet fortsætter.' }
   }
 
   return { ok: true }

@@ -22,10 +22,10 @@ export default function PrivatlivPage() {
 
         <div className="space-y-8 text-[15px] leading-relaxed text-foreground">
           <p>
-            Potalot er en have-app. Vi gemmer det, du selv lægger ind, så din have
+            Potalot er en haveapp. Vi gemmer det, du selv lægger ind, så din have
             kan huskes fra sæson til sæson — og vi holder det så enkelt og privat
-            som muligt. Herunder står præcis hvilke data vi gemmer, hvad de bruges
-            til, og hvordan du får dem slettet.
+            som muligt. Herunder kan du se, hvilke data vi gemmer, hvad vi bruger
+            dem til, og hvilke valg du har.
           </p>
 
           <Section title="Hvilke oplysninger gemmer vi?">
@@ -71,9 +71,9 @@ export default function PrivatlivPage() {
 
           <Section title="Hvor ligger dine data?">
             <p>
-              Dine data hostes hos vores underleverandører Supabase (database og
-              fillager) og Netlify (hosting). Adgang er beskyttet, og hver bruger
-              kan kun se sine egne data.
+              Dine data opbevares hos vores underleverandører Supabase, som leverer
+              database og filopbevaring, og Netlify, som driver appen. Adgangen
+              er beskyttet, og brugere kan kun se deres egne data.
             </p>
           </Section>
 

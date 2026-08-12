@@ -46,9 +46,8 @@ export function BadgeGallery({ earned }: Props) {
             Dit galleri venter på sit første mærke
           </p>
           <p className="text-sm text-muted-foreground italic max-w-md mx-auto">
-            Når du sår dit første frø, tilføjer din første frøpose
-            eller logger den første handling — vil dine badges begynde
-            at samle sig her.
+            Du får dine første badges, når du begynder at så, tilføje
+            frø og logge det, du gør i haven.
           </p>
         </CardContent>
       </Card>
@@ -61,7 +60,7 @@ export function BadgeGallery({ earned }: Props) {
         <CardTitle className="flex items-center justify-between flex-wrap gap-2">
           <span className="flex items-center gap-2">
             <Award className="h-4 w-4 text-amber-700" />
-            Mit badge-galleri
+            Mine badges
           </span>
           <span className="text-sm font-normal text-muted-foreground">
             {earnedCount} af {totalCount} optjent
@@ -101,8 +100,7 @@ export function BadgeGallery({ earned }: Props) {
           )
         })}
         <p className="text-[10px] text-muted-foreground italic pt-2 border-t border-border">
-          Badges tildeles automatisk når du gør det relevante i appen.
-          Genindlæs siden for at køre baggrundstjek igen.
+          Badges tildeles automatisk, når du når dem.
         </p>
       </CardContent>
     </Card>

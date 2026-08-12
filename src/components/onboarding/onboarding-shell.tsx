@@ -108,7 +108,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <MetodeKort
               icon={<Sprout className="h-5 w-5" />}
               title="Tilføj det, du dyrker"
-              desc="Skriv én plante eller hele bedet — du bestemmer, hvor meget du udfylder."
+              desc="Skriv om én plante eller hele bedet — du bestemmer, hvor meget du udfylder."
             />
           </button>
         </EgenPlanteDialog>
@@ -118,7 +118,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
           <MetodeKort
             icon={<Camera className="h-5 w-5" />}
             title="Scan en frøpose"
-            desc="Tag et billede af en pose — Potalot henter det, den kan læse."
+            desc="Tag et billede af en pose — Potalot læser de oplysninger, den kan finde på posen."
           />
         </Link>
 
@@ -170,7 +170,7 @@ export function OnboardingShell({ gardenLocations, existingNames, plantCount, se
             <MessageSquareText className="h-4 w-4 text-primary" /> Fortæl om haven
           </DialogTitle>
           <DialogDescription>
-            Beskriv løst hvad du dyrker. Jeg foreslår planter og frø — du godkender,
+            Beskriv løst, hvad du dyrker. Potalot foreslår planter og frø — du godkender,
             før noget gemmes.
           </DialogDescription>
           <HaveTekstFlow

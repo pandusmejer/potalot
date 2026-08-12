@@ -54,21 +54,21 @@ export function MultiImageUpload({
     const remaining = Math.max(0, maxImages - value.length)
     const toUpload = filesArr.slice(0, remaining)
     if (toUpload.length === 0) {
-      setError(`Du har allerede ${value.length} af max ${maxImages} billeder. Fjern et eksisterende først.`)
+      setError(`Du har allerede ${value.length} af ${maxImages} billeder. Fjern et eksisterende billede, før du tilføjer et nyt.`)
       return
     }
-    setDebug(`Uploader ${toUpload.length} billede(r)…`)
+    setDebug(toUpload.length === 1 ? 'Uploader 1 billede …' : `Uploader ${toUpload.length} billeder …`)
 
     startTransition(async () => {
       const newUrls: string[] = []
       const errors: string[] = []
       for (const file of toUpload) {
         try {
-          setDebug(`Forbereder "${file.name}" (${Math.round(file.size / 1024)} KB)…`)
+          setDebug(`Forbereder “${file.name}” …`)
           // Komprimér klient-side først — sparer båndbredde + sikrer at
           // server ikke ser tunge filer der kan OOM Netlify Functions
           const compressed = await compressImage(file)
-          setDebug(`Uploader "${compressed.name}" (${Math.round(compressed.size / 1024)} KB)…`)
+          setDebug(`Uploader “${compressed.name}” …`)
           const fd = new FormData()
           fd.append('file', compressed)
           fd.append('folder', folder)
@@ -77,17 +77,18 @@ export function MultiImageUpload({
           let parsed: { url?: string; error?: string } = {}
           try { parsed = JSON.parse(text) } catch { /* not JSON */ }
           if (!response.ok) {
-            errors.push(`${file.name}: ${parsed.error ?? `HTTP ${response.status} ${text.slice(0, 80)}`}`)
+            console.error('upload fejlede:', response.status, text.slice(0, 200))
+            errors.push(parsed.error ?? `Kunne ikke gemme “${file.name}”. Prøv igen.`)
             continue
           }
           if (!parsed.url) {
-            errors.push(`${file.name}: serveren returnerede ikke en URL`)
+            errors.push(`Kunne ikke gemme “${file.name}”. Prøv igen.`)
             continue
           }
           newUrls.push(parsed.url)
         } catch (e: unknown) {
-          const msg = e instanceof Error ? e.message : 'ukendt fejl'
-          errors.push(`${file.name}: ${msg}`)
+          console.error('upload fejlede:', e)
+          errors.push(`Kunne ikke gemme “${file.name}”. Prøv igen.`)
         }
       }
       if (newUrls.length > 0) {

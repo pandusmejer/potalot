@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { PageHero } from '@/components/ui/page-hero'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -11,7 +10,7 @@ import Link from 'next/link'
 import { LocationSetting } from '@/components/profil/location-setting'
 import { DeleteAccountSection } from '@/components/settings/delete-account'
 import type { NotificationPreference } from '@/lib/types'
-import { ChevronRight, User, Bell, Sparkles, Globe, Lock, Sprout, ShieldCheck, MessageCircle } from 'lucide-react'
+import { ChevronRight, User, Bell, Sprout, ShieldCheck, MessageCircle } from 'lucide-react'
 import { KONTAKT_EMAIL } from '@/lib/contact'
 
 const DEFAULT_PREFS: NotificationPreference = {
@@ -122,47 +121,14 @@ export default function IndstillingerPage() {
           </div>
 
           <p className="text-xs text-muted-foreground italic text-right">
-            Indstillingerne gemmes lokalt for denne session. Tværgående
-            persistens kommer i en senere version.
+            Dine valg gemmes kun på denne enhed indtil videre.
           </p>
         </CardContent>
       </Card>
 
-      {/* AI gartner */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            AI gartner
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            AI gartner er ikke aktiveret endnu. Kommer i en senere version.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Datasynk + Privatliv (placeholdere) */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Roadmap</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Globe className="h-3.5 w-3.5" />
-            Datasynk på tværs af enheder — på vej
-          </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Bell className="h-3.5 w-3.5" />
-            Vejr-integration til kalender — på vej
-          </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Lock className="h-3.5 w-3.5" />
-            Privatlivsindstillinger — på vej
-          </div>
-        </CardContent>
-      </Card>
+      {/* Gartner-kortet ("AI gartner er ikke aktiveret endnu") + Roadmap-kortet
+          er FJERNET (Anna NAV-0026-0030): Gartneren er live, og release-
+          planlægning hører ikke hjemme mellem reelle indstillinger. */}
 
       {/* Hjælp og privatliv */}
       <Card>

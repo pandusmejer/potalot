@@ -1,5 +1,6 @@
 'use client'
 
+import { authFejlBesked } from '@/lib/auth-fejl'
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
@@ -28,7 +29,7 @@ export function ForgotPasswordForm() {
         redirectTo,
       })
       if (err) {
-        setError(err.message)
+        setError(authFejlBesked(err, 'Kunne ikke sende mailen. Prøv igen.'))
         return
       }
       setSent(true)

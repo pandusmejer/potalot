@@ -21,7 +21,7 @@ export function DemoBanner() {
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-2 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary shrink-0" />
           <p className="text-xs sm:text-sm">
-            Du ser PotAlot i demo-tilstand. Opret bruger for at gemme dine egne frø, planter og opgaver.
+            Du ser Potalot i demo-tilstand. Opret bruger for at gemme dine egne frø, planter og opgaver.
           </p>
         </div>
       </div>

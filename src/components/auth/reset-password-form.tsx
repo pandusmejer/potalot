@@ -1,5 +1,6 @@
 'use client'
 
+import { authFejlBesked } from '@/lib/auth-fejl'
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -79,7 +80,7 @@ export function ResetPasswordForm() {
       const supabase = createClient()
       const { error: err } = await supabase.auth.updateUser({ password })
       if (err) {
-        setError(err.message)
+        setError(authFejlBesked(err, 'Kunne ikke gemme det nye kodeord. Prøv igen.'))
         return
       }
       setDone(true)
@@ -103,7 +104,7 @@ export function ResetPasswordForm() {
       <Card>
         <CardContent className="space-y-3 py-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Linket er udløbet eller ugyldigt. Anmod om et nyt nulstillings-link.
+            Linket er udløbet eller ugyldigt. Bed om et nyt link til at vælge kodeord.
           </p>
           <Button asChild>
             <Link href="/glemt-kode">Glemt kodeord</Link>

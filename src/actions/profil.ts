@@ -92,7 +92,10 @@ export async function updateProfile(input: UpdateProfileInput): Promise<{ ok: tr
     .update(update)
     .eq('id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('profil-handling fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
 
   revalidatePath('/profil')
   revalidatePath('/', 'layout')
@@ -149,7 +152,10 @@ export async function saveOnboardingPreferences(
   if (input.seasonStatus !== undefined) update.season_status = input.seasonStatus
 
   const { error } = await supabase.from('profiles').update(update).eq('id', userId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('profil-handling fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
 
   revalidatePath('/profil')
   revalidatePath('/', 'layout')

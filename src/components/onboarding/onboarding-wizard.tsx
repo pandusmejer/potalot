@@ -119,7 +119,7 @@ export function OnboardingWizard({
     setError(null)
     startTransition(async () => {
       const res = await saveOnboardingPreferences(prefsPayload(seasonStatus, true))
-      if ('error' in res) { setError('Kunne ikke gemme dine valg: ' + res.error); return }
+      if ('error' in res) { setError('Kunne ikke gemme dine valg. Prøv igen.'); return }
       router.push('/onboarding/faerdig')
       router.refresh()
     })
@@ -131,14 +131,14 @@ export function OnboardingWizard({
     setError(null)
     startTransition(async () => {
       const res = await saveOnboardingPreferences(prefsPayload('igang', false))
-      if ('error' in res) { setError('Kunne ikke gemme dine valg: ' + res.error); return }
+      if ('error' in res) { setError('Kunne ikke gemme dine valg. Prøv igen.'); return }
       setStep('import')
     })
   }
 
   function brugPlacering() {
     setLocError(null)
-    if (!('geolocation' in navigator)) { setLocError('Din browser deler ikke placering. Brug postnummer i stedet.'); return }
+    if (!('geolocation' in navigator)) { setLocError('Din browser understøtter ikke deling af placering. Brug et postnummer i stedet.'); return }
     setLocStatus('looking')
     navigator.geolocation.getCurrentPosition(
       pos => {
@@ -151,7 +151,7 @@ export function OnboardingWizard({
         setLocStatus('idle')
         setLocError(
           err.code === err.PERMISSION_DENIED
-            ? 'Du sagde nej til placering — helt fint. Indtast et postnummer i stedet.'
+            ? 'Placeringen blev ikke delt — helt fint. Brug et postnummer i stedet.'
             : err.code === err.TIMEOUT
               ? 'Det tog for lang tid at finde din placering. Prøv et postnummer.'
               : 'Kunne ikke finde din placering. Prøv et postnummer.',
@@ -219,7 +219,7 @@ export function OnboardingWizard({
 
       {/* HAVETYPE */}
       {step === 'havetype' && (
-        <StepBody title="Hvor dyrker du?" sub="Så kan vi tilpasse anbefalinger, guides og senere fællesskab.">
+        <StepBody title="Hvor dyrker du?" sub="Så kan Potalot tilpasse forslag og guides til din have.">
           <div className="grid grid-cols-2 gap-2.5">
             {HAVETYPER.map(h => (
               <OptionCard key={h.id} label={h.label} selected={gardenType === h.id}
@@ -247,7 +247,7 @@ export function OnboardingWizard({
                 <MapPin className="h-4 w-4 text-primary" /> <span className="font-medium">Indtast postnummer</span>
               </div>
               <div className="flex gap-2">
-                <Input inputMode="numeric" maxLength={4} placeholder="F.eks. 8000" value={postnr}
+                <Input inputMode="numeric" maxLength={4} placeholder="fx 8000" value={postnr}
                   onChange={e => { setPostnr(e.target.value.replace(/\D/g, '')); setLocError(null) }} />
                 <Button onClick={slaaPostnrOp} disabled={pending || postnr.trim().length !== 4}>
                   {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Find'}
@@ -266,7 +266,7 @@ export function OnboardingWizard({
 
       {/* DYRKNINGSOMRÅDER */}
       {step === 'omraader' && (
-        <StepBody title="Hvad dyrker du mest?" sub="Vælg gerne flere. Det hjælper Potalot med at foreslå det rigtige.">
+        <StepBody title="Hvad dyrker du mest?" sub="Vælg gerne flere. Det hjælper Potalot med at vise mere relevante forslag.">
           <div className="flex flex-wrap gap-2">
             {OMRAADER.map(o => (
               <OptionPill key={o.id} label={o.label} selected={growingAreas.includes(o.id)} onClick={() => toggleArea(o.id)} />
@@ -280,7 +280,7 @@ export function OnboardingWizard({
 
       {/* DYRKER-IDENTITET */}
       {step === 'grower' && (
-        <StepBody title="Hvad slags dyrker er du?" sub="Bruges til at tilpasse indhold og forslag. Det ændrer ikke, hvor meget Potalot forstyrrer dig.">
+        <StepBody title="Hvilken slags dyrker er du?" sub="Bruges til at tilpasse indhold og forslag. Det ændrer ikke, hvor meget Potalot forstyrrer dig.">
           <div className="grid grid-cols-2 gap-2.5">
             {GROWERS.map(g => (
               <button key={g.id} type="button"
@@ -297,7 +297,7 @@ export function OnboardingWizard({
 
       {/* NOTIFIKATIONSPROFIL */}
       {step === 'notifikation' && (
-        <StepBody title="Hvor meget må Potalot forstyrre?" sub="Uafhængigt af hvad du dyrker. Du kan altid skifte det senere.">
+        <StepBody title="Hvor meget må Potalot forstyrre?" sub="Det valg er uafhængigt af, hvad du dyrker. Du kan altid ændre det senere.">
           <div className="space-y-2.5">
             {NOTIFS.map(n => (
               <button key={n.id} type="button"
@@ -317,7 +317,7 @@ export function OnboardingWizard({
 
       {/* MIDT I SÆSONEN */}
       {step === 'saeson' && (
-        <StepBody title="Hvor langt er du?" sub="Så møder Potalot dig, hvor du er lige nu.">
+        <StepBody title="Hvor langt er du med haven?" sub="Så møder Potalot dig, hvor du er lige nu.">
           <div className="space-y-2.5">
             <OptionRow label="Jeg starter nu" desc="Blank tavle — vi bygger haven op sammen." onClick={() => { setSeasonStatus('starter'); afslutFinal() }} disabled={pending} />
             <OptionRow label="Jeg er godt i gang" desc="Jeg har allerede planter, frø eller noter — hjælp mig med at få dem ind." onClick={() => { setSeasonStatus('igang'); tilImport() }} disabled={pending} />

@@ -34,13 +34,13 @@ export function LocationSetting() {
     setError(null)
     const nr = postnr.trim()
     if (!/^\d{4}$/.test(nr)) {
-      setError('Skriv et gyldigt dansk postnummer (4 cifre).')
+      setError('Indtast et gyldigt dansk postnummer (4 cifre).')
       return
     }
     startTransition(async () => {
       const hit = await lookupPostnummer(nr)
       if (!hit) {
-        setError(`Kunne ikke finde postnummer ${nr}. Tjek at det er korrekt.`)
+        setError(`Kunne ikke finde postnummer ${nr}. Tjek, om det er skrevet korrekt.`)
         return
       }
       const label = `${hit.postnr} ${hit.name}`
@@ -81,12 +81,12 @@ export function LocationSetting() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-primary" />
-          Tilføj dit postnummer for mere præcise havevarsler
+          Tilføj postnummer for lokale havevarsler
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Så kan PotAlot hjælpe med ting som nattefrost, jordtemperatur og
+          Så kan Potalot tilpasse vejr, frostvarsler og sæsonråd til
           lokale dyrkningsforhold.
         </p>
         <p className="text-xs text-muted-foreground italic">
@@ -119,7 +119,7 @@ export function LocationSetting() {
             value={postnr}
             onChange={e => setPostnr(e.target.value.replace(/\D/g, '').slice(0, 4))}
             onKeyDown={e => { if (e.key === 'Enter') handleSave() }}
-            placeholder={current ? 'Skift postnummer…' : 'Fx. 8000'}
+            placeholder={current ? 'Skift postnummer…' : 'fx 8000'}
             inputMode="numeric"
             pattern="\d{4}"
             maxLength={4}

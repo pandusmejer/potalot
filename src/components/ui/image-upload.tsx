@@ -47,17 +47,18 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         let parsed: { url?: string; error?: string } = {}
         try { parsed = JSON.parse(text) } catch { /* not JSON */ }
         if (!response.ok) {
-          setError(parsed.error ?? `Upload fejlede (HTTP ${response.status}): ${text.slice(0, 100)}`)
+          console.error('upload fejlede:', response.status, text.slice(0, 200))
+          setError(parsed.error ?? 'Kunne ikke uploade billedet. Prøv igen.')
           return
         }
         if (!parsed.url) {
-          setError(`Upload fejlede: serveren returnerede ikke en URL`)
+          setError('Kunne ikke gemme billedet. Prøv igen.')
           return
         }
         onChange(parsed.url)
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'netværksfejl'
-        setError(`Upload fejlede: ${msg}`)
+        console.error('upload fejlede:', e)
+        setError('Kunne ikke uploade billedet. Tjek forbindelsen, og prøv igen.')
       }
     })
   }

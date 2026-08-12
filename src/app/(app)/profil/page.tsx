@@ -16,7 +16,7 @@ export default async function ProfilPage() {
         tone="coral"
         kicker="Dig"
         title="Min profil"
-        subtitle="Hvem er du, og hvordan vil du bruge PotAlot."
+        subtitle="Hvem er du, og hvordan vil du bruge Potalot?"
       />
 
       <ProfilForm initialProfile={profile} />

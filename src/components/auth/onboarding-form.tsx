@@ -99,7 +99,7 @@ export function OnboardingForm({ email, onComplete }: Props) {
               <Input
                 value={username}
                 onChange={e => setUsername(e.target.value.toLowerCase())}
-                placeholder="fx. lise_have"
+                placeholder="fx lise_have"
                 pattern="[a-z0-9_]{3,20}"
                 minLength={3}
                 maxLength={20}
@@ -116,7 +116,7 @@ export function OnboardingForm({ email, onComplete }: Props) {
             <p className="text-xs text-muted-foreground mt-1.5">
               {usernameStatus === 'taken' && <span className="text-destructive">Brugernavnet er taget.</span>}
               {usernameStatus === 'invalid' && <span className="text-destructive">3–20 tegn, kun a–z, 0–9 og _.</span>}
-              {usernameStatus !== 'taken' && usernameStatus !== 'invalid' && '3–20 tegn, kun a–z, 0–9 og _. Bruges i community.'}
+              {usernameStatus !== 'taken' && usernameStatus !== 'invalid' && '3–20 tegn, kun a–z, 0–9 og _. Bruges i fællesskabet.'}
             </p>
           </div>
 

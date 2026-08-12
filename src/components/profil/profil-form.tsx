@@ -89,7 +89,7 @@ export function ProfilForm({ initialProfile }: Props) {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground self-center">
-                  Tryk Rediger for at skifte billede.
+                  Tryk Redigér for at skifte billede.
                 </p>
               )}
             </div>

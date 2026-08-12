@@ -42,7 +42,9 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
               {current.description}
             </p>
             <p className="text-[11px] text-muted-foreground mt-2">
-              {progress.totalBadges} optjent badge{progress.totalBadges === 1 ? '' : 's'}
+              {progress.totalBadges === 1
+                ? '1 optjent badge'
+                : `${progress.totalBadges} optjente badges`}
             </p>
           </div>
         </div>
@@ -50,7 +52,7 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
         {/* Progression-stige med rolle-ikoner i stedet for tal */}
         <div className="mt-5 pt-4 border-t border-border/60">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
-            Din udviklings-stige
+            Din udviklingsstige
           </p>
           <div className="flex items-center justify-between gap-2 overflow-x-auto -mx-1 px-1">
             {ROLE_ORDER.map((roleId, i) => {
@@ -98,24 +100,26 @@ export function GardenRoleCard({ progress }: { progress: RoleProgress }) {
               Næste rolle: <strong className="font-serif text-base">{next.label}</strong>
             </p>
             <p className="text-xs text-muted-foreground italic mt-0.5">{next.description}</p>
-            <p className="text-[11px] text-muted-foreground mt-2">
-              {missing.badgesNeeded > 0 && (
-                <>Mangler {missing.badgesNeeded} badge{missing.badgesNeeded === 1 ? '' : 's'} til</>
-              )}
-              {missing.badgesNeeded === 0 && <>Du har badges nok til</>}
-              {Object.keys(missing.categoryMissing).length > 0 && (
-                <>
-                  {missing.badgesNeeded > 0 ? ' samt ' : ' '}
-                  {Object.entries(missing.categoryMissing).map(([cat, n], i, arr) => (
-                    <span key={cat}>
-                      {n} fra <em>{BADGE_CATEGORY_LABELS[cat as keyof typeof BADGE_CATEGORY_LABELS]}</em>
-                      {i < arr.length - 1 ? ', ' : ''}
-                    </span>
-                  ))}
-                </>
-              )}
-              .
-            </p>
+            {/* Hele sætninger pr. tilstand — aldrig fragment-sammensætning
+                (Anna NAV-0334). Alt opfyldt → ingen "mangler"-tekst. */}
+            {(() => {
+              const katListe = Object.entries(missing.categoryMissing).map(
+                ([cat, n]) =>
+                  `${n} fra ${BADGE_CATEGORY_LABELS[cat as keyof typeof BADGE_CATEGORY_LABELS]}`,
+              )
+              const kat = katListe.join(', ')
+              const tekst =
+                missing.badgesNeeded > 0 && katListe.length > 0
+                  ? `Du mangler ${missing.badgesNeeded} ${missing.badgesNeeded === 1 ? 'badge' : 'badges'}, heraf ${kat}.`
+                  : missing.badgesNeeded > 0
+                    ? `Du mangler ${missing.badgesNeeded} ${missing.badgesNeeded === 1 ? 'badge' : 'badges'} for at nå næste rolle.`
+                    : katListe.length > 0
+                      ? `Du har badges nok. Du mangler ${kat}.`
+                      : null
+              return tekst ? (
+                <p className="text-[11px] text-muted-foreground mt-2">{tekst}</p>
+              ) : null
+            })()}
           </div>
         )}
 

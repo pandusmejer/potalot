@@ -123,7 +123,7 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
               <p className="text-xs font-semibold uppercase tracking-wider text-green-800">
                 Master-guides ({masters.length})
               </p>
-              <span className="text-[10px] text-muted-foreground italic">– kuraterede af PotAlot</span>
+              <span className="text-[10px] text-muted-foreground italic">– kuraterede af Potalot</span>
             </div>
             {renderCards(masters)}
           </section>

@@ -65,8 +65,8 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
       if ('error' in res) { setError(res.error); return }
       if (res.forslag.length === 0) {
         setError(notePrimary
-          ? 'Jeg kunne ikke læse noget brugbart — prøv et skarpere foto, eller skriv et par ord ved siden af.'
-          : 'Jeg fandt ingen planter eller frø i teksten. Prøv at nævne dem mere direkte.')
+          ? 'Potalot kunne ikke læse noget brugbart. Prøv et skarpere foto, eller skriv et par ord ved siden af.'
+          : 'Potalot fandt ingen planter eller frø i teksten. Prøv at nævne dem mere direkte.')
         return
       }
       setRader(res.forslag.map(f => {
@@ -136,7 +136,7 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
         </div>
         <div>
           <p className="text-base font-medium text-foreground">
-            {gemtAntal > 0 ? `${gemtAntal} tilføjet til din have` : 'Intet gemt'}
+            {gemtAntal > 0 ? `${gemtAntal} planter eller frø er føjet til din have` : 'Intet gemt'}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             {gemtAntal > 0
@@ -160,8 +160,8 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Jeg forstod dette. Ret, fjern eller vælg fra og tryk <span className="text-foreground font-medium">Gem</span>.
-            Forslag, du ikke gemmer, huskes ikke, hvis du forlader siden.
+            Potalot fandt dette. Ret eller fjern det, du vil, og tryk <span className="text-foreground font-medium">Gem</span>.
+            Forslag, du ikke gemmer, forsvinder, når du forlader siden.
           </p>
         </div>
 
@@ -197,7 +197,7 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
                         ? <><Sprout className="h-3 w-3" /> Plante</>
                         : <><Package className="h-3 w-3" /> Frø</>}
                     </button>
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">fortolket fra tekst</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Fra din tekst</span>
                     <UsikkerhedChip u={r.usikkerhed} />
                     {r.muligDublet && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">findes måske allerede</span>
@@ -283,7 +283,7 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
           onChange={e => setText(e.target.value)}
           rows={5}
           autoFocus
-          placeholder="Fx. 'Jeg har tre tomatplanter i drivhuset, en række gulerødder i højbed 2, og en pose spinatfrø jeg ikke har sået endnu.'"
+          placeholder="fx “Jeg har tre tomatplanter i drivhuset, en række gulerødder i højbed 2 og en pose spinatfrø, jeg ikke har sået endnu.”"
           className="mt-1.5"
         />
         <p className="text-[11px] text-muted-foreground mt-1.5">
@@ -318,7 +318,7 @@ export function HaveTekstFlow({ existingNames = [], onCommitted, onBack, demoFor
           </Button>
         )}
         <Button onClick={fortolk} disabled={pending || (text.trim().length < 3 && !notePrimary)} className="ml-auto">
-          {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Læser…</> : <><Sparkles className="h-4 w-4 mr-1" /> Fortolk</>}
+          {pending ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Læser…</> : <><Sparkles className="h-4 w-4 mr-1" /> Find planter og frø</>}
         </Button>
       </div>
     </div>

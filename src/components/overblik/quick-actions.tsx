@@ -29,7 +29,7 @@ export function QuickActions() {
       <Button asChild variant="outline" className="h-auto py-3 flex-col gap-1">
         <Link href="/kalender">
           <CalendarDays className="h-5 w-5" />
-          <span className="text-xs">Se to-do</span>
+          <span className="text-xs">Se opgaver</span>
         </Link>
       </Button>
     </div>

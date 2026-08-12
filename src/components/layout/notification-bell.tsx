@@ -154,7 +154,7 @@ export function NotificationBell({ initialUnreadCount, fetchCountOnMount = false
                 onClick={handleMarkAllRead} disabled={pending}
               >
                 {pending ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCheck className="h-3 w-3" />}
-                Markér alle læst
+                Markér alle som læst
               </Button>
             )}
           </div>

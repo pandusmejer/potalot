@@ -68,7 +68,7 @@ export const USER_MODES: Record<UserMode, { label: string; tagline: string; desc
   maalrettet: {
     label: 'Målrettet',
     tagline: 'For den ambitiøse dyrker',
-    description: 'Flere påmindelser, flere forslag, alt info synligt. Du vil gerne have optimeret hvert bed og hver plante.',
+    description: 'Flere påmindelser, flere forslag og alle detaljer fremme. Du vil gerne nørde hvert bed og hver plante.',
   },
   afslappet: {
     label: 'Afslappet',
@@ -78,7 +78,7 @@ export const USER_MODES: Record<UserMode, { label: string; tagline: string; desc
   minimal: {
     label: 'Minimal',
     tagline: 'Uden notifikationer',
-    description: 'Ingen påmindelser. Ingen forslag. Du åbner appen når du vil vide noget, ikke når den vil have din opmærksomhed.',
+    description: 'Ingen påmindelser. Ingen forslag. Du åbner appen, når du vil vide noget — ikke omvendt.',
   },
 }
 

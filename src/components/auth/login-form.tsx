@@ -1,5 +1,6 @@
 'use client'
 
+import { authFejlBesked } from '@/lib/auth-fejl'
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -31,10 +32,7 @@ export function LoginForm() {
         password,
       })
       if (err) {
-        const msg = /Invalid login credentials/i.test(err.message)
-          ? 'Forkert mail eller kodeord. Brug "Glemt kodeord" hvis du ikke har sat et endnu.'
-          : err.message
-        setError(msg)
+        setError(authFejlBesked(err, 'Kunne ikke logge ind. Prøv igen.'))
         return
       }
       router.push('/')

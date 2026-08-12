@@ -62,12 +62,12 @@ const libreBaskerville = Libre_Baskerville({
 })
 
 export const metadata: Metadata = {
-  title: 'PotAlot',
+  title: 'Potalot',
   description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'PotAlot',
+    title: 'Potalot',
   },
 }
 

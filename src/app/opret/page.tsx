@@ -11,7 +11,7 @@ export default function SignupPage() {
           <div className="flex justify-center">
             <Sprout className="h-10 w-10 text-primary" />
           </div>
-          <h1 className="text-3xl font-serif text-foreground">PotAlot</h1>
+          <h1 className="text-3xl font-serif text-foreground">Potalot</h1>
           <p className="text-sm text-muted-foreground">
             Dit digitale haveredskab
           </p>

@@ -59,9 +59,9 @@ export function InviteDialog({ groupId, groupName }: Props) {
     })
   }
 
-  const subject = encodeURIComponent(`Invitation til ${groupName} på PotAlot`)
-  const bodyText = encodeURIComponent(`Hej!\n\nJeg vil gerne invitere dig til min gruppe "${groupName}" på PotAlot. Klik linket for at anmode om adgang:\n\n${link}\n`)
-  const smsBody = encodeURIComponent(`Tjek min gruppe "${groupName}" på PotAlot: ${link}`)
+  const subject = encodeURIComponent(`Invitation til ${groupName} på Potalot`)
+  const bodyText = encodeURIComponent(`Hej!\n\nJeg vil gerne invitere dig til min gruppe "${groupName}" på Potalot. Klik linket for at anmode om adgang:\n\n${link}\n`)
+  const smsBody = encodeURIComponent(`Tjek min gruppe "${groupName}" på Potalot: ${link}`)
 
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setError(null) }}>

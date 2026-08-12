@@ -42,7 +42,7 @@ export default async function HavelandskabPage() {
         tone="fresh"
         kicker="Fællesskab"
         title="Havelandskab"
-        subtitle="Sæsonens fælles rytme. Alle PotAlot-brugere kan deltage."
+        subtitle="Sæsonens fælles rytme. Alle Potalot-brugere kan deltage."
       />
 
       {/* Hero-card der forklarer hvad dette er */}

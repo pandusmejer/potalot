@@ -1,5 +1,6 @@
 'use client'
 
+import { authFejlBesked } from '@/lib/auth-fejl'
 import { useState, useTransition } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -31,7 +32,7 @@ export function ChangePasswordForm() {
       const supabase = createClient()
       const { error: err } = await supabase.auth.updateUser({ password })
       if (err) {
-        setError(err.message)
+        setError(authFejlBesked(err, 'Kunne ikke skifte kodeordet. Prøv igen.'))
         return
       }
       setPassword('')

@@ -1,5 +1,6 @@
 'use client'
 
+import { authFejlBesked } from '@/lib/auth-fejl'
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
@@ -38,7 +39,7 @@ export function SignupForm() {
         options: { emailRedirectTo: redirectTo },
       })
       if (err) {
-        setError(err.message)
+        setError(authFejlBesked(err, 'Kunne ikke oprette kontoen. Prøv igen.'))
         return
       }
       setSent(true)
@@ -55,7 +56,7 @@ export function SignupForm() {
           <p className="font-serif text-lg text-foreground">Tjek din mail</p>
           <p className="text-sm text-muted-foreground">
             Vi har sendt en bekræftelse til <strong>{email}</strong>.
-            Klik på linket i mailen for at aktivere kontoen, og log derefter ind.
+            Åbn linket i mailen for at aktivere kontoen, og log derefter ind.
           </p>
           <Button asChild variant="ghost" size="sm">
             <Link href="/login">Tilbage til login</Link>

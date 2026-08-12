@@ -94,3 +94,25 @@ som blind masse-erstatning.
    src/lib/inspiration.ts behandles som redaktionelt datasæt (fagligt
    systemtjek udestår), ikke som fri UI-copy.
 8. **Legacy slettes, ikke smukkeseres.**
+
+## Navigation & profil-reglerne (Anna 12/8)
+
+1. **Auth:** Brugeren må aldrig se en rå fejl fra Supabase/Postgres/HTTP
+   — kendte fejl mappes til dansk (src/lib/auth-fejl.ts), resten får
+   kontekstuel dansk fallback + log.
+2. **Privatliv-undtagelsen:** "AI" er tilladt og NØDVENDIG, når Potalot
+   forklarer teknologi og databehandling. "Ingen AI-brand" gælder
+   produktoplevelsen, ikke juridisk gennemsigtighed.
+3. **Indstillinger:** Ingen roadmap eller status på endnu-ikke-byggede
+   features mellem reelle indstillinger.
+4. **Onboarding:** Potalot er afsender — aldrig systemets "jeg".
+5. **Notifikationer:** Tidspunkt uden moralsk gæld — "Planlagt til i
+   går", ikke "Skulle være gjort".
+6. **Tekniske processer:** Beskriv hvad brugeren FÅR ("Find planter og
+   frø"), ikke hvad parseren hedder ("Fortolk").
+7. **Brand:** Potalot konsekvent i al displaytekst og metadata; interne
+   slugs/tekniske identifiers røres kun, hvis det er sikkert og
+   nødvendigt.
+8. **Humor bevares**, når den bærer Potalots stemme ("Vi interesserer os
+   mere for dine tomater end dine persondata", "Haven er glæde, ikke et
+   KPI-projekt").
