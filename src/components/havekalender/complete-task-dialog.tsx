@@ -61,10 +61,10 @@ export function CompleteTaskDialog({ open, onClose, taskId, plantId, taskTitle, 
       <DialogContent>
         <DialogTitle className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          Føj til dyrkningslog?
+          Føj til log?
         </DialogTitle>
         <DialogDescription>
-          Du kan gemme &quot;{taskTitle}&quot; som en log-entry på planten — så kan du senere se hvornår du gjorde det.
+          Du kan føje &quot;{taskTitle}&quot; til loggen, så du senere kan se det i Plantens historie.
         </DialogDescription>
 
         <div className="space-y-3">

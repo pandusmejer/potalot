@@ -29,7 +29,7 @@ interface Props {
  * Ekspanderbar visning af et generelt gøremål.
  *
  * Klik på header → folder ud med beskrivelse, tip, risiko.
- * Knapper: 'Tilføj til Mine opgaver' (eller status hvis allerede tilføjet)
+ * Knapper: 'Tilføj til mine opgaver' (eller status hvis allerede tilføjet)
  * + 'Ikke relevant for min have' (skjul-funktion).
  */
 export function GeneralTaskCard({ task, alreadyAdded, year, soft = false }: Props) {
@@ -144,7 +144,7 @@ export function GeneralTaskCard({ task, alreadyAdded, year, soft = false }: Prop
             {alreadyAdded ? (
               <Button type="button" size="sm" variant="outline" disabled className="text-xs">
                 <Check className="h-3.5 w-3.5" />
-                Tilføjet til Mine opgaver
+                Tilføjet til mine opgaver
               </Button>
             ) : (
               <Button
@@ -155,7 +155,7 @@ export function GeneralTaskCard({ task, alreadyAdded, year, soft = false }: Prop
                 className="text-xs"
               >
                 {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
-                Tilføj til Mine opgaver
+                Tilføj til mine opgaver
               </Button>
             )}
             <Button

@@ -296,7 +296,7 @@ function lag3Verifikation(p: Plant, dato: string): FokusHandling | null {
     indeIVinduet ? `Tjek spiringen på ${navn}` : `Tjek ${navn} i såbakken`,
     indeIVinduet
       ? 'De første spirer bør titte frem nu — et hurtigt kig fortæller, om såningen lykkedes.'
-      : 'Spiretiden er passeret — kommer der intet op, er der stadig tid til at så om.',
+      : 'Spiretiden er passeret. Tjek fugt og temperatur, før du vurderer, om du vil så igen.',
     dato, href,
   )
 }
@@ -318,17 +318,17 @@ function lag4FroebankVindue(
   if (item.sowingMonths?.includes(month)) {
     const forspir = item.preCultivation === true
     return mkFroebank(item, forspir ? 'forspir' : 'saa',
-      `${forspir ? 'Forspir' : 'Så'} ${navn}`,
+      `${forspir ? 'Forkultivér' : 'Så'} ${navn}`,
       forspir
-        ? `Du har ${navn} i frøbanken, og ${maaned} er forspiringsvinduet — forkultivér nu, så planterne når at blive klar.`
-        : `Du har ${navn} i frøbanken, og ${maaned} er såvinduet — sår du nu, når den at give i år.`,
+        ? `Du har ${navn} i Frøbanken, og forkultiveringsvinduet er åbent i ${maaned}.`
+        : `Du har ${navn} i Frøbanken, og såvinduet er åbent i ${maaned}.`,
       dato, href,
       { deadlineMaaned: vinduesLukning(item.sowingMonths), guidePrioritet: rulePrioritet(guide, ['sowing', 'pre_sow']) })
   }
   if (item.plantingOutMonths?.includes(month)) {
     return mkFroebank(item, 'plant-ud',
       `Plant ${navn} ud`,
-      `Du har ${navn} i frøbanken, og udplantningsvinduet er åbent i ${maaned} — jo før ud, jo længere vækstsæson.`,
+      `Du har ${navn} i Frøbanken, og udplantningsvinduet er åbent i ${maaned}.`,
       dato, href,
       { deadlineMaaned: vinduesLukning(item.plantingOutMonths), guidePrioritet: rulePrioritet(guide, ['plant_out']) })
   }
@@ -424,7 +424,7 @@ function lag5Vedligehold(p: Plant, guide: Guide | null, month: number, dato: str
     if (!r.recommendedMonths?.includes(month)) continue
     ud.push(mkPlante(
       p, 5, r.taskType as FokusTaskType, r.title,
-      `Plejen, der holder ${navn} sund og produktiv i ${maaned}.`, dato, `/mine-planter/${p.id}`,
+      `Fra guiden om ${navn} — anbefalet i ${maaned}.`, dato, `/mine-planter/${p.id}`,
       { deadlineMaaned: vinduesLukning(r.recommendedMonths), guidePrioritet: PRIORITET_RANG[r.priority] ?? 0 },
     ))
   }

@@ -60,7 +60,7 @@ export default function CalendarInspirationPreviewPage() {
         </header>
 
         <div style={{ display: 'grid', gap: 26 }}>
-          <InspirationFolder />
+          <InspirationFolder month={6} monthName="Juni" />
           <NextMonthTeaser />
         </div>
       </div>

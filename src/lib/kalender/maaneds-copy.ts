@@ -57,7 +57,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       {
         title: 'Gennemgå dine frø',
         description:
-          'Kig frøposerne igennem, fjern gamle sorter, og noter hvad du mangler til den nye sæson.',
+          'Se frøposerne igennem, og notér, hvad du allerede har, hvad du vil bruge først, og hvad du mangler.',
         category: 'planlaegning',
       },
       {
@@ -86,7 +86,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
     shortText:
       'Februar begynder at røre på sig. Lyset vender tilbage, og de første frø, knolde og beskæringer kan finde vej ind i årets plan.',
     longText:
-      'I februar mærker både havefolk og planter, at sæsonen nærmer sig. Dagslyset tager til, men kulden holder stadig haven tilbage. Nu handler det om at starte forsigtigt: nogle frø kan forspires, frugttræer kan beskæres på milde dage, og du kan gøre klar til den travle del af foråret. Når du holder igen med det meste og starter det rigtige, får planterne en roligere begyndelse.',
+      'I februar mærker både havefolk og planter, at sæsonen nærmer sig. Dagslyset tager til, men kulden holder stadig haven tilbage. Nu handler det om at starte forsigtigt: nogle frø kan forkultiveres, æble- og pæretræer kan beskæres på milde, frostfrie dage, og du kan gøre klar til den travle del af foråret. Når du holder igen med det meste og starter det rigtige, får planterne en roligere begyndelse.',
     tasks: [
       {
         title: 'Start de langsomme frø',
@@ -184,7 +184,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
     shortText:
       'Maj er udplantning, tempo og tålmodighed på samme tid. Planterne vil frem, men kolde nætter kan stadig sætte dem tilbage.',
     longText:
-      'I maj går haven fra forberedelse til alvor. Mange planter kan komme ud, men de skal hærdes og plantes på det rigtige tidspunkt. Nu skal du holde øje med nætterne, vande nyplantede planter og give støtte til det, der hurtigt vokser sig højt. Maj lokker havefolk til at gøre alt på én gang, hvilket selvfølgelig er effektivt, hvis målet er at blive træt og bagefter gøre halvdelen om.',
+      'I maj går haven fra forberedelse til alvor. Mange forspirede planter kan snart komme ud, men de skal vænne sig gradvist til forholdene udenfor. Nu skal du holde øje med nætterne, vande nyplantede planter og give støtte til det, der hurtigt vokser sig højt. Maj lokker havefolk til at gøre alt på én gang, hvilket selvfølgelig er effektivt, hvis målet er at blive træt og bagefter gøre halvdelen om.',
     tasks: [
       {
         title: 'Hærd planter af',
@@ -195,7 +195,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       {
         title: 'Plant ud efter vejret',
         description:
-          'Plant tomater, chili, blomster og andre sarte planter ud, når nætterne er milde nok.',
+          'Plant tomater, chili og frostfølsomme sommerblomster ud, når nætterne er milde nok.',
         category: 'saaning',
       },
       {
@@ -220,9 +220,9 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       'I juni bruger planterne vand, næring og plads i et tempo, der næsten virker fornærmende over for kalenderen. Nu hjælper du haven bedst ved at holde rytmen: vand før tørken bider, bind høje planter op, og høst lidt ad gangen, så planterne bliver ved. Juni belønner små gentagne indsatser mere end store heroiske redningsaktioner.',
     tasks: [
       {
-        title: 'Vand, gød og bind planter op',
+        title: 'Tjek vand, næring og støtte',
         description:
-          'Juni er vækstmåned, og mange planter har brug for både vand, næring og støtte.',
+          'Juni er vækstmåned. Se især til tørstige planter, planter i krukker og dem, der vokser højt eller bærer tungt.',
         category: 'pleje',
       },
       {
@@ -233,7 +233,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       {
         title: 'Høst lidt ad gangen',
         description:
-          'Pluk salat, krydderurter og de første grøntsager løbende, så planterne bliver ved.',
+          'Pluk salat, krydderurter og de første grøntsager, når de er høstklare.',
         category: 'hoest',
       },
       {
@@ -254,11 +254,11 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       {
         title: 'Høst ofte',
         description:
-          'Pluk grøntsager, bær og krydderurter løbende, så planterne ikke går i stå eller bliver grove.',
+          'Høst løbende det, der er klar, så du får råvarerne, mens kvaliteten er bedst.',
         category: 'hoest',
       },
       {
-        title: 'Vand dybt',
+        title: 'Vand grundigt ved behov',
         description: 'Giv færre, grundige vandinger frem for små sjatter på overfladen.',
         category: 'pleje',
       },
@@ -377,7 +377,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
       'I november går haven ind i den våde, mørke del af året. Det meste vokser langsomt eller slet ikke, men jorden lever stadig. Beskyt krukker, tøm slanger, saml løse ting og giv bede et lag blade eller kompost. Ryd op med måde, for visne stængler og blade giver ly, næring og struktur. Perfekt orden er sjældent havens bedste ven, hvilket åbenbart stadig overrasker folk.',
     tasks: [
       {
-        title: 'Frostsikr krukker og vand',
+        title: 'Frostsikr krukker og beholdere',
         description: 'Tøm slanger, vandkander og beholdere, og flyt frostsarte krukker i læ.',
         category: 'beskyttelse',
       },
@@ -423,7 +423,7 @@ export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {
         category: 'planlaegning',
       },
       {
-        title: 'Bestil eller ønsk frø',
+        title: 'Bestil frø eller gem dem på ønskelisten',
         description: 'Lav en rolig liste over sorter, du mangler, før forårets frøpanik begynder.',
         category: 'planlaegning',
       },

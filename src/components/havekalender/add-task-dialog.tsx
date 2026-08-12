@@ -127,7 +127,7 @@ export function AddTaskDialog({ children, defaultPlantId, plants = [], task }: P
             <Input
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="Fx. Køb planteskilte"
+              placeholder="fx Køb planteskilte"
               required
               className="mt-1.5"
             />

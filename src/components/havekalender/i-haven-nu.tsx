@@ -185,7 +185,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
     const routine = rytmeKeys.has(h.taskKey)
     const checkbar = h.plantId !== null
     const kind: 'plant' | 'seed' | 'routine' = routine ? 'routine' : h.plantId !== null ? 'plant' : 'seed'
-    const meta = routine ? 'Vedligehold' : h.plantId !== null ? 'Fra dine planter' : 'Fra frøbank'
+    const meta = routine ? 'Vedligehold' : h.plantId !== null ? 'Fra dine planter' : 'Fra Frøbanken'
     // Farvet papir-label i bunden efter kilde — afdæmpet, ikke hård farveblok.
     const band = {
       plant:   { bg: 'rgba(105,132,112,0.80)', text: '#FFF8EA' }, // eucalyptus/sage
@@ -380,7 +380,7 @@ export function IHavenNu({ tasks, dagensFokus, canPersist, aktivePlanter, plantI
             </TabsList>
 
             <TabsContent value="idag">
-              {renderHorizon(derivedIDag, userIDag, { showOverdue: true, emptyTitle: 'Roligt i haven i dag', emptyDescription: 'Fokus-kortet ovenfor har dig dækket — ellers: nyd kaffen.' })}
+              {renderHorizon(derivedIDag, userIDag, { showOverdue: true, emptyTitle: 'Roligt i haven i dag', emptyDescription: 'Dagens fokus ovenfor har styr på det — ellers: nyd kaffen.' })}
             </TabsContent>
             <TabsContent value="uge">
               {renderHorizon(derivedUge, userUge, { emptyTitle: 'Roligt program i denne uge', emptyDescription: 'Intet på listen — pust ud.' })}

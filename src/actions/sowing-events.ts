@@ -79,7 +79,10 @@ export async function updateSowingEvent(
     .select('plant_id, inventory_item_id')
     .single()
 
-  if (error || !row) return { error: error?.message ?? 'Kunne ikke opdatere' }
+  if (error || !row) {
+    console.error('updateSowingEvent fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   if (row.inventory_item_id) revalidatePath(`/froebank/${row.inventory_item_id}`)
@@ -104,7 +107,10 @@ export async function deleteSowingEvent(id: string): Promise<{ ok: true } | { er
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deleteSowingEvent fejlede:', error)
+    return { error: 'Kunne ikke slette hændelsen. Prøv igen.' }
+  }
 
   revalidatePath('/froebank')
   if (row?.inventory_item_id) revalidatePath(`/froebank/${row.inventory_item_id}`)

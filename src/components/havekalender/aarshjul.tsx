@@ -147,7 +147,7 @@ export function Aarshjul({ active, onChange, tasks, generelle, renderActive }: P
                           </span>
                         )}
                         <p className="text-xs font-medium opacity-60">
-                          {antal} ting du kan gøre i
+                          {antal} ting, du kan gøre i
                         </p>
                         <span className="block font-sans text-2xl font-bold leading-tight tracking-tight">
                           {navn}

@@ -9,10 +9,9 @@ import { InspirationFolder } from '@/components/havekalender/inspiration-folder'
 import { MaanedsHero } from '@/components/havekalender/maaneds-hero'
 import { UserTaskDialog } from '@/components/havekalender/user-task-dialog'
 import { GeneralTaskCard } from '@/components/havekalender/general-task-card'
-import { DenneUge } from '@/components/havekalender/denne-uge'
 import { GardenAlerts } from '@/components/havekalender/garden-alerts'
 import { DinDyrkning } from '@/components/havekalender/din-dyrkning'
-import { WeatherPoolsImage, type WeatherPoolsData } from '@/components/havekalender/weather-pools-image'
+import { WeatherPoolsImage } from '@/components/havekalender/weather-pools-image'
 import { TimingHorisont } from '@/components/havekalender/timing-horisont'
 import {
   DetKanDuGoereEditorialPlanner,
@@ -114,30 +113,17 @@ function IconKop({ className }: { className?: string }) {
  *  genaktivere (eller fjern flag + komponent helt efter vurdering). */
 const VIS_DIN_DYRKNING = false
 
-/** Demo-værdier til vejr-pools. Faste 4 slots (regn/jord/temp/sol) matcher
- *  billed-assetets 2x2-layout. Erstattes af vejr-API senere. */
-const VEJR_POOLS_DEMO: WeatherPoolsData = {
-  rain: { value: '8 mm', label: 'i nat' },
-  soil: { value: 'Jord', label: '12°' },
-  temperature: { value: '14°' },
-  sun: { value: 'Sol', label: '05.15' },
-}
-
-/** Lille vejr-note under pytterne: kort status + kort have-råd (vejrets lille
- *  have-råd, ikke en billedtekst). Drives af rigtige GardenAlerts
- *  (frost > storm > skybrud > tørke); rolig sæson-default uden påstand om
- *  specifikke forhold når intet varsel er aktivt. Pytterne (målingerne) er
- *  urørte — dette er kun en supplerende note. */
-function vejrNote(alerts: GardenAlert[], month: number): { headline: string; subline: string } {
+/** Lille vejr-note under pytterne. LÅST REGEL (Anna KAL-0140/0142): vejrtekst
+ *  kræver et FAKTISK vejrsignal (GardenAlerts: frost > storm > skybrud >
+ *  tørke). Intet varsel → ingen note — sæsonprosa må aldrig forklæde sig som
+ *  aktuel vejrvurdering. */
+function vejrNote(alerts: GardenAlert[]): { headline: string; subline: string } | null {
   const kinds = new Set(alerts.map(a => a.kind))
   if (kinds.has('frost')) return { headline: 'Dæk de sarte i aften.', subline: 'Frost på vej — tomater, georginer og squash er udsatte.' }
   if (kinds.has('storm')) return { headline: 'Bind op og sikr krukker.', subline: 'Hård vind på vej — giv stauder og høje planter støtte.' }
-  if (kinds.has('skybrud')) return { headline: 'Lad regnen vande.', subline: 'Skybrud på vej — vent med kandevanding.' }
+  if (kinds.has('skybrud')) return { headline: 'Vent med at vande.', subline: 'Kraftig regn er på vej.' }
   if (kinds.has('toerke')) return { headline: 'Vand før solen får fat.', subline: 'Lunt og tørt — krukker og drivhus tørrer hurtigt ud.' }
-  if (month >= 3 && month <= 5) return { headline: 'Få de sidste ting i jorden.', subline: 'Mildt forårsvejr — godt at så og plante ud.' }
-  if (month >= 6 && month <= 8) return { headline: 'Vand tidligt eller sent.', subline: 'Så får planterne mere ud af varmen.' }
-  if (month >= 9 && month <= 11) return { headline: 'Høst og sæt løg.', subline: 'Roligt efterårsvejr — tid til at rydde op.' }
-  return { headline: 'Lad haven hvile.', subline: 'Vinterro — planlæg næste sæson.' }
+  return null
 }
 
 export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, isLoggedIn, dagensFokus, plantImages }: Props) {
@@ -229,8 +215,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           aktuelle måned, falder noten tilbage til sæson-generisk tekst. */}
       <WeatherPoolsImage
         month={valgtMaaned}
-        data={VEJR_POOLS_DEMO}
-        note={vejrNote(valgtMaaned === nuMaaned ? alerts : [], valgtMaaned)}
+        note={vejrNote(valgtMaaned === nuMaaned ? alerts : []) ?? undefined}
       />
 
       {/* 3 · I HAVEN NU — Kalenderens samlede handlingscenter (Anna 30/6,
@@ -349,7 +334,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           samlet i én editorial mappe med tre faner (Frøbank / Juni-greb
           / Guides). Erstatter de tidligere løse inspirationslag. Ingen
           opgavestatus, ingen persistens — ren "dyk ned hvis du har lyst". */}
-      <InspirationFolder monthName={valgtMaanedNavn} />
+      <InspirationFolder month={valgtMaaned} monthName={valgtMaanedNavn} />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
           SKJULT INDTIL VIDERE: communities + challenges-funktioner
@@ -368,10 +353,10 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
               <p className="text-sm font-bold">
                 {challengesForMonth(valgtMaaned).length === 1
                   ? challengesForMonth(valgtMaaned)[0].title
-                  : `${challengesForMonth(valgtMaaned).length} sæson-challenges denne måned`}
+                  : `${challengesForMonth(valgtMaaned).length} sæsonudfordringer denne måned`}
               </p>
               <p className="text-xs opacity-70 mt-0.5">
-                Deltag i den fælles rytme — alle PotAlot-brugere er med.
+                Deltag i den fælles rytme — alle Potalot-brugere er med.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 opacity-60 group-hover:translate-x-0.5 transition-transform" />
@@ -392,72 +377,6 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   )
 }
 
-/**
- * 4 · Dine planter i fokus — personlig sektion. Dine aktive
- * planter + deres nærmeste åbne opgave (ægte data, ingen fyld).
- */
-function DinePlanterIFokus({ plants, tasks }: { plants: Plant[]; tasks: CalendarTask[] }) {
-  const aktive = plants.filter(p => !p.isArchived)
-
-  if (aktive.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Du har ingen aktive planter endnu.{' '}
-        <Link href="/froebank" className="font-semibold text-primary underline-offset-2 hover:underline">
-          Aktivér en sort fra frøbanken
-        </Link>{' '}
-        — så følger dine egne planter dig her.
-      </p>
-    )
-  }
-
-  function nextTaskFor(plantId: string): CalendarTask | null {
-    return tasks
-      .filter(t => t.linkedPlantId === plantId && t.status === 'open')
-      .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null
-  }
-
-  const vist = aktive.slice(0, 6)
-
-  return (
-    <div className="space-y-1.5">
-      {vist.map((p, i) => {
-        const nt = nextTaskFor(p.id)
-        const status = PLANT_STATUS_META[p.status]?.label ?? ''
-        const radius = i % 2 === 0
-          ? 'rounded-tl-[1.25rem] rounded-br-[1.25rem] rounded-tr-md rounded-bl-md'
-          : 'rounded-tr-[1.25rem] rounded-bl-[1.25rem] rounded-tl-md rounded-br-md'
-        return (
-          <Link
-            key={p.id}
-            href={`/mine-planter/${p.id}`}
-            className={cn(
-              'group flex items-center gap-3 border-l-[3px] border-primary/40 bg-secondary px-4 py-3 transition-transform hover:-translate-y-0.5',
-              radius
-            )}
-          >
-            <Sprout className="h-4 w-4 shrink-0 text-primary" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-foreground">
-                {p.name}
-                {p.variety && <span className="ml-1.5 font-normal text-muted-foreground">{p.variety}</span>}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {nt ? `Næste: ${nt.title}` : status}
-              </p>
-            </div>
-            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        )
-      })}
-      {aktive.length > vist.length && (
-        <Link href="/mine-planter" className="inline-block pt-1 text-xs font-semibold text-primary">
-          Se alle {aktive.length} planter →
-        </Link>
-      )}
-    </div>
-  )
-}
 
 /**
  * 8 · Hent inspiration — eksplorativt, ikke akut. Varierede

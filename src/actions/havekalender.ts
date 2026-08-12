@@ -196,7 +196,10 @@ export async function createTask(input: CreateTaskInput): Promise<{ id: string }
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+  if (error || !data) {
+    console.error('createTask fejlede:', error)
+    return { error: 'Kunne ikke oprette opgaven. Prøv igen.' }
+  }
 
   revalidatePath('/kalender')
   revalidatePath('/')
@@ -233,7 +236,10 @@ export async function updateTask(input: UpdateTaskInput): Promise<{ ok: true } |
     .select('linked_plant_id')
     .maybeSingle()
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updateTask fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
   if (!data) return { error: 'Opgave ikke fundet' }
 
   revalidatePath('/kalender')
@@ -324,7 +330,10 @@ export async function completeTaskWithLog(input: {
       linked_task_id: input.taskId,
     })
 
-  if (logErr) return { error: `Opgave markeret udført, men log-entry fejlede: ${logErr.message}` }
+  if (logErr) {
+    console.error('completeTaskWithLog: log-skrivning fejlede:', logErr)
+    return { error: 'Opgaven blev markeret som udført, men kunne ikke føjes til Plantens historie. Prøv igen.' }
+  }
 
   revalidatePath('/kalender')
   revalidatePath('/')
@@ -344,7 +353,10 @@ export async function uncompleteTask(id: string): Promise<{ ok: true } | { error
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('uncompleteTask fejlede:', error)
+    return { error: 'Kunne ikke fortryde markeringen. Prøv igen.' }
+  }
 
   revalidatePath('/kalender')
   revalidatePath('/')
@@ -359,7 +371,10 @@ export async function deleteTask(id: string): Promise<{ ok: true } | { error: st
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deleteTask fejlede:', error)
+    return { error: 'Kunne ikke slette opgaven. Prøv igen.' }
+  }
 
   revalidatePath('/kalender')
   return { ok: true }

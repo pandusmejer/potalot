@@ -18,6 +18,7 @@
 
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
+import { CURATED_INSPIRATION } from '@/components/havekalender/inspiration'
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -46,6 +47,8 @@ interface FolderItem {
 }
 
 interface InspirationFolderProps {
+  /** 1-12 — styrer det kuraterede sæsonråd (aldrig juni-fallback året rundt). */
+  month: number
   monthName?: string
   seedItems?: FolderItem[]
   juneItems?: FolderItem[]
@@ -71,27 +74,6 @@ const DEFAULT_SEED_ITEMS: FolderItem[] = [
     text: 'Spirer hurtigt i lun jord — hader kulde.',
     image: '/images/frokort/stangboenne-cobra.png',
     imageAlt: 'Stangbønne',
-  },
-]
-
-const DEFAULT_JUNE_ITEMS: FolderItem[] = [
-  {
-    title: 'Vand dybt og roligt',
-    text: 'Planter får mere ud af én grundig vanding end mange hurtige sjatter.',
-    image: '/images/kalender/saeson/vand.jpg',
-    imageAlt: '',
-  },
-  {
-    title: 'Tyv tomaterne',
-    text: 'Brug få minutter hver anden dag, så planterne ikke bliver et grønt trafikuheld i juli.',
-    image: '/images/kalender/saeson/sol.jpg',
-    imageAlt: '',
-  },
-  {
-    title: 'Så til sensommeren',
-    text: 'Grønkål, salat og kålroer kan nå at give en ny runde senere.',
-    image: '/images/kalender/saeson/vaekst.jpg',
-    imageAlt: '',
   },
 ]
 
@@ -204,8 +186,11 @@ function folderLayer(xL: number, isActive = false): string {
 
 export function InspirationFolder({
   monthName = 'juni',
+  month,
   seedItems = DEFAULT_SEED_ITEMS,
-  juneItems = DEFAULT_JUNE_ITEMS,
+  // KAL-0108 (Anna, SYSTEMFIX P1): sæsonråd kommer fra det kuraterede
+  // månedsindhold — hardcodet juni-indhold må ALDRIG være fallback året rundt.
+  juneItems = (CURATED_INSPIRATION[month] ?? []).map(k => ({ title: k.title, text: k.text })),
   guideItems = DEFAULT_GUIDE_ITEMS,
   hasSeedSuggestions = seedItems.length > 0,
 }: InspirationFolderProps) {
@@ -216,11 +201,11 @@ export function InspirationFolder({
   const activeContent = useMemo(() => {
     if (activeTab === 'seedbank') {
       return {
-        title: 'Fra din frøbank',
+        title: 'Fra din Frøbank',
         subtitle: hasSeedSuggestions
           ? 'Sorter, du stadig kan nå.'
-          : 'Din frøbank hviler lidt endnu.',
-        cta: hasSeedSuggestions ? 'Se frøbanken' : 'Tilføj frø',
+          : 'Din Frøbank hviler lidt endnu.',
+        cta: hasSeedSuggestions ? 'Se Frøbanken' : 'Tilføj frø',
         href: hasSeedSuggestions ? '/froebank' : '/froebank/tilfoej',
         items: seedItems,
       }
@@ -229,7 +214,7 @@ export function InspirationFolder({
     if (activeTab === 'june') {
       return {
         title: `Få mere ud af ${monthName}`,
-        subtitle: 'Råd til varme, vækst og høst.',
+        subtitle: `Sæsonråd til ${monthName.toLowerCase()}.`,
         cta: 'Se flere sæsonråd',
         href: '/kalender',
         items: juneItems,
@@ -241,8 +226,9 @@ export function InspirationFolder({
       subtitle: 'Guides til sæsonen lige nu.',
       cta: 'Åbn guides',
       href: '/guides',
-      // Indhold følger den aktuelle måned (ikke hardcodet juni).
-      items: guideItems.map(it => ({ ...it, title: it.title.replace('juni', monthName) })),
+      // KAL-0109: 'Tomater i juni' må ikke omdøbes mekanisk til andre måneder
+      // — den juni-specifikke guide vises KUN i juni.
+      items: guideItems.filter(it => month === 6 || !it.title.includes('juni')),
     }
   }, [activeTab, guideItems, hasSeedSuggestions, juneItems, monthName, seedItems])
 
@@ -277,7 +263,7 @@ export function InspirationFolder({
               maxWidth: 320,
             }}
           >
-            Når du vil mere<br />med {monthName}
+            Når du vil lidt mere<br />med haven i {monthName.toLowerCase()}
           </h2>
           {/* Bi-glyph som lille sommer-accent til højre for den hø-gule overskrift. */}
           <Image

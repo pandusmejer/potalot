@@ -157,7 +157,10 @@ export async function createUserGardenTask(input: CreateUserTaskInput): Promise<
     })
     .select('id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+  if (error || !data) {
+    console.error('createUserGardenTask fejlede:', error)
+    return { error: 'Kunne ikke oprette gøremålet. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   return { id: data.id as string }
 }
@@ -181,7 +184,10 @@ export async function updateUserGardenTask(
     .update(update)
     .eq('id', id)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('updateUserGardenTask fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   return { ok: true }
 }
@@ -194,7 +200,10 @@ export async function deleteUserGardenTask(id: string): Promise<{ ok: true } | {
     .delete()
     .eq('id', id)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('deleteUserGardenTask fejlede:', error)
+    return { error: 'Kunne ikke slette gøremålet. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   return { ok: true }
 }
@@ -207,7 +216,10 @@ export async function hideGeneralTask(generalTaskId: string): Promise<{ ok: true
     .from('user_hidden_general_tasks')
     .insert({ user_id: userId, general_task_id: generalTaskId })
   // Ignorér duplicate-fejl
-  if (error && !error.message.includes('duplicate')) return { error: error.message }
+  if (error && !error.message.includes('duplicate')) {
+    console.error('hideGeneralTask fejlede:', error)
+    return { error: 'Kunne ikke skjule gøremålet. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   return { ok: true }
 }
@@ -220,7 +232,10 @@ export async function unhideGeneralTask(generalTaskId: string): Promise<{ ok: tr
     .delete()
     .eq('user_id', userId)
     .eq('general_task_id', generalTaskId)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('unhideGeneralTask fejlede:', error)
+    return { error: 'Kunne ikke vise gøremålet igen. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   return { ok: true }
 }
@@ -264,7 +279,10 @@ export async function adminCreateGeneralTask(input: AdminGeneralTaskInput): Prom
     })
     .select('id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette' }
+  if (error || !data) {
+    console.error('adminCreateGeneralTask fejlede:', error)
+    return { error: 'Kunne ikke oprette gøremålet. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   revalidatePath('/admin')
   return { id: data.id as string }
@@ -292,7 +310,10 @@ export async function adminUpdateGeneralTask(
     .from('general_garden_tasks')
     .update(update)
     .eq('id', id)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('adminUpdateGeneralTask fejlede:', error)
+    return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   revalidatePath('/admin')
   return { ok: true }
@@ -305,7 +326,10 @@ export async function adminDeleteGeneralTask(id: string): Promise<{ ok: true } |
     .from('general_garden_tasks')
     .delete()
     .eq('id', id)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('adminDeleteGeneralTask fejlede:', error)
+    return { error: 'Kunne ikke slette gøremålet. Prøv igen.' }
+  }
   revalidatePath('/kalender')
   revalidatePath('/admin')
   return { ok: true }

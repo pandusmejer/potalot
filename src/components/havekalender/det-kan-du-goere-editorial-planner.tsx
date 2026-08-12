@@ -1118,7 +1118,7 @@ export const EDITORIAL_PLANNER_DEMO_ITEMS: EditorialPlannerItem[] = [
   {
     id: 'demo-bladlus',
     title: 'Bladlus på nye skud',
-    description: 'Tjek regelmæssigt - de spreder sig hurtigt.',
+    description: 'Tjek regelmæssigt — de spreder sig hurtigt.',
     month: 6,
     group: 'hold_oeje_med',
     category: 'Skadedyr',

@@ -70,7 +70,10 @@ export async function addGeneralTasksToCalendar(input: AddGeneralTasksInput): Pr
     .in('id', input.generalTaskIds)
     .eq('is_active', true)
 
-  if (templatesErr) return { error: templatesErr.message }
+  if (templatesErr) {
+    console.error('addGeneralTasksToCalendar opslag fejlede:', templatesErr)
+    return { error: 'Kunne ikke tilføje opgaverne. Prøv igen.' }
+  }
   if (!templates || templates.length === 0) return { added: 0, skipped: 0 }
 
   // Skip allerede tilføjede (samme template_id, samme år via source='general')
@@ -122,7 +125,10 @@ export async function addGeneralTasksToCalendar(input: AddGeneralTasksInput): Pr
   }
 
   const { error } = await supabase.from('calendar_tasks').insert(toInsert)
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('addGeneralTasksToCalendar fejlede:', error)
+    return { error: 'Kunne ikke tilføje opgaverne. Prøv igen.' }
+  }
 
   revalidatePath('/kalender')
   revalidatePath('/')

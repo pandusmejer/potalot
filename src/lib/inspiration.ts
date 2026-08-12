@@ -68,7 +68,7 @@ const KOMBINATIONER: Record<string, string> = {
   'habanero-orange':
     'Du dyrker Habanero. Den er blandt de sidste til at modne — giv den varme helt ind i september.',
   'jalapeno-groen':
-    'Du dyrker Jalapeño. Lader du den modne fra grøn til rød, bliver den sødere og mildere.',
+    'Du dyrker Jalapeño. Lader du frugterne modne fra grønne til røde, bliver smagen sødere og mere moden.',
   'lemon-drop':
     'Du dyrker Lemon Drop. Den citrusagtige chili tørrer fint — så har du varme hele vinteren.',
   'chili':
@@ -162,14 +162,14 @@ const ARTSTYPE: Record<string, 'rodfrugt' | 'krydderurt' | 'blomst' | 'spiseligt
  */
 function gapIndsigt(typer: Set<string>): string | null {
   if (!typer.has('rodfrugt')) {
-    return 'Du har endnu ingen rodfrugter. Gulerødder er blandt de letteste afgrøder at lykkes med.'
+    return 'Du har endnu ingen rodfrugter i dyrkning.'
   }
   if (!typer.has('krydderurt')) {
     return 'Du dyrker ingen krydderurter endnu. Basilikum og dild er svære at undvære, når køkkenet kalder.'
   }
   // Ren nytte-have uden en eneste blomst → bestøver-invitation
   if (!typer.has('blomst') && typer.has('spiseligt')) {
-    return 'Din have er ren nytte. Et bånd af tagetes mellem grøntsagerne glæder bierne — og holder skadedyr på afstand.'
+    return 'Din have er ren nytte. Et bånd af tagetes mellem grøntsagerne giver farve og blomster til bestøverne.'
   }
   return null
 }

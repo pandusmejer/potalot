@@ -557,8 +557,8 @@ function EmptyState() {
           marginTop: 6,
         }}
       >
-        Tilføj dine første frø eller planter — så viser kalenderen
-        hvad der kalder på opmærksomhed i din egen have.
+        Tilføj dine første frø eller planter — så viser kalenderen,
+        hvad der kalder på opmærksomhed i din have.
       </p>
       <div className="flex flex-wrap" style={{ gap: 8, marginTop: 14 }}>
         <Link
@@ -574,7 +574,7 @@ function EmptyState() {
             textDecoration: 'none',
           }}
         >
-          Til frøbanken
+          Til Frøbanken
         </Link>
         <Link
           href="/mine-planter"

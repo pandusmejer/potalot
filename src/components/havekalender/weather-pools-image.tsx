@@ -41,8 +41,8 @@ const SEASON_IMAGE: Record<Season, string> = {
   winter: '/images/weather-pools/weather-pools-winter.webp',
 }
 const SEASON_ALT: Record<Season, string> = {
-  spring: 'Forårets vejr-pools', summer: 'Sommerens vejr-pools',
-  autumn: 'Efterårets vejr-pools', winter: 'Vinterens vejr-pools',
+  spring: 'Forårets vejr i haven', summer: 'Sommerens vejr i haven',
+  autumn: 'Efterårets vejr i haven', winter: 'Vinterens vejr i haven',
 }
 
 /** Creme-flade pr. sæson — sampled fra hvert assets baggrundshjørne, så
@@ -136,7 +136,9 @@ export interface WeatherPoolsData {
 }
 
 interface Props {
-  data: WeatherPoolsData
+  /** Udelades → sæsonbilledet vises UDEN målings-overlays (Anna KAL-0137:
+   * hardcodede tal må aldrig ligne aktuelle målinger — live data eller intet). */
+  data?: WeatherPoolsData
   /** 1-12. Falder tilbage til date, derefter dags dato. */
   month?: number
   date?: Date
@@ -151,12 +153,14 @@ export function WeatherPoolsImage({ data, month, date, className, priority, note
   const season = monthToSeason(m)
   const creme = SEASON_CREME[season]
 
-  const slots: { slot: Slot; value: string; label?: string }[] = [
-    { slot: 'rain', value: data.rain.value, label: data.rain.label },
-    { slot: 'soil', value: data.soil.value, label: data.soil.label },
-    { slot: 'temperature', value: data.temperature.value, label: data.temperature.label },
-    { slot: 'sun', value: data.sun.value, label: data.sun.label },
-  ]
+  const slots: { slot: Slot; value: string; label?: string }[] = data
+    ? [
+        { slot: 'rain', value: data.rain.value, label: data.rain.label },
+        { slot: 'soil', value: data.soil.value, label: data.soil.label },
+        { slot: 'temperature', value: data.temperature.value, label: data.temperature.label },
+        { slot: 'sun', value: data.sun.value, label: data.sun.label },
+      ]
+    : []
 
   return (
     <>

@@ -72,3 +72,25 @@ som blind masse-erstatning.
   flaggede)** → Frøbank → Planter. Arbejdskopi med beslutningskolonner
   vedligeholdes af Anna; masterfilen `potalot-text-audit.csv` forbliver
   urørt census.
+
+## Kalenderens låste regler (Anna 11/8)
+
+1. **Vejrtekst kræver faktiske vejrdata.** Ingen hardcodede tal eller
+   vejrpåstande som fallback — varsler (GardenAlerts) er de eneste
+   gyldige signaler; intet varsel = ingen vejrnote, ingen målings-tal.
+2. **"Denne uge"/adaptive råd kræver et aktuelt signal** (brugerdata,
+   guidefakta, kalenderdata eller vejr). Sæsonprosa må aldrig forklædes
+   som ugentlig intelligens eller "aktuel vurdering".
+3. **Kalenderen må vise færre råd.** Ingen filler for at fylde et
+   bestemt antal cards/chips.
+4. **Dynamiske arts-/sortsnavne må aldrig lowercases mekanisk** — byg
+   sætninger, der ikke kræver det ("Så ${navn} nu", ikke "Tid til at så
+   ${navn.toLowerCase()}").
+5. **Frøbank-/guidefakta må udløse timing, ikke løfter.** "Såvinduet er
+   åbent" er data; "sår du nu, når den at give i år" er en slutning.
+6. **Kurateret månedscopy må være legende** — personlighed er ikke et
+   korrekturproblem.
+7. **Botaniske inspirationspåstande skal have en kilde** — hele
+   src/lib/inspiration.ts behandles som redaktionelt datasæt (fagligt
+   systemtjek udestår), ikke som fri UI-copy.
+8. **Legacy slettes, ikke smukkeseres.**

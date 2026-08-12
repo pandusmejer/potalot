@@ -67,7 +67,7 @@ export default async function AdminAarshjulPage() {
                     {m.full}
                     {isCurrent && (
                       <span className="ml-2 text-[10px] uppercase tracking-wider text-primary font-sans font-semibold">
-                        i dag
+                        Denne måned
                       </span>
                     )}
                   </p>

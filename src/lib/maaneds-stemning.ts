@@ -44,7 +44,7 @@ export const MAANEDS_STEMNING: Record<number, MaanedsStemning> = {
   },
   9: {
     tagline: 'Lun jord og tunge kurve',
-    description: 'September er æbler, dugvåde morgener og den perfekte plantetid. Haven giver stadig masser tilbage, men tempoet falder langsomt, mens efteråret begynder at snige sig ind mellem bedene.',
+    description: 'September er æbler, dugvåde morgener og en god plantetid for mange stauder, buske og træer. Haven giver stadig masser tilbage, men tempoet falder langsomt, mens efteråret begynder at snige sig ind mellem bedene.',
   },
   10: {
     tagline: 'Græskar, blade og sidste høst',

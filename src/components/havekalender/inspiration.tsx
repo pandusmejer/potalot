@@ -103,7 +103,7 @@ interface FraFroebankItem {
 function FraFroebank({ items, maaned }: { items: FraFroebankItem[]; maaned: string }) {
   return (
     <div>
-      <LayerEyebrow>Fra din frøbank</LayerEyebrow>
+      <LayerEyebrow>Fra din Frøbank</LayerEyebrow>
       <LayerTitle>Frøbanken foreslår</LayerTitle>
 
       {items.length > 0 ? (
@@ -191,14 +191,14 @@ function buildFraFroebank(
     )
     if (existingPlant && existingPlant.status === 'klar_til_udplantning'
         && item.plantingOutMonths.includes(month)) {
-      out.push({ text: `Dine ${item.name} skal hærdes af`, href: `/mine-planter/${existingPlant.id}` })
+      out.push({ text: `${item.name} skal hærdes af`, href: `/mine-planter/${existingPlant.id}` })
       continue
     }
 
     // 2. Hvis brugeren har eksisterende plante og pre-cultivation status er forspirring og udplantnings-måned matcher
     if (existingPlant && existingPlant.status === 'i_vaekst'
         && item.plantingOutMonths.includes(month)) {
-      out.push({ text: `${item.name} kan plantes ud snart`, href: `/mine-planter/${existingPlant.id}` })
+      out.push({ text: `${item.name} kan plantes ud denne måned`, href: `/mine-planter/${existingPlant.id}` })
       continue
     }
 
@@ -206,7 +206,7 @@ function buildFraFroebank(
     //    → "Tid til at så X"
     if (!aktivePlanterSourceIds.has(item.id) && item.sowingMonths.includes(month)) {
       out.push({
-        text: item.preCultivation ? `Forspir ${navn}` : `Tid til at så ${item.name.toLowerCase()}`,
+        text: item.preCultivation ? `Forkultivér ${navn}` : `Så ${item.name} nu`,
         href: `/froebank/${item.id}`,
       })
       continue
@@ -215,7 +215,7 @@ function buildFraFroebank(
     // 4. Hvis månedens plantingOut matcher OG brugeren ikke har plante endnu
     if (!aktivePlanterSourceIds.has(item.id) && item.plantingOutMonths.includes(month)) {
       out.push({
-        text: `${item.name} kan komme ud snart`,
+        text: `${item.name} kan plantes ud denne måned`,
         href: `/froebank/${item.id}`,
       })
       continue
@@ -224,7 +224,7 @@ function buildFraFroebank(
     // 5. Høst-vindue
     if (item.harvestMonths.includes(month) && existingPlant) {
       out.push({
-        text: `Tid til at høste ${item.name.toLowerCase()}`,
+        text: `Høst ${item.name}`,
         href: `/mine-planter/${existingPlant.id}`,
       })
       continue
@@ -235,7 +235,7 @@ function buildFraFroebank(
 }
 
 const EMPTY_STATE_LINES = [
-  'Din frøbank hviler lidt endnu.',
+  'Din Frøbank hviler lidt endnu.',
   'Maj venter stadig på dine sorter.',
   'Endnu intet i støbeskeen — pust ud.',
   'Jorden er rolig. Det er du også.',
@@ -315,15 +315,15 @@ function KurateretInspiration({ items, maaned }: { items: KurateretItem[]; maane
   )
 }
 
-const CURATED_INSPIRATION: Record<number, KurateretItem[]> = {
+export const CURATED_INSPIRATION: Record<number, KurateretItem[]> = {
   1: [
     { title: 'Læg planen for året', text: 'Skitsér bede, rotation, og hvad du vil dyrke for første gang.' },
-    { title: 'Gennemgå frøbanken', text: 'Hvad har du, hvad mangler du, hvad er gået ud.' },
+    { title: 'Gennemgå Frøbanken', text: 'Se, hvad du allerede har, hvad der mangler, og hvilke frø du vil bruge først.' },
     { title: 'Forspir det langsomme', text: 'Chili og aubergine kræver et forspring nu.' },
   ],
   2: [
     { title: 'Begynd forspiring', text: 'Tomat, peberfrugt og chili kan starte indenfor.' },
-    { title: 'Skitsér sæsonen', text: 'Klar sengeplaner og rotation før jorden tør.' },
+    { title: 'Skitsér sæsonen', text: 'Klargør bedplaner og sædskifte, før foråret tager fart.' },
     { title: 'Vask redskaberne', text: 'Rene knive og bakker giver sundere spirer.' },
   ],
   3: [
@@ -332,48 +332,47 @@ const CURATED_INSPIRATION: Record<number, KurateretItem[]> = {
     { title: 'Forspir de varmekrævende', text: 'Squash, agurk og tomat kan starte indenfor.' },
   ],
   4: [
-    { title: 'Hærd planterne af', text: 'Lad spirer få timer ude — vænner sig til vind og lys.' },
+    { title: 'Hærd forspirede planter af', text: 'Lad dem stå ude lidt længere dag for dag, så de vænner sig til vind og lys.' },
     { title: 'Direkte såning', text: 'Gulerod, radise, salat og ærter kan i jorden nu.' },
-    { title: 'Forberedt jord', text: 'Riv, top med kompost, planlæg rækker.' },
+    { title: 'Forbered jorden', text: 'Riv jorden, læg kompost på, og planlæg rækkerne.' },
   ],
   5: [
-    { title: 'Så noget hurtigt voksende', text: 'Radise, salat og bønner kan stadig nå hele cyklussen.' },
+    { title: 'Så noget hurtigt voksende', text: 'Radise, salat og bønner kan stadig nå at give høst.' },
     { title: 'Start sensommerens planer', text: 'Så grønkål, pak choi og vinterportulak nu.' },
     { title: 'Giv krydderurterne mere plads', text: 'Persille, basilikum og dild trives når de står frit.' },
   ],
   6: [
     { title: 'Vand dybt og roligt', text: 'Bedre én lang vanding end mange overfladiske.' },
-    { title: 'Tyv tomaterne', text: 'Brug 5 minutter hver anden dag — du sparer 5 timer i juli.' },
+    { title: 'Tyv tomaterne', text: 'Fjern små sideskud løbende, før de vokser sig store.' },
     { title: 'Så til vinteren', text: 'Grønkål og kålroer kan nå at modnes i god tid.' },
   ],
   7: [
-    { title: 'Pluk ofte', text: 'Salat, ærter og bønner producerer mere når du tager løbende.' },
-    { title: 'Tør krydderurter', text: 'Skær lange duftende grene mens duften er på toppen.' },
-    { title: 'Skygg de sarte', text: 'Spirebakker og nyudplantede tåler ikke fuld juli-sol.' },
+    { title: 'Pluk ofte', text: 'Høst ærter og bønner løbende, og tag salaten, mens den er frisk og sprød.' },
+    { title: 'Tør krydderurter', text: 'Høst dem på en tør dag, når de dufter kraftigt.' },
+    { title: 'Giv de sarte lidt skygge', text: 'Beskyt spirebakker og nyudplantede planter mod den skarpeste middagssol.' },
   ],
   8: [
-    { title: 'Saml dine bedste frø', text: 'Pluk modne frøposer fra dine yndlingsplanter.' },
+    { title: 'Saml dine bedste frø', text: 'Saml modne frøstande fra planter, du gerne vil dyrke igen.' },
     { title: 'Plant til efterår', text: 'Vinterportulak og feldsalat kan nå at slå rødder.' },
-    { title: 'Vand mindre, dybere', text: 'Planterne har nu rod nok til at finde fugt selv.' },
+    { title: 'Vand grundigt ved behov', text: 'August kan stadig være tør, især i krukker og nyplantede bede.' },
   ],
   9: [
     { title: 'Sæt grøngødning', text: 'Honningurt, boghvede eller rug — jorden takker dig til foråret.' },
-    { title: 'Plant vinterhvidløg', text: 'September-oktober er det optimale vindue.' },
+    { title: 'Plant vinterhvidløg', text: 'Sæt feddene i efteråret, mens jorden stadig er til at arbejde med.' },
     { title: 'Saml løvkompost', text: 'Gratis jordforbedring for næste sæson.' },
   ],
   10: [
-    { title: 'Tag det sarte ind', text: 'Krydderurter, chili og blomster kan overvintre indenfor.' },
+    { title: 'Tag det sarte ind', text: 'Flyt frostfølsomme krukker og planter i læ eller ind, hvis de skal overvintre.' },
     { title: 'Plant træer og buske', text: 'Jorden er stadig varm — perfekt til at slå rødder.' },
     { title: 'Læg løg i jord', text: 'Tulipaner og forårsløg vil have et godt forspring.' },
   ],
   11: [
     { title: 'Pak jorden ind', text: 'Et lag løv eller halm holder jorden levende.' },
-    { title: 'Beskær frugttræer', text: 'Når bladene falder kan du se træets struktur.' },
     { title: 'Notér året', text: 'Hvad lykkedes? Hvad vil du justere?' },
   ],
   12: [
-    { title: 'Drøm vinterens planer', text: 'Læs frøkataloger, skitsér nye bede.' },
-    { title: 'Pas på krukkerne', text: 'Tjek dræn, beskyt mod frost-skader.' },
+    { title: 'Drøm om næste sæson', text: 'Læs frøkataloger, og skitsér nye bede.' },
+    { title: 'Pas på krukkerne', text: 'Tjek dræn, beskyt mod frostskader.' },
     { title: 'Lad jorden hvile', text: 'Det vigtigste i december er ofte at gøre ingenting.' },
   ],
 }
@@ -545,14 +544,14 @@ function SensoryQuote({ text }: { text: string }) {
 const MAANED_STEMNING: Record<number, { q1: string; q2: string }> = {
   1: { q1: 'Jorden hviler, men frøene husker varmen.', q2: 'Året er endnu et udkast.' },
   2: { q1: 'Lyset bliver længere uden at man har bedt om det.', q2: 'Spirerne kommer altid før vi tror.' },
-  3: { q1: 'Det første spire-blad er stadig en lille åbenbaring.', q2: 'Marts lover meget og holder det halvt.' },
+  3: { q1: 'Det første spireblad er stadig en lille åbenbaring.', q2: 'Marts lover meget og holder det halvt.' },
   4: { q1: 'April kan ikke beslutte sig, men det er en del af charmen.', q2: 'Jorden har taget sin sweater af.' },
-  5: { q1: 'Maj smager af sol og koldt vand.', q2: 'Alt vil ud i jorden samtidigt.' },
-  6: { q1: 'Aftnerne bliver lange og bløde.', q2: 'Bedene fyldes hurtigere end man kan følge med.' },
+  5: { q1: 'Maj smager af sol og koldt vand.', q2: 'Alt vil ud i jorden samtidig.' },
+  6: { q1: 'Aftnerne bliver lange og bløde.', q2: 'Bedene fyldes hurtigere, end man kan følge med.' },
   7: { q1: 'Tomaterne dufter inden de modner.', q2: 'Juli kræver tålmodighed på en helt anden måde.' },
   8: { q1: 'August er overflod og første afsked.', q2: 'Bierne arbejder hårdere end os.' },
   9: { q1: 'Lyset bliver gyldent uden at varsle.', q2: 'Jorden er nu varmere end luften.' },
-  10: { q1: 'Bladene falder roligere end vi tror.', q2: 'Smag på æblerne mens de stadig dufter af regn.' },
+  10: { q1: 'Bladene falder roligere end vi tror.', q2: 'Smag på æblerne, mens de stadig dufter af regn.' },
   11: { q1: 'Haven trækker vejret dybt nu.', q2: 'Det er svært at se vækst, men den findes.' },
   12: { q1: 'Stilheden i bedet er ikke tom — den planlægger.', q2: 'December er hvile, ikke død.' },
 }

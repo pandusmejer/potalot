@@ -106,7 +106,7 @@ export function UserTaskDialog({ defaultMonth, task }: Props) {
         )}
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>{isEdit ? 'Rediger gøremål' : 'Tilføj eget gøremål'}</DialogTitle>
+        <DialogTitle>{isEdit ? 'Redigér gøremål' : 'Tilføj eget gøremål'}</DialogTitle>
         <DialogDescription>
           Kun synligt for dig. Bruges som påmindelse i din kalender.
         </DialogDescription>
