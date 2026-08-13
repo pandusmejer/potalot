@@ -3068,7 +3068,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/engblomme.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/18449/trollius-europaeus/details",
       "https://www.rhs.org.uk/plants/25537/trollius-chinensis/details",
@@ -4617,7 +4617,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/jungleagurk.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/343231/melothria-scabra/details",
       "https://www.johnnyseeds.com/vegetables/cucumbers/specialty-cucumbers/mexican-sour-gherkin-cucumber-seed-3174.html"
@@ -8042,7 +8042,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/persillerod.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/41216/petroselinum-crispum-var-tuberosum/details",
       "https://www.johnnyseeds.com/growers-library/herbs/parsley/root-parsley-key-growing-information.html"
@@ -10542,7 +10542,7 @@ export const IMPORTED_GUIDES: Guide[] = [
     ],
     "calendarRules": [],
     "mediaIds": [],
-    "primaryImageId": null,
+    "primaryImageId": "/images/arts/sommerridderspore.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/plants/25953/consolida-ajacis/details",
       "https://www.johnnyseeds.com/growers-library/flowers/larkspur-consolida/larkspur-key-growing-information.html"

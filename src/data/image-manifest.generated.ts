@@ -8,7 +8,7 @@
  * public/images/. resolvePotalotImage() bruger den til at afgøre
  * om et asset-convention-path findes inden det returneres.
  *
- * Fil-tæller: 1182
+ * Fil-tæller: 1186
  */
 
 export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
@@ -60,6 +60,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/elefantgraes.webp",
   "/images/arts/endivie.jpg",
   "/images/arts/endivie.webp",
+  "/images/arts/engblomme.jpg",
   "/images/arts/erantis.jpg",
   "/images/arts/erantis.webp",
   "/images/arts/graeskar.jpg",
@@ -82,6 +83,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/jordbaer.webp",
   "/images/arts/jordskok.jpg",
   "/images/arts/jordskok.webp",
+  "/images/arts/jungleagurk.jpg",
   "/images/arts/kaal.jpg",
   "/images/arts/kaal.webp",
   "/images/arts/kaalroe.jpg",
@@ -144,6 +146,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/perlehyacint.webp",
   "/images/arts/persille.jpg",
   "/images/arts/persille.webp",
+  "/images/arts/persillerod.jpg",
   "/images/arts/porre.jpg",
   "/images/arts/porre.webp",
   "/images/arts/portulak.jpg",
@@ -188,6 +191,7 @@ export const IMAGE_MANIFEST: ReadonlySet<string> = new Set([
   "/images/arts/solbaer.webp",
   "/images/arts/solsikke.jpg",
   "/images/arts/solsikke.webp",
+  "/images/arts/sommerridderspore.jpg",
   "/images/arts/spinat.jpg",
   "/images/arts/spinat.webp",
   "/images/arts/squash.jpg",
