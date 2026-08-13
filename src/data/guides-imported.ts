@@ -6667,7 +6667,7 @@ export const IMPORTED_GUIDES: Guide[] = [
       {
         "key": "marguerit-i-denne-guide",
         "title": "Marguerit i denne guide",
-        "body": "Potalot bruger her navnet marguerit om den flerårige havegruppe Leucanthemum × superbum, som blandt andet omfatter sorten 'Alaska'. Det er den klassiske staude med hvide randkroner, gul midte og oprette blomsterstængler.\n\nDet er værd at skelne den fra sommermarguerit i slægten Argyranthemum. De ligner hinanden på afstand, men dyrkes ikke på samme måde."
+        "body": "Potalot bruger her navnet marguerit om den flerårige havemarguerit Leucanthemum × superbum — på engelsk kaldet Shasta daisy — som blandt andet omfatter sorten 'Alaska'. Det er den klassiske, klumpdannende staude med hvide randkroner, gul midte og oprette blomsterstængler.\n\nDet danske navn marguerit bruges om flere margueritlignende planter, så det er værd at kende naboerne: den vilde hvid okseøje (Leucanthemum vulgare) er en anden, mere spinkel engplante, og sommermarguerit hører til slægten Argyranthemum og dyrkes ikke på samme måde. Denne guide handler om havestauden."
       },
       {
         "key": "en-staude-til-den-lyse-del-af-bedet",

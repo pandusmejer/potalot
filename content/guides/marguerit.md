@@ -22,9 +22,9 @@ sourceLinks: ["https://www.rhs.org.uk/plants/98781/leucanthemum-x-superbum/detai
 
 ## Marguerit i denne guide
 
-Potalot bruger her navnet marguerit om den flerårige havegruppe Leucanthemum × superbum, som blandt andet omfatter sorten 'Alaska'. Det er den klassiske staude med hvide randkroner, gul midte og oprette blomsterstængler.
+Potalot bruger her navnet marguerit om den flerårige havemarguerit Leucanthemum × superbum — på engelsk kaldet Shasta daisy — som blandt andet omfatter sorten 'Alaska'. Det er den klassiske, klumpdannende staude med hvide randkroner, gul midte og oprette blomsterstængler.
 
-Det er værd at skelne den fra sommermarguerit i slægten Argyranthemum. De ligner hinanden på afstand, men dyrkes ikke på samme måde.
+Det danske navn marguerit bruges om flere margueritlignende planter, så det er værd at kende naboerne: den vilde hvid okseøje (Leucanthemum vulgare) er en anden, mere spinkel engplante, og sommermarguerit hører til slægten Argyranthemum og dyrkes ikke på samme måde. Denne guide handler om havestauden.
 
 ## En staude til den lyse del af bedet
 
