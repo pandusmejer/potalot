@@ -2995,6 +2995,92 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "engblomme",
+    "plantName": "Engblomme",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Trollius",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Fugtelskende staude med dybt lappede blade og kugle- eller skålformede gule til orange blomster i forsommeren.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "fugtig-jord",
+      "halvskygge",
+      "gul-blomst",
+      "orange-blomst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "light": "partial_shade",
+      "water": "high",
+      "soil": "Dyb, fugtig og gerne tung jord, som ikke tørrer ud",
+      "growthType": "klumpdannende staude",
+      "height": "50-100 cm",
+      "primaryUse": "Fugtige staudebede og naturprægede bede"
+    },
+    "sections": [
+      {
+        "key": "engblomme-i-haven",
+        "title": "Engblomme i haven",
+        "body": "Potalots artsniveau samler her haveplanter i slægten Trollius under navnet engblomme. De danner tætte tuer af dybt lappede blade og oprette stængler med gule eller orange blomster.\n\nDen almindelige europæiske engblomme, Trollius europaeus, har mere kugleformede blomster, mens Trollius chinensis og sorter som 'Golden Queen' ofte åbner blomsten mere og viser de smalle, oprette indre kronblade tydeligt."
+      },
+      {
+        "key": "fugt-er-den-vigtigste-regel",
+        "title": "Fugt er den vigtigste regel",
+        "body": "Engblomme trives bedst i dyb, fugtig jord, der ikke tørrer ud. Den er derfor oplagt i den fugtige del af et staudebed, ved en lavning eller et andet sted, hvor jorden naturligt holder bedre på vandet.\n\nTung lerjord er ikke et problem, hvis planten får fugt og plads. Det er snarere en fordel sammenlignet med en let jord, der tørrer hurtigt."
+      },
+      {
+        "key": "sol-eller-halvskygge",
+        "title": "Sol eller halvskygge",
+        "body": "Planten kan stå i sol eller halvskygge. På et solrigt sted bliver kravet til jordfugtighed større, mens let skygge kan hjælpe jorden med at holde på fugten gennem sommeren.\n\nUndgå tørre, sandede placeringer, medmindre du reelt kan holde jorden stabilt fugtig."
+      },
+      {
+        "key": "plant-og-lad-tuen-etablere-sig",
+        "title": "Plant og lad tuen etablere sig",
+        "body": "Engblomme er en flerårig staude og behøver ikke flyttes hvert år. Vand grundigt efter plantning og gennem tørre perioder, mens planten etablerer sig.\n\nTuen bliver gradvist større, men er ikke en aggressiv spreder. Det gør den nem at kombinere med andre fugtelskende stauder."
+      },
+      {
+        "key": "klip-tilbage-efter-blomstring",
+        "title": "Klip tilbage efter blomstring",
+        "body": "Når blomstringen er ovre, kan planten klippes tilbage. Det rydder op i bedet, og på kraftige planter kan det fremme en mindre efterblomstring senere på sæsonen.\n\nLad bladene stå, så længe de er friske og grønne. De er med til at opbygge planten til næste sæson."
+      },
+      {
+        "key": "del-etablerede-planter",
+        "title": "Del etablerede planter",
+        "body": "Store tuer kan deles om foråret. Deling er den enkleste måde at formere en navngiven sort på, fordi de nye planter bevarer sortens egenskaber.\n\nArter kan også formeres fra frø, men for havebrug er deling af en sund, etableret plante ofte den mere direkte løsning."
+      },
+      {
+        "key": "et-robust-valg-til-vaadere-jord",
+        "title": "Et robust valg til vådere jord",
+        "body": "Engblomme er generelt hårdfør og forholdsvis problemfri, når den får den jordfugtighed, den kræver. Meldug kan forekomme, især hvis planten stresses.\n\nDet vigtigste forebyggende greb er derfor ikke en kemisk løsning, men at placere planten et sted, der faktisk passer til den."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/18449/trollius-europaeus/details",
+      "https://www.rhs.org.uk/plants/25537/trollius-chinensis/details",
+      "https://www.rhs.org.uk/plants/54725/trollius-chinensis-golden-queen/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "erantis",
     "plantName": "Erantis",
     "title": null,
@@ -4455,6 +4541,86 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/jordskok.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/vegetables/jerusalem-artichokes/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "jungleagurk",
+    "plantName": "Jungleagurk",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Melothria scabra",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Varmekrævende klatreplante med små, sprøde frugter, der ligner miniaturevandmeloner og smager syrligt af agurk.",
+    "difficulty": "medium",
+    "tags": [
+      "cucamelon",
+      "klatreplante",
+      "varmekraevende",
+      "spiselig",
+      "opbinding"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [],
+      "preCultivation": true,
+      "frostSensitive": true,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Varm, næringsrig og veldrænet jord, der holdes jævnt fugtig",
+      "growthType": "klatrende ranke",
+      "height": "250-300 cm",
+      "primaryUse": "Friske frugter og syltning"
+    },
+    "sections": [
+      {
+        "key": "saadan-vokser-jungleagurk",
+        "title": "Sådan vokser jungleagurk",
+        "body": "Jungleagurk er en hurtigtvoksende klatreplante med tynde ranker, små gule blomster og ru, lappede blade. Den dyrkes normalt som enårig i vores klima, selv om planten botanisk er flerårig.\n\nRankerne kan blive flere meter lange og griber selv fat med slyngtråde. Giv derfor planten net, snor eller espalier fra starten, så den kan vokse opad i stedet for at brede sig gennem naboplanterne."
+      },
+      {
+        "key": "start-den-varmt",
+        "title": "Start den varmt",
+        "body": "Jungleagurk er følsom over for kulde. Forkultivér den derfor, og plant først ud, når både jord og luft er blevet varme og risikoen for nattefrost er væk.\n\nSå i små potter, så rødderne forstyrres mindst muligt ved udplantning. Arten starter ofte langsommere end almindelig agurk, men tager fart, når varmen og dagslængden stiger."
+      },
+      {
+        "key": "giv-sol-varme-og-stoette",
+        "title": "Giv sol, varme og støtte",
+        "body": "Vælg et solrigt og beskyttet sted. Drivhus, en lun gårdhave eller et varmt bed ved en syd- eller vestvendt væg passer godt til planten.\n\nJorden skal være veldrænet og næringsrig. Hold den jævnt fugtig gennem vækstsæsonen, især når planten sætter mange frugter, men undgå at rødderne står konstant vådt."
+      },
+      {
+        "key": "lad-rankerne-arbejde",
+        "title": "Lad rankerne arbejde",
+        "body": "Jungleagurk behøver ikke den samme løbende knibning som en klassisk ranketomat. Det vigtigste er at give rankerne noget at klatre i og føre dem tilbage til støtten, hvis de søger langt ud i naboplanter.\n\nEt lodret espalier gør også frugterne nemmere at finde. De små grønstribede frugter kan ellers gemme sig overraskende effektivt i løvet."
+      },
+      {
+        "key": "hoest-mens-frugterne-er-smaa",
+        "title": "Høst mens frugterne er små",
+        "body": "Frugterne er typisk omkring 2,5 cm lange og mørkegrønne med lysere marmorering. Høst dem løbende, mens de stadig er faste og sprøde. Hvis de får lov at blive for store, bliver de mere frøfyldte.\n\nSmagen minder om agurk med en tydelig syrlig tone. De kan spises friske eller syltes hele."
+      },
+      {
+        "key": "naar-saesonen-slutter",
+        "title": "Når sæsonen slutter",
+        "body": "I dansk klima behandles jungleagurk praktisk som en enårig. Kulde stopper væksten, og planten skal ikke forventes at overvintre ude.\n\nFjern planten, når sæsonen er slut, og gem kun frø fra fuldmodne frugter, hvis du vil prøve at dyrke videre fra egen frøhøst."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/343231/melothria-scabra/details",
+      "https://www.johnnyseeds.com/vegetables/cucumbers/specialty-cucumbers/mexican-sour-gherkin-cucumber-seed-3174.html"
     ],
     "status": "published",
     "visibility": "public",
@@ -6463,6 +6629,86 @@ export const IMPORTED_GUIDES: Guide[] = [
     "updatedAt": "2026-06-05T00:00:00.000Z"
   },
   {
+    "id": "marguerit",
+    "plantName": "Marguerit",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Leucanthemum × superbum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "stauder",
+    "subcategoryId": null,
+    "summary": "Robust, klumpdannende staude med klassiske hvide margueritblomster og gul midte gennem sommeren.",
+    "difficulty": "easy",
+    "tags": [
+      "staude",
+      "hvid-blomst",
+      "snitblomst",
+      "sol",
+      "klumpdannende"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Moderat næringsrig, fugtig men veldrænet jord",
+      "growthType": "klumpdannende staude",
+      "height": "50-100 cm",
+      "primaryUse": "Staude- og blomsterbed samt snit"
+    },
+    "sections": [
+      {
+        "key": "marguerit-i-denne-guide",
+        "title": "Marguerit i denne guide",
+        "body": "Potalot bruger her navnet marguerit om den flerårige havegruppe Leucanthemum × superbum, som blandt andet omfatter sorten 'Alaska'. Det er den klassiske staude med hvide randkroner, gul midte og oprette blomsterstængler.\n\nDet er værd at skelne den fra sommermarguerit i slægten Argyranthemum. De ligner hinanden på afstand, men dyrkes ikke på samme måde."
+      },
+      {
+        "key": "en-staude-til-den-lyse-del-af-bedet",
+        "title": "En staude til den lyse del af bedet",
+        "body": "Marguerit danner en tæt klump af mørkegrønne blade og sender oprette blomsterstængler op gennem sommeren. Den blomstrer bedst i sol, men kan tåle let halvskygge.\n\nPlacér den, hvor jorden dræner efter regn. Den kan lide fugt, men ikke konstant vintervåd jord."
+      },
+      {
+        "key": "plant-i-almindelig-god-havejord",
+        "title": "Plant i almindelig god havejord",
+        "body": "En moderat næringsrig, fugtig men veldrænet jord passer godt. Vand nyplantede planter regelmæssigt, indtil de er etableret.\n\nÆldre planter klarer kortere tørre perioder, men en jævn vandforsyning giver mere stabil vækst og blomstring."
+      },
+      {
+        "key": "fjern-visne-blomster",
+        "title": "Fjern visne blomster",
+        "body": "Klip visne blomsterhoveder af løbende, hvis du vil forlænge blomstringen og holde planten pæn. Når sæsonen er slut, kan blomsterstænglerne skæres ned til jorden.\n\nHøje sorter kan få brug for diskret støtte, især på vindudsatte steder eller i meget næringsrig jord."
+      },
+      {
+        "key": "del-planten-naar-klumpen-bliver-gammel",
+        "title": "Del planten, når klumpen bliver gammel",
+        "body": "Marguerit kan deles i tidligt forår eller sensommer. Deling giver nye planter og kan samtidig forynge en ældre klump, der er blevet mindre blomstringsvillig i midten.\n\nRegelmæssig deling af store Leucanthemum-klumper hjælper med at holde dem vitale."
+      },
+      {
+        "key": "hold-oeje-med-bladene",
+        "title": "Hold øje med bladene",
+        "body": "Marguerit er generelt robust, men bladlus kan forekomme, og Leucanthemum kan angribes af blad- og knopål. Fjern tydeligt angrebne plantedele og undgå at flytte mistænkeligt plantemateriale rundt i haven.\n\nPlanten er ellers normalt ikke sygdomstung, når den står lyst og veldrænet."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/98781/leucanthemum-x-superbum/details",
+      "https://www.rhs.org.uk/plants/57020/leucanthemum-x-superbum-alaska/details"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
     "id": "melon",
     "plantName": "Melon",
     "title": null,
@@ -7711,6 +7957,95 @@ export const IMPORTED_GUIDES: Guide[] = [
     "primaryImageId": "/images/arts/persille.jpg",
     "sourceLinks": [
       "https://www.rhs.org.uk/herbs/parsley/grow-your-own"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "persillerod",
+    "plantName": "Persillerod",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Petroselinum crispum var. tuberosum",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Langsom rodgrøntsag med hvid, persilleduftende rod og spiselige toppe, som trives i dyb, fugtig og næringsrig jord.",
+    "difficulty": "medium",
+    "tags": [
+      "rodgroentsag",
+      "persille",
+      "direkte-saaning",
+      "langsom-spiring",
+      "kuldetolerant"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [
+        4,
+        5
+      ],
+      "plantingOutMonths": [],
+      "harvestMonths": [
+        10,
+        11,
+        12
+      ],
+      "preCultivation": false,
+      "frostSensitive": false,
+      "water": "regular",
+      "soil": "Dyb, fugtig og næringsrig jord uden sten og grove klumper",
+      "germinationDays": "14-30 dage",
+      "rowSpacing": "30-45 cm",
+      "sowingDepthMm": 10,
+      "growthType": "rodgroentsag",
+      "height": "10-50 cm",
+      "primaryUse": "Rod til madlavning; blade kan bruges som persille"
+    },
+    "sections": [
+      {
+        "key": "persille-med-en-rod-vaerd-at-vente-paa",
+        "title": "Persille med en rod værd at vente på",
+        "body": "Persillerod er en toårig persilleform, som i køkkenhaven dyrkes for den lyse, aflange rod. Bladene ligner almindelig persille og kan også bruges, men plantens vigtigste afgrøde er roden.\n\nDen udvikler sig langsomt og belønner mere tålmodighed end drama. Det afgørende er en god start, løs jord og jævn fugt."
+      },
+      {
+        "key": "saa-direkte-i-dyb-jord",
+        "title": "Så direkte i dyb jord",
+        "body": "Så persillerod direkte på voksestedet i foråret. Den bryder sig dårligt om at få den unge pælerod forstyrret, så forkultivering og senere omplantning er normalt ikke den oplagte vej.\n\nFrøene spirer langsomt. Hold det øverste jordlag fugtigt i hele spiringsperioden, og lad være med at opgive rækken efter en uge."
+      },
+      {
+        "key": "jorden-former-roden",
+        "title": "Jorden former roden",
+        "body": "Vælg dyb, fugtig og frugtbar jord. Fjern sten og grove klumper, så rødderne kan vokse lige og uden unødige forgreninger.\n\nTynd planterne, når de er etableret. For tæt bestand giver mindre rødder, mens lidt mere plads giver større rødder."
+      },
+      {
+        "key": "hold-vaeksten-jaevn",
+        "title": "Hold væksten jævn",
+        "body": "Persillerod tåler køligt vejr godt, men jorden bør ikke tørre helt ud under rodudviklingen. Vand ved længere tørre perioder og hold ukrudtet nede med overfladisk lugning, så du ikke skader rødderne.\n\nUndgå meget hård jordbearbejdning tæt på planten, når roden først er begyndt at fylde."
+      },
+      {
+        "key": "hoest-sent",
+        "title": "Høst sent",
+        "body": "Rødderne udvikler sig gennem en lang sæson og høstes typisk sent på året. De tåler en del kulde og kan blive stående længe, hvis jorden er til at arbejde i.\n\nLøsn jorden med en greb før høst i stedet for at trække hårdt i toppen."
+      },
+      {
+        "key": "brug-baade-rod-og-top",
+        "title": "Brug både rod og top",
+        "body": "Roden har en smag mellem persille, pastinak og selleri og egner sig til supper, puréer, ovnretter og andre varme retter. Bladene kan bruges som persille, men bliver ofte kraftigere og mere fibrede end sorter, der er forædlet til bladproduktion.\n\nHvis planten får lov at gå videre til andet år, vil den blomstre og sætte frø. Til almindelig køkkenhavedyrkning høstes den som en etårig afgrøde."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/41216/petroselinum-crispum-var-tuberosum/details",
+      "https://www.johnnyseeds.com/growers-library/herbs/parsley/root-parsley-key-growing-information.html"
     ],
     "status": "published",
     "visibility": "public",
@@ -10127,6 +10462,90 @@ export const IMPORTED_GUIDES: Guide[] = [
       "https://www.rhs.org.uk/plants/buddleja",
       "https://www.rhs.org.uk/plants/buddleja/growing-guide",
       "https://www.rhs.org.uk/plants/buddleja/pruning"
+    ],
+    "status": "published",
+    "visibility": "public",
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-05T00:00:00.000Z",
+    "updatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "id": "sommerridderspore",
+    "plantName": "Sommerridderspore",
+    "title": null,
+    "appliesTo": [],
+    "pluralName": null,
+    "variety": null,
+    "latinName": "Consolida ajacis",
+    "guideLevel": "species",
+    "parentGuideId": null,
+    "primaryCategoryId": "fro",
+    "subcategoryId": null,
+    "summary": "Slank enårig sommerblomst med fjerlette blade og høje spir af blå, rosa eller hvide blomster.",
+    "difficulty": "medium",
+    "tags": [
+      "sommerblomst",
+      "snitblomst",
+      "direkte-saaning",
+      "koelig-spiring",
+      "opret-vaekst"
+    ],
+    "quickFacts": {
+      "sowingMonths": [],
+      "directSowingMonths": [],
+      "plantingOutMonths": [],
+      "harvestMonths": [],
+      "preCultivation": true,
+      "frostSensitive": false,
+      "light": "full_sun",
+      "water": "regular",
+      "soil": "Næringsrig, veldrænet og gerne let basisk jord",
+      "germinationTemperature": "ca. 13 °C",
+      "germinationDays": "14-21 dage",
+      "plantSpacing": "10-15 cm",
+      "sowingDepthMm": 6,
+      "growthType": "opret enaarig",
+      "height": "50-100 cm",
+      "primaryUse": "Bed, frisk snit og tørring"
+    },
+    "sections": [
+      {
+        "key": "en-ridderspore-der-kun-tager-n-saeson",
+        "title": "En ridderspore, der kun tager én sæson",
+        "body": "Sommerridderspore er en opret enårig med fint delte, fjeragtige blade og blomster i lange klaser eller spir. Farverne ligger typisk i blå, violette, rosa og hvide nuancer.\n\nDen skal ikke dyrkes som flerårig stauderidderspore. Hele livscyklussen gennemføres på én sæson, og nye planter kommer fra frø."
+      },
+      {
+        "key": "kulde-hjaelper-spiringen",
+        "title": "Kulde hjælper spiringen",
+        "body": "Frøene spirer bedst køligt. Johnny's angiver omkring 13 °C og 14-21 dages spiring, og anbefaler en kort kuldebehandling af frøene for at forbedre spiringen.\n\nDirekte såning er den enkleste metode. Så frøene på voksestedet og dæk dem, fordi mørke hjælper spiringen. Forkultivering er mulig, men sommerridderspore er ikke en plante, der belønner et meget varmt vindueskarmsliv."
+      },
+      {
+        "key": "giv-den-sol-og-draen",
+        "title": "Giv den sol og dræn",
+        "body": "Vælg fuld sol og veldrænet jord. Arten trives bedst i kølige somre og bryder sig mindre om vedvarende varme omkring spiringen.\n\nEn næringsrig, veldrænet og gerne let basisk jord giver stærke stængler og god blomstring."
+      },
+      {
+        "key": "tynd-til-luftige-planter",
+        "title": "Tynd til luftige planter",
+        "body": "Tynd småplanterne, så der er luft mellem dem. Omkring 10-15 cm mellem planterne passer til den almindelige dyrkning som snit- og bedplante.\n\nHøje sorter kan have gavn af støtte. I et tæt bed støtter planterne ofte hinanden, men på åbne og vindudsatte steder kan stænglerne lægge sig."
+      },
+      {
+        "key": "hoest-spirene-i-tide",
+        "title": "Høst spirene i tide",
+        "body": "Til friske buketter høstes, når de nederste blomster på spiret er åbne, mens resten stadig står i knop. Til tørring kan du vente, til flere blomster er åbne, men høst før kronbladene begynder at falde.\n\nRegelmæssig skæring til buketter holder bedet i gang."
+      },
+      {
+        "key": "lad-nogle-planter-saette-froe",
+        "title": "Lad nogle planter sætte frø",
+        "body": "Vil du have nye planter næste år, kan du lade enkelte blomsterstande modne frø. Som enårig er planten afhængig af ny spiring for at vende tilbage.\n\nSår du selv, er det mest forudsigeligt at samle frø og vælge placeringen næste sæson frem for at stole på selvsåning."
+      }
+    ],
+    "calendarRules": [],
+    "mediaIds": [],
+    "primaryImageId": null,
+    "sourceLinks": [
+      "https://www.rhs.org.uk/plants/25953/consolida-ajacis/details",
+      "https://www.johnnyseeds.com/growers-library/flowers/larkspur-consolida/larkspur-key-growing-information.html"
     ],
     "status": "published",
     "visibility": "public",
