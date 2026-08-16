@@ -246,3 +246,31 @@ Formater:
 - SVG er masterformat for logoer.
 - PNG kun hvor platformen kræver raster (app-ikoner, favicons).
 - JPG bruges ALDRIG til logoer.
+
+### Logo-hierarki (ANNA-LÅST 16/8 2026)
+
+Ét ikon, ét wordmark, faste lockups — det eksisterende ét-blads-ikon
+er det ENESTE symbol. Der introduceres aldrig et to-blads-symbol.
+
+- **Primært logo:** `potalot-logo-integrated.svg` — wordmarket med
+  ét blad integreret ved første o.
+- **Sekundært logo:** `potalot-logo.svg` — den klassiske vandrette
+  lockup (ikon til venstre for wordmark).
+- **Stacked lockup:** `potalot-logo-stacked.svg` — wordmark øverst,
+  blad under, centreret (ikon 28 % af wordmark-bredden, gap 22 % af
+  ikonhøjden). Til kvadratiske/høje flader.
+- **Wordmark alene:** `potalot-wordmark.svg`.
+- **Ikon alene:** `potalot-icon.svg` — app-ikoner, favicons, loader
+  (samme blad må rotere som loader).
+- Alle findes i negativ (creme #F7F8EF) til mørk baggrund.
+- Alle mastere ligger i `POTALOT-BRAND/01-MASTER/`.
+
+Regler for det integrerede logo (LÅST):
+1. Bladet må ALDRIG centreres over o'et.
+2. Stilken skal falde ned mod mellemrummet mellem p og o.
+3. Bladets top må gerne ligge en smule over l'ets top.
+
+Låst geometri (wordmark-koordinater, viewBox 783,5 × 231,44):
+blad-højde 82, blad x 121–190,5, blad y −12 til 70. Bladet lænes
+ind over o'ets venstre skulder — det skal føles som en del af
+ordmærket, ikke som et ikon parkeret oven på teksten.
