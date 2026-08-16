@@ -231,3 +231,18 @@ koden ændres uden en eksplicit afstemnings-runde.
 - `Docs/design-system/sektion-roller.md` — hvad hvert rum ER
 - `Docs/design-system/havebog.md` — Havebog-manifest
 - `Docs/design-system/guides.md` — guide-systemet
+
+## Logo & app-ikon (ANNA-LÅST 13/8 2026)
+
+Farver — KUN eksisterende tokens, aldrig nye grønne:
+- Mørk Potalot:  #24301F  (--foreground, "mørk skovgrøn"/BLAEK)
+- Creme:         #F7F8EF  (--primary-foreground — creme-modspilleren til de grønne)
+- Accentgrøn:    #506834  (--primary) — accent, IKKE standard-logofarve
+
+Afvist: #173F35 (kølig teal, ~166° — uden for Potalots varme
+olivenfamilie 80–110°; ville være appens eneste kolde grønne).
+
+Formater:
+- SVG er masterformat for logoer.
+- PNG kun hvor platformen kræver raster (app-ikoner, favicons).
+- JPG bruges ALDRIG til logoer.
