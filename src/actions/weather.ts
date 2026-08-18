@@ -194,12 +194,23 @@ export interface VejrPoolsMaalinger {
  */
 export async function getVejrPools(): Promise<VejrPoolsMaalinger | null> {
   const profile = await getProfile()
-  if (!profile?.latitude || !profile?.longitude) return null
+
+  // DEMO-AFGRÆNSNING (Anna 18/8): KUN anonyme (ingen profil) får Aarhus som
+  // fast fallback-lokation, så demo viser ÆGTE live-vejr for et fast sted —
+  // samme princip som mockPlants. En logget-ind bruger UDEN lokation ser
+  // fortsat pytterne uden tal (egne data, også når de er tomme).
+  const AARHUS = { latitude: 56.1518, longitude: 10.2064 }
+  const lokation = profile === null
+    ? AARHUS
+    : profile.latitude && profile.longitude
+      ? { latitude: profile.latitude, longitude: profile.longitude }
+      : null
+  if (!lokation) return null
 
   try {
     const url = new URL('https://api.open-meteo.com/v1/forecast')
-    url.searchParams.set('latitude', String(profile.latitude))
-    url.searchParams.set('longitude', String(profile.longitude))
+    url.searchParams.set('latitude', String(lokation.latitude))
+    url.searchParams.set('longitude', String(lokation.longitude))
     url.searchParams.set('current', 'temperature_2m')
     url.searchParams.set('hourly', 'soil_temperature_6cm')
     url.searchParams.set('daily', 'precipitation_sum,sunrise')
