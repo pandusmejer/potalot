@@ -32,7 +32,7 @@ import { challengesForMonth } from '@/lib/seasonal-challenges'
 import { cn } from '@/lib/utils'
 import { hideGeneralTask } from '@/actions/aarshjul'
 import { createTask } from '@/actions/havekalender'
-import type { GardenAlert } from '@/actions/weather'
+import type { GardenAlert, VejrPoolsMaalinger } from '@/actions/weather'
 import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
@@ -46,6 +46,8 @@ interface Props {
   userTasks: UserGardenTask[]
   guides: Guide[]
   alerts: GardenAlert[]
+  /** Ægte målinger til vejr-pytterne (null uden lokation → pytter uden overlay). */
+  vejr: VejrPoolsMaalinger | null
   isLoggedIn: boolean
   /** Kalenderens hjerne — dagens 1-3 vigtigste (lib/kalender/dagens-fokus). */
   dagensFokus: DagensFokus
@@ -126,7 +128,7 @@ function vejrNote(alerts: GardenAlert[]): { headline: string; subline: string } 
   return null
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, isLoggedIn, dagensFokus, plantImages }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, vejr, isLoggedIn, dagensFokus, plantImages }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -209,12 +211,13 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
 
       {/* 2 · VEJR-POOLS — sæson-billed-assets med tekst-overlay (sanselag).
           Ikke et dashboard; rolige observationer fra haven. Sæsonbilledet
-          skifter med måneden. Demo-værdier indtil vejr-API kobles på.
-          Billedet følger den valgte måned (rent sæson-baseret); men ægte
-          vejr-varsler (alerts) gælder KUN nu — bladrer man væk fra den
-          aktuelle måned, falder noten tilbage til sæson-generisk tekst. */}
+          skifter med måneden. Overlay = ÆGTE Open-Meteo-målinger for havens
+          placering (KAL-0137: live data eller intet). Målinger og varsler
+          gælder KUN nu — bladrer man væk fra den aktuelle måned, vises
+          sæsonbilledet uden tal og noten falder tilbage. */}
       <WeatherPoolsImage
         month={valgtMaaned}
+        data={(valgtMaaned === nuMaaned ? vejr : null) ?? undefined}
         note={vejrNote(valgtMaaned === nuMaaned ? alerts : []) ?? undefined}
       />
 

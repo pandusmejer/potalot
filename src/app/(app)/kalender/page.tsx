@@ -7,7 +7,7 @@ import { getAllPlants } from '@/actions/mine-planter'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllGuides } from '@/actions/guides'
 import { getGeneralGardenTasks, getUserGardenTasks } from '@/actions/aarshjul'
-import { getGardenAlerts } from '@/actions/weather'
+import { getGardenAlerts, getVejrPools } from '@/actions/weather'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getCurrentUser } from '@/lib/auth'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
@@ -32,7 +32,7 @@ export default function KalenderPage() {
 }
 
 async function KalenderIndhold() {
-  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, me, completions] = await Promise.all([
+  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, vejr, me, completions] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
@@ -40,6 +40,7 @@ async function KalenderIndhold() {
     getGeneralGardenTasks(),
     getUserGardenTasks(),
     getGardenAlerts(),
+    getVejrPools(),
     getCurrentUser(),
     getTaskCompletionsForDate(),
   ])
@@ -101,6 +102,7 @@ async function KalenderIndhold() {
         userTasks={userTasks}
         guides={guides}
         alerts={alerts}
+        vejr={vejr}
         isLoggedIn={me !== null}
         dagensFokus={dagensFokus}
         plantImages={plantImages}

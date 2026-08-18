@@ -175,6 +175,65 @@ export async function getGardenAlerts(): Promise<GardenAlert[]> {
   }
 }
 
+// ============================================
+// Vejr-pools: fire ægte målinger til Kalenderens sanselag
+// ============================================
+
+export interface VejrPoolsMaalinger {
+  rain: { value: string; label: string }
+  soil: { value: string; label: string }
+  temperature: { value: string; label?: string }
+  sun: { value: string; label: string }
+}
+
+/**
+ * De fire målinger til vejr-pytterne (KAL-0137: live data eller intet):
+ * nedbør i dag (daglig sum), jordtemperatur nu (6 cm), lufttemperatur nu,
+ * solopgang i dag. Returnerer null uden lokation eller ved API-fejl —
+ * pytterne vises da uden overlay. Cachet 30 min som de øvrige vejr-kald.
+ */
+export async function getVejrPools(): Promise<VejrPoolsMaalinger | null> {
+  const profile = await getProfile()
+  if (!profile?.latitude || !profile?.longitude) return null
+
+  try {
+    const url = new URL('https://api.open-meteo.com/v1/forecast')
+    url.searchParams.set('latitude', String(profile.latitude))
+    url.searchParams.set('longitude', String(profile.longitude))
+    url.searchParams.set('current', 'temperature_2m')
+    url.searchParams.set('hourly', 'soil_temperature_6cm')
+    url.searchParams.set('daily', 'precipitation_sum,sunrise')
+    url.searchParams.set('timezone', 'Europe/Copenhagen')
+    url.searchParams.set('forecast_days', '1')
+
+    const res = await fetch(url, { next: { revalidate: 1800 } })
+    if (!res.ok) return null
+    const data = await res.json()
+
+    const tempNu = data.current?.temperature_2m
+    const nedboerIdag = data.daily?.precipitation_sum?.[0]
+    const solopgangIso: string | undefined = data.daily?.sunrise?.[0]
+
+    // Jordtemperatur i den indeværende time
+    const nowIso: string | undefined = data.current?.time
+    const hourlyTimes: string[] = data.hourly?.time ?? []
+    const soilTemps: number[] = data.hourly?.soil_temperature_6cm ?? []
+    const hourIdx = nowIso ? hourlyTimes.findIndex(t => t.startsWith(nowIso.slice(0, 13))) : -1
+    const jordTemp = hourIdx >= 0 ? soilTemps[hourIdx] : undefined
+
+    if (tempNu == null || nedboerIdag == null || jordTemp == null || !solopgangIso) return null
+
+    return {
+      rain: { value: `${Math.round(nedboerIdag)} mm`, label: 'i dag' },
+      soil: { value: 'Jord', label: `${Math.round(jordTemp)}°` },
+      temperature: { value: `${Math.round(tempNu)}°` },
+      sun: { value: 'Sol', label: solopgangIso.slice(11, 16).replace(':', '.') },
+    }
+  } catch {
+    return null
+  }
+}
+
 /**
  * Hent vejr for brugerens have-placering. Returnerer null hvis
  * lokation ikke er sat (chip skjules da bare).
