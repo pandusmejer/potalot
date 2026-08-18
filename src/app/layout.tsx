@@ -62,8 +62,36 @@ const libreBaskerville = Libre_Baskerville({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://potalot.app'),
   title: 'Potalot',
   description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
+  manifest: '/manifest.json',
+  // Brand-ikoner fra POTALOT-BRAND (logo-standard ANNA-LÅST 13/8 —
+  // ét-blads-ikonet, kun tokens #24301F/#F7F8EF).
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  openGraph: {
+    title: 'Potalot',
+    description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
+    url: 'https://potalot.app',
+    siteName: 'Potalot',
+    locale: 'da_DK',
+    type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Potalot' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Potalot',
+    description: 'Din dyrkningsapp. Hold styr på frøbank, aktive planter og havekalender.',
+    images: ['/og-image.png'],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

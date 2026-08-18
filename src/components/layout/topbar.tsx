@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Sprout } from 'lucide-react'
 import { ProfileMenu } from './profile-menu'
 import { NotificationBell } from './notification-bell'
 import { TopbarAuthOmraade } from './topbar-auth-omraade'
@@ -52,9 +51,11 @@ export function Topbar({ profile }: { profile: Profile | null }) {
       <div className="relative mx-auto w-full max-w-[480px] px-4 pt-2.5 pb-2">
         {/* Række 1 — logo (tilbageholdent) + klokke/profil */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-1.5">
-            <Sprout className="h-[18px] w-[18px] text-primary" />
-            <span className="font-serif text-lg text-foreground">Potalot</span>
+          <Link href="/" className="flex items-center">
+            {/* Primært logo (ANNA-LÅST 16/8): integrated-wordmark m. ét blad
+                ved første o — erstatter det gamle Sprout-ikon + tekst. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt="Potalot" className="h-[26px] w-auto" />
           </Link>
           {profile ? (
             <div className="flex items-center gap-1.5">

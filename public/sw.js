@@ -1,4 +1,4 @@
-// PotAlot Service Worker — PWA support + push notification readiness
+// Potalot Service Worker — PWA support + push notification readiness
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()
@@ -20,7 +20,7 @@ self.addEventListener('push', (event) => {
       data: { url: data.url || '/' },
     }
     event.waitUntil(
-      self.registration.showNotification(data.title || 'PotAlot', options)
+      self.registration.showNotification(data.title || 'Potalot', options)
     )
   }
 })
