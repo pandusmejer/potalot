@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { extractSeedFromUrl } from '@/actions/seed-packet-extract'
 import { buildInventoryInsert } from '@/lib/inventory-insert'
 import { findExistingGuideIdsForImport } from '@/actions/guides'
+import type { ImportGuideMatch } from '@/lib/guides/import-guide-match'
 import {
   normaliserImportRaekke,
   parseSowingDepth,
@@ -235,9 +236,13 @@ export async function confirmImportInventory(rows: EnrichedImportRow[]): Promise
 
   // Eksisterende guides kobles på FØR insert — aldrig via
   // ensureGuideForInventoryItem, som ville generere med AI pr. række.
-  let guideIds: (string | null)[] = importable.map(() => null)
+  // Kun et 1:1-match gemmes: en pose MED sort får kun guide_id, hvis der
+  // findes en rigtig sortsguide. Findes kun artsguiden, står guide_id tom,
+  // så posen kan kobles korrekt den dag sortsguiden produceres — visningen
+  // falder alligevel tilbage til artsguiden på navn.
+  let matches: ImportGuideMatch[] = importable.map(() => ({ guideId: null, artsGuideId: null }))
   try {
-    guideIds = await findExistingGuideIdsForImport(
+    matches = await findExistingGuideIdsForImport(
       importable.map(r => ({ name: r.values.name, variety: r.values.variety ?? null })),
     )
   } catch (e) {
@@ -246,7 +251,7 @@ export async function confirmImportInventory(rows: EnrichedImportRow[]): Promise
   }
 
   const inserts = importable.map((r, i) =>
-    buildInventoryInsert(userId, { ...r.values, guideId: guideIds[i] ?? null }),
+    buildInventoryInsert(userId, { ...r.values, guideId: matches[i]?.guideId ?? null }),
   )
 
   const { error } = await supabase.from('inventory_items').insert(inserts)

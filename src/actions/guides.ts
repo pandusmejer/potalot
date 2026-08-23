@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import type { ImportGuideMatch } from '@/lib/guides/import-guide-match'
 import type {
   Guide, GuideQuickFacts, GuideSection, GuideCalendarRule,
   PrimaryCategoryId, Difficulty, GuideStatus, GuideVisibility, GuideReviewStatus, GuideLevel,
@@ -132,28 +133,33 @@ async function findReusableGuideId(
  * Slå EKSISTERENDE guides op for et helt batch af (navn, sort)-par.
  *
  * Genererer ALDRIG noget. Bruges af Excel-importen, hvor 100 rækker ikke
- * må udløse 100 AI-guide-genereringer, men hvor importerede poser
- * heller ikke skal være andenrangsborgere i Frøbanken:
+ * må udløse 100 AI-guide-genereringer, men hvor importerede poser heller
+ * ikke skal være andenrangsborgere i Frøbanken.
  *
- *   1. eksisterende SORTS-guide (navn + sort)  → link den
- *   2. ellers eksisterende ARTS-guide (navn)   → link den
- *   3. ellers ingen guide                      → posten importeres uden
+ * 1:1-REGLEN (vidensmodellen §"aldrig artsguides til sorter", ANNA-LÅST
+ * 23/8): `guide_id` på en pose MED sort må kun pege på en rigtig
+ * sortsguide.
  *
- * Trin 2 er en bevidst UNDTAGELSE fra 1:1-reglen i vidensmodellen
- * ("der oprettes aldrig artsguides til sorter"). Under batch-import er
- * alternativet ingen guide overhovedet, og en artsguide er ærligt tættere
- * på end ingenting. En sådan midlertidig kobling kan altid genkendes uden
- * ny kolonne: posen har en `variety`, mens dens guide har `variety = null`
- * — det er nøglen, en senere rate-limitet generérings-kø skal bruge for at
- * opgradere posen til en rigtig sortsguide.
+ *   pose med sort + sortsguide findes  → guideId = sortsguiden
+ *   pose med sort, kun artsguide       → guideId = null, artsGuideId sat
+ *   pose uden sort + artsguide findes  → guideId = artsguiden (det ER 1:1)
+ *   ingenting                          → begge null
+ *
+ * Hvorfor det er vigtigt at LADE VÆRE med at gemme artsguiden på en sort:
+ * `ensureGuideForInventoryItem` returnerer tidligt, så snart `guide_id` er
+ * sat. Gemte vi artsguiden, ville posen aldrig kunne få sin rigtige
+ * sortsguide, når den engang bliver produceret — en fælde der først viser
+ * sig måneder senere. Visningen mister intet ved det: resolvePlantGuideHref
+ * falder allerede tilbage til artsguiden på navn, når guide_id er tom.
  *
  * Ét opslag for hele importen; matchningen sker i hukommelsen. Master-
  * guides (user_id = NULL) foretrækkes frem for private.
  */
 export async function findExistingGuideIdsForImport(
   par: { name: string; variety?: string | null }[],
-): Promise<(string | null)[]> {
+): Promise<ImportGuideMatch[]> {
   await requireUser()
+  const tom: ImportGuideMatch = { guideId: null, artsGuideId: null }
   if (par.length === 0) return []
 
   const supabase = await createClient()
@@ -163,7 +169,7 @@ export async function findExistingGuideIdsForImport(
     .order('user_id', { ascending: true, nullsFirst: true })
     .order('created_at', { ascending: true })
 
-  if (!data) return par.map(() => null)
+  if (!data) return par.map(() => ({ ...tom }))
 
   // Første match vinder — rækkefølgen fra queryen sætter master før privat.
   const sortsGuider = new Map<string, string>()
@@ -182,13 +188,17 @@ export async function findExistingGuideIdsForImport(
 
   return par.map(({ name, variety }) => {
     const navnKey = normalizeGuideKey(name)
-    if (!navnKey) return null
+    if (!navnKey) return { ...tom }
+    const artsGuideId = artsGuider.get(navnKey) ?? null
     const sortKey = variety ? normalizeGuideKey(variety) : null
-    if (sortKey) {
-      const traef = sortsGuider.get(`${navnKey}|${sortKey}`)
-      if (traef) return traef
+
+    if (!sortKey) {
+      // Ingen sort → artsguiden ER 1:1-matchet og må gemmes.
+      return { guideId: artsGuideId, artsGuideId }
     }
-    return artsGuider.get(navnKey) ?? null
+    // Med sort: kun en rigtig sortsguide må gemmes. Findes den ikke,
+    // efterlades guide_id tom, så posen kan kobles korrekt senere.
+    return { guideId: sortsGuider.get(`${navnKey}|${sortKey}`) ?? null, artsGuideId }
   })
 }
 
