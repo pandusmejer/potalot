@@ -33,6 +33,7 @@ import Link from 'next/link'
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import { InventoryCard } from './inventory-card'
 import type { InventoryItem } from '@/lib/types'
+import type { PoseInfo } from '@/lib/froebank-grupper'
 import { FORVANDLINGER_ROUTE } from '@/lib/constants'
 
 // ── Folder geometry — bredde matcher hero-frøkortet ─────────────
@@ -383,7 +384,7 @@ const HERO_BOTTOM_PAPER = 36 // synlig creme-bundflade under kortet — plads ti
                              // synlig creme + Tomats lille 9px overlap
 const HERO_FOLDER_TONE = '#EFE7D8' // Salat-folderens creme-tone
 
-function HeroFolder({ item }: { item: InventoryItem }) {
+function HeroFolder({ item, pose }: { item: InventoryItem; pose?: PoseInfo }) {
   const cardW = HERO_FOLDER_WIDTH - HERO_CARD_INSET_L - HERO_CARD_INSET_R
   const cardH = cardW * 1.25 // InventoryCard er aspect-[4/5]
   const H = HERO_CARD_TOP + cardH + HERO_BOTTOM_PAPER
@@ -418,6 +419,7 @@ function HeroFolder({ item }: { item: InventoryItem }) {
       <div style={{ position: 'absolute', top: HERO_CARD_TOP, left: HERO_CARD_INSET_L, right: HERO_CARD_INSET_R }}>
         <InventoryCard
           item={item}
+          pose={pose}
           cardRadius={24}
           cardShadow="0 8px 18px rgba(55,48,34,0.12), 0 2px 6px rgba(55,48,34,0.06), inset 0 1px 0 rgba(255,255,255,0.10)"
           infoPanelRadiusTop={22}
@@ -564,6 +566,7 @@ function useContainerWidth() {
 
 function StackFolder({
   item,
+  pose,
   shell,
   width,
   height,
@@ -574,6 +577,7 @@ function StackFolder({
   onToggle,
 }: {
   item: InventoryItem
+  pose?: PoseInfo
   shell: (typeof FOLDER_SHELLS)[number]
   width: number
   height: number
@@ -687,6 +691,7 @@ function StackFolder({
         >
           <InventoryCard
             item={item}
+            pose={pose}
             hideEyebrow={!isExpanded}
             nameScale={isExpanded ? 1 : 0.8}
             cardShadow={isExpanded ? STACK_EXPANDED_CARD_SHADOW : STACK_COLLAPSED_CARD_SHADOW}
@@ -833,7 +838,7 @@ function TailFolder({
 // (kun top-preview, 156px, overlap 18px, ÅBEN bund → fortsættende arkiv).
 // Tap/click åbner ÉT kort i fuld højde (afrundet bund); nyt klik kollapser
 // det forrige. Ghost-mapper + fade nederst. Ingen hover-expansion.
-function StackCascade({ items }: { items: InventoryItem[] }) {
+function StackCascade({ items, poseInfo }: { items: InventoryItem[]; poseInfo?: Map<string, PoseInfo> }) {
   const [ref, cw] = useContainerWidth()
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
@@ -899,6 +904,7 @@ function StackCascade({ items }: { items: InventoryItem[] }) {
           <StackFolder
             key={f.item.id}
             item={f.item}
+            pose={poseInfo?.get(f.item.id)}
             shell={f.shell}
             width={f.width}
             height={f.height}
@@ -979,9 +985,13 @@ function TomBankTreVeje() {
 // ── Main component ──────────────────────────────────────────────
 export function InventoryArchiveStack({
   inventory,
+  poseInfo,
   erTomBank,
 }: {
+  /** Én post pr. SORT (gruppens hoved-pose), ikke pr. frøpose. */
   inventory: InventoryItem[]
+  /** Poseoplysninger pr. hoved-pose-id — kun for sorter med flere poser. */
+  poseInfo?: Map<string, PoseInfo>
   /** Hele banken er tom (ikke bare et filter/en søgning uden match). */
   erTomBank?: boolean
 }) {
@@ -1016,14 +1026,14 @@ export function InventoryArchiveStack({
       aria-label="Frøbank-arkiv"
     >
       {/* FolderItem 1 — Salat hero-kort i sin EGEN creme folder-shell. */}
-      <HeroFolder item={hero} />
+      <HeroFolder item={hero} pose={poseInfo?.get(hero.id)} />
 
       {/* Folder-cascade — Tomat, Agurk, … hver i sin egen kort-bærende
           folder-shell. Salat er den ÅBNE introduktionsmappe (afrundet bund);
           Tomat overlapper kun dens cremebund ~9px, så der står ~27px synlig
           creme under Salat-kortet → "åben intro → collapsed arkivstak". */}
       <div style={{ position: 'relative', zIndex: 2, marginTop: -9 }}>
-        <StackCascade items={stackItems} />
+        <StackCascade items={stackItems} poseInfo={poseInfo} />
       </div>
     </div>
   )

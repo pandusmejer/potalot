@@ -9,7 +9,7 @@ import { EditInventoryDialog } from '@/components/froebank/edit-inventory-dialog
 import { FlytTilFroebank } from '@/components/froebank/flyt-til-froebank'
 import { SowDialog } from '@/components/froebank/sow-dialog'
 import { GuideLink } from '@/components/froebank/guide-link'
-import { getInventoryItem } from '@/actions/froebank'
+import { getInventoryItem, getFroeposerForSort } from '@/actions/froebank'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getAllGuides, getGuide } from '@/actions/guides'
 import { getAllTasks } from '@/actions/havekalender'
@@ -50,6 +50,10 @@ export default async function InventoryDetailPage({ params }: Props) {
     getAllTasks(),
   ])
   if (!item) notFound()
+
+  // Samme sort kan ligge i flere fysiske frøposer (forskellig leverandør,
+  // årgang, udløb). Tom liste = kun én pose → afsnittet vises slet ikke.
+  const froeposer = await getFroeposerForSort(item)
 
   const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
   const linkedTasks = allTasks
@@ -434,6 +438,88 @@ export default async function InventoryDetailPage({ params }: Props) {
                 >
                   {meta.label}
                 </Badge>
+              )
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Dine frøposer — vises KUN når sorten ligger i flere fysiske poser.
+          Poserne slås aldrig sammen: hver har sin leverandør, årgang, udløb
+          og antal, og redigeres hver for sig. Sortens guide, frøkort og
+          dyrkningsdata er derimod fælles og står i afsnittene ovenfor. */}
+      {froeposer.length > 1 && (
+        <Card
+          style={{
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.08) 100%), #F7F1E4',
+            border: '1px solid rgba(117,101,62,0.13)',
+            borderRadius: 26,
+            boxShadow: '0 10px 22px rgba(64,58,42,0.075), 0 3px 8px rgba(64,58,42,0.045), inset 0 1px 0 rgba(255,255,255,0.42)',
+            padding: '20px 22px 22px',
+          }}
+        >
+          <CardHeader className="!p-0 !space-y-0">
+            <CardTitle style={{ fontSize: 21, lineHeight: 1.05, fontWeight: 700, color: '#263321', marginBottom: 6 }}>
+              Dine frøposer
+            </CardTitle>
+            <p style={{ fontSize: 13, lineHeight: 1.35, color: 'rgba(38,51,33,0.62)', marginBottom: 16 }}>
+              Du har {froeposer.length} poser af {item.name}
+              {item.variety ? ` ${item.variety}` : ''}.
+            </p>
+          </CardHeader>
+          <CardContent className="!p-0 space-y-2">
+            {froeposer.map((pose) => {
+              const erDenneSide = pose.id === item.id
+              const detaljer = [
+                pose.supplier,
+                pose.purchaseYear != null ? String(pose.purchaseYear) : null,
+                pose.expiryDate ? `bedst før ${formatDatoMedAar(pose.expiryDate)}` : null,
+                pose.seedCount != null
+                  ? `${pose.seedsRemaining ?? pose.seedCount} frø`
+                  : pose.quantity != null
+                    ? `${pose.quantity} stk`
+                    : null,
+              ].filter(Boolean) as string[]
+
+              const indhold = (
+                <>
+                  <span className="min-w-0 flex-1" style={{ fontSize: 14, lineHeight: 1.35, color: '#263321' }}>
+                    {detaljer.length > 0 ? detaljer.join(' · ') : 'Ingen poseoplysninger endnu'}
+                  </span>
+                  {erDenneSide ? (
+                    <span
+                      className="shrink-0 whitespace-nowrap"
+                      style={{ fontSize: 11, fontWeight: 650, letterSpacing: '0.08em', color: 'rgba(38,51,33,0.5)' }}
+                    >
+                      DENNE POSE
+                    </span>
+                  ) : (
+                    <ArrowRight className="h-4 w-4 shrink-0" style={{ color: 'rgba(38,51,33,0.45)' }} aria-hidden />
+                  )}
+                </>
+              )
+
+              const stil = {
+                borderRadius: 16,
+                border: '1px solid rgba(117,101,62,0.14)',
+                background: erDenneSide ? 'rgba(220,230,204,0.5)' : 'rgba(255,255,255,0.42)',
+                padding: '12px 14px',
+              } as const
+
+              return erDenneSide ? (
+                <div key={pose.id} className="flex items-center gap-3" style={stil}>
+                  {indhold}
+                </div>
+              ) : (
+                <Link
+                  key={pose.id}
+                  href={`/froebank/${pose.id}`}
+                  className="no-underline flex items-center gap-3"
+                  style={stil}
+                  aria-label={`Åbn frøposen ${detaljer.join(', ')}`}
+                >
+                  {indhold}
+                </Link>
               )
             })}
           </CardContent>

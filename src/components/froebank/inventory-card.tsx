@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { froeRaekkevidde } from '@/lib/afledninger'
+import type { PoseInfo } from '@/lib/froebank-grupper'
 
 /**
  * Konverter fri tekst til kebab-case slug for asset-convention lookup
@@ -31,6 +32,12 @@ function slugify(text: string): string {
 
 interface Props {
   item: InventoryItem
+  /**
+   * Sortens poseoplysninger, når brugeren har FLERE fysiske frøposer af
+   * samme sort (art + sort). Sat kun for grupper med 2+ poser — er den
+   * udeladt, ser kortet præcis ud som før.
+   */
+  pose?: PoseInfo
   selectMode?: boolean
   selected?: boolean
   onToggleSelect?: () => void
@@ -83,6 +90,7 @@ const LIGHT_LABEL: Record<string, string> = {
  */
 export function InventoryCard({
   item,
+  pose,
   selectMode = false,
   selected = false,
   onToggleSelect,
@@ -125,8 +133,17 @@ export function InventoryCard({
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'
   const eyebrow = `Min Frøbank · ${kategori}`
 
-  const harSeed = item.seedCount != null
-  const tilbage = harSeed ? (item.seedsRemaining ?? item.seedCount ?? 0) : null
+  // Flere poser af samme sort: ringen tæller sortens SAMLEDE beholdning,
+  // ikke kun hoved-posens. Poserne selv bliver ikke slået sammen — de har
+  // hver sin leverandør, årgang og udløb og vises separat på detaljesiden.
+  const flerePoser = pose != null && pose.antalPoser > 1
+  const harSeed = flerePoser ? pose.froeTilbage != null : item.seedCount != null
+  const tilbage = !harSeed
+    ? null
+    : flerePoser
+      ? (pose.froeTilbage ?? 0)
+      : (item.seedsRemaining ?? item.seedCount ?? 0)
+  const froeIAlt = flerePoser ? pose.froeIAlt : item.seedCount
 
   // Sprint 1 (afledningsmotoren, F4): "Rækker ~7 sæsoner" — afledt
   // af seedsRemaining / seedsSown. For et frø PÅ LAGER er rækkevidden
@@ -230,7 +247,11 @@ export function InventoryCard({
           når der findes seedCount-data, ikke under select-mode, og
           ikke når overlay er skjult (hover-state på stack-kort). */}
       {!selectMode && !hideOverlay && tilbage != null && (
-        <SeedCountRing remaining={tilbage} total={item.seedCount} />
+        <SeedCountRing
+          remaining={tilbage}
+          total={froeIAlt}
+          antalPoser={flerePoser ? pose.antalPoser : undefined}
+        />
       )}
 
       {/* BUND — warm botanical paper-panel.
@@ -368,7 +389,16 @@ export function InventoryCard({
  * Hvis original-mængde mangler vises en neutral statisk ring på 65%
  * — så cirklen stadig læses som instrument, ikke som tomhed.
  */
-function SeedCountRing({ remaining, total }: { remaining: number; total?: number | null }) {
+function SeedCountRing({
+  remaining,
+  total,
+  antalPoser,
+}: {
+  remaining: number
+  total?: number | null
+  /** Sat kun når sorten har flere fysiske frøposer — ellers uændret kort. */
+  antalPoser?: number
+}) {
   const hasTotal = total != null && total > 0
   const percent = hasTotal ? Math.max(0, Math.min(100, (remaining / total) * 100)) : 65
 
@@ -391,6 +421,30 @@ function SeedCountRing({ remaining, total }: { remaining: number; total?: number
       className="pointer-events-none absolute right-[28px] top-[20px] z-20"
       style={{ width: size, height: size }}
     >
+      {/* "2 poser" — diskret undertekst under ringen. Al øvrig
+          poseinformation (leverandør, årgang, udløb) bor på sortens
+          detaljeside; grid-kortet nævner kun ANTALLET. */}
+      {antalPoser != null && antalPoser > 1 && (
+        <span
+          className="absolute left-1/2 whitespace-nowrap rounded-full px-2 py-[3px]"
+          style={{
+            top: size + 5,
+            transform: 'translateX(-50%)',
+            background: 'rgba(36,48,31,0.34)',
+            backdropFilter: 'blur(2px)',
+            WebkitBackdropFilter: 'blur(2px)',
+            border: '1px solid rgba(246,243,235,0.22)',
+            fontFamily: sans,
+            fontSize: 9,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+            lineHeight: 1,
+            color: '#F6F3EB',
+          }}
+        >
+          {antalPoser} poser
+        </span>
+      )}
       {/* Glas-lignende baggrund — papir-vellum mod fotoet.
           Materialitet: subtle outer shadow + inset top highlight giver
           badgen den samme fysiske dybde som kortene under den. */}

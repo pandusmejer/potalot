@@ -159,6 +159,29 @@ export async function getInventoryItem(id: string): Promise<InventoryItem | null
   return rowToItem(data as InventoryRow, c ? { seedsSown: c.seeds_sown, seedsRemaining: c.seeds_remaining } : undefined)
 }
 
+/**
+ * Alle brugerens fysiske frøposer af SAMME sort (art + sort) som det
+ * givne item — inkl. item selv. Grupperingen bruger kun kategori, navn
+ * og sort; leverandør, årgang og udløb hører til den enkelte pose og må
+ * aldrig samle eller adskille sorter.
+ *
+ * Returnerer en tom liste hvis der kun findes den ene pose, så kaldere
+ * kan lade visningen være uændret for brugere med én pose pr. sort.
+ */
+export async function getFroeposerForSort(item: InventoryItem): Promise<InventoryItem[]> {
+  const { sortsNoegle, sorterPoser } = await import('@/lib/froebank-grupper')
+  const noegle = sortsNoegle(item)
+
+  // Demo-frø lever ikke i databasen — slå op i demo-puljen i stedet.
+  const alle = item.id.startsWith('demo-inv-')
+    ? (await import('@/lib/demo-inventory')).DEMO_INVENTORY
+    : await getAllInventoryItems()
+
+  const poser = alle.filter((i) => sortsNoegle(i) === noegle)
+  if (poser.length < 2) return []
+  return sorterPoser(poser)
+}
+
 export interface CreateInventoryInput {
   name: string
   latinName?: string

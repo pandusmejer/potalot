@@ -20,6 +20,7 @@ import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
+import { grupperEfterSort, poseInfoEfterHovedId } from '@/lib/froebank-grupper'
 import {
   FilterBottomSheet,
   type SmartFilter,
@@ -181,6 +182,13 @@ export function FroebankBrowser({ inventory }: Props) {
       return byName(a, b)
     })
   }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder])
+
+  // Samme sort, flere fysiske frøposer: stakken viser ÉN mappe pr. sort
+  // (art + sort), ikke pr. pose. Poserne bevares som selvstændige rækker —
+  // de vises hver for sig på sortens detaljeside.
+  const grupper = useMemo(() => grupperEfterSort(filtered), [filtered])
+  const gruppeHoveder = useMemo(() => grupper.map((g) => g.hoved), [grupper])
+  const poseInfo = useMemo(() => poseInfoEfterHovedId(grupper), [grupper])
 
   const latestInventoryItem = useMemo(() => {
     const withDates = inventory.filter((i) => i.createdAt)
@@ -380,7 +388,7 @@ export function FroebankBrowser({ inventory }: Props) {
             />
           </div>
         )}
-        <InventoryArchiveStack inventory={filtered} erTomBank={inventory.length === 0} />
+        <InventoryArchiveStack inventory={gruppeHoveder} poseInfo={poseInfo} erTomBank={inventory.length === 0} />
       </div>
 
       {/* Filterknappen i mappen åbner dette bottom sheet (ikke længere et
