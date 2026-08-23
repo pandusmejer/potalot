@@ -278,6 +278,63 @@ export function resolvePotalotImage(
 }
 
 /**
+ * Sortens slug-kandidater — navn+sort, i den rækkefølge de skal prøves.
+ *
+ * Apostroffer staves på TO måder i billedbiblioteket, fordi filerne er
+ * produceret ad to veje: slugify laver "burpee's" → "burpee-s"
+ * (/images/frokort/roedbede-burpee-s-golden.png), mens de håndnavngivne
+ * guide-id'er dropper apostroffen helt ("Gardener's Delight" →
+ * tomat-gardeners-delight). Begge stavemåder ligger på disken.
+ *
+ * Prøver vi kun den ene, finder en frøpost aldrig det frøkort Potalot
+ * FAKTISK har — det var præcis dét "Tomat · Gardener's Delight" ramte.
+ * Rækkefølgen er låst: slugify først (uændret adfærd), apostrof-fri
+ * variant som ekstra kandidat. Begge peger på SAMME sort — kun
+ * apostroffen skrives forskelligt — så reglen "ingen fald til beslægtet
+ * sort" holder.
+ */
+function sortsSlugKandidater(
+  name: string,
+  variety: string | null | undefined,
+): string[] {
+  if (!variety) return []
+  const raa = `${name}-${variety}`
+  return uniqueCompact([slugify(raa), slugify(raa.replace(/['\u2018\u2019]/g, ''))])
+}
+
+/**
+ * Resolver en sorts-rolle (seed-card / plant-card) på tværs af sortens
+ * slug-stavemåder. Første kandidat der giver et RIGTIGT billede vinder;
+ * findes intet, returneres fallback for den kanoniske slug (så alt-tekst
+ * og src er uændrede i forhold til før).
+ */
+function resolveSortsRolle(
+  role: PotalotImageRole,
+  input: {
+    guideId?: string | null
+    name: string
+    variety?: string | null
+    preferredSrc?: string | null
+  },
+): PotalotImageOutput {
+  const kandidater = sortsSlugKandidater(input.name, input.variety)
+  const slugs: (string | null)[] = kandidater.length > 0 ? kandidater : [null]
+
+  let foersteFallback: PotalotImageOutput | null = null
+  for (const varietySlug of slugs) {
+    const ud = resolvePotalotImage({
+      guideId: input.guideId ?? undefined,
+      varietySlug,
+      role,
+      preferredSrc: input.preferredSrc ?? undefined,
+    })
+    if (ud.source !== 'fallback') return ud
+    foersteFallback ??= ud
+  }
+  return foersteFallback!
+}
+
+/**
  * resolveSeedCard — bekvemmeligheds-wrapper der bygger varietySlug af
  * navn+sort (præcis samme regel som frøbank-kortet) og resolver seed-
  * card-billedet. Samler slug-logikken ét sted, så frøbank-kort, frø-
@@ -285,6 +342,11 @@ export function resolvePotalotImage(
  *
  * Prioritet (fra resolvePotalotImage): brugerens eget foto (preferredSrc)
  * → kurateret frøkort → asset-convention → placeholder.
+ *
+ * Opslaget sker ALTID på navn+sort — aldrig på hvad der lå gemt i
+ * databasen da posen blev oprettet. Derfor finder en gammel frøpost
+ * automatisk et frøkort Potalot først har fået BAGEFTER, uden at der
+ * skrives noget som helst.
  */
 export function resolveSeedCard(input: {
   guideId?: string | null
@@ -292,15 +354,7 @@ export function resolveSeedCard(input: {
   variety?: string | null
   preferredSrc?: string | null
 }): PotalotImageOutput {
-  const varietySlug = input.variety
-    ? slugify(`${input.name}-${input.variety}`)
-    : null
-  return resolvePotalotImage({
-    guideId: input.guideId ?? undefined,
-    varietySlug,
-    role: 'seed-card',
-    preferredSrc: input.preferredSrc ?? undefined,
-  })
+  return resolveSortsRolle('seed-card', input)
 }
 
 /**
@@ -314,15 +368,7 @@ export function resolvePlantCard(input: {
   variety?: string | null
   preferredSrc?: string | null
 }): PotalotImageOutput {
-  const varietySlug = input.variety
-    ? slugify(`${input.name}-${input.variety}`)
-    : null
-  return resolvePotalotImage({
-    guideId: input.guideId ?? undefined,
-    varietySlug,
-    role: 'plant-card',
-    preferredSrc: input.preferredSrc ?? undefined,
-  })
+  return resolveSortsRolle('plant-card', input)
 }
 
 /**

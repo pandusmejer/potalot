@@ -41,6 +41,47 @@ export function sortsNoegle(item: Pick<InventoryItem, 'name' | 'variety' | 'prim
   return `${item.primaryCategoryId}|${normaliser(item.name)}|${normaliser(item.variety)}`
 }
 
+/**
+ * Er denne `primaryImageId` brugerens EGET foto?
+ *
+ * Kanonisk regel, ikke filnavns-heuristik: alle uploads i Potalot går
+ * gennem /api/upload, /api/images/upload eller actions/storage.ts, og de
+ * returnerer ALTID en absolut Supabase-storage-URL. Et lokalt
+ * `/images/…` har derfor aldrig kunnet komme fra en bruger — det er et
+ * Potalot-billede, der er skrevet ind i rækken (fx de gamle
+ * `/images/froebank/froekort-*.png` fra seed-data).
+ *
+ * Skellet bruges KUN til at vælge sortens forsidefoto. Selve resolveren
+ * er urørt: den validerer stadig enhver preferredSrc mod manifestet.
+ */
+export function erBrugerfoto(src: string | null | undefined): boolean {
+  return !!src && /^https?:\/\//.test(src)
+}
+
+/**
+ * Sortens forsidefoto på tværs af dens fysiske frøposer.
+ *
+ * Potalot-frøkortet tilhører SORTEN og resolves ved visning; brugerens
+ * eget foto tilhører den enkelte pose. Har mindst én pose et eget foto,
+ * repræsenterer det hele sorten — ellers returneres null, og resolveren
+ * finder sortens frøkort.
+ *
+ * Valget er bevidst uafhængigt af hvilken pose der er grupperepræsentant
+ * og af brugerens sortering (A–Å, udløb, nyeste …): vi tager det ÆLDST
+ * oprettede brugerfoto, med id som tiebreaker. Så skifter gridets billede
+ * hverken ved omsortering eller når brugeren tilføjer endnu en pose.
+ */
+export function gruppensForsidefoto(poser: InventoryItem[]): string | null {
+  const medFoto = poser.filter((p) => erBrugerfoto(p.primaryImageId))
+  if (medFoto.length === 0) return null
+  const valgt = [...medFoto].sort((a, b) => {
+    const tid = (a.createdAt ?? '').localeCompare(b.createdAt ?? '')
+    if (tid !== 0) return tid
+    return a.id.localeCompare(b.id)
+  })[0]
+  return valgt.primaryImageId ?? null
+}
+
 export interface SortsGruppe {
   noegle: string
   /** Posen der repræsenterer sorten i stakken (første i den givne rækkefølge). */
@@ -52,6 +93,12 @@ export interface SortsGruppe {
   froeTilbage: number | null
   /** Samlet oprindeligt antal frø (null hvis ingen pose har tal). */
   froeIAlt: number | null
+  /**
+   * Sortens forsidefoto: brugerfotoet fra én af poserne, valgt
+   * deterministisk (se `gruppensForsidefoto`). Null = ingen pose har eget
+   * foto → visningen resolver sortens Potalot-frøkort.
+   */
+  forsidefoto: string | null
 }
 
 function sumFelt(
@@ -99,6 +146,7 @@ export function grupperEfterSort(items: InventoryItem[]): SortsGruppe[] {
       antalPoser: poser.length,
       froeTilbage: sumFelt(poser, (p) => p.seedsRemaining ?? p.seedCount),
       froeIAlt: sumFelt(poser, (p) => p.seedCount),
+      forsidefoto: gruppensForsidefoto(poser),
     }
   })
 }
@@ -108,6 +156,12 @@ export interface PoseInfo {
   antalPoser: number
   froeTilbage: number | null
   froeIAlt: number | null
+  /**
+   * Sortens forsidefoto — brugerfoto fra en af poserne, eller null når
+   * ingen pose har et. Frøkortet er IKKE med her; det resolves ved
+   * visning ud fra art+sort.
+   */
+  forsidefoto: string | null
 }
 
 /**
@@ -123,6 +177,7 @@ export function poseInfoEfterHovedId(grupper: SortsGruppe[]): Map<string, PoseIn
       antalPoser: g.antalPoser,
       froeTilbage: g.froeTilbage,
       froeIAlt: g.froeIAlt,
+      forsidefoto: g.forsidefoto,
     })
   }
   return map

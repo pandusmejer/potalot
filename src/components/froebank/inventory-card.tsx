@@ -7,28 +7,9 @@ import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun, Hourglass } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
-import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
+import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { froeRaekkevidde } from '@/lib/afledninger'
 import type { PoseInfo } from '@/lib/froebank-grupper'
-
-/**
- * Konverter fri tekst til kebab-case slug for asset-convention lookup
- * når item.guideId mangler (legacy DB-items uden guide-kobling).
- */
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[æ]/g, 'ae')
-    .replace(/[ø]/g, 'oe')
-    .replace(/[å]/g, 'aa')
-    // Accent-normalisering (é→e, ñ→n): 'Café au Lait' og 'Jalapeño'
-    // skal matche filnavne uden accenter. æøå håndteres FØR NFD,
-    // da å ellers dekomponeres til 'a' i stedet for 'aa'.
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
 
 interface Props {
   item: InventoryItem
@@ -108,26 +89,27 @@ export function InventoryCard({
   // placeholder. Brudte/stale DB-paths (fx /images/froebank/froekort-…
   // som aldrig har eksisteret) falder automatisk til asset-convention.
   // Canonical resolver, rolle: seed-card. Falder gennem 4 lag:
-  //   1. preferredSrc (item.primaryImageId, valideret mod manifest)
+  //   1. preferredSrc (brugerens eget foto, valideret mod manifest)
   //   2. POTALOT_IMAGE_SETS_BY_ID[guideId | varietySlug].seedCard
   //   3. /images/frokort/<varietySlug>.{png,jpg}
   //   4. placeholder
   // Ingen cross-role fald — Corno bliver ikke til California Wonder.
   //
-  // varietySlug bygges ALTID af navn+sort (ikke guideId). guideId
-  // sendes separat og prøves først af resolveren; men det kuraterede
-  // frøkort er nøglet på sorts-sluggen (fx "radise-french-breakfast"),
-  // så den skal også med — ellers nås frøkortet aldrig for guide-koblede
-  // frø, og asset-convention ville bygge en /frokort/<UUID>-sti der intet
-  // matcher.
-  const varietySlug = item.variety
-    ? slugify(`${item.name}-${item.variety}`)
-    : null
-  const { src: heroImage } = resolvePotalotImage({
+  // resolveSeedCard bygger sorts-sluggen af navn+sort — ALTID ved
+  // visning, aldrig ud fra hvad der lå i rækken da posen blev oprettet.
+  // Derfor dukker et frøkort, Potalot først har fået BAGEFTER, op af sig
+  // selv; der skrives intet til databasen.
+  //
+  // preferredSrc: har sorten flere fysiske poser, er forsidefotoet
+  // gruppens (deterministisk valgt på tværs af poserne) — ellers ville
+  // billedet afhænge af hvilken pose der tilfældigvis blev
+  // grupperepræsentant, og dermed af brugerens sortering.
+  const preferredSrc = pose ? pose.forsidefoto : item.primaryImageId
+  const { src: heroImage } = resolveSeedCard({
     guideId: item.guideId,
-    varietySlug,
-    role: 'seed-card',
-    preferredSrc: item.primaryImageId,
+    name: item.name,
+    variety: item.variety,
+    preferredSrc,
   })
   const { field } = plantColor(item.name, item.variety)
   const kategori = PRIMARY_CATEGORIES[item.primaryCategoryId]?.name ?? 'Frø'

@@ -20,6 +20,7 @@ import {
 import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
+import { gruppensForsidefoto } from '@/lib/froebank-grupper'
 import {
   ArrowLeft, Calendar, BookOpen, Sprout, ArrowRight,
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
@@ -79,11 +80,24 @@ export default async function InventoryDetailPage({ params }: Props) {
   // Forsidefoto (#1): brugerens primære foto hvis aktivt valgt, ellers det
   // kuraterede frøkort. Samme resolver-prioritet som frøbank-kortet, så
   // detaljesiden og kortet altid viser det samme forsidefoto.
+  //
+  // Frøkortet tilhører SORTEN (jf. "Dine frøposer" nedenfor: guide, frøkort
+  // og dyrkningsdata er fælles for poserne), så ligger sorten i flere poser,
+  // bruges gruppens deterministisk valgte forsidefoto — ikke den åbnede
+  // poses. Ellers ville samme sort vise ét billede i gridet og et andet
+  // afhængigt af hvilken pose man klikkede sig ind på.
+  //
+  // Opslaget sker på navn+sort ved HVER visning: får Potalot et frøkort til
+  // sorten efter posen blev oprettet, dukker det op af sig selv. Ingen
+  // redigering, ingen gem, intet skrevet til databasen.
+  const forsidefoto = froeposer.length > 1
+    ? gruppensForsidefoto(froeposer)
+    : item.primaryImageId
   const heroResolved = resolveSeedCard({
     guideId: item.guideId,
     name: item.name,
     variety: item.variety,
-    preferredSrc: item.primaryImageId,
+    preferredSrc: forsidefoto,
   })
   const hero = heroResolved.source === 'fallback' ? null : heroResolved
   // Galleri = øvrige uploadede fotos (forsidefotoet vises separat ovenfor).
