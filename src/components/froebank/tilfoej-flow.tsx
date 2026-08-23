@@ -21,7 +21,7 @@ import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields }
 import { parseInventoryFile, confirmImportInventory, readImportLinks } from '@/actions/inventory-import'
 import {
   byggImportPreview, unikkeLinks, LINK_CHUNK,
-  type EnrichedImportRow, type LinkResult,
+  type EnrichedImportRow, type ImportRow, type ImportRettelser, type LinkResult,
 } from '@/lib/inventory-import-merge'
 import { ImportReview } from './import-review'
 import { ManuelOpret } from './manuel-opret'
@@ -65,6 +65,11 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const excelInputRef = useRef<HTMLInputElement>(null)
   const [excelStep, setExcelStep] = useState<'upload' | 'laeser' | 'preview' | 'done'>('upload')
   const [excelRows, setExcelRows] = useState<EnrichedImportRow[]>([])
+  // Råstoffet bevares, så en rettelse kan genberegne merget uden at læse
+  // filen eller linkene igen.
+  const [excelRaa, setExcelRaa] = useState<ImportRow[]>([])
+  const [excelLinks, setExcelLinks] = useState<Record<string, LinkResult>>({})
+  const [excelRettelser, setExcelRettelser] = useState<Record<number, ImportRettelser>>({})
   const [excelUnmapped, setExcelUnmapped] = useState<string[]>([])
   const [excelResult, setExcelResult] = useState<{ imported: number; skipped: number } | null>(null)
   const [excelBusy, setExcelBusy] = useState(false)
@@ -256,6 +261,9 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
       const res = await parseInventoryFile(fd)
       if ('error' in res) { setError(res.error); return }
       setExcelUnmapped(res.unmappedColumns)
+      setExcelRaa(res.rows)
+      setExcelLinks({})
+      setExcelRettelser({})
 
       // Hver URL hentes kun ÉN gang pr. import — også når ti rækker deler
       // samme produktside.
@@ -285,11 +293,23 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         setLinkProgress({ laest: Math.min(i + LINK_CHUNK, links.length), ialt: links.length })
         setExcelRows(byggImportPreview(res.rows, svar))
       }
+      setExcelLinks(svar)
       setExcelStep('preview')
     } finally {
       setExcelBusy(false)
       setLinkProgress(null)
     }
+  }
+
+  /**
+   * Brugeren har rettet én række. Hele forhåndsvisningen genberegnes —
+   * ikke kun rækken — fordi "samme sort findes to gange"-noten afhænger af
+   * de andre rækker. Ingen links læses igen; rettelsen er brugerens ord.
+   */
+  function handleRetRaekke(rowNumber: number, rettelser: ImportRettelser) {
+    const naeste = { ...excelRettelser, [rowNumber]: rettelser }
+    setExcelRettelser(naeste)
+    setExcelRows(byggImportPreview(excelRaa, excelLinks, naeste))
   }
 
   async function handleExcelConfirm() {
@@ -692,7 +712,11 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
 
             {excelStep === 'preview' && (
               <>
-                <ImportReview rows={excelRows} unmappedColumns={excelUnmapped} />
+                <ImportReview
+                  rows={excelRows}
+                  unmappedColumns={excelUnmapped}
+                  onGem={handleRetRaekke}
+                />
 
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <div className="flex flex-wrap gap-2 justify-end">

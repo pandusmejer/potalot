@@ -66,8 +66,37 @@ export type LinkResult =
   | { ok: true; fields: ExtractedSeedFields; primaryImageUrl: string | null; sourceUrl: string }
   | { ok: false }
 
-/** Hvor en færdig værdi kom fra. Rækkefølgen er merge-prioriteten. */
-export type ImportFeltKilde = 'excel' | 'link' | 'sort' | 'art'
+/**
+ * Hvor en færdig værdi kom fra. Rækkefølgen ER merge-prioriteten:
+ * brugerens egen rettelse i reviewet ligger ØVERST — den må hverken
+ * linket eller Potalots guider skrive hen over bagefter.
+ */
+export type ImportFeltKilde = 'egen' | 'excel' | 'link' | 'sort' | 'art'
+
+/**
+ * Felter brugeren kan rette i reviewet, før noget oprettes. Bevidst
+ * begrænset til identitet og poseoplysninger — dét, en automatisk import
+ * realistisk kan tage fejl af. Dyrkningsfakta autofyldes fortsat og rettes
+ * på frøkortet bagefter.
+ *
+ * At NØGLEN findes tæller som "rettet", også når værdien er tom: rydder
+ * brugeren leverandøren, skal den blive tom — ikke fyldes op af linket igen.
+ */
+export interface ImportRettelser {
+  name?: string
+  variety?: string
+  supplier?: string
+  purchaseYear?: number | null
+  expiryDate?: string
+  seedCount?: number | null
+  purchaseUrl?: string
+  primaryCategoryId?: PrimaryCategoryId
+}
+
+/** Felter i den rækkefølge, redigeringsformularen viser dem. */
+export const RETTELSE_FELTER = [
+  'name', 'variety', 'supplier', 'purchaseYear', 'expiryDate', 'seedCount', 'purchaseUrl',
+] as const satisfies readonly (keyof ImportRettelser)[]
 
 export interface ImportKonflikt {
   felt: string
@@ -125,6 +154,8 @@ export interface EnrichedImportRow {
   sortsNoegle: string
   /** Sat når flere rækker deler sortsNoegle: to fysiske frøposer, begge beholdes. */
   flerePoserNote: string | null
+  /** Brugerens egne rettelser fra reviewet — vinder over alt andet. */
+  rettelser: ImportRettelser
 }
 
 // ── Normalisering ────────────────────────────────────────────────────────
@@ -285,7 +316,11 @@ function noegle(kategori: string, name: string, variety: string | undefined): st
  * Berig én række: Excel → link → sortsguide → artsguide → STOP.
  * Rækken oprettes ikke her — den gøres kun klar til review.
  */
-export function berigImportRaekke(row: ImportRow, link: LinkResult | null): EnrichedImportRow {
+export function berigImportRaekke(
+  row: ImportRow,
+  link: LinkResult | null,
+  rettelser: ImportRettelser = {},
+): EnrichedImportRow {
   const excel = normaliserImportRaekke(row.data)
   const linkFields: ExtractedSeedFields = link?.ok ? link.fields : {}
   const linkStatus: EnrichedImportRow['linkStatus'] = !excel.purchaseUrl
@@ -303,8 +338,23 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
   const fieldSources: EnrichedImportRow['fieldSources'] = {}
   const konflikter: ImportKonflikt[] = []
 
-  // Lag 1+2: Excel vinder; linket fylder kun huller ud. Uenighed vises.
+  // Felter brugeren selv har rørt i reviewet. Låst: hverken linket eller
+  // Potalots guider må skrive hen over dem — heller ikke når værdien er tom.
+  const laast = new Set<keyof ImportValues>(
+    (Object.keys(rettelser) as (keyof ImportRettelser)[]).filter(k => rettelser[k] !== undefined),
+  )
+
+  // Lag 0-2: brugeren vinder over Excel, Excel over linket. Uenighed mellem
+  // fil og link vises — men kun så længe brugeren ikke selv har afgjort feltet.
   function saet<K extends keyof ImportValues>(key: K, fraExcel: unknown, fraLink: unknown) {
+    if (laast.has(key)) {
+      const egen = (rettelser as Record<string, unknown>)[key as string]
+      if (harVaerdi(egen)) {
+        values[key] = egen as ImportValues[K]
+        fieldSources[key] = 'egen'
+      }
+      return
+    }
     const harExcel = harVaerdi(fraExcel)
     const harLink = harVaerdi(fraLink)
     if (harExcel && harLink && !ensVaerdi(fraExcel, fraLink)) {
@@ -346,10 +396,7 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
   saet('rowSpacing', undefined, linkFields.rowSpacing)
 
   // Købslinket bevares altid som proveniens på posen.
-  if (excel.purchaseUrl) {
-    values.purchaseUrl = excel.purchaseUrl
-    fieldSources.purchaseUrl = 'excel'
-  }
+  saet('purchaseUrl', excel.purchaseUrl, undefined)
 
   if (!values.primaryCategoryId) values.primaryCategoryId = 'fro'
   if (!values.name) values.name = excel.latinName ?? ''
@@ -361,6 +408,7 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
     const autofill = findFroebankAutofill(values.name, values.variety ?? null)
     if (autofill) {
       const fra = <K extends keyof ImportValues>(key: K, v: unknown) => {
+        if (laast.has(key)) return                  // brugerens eget felt — urørligt
         if (harVaerdi(values[key])) return          // Excel/link har allerede talt
         if (!harVaerdi(v)) return                   // guiderne tier → feltet forbliver tomt
         values[key] = v as ImportValues[K]
@@ -424,6 +472,7 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
     harFroekort,
     sortsNoegle: noegle(values.primaryCategoryId, values.name, values.variety),
     flerePoserNote: null,
+    rettelser,
   }
 }
 
@@ -434,10 +483,15 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
 export function byggImportPreview(
   rows: ImportRow[],
   linkResults: Record<string, LinkResult>,
+  rettelser: Record<number, ImportRettelser> = {},
 ): EnrichedImportRow[] {
   const beriget = rows.map(r => {
     const url = normaliserImportRaekke(r.data).purchaseUrl
-    return berigImportRaekke(r, url ? (linkResults[url] ?? { ok: false }) : null)
+    return berigImportRaekke(
+      r,
+      url ? (linkResults[url] ?? { ok: false }) : null,
+      rettelser[r.rowNumber] ?? {},
+    )
   })
 
   const antalPrNoegle = new Map<string, number>()
