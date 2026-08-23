@@ -12,6 +12,7 @@ export interface ExtractedSeedFields {
   variety?: string
   supplier?: string
   seedCount?: number
+  purchaseYear?: number
   sowingMonths?: number[]
   plantingOutMonths?: number[]
   harvestMonths?: number[]
@@ -37,6 +38,7 @@ Felter at udtrække:
 - variety: sort (fx "San Marzano", "Black Cherry")
 - supplier: leverandør/mærke (fx "Nelson Garden", "Impecta")
 - seedCount: antal frø i posen som heltal (kun hvis tydeligt angivet)
+- purchaseYear: det årstal posen er pakket til / sæsonmærket med som heltal — KUN hvis det står tydeligt på posen eller siden. Gæt ALDRIG på indeværende år.
 - sowingMonths: array af måned-numre (1-12) hvor frøet sås
 - plantingOutMonths: array af måned-numre (1-12) hvor det udplantes
 - harvestMonths: array af måned-numre (1-12) hvor det høstes
@@ -129,6 +131,9 @@ function parseFieldsFromJson(parsed: Record<string, unknown>): ExtractedSeedFiel
   if (typeof parsed.variety === 'string')        fields.variety = parsed.variety
   if (typeof parsed.supplier === 'string')       fields.supplier = parsed.supplier
   if (typeof parsed.seedCount === 'number')      fields.seedCount = Math.round(parsed.seedCount)
+  if (typeof parsed.purchaseYear === 'number' && parsed.purchaseYear >= 1900 && parsed.purchaseYear <= 2100) {
+    fields.purchaseYear = Math.round(parsed.purchaseYear)
+  }
   if (Array.isArray(parsed.sowingMonths))        fields.sowingMonths = parsed.sowingMonths.filter((m): m is number => typeof m === 'number')
   if (Array.isArray(parsed.plantingOutMonths))   fields.plantingOutMonths = parsed.plantingOutMonths.filter((m): m is number => typeof m === 'number')
   if (Array.isArray(parsed.harvestMonths))       fields.harvestMonths = parsed.harvestMonths.filter((m): m is number => typeof m === 'number')

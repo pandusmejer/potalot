@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
 import { ensureGuideForInventoryItem } from '@/actions/guides'
 import type { InventoryItem, PrimaryCategoryId, InventoryStatus, GrowingLocation } from '@/lib/types'
+import { buildInventoryInsert, type CreateInventoryInput } from '@/lib/inventory-insert'
 
 interface InventoryRow {
   id: string
@@ -182,75 +183,13 @@ export async function getFroeposerForSort(item: InventoryItem): Promise<Inventor
   return sorterPoser(poser)
 }
 
-export interface CreateInventoryInput {
-  name: string
-  latinName?: string
-  variety?: string
-  supplier?: string
-  primaryCategoryId: PrimaryCategoryId
-  subcategoryId?: string
-  quantity?: number
-  seedCount?: number
-  purchaseDate?: string
-  purchaseYear?: number
-  purchaseUrl?: string
-  expiryDate?: string
-  notes?: string
-  sowingMonths?: number[]
-  sowingDepthMm?: number
-  preCultivation?: boolean
-  plantingOutMonths?: number[]
-  harvestMonths?: number[]
-  light?: 'full_sun' | 'partial_shade' | 'shade'
-  water?: 'low' | 'regular' | 'high'
-  soil?: string
-  germinationDays?: string
-  germinationTemperature?: string
-  plantSpacing?: string
-  rowSpacing?: string
-  growingLocations?: GrowingLocation[]
-  imageUrls?: string[]
-  primaryImageUrl?: string
-}
-
 export async function createInventoryItem(input: CreateInventoryInput): Promise<{ id: string } | { error: string }> {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('inventory_items')
-    .insert({
-      user_id: userId,
-      name: input.name,
-      latin_name: input.latinName || null,
-      variety: input.variety || null,
-      supplier: input.supplier || null,
-      primary_category_id: input.primaryCategoryId,
-      subcategory_id: input.subcategoryId || null,
-      quantity: input.quantity != null ? Math.round(input.quantity) : null,
-      seed_count: input.seedCount != null ? Math.round(input.seedCount) : null,
-      purchase_date: input.purchaseDate || null,
-      purchase_year: input.purchaseYear != null ? Math.round(input.purchaseYear) : null,
-      purchase_url: input.purchaseUrl || null,
-      expiry_date: input.expiryDate || null,
-      notes: input.notes || null,
-      sowing_months: input.sowingMonths ?? [],
-      sowing_depth_mm: input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : 0,
-      pre_cultivation: input.preCultivation ?? null,
-      planting_out_months: input.plantingOutMonths ?? [],
-      harvest_months: input.harvestMonths ?? [],
-      light: input.light ?? null,
-      water: input.water ?? null,
-      soil: input.soil || null,
-      germination_days: input.germinationDays ?? null,
-      germination_temperature: input.germinationTemperature ?? null,
-      plant_spacing: input.plantSpacing ?? null,
-      row_spacing: input.rowSpacing ?? null,
-      growing_locations: input.growingLocations ?? [],
-      status: 'i_froebank',
-      image_urls: input.imageUrls ?? [],
-      primary_image_url: input.primaryImageUrl ?? null,
-    })
+    .insert(buildInventoryInsert(userId, input))
     .select('id')
     .single()
 

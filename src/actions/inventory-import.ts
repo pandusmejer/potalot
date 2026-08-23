@@ -4,7 +4,17 @@ import * as XLSX from 'xlsx'
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
-import type { PrimaryCategoryId } from '@/lib/types'
+import { extractSeedFromUrl } from '@/actions/seed-packet-extract'
+import { buildInventoryInsert } from '@/lib/inventory-insert'
+import {
+  normaliserImportRaekke,
+  parseSowingDepth,
+  LINK_CHUNK,
+  type ImportRow,
+  type ParseResult,
+  type LinkResult,
+  type EnrichedImportRow,
+} from '@/lib/inventory-import-merge'
 
 // Kolonne-aliases: rå header → vores nøgle
 const COLUMN_ALIASES: Record<string, string[]> = {
@@ -12,10 +22,11 @@ const COLUMN_ALIASES: Record<string, string[]> = {
   latinName: ['latinsk navn', 'botanisk navn', 'latin', 'botanical', 'latinsk/botanisk navn'],
   variety: ['sort', 'variant', 'kultivar', 'variety'],
   seedCount: ['antal frø', 'antal', 'frø i pose', 'antal frø i pose', 'seed count'],
-  purchaseYear: ['købsår', 'år', 'purchase year', 'år købt'],
+  purchaseYear: ['købsår', 'år', 'purchase year', 'år købt', 'årgang'],
   expiryDate: ['udløb', 'udløber', 'expiry', 'best before'],
   supplier: ['mærke', 'leverandør', 'mærke/leverandør', 'mærke / leverandør', 'brand', 'supplier'],
-  purchaseUrl: ['købt her', 'url', 'link', 'purchase url'],
+  purchaseUrl: ['købt her', 'url', 'link', 'purchase url', 'produktlink'],
+  sowingDepthMm: ['sådybde', 'sådybde mm', 'sådybde (mm)', 'sowing depth'],
   notes: ['noter', 'note', 'egne noter', 'kommentar', 'notes'],
 }
 
@@ -52,32 +63,10 @@ function parseInt0(s: unknown): number | null {
   return isNaN(n) ? null : n
 }
 
-export interface ImportRow {
-  rowNumber: number
-  status: 'ready' | 'warning' | 'error'
-  warnings: string[]
-  errors: string[]
-  data: {
-    name?: string
-    latinName?: string
-    variety?: string
-    seedCount?: number
-    purchaseYear?: number
-    expiryDate?: string
-    supplier?: string
-    purchaseUrl?: string
-    notes?: string
-  }
-}
-
-export interface ParseResult {
-  rows: ImportRow[]
-  unmappedColumns: string[]
-}
-
 /**
  * Parser Excel- eller CSV-fil og returnerer mappede rækker + advarsler.
- * Importerer ikke noget endnu — det sker via confirmImport.
+ * Importerer ikke noget endnu — rækkerne beriges (readImportLinks +
+ * byggImportPreview) og vises i review, før noget oprettes.
  */
 export async function parseInventoryFile(formData: FormData): Promise<ParseResult | { error: string }> {
   await requireUser()
@@ -90,7 +79,7 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
   let workbook: XLSX.WorkBook
   try {
     workbook = XLSX.read(buffer, { type: 'array' })
-  } catch (e) {
+  } catch {
     return { error: 'Kunne ikke læse fil. Brug .xlsx eller .csv.' }
   }
 
@@ -114,6 +103,9 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
 
   const rows: ImportRow[] = json.map((raw, i) => {
     const data: ImportRow['data'] = {}
+    const warnings: string[] = []
+    const errors: string[] = []
+
     for (const [header, key] of headerToKey) {
       const v = raw[header]
       if (v == null || v === '') continue
@@ -127,20 +119,31 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
         case 'supplier':     data.supplier = String(v).trim(); break
         case 'purchaseUrl':  data.purchaseUrl = String(v).trim(); break
         case 'notes':        data.notes = String(v).trim(); break
+        case 'sowingDepthMm': {
+          // Præcisionsreglen: "5 mm" → 5, men "2–5 mm" er et interval og
+          // må ALDRIG blive til 3. Uden ét entydigt tal står feltet tomt.
+          const d = parseSowingDepth(v)
+          if (d.mm != null) data.sowingDepthMm = d.mm
+          else if (d.interval) warnings.push(`Sådybde "${String(v).trim()}" er et interval — vi gætter ikke. Feltet står tomt.`)
+          break
+        }
       }
     }
 
-    const warnings: string[] = []
-    const errors: string[] = []
+    // Normalisér art/sort/leverandør FØR alt andet i pipelinen.
+    const norm = normaliserImportRaekke(data)
 
-    if (!data.name && !data.latinName) {
+    if (!norm.name && !norm.latinName) {
       errors.push('Mangler navn eller latinsk navn')
     }
-    if (data.seedCount != null && data.seedCount < 0) {
+    if (norm.seedCount != null && norm.seedCount < 0) {
       errors.push('Antal frø må ikke være negativt')
     }
-    if (data.purchaseYear != null && (data.purchaseYear < 1900 || data.purchaseYear > 2100)) {
-      warnings.push(`Mistænkeligt købsår: ${data.purchaseYear}`)
+    if (norm.purchaseYear != null && (norm.purchaseYear < 1900 || norm.purchaseYear > 2100)) {
+      warnings.push(`Mistænkeligt købsår: ${norm.purchaseYear}`)
+    }
+    if (norm.purchaseUrl && !/^https?:\/\//i.test(norm.purchaseUrl)) {
+      warnings.push('Linket ser ikke ud til at være en webadresse. Vi springer det over.')
     }
 
     return {
@@ -148,46 +151,85 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
       status: errors.length > 0 ? 'error' : warnings.length > 0 ? 'warning' : 'ready',
       warnings,
       errors,
-      data,
+      data: norm,
     }
   })
 
   return { rows, unmappedColumns: unmapped }
 }
 
+const LINK_CONCURRENCY = 4
+const LINK_TIMEOUT_MS = 15_000
+
+function medTimeout<T>(p: Promise<T>, ms: number): Promise<T | null> {
+  return Promise.race([
+    p.catch(() => null),
+    new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+  ])
+}
+
 /**
- * Importér rækker til frøbanken. Skipper rækker med errors.
- * Tjekker for dubletter på (name, variety, supplier, purchaseYear) og advarer
- * — men opretter alligevel da samme sort kan være ny batch.
+ * Læs et bundt produktlinks fra importen.
+ *
+ * Reglerne (Anna, opgave 2): begrænset samtidighed, timeout pr. link,
+ * og en fejl på ét link må ALDRIG stoppe importen — den bliver til
+ * `{ ok: false }`, og rækken beholder sine Excel-data.
+ *
+ * Kaldes i bidder fra review-fladen, så brugeren ser fremdrift og hvert
+ * server-kald holder sig kort. Kalderen sørger for at hver URL kun
+ * sendes én gang pr. import.
  */
-export async function confirmImportInventory(rows: ImportRow[]): Promise<
+export async function readImportLinks(urls: string[]): Promise<Record<string, LinkResult>> {
+  await requireUser()
+
+  const unikke = [...new Set(urls.filter(u => /^https?:\/\//i.test(u)))].slice(0, LINK_CHUNK)
+  const ud: Record<string, LinkResult> = {}
+
+  let i = 0
+  async function arbejder() {
+    while (i < unikke.length) {
+      const url = unikke[i++]
+      const res = await medTimeout(extractSeedFromUrl(url), LINK_TIMEOUT_MS)
+      if (!res || 'error' in res) {
+        if (res && 'error' in res) console.error(`import-link fejlede (${url}):`, res.error)
+        ud[url] = { ok: false }
+      } else {
+        ud[url] = { ok: true, fields: res.fields, primaryImageUrl: res.primaryImageUrl, sourceUrl: res.sourceUrl }
+      }
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(LINK_CONCURRENCY, unikke.length) }, () => arbejder()),
+  )
+
+  return ud
+}
+
+/**
+ * Opret de berigede rækker i frøbanken. Rækker med fejl springes over.
+ *
+ * Der dedupliceres ALDRIG: to rækker med samme sort er to fysiske
+ * frøposer (jf. frøposer-modellen), og begge oprettes.
+ *
+ * Rækkerne bygges gennem den samme insert-kontrakt som
+ * `createInventoryItem` (buildInventoryInsert), men skrives i ét batch —
+ * en 100-rækkers fil skal ikke sætte 100 AI-guide-genereringer i gang.
+ */
+export async function confirmImportInventory(rows: EnrichedImportRow[]): Promise<
   | { imported: number; skipped: number }
   | { error: string }
 > {
   const { id: userId } = await requireUser()
   const supabase = await createClient()
 
-  const importable = rows.filter(r => r.status !== 'error')
+  const importable = rows.filter(r => r.status !== 'fejl' && r.values?.name)
   if (importable.length === 0) return { imported: 0, skipped: rows.length }
 
-  const inserts = importable.map(r => ({
-    user_id: userId,
-    name: r.data.name ?? r.data.latinName ?? 'Ukendt',
-    latin_name: r.data.latinName ?? null,
-    variety: r.data.variety ?? null,
-    supplier: r.data.supplier ?? null,
-    primary_category_id: 'fro' satisfies PrimaryCategoryId,
-    seed_count: r.data.seedCount ?? null,
-    purchase_year: r.data.purchaseYear ?? null,
-    purchase_url: r.data.purchaseUrl ?? null,
-    expiry_date: r.data.expiryDate ?? null,
-    notes: r.data.notes ?? null,
-    status: 'i_froebank',
-  }))
+  const inserts = importable.map(r => buildInventoryInsert(userId, r.values))
 
   const { error } = await supabase.from('inventory_items').insert(inserts)
   if (error) {
-    console.error('importInventoryRows fejlede:', error)
+    console.error('confirmImportInventory fejlede:', error)
     return { error: 'Kunne ikke importere rækkerne. Prøv igen.' }
   }
 

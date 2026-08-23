@@ -18,7 +18,11 @@ import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
 import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
-import { parseInventoryFile, confirmImportInventory, type ImportRow } from '@/actions/inventory-import'
+import { parseInventoryFile, confirmImportInventory, readImportLinks } from '@/actions/inventory-import'
+import {
+  byggImportPreview, unikkeLinks, LINK_CHUNK, IMPORT_STATUS_LABEL,
+  type EnrichedImportRow, type LinkResult,
+} from '@/lib/inventory-import-merge'
 import { ManuelOpret } from './manuel-opret'
 import { cn } from '@/lib/utils'
 
@@ -56,12 +60,15 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   // Link
   const [linkUrl, setLinkUrl] = useState('')
 
-  // Excel
+  // Excel — berigelse sker FØR oprettelse: fil → links → merge → review.
   const excelInputRef = useRef<HTMLInputElement>(null)
-  const [excelStep, setExcelStep] = useState<'upload' | 'preview' | 'done'>('upload')
-  const [excelRows, setExcelRows] = useState<ImportRow[]>([])
+  const [excelStep, setExcelStep] = useState<'upload' | 'laeser' | 'preview' | 'done'>('upload')
+  const [excelRows, setExcelRows] = useState<EnrichedImportRow[]>([])
   const [excelUnmapped, setExcelUnmapped] = useState<string[]>([])
   const [excelResult, setExcelResult] = useState<{ imported: number; skipped: number } | null>(null)
+  const [excelBusy, setExcelBusy] = useState(false)
+  const [linkProgress, setLinkProgress] = useState<{ laest: number; ialt: number } | null>(null)
+  const [aabenRaekke, setAabenRaekke] = useState<number | null>(null)
 
   // ── FASE 1: LÆS posen. Opretter ALDRIG her — hverken ved API-fejl eller tom
   //    udlæsning (spejler F5's ærlige adfærd). Fører til 'review' (navn aflæst)
@@ -232,6 +239,10 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     startTransition(() => runLinkAndCreate(trimmed, scanTarget))
   }
 
+  // ── EXCEL: berig FØR oprettelse ────────────────────────────────────────
+  //  fil → normalisér → læs links → merge (Excel > link > sort > art > STOP)
+  //  → resolve frøkort → validér → review. Intet oprettes før brugeren
+  //  trykker "Importér". Ingen manuel "Autoudfyld" pr. række.
   async function handleExcelFile(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null)
     const file = e.target.files?.[0]
@@ -239,26 +250,67 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     e.target.value = ''
     const fd = new FormData()
     fd.append('file', file)
-    startTransition(async () => {
+
+    setExcelBusy(true)
+    try {
       const res = await parseInventoryFile(fd)
       if ('error' in res) { setError(res.error); return }
-      setExcelRows(res.rows); setExcelUnmapped(res.unmappedColumns); setExcelStep('preview')
-    })
+      setExcelUnmapped(res.unmappedColumns)
+      setAabenRaekke(null)
+
+      // Hver URL hentes kun ÉN gang pr. import — også når ti rækker deler
+      // samme produktside.
+      const links = unikkeLinks(res.rows)
+      if (links.length === 0) {
+        setExcelRows(byggImportPreview(res.rows, {}))
+        setExcelStep('preview')
+        return
+      }
+
+      setLinkProgress({ laest: 0, ialt: links.length })
+      setExcelRows(byggImportPreview(res.rows, {}))
+      setExcelStep('laeser')
+
+      // Bidder med begrænset samtidighed. Et link der fejler (eller et helt
+      // kald der fejler) må ALDRIG stoppe importen — rækken beholder sine
+      // Excel-data og markeres "Link kunne ikke læses".
+      const svar: Record<string, LinkResult> = {}
+      for (let i = 0; i < links.length; i += LINK_CHUNK) {
+        const bid = links.slice(i, i + LINK_CHUNK)
+        try {
+          Object.assign(svar, await readImportLinks(bid))
+        } catch (err) {
+          console.error('import-link-bid fejlede:', err)
+          for (const u of bid) svar[u] = { ok: false }
+        }
+        setLinkProgress({ laest: Math.min(i + LINK_CHUNK, links.length), ialt: links.length })
+        setExcelRows(byggImportPreview(res.rows, svar))
+      }
+      setExcelStep('preview')
+    } finally {
+      setExcelBusy(false)
+      setLinkProgress(null)
+    }
   }
 
-  function handleExcelConfirm() {
+  async function handleExcelConfirm() {
     setError(null)
-    startTransition(async () => {
+    setExcelBusy(true)
+    try {
       const res = await confirmImportInventory(excelRows)
       if ('error' in res) { setError(res.error); return }
       setExcelResult(res); setExcelStep('done')
       router.refresh()
-    })
+    } finally {
+      setExcelBusy(false)
+    }
   }
 
-  const excelReady = excelRows.filter(r => r.status === 'ready').length
-  const excelWarn = excelRows.filter(r => r.status === 'warning').length
-  const excelErr = excelRows.filter(r => r.status === 'error').length
+  const excelKlar = excelRows.filter(r => r.status === 'klar').length
+  const excelDelvist = excelRows.filter(r => r.status === 'delvist').length
+  const excelLinkFejl = excelRows.filter(r => r.status === 'link_fejl').length
+  const excelErr = excelRows.filter(r => r.status === 'fejl').length
+  const excelImporterbare = excelRows.length - excelErr
 
   return (
     <div className="space-y-4 max-w-2xl">
@@ -594,7 +646,10 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
           <CardContent className="space-y-4 py-5">
             {excelStep === 'upload' && (
               <>
-                <p className="text-sm text-muted-foreground">Upload .xlsx eller .csv. Kolonner mappes automatisk.</p>
+                <p className="text-sm text-muted-foreground">
+                  Upload .xlsx eller .csv. Kolonner mappes automatisk, og står der et
+                  produktlink i en række, læser vi det med det samme.
+                </p>
                 <input
                   ref={excelInputRef}
                   type="file"
@@ -604,9 +659,9 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 />
                 <div className="border-2 border-dashed border-border rounded-xl p-8 text-center">
                   <FileSpreadsheet className="h-12 w-12 text-muted-foreground/40 mx-auto mb-3" />
-                  <Button onClick={() => excelInputRef.current?.click()} disabled={pending}>
+                  <Button onClick={() => excelInputRef.current?.click()} disabled={excelBusy}>
                     <Upload className="h-4 w-4" />
-                    {pending ? 'Læser…' : 'Vælg fil'}
+                    {excelBusy ? 'Læser…' : 'Vælg fil'}
                   </Button>
                 </div>
                 <a href="/api/inventory/template" className="flex items-center gap-2 text-sm text-primary hover:underline justify-center">
@@ -617,45 +672,116 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
               </>
             )}
 
+            {excelStep === 'laeser' && (
+              <div className="flex flex-col items-center gap-3 py-10 text-center">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <p className="font-serif text-lg text-foreground">Vi læser dine links</p>
+                <p className="text-sm text-muted-foreground">
+                  {linkProgress
+                    ? `${linkProgress.laest} af ${linkProgress.ialt} ${linkProgress.ialt === 1 ? 'link' : 'links'} læst`
+                    : 'Et øjeblik…'}
+                </p>
+                {linkProgress && (
+                  <div className="h-1.5 w-full max-w-xs rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all"
+                      style={{ width: `${Math.round((linkProgress.laest / Math.max(linkProgress.ialt, 1)) * 100)}%` }}
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground max-w-xs">
+                  Links, vi ikke kan læse, springes over — dine egne oplysninger går aldrig tabt.
+                </p>
+              </div>
+            )}
+
             {excelStep === 'preview' && (
               <>
                 <p className="text-sm">
-                  {excelRows.length} {excelRows.length === 1 ? 'række' : 'rækker'} fundet. {excelReady} klar, {excelWarn} med advarsler, {excelErr} med fejl.
+                  {excelRows.length} {excelRows.length === 1 ? 'række' : 'rækker'} fundet.
                 </p>
+                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  {excelKlar > 0 && <Badge variant="success">{excelKlar} klar</Badge>}
+                  {excelDelvist > 0 && <Badge variant="warning">{excelDelvist} delvist udfyldt</Badge>}
+                  {excelLinkFejl > 0 && <Badge variant="warning">{excelLinkFejl} link kunne ikke læses</Badge>}
+                  {excelErr > 0 && <Badge variant="muted">{excelErr} med fejl</Badge>}
+                </div>
                 {excelUnmapped.length > 0 && (
                   <div className="bg-warning/10 border border-warning/30 rounded-lg p-3 text-xs">
                     Kolonner uden match: {excelUnmapped.join(', ')}
                   </div>
                 )}
-                <div className="max-h-72 overflow-y-auto border border-border rounded-lg">
-                  <table className="w-full text-xs">
-                    <thead className="bg-muted sticky top-0">
-                      <tr>
-                        <th className="text-left p-2">Status</th>
-                        <th className="text-left p-2">Navn</th>
-                        <th className="text-left p-2">Sort</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {excelRows.map(r => (
-                        <tr key={r.rowNumber} className="border-t border-border">
-                          <td className="p-2">
-                            {r.status === 'ready' && <Badge variant="success" className="text-[10px]">OK</Badge>}
-                            {r.status === 'warning' && <Badge variant="warning" className="text-[10px]">Advarsel</Badge>}
-                            {r.status === 'error' && <Badge variant="muted" className="text-[10px]">Fejl</Badge>}
-                          </td>
-                          <td className="p-2 font-medium">{r.data.name ?? '—'}</td>
-                          <td className="p-2 text-muted-foreground">{r.data.variety ?? '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+
+                <ul className="max-h-80 overflow-y-auto border border-border rounded-lg divide-y divide-border">
+                  {excelRows.map(r => {
+                    const aaben = aabenRaekke === r.rowNumber
+                    const detaljer =
+                      r.konflikter.length + r.warnings.length + r.errors.length > 0 || !!r.flerePoserNote
+                    return (
+                      <li key={r.rowNumber}>
+                        <button
+                          type="button"
+                          onClick={() => setAabenRaekke(aaben ? null : r.rowNumber)}
+                          disabled={!detaljer}
+                          className={cn(
+                            'w-full text-left px-3 py-2.5 flex items-start gap-2',
+                            detaljer && 'hover:bg-muted/50',
+                          )}
+                        >
+                          <span className="shrink-0 pt-0.5">
+                            {r.status === 'klar' && <Badge variant="success" className="text-[10px]">Klar</Badge>}
+                            {r.status === 'delvist' && <Badge variant="warning" className="text-[10px]">Delvist</Badge>}
+                            {r.status === 'link_fejl' && <Badge variant="warning" className="text-[10px]">Link</Badge>}
+                            {r.status === 'fejl' && <Badge variant="muted" className="text-[10px]">Fejl</Badge>}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-sm font-medium truncate">
+                              {r.values.name || '—'}
+                              {r.values.variety && (
+                                <span className="text-muted-foreground font-normal"> · {r.values.variety}</span>
+                              )}
+                            </span>
+                            <span className="block text-[11px] text-muted-foreground truncate">
+                              {[r.values.supplier, r.values.purchaseYear]
+                                .filter(Boolean).join(' · ') || IMPORT_STATUS_LABEL[r.status]}
+                            </span>
+                          </span>
+                          {detaljer && (
+                            <AlertTriangle className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-1" />
+                          )}
+                        </button>
+
+                        {aaben && detaljer && (
+                          <div className="px-3 pb-3 space-y-2 text-xs">
+                            {r.errors.map((m, i) => (
+                              <p key={`e${i}`} className="text-destructive">{m}</p>
+                            ))}
+                            {r.konflikter.map(k => (
+                              <div key={k.felt} className="bg-muted/60 rounded-md p-2">
+                                <p className="font-medium">{k.label}</p>
+                                <p className="text-muted-foreground">Din fil: {k.fil}</p>
+                                <p className="text-muted-foreground">Linket: {k.link}</p>
+                                <p>Vi beholder {k.fil}.</p>
+                              </div>
+                            ))}
+                            {r.flerePoserNote && (
+                              <p className="text-muted-foreground">{r.flerePoserNote}</p>
+                            )}
+                            {r.warnings.map((m, i) => (
+                              <p key={`w${i}`} className="text-muted-foreground">{m}</p>
+                            ))}
+                          </div>
+                        )}
+                      </li>
+                    )
+                  })}
+                </ul>
+
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <div className="flex gap-2 justify-end">
-                  <Button variant="ghost" onClick={() => setExcelStep('upload')} disabled={pending}>Vælg anden fil</Button>
-                  <Button onClick={handleExcelConfirm} disabled={pending || excelReady + excelWarn === 0}>
-                    {pending ? 'Importerer…' : `Importér ${excelReady + excelWarn} ${excelReady + excelWarn === 1 ? 'række' : 'rækker'}`}
+                  <Button variant="ghost" onClick={() => setExcelStep('upload')} disabled={excelBusy}>Vælg anden fil</Button>
+                  <Button onClick={handleExcelConfirm} disabled={excelBusy || excelImporterbare === 0}>
+                    {excelBusy ? 'Importerer…' : `Importér ${excelImporterbare} ${excelImporterbare === 1 ? 'række' : 'rækker'}`}
                   </Button>
                 </div>
               </>
