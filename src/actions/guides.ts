@@ -128,6 +128,70 @@ async function findReusableGuideId(
   return match ? (match.id as string) : null
 }
 
+/**
+ * Slå EKSISTERENDE guides op for et helt batch af (navn, sort)-par.
+ *
+ * Genererer ALDRIG noget. Bruges af Excel-importen, hvor 100 rækker ikke
+ * må udløse 100 AI-guide-genereringer, men hvor importerede poser
+ * heller ikke skal være andenrangsborgere i Frøbanken:
+ *
+ *   1. eksisterende SORTS-guide (navn + sort)  → link den
+ *   2. ellers eksisterende ARTS-guide (navn)   → link den
+ *   3. ellers ingen guide                      → posten importeres uden
+ *
+ * Trin 2 er en bevidst UNDTAGELSE fra 1:1-reglen i vidensmodellen
+ * ("der oprettes aldrig artsguides til sorter"). Under batch-import er
+ * alternativet ingen guide overhovedet, og en artsguide er ærligt tættere
+ * på end ingenting. En sådan midlertidig kobling kan altid genkendes uden
+ * ny kolonne: posen har en `variety`, mens dens guide har `variety = null`
+ * — det er nøglen, en senere rate-limitet generérings-kø skal bruge for at
+ * opgradere posen til en rigtig sortsguide.
+ *
+ * Ét opslag for hele importen; matchningen sker i hukommelsen. Master-
+ * guides (user_id = NULL) foretrækkes frem for private.
+ */
+export async function findExistingGuideIdsForImport(
+  par: { name: string; variety?: string | null }[],
+): Promise<(string | null)[]> {
+  await requireUser()
+  if (par.length === 0) return []
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('guides')
+    .select('id, plant_name, variety, user_id')
+    .order('user_id', { ascending: true, nullsFirst: true })
+    .order('created_at', { ascending: true })
+
+  if (!data) return par.map(() => null)
+
+  // Første match vinder — rækkefølgen fra queryen sætter master før privat.
+  const sortsGuider = new Map<string, string>()
+  const artsGuider = new Map<string, string>()
+  for (const row of data) {
+    const navnKey = normalizeGuideKey(row.plant_name as string)
+    if (!navnKey) continue
+    const sort = row.variety as string | null
+    if (sort) {
+      const key = `${navnKey}|${normalizeGuideKey(sort)}`
+      if (!sortsGuider.has(key)) sortsGuider.set(key, row.id as string)
+    } else if (!artsGuider.has(navnKey)) {
+      artsGuider.set(navnKey, row.id as string)
+    }
+  }
+
+  return par.map(({ name, variety }) => {
+    const navnKey = normalizeGuideKey(name)
+    if (!navnKey) return null
+    const sortKey = variety ? normalizeGuideKey(variety) : null
+    if (sortKey) {
+      const traef = sortsGuider.get(`${navnKey}|${sortKey}`)
+      if (traef) return traef
+    }
+    return artsGuider.get(navnKey) ?? null
+  })
+}
+
 export async function getAllGuides(): Promise<Guide[]> {
   const user = await getCurrentUser()
   if (!user) return []

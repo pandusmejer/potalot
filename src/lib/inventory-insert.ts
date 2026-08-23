@@ -39,6 +39,11 @@ export interface CreateInventoryInput {
   growingLocations?: GrowingLocation[]
   imageUrls?: string[]
   primaryImageUrl?: string
+  /**
+   * Forudkoblet guide. Sættes KUN af Excel-importen, der slår eksisterende
+   * guides op i batch; den normale oprettelse lader `after()` gøre det.
+   */
+  guideId?: string | null
 }
 
 export function buildInventoryInsert(userId: string, input: CreateInventoryInput) {
@@ -73,5 +78,6 @@ export function buildInventoryInsert(userId: string, input: CreateInventoryInput
     status: 'i_froebank',
     image_urls: input.imageUrls ?? [],
     primary_image_url: input.primaryImageUrl ?? null,
+    guide_id: input.guideId ?? null,
   }
 }

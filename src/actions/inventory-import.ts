@@ -6,10 +6,12 @@ import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { extractSeedFromUrl } from '@/actions/seed-packet-extract'
 import { buildInventoryInsert } from '@/lib/inventory-insert'
+import { findExistingGuideIdsForImport } from '@/actions/guides'
 import {
   normaliserImportRaekke,
   parseSowingDepth,
   LINK_CHUNK,
+  FEJL_MANGLER_NAVN,
   type ImportRow,
   type ParseResult,
   type LinkResult,
@@ -134,7 +136,7 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
     const norm = normaliserImportRaekke(data)
 
     if (!norm.name && !norm.latinName) {
-      errors.push('Mangler navn eller latinsk navn')
+      errors.push(FEJL_MANGLER_NAVN)
     }
     if (norm.seedCount != null && norm.seedCount < 0) {
       errors.push('Antal frø må ikke være negativt')
@@ -212,8 +214,14 @@ export async function readImportLinks(urls: string[]): Promise<Record<string, Li
  * frøposer (jf. frøposer-modellen), og begge oprettes.
  *
  * Rækkerne bygges gennem den samme insert-kontrakt som
- * `createInventoryItem` (buildInventoryInsert), men skrives i ét batch —
- * en 100-rækkers fil skal ikke sætte 100 AI-guide-genereringer i gang.
+ * `createInventoryItem` (buildInventoryInsert), men skrives i ét batch.
+ *
+ * GUIDE-REGEL (Anna, 23/8): batch-import må ALDRIG starte AI-generering —
+ * en 100-rækkers fil skal ikke sætte 100 guide-genereringer i gang. Men
+ * importerede poser må heller ikke være andenrangsborgere: findes der
+ * allerede en sortsguide, kobles den; ellers en artsguide; ellers
+ * importeres posen uden guide. Opslaget er ét enkelt kald for hele
+ * batchen og genererer intet.
  */
 export async function confirmImportInventory(rows: EnrichedImportRow[]): Promise<
   | { imported: number; skipped: number }
@@ -225,7 +233,21 @@ export async function confirmImportInventory(rows: EnrichedImportRow[]): Promise
   const importable = rows.filter(r => r.status !== 'fejl' && r.values?.name)
   if (importable.length === 0) return { imported: 0, skipped: rows.length }
 
-  const inserts = importable.map(r => buildInventoryInsert(userId, r.values))
+  // Eksisterende guides kobles på FØR insert — aldrig via
+  // ensureGuideForInventoryItem, som ville generere med AI pr. række.
+  let guideIds: (string | null)[] = importable.map(() => null)
+  try {
+    guideIds = await findExistingGuideIdsForImport(
+      importable.map(r => ({ name: r.values.name, variety: r.values.variety ?? null })),
+    )
+  } catch (e) {
+    // Guide-opslaget må aldrig blokere importen — posterne kan kobles senere.
+    console.error('guide-opslag under import fejlede:', e)
+  }
+
+  const inserts = importable.map((r, i) =>
+    buildInventoryInsert(userId, { ...r.values, guideId: guideIds[i] ?? null }),
+  )
 
   const { error } = await supabase.from('inventory_items').insert(inserts)
   if (error) {

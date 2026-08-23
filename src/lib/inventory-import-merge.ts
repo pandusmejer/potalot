@@ -177,7 +177,10 @@ export function normaliserImportRaekke(data: ImportRowData): ImportRowData {
   }
 
   next.name = name
-  next.variety = variety
+  // Samme behandling som arten: "sungold" → "Sungold". Grupperingen er
+  // alligevel case-ufølsom, men to poser af samme sort skal ikke stå med
+  // hver sit begyndelsesbogstav i Frøbanken.
+  next.variety = variety ? storForbogstav(variety) : undefined
   next.latinName = stram(next.latinName)
   next.supplier = stram(next.supplier)
   next.purchaseUrl = stram(next.purchaseUrl)
@@ -292,7 +295,9 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
       : 'fejl'
 
   const warnings = [...row.warnings]
-  const errors = [...row.errors]
+  // "Mangler navn" afgøres FØRST efter merget — et navn kan komme fra linket,
+  // selv om Excel-cellen var tom. Fil-parsningens bud kasseres derfor her.
+  const errors = row.errors.filter(m => m !== FEJL_MANGLER_NAVN)
 
   const values = {} as ImportValues
   const fieldSources: EnrichedImportRow['fieldSources'] = {}
@@ -389,7 +394,7 @@ export function berigImportRaekke(row: ImportRow, link: LinkResult | null): Enri
   }
 
   // Validering.
-  if (!values.name) errors.push('Mangler navn eller latinsk navn')
+  if (!values.name) errors.push(FEJL_MANGLER_NAVN)
   if (linkStatus === 'fejl') {
     warnings.push('Linket kunne ikke læses. Vi bruger oplysningerne fra din fil.')
   }
@@ -468,6 +473,13 @@ export function unikkeLinks(rows: ImportRow[]): string[] {
  * timeouten og brugeren ser fremdrift undervejs.
  */
 export const LINK_CHUNK = 4
+
+/**
+ * Fejlteksten for en række uden identitet. Delt konstant, fordi den sættes
+ * ved fil-parsningen og RE-VURDERES efter berigelsen: står navnet kun på
+ * produktsiden, er rækken ikke navnløs alligevel.
+ */
+export const FEJL_MANGLER_NAVN = 'Mangler navn eller latinsk navn'
 
 export const IMPORT_STATUS_LABEL: Record<EnrichedStatus, string> = {
   klar: 'Klar',
