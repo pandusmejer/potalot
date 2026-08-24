@@ -25,7 +25,7 @@ export interface CreateInventoryInput {
   expiryDate?: string
   notes?: string
   sowingMonths?: number[]
-  sowingDepthMm?: number
+  sowingDepthMm?: number | null
   preCultivation?: boolean
   plantingOutMonths?: number[]
   harvestMonths?: number[]
@@ -63,7 +63,7 @@ export function buildInventoryInsert(userId: string, input: CreateInventoryInput
     expiry_date: input.expiryDate || null,
     notes: input.notes || null,
     sowing_months: input.sowingMonths ?? [],
-    sowing_depth_mm: input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : 0,
+    sowing_depth_mm: input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : null,
     pre_cultivation: input.preCultivation ?? null,
     planting_out_months: input.plantingOutMonths ?? [],
     harvest_months: input.harvestMonths ?? [],

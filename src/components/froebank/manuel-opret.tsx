@@ -89,7 +89,7 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
   // Felter Potalot ved ikke bruges for denne art/sort — de flyttes ned under
   // "Flere dyrkningsoplysninger" (ikke fjernet: en særmetode skal stadig
   // kunne registreres). Genberegnes når brugeren selv ændrer de to felter,
-  // så en egen "Ja" til forspiring straks hiver felterne frem igen.
+  // så en egen "Ja" til forkultivering straks hiver felterne frem igen.
   const irrelevante = useMemo(
     () => irrelevanteDyrkningsfelter(name, variety, {
       preCultivation: dyrkning.preCultivation,
@@ -216,7 +216,7 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
         expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
         sowingMonths: dyrkning.sowingMonths,
-        sowingDepthMm: dyrkning.sowingDepthMm ?? undefined,
+        sowingDepthMm: dyrkning.sowingDepthMm,
         preCultivation: dyrkning.preCultivation ?? undefined,
         plantingOutMonths: dyrkning.plantingOutMonths,
         harvestMonths: dyrkning.harvestMonths,

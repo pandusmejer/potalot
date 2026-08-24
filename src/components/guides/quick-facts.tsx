@@ -61,7 +61,7 @@ export function QuickFactsCard({ guide, inheritedFields, species = false }: Prop
           )}
           {qf.preCultivation !== undefined && (
             <Fact
-              label="Forspiring"
+              label="Forkultivering"
               value={qf.preCultivation ? 'Ja' : 'Nej'}
               icon={<Sprout className="h-3.5 w-3.5" />}
             />
@@ -222,7 +222,7 @@ function SpeciesQuickFacts({ guide }: { guide: Guide }) {
 
   const facts = [
     qf.preCultivation !== undefined && {
-      label: 'Forspiring',
+      label: 'Forkultivering',
       value: qf.preCultivation ? 'Ja' : 'Nej',
       icon: <Sprout className="h-3.5 w-3.5" />,
     },

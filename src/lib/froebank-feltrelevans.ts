@@ -22,7 +22,7 @@
  * afleder denne motor kun to skjul, begge forankret i `preCultivation ===
  * false`:
  *
- *   · Forspiring (preCultivation)
+ *   · Forkultivering (preCultivation)
  *       Skjules når guiden siger false OG brugeren ikke har sagt noget andet.
  *
  *   · Plant ud (plantingOutMonths)
@@ -93,7 +93,7 @@ export function irrelevanteDyrkningsfelter(
   if (fraGuide('preCultivation', sortQF, artQF) !== false) return skjul
 
   // Brugeren har eksplicit sagt "ja, jeg forkultiverer" → afviger fra
-  // Potalots viden. Så står både Forspiring og Plant ud ved magt.
+  // Potalots viden. Så står både Forkultivering og Plant ud ved magt.
   if (egne?.preCultivation === true) return skjul
 
   skjul.add('preCultivation')

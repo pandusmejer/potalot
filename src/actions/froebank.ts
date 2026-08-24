@@ -25,7 +25,7 @@ interface InventoryRow {
   expiry_date: string | null
   notes: string | null
   sowing_months: number[]
-  sowing_depth_mm: number
+  sowing_depth_mm: number | null
   pre_cultivation: boolean | null
   planting_out_months: number[]
   harvest_months: number[]
@@ -70,7 +70,7 @@ function rowToItem(row: InventoryRow, counts?: { seedsSown?: number; seedsRemain
     expiryDate: row.expiry_date,
     notes: row.notes,
     sowingMonths: row.sowing_months ?? [],
-    sowingDepthMm: row.sowing_depth_mm ?? 0,
+    sowingDepthMm: row.sowing_depth_mm,
     preCultivation: row.pre_cultivation,
     plantingOutMonths: row.planting_out_months ?? [],
     harvestMonths: row.harvest_months ?? [],
@@ -240,7 +240,7 @@ export async function updateInventoryItem(
   if (input.expiryDate !== undefined) update.expiry_date = input.expiryDate || null
   if (input.notes !== undefined) update.notes = input.notes || null
   if (input.sowingMonths !== undefined) update.sowing_months = input.sowingMonths
-  if (input.sowingDepthMm !== undefined) update.sowing_depth_mm = input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : 0
+  if (input.sowingDepthMm !== undefined) update.sowing_depth_mm = input.sowingDepthMm != null ? Math.round(input.sowingDepthMm) : null
   if (input.preCultivation !== undefined) update.pre_cultivation = input.preCultivation
   if (input.plantingOutMonths !== undefined) update.planting_out_months = input.plantingOutMonths
   if (input.harvestMonths !== undefined) update.harvest_months = input.harvestMonths

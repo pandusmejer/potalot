@@ -36,6 +36,9 @@ const WATER_LABEL: Record<NonNullable<DyrkningsfaktaState['water']>, string> = {
   regular: 'Regelmæssig',
   high: 'Meget',
 }
+/** null = ukendt, 0 = eksplicit overfladesåning — aldrig "0 mm". */
+const saadybdeLabel = (mm: number | null | undefined): string =>
+  mm == null ? '—' : mm === 0 ? 'Sås på overfladen' : `${mm} mm`
 const monthsLabel = (months: number[]): string =>
   months.length === 0 ? '—' : months.map(m => MONTHS_DA.find(x => x.num === m)?.short ?? m).join(', ')
 const arraysEqual = (a: number[], b: number[]): boolean =>
@@ -126,7 +129,7 @@ export function EditInventoryDialog({ item }: Props) {
       let dyrkChanged = false
       if (dyrkning.sowingMonths.length === 0 && f.sowingMonths?.length) { nextDyrkning.sowingMonths = f.sowingMonths; filled.push('Sås'); dyrkChanged = true }
       if (dyrkning.sowingDepthMm == null && f.sowingDepthMm != null)    { nextDyrkning.sowingDepthMm = f.sowingDepthMm; filled.push('Sådybde'); dyrkChanged = true }
-      if (dyrkning.preCultivation == null && f.preCultivation != null)  { nextDyrkning.preCultivation = f.preCultivation; filled.push('Forspiring'); dyrkChanged = true }
+      if (dyrkning.preCultivation == null && f.preCultivation != null)  { nextDyrkning.preCultivation = f.preCultivation; filled.push('Forkultivering'); dyrkChanged = true }
       if (dyrkning.plantingOutMonths.length === 0 && f.plantingOutMonths?.length) { nextDyrkning.plantingOutMonths = f.plantingOutMonths; filled.push('Plant ud'); dyrkChanged = true }
       if (dyrkning.harvestMonths.length === 0 && f.harvestMonths?.length) { nextDyrkning.harvestMonths = f.harvestMonths; filled.push('Høst'); dyrkChanged = true }
       if (dyrkning.light == null && f.light)                            { nextDyrkning.light = f.light; filled.push('Lys'); dyrkChanged = true }
@@ -259,17 +262,17 @@ export function EditInventoryDialog({ item }: Props) {
         arraysEqual, v => v.length === 0,
       )
 
-      // Sådybde (number | null)
+      // Sådybde (number | null) — null = ukendt, 0 = overfladesåning.
       if (f.sowingDepthMm != null) dyrkningField(
         'Sådybde', dyrkning.sowingDepthMm, f.sowingDepthMm, 'sowingDepthMm',
-        dyrkning.sowingDepthMm == null ? '—' : `${dyrkning.sowingDepthMm} mm`,
-        `${f.sowingDepthMm} mm`,
+        saadybdeLabel(dyrkning.sowingDepthMm),
+        saadybdeLabel(f.sowingDepthMm),
         (a, b) => a === b, v => v == null,
       )
 
       // Forspiring (boolean | null)
       if (f.preCultivation != null) dyrkningField(
-        'Forspiring', dyrkning.preCultivation, f.preCultivation, 'preCultivation',
+        'Forkultivering', dyrkning.preCultivation, f.preCultivation, 'preCultivation',
         dyrkning.preCultivation == null ? '—' : dyrkning.preCultivation ? 'Ja' : 'Nej',
         f.preCultivation ? 'Ja' : 'Nej',
         (a, b) => a === b, v => v == null,
@@ -356,7 +359,7 @@ export function EditInventoryDialog({ item }: Props) {
         expiryDate: expiryDate || undefined,
         notes: notes.trim() || undefined,
         sowingMonths: dyrkning.sowingMonths,
-        sowingDepthMm: dyrkning.sowingDepthMm ?? undefined,
+        sowingDepthMm: dyrkning.sowingDepthMm,
         preCultivation: dyrkning.preCultivation ?? undefined,
         plantingOutMonths: dyrkning.plantingOutMonths,
         harvestMonths: dyrkning.harvestMonths,

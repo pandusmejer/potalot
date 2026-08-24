@@ -80,11 +80,11 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
   }, [groupAdvanced, harAvanceretIndhold])
 
   // Irrelevante felter demoteres — de tæller derfor ALDRIG med i
-  // auto-åbningen ovenfor (ellers ville et skjult "Forspiring: Nej" folde
+  // auto-åbningen ovenfor (ellers ville et skjult "Forkultivering: Nej" folde
   // hele sektionen ud hver gang og gøre skjulet meningsløst).
   //
   // Demotering er ENVEJS så længe formularen er åben: et felt må gerne
-  // PROMOVERES op i standardvisningen (brugeren svarer "Ja" til forspiring →
+  // PROMOVERES op i standardvisningen (brugeren svarer "Ja" til forkultivering →
   // feltet hører til dér), men det må aldrig rives væk under fingeren igen,
   // hvis hun fortryder. Ref'en nulstilles ved unmount — dvs. når man går
   // tilbage til trin 1 eller lukker redigér-dialogen.
@@ -131,7 +131,7 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
 
   const forspiring = (
     <div>
-      <FeltLabel tekst="Forspiring" felt="preCultivation" />
+      <FeltLabel tekst="Forkultivering" felt="preCultivation" />
       <div className="mt-1.5 flex gap-1 p-1 bg-muted rounded-lg">
         <SegmentBtn active={value.preCultivation === true} onClick={() => patch('preCultivation', true)}>Ja</SegmentBtn>
         <SegmentBtn active={value.preCultivation === false} onClick={() => patch('preCultivation', false)}>Nej</SegmentBtn>
@@ -151,9 +151,14 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
           const v = e.target.value
           patch('sowingDepthMm', v === '' ? null : parseInt(v, 10))
         }}
-        placeholder={ph('sowingDepthMm', '0 = overflade')}
+        placeholder={ph('sowingDepthMm', 'fx 5 · skriv 0 for overflade')}
         className="mt-1.5"
       />
+      {/* Tomt felt = ukendt. 0 er et rigtigt svar — bekræft det tilbage,
+          så brugeren kan se forskel på "ved ikke" og "sås på overfladen". */}
+      {value.sowingDepthMm === 0 && (
+        <p className="text-[11px] text-muted-foreground mt-1">Sås på overfladen.</p>
+      )}
     </div>
   )
 

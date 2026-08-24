@@ -404,14 +404,19 @@ export default async function InventoryDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent className="!p-0 grid grid-cols-2" style={{ columnGap: 38, rowGap: 20 }}>
           <Fact label="Sås" value={formatMonths(item.sowingMonths)} icon={<Calendar className="h-4 w-4" strokeWidth={1.9} />} />
-          <Fact
-            label="Sådybde"
-            value={item.sowingDepthMm === 0 ? '0 mm (overflade)' : `${item.sowingDepthMm} mm`}
-            icon={<ArrowDown className="h-4 w-4" strokeWidth={1.9} />}
-          />
+          {/* Sådybde: null = ukendt (vis intet — ukendt er bedre end
+              opdigtet præcision), 0 = eksplicit overfladesåning (en
+              sætning, ikke "0 mm"), >0 = målet. */}
+          {item.sowingDepthMm != null && (
+            <Fact
+              label="Sådybde"
+              value={item.sowingDepthMm === 0 ? 'Sås på overfladen' : `${item.sowingDepthMm} mm`}
+              icon={<ArrowDown className="h-4 w-4" strokeWidth={1.9} />}
+            />
+          )}
           {!irrelevante.has('preCultivation') && (
             <Fact
-              label="Forspiring"
+              label="Forkultivering"
               value={item.preCultivation == null ? '—' : item.preCultivation ? 'Ja' : 'Nej'}
             />
           )}

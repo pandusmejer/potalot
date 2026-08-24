@@ -108,7 +108,7 @@ export interface InventoryItem {
 
   // Dyrkning
   sowingMonths: number[]                // 1-12
-  sowingDepthMm: number                 // 0 = overfladen (altid udfyldt)
+  sowingDepthMm: number | null          // null = ukendt · 0 = eksplicit overfladesåning
   preCultivation?: boolean | null
   plantingOutMonths: number[]
   harvestMonths: number[]

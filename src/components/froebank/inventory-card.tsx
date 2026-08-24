@@ -562,7 +562,7 @@ function CultivationMarker({ color, muted = false }: { color: string; muted?: bo
 function MonthIndicator({ item }: { item: InventoryItem }) {
   const sow = item.sowingMonths ?? []
   const states: StateDef[] = [
-    { label: 'forspires',  color: '#A7B08A', months: item.preCultivation ? sow : [] },
+    { label: 'forkultiveres', color: '#A7B08A', months: item.preCultivation ? sow : [] },
     { label: 'så direkte', color: '#617345', months: item.preCultivation ? [] : sow },
     { label: 'høst',       color: '#C89A35', months: item.harvestMonths ?? [] },
   ]
