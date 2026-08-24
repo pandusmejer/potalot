@@ -10,6 +10,7 @@
 import {
   poseStatusForSort,
   erUdloebet,
+  erBedstFoerNaer,
   froeTilbageIPose,
   grupperEfterSort,
 } from '@/lib/froebank-grupper'
@@ -74,6 +75,20 @@ function main() {
     // en dag tilbage i dansk tid.
     const sentPaaDagen = new Date(2026, 7, 24, 23, 59)
     tjek('sent på dagen: expiry = i dag stadig ikke udløbet', !erUdloebet('2026-08-24', sentPaaDagen))
+  }
+
+  console.log('\n[Bedst før nærmer sig] filtret bruger datoen, ikke købsåret')
+  {
+    tjek('bedst før om 3 måneder → nærmer sig', erBedstFoerNaer('2026-11-30', IDAG))
+    tjek('bedst før om 11 måneder → nærmer sig', erBedstFoerNaer('2027-07-01', IDAG))
+    tjek('bedst før om 2 år → nærmer sig IKKE', !erBedstFoerNaer('2028-08-24', IDAG))
+    tjek('allerede udløbet → tæller også med', erBedstFoerNaer('2024-01-01', IDAG))
+    // Kernen i 5B: en gammel pose med lang holdbarhed udløber ikke snart,
+    // og en pose uden dato gættes der aldrig på.
+    tjek('ingen bedst før-dato → matcher aldrig (intet gæt ud fra årgang)',
+      !erBedstFoerNaer(null, IDAG) && !erBedstFoerNaer(undefined, IDAG))
+    tjek('grænsedagen præcis 12 mdr frem er med', erBedstFoerNaer('2027-08-24', IDAG))
+    tjek('dagen efter grænsen er ude', !erBedstFoerNaer('2027-08-25', IDAG))
   }
 
   console.log('\n[Case 1] to poser, forskellig bedst før')

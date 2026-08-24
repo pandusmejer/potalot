@@ -623,7 +623,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           {item.purchaseDate && !item.purchaseYear && <Fact label="Indkøbsdato" value={formatDatoMedAar(item.purchaseDate)} tone="secondary" />}
           {item.expiryDate && (
             <Fact
-              label="Udløber"
+              label="Bedst før"
               tone="secondary"
               value={
                 <span className="inline-flex flex-wrap items-center gap-2">

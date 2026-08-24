@@ -7,7 +7,7 @@ export async function GET() {
     'Sort',
     'Antal frø',
     'Købsår',
-    'Udløb',
+    'Bedst før',
     'Mærke / leverandør',
     'Købt her',
     'Egne noter',

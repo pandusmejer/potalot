@@ -15,26 +15,35 @@ export async function GET() {
 
   const { data: counts } = await supabase
     .from('inventory_seed_counts')
-    .select('inventory_item_id, seeds_sown, seeds_remaining')
+    .select('inventory_item_id, seeds_sown')
     .eq('user_id', user.id)
 
   const countMap = new Map(
-    (counts ?? []).map((c: { inventory_item_id: string; seeds_sown: number; seeds_remaining: number }) =>
+    (counts ?? []).map((c: { inventory_item_id: string; seeds_sown: number }) =>
       [c.inventory_item_id, c]
     )
   )
 
   const rows = (items ?? []).map(i => {
     const c = countMap.get(i.id as string)
+    // Ukendt antal må ALDRIG eksporteres som 0. Viewet coalescer
+    // seed_count → 0, så "Antal tilbage" ville sige "tom pose" om en pose
+    // vi bare ikke kender antallet på — og en genimport ville skrive
+    // gætteriet tilbage i databasen. Vi regner selv, som rowToItem gør:
+    // seed_count er null → cellen står tom.
+    const antalTilbage =
+      i.seed_count == null
+        ? ''
+        : Math.max((i.seed_count as number) - (c?.seeds_sown ?? 0), 0)
     return {
       'Dansk navn': i.name ?? '',
       'Latinsk navn': i.latin_name ?? '',
       'Sort': i.variety ?? '',
       'Antal frø': i.seed_count ?? '',
       'Antal sået': c?.seeds_sown ?? '',
-      'Antal tilbage': c?.seeds_remaining ?? '',
+      'Antal tilbage': antalTilbage,
       'Købsår': i.purchase_year ?? '',
-      'Udløb': i.expiry_date ?? '',
+      'Bedst før': i.expiry_date ?? '',
       'Mærke / leverandør': i.supplier ?? '',
       'Købt her': i.purchase_url ?? '',
       'Egne noter': i.notes ?? '',
@@ -50,7 +59,7 @@ export async function GET() {
     'Antal sået': '',
     'Antal tilbage': '',
     'Købsår': '',
-    'Udløb': '',
+    'Bedst før': '',
     'Mærke / leverandør': '',
     'Købt her': '',
     'Egne noter': '',

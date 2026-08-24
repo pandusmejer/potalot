@@ -249,6 +249,29 @@ export function erUdloebet(
   return parseDate(expiryDate).getTime() < nu.getTime()
 }
 
+/**
+ * Nærmer bedst før-datoen sig — eller er den allerede passeret?
+ *
+ * Bruges af Frøbankens filter/sortering. Vinduet er 12 måneder, fordi en
+ * frøpose bruges inden for en sæson: "inden for det kommende år" er det
+ * samme som "brug den i år". Grænsen er en RIGTIG dato, ikke et gæt ud
+ * fra købsåret — en pose fra 2019 med bedst før 2031 udløber ikke snart.
+ *
+ * Poser UDEN bedst før-dato matcher aldrig. Potalot kalder ikke noget
+ * "udløber snart" på baggrund af en dato den ikke har.
+ */
+export function erBedstFoerNaer(
+  expiryDate: string | null | undefined,
+  idag: Date = new Date(),
+  maanederFrem = 12,
+): boolean {
+  if (!expiryDate) return false
+  const graense = new Date(idag)
+  graense.setHours(0, 0, 0, 0)
+  graense.setMonth(graense.getMonth() + maanederFrem)
+  return parseDate(expiryDate).getTime() <= graense.getTime()
+}
+
 /** Én poses afledte status. Intet af det gemmes i databasen. */
 export interface PoseStatus {
   /** Bedst før-datoen er passeret. Rådgivende — frøene kan stadig spire. */

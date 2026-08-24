@@ -27,7 +27,7 @@ export type SmartFilter =
 export type SortOrder = 'standard' | 'az' | 'za' | 'recent' | 'expiry'
 
 const VIS_OPTIONS: { id: SmartFilter; label: string }[] = [
-  { id: 'udloeber-snart', label: 'Udløber snart' },
+  { id: 'udloeber-snart', label: 'Bedst før snart' },
   { id: 'mangler-billede', label: 'Mangler billede' },
   { id: 'mangler-guide', label: 'Mangler guide' },
 ]
@@ -44,7 +44,7 @@ const TYPE_OPTIONS: { id: PrimaryCategoryId; label: string }[] = [
 
 const SORT_OPTIONS: { id: SortOrder; label: string }[] = [
   { id: 'recent', label: 'Senest tilføjet' },
-  { id: 'expiry', label: 'Udløber snart' },
+  { id: 'expiry', label: 'Ældste bedst før' },
   { id: 'az', label: 'Alfabetisk A–Å' },
   { id: 'za', label: 'Alfabetisk Å–A' },
 ]

@@ -92,7 +92,7 @@ const CATEGORY_ICONS: Record<string, IconType> = {
 
 const DEFAULT_FILTERS: SeedBankFolderFilter[] = [
   { id: 'alle', label: 'Alle' },
-  { id: 'udloeber-snart', label: 'Udløber snart' },
+  { id: 'udloeber-snart', label: 'Bedst før snart' },
   { id: 'senest-tilfoejet', label: 'Senest tilføjet' },
 ]
 

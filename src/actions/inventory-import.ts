@@ -26,7 +26,7 @@ const COLUMN_ALIASES: Record<string, string[]> = {
   variety: ['sort', 'variant', 'kultivar', 'variety'],
   seedCount: ['antal frø', 'antal', 'frø i pose', 'antal frø i pose', 'seed count'],
   purchaseYear: ['købsår', 'år', 'purchase year', 'år købt', 'årgang'],
-  expiryDate: ['udløb', 'udløber', 'expiry', 'best before'],
+  expiryDate: ['bedst før', 'bedst foer', 'udløb', 'udløber', 'expiry', 'best before'],
   supplier: ['mærke', 'leverandør', 'mærke/leverandør', 'mærke / leverandør', 'brand', 'supplier'],
   purchaseUrl: ['købt her', 'url', 'link', 'purchase url', 'produktlink'],
   sowingDepthMm: ['sådybde', 'sådybde mm', 'sådybde (mm)', 'sowing depth'],

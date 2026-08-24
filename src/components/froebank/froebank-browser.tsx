@@ -20,7 +20,10 @@ import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
-import { grupperEfterSort, poseInfoEfterHovedId, sortsNoegle } from '@/lib/froebank-grupper'
+import {
+  grupperEfterSort, poseInfoEfterHovedId, sortsNoegle, erBedstFoerNaer,
+} from '@/lib/froebank-grupper'
+import { parseDate } from '@/lib/datetime'
 import {
   FilterBottomSheet,
   type SmartFilter,
@@ -118,6 +121,18 @@ export function FroebankBrowser({ inventory }: Props) {
   // Sortens samlede beholdning på tværs af dens fysiske poser, beregnet
   // på HELE frøbanken. Bruges af beholdnings-filtre, så de aldrig vurderer
   // en sort ud fra den ene pose der tilfældigvis er næsten tom.
+  // Sorter hvor MINDST ÉN pose har en bedst før-dato der er passeret eller
+  // falder inden for det kommende år. Hele sortsgruppen matcher, så gridets
+  // kort beholder sit rigtige antal og "3 poser" — udløb hører til posen,
+  // men filtret handler om hvilke SORTER der trænger til opmærksomhed.
+  const bedstFoerNaerSorter = useMemo(() => {
+    const saet = new Set<string>()
+    for (const i of inventory) {
+      if (erBedstFoerNaer(i.expiryDate)) saet.add(sortsNoegle(i))
+    }
+    return saet
+  }, [inventory])
+
   const froeTilbagePrSort = useMemo(() => {
     const map = new Map<string, number | null>()
     for (const g of grupperEfterSort(inventory)) map.set(g.noegle, g.froeTilbage)
@@ -147,12 +162,9 @@ export function FroebankBrowser({ inventory }: Props) {
       list = list.filter((i) => !i.primaryImageId)
     }
     if (smartFilters.has('udloeber-snart')) {
-      // Heuristik: frø ældre end 2 år regnes "snart-udløbet".
-      const now = new Date()
-      list = list.filter((i) => {
-        if (!i.purchaseYear) return false
-        return now.getFullYear() - i.purchaseYear >= 2
-      })
+      // Den faktiske bedst før-dato afgør — ikke købsåret. En pose uden
+      // dato matcher aldrig: Potalot gætter ikke et udløb ud fra årgangen.
+      list = list.filter((i) => bedstFoerNaerSorter.has(sortsNoegle(i)))
     }
     if (smartFilters.has('naesten-tom')) {
       // Beholdning vurderes på SORTEN, ikke på den enkelte pose: 2 frø i
@@ -179,8 +191,14 @@ export function FroebankBrowser({ inventory }: Props) {
       a.name.localeCompare(b.name, 'da')
     const byCreatedAt = (a: InventoryItem, b: InventoryItem) =>
       (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
-    const byExpiry = (a: InventoryItem, b: InventoryItem) =>
-      (a.purchaseYear ?? Infinity) - (b.purchaseYear ?? Infinity)
+    // Ældste bedst før først. Poser uden dato ryger bagerst — ukendt er
+    // ikke det samme som "udløber sent", men de skal et sted hen.
+    const bedstFoerTid = (i: InventoryItem) =>
+      i.expiryDate ? parseDate(i.expiryDate).getTime() : Infinity
+    const byExpiry = (a: InventoryItem, b: InventoryItem) => {
+      const diff = bedstFoerTid(a) - bedstFoerTid(b)
+      return diff !== 0 && Number.isFinite(diff) ? diff : byName(a, b)
+    }
 
     if (sortOrder === 'recent') return [...list].sort(byCreatedAt)
     if (sortOrder === 'expiry') return [...list].sort(byExpiry)
@@ -193,7 +211,7 @@ export function FroebankBrowser({ inventory }: Props) {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
       return byName(a, b)
     })
-  }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder, froeTilbagePrSort])
+  }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder, froeTilbagePrSort, bedstFoerNaerSorter])
 
   // Samme sort, flere fysiske frøposer: stakken viser ÉN mappe pr. sort
   // (art + sort), ikke pr. pose. Poserne bevares som selvstændige rækker —
@@ -277,10 +295,7 @@ export function FroebankBrowser({ inventory }: Props) {
     const remaining = item.seedsRemaining ?? item.seedCount ?? 0
     return sum + remaining
   }, 0)
-  const expiringSoonCount = inventory.filter((item) => {
-    if (!item.purchaseYear) return false
-    return new Date().getFullYear() - item.purchaseYear >= 2
-  }).length
+  const expiringSoonCount = bedstFoerNaerSorter.size
 
   const activeFolderFilter = smartFilters.has('udloeber-snart')
     ? 'udloeber-snart'
@@ -316,7 +331,7 @@ export function FroebankBrowser({ inventory }: Props) {
     if (sortOrder === 'az') chips.push({ id: 'sort-az', label: 'A–Å' })
     if (sortOrder === 'za') chips.push({ id: 'sort-za', label: 'Å–A' })
     if (sortOrder === 'expiry')
-      chips.push({ id: 'sort-expiry', label: 'Udløber snart' })
+      chips.push({ id: 'sort-expiry', label: 'Ældste bedst før' })
     return chips
   }, [smartFilters, sortOrder])
 

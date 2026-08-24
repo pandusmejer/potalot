@@ -475,7 +475,7 @@ export function EditInventoryDialog({ item }: Props) {
               <Input type="number" value={purchaseYear} onChange={e => setPurchaseYear(e.target.value)} className="mt-1.5" />
             </div>
             <div>
-              <Label>Udløb</Label>
+              <Label>Bedst før</Label>
               <Input type="date" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} className="mt-1.5" />
             </div>
           </div>

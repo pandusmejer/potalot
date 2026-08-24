@@ -337,7 +337,7 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Udløb</Label><Input type="date" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} className="mt-1.5" /></div>
+                <div><Label>Bedst før</Label><Input type="date" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} className="mt-1.5" /></div>
                 <div><Label>Købt her</Label><Input type="url" value={purchaseUrl} onChange={e => setPurchaseUrl(e.target.value)} className="mt-1.5" /></div>
               </div>
               <div><Label>Noter</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="mt-1.5" /></div>
