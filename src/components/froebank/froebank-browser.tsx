@@ -331,7 +331,7 @@ export function FroebankBrowser({ inventory }: Props) {
     if (sortOrder === 'az') chips.push({ id: 'sort-az', label: 'A–Å' })
     if (sortOrder === 'za') chips.push({ id: 'sort-za', label: 'Å–A' })
     if (sortOrder === 'expiry')
-      chips.push({ id: 'sort-expiry', label: 'Ældste bedst før' })
+      chips.push({ id: 'sort-expiry', label: 'Udløber først' })
     return chips
   }, [smartFilters, sortOrder])
 
