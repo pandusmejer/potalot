@@ -20,7 +20,7 @@ import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
-import { grupperEfterSort, poseInfoEfterHovedId } from '@/lib/froebank-grupper'
+import { grupperEfterSort, poseInfoEfterHovedId, sortsNoegle } from '@/lib/froebank-grupper'
 import {
   FilterBottomSheet,
   type SmartFilter,
@@ -115,6 +115,15 @@ export function FroebankBrowser({ inventory }: Props) {
 
   // Filter-logik: kategori → underkategori → smart-filtre → fritekst.
   // Sortér til sidst: pinned først, så favoritter, så alfabetisk på navn.
+  // Sortens samlede beholdning på tværs af dens fysiske poser, beregnet
+  // på HELE frøbanken. Bruges af beholdnings-filtre, så de aldrig vurderer
+  // en sort ud fra den ene pose der tilfældigvis er næsten tom.
+  const froeTilbagePrSort = useMemo(() => {
+    const map = new Map<string, number | null>()
+    for (const g of grupperEfterSort(inventory)) map.set(g.noegle, g.froeTilbage)
+    return map
+  }, [inventory])
+
   const filtered = useMemo(() => {
     let list = inventory
 
@@ -146,9 +155,12 @@ export function FroebankBrowser({ inventory }: Props) {
       })
     }
     if (smartFilters.has('naesten-tom')) {
+      // Beholdning vurderes på SORTEN, ikke på den enkelte pose: 2 frø i
+      // én pose og 48 i en anden af samme sort er ikke "næsten tom".
+      // Ukendt antal (null) er heller ikke lavt — vi ved det bare ikke.
       list = list.filter((i) => {
-        const remaining = i.seedsRemaining ?? i.seedCount ?? 0
-        return remaining > 0 && remaining < 5
+        const total = froeTilbagePrSort.get(sortsNoegle(i))
+        return total != null && total > 0 && total < 5
       })
     }
 
@@ -181,7 +193,7 @@ export function FroebankBrowser({ inventory }: Props) {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
       return byName(a, b)
     })
-  }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder])
+  }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder, froeTilbagePrSort])
 
   // Samme sort, flere fysiske frøposer: stakken viser ÉN mappe pr. sort
   // (art + sort), ikke pr. pose. Poserne bevares som selvstændige rækker —

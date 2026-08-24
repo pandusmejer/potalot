@@ -20,7 +20,7 @@ import {
 import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
-import { gruppensForsidefoto } from '@/lib/froebank-grupper'
+import { gruppensForsidefoto, poseStatusForSort, erUdloebet } from '@/lib/froebank-grupper'
 import { irrelevanteDyrkningsfelter } from '@/lib/froebank-feltrelevans'
 import {
   ArrowLeft, Calendar, BookOpen, Sprout, ArrowRight,
@@ -56,6 +56,16 @@ export default async function InventoryDetailPage({ params }: Props) {
   // Samme sort kan ligge i flere fysiske frøposer (forskellig leverandør,
   // årgang, udløb). Tom liste = kun én pose → afsnittet vises slet ikke.
   const froeposer = await getFroeposerForSort(item)
+
+  // Udløb og brugsrækkefølge er AFLEDT ved visning — intet af det står i
+  // databasen. "Brug denne først" er rådgivning, ikke en tilstand posen
+  // har, og gives kun når Potalot har et fagligt grundlag (se
+  // poseStatusForSort). Bedst før er ligeledes rådgivende: frøene bliver
+  // ikke ubrugelige, og posen skjules aldrig.
+  const poseStatus = poseStatusForSort(froeposer)
+  const denneErUdloebet = erUdloebet(item.expiryDate)
+  const nogenUdloebet = froeposer.some((p) => poseStatus.get(p.id)?.udloebet)
+  const UDLOEB_HJAELP = 'Frø kan stadig spire efter bedst før-datoen. Prøv dem gerne, hvis de ser fine ud.'
 
   const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
   const linkedTasks = allTasks
@@ -504,21 +514,36 @@ export default async function InventoryDetailPage({ params }: Props) {
           <CardContent className="!p-0 space-y-2">
             {froeposer.map((pose) => {
               const erDenneSide = pose.id === item.id
+              const status = poseStatus.get(pose.id)
               const detaljer = [
                 pose.supplier,
                 pose.purchaseYear != null ? String(pose.purchaseYear) : null,
                 pose.expiryDate ? `bedst før ${formatDatoMedAar(pose.expiryDate)}` : null,
-                pose.seedCount != null
-                  ? `${pose.seedsRemaining ?? pose.seedCount} frø`
+                // Ukendt antal står tomt — der opdigtes aldrig et 0.
+                status?.froeTilbage != null
+                  ? `${status.froeTilbage} frø tilbage`
                   : pose.quantity != null
                     ? `${pose.quantity} stk`
                     : null,
               ].filter(Boolean) as string[]
 
+              const maerkater = [
+                status?.udloebet ? 'udløbet' : null,
+                status?.brugFoerst ? 'brug denne først' : null,
+              ].filter(Boolean) as string[]
+
               const indhold = (
                 <>
-                  <span className="min-w-0 flex-1" style={{ fontSize: 14, lineHeight: 1.35, color: '#263321' }}>
-                    {detaljer.length > 0 ? detaljer.join(' · ') : 'Ingen poseoplysninger endnu'}
+                  <span className="min-w-0 flex-1">
+                    <span className="block" style={{ fontSize: 14, lineHeight: 1.35, color: '#263321' }}>
+                      {detaljer.length > 0 ? detaljer.join(' · ') : 'Ingen poseoplysninger endnu'}
+                    </span>
+                    {maerkater.length > 0 && (
+                      <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                        {status?.udloebet && <PoseMaerkat slags="udloebet" />}
+                        {status?.brugFoerst && <PoseMaerkat slags="brug-foerst" />}
+                      </span>
+                    )}
                   </span>
                   {erDenneSide ? (
                     <span
@@ -550,13 +575,20 @@ export default async function InventoryDetailPage({ params }: Props) {
                   href={`/froebank/${pose.id}`}
                   className="no-underline flex items-center gap-3"
                   style={stil}
-                  aria-label={`Åbn frøposen ${detaljer.join(', ')}`}
+                  aria-label={`Åbn frøposen ${[...detaljer, ...maerkater].join(', ')}`}
                 >
                   {indhold}
                 </Link>
               )
             })}
           </CardContent>
+          {nogenUdloebet && (
+            <p
+              style={{ marginTop: 14, fontSize: 13, lineHeight: 1.45, color: 'rgba(38,51,33,0.62)' }}
+            >
+              {UDLOEB_HJAELP}
+            </p>
+          )}
         </Card>
       )}
 
@@ -589,7 +621,18 @@ export default async function InventoryDetailPage({ params }: Props) {
           {item.seedCount == null && item.quantity != null && <Fact label="Antal" value={`${item.quantity} stk`} tone="secondary" />}
           {item.purchaseYear && <Fact label="Købsår" value={String(item.purchaseYear)} tone="secondary" />}
           {item.purchaseDate && !item.purchaseYear && <Fact label="Indkøbsdato" value={formatDatoMedAar(item.purchaseDate)} tone="secondary" />}
-          {item.expiryDate && <Fact label="Udløber" value={formatDatoMedAar(item.expiryDate)} tone="secondary" />}
+          {item.expiryDate && (
+            <Fact
+              label="Udløber"
+              tone="secondary"
+              value={
+                <span className="inline-flex flex-wrap items-center gap-2">
+                  {formatDatoMedAar(item.expiryDate)}
+                  {denneErUdloebet && <PoseMaerkat slags="udloebet" />}
+                </span>
+              }
+            />
+          )}
           {item.purchaseUrl && (
             <Fact
               label="Købt her"
@@ -602,6 +645,11 @@ export default async function InventoryDetailPage({ params }: Props) {
             />
           )}
         </CardContent>
+        {denneErUdloebet && froeposer.length < 2 && (
+          <p style={{ marginTop: 18, fontSize: 13, lineHeight: 1.45, color: 'rgba(38,51,33,0.62)' }}>
+            {UDLOEB_HJAELP}
+          </p>
+        )}
         {item.notes && (
           <p
             className="italic break-words"
@@ -723,6 +771,36 @@ export default async function InventoryDetailPage({ params }: Props) {
         <DeleteInventoryButton id={item.id} name={item.name} />
       </div>
     </article>
+  )
+}
+
+/**
+ * Diskret mærkat på en fysisk frøpose. Begge er RÅDGIVENDE og afledt ved
+ * visning — hverken "Udløbet" eller "Brug denne først" er en tilstand
+ * posen har i databasen.
+ *
+ * "Udløbet" er bevidst jordfarvet, ikke rød: en passeret bedst før-dato
+ * gør ikke frøene dårlige, og Potalot foreslår aldrig at kassere dem.
+ */
+function PoseMaerkat({ slags }: { slags: 'udloebet' | 'brug-foerst' }) {
+  const stil =
+    slags === 'udloebet'
+      ? { background: 'rgba(150,116,58,0.15)', color: '#6E5527', tekst: 'UDLØBET' }
+      : { background: 'rgba(79,111,53,0.16)', color: '#3D5626', tekst: 'BRUG DENNE FØRST' }
+  return (
+    <span
+      className="inline-flex shrink-0 items-center rounded-full whitespace-nowrap"
+      style={{
+        padding: '3px 8px',
+        background: stil.background,
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: '0.08em',
+        color: stil.color,
+      }}
+    >
+      {stil.tekst}
+    </span>
   )
 }
 

@@ -15,6 +15,7 @@
  */
 
 import type { InventoryItem } from '@/lib/types'
+import { parseDate } from '@/lib/datetime'
 
 /**
  * Normalisering til nøglebrug. Kun tekniske værdier (ae/oe/aa er
@@ -144,7 +145,7 @@ export function grupperEfterSort(items: InventoryItem[]): SortsGruppe[] {
       hoved: poser[0],
       poser,
       antalPoser: poser.length,
-      froeTilbage: sumFelt(poser, (p) => p.seedsRemaining ?? p.seedCount),
+      froeTilbage: sumFelt(poser, froeTilbageIPose),
       froeIAlt: sumFelt(poser, (p) => p.seedCount),
       forsidefoto: gruppensForsidefoto(poser),
     }
@@ -193,4 +194,146 @@ export function sorterPoser(poser: InventoryItem[]): InventoryItem[] {
     if (aar !== 0) return aar
     return (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
   })
+}
+
+// ─────────────────────────────────────────────────────────────
+// Udløb og brugsrækkefølge — afledt ved visning, aldrig gemt
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Frø tilbage i ÉN fysisk pose.
+ *
+ * `null` betyder ukendt — ikke nul. Skellet er ægte hele vejen ned:
+ * `inventory_items.seed_count` er nullable, og både opret- og
+ * redigér-formularen sender tom streng videre som `undefined` (→ null),
+ * mens et indtastet "0" bliver til tallet 0. Excel-importen gør det
+ * samme (`parseInt0`: tom celle → null). Derfor må visningen ALDRIG
+ * kollapse de to med `?? 0`.
+ *
+ * (Databasens view `inventory_seed_counts` coalescer godt nok
+ * seed_count til 0, men dens `seeds_remaining` bruges ikke her —
+ * `rowToItem` regner selv resten ud og lader ukendt være undefined.)
+ */
+export function froeTilbageIPose(
+  item: Pick<InventoryItem, 'seedCount' | 'seedsRemaining'>,
+): number | null {
+  if (item.seedCount == null) return null
+  return item.seedsRemaining ?? item.seedCount
+}
+
+/**
+ * Sortens ÅRGANG for én pose: `purchase_year`, ellers året fra
+ * `purchase_date`. Null når posen ikke har nogen af delene.
+ */
+function poseAargang(item: Pick<InventoryItem, 'purchaseYear' | 'purchaseDate'>): number | null {
+  if (item.purchaseYear != null) return item.purchaseYear
+  if (item.purchaseDate) return parseDate(item.purchaseDate).getFullYear()
+  return null
+}
+
+/**
+ * Er bedst før-datoen passeret?
+ *
+ * `expiry_date` er en SQL DATE — en kalenderdato, ikke et tidspunkt.
+ * `parseDate` læser den som lokal midnat (samme konvention som resten
+ * af appen), og dags dato nulstilles til lokal midnat før sammen-
+ * ligningen. En pose der udløber I DAG er altså ikke udløbet endnu.
+ */
+export function erUdloebet(
+  expiryDate: string | null | undefined,
+  idag: Date = new Date(),
+): boolean {
+  if (!expiryDate) return false
+  const nu = new Date(idag)
+  nu.setHours(0, 0, 0, 0)
+  return parseDate(expiryDate).getTime() < nu.getTime()
+}
+
+/** Én poses afledte status. Intet af det gemmes i databasen. */
+export interface PoseStatus {
+  /** Bedst før-datoen er passeret. Rådgivende — frøene kan stadig spire. */
+  udloebet: boolean
+  /** Denne pose bør bruges før de andre. Højst én pr. sortsgruppe. */
+  brugFoerst: boolean
+  /** Frø tilbage i netop denne pose. null = ukendt (ikke 0). */
+  froeTilbage: number | null
+}
+
+/**
+ * Afledt status for hver pose i ÉN sortsgruppe — nøglet på pose-id.
+ *
+ * "Brug denne først" er rådgivning, ikke en tilstand posen har.
+ * Reglerne, i den rækkefølge Potalot tør udtale sig:
+ *
+ *  1. Én pose i gruppen → ingen anbefaling. Brugeren kan selv regne ud
+ *     hvilken pose han skal bruge, når der kun er én.
+ *  2. Poser der sikkert er TOMME (0 frø tilbage — ikke ukendt) kan ikke
+ *     bruges først. De rangeres ikke med, men vises stadig.
+ *  3. Er der kun én brugbar pose tilbage, får den anbefalingen: at de
+ *     øvrige er tomme er et fagligt grundlag, ikke et gæt.
+ *  4. Ellers sammenlignes poserne på det FØRSTE kriterium der er kendt
+ *     for ALLE brugbare poser: bedst før-dato (tidligst først), ellers
+ *     årgang (ældst først). En udløbet pose kommer dermed naturligt
+ *     før en gyldig — uden at vi kalder den dårlig.
+ *  5. Er ingen af kriterierne kendt for alle, gives INGEN anbefaling.
+ *     Ukendt er bedre end opdigtet rådgivning: en pose uden årgang kan
+ *     lige så godt være fra 2010 som fra i år.
+ *
+ * `created_at` → `id` bruges kun som stabil tie-breaker INDE i en
+ * sammenligning der allerede har et fagligt grundlag (samme udløb,
+ * samme årgang), så UI'et ikke hopper. Den forklares aldrig i UI'et,
+ * og den kan aldrig alene skabe en anbefaling.
+ */
+export function poseStatusForSort(
+  poser: InventoryItem[],
+  idag: Date = new Date(),
+): Map<string, PoseStatus> {
+  const status = new Map<string, PoseStatus>()
+  for (const p of poser) {
+    status.set(p.id, {
+      udloebet: erUdloebet(p.expiryDate, idag),
+      brugFoerst: false,
+      froeTilbage: froeTilbageIPose(p),
+    })
+  }
+
+  if (poser.length < 2) return status
+
+  // Regel 2: kun poser der faktisk kan bruges rangeres. Ukendt antal
+  // tæller som brugbar — vi ved ikke at posen er tom.
+  const brugbare = poser.filter((p) => froeTilbageIPose(p) !== 0)
+  if (brugbare.length === 0) return status
+
+  if (brugbare.length === 1) {
+    status.get(brugbare[0].id)!.brugFoerst = true
+    return status
+  }
+
+  const stabil = (a: InventoryItem, b: InventoryItem) => {
+    const tid = (a.createdAt ?? '').localeCompare(b.createdAt ?? '')
+    return tid !== 0 ? tid : a.id.localeCompare(b.id)
+  }
+
+  let raekkefoelge: InventoryItem[] | null = null
+
+  if (brugbare.every((p) => !!p.expiryDate)) {
+    raekkefoelge = [...brugbare].sort((a, b) => {
+      const dato = parseDate(a.expiryDate!).getTime() - parseDate(b.expiryDate!).getTime()
+      if (dato !== 0) return dato
+      const aa = poseAargang(a)
+      const ba = poseAargang(b)
+      if (aa != null && ba != null && aa !== ba) return aa - ba
+      return stabil(a, b)
+    })
+  } else if (brugbare.every((p) => poseAargang(p) != null)) {
+    raekkefoelge = [...brugbare].sort((a, b) => {
+      const aar = poseAargang(a)! - poseAargang(b)!
+      return aar !== 0 ? aar : stabil(a, b)
+    })
+  }
+
+  // Regel 5: intet fælles kendt kriterium → ingen anbefaling.
+  if (raekkefoelge) status.get(raekkefoelge[0].id)!.brugFoerst = true
+
+  return status
 }
