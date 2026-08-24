@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogTrigger,
@@ -16,6 +16,7 @@ import { PRIMARY_CATEGORIES, PRIMARY_CATEGORY_IDS, SYSTEM_SUBCATEGORIES, MONTHS_
 import { updateInventoryItem } from '@/actions/froebank'
 import { extractSeedPacketFields, extractSeedFromUrl } from '@/actions/seed-packet-extract'
 import { DyrkningsfaktaFields, type DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
+import { irrelevanteDyrkningsfelter } from '@/lib/froebank-feltrelevans'
 
 interface Suggestion {
   key: string
@@ -90,6 +91,16 @@ export function EditInventoryDialog({ item }: Props) {
 
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
+
+  // Samme relevans som oprettelsen og detaljesiden. Følger name/variety, så
+  // retter man arten i dialogen, flytter felterne med med det samme.
+  const irrelevante = useMemo(
+    () => irrelevanteDyrkningsfelter(name, variety, {
+      preCultivation: dyrkning.preCultivation,
+      plantingOutMonths: dyrkning.plantingOutMonths,
+    }),
+    [name, variety, dyrkning.preCultivation, dyrkning.plantingOutMonths],
+  )
 
   async function handleReadWithAI() {
     if (images.length === 0) return
@@ -518,7 +529,7 @@ export function EditInventoryDialog({ item }: Props) {
 
           <div className="border-t border-border pt-3">
             <p className="font-serif text-base text-foreground mb-2">Dyrkningsfakta</p>
-            <DyrkningsfaktaFields value={dyrkning} onChange={setDyrkning} />
+            <DyrkningsfaktaFields value={dyrkning} onChange={setDyrkning} irrelevanteFelter={irrelevante} />
           </div>
 
           <div>

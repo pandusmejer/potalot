@@ -45,6 +45,13 @@ interface Props {
    * (edit-dialogen, uændret).
    */
   groupAdvanced?: boolean
+  /**
+   * Felter Potalot POSITIVT ved ikke bruges for denne art/sort
+   * (se lib/froebank-feltrelevans.ts). De FJERNES aldrig — de flyttes ned
+   * under "Flere dyrkningsoplysninger", så en særmetode altid kan
+   * registreres. Udeladt → alt står som hidtil.
+   */
+  irrelevanteFelter?: Set<keyof DyrkningsfaktaState>
 }
 
 const AVANCEREDE: (keyof DyrkningsfaktaState)[] = [
@@ -59,7 +66,7 @@ function harIndhold(key: keyof DyrkningsfaktaState, v: DyrkningsfaktaState): boo
   return true
 }
 
-export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPlaceholders, groupAdvanced }: Props) {
+export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPlaceholders, groupAdvanced, irrelevanteFelter }: Props) {
   // Autofyldt må aldrig gemmes væk: folden auto-åbner når et avanceret felt
   // FÅR indhold/badge (også efter mount — fx når "Udfyld med Potalots forslag"
   // lander senere). Kun ved overgangen tom→indhold, så brugeren stadig selv
@@ -71,6 +78,25 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
     if (groupAdvanced && harAvanceretIndhold && !forrigeIndhold.current) setVisAvanceret(true)
     forrigeIndhold.current = harAvanceretIndhold
   }, [groupAdvanced, harAvanceretIndhold])
+
+  // Irrelevante felter demoteres — de tæller derfor ALDRIG med i
+  // auto-åbningen ovenfor (ellers ville et skjult "Forspiring: Nej" folde
+  // hele sektionen ud hver gang og gøre skjulet meningsløst).
+  //
+  // Demotering er ENVEJS så længe formularen er åben: et felt må gerne
+  // PROMOVERES op i standardvisningen (brugeren svarer "Ja" til forspiring →
+  // feltet hører til dér), men det må aldrig rives væk under fingeren igen,
+  // hvis hun fortryder. Ref'en nulstilles ved unmount — dvs. når man går
+  // tilbage til trin 1 eller lukker redigér-dialogen.
+  const harStaaetFrem = useRef(new Set<keyof DyrkningsfaktaState>())
+  const skjult = (k: keyof DyrkningsfaktaState): boolean => {
+    if (!irrelevanteFelter?.has(k)) {
+      harStaaetFrem.current.add(k)
+      return false
+    }
+    return !harStaaetFrem.current.has(k)
+  }
+  const [visDemoteredeFlade, setVisDemoteredeFlade] = useState(false)
 
   function patch<K extends keyof DyrkningsfaktaState>(key: K, v: DyrkningsfaktaState[K]) {
     onChange({ ...value, [key]: v })
@@ -239,8 +265,8 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
     return (
       <div className="space-y-4">
         {saas}
-        {forspiring}
-        {plantUd}
+        {!skjult('preCultivation') && forspiring}
+        {!skjult('plantingOutMonths') && plantUd}
         {hoest}
         {lysVand}
 
@@ -255,6 +281,10 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
 
         {visAvanceret && (
           <div className="space-y-4">
+            {/* Demoterede felter først: de er stadig fuldt redigerbare —
+                brugeren skal altid kunne registrere en særmetode. */}
+            {skjult('preCultivation') && forspiring}
+            {skjult('plantingOutMonths') && plantUd}
             <div className="grid grid-cols-2 gap-3">
               {saadybde}
               {jord}
@@ -268,19 +298,45 @@ export function DyrkningsfaktaFields({ value, onChange, fieldBadges, autofillPla
   }
 
   // ── Flad visning (edit-dialogen — uændret layout + Jord til sidst) ──
+  // Er intet demoteret, ser den ud PRÆCIS som før. Er noget demoteret, får
+  // den samme "Flere dyrkningsoplysninger"-fold som oprettelsen, så
+  // felterne stadig kan findes og udfyldes.
+  const demoterede = [
+    skjult('preCultivation') ? <div key="forspiring">{forspiring}</div> : null,
+    skjult('plantingOutMonths') ? <div key="plantUd">{plantUd}</div> : null,
+  ].filter(Boolean)
+
   return (
     <div className="space-y-4">
       {saas}
-      <div className="grid grid-cols-2 gap-3">
-        {saadybde}
-        {forspiring}
-      </div>
-      {plantUd}
+      {skjult('preCultivation') ? (
+        saadybde
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          {saadybde}
+          {forspiring}
+        </div>
+      )}
+      {!skjult('plantingOutMonths') && plantUd}
       {hoest}
       {lysVand}
       {spire}
       {afstand}
       {jord}
+
+      {demoterede.length > 0 && (
+        <>
+          <button
+            type="button"
+            onClick={() => setVisDemoteredeFlade(v => !v)}
+            className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ChevronDown className={cn('h-4 w-4 transition-transform', visDemoteredeFlade && 'rotate-180')} />
+            Flere dyrkningsoplysninger
+          </button>
+          {visDemoteredeFlade && <div className="space-y-4">{demoterede}</div>}
+        </>
+      )}
     </div>
   )
 }

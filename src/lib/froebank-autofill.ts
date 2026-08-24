@@ -84,13 +84,20 @@ function resolveFelt<K extends keyof GuideQuickFacts>(
   return null
 }
 
-export function findFroebankAutofill(
+/**
+ * Rå guide-opslag: sortsguide + artsguide for et navn/sort-par.
+ *
+ * Delt af autofill (som fylder felter ud) og feltrelevans (som afgør hvilke
+ * felter der overhovedet skal stå frem) — så de to altid ser PRÆCIS samme
+ * guider. Returnerer begge niveauer råt; kaldere laver selv sort→art-faldet.
+ */
+export function slaaGuiderOp(
   name: string,
   variety?: string | null,
-): FroebankAutofill | null {
+): { sortsGuide: GuideFactsEntry | null; artsGuide: GuideFactsEntry | null } {
   const navn = name.trim()
   const sort = (variety ?? '').trim()
-  if (!navn) return null
+  if (!navn) return { sortsGuide: null, artsGuide: null }
 
   // 1) Sortsguide?
   let sortsGuide: GuideFactsEntry | null = null
@@ -103,6 +110,18 @@ export function findFroebankAutofill(
   }
   if (!artsGuide) artsGuide = guideById.get(slugify(navn)) ?? null
 
+  return { sortsGuide, artsGuide }
+}
+
+export function findFroebankAutofill(
+  name: string,
+  variety?: string | null,
+): FroebankAutofill | null {
+  const navn = name.trim()
+  const sort = (variety ?? '').trim()
+  if (!navn) return null
+
+  const { sortsGuide, artsGuide } = slaaGuiderOp(navn, sort)
   if (!sortsGuide && !artsGuide) return null
 
   const sortQF = sortsGuide?.quickFacts ?? null

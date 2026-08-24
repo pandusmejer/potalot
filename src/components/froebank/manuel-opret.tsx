@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { findFroebankAutofill, tomDyrkning, type FroebankAutofill } from '@/lib/froebank-autofill'
+import { irrelevanteDyrkningsfelter } from '@/lib/froebank-feltrelevans'
 import { slugify } from '@/lib/afledninger'
 import { DyrkningsfaktaFields, type DyrkningsfaktaState } from './dyrkningsfakta-fields'
 import type { KildeType } from './kilde-badge'
@@ -84,6 +85,18 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
 
   const isFroe = primaryCat === 'fro'
   const tilgaengeligeSubs = SYSTEM_SUBCATEGORIES.filter(s => s.parentCategoryIds.includes(primaryCat))
+
+  // Felter Potalot ved ikke bruges for denne art/sort — de flyttes ned under
+  // "Flere dyrkningsoplysninger" (ikke fjernet: en særmetode skal stadig
+  // kunne registreres). Genberegnes når brugeren selv ændrer de to felter,
+  // så en egen "Ja" til forspiring straks hiver felterne frem igen.
+  const irrelevante = useMemo(
+    () => irrelevanteDyrkningsfelter(name, variety, {
+      preCultivation: dyrkning.preCultivation,
+      plantingOutMonths: dyrkning.plantingOutMonths,
+    }),
+    [name, variety, dyrkning.preCultivation, dyrkning.plantingOutMonths],
+  )
 
   // Frøkort-opslag (reaktivt, uden brugerens upload — samme regel som
   // harKurateretFroekort): findes et kurateret Potalot-frøkort for sorten?
@@ -417,6 +430,7 @@ export function ManuelOpret({ returnTo = '/froebank', initialName, initialVariet
             fieldBadges={badges}
             autofillPlaceholders={prefillValg === 'potalot'}
             groupAdvanced
+            irrelevanteFelter={irrelevante}
           />
 
           {error && <p className="text-sm text-destructive">{error}</p>}

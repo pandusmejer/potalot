@@ -21,6 +21,7 @@ import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { gruppensForsidefoto } from '@/lib/froebank-grupper'
+import { irrelevanteDyrkningsfelter } from '@/lib/froebank-feltrelevans'
 import {
   ArrowLeft, Calendar, BookOpen, Sprout, ArrowRight,
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
@@ -70,6 +71,16 @@ export default async function InventoryDetailPage({ params }: Props) {
   const statusMeta = INVENTORY_STATUS_META[item.status]
   const lightMeta = item.light ? LIGHT_META[item.light] : null
   const waterMeta = item.water ? WATER_META[item.water] : null
+
+  // Dyrkningsfakta skal kun fremhæve det, der gælder for DENNE art/sort.
+  // Ren præsentation: intet slettes, og felter skjules kun, når Potalot
+  // POSITIVT ved, at de ikke bruges (manglende data ≠ irrelevant). Brugerens
+  // egne afvigende værdier hiver altid feltet frem igen — se
+  // lib/froebank-feltrelevans.ts.
+  const irrelevante = irrelevanteDyrkningsfelter(item.name, item.variety, {
+    preCultivation: item.preCultivation,
+    plantingOutMonths: item.plantingOutMonths,
+  })
 
   // Hero-statusblok — appens sans-font arves (ingen serif-override). Samme
   // krympede label/værdi-stil som tidligere, så heroens kolonne bevarer
@@ -398,11 +409,15 @@ export default async function InventoryDetailPage({ params }: Props) {
             value={item.sowingDepthMm === 0 ? '0 mm (overflade)' : `${item.sowingDepthMm} mm`}
             icon={<ArrowDown className="h-4 w-4" strokeWidth={1.9} />}
           />
-          <Fact
-            label="Forspiring"
-            value={item.preCultivation == null ? '—' : item.preCultivation ? 'Ja' : 'Nej'}
-          />
-          <Fact label="Plant ud" value={formatMonths(item.plantingOutMonths)} />
+          {!irrelevante.has('preCultivation') && (
+            <Fact
+              label="Forspiring"
+              value={item.preCultivation == null ? '—' : item.preCultivation ? 'Ja' : 'Nej'}
+            />
+          )}
+          {!irrelevante.has('plantingOutMonths') && (
+            <Fact label="Plant ud" value={formatMonths(item.plantingOutMonths)} />
+          )}
           <Fact label="Høst" value={formatMonths(item.harvestMonths)} />
           {lightMeta && <Fact label="Lys" value={lightMeta.label} icon={<Sun className="h-4 w-4" strokeWidth={1.9} />} />}
           {waterMeta && <Fact label="Vand" value={waterMeta.label} icon={<Droplets className="h-4 w-4" strokeWidth={1.9} />} />}
