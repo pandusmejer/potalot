@@ -31,6 +31,7 @@
 
 import type { InventoryItem, InventoryStatus, PrimaryCategoryId, Plant } from '@/lib/types'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
+import { findFroebankAutofill } from '@/lib/froebank-autofill'
 
 export interface FroebankForslag {
   /** Stabil React-key — inventory-id'et for den pose forslaget kom fra. */
@@ -103,18 +104,63 @@ function titel(vindue: Vindue, navn: string): string {
   return `Så ${navn}`
 }
 
+interface PoseVinduer {
+  sowingMonths: number[]
+  plantingOutMonths: number[]
+  preCultivation: boolean | null
+}
+
+/**
+ * Posens dyrkningsvinduer — med ARV, jf. guidekontrakten (Anna 25/8).
+ *
+ * En manglende værdi på posen betyder "ingen override", ikke "ingen
+ * aktivitet". Står posen helt uden vinduer, spørger vi derfor Potalots
+ * egen resolver (`findFroebankAutofill`), som allerede implementerer
+ * sort → art-arven OG sammenfoldningen af guidernes to såfelter
+ * (`sowingMonths` = forkultivering, `directSowingMonths` = direkte såning).
+ * Er guiderne også tavse, forbliver vi tavse.
+ *
+ * To ting det her IKKE gør, og hvorfor:
+ * - Det OVERSKRIVER aldrig en gemt værdi. En udfyldt pose kan være Annas
+ *   egen rettelse, og "Potalot foreslår, brugeren bestemmer" gælder også
+ *   her. Er en gemt værdi forældet i forhold til en nyere guide, hører det
+ *   hjemme i backfill-flowet på /froebank — ikke i en tavs read-time-override.
+ * - Det SKRIVER intet. Samme princip som frøkort-resolveren: opslaget sker
+ *   ved visning, så en pose automatisk får glæde af en guide, Potalot først
+ *   har fået bagefter.
+ */
+function vinduerForPose(item: InventoryItem): PoseVinduer {
+  const gemt = {
+    sowingMonths: item.sowingMonths ?? [],
+    plantingOutMonths: item.plantingOutMonths ?? [],
+    preCultivation: item.preCultivation ?? null,
+  }
+  if (gemt.sowingMonths.length > 0 || gemt.plantingOutMonths.length > 0) return gemt
+
+  const autofill = findFroebankAutofill(item.name, item.variety ?? null)
+  if (!autofill) return gemt
+  const arvet = {
+    sowingMonths: autofill.facts.sowingMonths ?? [],
+    plantingOutMonths: autofill.facts.plantingOutMonths ?? [],
+    preCultivation: autofill.facts.preCultivation ?? gemt.preCultivation,
+  }
+  if (arvet.sowingMonths.length === 0 && arvet.plantingOutMonths.length === 0) return gemt
+  return arvet
+}
+
 /**
  * Hvilket vindue er åbent for denne pose i denne måned? Rækkefølgen er
  * bevidst: så/forkultivér vinder over udplantning, fordi såvinduet lukker
  * først og er den handling, brugeren kan nå at gøre noget ved.
- * Tomme månedslister = vi VED det ikke → null (tavshed, ikke gæt).
+ * Tomme månedslister EFTER arv = vi VED det ikke → null (tavshed, ikke gæt).
  */
 function aabentVindue(item: InventoryItem, month: number): { vindue: Vindue; months: number[] } | null {
-  if (item.sowingMonths?.length && item.sowingMonths.includes(month)) {
-    return { vindue: item.preCultivation === true ? 'forspir' : 'saa', months: item.sowingMonths }
+  const v = vinduerForPose(item)
+  if (v.sowingMonths.length && v.sowingMonths.includes(month)) {
+    return { vindue: v.preCultivation === true ? 'forspir' : 'saa', months: v.sowingMonths }
   }
-  if (item.plantingOutMonths?.length && item.plantingOutMonths.includes(month)) {
-    return { vindue: 'plant-ud', months: item.plantingOutMonths }
+  if (v.plantingOutMonths.length && v.plantingOutMonths.includes(month)) {
+    return { vindue: 'plant-ud', months: v.plantingOutMonths }
   }
   return null
 }
