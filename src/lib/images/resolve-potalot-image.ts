@@ -30,6 +30,7 @@
 import { IMAGE_MANIFEST } from '@/data/image-manifest.generated'
 import { POTALOT_IMAGE_SETS_BY_ID } from '@/data/potalot-image-sets'
 import { GUIDE_IMAGE_INDEX } from '@/data/guide-image-index.generated'
+import { kanoniskSortsSlug } from '@/lib/sorts-alias'
 import type {
   PotalotImageInput,
   PotalotImageOutput,
@@ -289,9 +290,10 @@ export function resolvePotalotImage(
  * Prøver vi kun den ene, finder en frøpost aldrig det frøkort Potalot
  * FAKTISK har — det var præcis dét "Tomat · Gardener's Delight" ramte.
  * Rækkefølgen er låst: slugify først (uændret adfærd), apostrof-fri
- * variant som ekstra kandidat. Begge peger på SAMME sort — kun
- * apostroffen skrives forskelligt — så reglen "ingen fald til beslægtet
- * sort" holder.
+ * variant, og til sidst sortens kanoniske alias. Alle tre peger på SAMME
+ * sort — kun stavemåden er forskellig — så reglen "ingen fald til
+ * beslægtet sort" holder. Aliasserne er eksplicit verificeret pr. sort
+ * (sorts-alias.ts); der er bevidst ingen generel F1-afkortning.
  */
 function sortsSlugKandidater(
   name: string,
@@ -299,7 +301,15 @@ function sortsSlugKandidater(
 ): string[] {
   if (!variety) return []
   const raa = `${name}-${variety}`
-  return uniqueCompact([slugify(raa), slugify(raa.replace(/['\u2018\u2019]/g, ''))])
+  // Kanonisk sortsalias til SIDST: eksakt stavemåde vinder altid, og
+  // aliasset er kun en ekstra kandidat for de sorter hvor synonymet er
+  // eksplicit verificeret (se sorts-alias.ts). Ingen generel F1-regel.
+  const kanonisk = kanoniskSortsSlug(name, variety)
+  return uniqueCompact([
+    slugify(raa),
+    slugify(raa.replace(/['\u2018\u2019]/g, '')),
+    `${slugify(name)}-${kanonisk}`,
+  ])
 }
 
 /**

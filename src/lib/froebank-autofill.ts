@@ -24,6 +24,7 @@
 
 import { GUIDE_FACTS, type GuideFactsEntry } from '@/data/guide-facts-index.generated'
 import { slugify } from '@/lib/afledninger'
+import { kanoniskSortsSlug } from '@/lib/sorts-alias'
 import type { Guide, GuideQuickFacts } from '@/lib/types'
 import type { DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
 
@@ -99,9 +100,17 @@ export function slaaGuiderOp(
   const sort = (variety ?? '').trim()
   if (!navn) return { sortsGuide: null, artsGuide: null }
 
-  // 1) Sortsguide?
+  // 1) Sortsguide? Eksakt stavemåde først; findes den ikke, prøves sortens
+  // kanoniske alias (fx 'Eight Ball F1' → 'Eight Ball'). Kun eksplicit
+  // verificerede synonymer — se sorts-alias.ts.
   let sortsGuide: GuideFactsEntry | null = null
-  if (sort) sortsGuide = guideById.get(slugify(`${navn} ${sort}`)) ?? null
+  if (sort) {
+    sortsGuide = guideById.get(slugify(`${navn} ${sort}`)) ?? null
+    if (!sortsGuide) {
+      const kanonisk = kanoniskSortsSlug(navn, sort)
+      if (kanonisk) sortsGuide = guideById.get(`${slugify(navn)}-${kanonisk}`) ?? null
+    }
+  }
 
   // 2) Artsguide — direkte match, eller sortsguidens parent.
   let artsGuide: GuideFactsEntry | null = null

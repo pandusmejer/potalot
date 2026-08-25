@@ -16,6 +16,7 @@
 
 import type { InventoryItem } from '@/lib/types'
 import { parseDate } from '@/lib/datetime'
+import { kanoniskSortsSlug } from '@/lib/sorts-alias'
 
 /**
  * Normalisering til nøglebrug. Kun tekniske værdier (ae/oe/aa er
@@ -39,7 +40,11 @@ function normaliser(text: string | null | undefined): string {
  * udløb, antal) indgår bevidst IKKE.
  */
 export function sortsNoegle(item: Pick<InventoryItem, 'name' | 'variety' | 'primaryCategoryId'>): string {
-  return `${item.primaryCategoryId}|${normaliser(item.name)}|${normaliser(item.variety)}`
+  // Kanonisk sortsalias: 'Eight Ball' og 'Eight Ball F1' er SAMME sort og
+  // skal derfor være samme mappe i Frøbanken. Kun eksplicit verificerede
+  // synonymer (sorts-alias.ts) — posens egen tekst ændres aldrig.
+  const sort = kanoniskSortsSlug(item.name, item.variety)
+  return `${item.primaryCategoryId}|${normaliser(item.name)}|${sort}`
 }
 
 /**

@@ -30,6 +30,7 @@
  */
 
 import { findFroebankAutofill } from '@/lib/froebank-autofill'
+import { kanoniskSortsSlug } from '@/lib/sorts-alias'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import type { PrimaryCategoryId } from '@/lib/types'
 import type { ExtractedSeedFields } from '@/lib/seed-packet-fields'
@@ -619,14 +620,20 @@ function ensVaerdi(a: unknown, b: unknown): boolean {
   return a === b
 }
 
-/** Sorts-nøgle: kategori + art + sort. Pose-oplysninger indgår bevidst ikke. */
+/**
+ * Sorts-nøgle: kategori + art + sort. Pose-oplysninger indgår bevidst ikke.
+ *
+ * Sortsdelen går gennem det kanoniske alias, så importen genkender at
+ * 'Eight Ball F1' er den sort Potalot kalder 'Eight Ball' — præcis som
+ * Frøbankens gruppering gør det.
+ */
 function noegle(kategori: string, name: string, variety: string | undefined): string {
   const n = (s: string) =>
     s.toLowerCase()
       .replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa')
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  return `${kategori}|${n(name)}|${n(variety ?? '')}`
+  return `${kategori}|${n(name)}|${kanoniskSortsSlug(name, variety)}`
 }
 
 /**
