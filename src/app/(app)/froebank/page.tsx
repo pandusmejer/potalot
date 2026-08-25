@@ -5,6 +5,8 @@ import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { HaveStemning } from '@/components/havekalender/have-stemning'
 import { FroebankBrowser } from '@/components/froebank/froebank-browser'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
+import { BackfillKort } from '@/components/froebank/backfill-kort'
+import { hentBackfillForslag } from '@/actions/froebank-backfill'
 import { Package } from 'lucide-react'
 import { pickGardenNote } from '@/lib/garden-notes'
 import { aktuelMaaned } from '@/lib/datetime'
@@ -26,10 +28,13 @@ export default function FroebankPage() {
 }
 
 async function FroebankIndhold() {
-  const [realInventory, customSubcategories, user] = await Promise.all([
+  const [realInventory, customSubcategories, user, backfill] = await Promise.all([
     getAllInventoryItems(),
     getCustomSubcategories(),
     getCurrentUser(),
+    // Rent opslag mod Potalots eget bibliotek — der skrives intet før
+    // brugeren selv trykker. Tom liste → kortet findes ikke.
+    hentBackfillForslag(),
   ])
 
   // Hvis brugeren ikke er logget ind eller endnu ikke har tilføjet
@@ -67,6 +72,10 @@ async function FroebankIndhold() {
         body="Potalot kan huske sorter, såtid og forslag til næste sæson for dig."
         hideWhen={realInventory.length >= 5}
       />
+
+      {/* Gamle poser, nye guider: findes kun så længe der er noget at
+          udfylde. Ingen tom tilstand, ingen "0 felter mangler". */}
+      <BackfillKort forslag={backfill} />
 
       {/* Frøbankens øverste arkivmappe + det komplette arkivsystem.
           Mappens søgning, kategori og filterchips styrer stacken. */}
