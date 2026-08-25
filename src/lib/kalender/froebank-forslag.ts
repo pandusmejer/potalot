@@ -8,6 +8,14 @@
  * under overskriften "Sorter, du stadig kan nå". Det er rådgivning på det
  * forkerte tidspunkt, ikke kosmetik.
  *
+ * ── Semantikken (ANNA-LÅST 25/8) ─────────────────────────────────────────
+ * "Fra din Frøbank" = ting, du stadig kan STARTE fra frø, løg eller knold.
+ * Høst, blomstring, knibning og stiklinger handler om planter, der allerede
+ * vokser — de hører til Mine planter og Kalenderens plantebaserede råd. En
+ * basilikum-frøpose fortæller os ikke, om posen nogensinde blev sået; råd om
+ * høst dér ville bare være en mere sofistikeret måde at gætte på.
+ * Derfor er "Sorter, du stadig kan nå" præcis, ikke omtrentlig.
+ *
  * ── De to låste regler ───────────────────────────────────────────────────
  * 1. MÅNED FØRST. Et kort må kun vises, hvis Potalot kan dokumentere BÅDE
  *    at brugeren ejer frøet OG at der findes et vindue for netop den valgte
