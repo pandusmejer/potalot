@@ -4,29 +4,13 @@ import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { requireUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
-import type { PrimaryCategoryId } from '@/lib/types'
+import {
+  parseJsonOrNull,
+  parseFieldsFromJson,
+  type ExtractedSeedFields,
+} from '@/lib/seed-packet-fields'
 
-export interface ExtractedSeedFields {
-  name?: string
-  latinName?: string
-  variety?: string
-  supplier?: string
-  seedCount?: number
-  purchaseYear?: number
-  sowingMonths?: number[]
-  plantingOutMonths?: number[]
-  harvestMonths?: number[]
-  sowingDepthMm?: number
-  preCultivation?: boolean
-  germinationDays?: string
-  germinationTemperature?: string
-  plantSpacing?: string
-  rowSpacing?: string
-  light?: 'full_sun' | 'partial_shade' | 'shade'
-  water?: 'low' | 'regular' | 'high'
-  primaryCategoryId?: PrimaryCategoryId
-  notes?: string
-}
+export type { ExtractedSeedFields }
 
 const SYSTEM_PROMPT = `Du er en assistent der læser danske og europæiske frøposer.
 Få information ud af billedet og returnér JSON med felter du er sikker på.
@@ -50,6 +34,7 @@ Felter at udtrække:
 - rowSpacing: rækkeafstand (fx "60-80 cm")
 - light: "full_sun" | "partial_shade" | "shade"
 - water: "low" | "regular" | "high"
+- soil: jordtype/jordkrav som kort dansk tekst, ORDRET som posen eller siden beskriver det (fx "Næringsrig, veldrænet jord") — KUN hvis der faktisk står noget om jorden. Opfind ALDRIG en jordbeskrivelse ud fra hvad planten plejer at ville have; står der intet, skal feltet være null.
 - primaryCategoryId: "fro" (frø) | "loeg" (løg) | "knolde" | "buske" | "traeer" | "stauder"
 - notes: en kort dansk note med ekstra info (fx "Kuldetolerant, gode i drivhus")
 
@@ -113,48 +98,6 @@ export async function extractSeedPacketFields(imageUrls: string[]): Promise<
   }
 }
 
-function parseJsonOrNull(raw: string): Record<string, unknown> | null {
-  let cleaned = raw.trim()
-  const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)\s*```/)
-  if (fenceMatch) cleaned = fenceMatch[1].trim()
-  try {
-    return JSON.parse(cleaned)
-  } catch {
-    return null
-  }
-}
-
-function parseFieldsFromJson(parsed: Record<string, unknown>): ExtractedSeedFields {
-  const fields: ExtractedSeedFields = {}
-  if (typeof parsed.name === 'string')           fields.name = parsed.name
-  if (typeof parsed.latinName === 'string')      fields.latinName = parsed.latinName
-  if (typeof parsed.variety === 'string')        fields.variety = parsed.variety
-  if (typeof parsed.supplier === 'string')       fields.supplier = parsed.supplier
-  if (typeof parsed.seedCount === 'number')      fields.seedCount = Math.round(parsed.seedCount)
-  if (typeof parsed.purchaseYear === 'number' && parsed.purchaseYear >= 1900 && parsed.purchaseYear <= 2100) {
-    fields.purchaseYear = Math.round(parsed.purchaseYear)
-  }
-  if (Array.isArray(parsed.sowingMonths))        fields.sowingMonths = parsed.sowingMonths.filter((m): m is number => typeof m === 'number')
-  if (Array.isArray(parsed.plantingOutMonths))   fields.plantingOutMonths = parsed.plantingOutMonths.filter((m): m is number => typeof m === 'number')
-  if (Array.isArray(parsed.harvestMonths))       fields.harvestMonths = parsed.harvestMonths.filter((m): m is number => typeof m === 'number')
-  if (typeof parsed.sowingDepthMm === 'number')  fields.sowingDepthMm = Math.round(parsed.sowingDepthMm)
-  if (typeof parsed.preCultivation === 'boolean') fields.preCultivation = parsed.preCultivation
-  if (typeof parsed.germinationDays === 'string')        fields.germinationDays = parsed.germinationDays
-  if (typeof parsed.germinationTemperature === 'string') fields.germinationTemperature = parsed.germinationTemperature
-  if (typeof parsed.plantSpacing === 'string')   fields.plantSpacing = parsed.plantSpacing
-  if (typeof parsed.rowSpacing === 'string')     fields.rowSpacing = parsed.rowSpacing
-  if (parsed.light === 'full_sun' || parsed.light === 'partial_shade' || parsed.light === 'shade') {
-    fields.light = parsed.light
-  }
-  if (parsed.water === 'low' || parsed.water === 'regular' || parsed.water === 'high') {
-    fields.water = parsed.water
-  }
-  if (typeof parsed.primaryCategoryId === 'string') {
-    fields.primaryCategoryId = parsed.primaryCategoryId as PrimaryCategoryId
-  }
-  if (typeof parsed.notes === 'string') fields.notes = parsed.notes
-  return fields
-}
 
 /**
  * Hent en URL → udtræk produktbillede + tekst → kør AI for at få frøinfo.

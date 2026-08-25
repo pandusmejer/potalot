@@ -32,7 +32,7 @@
 import { findFroebankAutofill } from '@/lib/froebank-autofill'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import type { PrimaryCategoryId } from '@/lib/types'
-import type { ExtractedSeedFields } from '@/actions/seed-packet-extract'
+import type { ExtractedSeedFields } from '@/lib/seed-packet-fields'
 
 /** Rå Excel-værdier — præcis som de stod i filen (efter normalisering). */
 export interface ImportRowData {
@@ -711,7 +711,7 @@ export function berigImportRaekke(
   saet('harvestMonths', excel.harvestMonths, linkFields.harvestMonths)
   saet('light', excel.light, linkFields.light)
   saet('water', excel.water, linkFields.water)
-  saet('soil', excel.soil, undefined)
+  saet('soil', excel.soil, linkFields.soil)
   saet('germinationDays', excel.germinationDays, linkFields.germinationDays)
   saet('germinationTemperature', excel.germinationTemperature, linkFields.germinationTemperature)
   saet('plantSpacing', excel.plantSpacing, linkFields.plantSpacing)

@@ -20,6 +20,7 @@ import {
   type ImportRowData,
 } from '@/lib/inventory-import-merge'
 import { COLUMNS } from '@/app/api/inventory/template/route'
+import { parseFieldsFromJson } from '@/lib/seed-packet-fields'
 
 let bestået = 0
 let fejlet = 0
@@ -230,6 +231,58 @@ function main() {
     tjek('felterne står tomme',
       r.data.sowingMonths === undefined && r.data.sowingDepthMm === undefined && r.data.light === undefined)
     tjek('rækken er ikke en fejl — den kan stadig importeres', r.status === 'warning')
+  }
+
+  console.log('\n[Jord fra linket] produktsiden må sige det, den faktisk siger')
+  {
+    // Jord fundet: siden angiver jordkrav → feltet bæres ordret videre.
+    const fundet = parseFieldsFromJson({ name: 'Ært', soil: 'Fugtighedsbevarende, veldrænet jord' })
+    tjek('jord fundet bæres ordret videre', fundet.soil === 'Fugtighedsbevarende, veldrænet jord')
+
+    // Jord mangler: intet felt, forkert type eller tom streng er ALT SAMMEN
+    // tavshed. Der opfindes aldrig en jordbeskrivelse.
+    tjek('jord mangler → feltet sættes ikke', parseFieldsFromJson({ name: 'Ært' }).soil === undefined)
+    tjek('jord = null → feltet sættes ikke', parseFieldsFromJson({ soil: null }).soil === undefined)
+    tjek('jord = tom streng → feltet sættes ikke', parseFieldsFromJson({ soil: '   ' }).soil === undefined)
+    tjek('jord af forkert type → feltet sættes ikke', parseFieldsFromJson({ soil: 42 }).soil === undefined)
+
+    const link = (soil?: string) => ({
+      ok: true as const,
+      fields: soil ? { soil } : {},
+      primaryImageUrl: null,
+      sourceUrl: 'https://eksempel.dk',
+    })
+
+    // Linket udfylder KUN et tomt felt.
+    const fraLink = berigImportRaekke(
+      raekke({ name: 'Hirse', purchaseUrl: 'https://eksempel.dk' }),
+      link('Let, sandet jord'),
+    )
+    tjek('tomt jord-felt udfyldes af linket',
+      fraLink.values.soil === 'Let, sandet jord' && fraLink.fieldSources.soil === 'link')
+
+    // Excel vinder over linket — og uenigheden vises i reviewet.
+    const excelVinder = berigImportRaekke(
+      raekke({ name: 'Hirse', soil: 'Min egen muld', purchaseUrl: 'https://eksempel.dk' }),
+      link('Let, sandet jord'),
+    )
+    tjek('Excel-værdi vinder over linket',
+      excelVinder.values.soil === 'Min egen muld' && excelVinder.fieldSources.soil === 'excel')
+    tjek('uenigheden vises som konflikt',
+      excelVinder.konflikter.some(k => k.felt === 'soil' && k.label === 'Jord'))
+
+    // Og guiden fylder først op, når hverken fil eller link har talt.
+    const kunGuide = berigImportRaekke(raekke({ name: 'Tomat' }), link())
+    tjek('uden fil og link falder jord tilbage til guiden',
+      !!kunGuide.values.soil && kunGuide.fieldSources.soil === 'art')
+
+    const linkSlaarGuiden = berigImportRaekke(
+      raekke({ name: 'Tomat', purchaseUrl: 'https://eksempel.dk' }),
+      link('Sur, tørveblandet jord'),
+    )
+    tjek('linket slår guiden',
+      linkSlaarGuiden.values.soil === 'Sur, tørveblandet jord' &&
+      linkSlaarGuiden.fieldSources.soil === 'link')
   }
 
   console.log('\n[Skabelon] hver kolonne i skabelonen bliver faktisk læst')
