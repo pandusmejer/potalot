@@ -9,62 +9,14 @@ import { buildInventoryInsert } from '@/lib/inventory-insert'
 import { findExistingGuideIdsForImport } from '@/actions/guides'
 import type { ImportGuideMatch } from '@/lib/guides/import-guide-match'
 import {
-  normaliserImportRaekke,
-  parseSowingDepth,
+  kortlaegKolonner,
+  laesImportRaekke,
   LINK_CHUNK,
-  FEJL_MANGLER_NAVN,
   type ImportRow,
   type ParseResult,
   type LinkResult,
   type EnrichedImportRow,
 } from '@/lib/inventory-import-merge'
-
-// Kolonne-aliases: rå header → vores nøgle
-const COLUMN_ALIASES: Record<string, string[]> = {
-  name: ['dansk navn', 'navn', 'plante', 'plantenavn', 'name'],
-  latinName: ['latinsk navn', 'botanisk navn', 'latin', 'botanical', 'latinsk/botanisk navn'],
-  variety: ['sort', 'variant', 'kultivar', 'variety'],
-  seedCount: ['antal frø', 'antal', 'frø i pose', 'antal frø i pose', 'seed count'],
-  purchaseYear: ['købsår', 'år', 'purchase year', 'år købt', 'årgang'],
-  expiryDate: ['bedst før', 'bedst foer', 'udløb', 'udløber', 'expiry', 'best before'],
-  supplier: ['mærke', 'leverandør', 'mærke/leverandør', 'mærke / leverandør', 'brand', 'supplier'],
-  purchaseUrl: ['købt her', 'url', 'link', 'purchase url', 'produktlink'],
-  sowingDepthMm: ['sådybde', 'sådybde mm', 'sådybde (mm)', 'sowing depth'],
-  notes: ['noter', 'note', 'egne noter', 'kommentar', 'notes'],
-}
-
-function detectColumn(header: string): string | null {
-  const norm = header.trim().toLowerCase()
-  for (const [key, aliases] of Object.entries(COLUMN_ALIASES)) {
-    if (aliases.includes(norm)) return key
-  }
-  return null
-}
-
-function parseDate(s: unknown): string | null {
-  if (s == null || s === '') return null
-  if (s instanceof Date) return s.toISOString().split('T')[0]
-  const str = String(s).trim()
-  // DD.MM.YYYY
-  let m = str.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/)
-  if (m) {
-    const [, d, mo, y] = m
-    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-  // YYYY-MM-DD
-  m = str.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$/)
-  if (m) {
-    const [, y, mo, d] = m
-    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-  return null
-}
-
-function parseInt0(s: unknown): number | null {
-  if (s == null || s === '') return null
-  const n = parseInt(String(s).trim(), 10)
-  return isNaN(n) ? null : n
-}
 
 /**
  * Parser Excel- eller CSV-fil og returnerer mappede rækker + advarsler.
@@ -93,70 +45,11 @@ export async function parseInventoryFile(formData: FormData): Promise<ParseResul
   const json = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' })
   if (json.length === 0) return { error: 'Ingen data i filen' }
 
-  // Map kolonner
-  const firstRow = json[0]
-  const headers = Object.keys(firstRow)
-  const headerToKey = new Map<string, string>()
-  const unmapped: string[] = []
-  for (const h of headers) {
-    const k = detectColumn(h)
-    if (k) headerToKey.set(h, k)
-    else unmapped.push(h)
-  }
-
-  const rows: ImportRow[] = json.map((raw, i) => {
-    const data: ImportRow['data'] = {}
-    const warnings: string[] = []
-    const errors: string[] = []
-
-    for (const [header, key] of headerToKey) {
-      const v = raw[header]
-      if (v == null || v === '') continue
-      switch (key) {
-        case 'name':         data.name = String(v).trim(); break
-        case 'latinName':    data.latinName = String(v).trim(); break
-        case 'variety':      data.variety = String(v).trim(); break
-        case 'seedCount':    data.seedCount = parseInt0(v) ?? undefined; break
-        case 'purchaseYear': data.purchaseYear = parseInt0(v) ?? undefined; break
-        case 'expiryDate':   data.expiryDate = parseDate(v) ?? undefined; break
-        case 'supplier':     data.supplier = String(v).trim(); break
-        case 'purchaseUrl':  data.purchaseUrl = String(v).trim(); break
-        case 'notes':        data.notes = String(v).trim(); break
-        case 'sowingDepthMm': {
-          // Præcisionsreglen: "5 mm" → 5, men "2–5 mm" er et interval og
-          // må ALDRIG blive til 3. Uden ét entydigt tal står feltet tomt.
-          const d = parseSowingDepth(v)
-          if (d.mm != null) data.sowingDepthMm = d.mm
-          else if (d.interval) warnings.push(`Sådybde "${String(v).trim()}" er et interval — vi gætter ikke. Feltet står tomt.`)
-          break
-        }
-      }
-    }
-
-    // Normalisér art/sort/leverandør FØR alt andet i pipelinen.
-    const norm = normaliserImportRaekke(data)
-
-    if (!norm.name && !norm.latinName) {
-      errors.push(FEJL_MANGLER_NAVN)
-    }
-    if (norm.seedCount != null && norm.seedCount < 0) {
-      errors.push('Antal frø må ikke være negativt')
-    }
-    if (norm.purchaseYear != null && (norm.purchaseYear < 1900 || norm.purchaseYear > 2100)) {
-      warnings.push(`Mistænkeligt købsår: ${norm.purchaseYear}`)
-    }
-    if (norm.purchaseUrl && !/^https?:\/\//i.test(norm.purchaseUrl)) {
-      warnings.push('Linket ser ikke ud til at være en webadresse. Vi springer det over.')
-    }
-
-    return {
-      rowNumber: i + 2, // +1 for header, +1 for 1-indexed
-      status: errors.length > 0 ? 'error' : warnings.length > 0 ? 'warning' : 'ready',
-      warnings,
-      errors,
-      data: norm,
-    }
-  })
+  const { headerToKey, unmapped } = kortlaegKolonner(Object.keys(json[0]))
+  const rows: ImportRow[] = json.map((raw, i) =>
+    // +1 for header, +1 for 1-indekseret regneark
+    laesImportRaekke(raw, headerToKey, i + 2),
+  )
 
   return { rows, unmappedColumns: unmapped }
 }

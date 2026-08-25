@@ -40,12 +40,27 @@ export interface ImportRowData {
   latinName?: string
   variety?: string
   seedCount?: number
+  quantity?: number
   purchaseYear?: number
+  purchaseDate?: string
   expiryDate?: string
   supplier?: string
   purchaseUrl?: string
-  sowingDepthMm?: number
   notes?: string
+  // Dyrkningsfakta brugeren selv har skrevet i regnearket. Står de i
+  // filen, er de brugerens egne tal og vinder over både link og guider.
+  sowingMonths?: number[]
+  sowingDepthMm?: number
+  preCultivation?: boolean
+  plantingOutMonths?: number[]
+  harvestMonths?: number[]
+  light?: 'full_sun' | 'partial_shade' | 'shade'
+  water?: 'low' | 'regular' | 'high'
+  soil?: string
+  germinationDays?: string
+  germinationTemperature?: string
+  plantSpacing?: string
+  rowSpacing?: string
 }
 
 export interface ImportRow {
@@ -115,7 +130,10 @@ export interface ImportValues {
   supplier?: string
   primaryCategoryId: PrimaryCategoryId
   seedCount?: number
+  /** Stk-antal for løg/knolde/planter — frø tælles i seedCount. */
+  quantity?: number
   purchaseYear?: number
+  purchaseDate?: string
   purchaseUrl?: string
   expiryDate?: string
   notes?: string
@@ -216,6 +234,11 @@ export function normaliserImportRaekke(data: ImportRowData): ImportRowData {
   next.supplier = stram(next.supplier)
   next.purchaseUrl = stram(next.purchaseUrl)
   next.notes = stram(next.notes)
+  next.soil = stram(next.soil)
+  next.germinationDays = stram(next.germinationDays)
+  next.germinationTemperature = stram(next.germinationTemperature)
+  next.plantSpacing = stram(next.plantSpacing)
+  next.rowSpacing = stram(next.rowSpacing)
   return next
 }
 
@@ -241,6 +264,298 @@ export function parseSowingDepth(raw: unknown): { mm: number | null; interval: b
   return { mm: Math.round(m[2] === 'cm' ? tal * 10 : tal), interval: false }
 }
 
+// ── Dyrkningsfelter fra regnearket ───────────────────────────────────────
+//
+// Samme præcisionsregel som sådybde hele vejen: står der noget entydigt i
+// cellen, læser vi det. Er det tvetydigt, lader vi feltet stå tomt og
+// siger det i reviewet. Vi gætter aldrig for at få en celle til at "tælle".
+
+const MAANED_NAVNE: Record<string, number> = {
+  jan: 1, januar: 1, feb: 2, februar: 2, mar: 3, marts: 3, apr: 4, april: 4,
+  maj: 5, jun: 6, juni: 6, jul: 7, juli: 7, aug: 8, august: 8,
+  sep: 9, sept: 9, september: 9, okt: 10, oktober: 10,
+  nov: 11, november: 11, dec: 12, december: 12,
+}
+
+function eenMaaned(bid: string): number | null {
+  const s = bid.trim().toLowerCase().replace(/\.$/, '')
+  if (!s) return null
+  if (/^\d{1,2}$/.test(s)) {
+    const n = parseInt(s, 10)
+    return n >= 1 && n <= 12 ? n : null
+  }
+  return MAANED_NAVNE[s] ?? null
+}
+
+/**
+ * Måneder fra en regnearkscelle.
+ *
+ * Forstår lister ("3, 4, 5" · "mar, apr" · "marts/april") og intervaller
+ * ("3-5" · "mar–maj"). Et interval mellem måneder er IKKE det samme
+ * tvetydige tilfælde som et sådybde-interval: "mar-maj" betyder utvetydigt
+ * marts, april og maj. Vender intervallet årsskiftet ("nov-feb"), læser vi
+ * det den vej rundt.
+ *
+ * Alt andet → `uklar: true`, feltet står tomt, og reviewet siger hvorfor.
+ */
+export function parseMaaneder(raw: unknown): { months: number[] | null; uklar: boolean } {
+  if (raw == null || raw === '') return { months: null, uklar: false }
+  if (typeof raw === 'number') {
+    const n = Math.round(raw)
+    return n >= 1 && n <= 12 ? { months: [n], uklar: false } : { months: null, uklar: true }
+  }
+  const s = String(raw).trim().toLowerCase()
+  if (!s) return { months: null, uklar: false }
+
+  const ud = new Set<number>()
+  for (const del of s.split(/[,;/]|\bog\b/)) {
+    const bid = del.trim()
+    if (!bid) continue
+    const interval = bid.match(/^(.+?)\s*(?:-|–|—|til)\s*(.+)$/)
+    if (interval) {
+      const fra = eenMaaned(interval[1])
+      const til = eenMaaned(interval[2])
+      if (fra == null || til == null) return { months: null, uklar: true }
+      // Nov–feb vender om årsskiftet; det er stadig en entydig række måneder.
+      for (let n = fra, vaern = 0; vaern < 12; vaern++) {
+        ud.add(n)
+        if (n === til) break
+        n = n === 12 ? 1 : n + 1
+      }
+      continue
+    }
+    const en = eenMaaned(bid)
+    if (en == null) return { months: null, uklar: true }
+    ud.add(en)
+  }
+  if (ud.size === 0) return { months: null, uklar: true }
+  return { months: [...ud].sort((a, b) => a - b), uklar: false }
+}
+
+/** Ja/nej fra en celle. Alt uden for de kendte ord → null (ukendt). */
+export function parseJaNej(raw: unknown): boolean | null {
+  if (typeof raw === 'boolean') return raw
+  if (raw == null || raw === '') return null
+  const s = String(raw).trim().toLowerCase()
+  if (['ja', 'j', 'true', 'sand', 'x', '1', 'yes'].includes(s)) return true
+  if (['nej', 'n', 'false', 'falsk', '0', 'no'].includes(s)) return false
+  // Hele ord fra Potalots eget sprogbrug, så "Forkultiveres" og
+  // "Sås direkte" også kan stå i kolonnen.
+  if (/^for(kultiver|spir)/.test(s)) return true
+  if (/^(så|saa)s?\s*direkte/.test(s) || s === 'direkte') return false
+  return null
+}
+
+/** Lys — Potalots egne etiketter plus de engelske enum-værdier. */
+export function parseLys(raw: unknown): 'full_sun' | 'partial_shade' | 'shade' | null {
+  if (raw == null || raw === '') return null
+  const s = String(raw).trim().toLowerCase()
+  if (['full_sun', 'fuld sol', 'sol', 'fuldsol', 'full sun'].includes(s)) return 'full_sun'
+  if (['partial_shade', 'halvskygge', 'halv skygge', 'delvis skygge', 'partial shade'].includes(s)) return 'partial_shade'
+  if (['shade', 'skygge'].includes(s)) return 'shade'
+  return null
+}
+
+/** Vand — Potalots egne etiketter plus de engelske enum-værdier. */
+export function parseVand(raw: unknown): 'low' | 'regular' | 'high' | null {
+  if (raw == null || raw === '') return null
+  const s = String(raw).trim().toLowerCase()
+  if (['low', 'lidt', 'lav', 'sparsomt', 'tørketålende', 'toerketaalende'].includes(s)) return 'low'
+  if (['regular', 'regelmæssig', 'regelmaessig', 'jævnt', 'jaevnt', 'jævn', 'normal', 'middel'].includes(s)) return 'regular'
+  if (['high', 'meget', 'højt', 'hoejt', 'rigeligt'].includes(s)) return 'high'
+  return null
+}
+
+// ── Kolonner ─────────────────────────────────────────────────────────────
+
+// Kolonne-aliases: rå header → vores nøgle
+export const COLUMN_ALIASES: Record<string, string[]> = {
+  // Identitet og pose
+  name: ['dansk navn', 'navn', 'plante', 'plantenavn', 'name'],
+  latinName: ['latinsk navn', 'botanisk navn', 'latin', 'botanical', 'latinsk/botanisk navn'],
+  variety: ['sort', 'variant', 'kultivar', 'variety'],
+  seedCount: ['antal frø', 'antal', 'frø i pose', 'antal frø i pose', 'seed count'],
+  quantity: ['antal stk', 'stk', 'antal løg', 'antal knolde', 'quantity'],
+  purchaseYear: ['købsår', 'år', 'purchase year', 'år købt', 'årgang'],
+  purchaseDate: ['købsdato', 'indkøbsdato', 'købt dato', 'purchase date'],
+  expiryDate: ['bedst før', 'bedst foer', 'udløb', 'udløber', 'expiry', 'best before'],
+  supplier: ['mærke', 'leverandør', 'mærke/leverandør', 'mærke / leverandør', 'brand', 'supplier'],
+  purchaseUrl: ['købt her', 'url', 'link', 'purchase url', 'produktlink'],
+  notes: ['noter', 'note', 'egne noter', 'kommentar', 'notes'],
+
+  // Dyrkningsfakta. Står de i regnearket, er de brugerens egne og vinder
+  // over både produktsiden og Potalots guider (merge-prioriteten).
+  sowingMonths: ['sås', 'såmåneder', 'saamaaneder', 'såtid', 'såning', 'sowing months'],
+  sowingDepthMm: ['sådybde', 'sådybde mm', 'sådybde (mm)', 'sowing depth'],
+  preCultivation: ['forkultivering', 'forkultiveres', 'forspiring', 'pre cultivation'],
+  plantingOutMonths: ['plant ud', 'udplantning', 'udplantningsmåneder', 'planting out'],
+  harvestMonths: ['høst', 'høstmåneder', 'hoestmaaneder', 'høsttid', 'harvest months'],
+  light: ['lys', 'placering', 'sol', 'light'],
+  water: ['vand', 'vanding', 'water'],
+  soil: ['jord', 'jordtype', 'soil'],
+  germinationDays: ['spiretid', 'spiring', 'germination days'],
+  germinationTemperature: ['spiretemperatur', 'spiretemp', 'germination temperature'],
+  plantSpacing: ['planteafstand', 'afstand', 'plant spacing'],
+  rowSpacing: ['rækkeafstand', 'raekkeafstand', 'row spacing'],
+}
+
+/** Menneskelige navne til måneds-advarslerne. */
+export const MAANED_FELT_LABEL: Record<'sowingMonths' | 'plantingOutMonths' | 'harvestMonths', string> = {
+  sowingMonths: 'Såmåneder',
+  plantingOutMonths: 'Udplantning',
+  harvestMonths: 'Høst',
+}
+
+/** Én kolonne i Excel-skabelonen: overskrift + eksempelværdi. */
+export type TemplateColumn = [string, string | number]
+
+export function detectColumn(header: string): string | null {
+  const norm = header.trim().toLowerCase()
+  for (const [key, aliases] of Object.entries(COLUMN_ALIASES)) {
+    if (aliases.includes(norm)) return key
+  }
+  return null
+}
+
+/** Én celle-værdi som regnearket leverer den. */
+type Celle = unknown
+
+function parseDato(s: Celle): string | null {
+  if (s == null || s === '') return null
+  if (s instanceof Date) return s.toISOString().split('T')[0]
+  const str = String(s).trim()
+  // DD.MM.YYYY
+  let m = str.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/)
+  if (m) {
+    const [, d, mo, y] = m
+    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
+  }
+  // YYYY-MM-DD
+  m = str.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$/)
+  if (m) {
+    const [, y, mo, d] = m
+    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
+  }
+  return null
+}
+
+function parseHeltal(s: Celle): number | null {
+  if (s == null || s === '') return null
+  const n = parseInt(String(s).trim(), 10)
+  return isNaN(n) ? null : n
+}
+
+/** Overskrifter → feltnøgler. Ukendte kolonner tabes ikke — de rapporteres. */
+export function kortlaegKolonner(headers: string[]): {
+  headerToKey: Map<string, string>
+  unmapped: string[]
+} {
+  const headerToKey = new Map<string, string>()
+  const unmapped: string[] = []
+  for (const h of headers) {
+    const k = detectColumn(h)
+    if (k) headerToKey.set(h, k)
+    else unmapped.push(h)
+  }
+  return { headerToKey, unmapped }
+}
+
+/**
+ * Læs én regnearksrække til felter + advarsler.
+ *
+ * Præcisionsreglen gælder hver celle: kan værdien ikke afkodes entydigt,
+ * står feltet TOMT og brugeren får at vide hvorfor. Vi runder aldrig et
+ * interval af og gætter aldrig på "forår" for at få en celle til at tælle.
+ */
+export function laesImportRaekke(
+  raw: Record<string, Celle>,
+  headerToKey: Map<string, string>,
+  rowNumber: number,
+): ImportRow {
+  const data: ImportRowData = {}
+  const warnings: string[] = []
+  const errors: string[] = []
+
+  for (const [header, key] of headerToKey) {
+    const v = raw[header]
+    if (v == null || v === '') continue
+    switch (key) {
+      case 'name':         data.name = String(v).trim(); break
+      case 'latinName':    data.latinName = String(v).trim(); break
+      case 'variety':      data.variety = String(v).trim(); break
+      case 'supplier':     data.supplier = String(v).trim(); break
+      case 'purchaseUrl':  data.purchaseUrl = String(v).trim(); break
+      case 'notes':        data.notes = String(v).trim(); break
+      case 'seedCount':    data.seedCount = parseHeltal(v) ?? undefined; break
+      case 'quantity':     data.quantity = parseHeltal(v) ?? undefined; break
+      case 'purchaseYear': data.purchaseYear = parseHeltal(v) ?? undefined; break
+      case 'purchaseDate': data.purchaseDate = parseDato(v) ?? undefined; break
+      case 'expiryDate':   data.expiryDate = parseDato(v) ?? undefined; break
+      // Fritekst-felterne bæres videre som de står — Potalot viser dem
+      // ordret, så der er intet at fortolke og intet at gætte forkert.
+      case 'soil':                   data.soil = String(v).trim(); break
+      case 'germinationDays':        data.germinationDays = String(v).trim(); break
+      case 'germinationTemperature': data.germinationTemperature = String(v).trim(); break
+      case 'plantSpacing':           data.plantSpacing = String(v).trim(); break
+      case 'rowSpacing':             data.rowSpacing = String(v).trim(); break
+      case 'preCultivation': {
+        const b = parseJaNej(v)
+        if (b != null) data.preCultivation = b
+        else warnings.push(`Forkultivering "${String(v).trim()}" kunne ikke afkodes. Feltet står tomt.`)
+        break
+      }
+      case 'light': {
+        const l = parseLys(v)
+        if (l) data.light = l
+        else warnings.push(`Lys "${String(v).trim()}" kunne ikke afkodes. Feltet står tomt.`)
+        break
+      }
+      case 'water': {
+        const w = parseVand(v)
+        if (w) data.water = w
+        else warnings.push(`Vand "${String(v).trim()}" kunne ikke afkodes. Feltet står tomt.`)
+        break
+      }
+      case 'sowingMonths':
+      case 'plantingOutMonths':
+      case 'harvestMonths': {
+        const { months, uklar } = parseMaaneder(v)
+        if (months) data[key] = months
+        else if (uklar) warnings.push(`${MAANED_FELT_LABEL[key]} "${String(v).trim()}" kunne ikke læses som måneder. Feltet står tomt.`)
+        break
+      }
+      case 'sowingDepthMm': {
+        // "5 mm" → 5, men "2–5 mm" er et interval og må ALDRIG blive til 3.
+        const d = parseSowingDepth(v)
+        if (d.mm != null) data.sowingDepthMm = d.mm
+        else if (d.interval) warnings.push(`Sådybde "${String(v).trim()}" er et interval — vi gætter ikke. Feltet står tomt.`)
+        break
+      }
+    }
+  }
+
+  // Normalisér art/sort/leverandør FØR alt andet i pipelinen.
+  const norm = normaliserImportRaekke(data)
+
+  if (!norm.name && !norm.latinName) errors.push(FEJL_MANGLER_NAVN)
+  if (norm.seedCount != null && norm.seedCount < 0) errors.push('Antal frø må ikke være negativt')
+  if (norm.quantity != null && norm.quantity < 0) errors.push('Antal må ikke være negativt')
+  if (norm.purchaseYear != null && (norm.purchaseYear < 1900 || norm.purchaseYear > 2100)) {
+    warnings.push(`Mistænkeligt købsår: ${norm.purchaseYear}`)
+  }
+  if (norm.purchaseUrl && !/^https?:\/\//i.test(norm.purchaseUrl)) {
+    warnings.push('Linket ser ikke ud til at være en webadresse. Vi springer det over.')
+  }
+
+  return {
+    rowNumber,
+    status: errors.length > 0 ? 'error' : warnings.length > 0 ? 'warning' : 'ready',
+    warnings,
+    errors,
+    data: norm,
+  }
+}
+
 // ── Merge ────────────────────────────────────────────────────────────────
 
 const FELT_LABELS: Partial<Record<keyof ImportValues, string>> = {
@@ -250,8 +565,10 @@ const FELT_LABELS: Partial<Record<keyof ImportValues, string>> = {
   supplier: 'Leverandør',
   primaryCategoryId: 'Kategori',
   seedCount: 'Antal frø',
+  quantity: 'Antal stk',
   purchaseYear: 'Årgang',
-  expiryDate: 'Udløb',
+  purchaseDate: 'Købsdato',
+  expiryDate: 'Bedst før',
   purchaseUrl: 'Link',
   notes: 'Noter',
   sowingMonths: 'Såmåneder',
@@ -379,27 +696,43 @@ export function berigImportRaekke(
   saet('variety', excel.variety, linkFields.variety)
   saet('supplier', excel.supplier, linkFields.supplier)
   saet('seedCount', excel.seedCount, linkFields.seedCount)
+  saet('quantity', excel.quantity, undefined)
   saet('purchaseYear', excel.purchaseYear, linkFields.purchaseYear)
+  saet('purchaseDate', excel.purchaseDate, undefined)
   saet('expiryDate', excel.expiryDate, undefined)
   saet('notes', excel.notes, linkFields.notes)
-  saet('sowingDepthMm', excel.sowingDepthMm, linkFields.sowingDepthMm)
   saet('primaryCategoryId', undefined, linkFields.primaryCategoryId)
-  saet('sowingMonths', undefined, linkFields.sowingMonths)
-  saet('plantingOutMonths', undefined, linkFields.plantingOutMonths)
-  saet('harvestMonths', undefined, linkFields.harvestMonths)
-  saet('preCultivation', undefined, linkFields.preCultivation)
-  saet('light', undefined, linkFields.light)
-  saet('water', undefined, linkFields.water)
-  saet('germinationDays', undefined, linkFields.germinationDays)
-  saet('germinationTemperature', undefined, linkFields.germinationTemperature)
-  saet('plantSpacing', undefined, linkFields.plantSpacing)
-  saet('rowSpacing', undefined, linkFields.rowSpacing)
+  // Dyrkningsfakta: står de i brugerens fil, vinder de over produktsiden —
+  // præcis som resten af filen gør. Guiderne (lag 3+4) kommer først bagefter.
+  saet('sowingMonths', excel.sowingMonths, linkFields.sowingMonths)
+  saet('sowingDepthMm', excel.sowingDepthMm, linkFields.sowingDepthMm)
+  saet('preCultivation', excel.preCultivation, linkFields.preCultivation)
+  saet('plantingOutMonths', excel.plantingOutMonths, linkFields.plantingOutMonths)
+  saet('harvestMonths', excel.harvestMonths, linkFields.harvestMonths)
+  saet('light', excel.light, linkFields.light)
+  saet('water', excel.water, linkFields.water)
+  saet('soil', excel.soil, undefined)
+  saet('germinationDays', excel.germinationDays, linkFields.germinationDays)
+  saet('germinationTemperature', excel.germinationTemperature, linkFields.germinationTemperature)
+  saet('plantSpacing', excel.plantSpacing, linkFields.plantSpacing)
+  saet('rowSpacing', excel.rowSpacing, linkFields.rowSpacing)
 
   // Købslinket bevares altid som proveniens på posen.
   saet('purchaseUrl', excel.purchaseUrl, undefined)
 
   if (!values.primaryCategoryId) values.primaryCategoryId = 'fro'
   if (!values.name) values.name = excel.latinName ?? ''
+
+  // Frø tælles i frø, løg og knolde i stk — præcis som den manuelle
+  // oprettelse gør det. Et regneark har typisk ÉN "Antal"-kolonne, og
+  // kategorien er først kendt her (linket kan have sagt "loeg"). Uden det
+  // her ville en importeret løg stå med en frø-tæller på frøkortet.
+  if (values.primaryCategoryId !== 'fro' && values.seedCount != null && values.quantity == null) {
+    values.quantity = values.seedCount
+    fieldSources.quantity = fieldSources.seedCount
+    delete values.seedCount
+    delete fieldSources.seedCount
+  }
 
   // Lag 3+4: Potalots egne guider — sort før art, aldrig kategori.
   // findFroebankAutofill afgør allerede sort-vs-art pr. felt, så kilden

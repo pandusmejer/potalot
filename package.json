@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guides-intake.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts && npx tsx scripts/test-froeposer.ts",
+    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guides-intake.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts && npx tsx scripts/test-froeposer.ts && npx tsx scripts/test-import-felter.ts",
     "import:guides": "npx tsx scripts/import-guides.ts",
     "scan:images": "npx tsx scripts/scan-images.ts",
     "check:images": "npx tsx scripts/check-images.ts",
