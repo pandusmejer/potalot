@@ -40,6 +40,8 @@ type TabId = 'seedbank' | 'june' | 'guides'
 interface FolderItem {
   title: string
   text: string
+  /** Eget mål for kortet (fx den konkrete frøpose). Mangler det, bruges fanens. */
+  href?: string
   /** Rundt thumbnail hvis tippet handler om en konkret plante/sort.
    *  Mangler den (generelt råd), vises en neutral kilde-markør i stedet. */
   image?: string
@@ -50,13 +52,30 @@ interface InspirationFolderProps {
   /** 1-12 — styrer det kuraterede sæsonråd (aldrig juni-fallback året rundt). */
   month: number
   monthName?: string
+  /**
+   * Månedens forslag fra brugerens EGEN frøbank, allerede filtreret på
+   * `month` af src/lib/kalender/froebank-forslag.ts. Tom liste er et
+   * gyldigt svar — komponenten må ALDRIG fylde op med generiske kort.
+   */
   seedItems?: FolderItem[]
+  /**
+   * Har brugeren overhovedet frø i banken? Skelner de to tomme tilstande:
+   * "du har ingen frø endnu" vs. "dine frø skal bare ikke i jorden nu".
+   */
+  hasSeedsInBank?: boolean
   juneItems?: FolderItem[]
   guideItems?: FolderItem[]
   hasSeedSuggestions?: boolean
 }
 
-const DEFAULT_SEED_ITEMS: FolderItem[] = [
+/**
+ * KUN til design-preview (/calendar-inspiration-preview). Disse tre kort var
+ * indtil KAL-0110 fanens DEFAULT — hardkodet forårs-copy der blev vist året
+ * rundt uanset brugerens frøbank. De må ALDRIG være fallback i produktion:
+ * en tom Frøbank-fane er sandheden, filler er en løgn. Se
+ * src/lib/kalender/froebank-forslag.ts.
+ */
+export const DEMO_SEED_ITEMS: FolderItem[] = [
   {
     title: 'Så salat igen',
     text: 'Little Gem kan give sprøde blade senere.',
@@ -187,7 +206,10 @@ function folderLayer(xL: number, isActive = false): string {
 export function InspirationFolder({
   monthName = 'juni',
   month,
-  seedItems = DEFAULT_SEED_ITEMS,
+  // KAL-0110 (Anna, P1): INGEN hardkodet fallback. Kender vi ikke brugerens
+  // frø, viser fanen sin tomme tilstand — den lyver ikke om måneden.
+  seedItems = [],
+  hasSeedsInBank = false,
   // KAL-0108 (Anna, SYSTEMFIX P1): sæsonråd kommer fra det kuraterede
   // månedsindhold — hardcodet juni-indhold må ALDRIG være fallback året rundt.
   juneItems = (CURATED_INSPIRATION[month] ?? []).map(k => ({ title: k.title, text: k.text })),
@@ -200,13 +222,19 @@ export function InspirationFolder({
 
   const activeContent = useMemo(() => {
     if (activeTab === 'seedbank') {
+      // Tre ærlige tilstande — aldrig filler for at nå tre kort:
+      //   forslag        → "Sorter, du stadig kan nå."
+      //   frø, men ro    → månedens vinduer er lukkede, og det siger vi
+      //   ingen frø endnu→ invitation til at tilføje
+      // Kort nok til at overskrifts-linjen ikke afkortes (nowrap + ellipsis).
+      const tomTekst = hasSeedsInBank
+        ? `Dine sorter hviler i ${monthName.toLowerCase()}.`
+        : 'Din Frøbank hviler lidt endnu.'
       return {
         title: 'Fra din Frøbank',
-        subtitle: hasSeedSuggestions
-          ? 'Sorter, du stadig kan nå.'
-          : 'Din Frøbank hviler lidt endnu.',
-        cta: hasSeedSuggestions ? 'Se Frøbanken' : 'Tilføj frø',
-        href: hasSeedSuggestions ? '/froebank' : '/froebank/tilfoej',
+        subtitle: hasSeedSuggestions ? 'Sorter, du stadig kan nå.' : tomTekst,
+        cta: hasSeedSuggestions || hasSeedsInBank ? 'Se Frøbanken' : 'Tilføj frø',
+        href: hasSeedSuggestions || hasSeedsInBank ? '/froebank' : '/froebank/tilfoej',
         items: seedItems,
       }
     }
@@ -230,7 +258,7 @@ export function InspirationFolder({
       // — den juni-specifikke guide vises KUN i juni.
       items: guideItems.filter(it => month === 6 || !it.title.includes('juni')),
     }
-  }, [activeTab, guideItems, hasSeedSuggestions, juneItems, monthName, seedItems])
+  }, [activeTab, guideItems, hasSeedSuggestions, hasSeedsInBank, juneItems, month, monthName, seedItems])
 
   return (
     <section aria-labelledby="inspiration-folder-title" style={{ paddingTop: 6 }}>
@@ -424,9 +452,9 @@ function FolderPanel({
       <div style={{ display: 'grid', gap: 12 }}>
         {content.items.map(item => (
           <FolderItemCard
-            key={item.title}
+            key={item.href ?? item.title}
             item={item}
-            href={content.href}
+            href={item.href ?? content.href}
             sourceTab={tab}
           />
         ))}

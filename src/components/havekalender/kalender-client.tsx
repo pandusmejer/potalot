@@ -34,6 +34,7 @@ import { hideGeneralTask } from '@/actions/aarshjul'
 import { createTask } from '@/actions/havekalender'
 import type { GardenAlert, VejrPoolsMaalinger } from '@/actions/weather'
 import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
+import type { FroebankForslag } from '@/lib/kalender/froebank-forslag'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -53,6 +54,15 @@ interface Props {
   dagensFokus: DagensFokus
   /** plantId → ægte foto-URL (server-resolveret; kun rigtige billeder). */
   plantImages: Record<string, string>
+  /**
+   * KAL-0110: Inspiration-mappens Frøbank-fane. Måned (1-12) → forslag der
+   * er filtreret på NETOP den måned og på brugerens egne frø. Beregnes
+   * server-side for hele året, fordi brugeren kan skifte måned i klienten
+   * uden at billed-manifesterne skal med i kalenderens bundle.
+   */
+  froebankForslag: Record<number, FroebankForslag[]>
+  /** Har brugeren frø i banken? Skelner "ingen frø" fra "ingen vinduer nu". */
+  harFroebank: boolean
 }
 
 /** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
@@ -128,7 +138,7 @@ function vejrNote(alerts: GardenAlert[]): { headline: string; subline: string } 
   return null
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, vejr, isLoggedIn, dagensFokus, plantImages }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, vejr, isLoggedIn, dagensFokus, plantImages, froebankForslag, harFroebank }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -337,7 +347,12 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
           samlet i én editorial mappe med tre faner (Frøbank / Juni-greb
           / Guides). Erstatter de tidligere løse inspirationslag. Ingen
           opgavestatus, ingen persistens — ren "dyk ned hvis du har lyst". */}
-      <InspirationFolder month={valgtMaaned} monthName={valgtMaanedNavn} />
+      <InspirationFolder
+        month={valgtMaaned}
+        monthName={valgtMaanedNavn}
+        seedItems={froebankForslag[valgtMaaned] ?? []}
+        hasSeedsInBank={harFroebank}
+      />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
           SKJULT INDTIL VIDERE: communities + challenges-funktioner

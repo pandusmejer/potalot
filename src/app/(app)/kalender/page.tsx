@@ -12,6 +12,8 @@ import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getCurrentUser } from '@/lib/auth'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
 import { resolvePlantCard } from '@/lib/images/resolve-potalot-image'
+import { byggFroebankForslagPrMaaned } from '@/lib/kalender/froebank-forslag'
+import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { mockPlants } from '@/data/mock-plants'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 
@@ -80,6 +82,21 @@ async function KalenderIndhold() {
     if (source !== 'fallback') plantImages[p.id] = src
   }
 
+  // ── KAL-0110 (Anna 25/8, P1): Inspiration-mappens Frøbank-fane ──────────
+  // Fanen viste før TRE HARDKODEDE forårs-kort året rundt ("Giv basilikum
+  // varme" i august). Nu bygges den af brugerens EGNE frø, filtreret på
+  // måneden FØRST — og viser ét kort, hvis kun ét frø er aktuelt. Aldrig
+  // filler. Motoren: src/lib/kalender/froebank-forslag.ts.
+  //
+  // Samme demo-afgrænsning som /froebank: en anonym bruger uden egne frø
+  // ser DEMO_INVENTORY, så designet er synligt — men forslagene er stadig
+  // ægte månedsfiltrerede, så demoen aldrig rådgiver på det forkerte tidspunkt.
+  const froebankInventory = (me === null && inventory.length === 0) ? DEMO_INVENTORY : inventory
+  const froebankForslag = byggFroebankForslagPrMaaned({
+    inventory: froebankInventory,
+    plants: brainPlants,
+  })
+
   // (Den sensoriske stemnings-note vises ikke længere på kalenderen —
   // garden-notes kører fortsat på /froebank og /mine-planter.)
 
@@ -106,6 +123,8 @@ async function KalenderIndhold() {
         isLoggedIn={me !== null}
         dagensFokus={dagensFokus}
         plantImages={plantImages}
+        froebankForslag={froebankForslag}
+        harFroebank={froebankInventory.length > 0}
       />
     </>
   )

@@ -1,4 +1,4 @@
-import { InspirationFolder } from '@/components/havekalender/inspiration-folder'
+import { InspirationFolder, DEMO_SEED_ITEMS } from '@/components/havekalender/inspiration-folder'
 import { NextMonthTeaser } from '@/components/havekalender/next-month-teaser'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
@@ -60,7 +60,15 @@ export default function CalendarInspirationPreviewPage() {
         </header>
 
         <div style={{ display: 'grid', gap: 26 }}>
-          <InspirationFolder month={6} monthName="Juni" />
+          {/* Design-preview: Frøbank-fanens kort fodres EKSPLICIT med demo-data.
+              I den rigtige kalender kommer de fra brugerens egen frøbank,
+              filtreret på måneden (src/lib/kalender/froebank-forslag.ts). */}
+          <InspirationFolder
+            month={6}
+            monthName="Juni"
+            seedItems={DEMO_SEED_ITEMS}
+            hasSeedsInBank
+          />
           <NextMonthTeaser />
         </div>
       </div>
