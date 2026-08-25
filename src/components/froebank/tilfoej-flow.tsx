@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { MultiImageUpload } from '@/components/ui/multi-image-upload'
 import {
   Camera, Image as ImageIcon, FileSpreadsheet, FileText, Sparkles, Link2,
-  Loader2, ArrowLeft, Upload, Download, Check, Wand2, AlertTriangle,
+  Loader2, ArrowLeft, Upload, Download, Check, Wand2, AlertTriangle, RefreshCw,
 } from 'lucide-react'
 import { FROEPOSE_UDEN_NAVN } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
@@ -57,6 +57,11 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   const [scanTarget, setScanTarget] = useState<'froebank' | 'oenskeliste'>('froebank')
   const [scanCreatedId, setScanCreatedId] = useState<string | null>(null)
   const [scanIncomplete, setScanIncomplete] = useState(false)
+  // HVORFOR fejlede det? 'ulaeselig' = posen kunne ikke tydes (rådet er et
+  // bedre foto). 'server-*' = vi fik aldrig svar fra Potalot (rådet er "prøv
+  // igen / genindlæs"). At blande dem sender folk ud at fotografere om, når
+  // billedet var fint nok.
+  const [scanFejl, setScanFejl] = useState<'ulaeselig' | 'server-laes' | 'server-opret'>('ulaeselig')
 
   // Link
   const [linkUrl, setLinkUrl] = useState('')
@@ -81,24 +86,38 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   async function runScan(imgs: string[]) {
     setError(null)
     setScanStage('reading')
-    const ext = await extractSeedPacketFields(imgs)
-    if ('error' in ext) {
-      // Rigtig AI/API-fejl må ALDRIG sluges eller ende som "succes".
-      // Detaljen logges internt — aldrig i UI'et (FRB-0227).
-      console.error('frøpose-skanning fejlede:', ext.error)
+    try {
+      const ext = await extractSeedPacketFields(imgs)
+      if ('error' in ext) {
+        // Rigtig AI/API-fejl må ALDRIG sluges eller ende som "succes".
+        // Detaljen logges internt — aldrig i UI'et (FRB-0227). Det er en
+        // serverfejl, ikke et dårligt billede: rådet skal være "prøv igen".
+        console.error('frøpose-skanning fejlede:', ext.error)
+        setScanFejl('server-laes')
+        setScanStage('failed')
+        return
+      }
+      const fields = ext.fields
+      setScanExtracted(fields)
+      const aflaestNavn = fields.name?.trim() ?? ''
+      if (!aflaestNavn) {
+        // Gyldigt billede, men ingen brugbar identifikation → opret intet.
+        setScanFejl('ulaeselig')
+        setScanStage('failed')
+        return
+      }
+      setScanName(aflaestNavn) // redigerbart i review-trinnet
+      setScanStage('review')
+    } catch (e: unknown) {
+      // Kaldet nåede aldrig frem — netværk, timeout, eller (set i praksis) en
+      // fane der har ligget åben hen over en ny udrulning, så handlingen ikke
+      // findes på serveren længere. UDEN dette catch bobler fejlen op i
+      // error.tsx: hele siden bliver til "Noget gik galt", og de uploadede
+      // billeder er låst inde. Her bliver den til et valg i stedet.
+      console.error('frøpose-skanning nåede ikke frem:', e)
+      setScanFejl('server-laes')
       setScanStage('failed')
-      return
     }
-    const fields = ext.fields
-    setScanExtracted(fields)
-    const aflaestNavn = fields.name?.trim() ?? ''
-    if (!aflaestNavn) {
-      // Gyldigt billede, men ingen brugbar identifikation → opret intet.
-      setScanStage('failed')
-      return
-    }
-    setScanName(aflaestNavn) // redigerbart i review-trinnet
-    setScanStage('review')
   }
 
   // ── FASE 2: OPRET. Kun fra et EKSPLICIT brugervalg (review "Opret" eller
@@ -139,23 +158,33 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
           notes: fields.notes,
         }
 
-    const res = await createInventoryItem({
-      name: finalName,
-      ...specs,
-      imageUrls: scanImages,
-      primaryImageUrl: harFroekort ? undefined : (scanPrimary ?? undefined),
-    })
+    try {
+      const res = await createInventoryItem({
+        name: finalName,
+        ...specs,
+        imageUrls: scanImages,
+        primaryImageUrl: harFroekort ? undefined : (scanPrimary ?? undefined),
+      })
 
-    if ('error' in res) {
-      console.error('oprettelse efter skanning fejlede:', res.error)
+      if ('error' in res) {
+        console.error('oprettelse efter skanning fejlede:', res.error)
+        setScanFejl('server-opret')
+        setScanStage('failed')
+        return
+      }
+      setScanCreatedId(res.id)
+      setScanName(finalName)
+      setScanIncomplete(opts.incomplete)
+      setScanStage('done')
+      router.refresh()
+    } catch (e: unknown) {
+      // Samme sikkerhedsnet som i runScan: oprettelsen må ikke kunne rive
+      // hele siden ned. Det aflæste står stadig i state, så et nyt forsøg
+      // koster hverken et nyt foto eller en ny læsning.
+      console.error('oprettelse efter skanning nåede ikke frem:', e)
+      setScanFejl('server-opret')
       setScanStage('failed')
-      return
     }
-    setScanCreatedId(res.id)
-    setScanName(finalName)
-    setScanIncomplete(opts.incomplete)
-    setScanStage('done')
-    router.refresh()
   }
 
   function handleScanImagesChange(imgs: string[], p: string | null) {
@@ -171,8 +200,13 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
   // Failed-trin-handlinger.
   function resetScan(toMode?: 'camera' | 'library') {
     setScanImages([]); setScanPrimary(null); setScanExtracted(null)
-    setScanName(''); setScanStage('idle')
+    setScanName(''); setScanStage('idle'); setScanFejl('ulaeselig')
     if (toMode) setMode(toMode)
+  }
+  function handleProevIgen() {
+    // Serverfejl → billederne ligger der stadig. Læs dem om, uden ny upload.
+    if (scanImages.length === 0) return
+    startTransition(() => runScan(scanImages))
   }
   function handleSkrivNavnSelv() {
     // Ingen brugbar aflæsning → lad brugeren navngive selv (billeder bevares).
@@ -241,7 +275,15 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
     e.preventDefault()
     const trimmed = linkUrl.trim()
     if (!trimmed) return
-    startTransition(() => runLinkAndCreate(trimmed, scanTarget))
+    startTransition(async () => {
+      try {
+        await runLinkAndCreate(trimmed, scanTarget)
+      } catch (err: unknown) {
+        console.error('link-import nåede ikke frem:', err)
+        setError('Vi fik ikke svar fra Potalot. Prøv igen — hjælper det ikke, så genindlæs siden.')
+        setScanStage('idle')
+      }
+    })
   }
 
   // ── EXCEL: berig FØR oprettelse ────────────────────────────────────────
@@ -476,20 +518,51 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                       <AlertTriangle className="h-5 w-5 text-destructive" />
                     </div>
                     <div>
-                      <p className="font-serif text-lg text-foreground">Vi kunne ikke læse frøposen</p>
+                      <p className="font-serif text-lg text-foreground">
+                        {scanFejl === 'ulaeselig' ? 'Vi kunne ikke læse frøposen' : 'Vi fik ikke svar fra Potalot'}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        Prøv med et skarpere billede i bedre lys, eller skriv plantens navn selv.
+                        {scanFejl === 'ulaeselig'
+                          ? 'Prøv med et skarpere billede i bedre lys, eller skriv plantens navn selv.'
+                          : scanFejl === 'server-laes'
+                            ? 'Det er ikke billedernes skyld — de er gemt. Prøv at læse dem igen, eller genindlæs siden.'
+                            : 'Frøposen blev ikke oprettet. Det, vi læste, står der stadig — prøv igen, eller genindlæs siden.'}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button variant="outline" onClick={() => resetScan('camera')} disabled={pending}>
-                    <Camera className="h-4 w-4" /> Tag nyt billede
-                  </Button>
-                  <Button variant="outline" onClick={() => resetScan('library')} disabled={pending}>
-                    <ImageIcon className="h-4 w-4" /> Vælg et andet foto
-                  </Button>
+                  {/* Serverfejl: billederne ligger allerede i skyen. Første råd
+                      er derfor "prøv igen" — ikke "fotografér om". */}
+                  {scanFejl === 'server-laes' && (
+                    <Button onClick={handleProevIgen} disabled={pending}>
+                      {pending
+                        ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Læser…</>
+                        : <><Wand2 className="h-4 w-4" /> Prøv at læse igen</>}
+                    </Button>
+                  )}
+                  {scanFejl === 'server-opret' && (
+                    <Button onClick={handleReviewOpret} disabled={pending || !scanName.trim()}>
+                      {pending
+                        ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Opretter…</>
+                        : <><Check className="h-4 w-4" /> Prøv at oprette igen</>}
+                    </Button>
+                  )}
+                  {scanFejl !== 'ulaeselig' && (
+                    <Button variant="outline" onClick={() => window.location.reload()} disabled={pending}>
+                      <RefreshCw className="h-4 w-4" /> Genindlæs siden
+                    </Button>
+                  )}
+                  {scanFejl === 'ulaeselig' && (
+                    <>
+                      <Button variant="outline" onClick={() => resetScan('camera')} disabled={pending}>
+                        <Camera className="h-4 w-4" /> Tag nyt billede
+                      </Button>
+                      <Button variant="outline" onClick={() => resetScan('library')} disabled={pending}>
+                        <ImageIcon className="h-4 w-4" /> Vælg et andet foto
+                      </Button>
+                    </>
+                  )}
                   <Button variant="outline" onClick={handleSkrivNavnSelv} disabled={pending}>
                     <FileText className="h-4 w-4" /> Skriv navn og udfyld selv
                   </Button>

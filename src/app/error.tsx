@@ -24,8 +24,18 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           meget gerne fortælle os hvad du lavede, så vi kan rette det.
         </p>
         <div className="flex flex-col gap-2 pt-1">
-          <button onClick={reset} className="w-full rounded-xl bg-primary text-primary-foreground font-medium py-3">
-            Prøv igen
+          {/* Genindlæsning står forrest med vilje: den hyppigste årsag til at
+              lande her er en fane, der har ligget åben hen over en ny
+              udrulning. reset() gentegner den samme forældede kode og fejler
+              igen — en frisk indlæsning henter den nye. */}
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full rounded-xl bg-primary text-primary-foreground font-medium py-3"
+          >
+            Genindlæs siden
+          </button>
+          <button onClick={reset} className="w-full text-sm text-muted-foreground hover:text-foreground py-1">
+            Prøv igen uden at genindlæse
           </button>
           <Link href="/" className="w-full text-sm text-muted-foreground hover:text-foreground no-underline py-1">
             Tilbage til forsiden
