@@ -7,7 +7,7 @@ import { udfoerBackfill } from '@/actions/froebank-backfill'
 import { BACKFILL_LABELS, type BackfillForslag, type BackfillFelt } from '@/lib/froebank-backfill'
 
 /**
- * "Potalot kan udfylde resten" — engangsoprydning på gamle frøposer.
+ * "Potalot kan udfylde mere" — engangsoprydning på gamle frøposer.
  *
  * Poser oprettet før berigelsen fandtes står med tomme dyrkningsfakta, selv
  * om Potalot i dag har guiden. Kortet tilbyder at fylde dem ud i ét greb i
@@ -16,8 +16,10 @@ import { BACKFILL_LABELS, type BackfillForslag, type BackfillFelt } from '@/lib/
  * To ting holder det roligt:
  *   · Det findes kun så længe der er noget at gøre. Er alt udfyldt, findes
  *     kortet ikke — ingen tom tilstand, ingen "0 felter mangler".
- *   · Listen kan foldes ud FØR man trykker. Ingen skal sige ja til noget,
- *     de ikke kan se.
+ *   · Vejen frem går GENNEM listen: "Se forslag" åbner den, og først
+ *     dér findes "Brug Potalots forslag". Ingen kan sige ja til noget,
+ *     de ikke har set. Potalot foreslår, brugeren bestemmer — samme model
+ *     som ved manuel oprettelse.
  *
  * Brugerens egne oplysninger røres aldrig — hverken poseoplysninger eller
  * et dyrkningsfelt hun selv har udfyldt. Serveren genberegner forslaget før
@@ -34,6 +36,7 @@ export function BackfillKort({ forslag }: { forslag: BackfillForslag[] }) {
   if (forslag.length === 0 || lukket) return null
 
   const antalFelter = forslag.reduce((sum, f) => sum + f.antalFelter, 0)
+  const enPose = forslag.length === 1
 
   async function udfyld() {
     setKoerer(true)
@@ -76,29 +79,26 @@ export function BackfillKort({ forslag }: { forslag: BackfillForslag[] }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold" style={{ color: '#263321' }}>
-            Potalot kan udfylde resten
+            Potalot kan udfylde mere
           </p>
           <p className="mt-1 text-sm" style={{ color: 'rgba(38,51,33,0.68)', lineHeight: 1.45 }}>
-            {forslag.length} {forslag.length === 1 ? 'frøpose mangler' : 'frøposer mangler'}{' '}
-            dyrkningsfakta, som guiderne allerede kender — {antalFelter} felter i alt. Det, du selv
-            har skrevet, bliver stående.
+            {enPose ? (
+              <>
+                Vi har oplysninger om {antalFelter}{' '}
+                {antalFelter === 1 ? 'tomt dyrkningsfelt' : 'tomme dyrkningsfelter'} for{' '}
+                {forslag[0].navn}.
+              </>
+            ) : (
+              <>
+                Vi har oplysninger om {antalFelter} tomme dyrkningsfelter på {forslag.length}{' '}
+                af dine frøposer.
+              </>
+            )}{' '}
+            Se dem igennem, før du bruger dem. Det, du selv har skrevet, bliver stående.
           </p>
 
-          <button
-            type="button"
-            onClick={() => setAaben(v => !v)}
-            aria-expanded={aaben}
-            className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            {aaben ? 'Skjul listen' : 'Se hvad der bliver udfyldt'}
-            <ChevronRight
-              className="h-3.5 w-3.5 transition-transform"
-              style={{ transform: aaben ? 'rotate(90deg)' : undefined }}
-            />
-          </button>
-
           {aaben && (
-            <ul className="mt-2 space-y-1.5 border-t border-primary/10 pt-2">
+            <ul className="mt-2.5 space-y-1.5 border-t border-primary/10 pt-2.5">
               {forslag.map(f => (
                 <li key={f.id} className="text-xs" style={{ color: 'rgba(38,51,33,0.72)' }}>
                   <span className="font-semibold" style={{ color: '#263321' }}>{f.navn}</span>
@@ -113,9 +113,33 @@ export function BackfillKort({ forslag }: { forslag: BackfillForslag[] }) {
 
           {fejl && <p className="mt-2 text-xs text-destructive">{fejl}</p>}
 
-          <Button size="sm" className="mt-3" onClick={udfyld} disabled={koerer}>
-            {koerer ? 'Udfylder …' : 'Udfyld felterne'}
-          </Button>
+          {/* Én knap, to roller. Foldet ud er den eneste vej frem at ÅBNE
+              listen — så ingen kan bruge forslagene uden at have set dem. */}
+          {aaben ? (
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Button size="sm" onClick={udfyld} disabled={koerer}>
+                {koerer ? 'Udfylder …' : 'Brug Potalots forslag'}
+              </Button>
+              <button
+                type="button"
+                onClick={() => setAaben(false)}
+                className="text-xs font-semibold text-muted-foreground hover:text-foreground"
+              >
+                Skjul
+              </button>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              className="mt-3"
+              onClick={() => setAaben(true)}
+              aria-expanded={false}
+            >
+              Se forslag
+              <ChevronRight className="ml-1 h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
       </div>
     </div>
