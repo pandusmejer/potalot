@@ -147,7 +147,7 @@ export function EditInventoryDialog({ item }: Props) {
       // Uden dette catch forsvandt en mislykket genlæsning helt tavst:
       // spinneren stoppede, og intet skete. Nu siger den det.
       console.error('genlæsning af billeder nåede ikke frem:', e)
-      setError('Vi fik ikke svar fra Potalot. Prøv igen — hjælper det ikke, så genindlæs siden.')
+      setError('Vi fik ikke svar fra Potalot. Prøv igen. Hvis det ikke virker, så genindlæs siden.')
     } finally {
       setAiPending(false)
     }

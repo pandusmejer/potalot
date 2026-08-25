@@ -280,7 +280,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         await runLinkAndCreate(trimmed, scanTarget)
       } catch (err: unknown) {
         console.error('link-import nåede ikke frem:', err)
-        setError('Vi fik ikke svar fra Potalot. Prøv igen — hjælper det ikke, så genindlæs siden.')
+        setError('Vi fik ikke svar fra Potalot. Prøv igen. Hvis det ikke virker, så genindlæs siden.')
         setScanStage('idle')
       }
     })
@@ -523,10 +523,10 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {scanFejl === 'ulaeselig'
-                          ? 'Prøv med et skarpere billede i bedre lys, eller skriv plantens navn selv.'
+                          ? 'Prøv med et skarpere billede af for- og bagside.'
                           : scanFejl === 'server-laes'
-                            ? 'Det er ikke billedernes skyld — de er gemt. Prøv at læse dem igen, eller genindlæs siden.'
-                            : 'Frøposen blev ikke oprettet. Det, vi læste, står der stadig — prøv igen, eller genindlæs siden.'}
+                            ? 'Prøv igen. Hvis det ikke virker, så genindlæs siden.'
+                            : 'Frøposen blev ikke oprettet. Prøv igen. Hvis det ikke virker, så genindlæs siden.'}
                       </p>
                     </div>
                   </div>
