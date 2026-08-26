@@ -30,6 +30,47 @@ import type { DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-f
 
 export type AutofillKilde = 'sort' | 'art'
 
+// ─── Typede dyrkningsvinduer (Anna 25/8) ─────────────────────────────
+//
+// Guidekontrakten kender TRE separate vinduer — forkultivering
+// (`sowingMonths`), direkte såning (`directSowingMonths`) og udplantning
+// (`plantingOutMonths`). Frøbankens formular har historisk kun ét samlet
+// såfelt, og sammenfoldningen nedenfor (findFroebankAutofill) MISTER
+// derfor hvilken handling månederne repræsenterer.
+//
+// Det tab må ikke brede sig til resten af appen. Verbet skal udledes af
+// det konkrete AKTIVE vindue — ikke af `preCultivation`, som betyder
+// "denne art kan/skal forkultiveres", ikke "alle måneder i det samlede
+// såvindue er forkultiveringsmåneder". Salat viser forskellen: arten har
+// forkultivering feb-aug, direkte såning mar-aug OG preCultivation: true.
+// I august er begge handlinger gyldige, og "Så salat" er det enklere råd.
+//
+// `resolveFroebankVinduer` er derfor den kanoniske kilde for alt der skal
+// vide HVILKEN handling en måned hører til. Det samlede felt lever videre
+// til formularen — men aldrig som autoritativ kilde for en handling.
+
+export type FroebankVinduesHandling = 'direct_sow' | 'pre_sow' | 'plant_out'
+
+/** Hvor vinduet kommer fra — bevares hele vejen, så et kort kan debugges. */
+export type FroebankVinduesKilde = 'inventory' | 'variety' | 'species'
+
+export interface FroebankVindue {
+  action: FroebankVinduesHandling
+  months: number[]
+  source: FroebankVinduesKilde
+}
+
+/**
+ * Prioritet når FLERE vinduer er åbne i samme måned (Anna 25/8):
+ * direkte såning før forkultivering før udplantning. Kan man både så
+ * salaten direkte og forkultivere den i august, er "Så salat" det
+ * enklere og mere naturlige råd; forkultivering er svaret, når den er
+ * den nødvendige vej.
+ */
+export const FROEBANK_VINDUE_PRIORITET: FroebankVinduesHandling[] = [
+  'direct_sow', 'pre_sow', 'plant_out',
+]
+
 export interface FroebankAutofill {
   /** Fuldt formet DyrkningsfaktaState — tomme defaults hvor guiderne tier. */
   facts: DyrkningsfaktaState
@@ -122,6 +163,46 @@ export function slaaGuiderOp(
   return { sortsGuide, artsGuide }
 }
 
+/**
+ * Alle dyrkningsvinduer for en art/sort — med handlingstype og kilde BEVARET.
+ *
+ * Arven er den samme som resten af autofill'en: værdi eksplicit på sortens
+ * rå quickFacts → 'variety'; ellers artens → 'species'; ellers intet vindue.
+ * En manglende sortsværdi betyder "ingen override", ikke "ingen aktivitet".
+ *
+ * Vinduerne returneres i prioritetsrækkefølge (FROEBANK_VINDUE_PRIORITET) og
+ * er BEVIDST ikke gjort disjunkte: overlapper forkultivering og direkte
+ * såning, er begge sande, og kalderen vælger efter prioritet. Ville vi klippe
+ * dem fra hinanden, ville "sidste måned, du kan forkultivere" pludselig
+ * betyde "sidste måned hvor forkultivering var det ENESTE valg" — og det er
+ * en anden og forkert påstand.
+ */
+export function resolveFroebankVinduer(
+  name: string,
+  variety?: string | null,
+): FroebankVindue[] {
+  const navn = name.trim()
+  if (!navn) return []
+  const { sortsGuide, artsGuide } = slaaGuiderOp(navn, (variety ?? '').trim())
+  const sortQF = sortsGuide?.quickFacts ?? null
+  const artQF = artsGuide?.quickFacts ?? null
+
+  const ud: FroebankVindue[] = []
+  const tilfoej = (action: FroebankVinduesHandling, key: keyof GuideQuickFacts) => {
+    const r = resolveFelt(key, sortQF, artQF)
+    if (!r || !Array.isArray(r.value) || r.value.length === 0) return
+    ud.push({
+      action,
+      months: [...(r.value as number[])].sort((a, b) => a - b),
+      source: r.kilde === 'sort' ? 'variety' : 'species',
+    })
+  }
+  tilfoej('direct_sow', 'directSowingMonths')
+  tilfoej('pre_sow', 'sowingMonths')
+  tilfoej('plant_out', 'plantingOutMonths')
+  return ud
+}
+
 export function findFroebankAutofill(
   name: string,
   variety?: string | null,
@@ -159,10 +240,17 @@ export function findFroebankAutofill(
   saet('rowSpacing')
 
   // Sås-måneder: guiderne skelner mellem forkultivering (sowingMonths) og
-  // direkte såning (directSowingMonths); frøbanken har ét felt. Regel:
+  // direkte såning (directSowingMonths); frøbankens FORMULAR har ét felt.
+  // Regel:
   //   preCultivation === true  → sowingMonths (indendørs-vinduet)
   //   preCultivation === false → directSowingMonths
   //   ukendt                   → union af begge (begge er ægte såvinduer)
+  //
+  // Sammenfoldningen sker KUN her, til formularen. Alt der skal vide hvilken
+  // HANDLING månederne hører til, skal bruge resolveFroebankVinduer() —
+  // ellers udleder man verbet af preCultivation, og det er en egenskab ved
+  // planten, ikke ved vinduet. Begge veje læser de samme resolveFelt-opslag,
+  // så de kan ikke drifte fra hinanden.
   const indendoers = resolveFelt('sowingMonths', sortQF, artQF)
   const direkte = resolveFelt('directSowingMonths', sortQF, artQF)
   const preCult = facts.preCultivation

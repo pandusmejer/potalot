@@ -39,7 +39,13 @@
 
 import type { InventoryItem, InventoryStatus, PrimaryCategoryId, Plant } from '@/lib/types'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
-import { findFroebankAutofill } from '@/lib/froebank-autofill'
+import {
+  resolveFroebankVinduer,
+  FROEBANK_VINDUE_PRIORITET,
+  type FroebankVindue,
+  type FroebankVinduesHandling,
+  type FroebankVinduesKilde,
+} from '@/lib/froebank-autofill'
 
 export interface FroebankForslag {
   /** Stabil React-key — inventory-id'et for den pose forslaget kom fra. */
@@ -49,6 +55,10 @@ export interface FroebankForslag {
   href: string
   image?: string
   imageAlt?: string
+  /** Hvilket vindue kortet står på — bevaret hele vejen, så det kan debugges. */
+  action: FroebankVinduesHandling
+  /** Hvor vinduet kom fra: posen selv, sortsguiden eller artsguiden. */
+  source: FroebankVinduesKilde
 }
 
 export interface FroebankForslagInput {
@@ -71,8 +81,6 @@ const IKKE_EJET: PrimaryCategoryId[] = ['indkoebsliste', 'favoritter']
 /** Poser der er ude af spil — de skal ikke foreslås. */
 const UDE_AF_SPIL: InventoryStatus[] = ['afsluttet', 'arkiveret']
 
-type Vindue = 'forspir' | 'saa' | 'plant-ud'
-
 /** Visningsnavn: "Stangbønne Cobra" (art + sort) eller bare arten. */
 function visningsNavn(name: string, variety?: string | null): string {
   return variety ? `${name} ${variety}` : name
@@ -88,87 +96,115 @@ function lukker(months: number[]): number {
   return Math.max(...months)
 }
 
-function tekst(vindue: Vindue, month: number, months: number[]): string {
-  const maaned = MAANED_NAVN[month - 1]
-  const sidste = lukker(months) === month
-  if (vindue === 'plant-ud') {
-    return sidste
-      ? `Sidste måned, du kan plante ud.`
-      : `Udplantningsvinduet er åbent i ${maaned}.`
-  }
-  if (vindue === 'forspir') {
-    return sidste
-      ? `Sidste måned, du kan forkultivere.`
-      : `Forkultiveringsvinduet er åbent i ${maaned}.`
-  }
-  return sidste
-    ? `Sidste måned, du kan så.`
-    : `Såvinduet er åbent i ${maaned}.`
+const TITEL: Record<FroebankVinduesHandling, (navn: string) => string> = {
+  direct_sow: navn => `Så ${navn}`,
+  pre_sow: navn => `Forkultivér ${navn}`,
+  plant_out: navn => `Plant ${navn} ud`,
 }
 
-function titel(vindue: Vindue, navn: string): string {
-  if (vindue === 'plant-ud') return `Plant ${navn} ud`
-  if (vindue === 'forspir') return `Forkultivér ${navn}`
-  return `Så ${navn}`
+const SIDSTE_LINJE: Record<FroebankVinduesHandling, string> = {
+  direct_sow: 'Sidste måned, du kan så.',
+  pre_sow: 'Sidste måned, du kan forkultivere.',
+  plant_out: 'Sidste måned, du kan plante ud.',
 }
 
-interface PoseVinduer {
-  sowingMonths: number[]
-  plantingOutMonths: number[]
-  preCultivation: boolean | null
+const AABEN_LINJE: Record<FroebankVinduesHandling, string> = {
+  direct_sow: 'Såvinduet',
+  pre_sow: 'Forkultiveringsvinduet',
+  plant_out: 'Udplantningsvinduet',
+}
+
+function tekst(vindue: FroebankVindue, month: number): string {
+  if (lukker(vindue.months) === month) return SIDSTE_LINJE[vindue.action]
+  return `${AABEN_LINJE[vindue.action]} er åbent i ${MAANED_NAVN[month - 1]}.`
 }
 
 /**
- * Posens dyrkningsvinduer — med ARV, jf. guidekontrakten (Anna 25/8).
+ * Posens dyrkningsvinduer — typede, med ARV (guidekontrakten, Anna 25/8).
  *
- * En manglende værdi på posen betyder "ingen override", ikke "ingen
- * aktivitet". Står posen helt uden vinduer, spørger vi derfor Potalots
- * egen resolver (`findFroebankAutofill`), som allerede implementerer
- * sort → art-arven OG sammenfoldningen af guidernes to såfelter
- * (`sowingMonths` = forkultivering, `directSowingMonths` = direkte såning).
- * Er guiderne også tavse, forbliver vi tavse.
+ * Kilden er `resolveFroebankVinduer`, som bevarer HANDLINGEN. Motoren udleder
+ * altså aldrig verbet af `preCultivation` — den egenskab siger "denne art
+ * kan/skal forkultiveres", ikke "denne måned er en forkultiveringsmåned".
  *
- * To ting det her IKKE gør, og hvorfor:
- * - Det OVERSKRIVER aldrig en gemt værdi. En udfyldt pose kan være Annas
- *   egen rettelse, og "Potalot foreslår, brugeren bestemmer" gælder også
- *   her. Er en gemt værdi forældet i forhold til en nyere guide, hører det
- *   hjemme i backfill-flowet på /froebank — ikke i en tavs read-time-override.
- * - Det SKRIVER intet. Samme princip som frøkort-resolveren: opslaget sker
- *   ved visning, så en pose automatisk får glæde af en guide, Potalot først
- *   har fået bagefter.
+ * To lag:
+ * 1. Har posen ingen egne måneder → guidens vinduer bruges direkte (arv).
+ *    En manglende sortsværdi betyder "ingen override", ikke "ingen aktivitet".
+ * 2. Har posen egne måneder → MÅNEDERNE er posens (brugeren bestemmer), men
+ *    HANDLINGEN slås op i guidens typede vinduer måned for måned. Ligger
+ *    posens marts i artens directSowingMonths, er marts en "Så"-måned — også
+ *    selv om arten også kan forkultiveres.
+ *
+ * Det OVERSKRIVER aldrig en gemt værdi, og det SKRIVER intet (samme princip
+ * som frøkort-resolveren). Er en gemt værdi forældet i forhold til en nyere
+ * guide, hører det hjemme i backfill-flowet på /froebank — ikke i en tavs
+ * read-time-override.
  */
-function vinduerForPose(item: InventoryItem): PoseVinduer {
-  const gemt = {
-    sowingMonths: item.sowingMonths ?? [],
-    plantingOutMonths: item.plantingOutMonths ?? [],
-    preCultivation: item.preCultivation ?? null,
-  }
-  if (gemt.sowingMonths.length > 0 || gemt.plantingOutMonths.length > 0) return gemt
+function vinduerForPose(item: InventoryItem): FroebankVindue[] {
+  const guide = resolveFroebankVinduer(item.name, item.variety ?? null)
+  const gemtSaa = item.sowingMonths ?? []
+  const gemtUd = item.plantingOutMonths ?? []
+  if (gemtSaa.length === 0 && gemtUd.length === 0) return guide
 
-  const autofill = findFroebankAutofill(item.name, item.variety ?? null)
-  if (!autofill) return gemt
-  const arvet = {
-    sowingMonths: autofill.facts.sowingMonths ?? [],
-    plantingOutMonths: autofill.facts.plantingOutMonths ?? [],
-    preCultivation: autofill.facts.preCultivation ?? gemt.preCultivation,
+  const ud: FroebankVindue[] = []
+  if (gemtSaa.length > 0) ud.push(...saaVinduerFraGemte(gemtSaa, guide, item.preCultivation ?? null))
+  if (gemtUd.length > 0) {
+    ud.push({ action: 'plant_out', months: [...gemtUd].sort((a, b) => a - b), source: 'inventory' })
   }
-  if (arvet.sowingMonths.length === 0 && arvet.plantingOutMonths.length === 0) return gemt
-  return arvet
+  return ud
 }
 
 /**
- * Hvilket vindue er åbent for denne pose i denne måned? Rækkefølgen er
- * bevidst: så/forkultivér vinder over udplantning, fordi såvinduet lukker
- * først og er den handling, brugeren kan nå at gøre noget ved.
- * Tomme månedslister EFTER arv = vi VED det ikke → null (tavshed, ikke gæt).
+ * Posens gemte såmåneder → typede vinduer. Hver måned tildeles ÉN handling:
+ * findes den i guidens direkte-så-vindue, er den en "Så"-måned; ellers i
+ * forkultiverings-vinduet, er den en "Forkultivér"-måned.
+ *
+ * Kender guiden slet ikke måneden (posen rækker ud over artens vinduer —
+ * fx en tomat gemt med februar, hvor arten kun kender marts-april), falder
+ * vi tilbage i denne rækkefølge: posens eget `preCultivation` → den ENESTE
+ * såhandling arten overhovedet kender → "Så" som enkleste råd.
+ *
+ * Her SKAL månederne klippes fra hinanden (modsat guidens egne vinduer):
+ * "sidste måned, du kan så" må måles på posens eget vindue, ikke på artens.
  */
-function aabentVindue(item: InventoryItem, month: number): { vindue: Vindue; months: number[] } | null {
-  const v = vinduerForPose(item)
-  if (v.sowingMonths.length && v.sowingMonths.includes(month)) {
-    return { vindue: v.preCultivation === true ? 'forspir' : 'saa', months: v.sowingMonths }
+function saaVinduerFraGemte(
+  gemte: number[], guide: FroebankVindue[], preCultivation: boolean | null,
+): FroebankVindue[] {
+  const direkte = guide.find(v => v.action === 'direct_sow')
+  const forspir = guide.find(v => v.action === 'pre_sow')
+  const sidsteUdvej: FroebankVinduesHandling =
+    preCultivation === true ? 'pre_sow'
+    : preCultivation === false ? 'direct_sow'
+    : forspir && !direkte ? 'pre_sow'
+    : 'direct_sow'
+  const grupper = new Map<FroebankVinduesHandling, number[]>()
+
+  for (const m of [...gemte].sort((a, b) => a - b)) {
+    const action: FroebankVinduesHandling =
+      direkte?.months.includes(m) ? 'direct_sow'
+      : forspir?.months.includes(m) ? 'pre_sow'
+      : sidsteUdvej
+    grupper.set(action, [...(grupper.get(action) ?? []), m])
   }
-  if (v.plantingOutMonths.length && v.plantingOutMonths.includes(month)) {
-    return { vindue: 'plant-ud', months: v.plantingOutMonths }
+
+  return FROEBANK_VINDUE_PRIORITET
+    .filter(a => grupper.has(a))
+    .map(action => ({ action, months: grupper.get(action)!, source: 'inventory' as const }))
+}
+
+/**
+ * Hvilket vindue er åbent for denne pose i denne måned?
+ *
+ * Prioritet ved flere åbne vinduer: direkte såning → forkultivering →
+ * udplantning (FROEBANK_VINDUE_PRIORITET). Kan man både så salaten direkte
+ * og forkultivere den i august, er "Så salat" det enklere råd.
+ *
+ * Ingen vinduer efter arv = vi VED det ikke → null (tavshed, ikke gæt).
+ */
+function aabentVindue(item: InventoryItem, month: number): FroebankVindue | null {
+  const vinduer = vinduerForPose(item)
+  for (const action of FROEBANK_VINDUE_PRIORITET) {
+    const traeffer = vinduer.find(v => v.action === action && v.months.includes(month))
+    if (traeffer) return traeffer
   }
   return null
 }
@@ -178,7 +214,7 @@ function aabentVindue(item: InventoryItem, month: number): { vindue: Vindue; mon
  *
  * Rangering (kun på kriterier vi kender for ALLE kandidater):
  *   1. Vinduet lukker denne måned  → "stadig kan nå" er bogstavelig talt sandt
- *   2. Så/forkultivér før plant-ud → handlingen med kortest horisont først
+ *   2. Handlings-prioritet        → så → forkultivér → plant ud
  *   3. Alfabetisk på visningsnavn  → stabil rækkefølge mellem reloads
  */
 export function byggFroebankForslag(input: FroebankForslagInput): FroebankForslag[] {
@@ -192,7 +228,12 @@ export function byggFroebankForslag(input: FroebankForslagInput): FroebankForsla
   )
 
   const set = new Set<string>()
-  const kandidater: Array<{ forslag: FroebankForslag; sidste: boolean; vindue: Vindue; navn: string }> = []
+  const kandidater: Array<{
+    forslag: FroebankForslag
+    sidste: boolean
+    action: FroebankVinduesHandling
+    navn: string
+  }> = []
 
   for (const item of inventory) {
     if (IKKE_EJET.includes(item.primaryCategoryId)) continue
@@ -210,7 +251,7 @@ export function byggFroebankForslag(input: FroebankForslagInput): FroebankForsla
     set.add(noegle)
 
     const navn = visningsNavn(item.name, item.variety)
-    const { src, source } = resolveSeedCard({
+    const { src, source: billedKilde } = resolveSeedCard({
       guideId: item.guideId,
       name: item.name,
       variety: item.variety,
@@ -219,24 +260,25 @@ export function byggFroebankForslag(input: FroebankForslagInput): FroebankForsla
 
     kandidater.push({
       sidste: lukker(aabent.months) === month,
-      vindue: aabent.vindue,
+      action: aabent.action,
       navn,
       forslag: {
         id: item.id,
-        title: titel(aabent.vindue, navn),
-        text: tekst(aabent.vindue, month, aabent.months),
+        title: TITEL[aabent.action](navn),
+        text: tekst(aabent, month),
         href: `/froebank/${item.id}`,
+        action: aabent.action,
+        source: aabent.source,
         // Kun ægte billeder — placeholder udelades, så kortet falder til
         // den neutrale kilde-markør i stedet for en tom ramme.
-        ...(source !== 'fallback' ? { image: src, imageAlt: navn } : {}),
+        ...(billedKilde !== 'fallback' ? { image: src, imageAlt: navn } : {}),
       },
     })
   }
 
-  const vindueRang: Record<Vindue, number> = { forspir: 0, saa: 0, 'plant-ud': 1 }
   kandidater.sort((a, b) =>
     (Number(b.sidste) - Number(a.sidste)) ||
-    (vindueRang[a.vindue] - vindueRang[b.vindue]) ||
+    (FROEBANK_VINDUE_PRIORITET.indexOf(a.action) - FROEBANK_VINDUE_PRIORITET.indexOf(b.action)) ||
     a.navn.localeCompare(b.navn, 'da')
   )
 
