@@ -116,10 +116,25 @@ export function DetKanDuGoereEditorialPlanner({
   const prevShort = MONTH_SHORT_LABELS[prevMonth - 1] ?? prevLabel
   const nextShort = MONTH_SHORT_LABELS[nextMonth - 1] ?? nextLabel
 
-  const visibleItems = useMemo(
-    () => items.filter(item => itemStates[item.id] !== 'hidden' && (!item.month || item.month === viewMonth)),
-    [items, itemStates, viewMonth]
-  )
+  // Rækkefølge: prioritet FØRST, derefter titel (stabil mellem reloads).
+  //
+  // KAL-0111 (QA 26/8): grupperne vises som `groupItems.slice(0, limit)`, så
+  // de tre kort under "Gør nu" ER hele påstanden — resten ligger bag "Se alle".
+  // Uden sortering var de tre bare de første i den rækkefølge databasen
+  // tilfældigvis leverede (getGeneralGardenTasks sorterer KUN på måned).
+  // Konkret i august: tre `medium`-gøremål tog pladserne, mens ALLE FIRE
+  // `high` — Plant nye jordbærplanter, Høst tomater, Høst squash og bønner,
+  // Høst løg og kartofler — lå gemt under folden. I høstmåneden.
+  // Prioriteten står i databasen; den skal også bestemme, hvad brugeren ser.
+  const visibleItems = useMemo(() => {
+    const rang: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 }
+    return items
+      .filter(item => itemStates[item.id] !== 'hidden' && (!item.month || item.month === viewMonth))
+      .sort((a, b) =>
+        (rang[a.priority ?? 'medium'] ?? 2) - (rang[b.priority ?? 'medium'] ?? 2) ||
+        a.title.localeCompare(b.title, 'da')
+      )
+  }, [items, itemStates, viewMonth])
 
   const totalHiddenByLimit = GROUPS.reduce((sum, group) => {
     const groupItems = visibleItems.filter(item => item.group === group.id)
