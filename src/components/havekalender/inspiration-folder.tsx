@@ -18,7 +18,7 @@
 
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
-import { CURATED_INSPIRATION } from '@/components/havekalender/inspiration'
+import { CURATED_INSPIRATION } from '@/lib/kalender/saesonraad'
 import Link from 'next/link'
 import {
   ArrowRight,
