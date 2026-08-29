@@ -294,22 +294,32 @@ export function DetKanDuGoereEditorialPlanner({
         </header>
 
         <div style={{ display: 'grid', gap: 20, padding: '0 clamp(20px, 5vw, 38px)', marginTop: '-1cm' }}>
-          {GROUPS.map(group => {
-            const groupItems = visibleItems.filter(item => item.group === group.id)
-            const shownItems = showAll ? groupItems : groupItems.slice(0, groupLimits[group.id])
-            if (shownItems.length === 0) return null
+          {/* Løbenummeret tælles på tværs af de grupper der FAKTISK vises.
+              Før blev startIndex slået op i den usnittede `visibleItems`, så
+              et afkortet gruppe gav kollisioner: "Gør nu" sluttede på 03, og
+              "Senere på måneden" begyndte på 03 igen (QA 26/8, september). */}
+          {(() => {
+            let loebenummer = 1
+            return GROUPS.map(group => {
+              const groupItems = visibleItems.filter(item => item.group === group.id)
+              const shownItems = showAll ? groupItems : groupItems.slice(0, groupLimits[group.id])
+              if (shownItems.length === 0) return null
 
-            return (
-              <PlannerGroup
-                key={group.id}
-                label={group.label}
-                items={shownItems}
-                startIndex={visibleItems.findIndex(item => item.id === shownItems[0]?.id) + 1}
-                itemStates={itemStates}
-                onSelect={setSelectedItem}
-              />
-            )
-          })}
+              const startIndex = loebenummer
+              loebenummer += shownItems.length
+
+              return (
+                <PlannerGroup
+                  key={group.id}
+                  label={group.label}
+                  items={shownItems}
+                  startIndex={startIndex}
+                  itemStates={itemStates}
+                  onSelect={setSelectedItem}
+                />
+              )
+            })
+          })()}
         </div>
 
         {totalHiddenByLimit > 0 && (
