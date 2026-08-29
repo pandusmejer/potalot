@@ -25,6 +25,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
 import { MONTHLY_GARDEN_COPY } from '@/lib/kalender/maaneds-copy'
+import { effektivPlannerGruppe } from '@/lib/kalender/tidsvindue'
 import { guideHref } from '@/lib/guides/guide-href'
 import {
   Dialog,
@@ -48,7 +49,7 @@ const MONTH_SHORT_LABELS = [
   'JULI', 'AUG', 'SEPT', 'OKT', 'NOV', 'DEC',
 ] as const
 
-type PlannerGroupId = 'goer_nu' | 'hold_oeje_med' | 'hvis_du_har_tid'
+type PlannerGroupId = 'goer_nu' | 'senere_paa_maaneden' | 'hold_oeje_med' | 'hvis_du_har_tid'
 type PlannerItemState = 'idle' | 'added' | 'hidden'
 
 export interface EditorialPlannerItem {
@@ -60,6 +61,8 @@ export interface EditorialPlannerItem {
   category?: string
   guideHref?: string
   priority?: GeneralGardenTask['priority']
+  /** Redaktionelt vinduestekst fra general_garden_tasks.time_window. */
+  timeWindow?: string | null
 }
 
 interface Props {
@@ -74,12 +77,14 @@ interface Props {
 
 const GROUPS: Array<{ id: PlannerGroupId; label: string }> = [
   { id: 'goer_nu', label: 'Gør nu' },
+  { id: 'senere_paa_maaneden', label: 'Senere på måneden' },
   { id: 'hold_oeje_med', label: 'Hold øje med' },
   { id: 'hvis_du_har_tid', label: 'Hvis du har tid' },
 ]
 
 const DEFAULT_GROUP_LIMITS: Record<PlannerGroupId, number> = {
   goer_nu: 3,
+  senere_paa_maaneden: 1,
   hold_oeje_med: 1,
   hvis_du_har_tid: 0,
 }
@@ -116,20 +121,31 @@ export function DetKanDuGoereEditorialPlanner({
   const prevShort = MONTH_SHORT_LABELS[prevMonth - 1] ?? prevLabel
   const nextShort = MONTH_SHORT_LABELS[nextMonth - 1] ?? nextLabel
 
-  // Rækkefølge: prioritet FØRST, derefter titel (stabil mellem reloads).
+  // To regler bestemmer hvad brugeren ser — begge fundet i QA 26/8.
   //
-  // KAL-0111 (QA 26/8): grupperne vises som `groupItems.slice(0, limit)`, så
-  // de tre kort under "Gør nu" ER hele påstanden — resten ligger bag "Se alle".
-  // Uden sortering var de tre bare de første i den rækkefølge databasen
-  // tilfældigvis leverede (getGeneralGardenTasks sorterer KUN på måned).
-  // Konkret i august: tre `medium`-gøremål tog pladserne, mens ALLE FIRE
-  // `high` — Plant nye jordbærplanter, Høst tomater, Høst squash og bønner,
-  // Høst løg og kartofler — lå gemt under folden. I høstmåneden.
-  // Prioriteten står i databasen; den skal også bestemme, hvad brugeren ser.
+  // KAL-0111 · RÆKKEFØLGE: grupperne vises som `groupItems.slice(0, limit)`,
+  // så de tre kort under "Gør nu" ER hele påstanden; resten ligger bag "Se
+  // alle". Listen var usorteret (getGeneralGardenTasks sorterer KUN på måned),
+  // så pladserne gik til de rækker databasen tilfældigvis leverede først. I
+  // august tog tre `medium` pladserne, mens ALLE FIRE `high` — Høst løg og
+  // kartofler, Høst tomater, Høst squash og bønner, Plant nye jordbærplanter
+  // — lå under folden. I høstmåneden. Prioriteten står i databasen; nu
+  // bestemmer den også hvad brugeren ser. Titel som stabil tie-break.
+  //
+  // KAL-0112 (ANNA-LÅST) · "GØR NU" SKAL BETYDE NU: gruppen udledtes af
+  // kategori + prioritet alene, og `time_window` blev aldrig læst. Derfor
+  // stod "Så spinat til vinterdyrkning · fra midt august" under "Gør nu" den
+  // 5. august, og "Beskær hindbær efter høst" står der uanset om brugeren har
+  // høstet. Reglen bor i lib/kalender/tidsvindue.ts, så den kan testes uden
+  // UI (scripts/test-tidsvindue.ts kører den mod de faktiske DB-værdier).
   const visibleItems = useMemo(() => {
     const rang: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 }
     return items
       .filter(item => itemStates[item.id] !== 'hidden' && (!item.month || item.month === viewMonth))
+      .map(item => ({
+        ...item,
+        group: effektivPlannerGruppe(item.group, item.timeWindow, viewMonth, new Date()),
+      }))
       .sort((a, b) =>
         (rang[a.priority ?? 'medium'] ?? 2) - (rang[b.priority ?? 'medium'] ?? 2) ||
         a.title.localeCompare(b.title, 'da')
@@ -1065,6 +1081,7 @@ export function mapTaskToPlannerItem(task: GeneralGardenTask): EditorialPlannerI
     description: task.description,
     month: task.month,
     group: plannerGroupFromTask(task),
+    timeWindow: task.timeWindow,
     category: humanCategory(task.category),
     priority: task.priority,
     guideHref: task.linkedGuideIds[0] ? guideHref(task.linkedGuideIds[0]) : undefined,
