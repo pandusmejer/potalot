@@ -1,4 +1,4 @@
-import { InspirationFolder, DEMO_SEED_ITEMS } from '@/components/havekalender/inspiration-folder'
+import { InspirationFolder, DEMO_SEED_ITEMS, DEMO_GUIDE_ITEMS } from '@/components/havekalender/inspiration-folder'
 import { NextMonthTeaser } from '@/components/havekalender/next-month-teaser'
 
 const sans = 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif'
@@ -67,6 +67,7 @@ export default function CalendarInspirationPreviewPage() {
             month={6}
             monthName="Juni"
             seedItems={DEMO_SEED_ITEMS}
+            guideItems={DEMO_GUIDE_ITEMS}
             hasSeedsInBank
           />
           <NextMonthTeaser />

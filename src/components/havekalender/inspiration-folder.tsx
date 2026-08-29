@@ -96,7 +96,12 @@ export const DEMO_SEED_ITEMS: FolderItem[] = [
   },
 ]
 
-const DEFAULT_GUIDE_ITEMS: FolderItem[] = [
+/**
+ * KUN til design-preview. Disse to kort var indtil KAL-0113 fanens DEFAULT
+ * — hardkodede kort vist året rundt under løftet "Guides til sæsonen lige
+ * nu". De må ALDRIG være fallback i produktion.
+ */
+export const DEMO_GUIDE_ITEMS: FolderItem[] = [
   {
     title: 'Tomater i juni',
     text: 'Opbinding, sideskud og vand - det vigtigste lige nu.',
@@ -213,7 +218,9 @@ export function InspirationFolder({
   // KAL-0108 (Anna, SYSTEMFIX P1): sæsonråd kommer fra det kuraterede
   // månedsindhold — hardcodet juni-indhold må ALDRIG være fallback året rundt.
   juneItems = (CURATED_INSPIRATION[month] ?? []).map(k => ({ title: k.title, text: k.text })),
-  guideItems = DEFAULT_GUIDE_ITEMS,
+  // KAL-0113: INGEN hardkodede guidekort i live. Kender vi ikke månedens
+  // relevante guides, viser fanen sin ærlige tomme tilstand.
+  guideItems = [],
   hasSeedSuggestions = seedItems.length > 0,
 }: InspirationFolderProps) {
   const defaultTab = hasSeedSuggestions ? 'seedbank' : 'june'
@@ -240,25 +247,30 @@ export function InspirationFolder({
     }
 
     if (activeTab === 'june') {
+      // INGEN CTA (Anna 26/8): "Se flere sæsonråd" pegede på /kalender —
+      // altså den side, brugeren allerede står på. Der FINDES ikke flere
+      // sæsonråd. Hellere ingen CTA end en dekorativ rundtur. Kortene er
+      // almanak-udsagn, ikke døre, så de er heller ikke links.
       return {
         title: `Få mere ud af ${monthName}`,
         subtitle: `Sæsonråd til ${monthName.toLowerCase()}.`,
-        cta: 'Se flere sæsonråd',
-        href: '/kalender',
         items: juneItems,
       }
     }
 
+    // KAL-0113 (ANNA-LÅST): fanen lover SÆSON ("Guides til sæsonen lige nu"),
+    // så kortene kommer fra ægte guides med et vindue åbent i måneden —
+    // aldrig fra hardkodede kort. Se lib/kalender/guide-forslag.ts.
     return {
       title: 'Forstå det, der gror',
-      subtitle: 'Guides til sæsonen lige nu.',
+      subtitle: guideItems.length > 0
+        ? 'Guides til sæsonen lige nu.'
+        : `Biblioteket har ikke noget om ${monthName.toLowerCase()} endnu.`,
       cta: 'Åbn guides',
       href: '/guides',
-      // KAL-0109: 'Tomater i juni' må ikke omdøbes mekanisk til andre måneder
-      // — den juni-specifikke guide vises KUN i juni.
-      items: guideItems.filter(it => month === 6 || !it.title.includes('juni')),
+      items: guideItems,
     }
-  }, [activeTab, guideItems, hasSeedSuggestions, hasSeedsInBank, juneItems, month, monthName, seedItems])
+  }, [activeTab, guideItems, hasSeedSuggestions, hasSeedsInBank, juneItems, monthName, seedItems])
 
   return (
     <section aria-labelledby="inspiration-folder-title" style={{ paddingTop: 6 }}>
@@ -406,8 +418,9 @@ function FolderPanel({
   content: {
     title: string
     subtitle: string
-    cta: string
-    href: string
+    /** Mangler cta/href, vises ingen CTA — fanen har intet meningsfuldt mål. */
+    cta?: string
+    href?: string
     items: FolderItem[]
   }
 }) {
@@ -460,6 +473,7 @@ function FolderPanel({
         ))}
       </div>
 
+      {content.cta && content.href && (
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 11 }}>
         <Link
           href={content.href}
@@ -479,6 +493,7 @@ function FolderPanel({
           <ArrowRight width={17} height={17} strokeWidth={1.8} aria-hidden />
         </Link>
       </div>
+      )}
     </div>
   )
 }
@@ -489,25 +504,25 @@ function FolderItemCard({
   sourceTab,
 }: {
   item: FolderItem
-  href: string
+  /** Mangler målet, er kortet et UDSAGN (fx et sæsonråd) og ikke et link. */
+  href?: string
   sourceTab: TabId
 }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        alignItems: 'center',
-        background: '#F6F1E6',
-        borderRadius: 20,
-        color: '#23382B',
-        display: 'grid',
-        gridTemplateColumns: '44px minmax(0, 1fr) 16px',
-        gap: 14,
-        minHeight: 104,
-        padding: 18,
-        textDecoration: 'none',
-      }}
-    >
+  const kortStil = {
+    alignItems: 'center',
+    background: '#F6F1E6',
+    borderRadius: 20,
+    color: '#23382B',
+    display: 'grid',
+    gridTemplateColumns: '44px minmax(0, 1fr) 16px',
+    gap: 14,
+    minHeight: 104,
+    padding: 18,
+    textDecoration: 'none',
+  } as const
+
+  const indhold = (
+    <>
       <LeadingVisual image={item.image} alt={item.imageAlt} sourceTab={sourceTab} />
       <span style={{ minWidth: 0 }}>
         <span
@@ -541,15 +556,24 @@ function FolderItemCard({
           {item.text}
         </span>
       </span>
-      <ChevronRight
-        width={15}
-        height={15}
-        strokeWidth={1.8}
-        style={{ color: 'rgba(94,103,93,0.4)' }}
-        aria-hidden
-      />
-    </Link>
+      {href ? (
+        <ChevronRight
+          width={15}
+          height={15}
+          strokeWidth={1.8}
+          style={{ color: 'rgba(94,103,93,0.4)' }}
+          aria-hidden
+        />
+      ) : (
+        // Uden mål ingen pil: pilen er et løfte om at der sker noget ved tryk.
+        <span aria-hidden />
+      )}
+    </>
   )
+
+  return href
+    ? <Link href={href} style={kortStil}>{indhold}</Link>
+    : <div style={kortStil}>{indhold}</div>
 }
 
 /**

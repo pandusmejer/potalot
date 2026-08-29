@@ -13,6 +13,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { byggDagensFokus } from '@/lib/kalender/dagens-fokus'
 import { resolvePlantCard } from '@/lib/images/resolve-potalot-image'
 import { byggFroebankForslagPrMaaned } from '@/lib/kalender/froebank-forslag'
+import { byggGuideForslagPrMaaned } from '@/lib/kalender/guide-forslag'
 import { DEMO_INVENTORY } from '@/lib/demo-inventory'
 import { mockPlants } from '@/data/mock-plants'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
@@ -97,6 +98,12 @@ async function KalenderIndhold() {
     plants: brainPlants,
   })
 
+  // KAL-0113: Guides-fanen. Fanen lover SÆSON ("Guides til sæsonen lige nu"),
+  // så kortene vælges blandt ÆGTE guides med et vindue åbent i måneden —
+  // aldrig hardkodede kort. brainGuides bruges, så demo-brugeren ser
+  // biblioteket; forslagene er stadig ægte månedsfiltrerede.
+  const guideForslag = byggGuideForslagPrMaaned({ guides: brainGuides })
+
   // (Den sensoriske stemnings-note vises ikke længere på kalenderen —
   // garden-notes kører fortsat på /froebank og /mine-planter.)
 
@@ -125,6 +132,7 @@ async function KalenderIndhold() {
         plantImages={plantImages}
         froebankForslag={froebankForslag}
         harFroebank={froebankInventory.length > 0}
+        guideForslag={guideForslag}
       />
     </>
   )

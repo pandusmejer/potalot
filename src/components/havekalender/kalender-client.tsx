@@ -35,6 +35,7 @@ import { createTask } from '@/actions/havekalender'
 import type { GardenAlert, VejrPoolsMaalinger } from '@/actions/weather'
 import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 import type { FroebankForslag } from '@/lib/kalender/froebank-forslag'
+import type { GuideForslag } from '@/lib/kalender/guide-forslag'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -63,6 +64,12 @@ interface Props {
   froebankForslag: Record<number, FroebankForslag[]>
   /** Har brugeren frø i banken? Skelner "ingen frø" fra "ingen vinduer nu". */
   harFroebank: boolean
+  /**
+   * KAL-0113: Inspiration-mappens Guides-fane. Måned (1-12) → ægte guides
+   * med et dyrkningsvindue åbent i netop den måned. Server-resolveret, så
+   * guide-biblioteket ikke skal i kalenderens bundle.
+   */
+  guideForslag: Record<number, GuideForslag[]>
 }
 
 /** Lille versal-eyebrow der gør sidens narrativ eksplicit. */
@@ -138,7 +145,7 @@ function vejrNote(alerts: GardenAlert[]): { headline: string; subline: string } 
   return null
 }
 
-export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, vejr, isLoggedIn, dagensFokus, plantImages, froebankForslag, harFroebank }: Props) {
+export function KalenderClient({ tasks, plants, inventory, generalTasks, userTasks, guides, alerts, vejr, isLoggedIn, dagensFokus, plantImages, froebankForslag, harFroebank, guideForslag }: Props) {
   const nuMaaned = aktuelMaaned()
   const [valgtMaaned, setValgtMaaned] = useState(nuMaaned)
   const [visSkjulte, setVisSkjulte] = useState(false)
@@ -352,6 +359,9 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         monthName={valgtMaanedNavn}
         seedItems={froebankForslag[valgtMaaned] ?? []}
         hasSeedsInBank={harFroebank}
+        guideItems={(guideForslag[valgtMaaned] ?? []).map(g => ({
+          title: g.title, text: g.text, href: g.href,
+        }))}
       />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
