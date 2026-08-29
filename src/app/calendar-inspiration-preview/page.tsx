@@ -70,7 +70,7 @@ export default function CalendarInspirationPreviewPage() {
             guideItems={DEMO_GUIDE_ITEMS}
             hasSeedsInBank
           />
-          <NextMonthTeaser />
+          <NextMonthTeaser currentMonth={6} />
         </div>
       </div>
     </main>

@@ -16,9 +16,16 @@ const sans = 'var(--font-manrope)'
 const serif = 'var(--font-cormorant), Georgia, serif'
 
 interface NextMonthTeaserProps {
-  /** Kalenderens AKTUELLE måned (1-12). Teaseren viser ALTID currentMonth+1
-   *  — aldrig samme måned som topheroen. */
-  currentMonth?: number
+  /**
+   * Den måned kalenderen VISER (1-12) — ikke nødvendigvis dags dato.
+   * Teaseren viser ALTID currentMonth+1, aldrig samme måned som topheroen.
+   *
+   * PÅKRÆVET med vilje: en default-måned her ville være endnu en hardkodet
+   * måneds-fallback, og dem har kalenderen mistet nok tid på (juni-råd året
+   * rundt i Inspiration-mappen, maj-fallback i den nu slettede
+   * Inspiration-komponent). Kalderen SKAL sige hvilken måned der vises.
+   */
+  currentMonth: number
   /** Kaldes når brugeren trykker "Se [måned]". Skifter kalenderens valgte
    *  måned til næste måned (håndteret af forælderen). Ingen href — kortet
    *  sidder allerede på /kalender, så et link dertil ville være en no-op. */
@@ -28,7 +35,7 @@ interface NextMonthTeaserProps {
 }
 
 export function NextMonthTeaser({
-  currentMonth = 7,
+  currentMonth,
   onSelectNextMonth,
   heroImage,
 }: NextMonthTeaserProps) {
@@ -36,7 +43,9 @@ export function NextMonthTeaser({
   // kalenderens aktuelle måned — aldrig samme som topheroen. Alt (label,
   // titel, subtitle, body, hero, CTA) afledes derfor af nextMonth.
   const nextMonth = currentMonth >= 12 ? 1 : currentMonth + 1
-  const monthName = MONTHS_DA[nextMonth - 1]?.full ?? 'Juli'
+  // nextMonth er altid 1-12, så opslaget kan ikke fejle — og en
+  // måneds-fallback ville alligevel være en løgn.
+  const monthName = MONTHS_DA[nextMonth - 1].full
   // Eyebrow uden måneden — den store titel nedenunder bærer måneden (ingen dublet).
   const label = 'Kig mod'
   const subtitle = MAANEDS_STEMNING[nextMonth]?.tagline ?? ''
