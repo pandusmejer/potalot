@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { opgaveDatoForGoeremaal } from '@/lib/kalender/tidsvindue'
 
 /**
  * Tilføj generelle haveopgaver til brugerens kalender.
@@ -13,15 +14,31 @@ import { revalidatePath } from 'next/cache'
  * samme år hvis allerede der).
  */
 
-function inferDayFromTimeWindow(window: string | null): number {
-  if (!window) return 15
-  const w = window.toLowerCase()
-  if (w.includes('primo') || w.includes('begynd')) return 5
-  if (w.includes('medio') || w.includes('midt')) return 15
-  if (w.includes('slut') || w.includes('sidst')) return 25
-  if (w.includes('før frost')) return 25
-  return 15
-}
+/*
+ * KAL-0115 (audit 26/8): her lå `inferDayFromTimeWindow` — en ANDEN
+ * fortolker af general_garden_tasks.time_window end den planneren bruger.
+ * De var uenige, så det SAMME gøremål fik forskellig dato alt efter hvilken
+ * knap brugeren trykkede på:
+ *
+ *     time_window        her      planneren (tolkTidsvindue)
+ *     (tom)              15       1
+ *     "primo september"   5       1
+ *     "fra midt august"  15       11
+ *     "slut september"   25       21
+ *     "efter høst"       15       betinget — ingen dato-påstand
+ *
+ * Værre: den opfandt en præcis dato (den 15.) for BETINGEDE vinduer og for
+ * vejrafhængige former ("milde tørre dage"), bare for at få feltet udfyldt.
+ * Og den havde intet gulv, så et marts-gøremål tilføjet i august blev
+ * oprettet allerede forsinket — og udløser nu præcis én ulæst påmindelse,
+ * der bliver hængende til opgaven lukkes.
+ *
+ * Nu bruges `opgaveDatoForGoeremaal` — samme fortolkningslag som
+ * planner-visningen og som "+"-knappen. Dagen kommer fra vinduet, når det
+ * er dato-fortolkeligt; ellers den 1. i måneden (månedens start er den
+ * mindst påståelige dato — den 15. lyver om midtmåneds-præcision). Aldrig
+ * en dato i fortiden.
+ */
 
 function inferTaskType(category: string | null): string {
   if (!category) return 'custom'
@@ -84,11 +101,13 @@ export async function addGeneralTasksToCalendar(input: AddGeneralTasksInput): Pr
     .eq('source', 'general')
     .in('source_id', input.generalTaskIds)
 
+  // Idempotens: samme gøremål må kun ligge én gang pr. ÅR. Nøglen bygges på
+  // den eksisterende rækkes eget år — ikke på input.year — så gulvet
+  // ("aldrig i fortiden") ikke kan skabe dubletter, når en tidligere
+  // tilføjelse blev flyttet til i dag.
   type ExistingRow = { source_id: string; date: string }
   const existingThisYear = new Set(
-    ((existing ?? []) as ExistingRow[])
-      .filter(r => r.date.startsWith(String(input.year)))
-      .map(r => r.source_id)
+    ((existing ?? []) as ExistingRow[]).map(r => `${r.source_id}:${r.date.slice(0, 4)}`)
   )
 
   type Template = {
@@ -101,11 +120,11 @@ export async function addGeneralTasksToCalendar(input: AddGeneralTasksInput): Pr
     time_window: string | null
   }
 
+  const idag = new Date()
   const toInsert = (templates as Template[])
-    .filter(t => !existingThisYear.has(t.id))
-    .map(t => {
-      const day = inferDayFromTimeWindow(t.time_window)
-      const date = `${input.year}-${String(t.month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    .map(t => ({ t, date: opgaveDatoForGoeremaal(t.time_window, t.month, input.year, idag) }))
+    .filter(({ t, date }) => !existingThisYear.has(`${t.id}:${date.slice(0, 4)}`))
+    .map(({ t, date }) => {
       return {
         user_id: userId,
         title: t.title,
