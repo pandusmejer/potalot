@@ -36,6 +36,7 @@ import type { GardenAlert, VejrPoolsMaalinger } from '@/actions/weather'
 import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 import type { FroebankForslag } from '@/lib/kalender/froebank-forslag'
 import type { GuideForslag } from '@/lib/kalender/guide-forslag'
+import { opgaveDatoForGoeremaal } from '@/lib/kalender/tidsvindue'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -265,11 +266,17 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
         items={monthlyPlannerItems}
         onAddToTasks={isLoggedIn
           ? async (item) => {
-              const today = new Date().toISOString().slice(0, 10)
+              // KAL-0114: datoen følger den måned brugeren KIGGER på — ikke
+              // dags dato. Ellers landede et januar-gøremål som en opgave i
+              // august, forsinket fra fødslen. Dagen kommer fra gøremålets
+              // eget tidsvindue, når det er dato-fortolkeligt.
+              const dato = opgaveDatoForGoeremaal(
+                item.timeWindow, item.month ?? valgtMaaned, year, new Date(),
+              )
               await createTask({
                 title: item.title,
                 description: item.description || undefined,
-                date: today,
+                date: dato,
                 taskType: 'custom',
                 priority: item.priority ?? 'medium',
                 source: 'general',

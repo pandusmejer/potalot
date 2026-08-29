@@ -135,3 +135,37 @@ export function effektivPlannerGruppe(
   if (aabent !== false) return 'goer_nu'
   return vindue.slags === 'betinget' ? 'hvis_du_har_tid' : 'senere_paa_maaneden'
 }
+
+/**
+ * Hvilken dato skal en opgave have, når brugeren trykker "+" på et gøremål?
+ *
+ * ── Fejlen det retter (KAL-0114, QA 26/8) ────────────────────────────────
+ * "+" satte ALTID `date` til dags dato, uanset hvilken måned brugeren stod
+ * på. Bladrede man frem til januar 2027 og tilføjede "Beskær frugttræer",
+ * landede opgaven den 26. august 2026 — altså med det samme forsinket, i
+ * "I dag"-bunken, og som frisk foder til påmindelsesmotoren. Brugeren bad
+ * om at planlægge januar; Potalot arkiverede det som "nu".
+ *
+ * ── Reglen ───────────────────────────────────────────────────────────────
+ * Dagen kommer fra gøremålets eget tidsvindue, når det er dato-fortolkeligt
+ * ("fra midt august" → den 11.); ellers den 1. i måneden. Måneden og året
+ * er dem brugeren KIGGER på — ikke dagens.
+ *
+ * Og aldrig en dato i fortiden: bladrer man tilbage, eller er vinduets dag
+ * allerede passeret i indeværende måned, bruges i dag. En opgave man selv
+ * lige har tilføjet, må ikke fødes forsinket.
+ */
+export function opgaveDatoForGoeremaal(
+  timeWindow: string | null | undefined,
+  viewMonth: number,
+  year: number,
+  idag: Date,
+): string {
+  const vindue = tolkTidsvindue(timeWindow)
+  const dag = vindue.slags === 'fra_dag' ? vindue.dag : 1
+  const maal = new Date(year, viewMonth - 1, dag)
+  const gulv = new Date(idag.getFullYear(), idag.getMonth(), idag.getDate())
+  const valgt = maal < gulv ? gulv : maal
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${valgt.getFullYear()}-${p(valgt.getMonth() + 1)}-${p(valgt.getDate())}`
+}

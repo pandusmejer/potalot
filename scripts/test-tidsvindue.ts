@@ -99,7 +99,7 @@ tjek('"hele september" · 26/8 · SEPTEMBER',
 // Basisgruppen er den kategori/prioritets-udledning planneren allerede
 // lavede; her testes KUN hvad tidsvinduet gør ved den.
 // ─────────────────────────────────────────────────────────────────────
-import { effektivPlannerGruppe, type PlannerGruppe } from '@/lib/kalender/tidsvindue'
+import { effektivPlannerGruppe, opgaveDatoForGoeremaal, type PlannerGruppe } from '@/lib/kalender/tidsvindue'
 
 const AUGUST: Array<{ titel: string; basis: PlannerGruppe; tw: string | null }> = [
   { titel: 'Høst løg og kartofler',       basis: 'goer_nu',         tw: 'august' },
@@ -136,6 +136,33 @@ tjek('"efter høst" stadig ude af topgrupperne',
   g26.hvis_du_har_tid?.includes('Beskær hindbær efter høst'), true)
 tjek('Lavprioritets-gøremål flyttes ALDRIG af vinduet',
   g26.hvis_du_har_tid?.includes('Giv plænen lidt luft'), true)
+
+// ─────────────────────────────────────────────────────────────────────
+// KAL-0114: "+" på et gøremål skal datere opgaven i den VISTE måned.
+// ─────────────────────────────────────────────────────────────────────
+const IDAG = new Date(2026, 7, 26) // 26. august 2026
+
+console.log('\n[Opgavedato · fremtidig måned — måned OG år følger visningen]')
+tjek('januar 2027, hele måneden → 1/1-2027',
+  opgaveDatoForGoeremaal('januar', 1, 2027, IDAG), '2027-01-01')
+tjek('september 2026, "slut september" → 21/9',
+  opgaveDatoForGoeremaal('slut september', 9, 2026, IDAG), '2026-09-21')
+tjek('september 2026, "primo september" → 1/9',
+  opgaveDatoForGoeremaal('primo september', 9, 2026, IDAG), '2026-09-01')
+
+console.log('\n[Opgavedato · indeværende måned — aldrig i fortiden]')
+tjek('august, hele måneden (den 1. er passeret) → i dag',
+  opgaveDatoForGoeremaal('hele august', 8, 2026, IDAG), '2026-08-26')
+tjek('august, "fra midt august" (den 11. er passeret) → i dag',
+  opgaveDatoForGoeremaal('fra midt august', 8, 2026, IDAG), '2026-08-26')
+tjek('august, "slut august" set den 5. → den 21.',
+  opgaveDatoForGoeremaal('slut august', 8, 2026, new Date(2026, 7, 5)), '2026-08-21')
+
+console.log('\n[Opgavedato · bladret TILBAGE — ingen opgave født forsinket]')
+tjek('marts 2026 (fortid) → i dag',
+  opgaveDatoForGoeremaal('marts', 3, 2026, IDAG), '2026-08-26')
+tjek('december 2025 (fortid, andet år) → i dag',
+  opgaveDatoForGoeremaal('december', 12, 2025, IDAG), '2026-08-26')
 
 console.log(`\n${fejlet === 0 ? '✅' : '❌'}  i alt: ${bestaaet} bestået, ${fejlet} fejlet`)
 if (fejlet > 0) process.exit(1)
