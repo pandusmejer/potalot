@@ -112,6 +112,78 @@ function main() {
     tjek('tom tekst giver tom slug', kanoniskArtsSlug('') === '' && kanoniskArtsSlug(null) === '')
   }
 
+  console.log('\n[Artsalias] Skoleagurk er en produktbetegnelse, ikke en art')
+  {
+    // Skoleagurk ER Agurk (Cucumis sativus). Aliaset er sprog, ikke type:
+    // det må ikke sætte en typepåstand og dermed jagte et typenavngivet kort.
+    tjek("'Skoleagurk' er arten Agurk", kanoniskArtsNavn('Skoleagurk') === 'Agurk')
+    tjek("'Skoleagurk' giver artsslug 'agurk'", kanoniskArtsSlug('Skoleagurk') === 'agurk')
+    tjek("'Skoleagurk' får INGEN væksttype", slaaArtOp('Skoleagurk').type === null)
+    tjek("'Skoleagurk' med sort får heller ingen typeslug",
+      typeSlugForPose('Skoleagurk', 'Beit Alpha') === null)
+    tjek("flertalsformen rammer samme art", kanoniskArtsNavn('Skoleagurker') === 'Agurk')
+    tjek('den kanoniske form er sig selv', kanoniskArtsNavn('Agurk') === 'Agurk')
+
+    // Grænsen: Jungleagurk (Melothria scabra) er en ANDEN art med egen
+    // guide. Ingen delstrengs-magi må trække den ind under Agurk.
+    tjek('Jungleagurk forbliver sin egen art',
+      kanoniskArtsNavn('Jungleagurk') === 'Jungleagurk' && !slaaArtOp('Jungleagurk').kendt)
+
+    // Guiden: begge stavemåder ender ved artsguiden 'agurk'.
+    for (const navn of ['Agurk', 'Skoleagurk']) {
+      tjek(`${navn} · Beit Alpha finder artsguiden 'agurk'`,
+        slaaGuiderOp(navn, 'Beit Alpha').artsGuide?.id === 'agurk',
+        slaaGuiderOp(navn, 'Beit Alpha').artsGuide?.id ?? 'ingen guide')
+    }
+    tjek("Skoleagurk · Marketmore finder også sortsguiden",
+      slaaGuiderOp('Skoleagurk', 'Marketmore').sortsGuide?.id === 'agurk-marketmore',
+      slaaGuiderOp('Skoleagurk', 'Marketmore').sortsGuide?.id ?? 'ingen sortsguide')
+
+    // Frøbanken: de to poser Anna har, ligger nu i samme mappe.
+    tjek("'Skoleagurk Beit Alpha' og 'Agurk Beit Alpha' er ÉN sort",
+      sortsNoegle(pose('Skoleagurk', 'Beit Alpha')) === sortsNoegle(pose('Agurk', 'Beit Alpha')))
+    tjek('Agurk og Jungleagurk blandes ikke',
+      sortsNoegle(pose('Skoleagurk', 'Lemon')) !== sortsNoegle(pose('Jungleagurk', 'Lemon')))
+
+    // Frøkortet: Skoleagurk-posen når Potalots agurkekort.
+    const kort = resolveSeedCard({ guideId: null, name: 'Skoleagurk', variety: 'Marketmore' })
+    tjek('Skoleagurk · Marketmore finder /images/frokort/agurk-marketmore',
+      kort.src.startsWith('/images/frokort/agurk-marketmore') && kort.source !== 'fallback', kort.src)
+    // Og grundreglen står ved magt: ukendt sort får intet vilkårligt kort.
+    tjek('en ukendt agurkesort får INTET kort',
+      resolveSeedCard({ guideId: null, name: 'Skoleagurk', variety: 'Findes Ikke' }).source === 'fallback')
+  }
+
+  console.log('\n[Ingen automatisk sammenlægning] latinsk navn er signal, ikke regel')
+  {
+    // Aliasserne er eksplicitte undtagelser. Arter der deler latinsk navn
+    // med en anden — eller bare ligner — må IKKE være lagt sammen af sig selv.
+    const skalVaereUroerte = ['Jordbærmajs', 'Hirse', 'Melon', 'Squash', 'Vandmelon']
+    for (const navn of skalVaereUroerte) {
+      tjek(`"${navn}" er ikke stiltiende lagt sammen med noget`,
+        !slaaArtOp(navn).kendt, slaaArtOp(navn).art)
+    }
+    // Stangbønne er en TYPE under Bønne — den må aldrig glide ned i
+    // `aliaser`, for så ville væksttypen gå tabt ved opslaget.
+    tjek('Stangbønne står som type, ikke som artsalias',
+      !ARTS_MODEL.some(a => a.aliaser.some(al => slug(al) === 'stangboenne')) &&
+      slaaArtOp('Stangbønne').type === 'Stangbønne')
+    // Hver post i modellen skal bære sin egen dokumentation — også dem
+    // der kun findes for et alias' skyld.
+    for (const post of ARTS_MODEL) {
+      tjek(`${post.art}: posten er dokumenteret`, post.begrundelse.trim().length > 40)
+      tjek(`${post.art}: posten bærer viden (typer eller aliasser)`,
+        post.typer.length > 0 || post.aliaser.length > 0)
+    }
+    // Et alias må aldrig være et andet arts kanoniske navn (ingen kæder).
+    const kanoniske = new Set(ARTS_MODEL.map(a => slug(a.art)))
+    const alleAliasser = ARTS_MODEL.flatMap(a => a.aliaser.map(slug))
+    tjek('intet artsalias er selv en kanonisk art',
+      !alleAliasser.some(a => kanoniske.has(a)))
+    tjek('intet artsalias optræder to gange',
+      new Set(alleAliasser).size === alleAliasser.length)
+  }
+
   console.log('\n[Frøkort] posen finder Potalots kort — uanset hvad der står på den')
   {
     const forventet = '/images/frokort/stangboenne-cobra'

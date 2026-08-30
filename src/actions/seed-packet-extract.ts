@@ -17,7 +17,7 @@ Få information ud af billedet og returnér JSON med felter du er sikker på.
 Lad felter du er i tvivl om være null.
 
 Felter at udtrække:
-- name: dansk navn (fx "Tomat", "Basilikum")
+- name: det ALMINDELIGE DANSKE NAVN PÅ DEN BOTANISKE ART (fx "Agurk", "Tomat", "Basilikum"). Produktets typebetegnelse, anvendelse eller markedsføringsnavn må ALDRIG bruges som art: "Skoleagurk Snack F1" er arten **Agurk** (sorten er Snack F1), ikke "Skoleagurk"; "Cherrytomat Sungold" er arten **Tomat**. Kan arten ikke identificeres sikkert, skal feltet være null — kopiér ALDRIG produkttitlen ind som artsnavn.
 - latinName: latinsk/botanisk navn (fx "Solanum lycopersicum")
 - variety: sort (fx "San Marzano", "Black Cherry")
 - supplier: leverandør/mærke (fx "Nelson Garden", "Impecta")

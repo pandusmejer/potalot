@@ -93,7 +93,7 @@ naturlig dyrkningsarchetype. Gruppe er valgfri fordi nogle arter
 - **Specialsort:** Green Zebra
 
 ### Agurk
-- Marketmore · Telegraph Improved · Beth Alpha · Passandra · Lemon ·
+- Marketmore · Telegraph Improved · Beit Alpha · Passandra · Lemon ·
   Crystal Apple
 
 ### Chili

@@ -32,6 +32,16 @@
  *      "Bønne". Det siger INTET om væksttype, og må aldrig komme til det:
  *      en pose der bare siger "Bønner" kan lige så godt være en buskbønne.
  *
+ *      Et artsalias er en EKSPLICIT UNDTAGELSE, ikke en generel
+ *      normalisering (samme ansvarlighed som [sorts-alias.ts]s afviste
+ *      F1-regel). Det må kun skrives ind, når begge dele holder:
+ *        a) navnet betegner den SAMME botaniske art, og
+ *        b) ingen relevant dyrkningsforskel går tabt ved at slå dem sammen.
+ *      Latinsk navn må gerne bruges som ekstra valideringssignal — men
+ *      ALDRIG som automatik: to danske navne må ikke lægges sammen alene
+ *      fordi de deler latinsk navn. Stangbønne, Jordbærmajs, Hirse og
+ *      lignende hører derfor IKKE her uden hver sin dokumentation.
+ *
  *   2. TYPE (`typer` + `SORTS_TYPER`) — en påstand om væksttype. Den kommer
  *      kun to steder fra: brugeren skrev den selv ("Stangbønne"), eller
  *      Potalot ved det om den konkrete SORT ("Cobra er en stangbønne").
@@ -83,9 +93,12 @@ export interface ArtsPost {
 /**
  * Arterne med navngivne typer.
  *
- * Kun arter hvor typenavnet FAKTISK optræder i brugerens verden (på poser,
- * i frøkortenes filnavne eller i guidens egen tekst). En art uden navngivne
- * typer hører ikke hjemme her — den fungerer uændret uden en post.
+ * En art hører kun hjemme her, når den bærer viden appen ellers ikke har:
+ * enten navngivne TYPER (som Bønne), eller mindst ét ARTSALIAS, brugeren
+ * faktisk kan finde på at skrive (som Agurk). Typenavne tages kun med, når
+ * de FAKTISK optræder i brugerens verden — på poser, i frøkortenes filnavne
+ * eller i guidens egen tekst. En art uden nogen af delene fungerer uændret
+ * uden en post.
  */
 export const ARTS_MODEL: ArtsPost[] = [
   {
@@ -115,6 +128,23 @@ export const ARTS_MODEL: ArtsPost[] = [
           '/images/frokort/buskboenne-*.png.',
       },
     ],
+  },
+  {
+    art: 'Agurk',
+    aliaser: ['Agurker', 'Skoleagurk', 'Skoleagurker'],
+    begrundelse:
+      'Agurk (Cucumis sativus) er arten. "Skoleagurk" er ikke en art, men ' +
+      'en dansk markedsføringsbetegnelse for de korte, tyndskallede ' +
+      'salatagurker, der sælges til skolehaver og altankasser — samme ' +
+      'plante, samme dyrkningsforløb, samme guide (`agurk`). Poserne bag ' +
+      'fejlen (Skoleagurk · Beit Alpha og Skoleagurk · Snack F1) bærer ' +
+      'begge latin_name Cucumis sativus, hvilket bekræfter arten. ' +
+      'Sammenlægningen koster ingen dyrkningsviden: Potalot har intet ' +
+      'skoleagurk-lag i guider, frøkort eller kalenderregler, og der findes ' +
+      'ingen anden art ved det navn. Bemærk grænsen: Jungleagurk ' +
+      '(Melothria scabra) er en ANDEN art med sin egen guide og er ' +
+      'bevidst holdt uden for.',
+    typer: [],
   },
 ]
 
