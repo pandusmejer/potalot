@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guides-intake.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts && npx tsx scripts/test-froeposer.ts && npx tsx scripts/test-import-felter.ts && npx tsx scripts/test-backfill.ts && npx tsx scripts/test-sorts-alias.ts && npx tsx scripts/test-migration-invarianter.ts && npx tsx scripts/test-tidsvindue.ts",
+    "test": "npx tsx scripts/test-guides-sync.ts && npx tsx scripts/test-guides-intake.ts && npx tsx scripts/test-guide-regression.ts && npx tsx scripts/test-tale-fortolk.ts && npx tsx scripts/test-froeposer.ts && npx tsx scripts/test-import-felter.ts && npx tsx scripts/test-backfill.ts && npx tsx scripts/test-sorts-alias.ts && npx tsx scripts/test-migration-invarianter.ts && npx tsx scripts/test-tidsvindue.ts && npx tsx scripts/test-maaneds-navigation.ts && npx tsx scripts/test-hero-integritet.ts",
     "import:guides": "npx tsx scripts/import-guides.ts",
     "scan:images": "npx tsx scripts/scan-images.ts",
     "check:images": "npx tsx scripts/check-images.ts",

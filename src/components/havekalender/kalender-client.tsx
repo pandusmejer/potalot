@@ -37,6 +37,7 @@ import type { DagensFokus } from '@/lib/kalender/dagens-fokus'
 import type { FroebankForslag } from '@/lib/kalender/froebank-forslag'
 import type { GuideForslag } from '@/lib/kalender/guide-forslag'
 import { opgaveDatoForGoeremaal } from '@/lib/kalender/tidsvindue'
+import { skiftTilMaaned, naesteMaaned } from '@/lib/kalender/maaneds-navigation'
 import type {
   CalendarTask, GeneralGardenTask, Guide, InventoryItem, Plant, UserGardenTask,
 } from '@/lib/types'
@@ -162,10 +163,13 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   // går herigennem, så hero, vejr-billede, "Det kan du gøre", Inspiration
   // og teaser altid viser SAMME måned. Håndterer årsskifte begge veje
   // (dec→jan = +1 år, jan→dec = −1).
+  // Reglen (måned + år) bor i lib/kalender/maaneds-navigation.ts, så den kan
+  // testes uden UI. Året er ikke længere kosmetik: det er input til
+  // opgaveDatoForGoeremaal, når et gøremål bliver til en opgave (KAL-0114).
   const gaaTilMaaned = (next: number) => {
-    if (valgtMaaned === 12 && next === 1) setYear((y) => y + 1)
-    else if (valgtMaaned === 1 && next === 12) setYear((y) => y - 1)
-    setValgtMaaned(next)
+    const visning = skiftTilMaaned({ month: valgtMaaned, year }, next)
+    setYear(visning.year)
+    setValgtMaaned(visning.month)
   }
 
   // Fælles månedsskift (Anna 3/8): "Kig mod [måned]" nederst skal vise den
@@ -191,7 +195,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
   // "Kig mod [næste måned]" i bund-teaseren: bladr ét skridt frem fra den
   // VISTE måned (ikke den aktuelle), så man kan bladre længere end ét skridt.
   const handleSelectNextMonth = () => {
-    skiftMaaned(valgtMaaned >= 12 ? 1 : valgtMaaned + 1, true)
+    skiftMaaned(naesteMaaned(valgtMaaned), true)
   }
 
   const aktivePlanter = plants
