@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { Fragment, type ComponentType, type SVGProps } from 'react'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { froeRaekkevidde } from '@/lib/afledninger'
-import type { PoseInfo } from '@/lib/froebank-grupper'
+import { beholdningForKort, beholdningProcent, type Beholdning, type PoseInfo } from '@/lib/froebank-grupper'
 
 interface Props {
   item: InventoryItem
@@ -119,13 +119,7 @@ export function InventoryCard({
   // ikke kun hoved-posens. Poserne selv bliver ikke slået sammen — de har
   // hver sin leverandør, årgang og udløb og vises separat på detaljesiden.
   const flerePoser = pose != null && pose.antalPoser > 1
-  const harSeed = flerePoser ? pose.froeTilbage != null : item.seedCount != null
-  const tilbage = !harSeed
-    ? null
-    : flerePoser
-      ? (pose.froeTilbage ?? 0)
-      : (item.seedsRemaining ?? item.seedCount ?? 0)
-  const froeIAlt = flerePoser ? pose.froeIAlt : item.seedCount
+  const beholdning = beholdningForKort(item, pose)
 
   // Sprint 1 (afledningsmotoren, F4): "Rækker ~7 sæsoner" — afledt
   // af seedsRemaining / seedsSown. For et frø PÅ LAGER er rækkevidden
@@ -228,10 +222,9 @@ export function InventoryCard({
           højre INDE i billedet. Bryder ikke kortets kant. Vises kun
           når der findes seedCount-data, ikke under select-mode, og
           ikke når overlay er skjult (hover-state på stack-kort). */}
-      {!selectMode && !hideOverlay && tilbage != null && (
+      {!selectMode && !hideOverlay && beholdning.tilbage != null && (
         <SeedCountRing
-          remaining={tilbage}
-          total={froeIAlt}
+          beholdning={beholdning}
           antalPoser={flerePoser ? pose.antalPoser : undefined}
         />
       )}
@@ -368,24 +361,30 @@ export function InventoryCard({
  *   • meget lav (<10%): #B86645 (dæmpet terracotta)
  * Aldrig rød. Aldrig neon. Aldrig gradient.
  *
- * Hvis original-mængde mangler vises en neutral statisk ring på 65%
- * — så cirklen stadig læses som instrument, ikke som tomhed.
+ * Hvis original-mængden er UKENDT vises en neutral statisk ring på 65%
+ * — så cirklen stadig læses som instrument, ikke som tomhed. En pose med
+ * 0 frø er ikke ukendt: den er tom, og ringen tegnes tom.
+ *
+ * Ringen har ingen egen matematik. Den fyldes af `beholdningProcent` ud
+ * fra præcis de to tal centeret viser, så grafikken aldrig kan sige
+ * noget andet end tallet.
  */
+const NEUTRAL_RING_PROCENT = 65
+
 function SeedCountRing({
-  remaining,
-  total,
+  beholdning,
   antalPoser,
 }: {
-  remaining: number
-  total?: number | null
+  beholdning: Beholdning
   /** Sat kun når sorten har flere fysiske frøposer — ellers uændret kort. */
   antalPoser?: number
 }) {
-  const hasTotal = total != null && total > 0
-  const percent = hasTotal ? Math.max(0, Math.min(100, (remaining / total) * 100)) : 65
+  const remaining = beholdning.tilbage ?? 0
+  const fyldning = beholdningProcent(beholdning)
+  const percent = fyldning ?? NEUTRAL_RING_PROCENT
 
   let activeColor = '#EAE3D5'
-  if (hasTotal) {
+  if (fyldning != null) {
     if (percent < 10) activeColor = '#B86645'
     else if (percent < 30) activeColor = '#C89A35'
   }

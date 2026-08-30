@@ -21,7 +21,7 @@ import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
 import {
-  grupperEfterSort, poseInfoEfterHovedId, sortsNoegle, erBedstFoerNaer,
+  grupperEfterSort, poseInfoForViste, sortsNoegle, erBedstFoerNaer,
 } from '@/lib/froebank-grupper'
 import { parseDate } from '@/lib/datetime'
 import {
@@ -133,11 +133,16 @@ export function FroebankBrowser({ inventory }: Props) {
     return saet
   }, [inventory])
 
+  // ÉN kanonisk gruppering, beregnet på HELE frøbanken. Både beholdnings-
+  // filtret og frøkortets tæller/ring læser herfra — så et filter kan
+  // skjule poser uden at ændre hvor mange frø sorten har.
+  const kanoniskeGrupper = useMemo(() => grupperEfterSort(inventory), [inventory])
+
   const froeTilbagePrSort = useMemo(() => {
     const map = new Map<string, number | null>()
-    for (const g of grupperEfterSort(inventory)) map.set(g.noegle, g.froeTilbage)
+    for (const g of kanoniskeGrupper) map.set(g.noegle, g.froeTilbage)
     return map
-  }, [inventory])
+  }, [kanoniskeGrupper])
 
   const filtered = useMemo(() => {
     let list = inventory
@@ -218,7 +223,12 @@ export function FroebankBrowser({ inventory }: Props) {
   // de vises hver for sig på sortens detaljeside.
   const grupper = useMemo(() => grupperEfterSort(filtered), [filtered])
   const gruppeHoveder = useMemo(() => grupper.map((g) => g.hoved), [grupper])
-  const poseInfo = useMemo(() => poseInfoEfterHovedId(grupper), [grupper])
+  // Kortets antal kommer fra sortens kanoniske gruppe — ikke fra den
+  // filtrerede delmængde, som kun afgør HVILKE mapper der vises.
+  const poseInfo = useMemo(
+    () => poseInfoForViste(kanoniskeGrupper, gruppeHoveder),
+    [kanoniskeGrupper, gruppeHoveder],
+  )
 
   const latestInventoryItem = useMemo(() => {
     const withDates = inventory.filter((i) => i.createdAt)

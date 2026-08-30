@@ -123,6 +123,60 @@ function sumFelt(
   return harTal ? sum : null
 }
 
+// ─────────────────────────────────────────────────────────────
+// Beholdning — ÉN beregning, som både tal og grafik læser
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Hvor mange frø har brugeren af en sort — og hvor mange var der fra
+ * start? To tal, ét regnestykke, én kilde.
+ *
+ * `null` betyder ukendt, ikke nul (se `froeTilbageIPose`). De to felter
+ * er altid ukendte sammen: er der ingen pose med et antal, findes
+ * hverken en rest eller et oprindeligt antal.
+ */
+export interface Beholdning {
+  /** Frø tilbage. null = ukendt. 0 er et ægte tal. */
+  tilbage: number | null
+  /** Oprindeligt antal frø — ringens maksimum. null = ukendt. */
+  iAlt: number | null
+}
+
+/**
+ * Beholdningen for et sæt poser. Én pose er bare et sæt med én, så
+ * sorten med tre poser og sorten med én regnes af SAMME funktion.
+ */
+export function beholdningForPoser(poser: InventoryItem[]): Beholdning {
+  return {
+    tilbage: sumFelt(poser, froeTilbageIPose),
+    iAlt: sumFelt(poser, (p) => p.seedCount),
+  }
+}
+
+/**
+ * Beholdningen bag ét frøkort: gruppens sum når sorten ligger i flere
+ * fysiske poser, ellers posens egen — men beregnet af `beholdningForPoser`
+ * i begge tilfælde. Kortet har ingen egen matematik.
+ */
+export function beholdningForKort(item: InventoryItem, pose?: PoseInfo): Beholdning {
+  if (pose) return { tilbage: pose.froeTilbage, iAlt: pose.froeIAlt }
+  return beholdningForPoser([item])
+}
+
+/**
+ * Ringens fyldning i procent — udregnet af PRÆCIS de to tal kortet
+ * viser, så grafikken aldrig kan sige noget andet end tallet.
+ *
+ * `null` betyder "intet grundlag" (oprindeligt antal ukendt) og er det
+ * ENESTE tilfælde hvor visningen må tegne en neutral ring. En pose med
+ * 0 frø er ikke ukendt: den er tom, og ringen skal være tom.
+ */
+export function beholdningProcent(b: Beholdning): number | null {
+  if (b.tilbage == null || b.iAlt == null) return null
+  if (b.iAlt <= 0) return 0
+  return Math.max(0, Math.min(100, (b.tilbage / b.iAlt) * 100))
+}
+
 /**
  * Saml en (allerede filtreret og sorteret) liste af frøposer til
  * sortsgrupper. Rækkefølgen af grupperne følger rækkefølgen af den
@@ -145,13 +199,14 @@ export function grupperEfterSort(items: InventoryItem[]): SortsGruppe[] {
 
   return orden.map((noegle) => {
     const poser = kort.get(noegle)!
+    const { tilbage, iAlt } = beholdningForPoser(poser)
     return {
       noegle,
       hoved: poser[0],
       poser,
       antalPoser: poser.length,
-      froeTilbage: sumFelt(poser, froeTilbageIPose),
-      froeIAlt: sumFelt(poser, (p) => p.seedCount),
+      froeTilbage: tilbage,
+      froeIAlt: iAlt,
       forsidefoto: gruppensForsidefoto(poser),
     }
   })
@@ -171,15 +226,29 @@ export interface PoseInfo {
 }
 
 /**
- * Opslag fra hoved-posens id → gruppens poseoplysninger. Grupper med
- * kun én pose udelades, så frøkortet forbliver præcis som før for
- * brugere der har én pose pr. sort.
+ * Poseoplysninger til de kort der FAKTISK vises — altid hentet fra
+ * sortens kanoniske gruppe (beregnet på hele frøbanken), aldrig fra den
+ * filtrerede delmængde.
+ *
+ * Et filter (søgning, "mangler billede", favoritter …) må skjule poser,
+ * men det ændrer ikke hvor mange frø brugeren har af sorten. Grupperer
+ * man den filtrerede liste, viser kortet en delsum af sin egen sort —
+ * fx "2 frø" for en Eight Ball der i virkeligheden ligger i tre poser
+ * med 18 frø tilsammen.
+ *
+ * Grupper med kun én pose udelades, så frøkortet forbliver præcis som
+ * før for brugere der har én pose pr. sort.
  */
-export function poseInfoEfterHovedId(grupper: SortsGruppe[]): Map<string, PoseInfo> {
+export function poseInfoForViste(
+  kanoniskeGrupper: SortsGruppe[],
+  viste: InventoryItem[],
+): Map<string, PoseInfo> {
+  const efterNoegle = new Map(kanoniskeGrupper.map((g) => [g.noegle, g]))
   const map = new Map<string, PoseInfo>()
-  for (const g of grupper) {
-    if (g.antalPoser < 2) continue
-    map.set(g.hoved.id, {
+  for (const item of viste) {
+    const g = efterNoegle.get(sortsNoegle(item))
+    if (!g || g.antalPoser < 2) continue
+    map.set(item.id, {
       antalPoser: g.antalPoser,
       froeTilbage: g.froeTilbage,
       froeIAlt: g.froeIAlt,

@@ -13,6 +13,10 @@ import {
   erBedstFoerNaer,
   froeTilbageIPose,
   grupperEfterSort,
+  beholdningForKort,
+  beholdningForPoser,
+  beholdningProcent,
+  poseInfoForViste,
 } from '@/lib/froebank-grupper'
 import type { InventoryItem } from '@/lib/types'
 
@@ -230,6 +234,77 @@ function main() {
     const u = pose({ id: 'u', purchaseYear: 2020 })
     const k = pose({ id: 'k', purchaseYear: 2025, seedCount: 40 })
     tjek('pose med ukendt antal kan stadig anbefales først', brugFoerst([u, k]) === 'u')
+  }
+
+  console.log('\n[Cirkel-tæller] tal og grafik læser samme regnestykke')
+  {
+    // Regressionen: ringen brugte `total > 0` som betingelse, så en TOM
+    // pose (0 frø) faldt i "ukendt oprindeligt antal"-grenen og blev
+    // tegnet 65 % fuld under tallet 0.
+    const tom = pose({ id: 'tom', seedCount: 0 })
+    tjek('0 frø → ringen er tom (0 %), ikke den neutrale 65 %',
+      beholdningProcent(beholdningForKort(tom)) === 0)
+
+    // Ukendt oprindeligt antal er det ENESTE grundlag for en neutral ring.
+    const ukendt = pose({ id: 'ukendt' })
+    tjek('ukendt antal → intet grundlag (null)',
+      beholdningProcent(beholdningForKort(ukendt)) === null)
+
+    // Sået trækkes fra i BÅDE tallet og ringens grundlag.
+    const saaet = pose({ id: 'saaet', seedCount: 8, seedsSown: 2, seedsRemaining: 6 })
+    const b = beholdningForKort(saaet)
+    tjek('6 tilbage af 8', b.tilbage === 6 && b.iAlt === 8)
+    tjek('ringen fyldes 75 %', beholdningProcent(b) === 75)
+
+    // Kortet har ingen egen matematik: samme funktion for 1 og for mange poser.
+    tjek('kortets beholdning = beholdningForPoser for én pose',
+      JSON.stringify(beholdningForKort(saaet)) === JSON.stringify(beholdningForPoser([saaet])))
+
+    // Ringen kan aldrig sige noget andet end tallet.
+    for (const [tilbage, iAlt, forventet] of [[0, 0, 0], [0, 30, 0], [18, 20, 90], [30, 30, 100]] as const) {
+      tjek(`${tilbage} af ${iAlt} → ${forventet} %`,
+        beholdningProcent({ tilbage, iAlt }) === forventet)
+    }
+  }
+
+  console.log('\n[Cirkel-tæller] flere poser af samme sort')
+  {
+    // Produktionsdata: Squash Eight Ball ligger i tre poser — 10 frø,
+    // 8 med 2 sået, og 2. Sorten har 18 frø tilbage af oprindeligt 20.
+    // 'Eight Ball' og 'Eight Ball F1' er samme sort (kanonisk alias).
+    const p1 = pose({ id: 'p1', name: 'Squash', variety: 'Eight Ball', seedCount: 10 })
+    const p2 = pose({ id: 'p2', name: 'Squash', variety: 'Eight Ball F1', seedCount: 8, seedsSown: 2, seedsRemaining: 6 })
+    const p3 = pose({ id: 'p3', name: 'Squash', variety: 'Eight Ball F1', seedCount: 2 })
+    const alle = [p1, p2, p3]
+    const kanoniske = grupperEfterSort(alle)
+    tjek('tre poser = én sort', kanoniske.length === 1 && kanoniske[0].antalPoser === 3)
+
+    const info = poseInfoForViste(kanoniske, [p1])
+    const kort = beholdningForKort(p1, info.get('p1'))
+    tjek('kortet viser sortens 18 frø, ikke posens 10', kort.tilbage === 18)
+    tjek('ringens maksimum er sortens 20, ikke posens 10', kort.iAlt === 20)
+    tjek('ringen fyldes 90 %', beholdningProcent(kort) === 90)
+
+    // Regressionen: grupperingen skete på den FILTREREDE liste, så et
+    // filter der skjulte to af poserne fik kortet til at vise 10 frø og
+    // tabe "3 poser". Filtre må skjule mapper — ikke ændre antallet.
+    const filtreret = [p3] // fx "mangler billede" rammer kun én pose
+    const efterFilter = poseInfoForViste(kanoniske, filtreret)
+    const kortEfterFilter = beholdningForKort(p3, efterFilter.get('p3'))
+    tjek('filtreret visning viser stadig sortens 18 frø', kortEfterFilter.tilbage === 18)
+    tjek('filtreret visning viser stadig "3 poser"', efterFilter.get('p3')!.antalPoser === 3)
+    tjek('grupperet på den filtrerede liste ville have vist 2 frø',
+      grupperEfterSort(filtreret)[0].froeTilbage === 2)
+
+    // Ukendt antal i én pose gør ikke sorten ukendt — og tælles ikke som 0.
+    const p4 = pose({ id: 'p4', name: 'Squash', variety: 'Eight Ball' })
+    const medUkendt = grupperEfterSort([...alle, p4])
+    tjek('pose uden antal springes over: stadig 18 af 20',
+      medUkendt[0].froeTilbage === 18 && medUkendt[0].froeIAlt === 20)
+
+    // Én pose pr. sort → ingen poseoplysninger, kortet er uændret.
+    tjek('sort med én pose får ingen PoseInfo',
+      poseInfoForViste(grupperEfterSort([p1]), [p1]).size === 0)
   }
 
   console.log('\n[Stabilitet] samme input → samme svar')
