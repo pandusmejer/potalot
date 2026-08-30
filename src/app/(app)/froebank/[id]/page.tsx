@@ -27,6 +27,7 @@ import {
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
 import { guideHref } from '@/lib/guides/guide-href'
+import { findArtsGuide } from '@/lib/guides/find-arts-guide'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -75,6 +76,12 @@ export default async function InventoryDetailPage({ params }: Props) {
     item.guideId ? getGuide(item.guideId) : Promise.resolve(null),
     getAllGuides(),
   ])
+
+  // Har posen en sort, men ingen sortsguide, står koblingen bevidst tom
+  // (1:1-reglen). Så skal VISNINGEN finde arten selv — ellers stod en pose
+  // uden guide-link, selvom Potalot har en artsguide til den. Rent opslag på
+  // det kanoniske artsnavn; intet skrives, og koblingen røres ikke.
+  const visGuide = guide ?? findArtsGuide(item.name, allGuides)
 
   const cat = PRIMARY_CATEGORIES[item.primaryCategoryId]
   const subcat = SYSTEM_SUBCATEGORIES.find(s => s.id === item.subcategoryId)
@@ -385,9 +392,9 @@ export default async function InventoryDetailPage({ params }: Props) {
         </div>
       )}
 
-      {guide && (
+      {visGuide && (
         <Button asChild variant="outline" className="w-full">
-          <Link href={guideHref(guide.id, `/froebank/${item.id}`)}>
+          <Link href={guideHref(visGuide.id, `/froebank/${item.id}`)}>
             <BookOpen className="h-4 w-4" />
             Se guide
           </Link>

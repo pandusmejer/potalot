@@ -31,6 +31,7 @@ import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import { sortsNoegle } from '@/lib/froebank-grupper'
 import { slaaGuiderOp } from '@/lib/froebank-autofill'
 import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
+import { findArtsGuide } from '@/lib/guides/find-arts-guide'
 import type { Guide, InventoryItem } from '@/lib/types'
 
 let bestået = 0
@@ -152,6 +153,26 @@ function main() {
       tjek(`${navn} · Cobra → /guides/boenne`,
         resolvePlantGuideHref({ name: navn, variety: 'Cobra' }, guides) === '/guides/boenne')
     }
+  }
+
+  console.log('\n[Frøbankens guide-fald] tom kobling må ikke betyde intet link')
+  {
+    // Sådan ser Annas faktiske DB ud: master-artsguiden "Bønne" + det
+    // AI-udkast, fejlen selv skabte. Udkastet må ALDRIG vinde.
+    const dbGuides = [
+      { id: 'a3f72f17', plantName: 'Bønne', variety: null, visibility: 'public' },
+      { id: '679e2995', plantName: 'Bønner', variety: 'Cobra', visibility: 'private' },
+    ] as unknown as Guide[]
+
+    for (const navn of ['Bønner', 'Bønne', 'Stangbønne']) {
+      tjek(`${navn} uden kobling falder til master-artsguiden`,
+        findArtsGuide(navn, dbGuides)?.id === 'a3f72f17',
+        findArtsGuide(navn, dbGuides)?.id ?? 'intet fald')
+    }
+    tjek('et sorts-udkast bliver ALDRIG artsguide',
+      findArtsGuide('Bønner', [dbGuides[1]]) === null)
+    tjek('ingen artsguide → intet link (ingen nødløsning)',
+      findArtsGuide('Pastinak', dbGuides) === null)
   }
 
   console.log('\n[Gruppering] samme sort = samme mappe, forskellig type = forskellig mappe')
