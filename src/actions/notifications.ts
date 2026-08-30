@@ -3,6 +3,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import {
+  ikkeRelevanteOpgaveIder,
+  kalenderMaanedKbh,
+  MASKINAFLEDT_KILDE,
+  type ReminderKandidat,
+} from '@/lib/kalender/reminder-relevans'
 
 export interface Notification {
   id: string
@@ -47,10 +53,85 @@ export async function getMyNotifications(): Promise<Notification[]> {
 }
 
 /**
+ * Fagligt udløbne dyrkningsopgaver (Anna 30/8).
+ *
+ * Henter brugerens ÅBNE maskin-afledte opgaver og spørger relevansmotoren,
+ * om handlingen stadig er meningsfuld i denne måned. Returnerer en blokliste
+ * til RPC'en — eller `null`, som betyder "ingen vurdering foretaget" og
+ * lader SQL opføre sig præcis som før.
+ *
+ * Kun `source = 'guide'` hentes: det er den eneste maskin-afledte kilde, og
+ * alt andet skal alligevel passere ufiltreret. Derfor er opslaget lille selv
+ * for en have med mange opgaver.
+ *
+ * Der filtreres BEVIDST ikke på forfaldsdato her. En opgave, der endnu ikke
+ * er forfalden, kan SQL alligevel ikke påminde om, så bloklisten bliver
+ * hverken kortere eller mere korrekt af det — og listen genberegnes ved hvert
+ * sync, så en opgave, hvis vindue åbner inden den forfalder, vurderes på ny.
+ *
+ * Fejler et af opslagene, returneres `null`. Et databaseudfald må aldrig
+ * blive til "så er alle dine påmindelser vel irrelevante".
+ */
+async function findFagligtUdloebedeOpgaver(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<string[] | null> {
+  const { data: opgaver, error } = await supabase
+    .from('calendar_tasks')
+    .select('id, task_type, linked_plant_id')
+    .eq('user_id', userId)
+    .eq('source', MASKINAFLEDT_KILDE)
+    .eq('status', 'open')
+    .not('linked_plant_id', 'is', null)
+
+  if (error || !opgaver) return null
+  if (opgaver.length === 0) return []
+
+  type OpgaveRow = { id: string; task_type: string; linked_plant_id: string }
+  const rows = opgaver as OpgaveRow[]
+
+  const planteIder = [...new Set(rows.map(r => r.linked_plant_id))]
+  const { data: planter, error: planteFejl } = await supabase
+    .from('plants_v2')
+    .select('id, name, variety')
+    .in('id', planteIder)
+
+  if (planteFejl || !planter) return null
+
+  const planteById = new Map(
+    (planter as Array<{ id: string; name: string; variety: string | null }>)
+      .map(p => [p.id, p]),
+  )
+
+  // Arten er nøglen til det canonical vindue. Kender vi ikke planten, kan vi
+  // ikke dokumentere noget — og så udelades opgaven fra bloklisten (tavshed).
+  const kandidater: ReminderKandidat[] = []
+  for (const r of rows) {
+    const plante = planteById.get(r.linked_plant_id)
+    if (!plante) continue
+    kandidater.push({
+      id: r.id,
+      source: MASKINAFLEDT_KILDE,
+      taskType: r.task_type,
+      plantName: plante.name,
+      variety: plante.variety,
+    })
+  }
+
+  return ikkeRelevanteOpgaveIder(kandidater, kalenderMaanedKbh())
+}
+
+/**
  * Generér deterministiske opgave-påmindelser (smal launch-notifikation).
  * Kalder den self-scopede SECURITY DEFINER-funktion sync_task_reminders,
  * som afleder FÅ, plante-knyttede påmindelser fra åbne forfaldne
  * calendar_tasks og enqueue'er dem — idempotent (dedup pr. opgave/dag).
+ *
+ * Siden 00071 sendes en blokliste med: de maskin-afledte dyrkningsopgaver,
+ * hvis dokumenterede vindue er lukket denne måned. SQL ejer fortsat dedup,
+ * loft og cleanup; TypeScript ejer alene fagligheden, fordi den kanoniske
+ * vindue-model bor her (se reminder-relevans.ts).
+ *
  * Best-effort: fejl må aldrig vælte topbaren.
  */
 export async function syncTaskReminders(): Promise<void> {
@@ -58,7 +139,8 @@ export async function syncTaskReminders(): Promise<void> {
   if (!me) return
   try {
     const supabase = await createClient()
-    await supabase.rpc('sync_task_reminders')
+    const udloebede = await findFagligtUdloebedeOpgaver(supabase, me.id)
+    await supabase.rpc('sync_task_reminders', { p_ikke_relevante: udloebede })
   } catch {
     // Stille — påmindelser er sekundære til at siden loader.
   }

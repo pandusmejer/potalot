@@ -216,6 +216,37 @@ export function resolveFroebankVinduer(
   return ud
 }
 
+/**
+ * Artens/sortens dokumenterede HØSTVINDUE — canonical, samme opslag og samme
+ * sort→art-præcedens som `resolveFroebankVinduer`.
+ *
+ * Høst er bevidst IKKE et `FroebankVindue`: de tre typede vinduer beskriver
+ * handlinger brugeren udfører PÅ frøposen (så, forkultivér, plant ud), og
+ * frøbank-forslagene bygger på præcis den treenighed. Høst hører til planten,
+ * ikke posen. Men relevansvurderingen af en høst-opgave har brug for samme
+ * kanoniske kilde — derfor står den her, ved siden af sine søskende, i stedet
+ * for som et andet opslag et andet sted i appen.
+ *
+ * `null` = guiderne tier (ukendt sort, ukendt art, eller tomt felt begge
+ * steder). Kaldere skal behandle det som "vi ved det ikke", aldrig som
+ * "ingen høst".
+ */
+export function resolveHoestMaaneder(
+  name: string,
+  variety?: string | null,
+): number[] | null {
+  const navn = name.trim()
+  if (!navn) return null
+  const { sortsGuide, artsGuide } = slaaGuiderOp(navn, (variety ?? '').trim())
+  const r = resolveFelt(
+    'harvestMonths',
+    sortsGuide?.quickFacts ?? null,
+    artsGuide?.quickFacts ?? null,
+  )
+  if (!r || !Array.isArray(r.value) || r.value.length === 0) return null
+  return [...(r.value as number[])].sort((a, b) => a - b)
+}
+
 export function findFroebankAutofill(
   name: string,
   variety?: string | null,
