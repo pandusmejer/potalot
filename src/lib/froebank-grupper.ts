@@ -17,34 +17,42 @@
 import type { InventoryItem } from '@/lib/types'
 import { parseDate } from '@/lib/datetime'
 import { kanoniskSortsSlug } from '@/lib/sorts-alias'
-
-/**
- * Normalisering til nøglebrug. Kun tekniske værdier (ae/oe/aa er
- * tilladt her — nøglen vises aldrig i brugerfladen).
- */
-function normaliser(text: string | null | undefined): string {
-  if (!text) return ''
-  return text
-    .toLowerCase()
-    .replace(/æ/g, 'ae')
-    .replace(/ø/g, 'oe')
-    .replace(/å/g, 'aa')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
+import { kanoniskArtsSlug, typeSlugForPose } from '@/lib/arts-model'
 
 /**
  * Stabil nøgle for sorten. Poseoplysninger (leverandør, købsår,
  * udløb, antal) indgår bevidst IKKE.
+ *
+ * Delt af Frøbankens gruppering og Excel-importens dubletmarkering, så de to
+ * altid er enige om, hvad "samme sort" betyder.
  */
-export function sortsNoegle(item: Pick<InventoryItem, 'name' | 'variety' | 'primaryCategoryId'>): string {
+export function sortsNoegleAf(
+  primaryCategoryId: string,
+  name: string,
+  variety: string | null | undefined,
+): string {
   // Kanonisk sortsalias: 'Eight Ball' og 'Eight Ball F1' er SAMME sort og
   // skal derfor være samme mappe i Frøbanken. Kun eksplicit verificerede
   // synonymer (sorts-alias.ts) — posens egen tekst ændres aldrig.
-  const sort = kanoniskSortsSlug(item.name, item.variety)
-  return `${item.primaryCategoryId}|${normaliser(item.name)}|${sort}`
+  const sort = kanoniskSortsSlug(name, variety)
+
+  // Artsdelen går gennem artsmodellen, så 'Bønner Cobra' og 'Stangbønne
+  // Cobra' lander i SAMME mappe: det er to poser af samme sort, ikke to
+  // sorter. Væksttypen står med i nøglen, netop fordi den ikke må forsvinde
+  // — 'Bønner' uden sort og 'Stangbønne' uden sort er stadig to forskellige
+  // mapper, for den første kan lige så godt være en buskbønne. Typen sættes
+  // kun når Potalot VED den (arts-model.ts); ellers er segmentet tomt, og
+  // nøglen er præcis den samme som før artsmodellen.
+  const artSlug = kanoniskArtsSlug(name)
+  const typeSlug = typeSlugForPose(name, variety)
+  const art = typeSlug ? `${artSlug}~${typeSlug}` : artSlug
+
+  return `${primaryCategoryId}|${art}|${sort}`
+}
+
+/** Sortsnøglen for en frøpose. Se `sortsNoegleAf`. */
+export function sortsNoegle(item: Pick<InventoryItem, 'name' | 'variety' | 'primaryCategoryId'>): string {
+  return sortsNoegleAf(item.primaryCategoryId, item.name, item.variety)
 }
 
 /**

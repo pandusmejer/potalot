@@ -30,7 +30,7 @@
  */
 
 import { findFroebankAutofill } from '@/lib/froebank-autofill'
-import { kanoniskSortsSlug } from '@/lib/sorts-alias'
+import { sortsNoegleAf } from '@/lib/froebank-grupper'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
 import type { PrimaryCategoryId } from '@/lib/types'
 import type { ExtractedSeedFields } from '@/lib/seed-packet-fields'
@@ -623,17 +623,13 @@ function ensVaerdi(a: unknown, b: unknown): boolean {
 /**
  * Sorts-nøgle: kategori + art + sort. Pose-oplysninger indgår bevidst ikke.
  *
- * Sortsdelen går gennem det kanoniske alias, så importen genkender at
- * 'Eight Ball F1' er den sort Potalot kalder 'Eight Ball' — præcis som
- * Frøbankens gruppering gør det.
+ * ÉN fortolker: nøglen kommer fra Frøbankens egen `sortsNoegleAf`, så
+ * importens dubletmarkering og Frøbankens gruppering ALDRIG kan komme til at
+ * mene noget forskelligt om, hvad "samme sort" er. Både sortsaliasset ('Eight
+ * Ball F1' → 'Eight Ball') og artsmodellen ('Bønner' → 'Bønne') følger med.
  */
 function noegle(kategori: string, name: string, variety: string | undefined): string {
-  const n = (s: string) =>
-    s.toLowerCase()
-      .replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa')
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  return `${kategori}|${n(name)}|${kanoniskSortsSlug(name, variety)}`
+  return sortsNoegleAf(kategori, name, variety)
 }
 
 /**

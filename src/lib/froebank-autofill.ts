@@ -25,6 +25,7 @@
 import { GUIDE_FACTS, type GuideFactsEntry } from '@/data/guide-facts-index.generated'
 import { slugify } from '@/lib/afledninger'
 import { kanoniskSortsSlug } from '@/lib/sorts-alias'
+import { kanoniskArtsSlug } from '@/lib/arts-model'
 import type { Guide, GuideQuickFacts } from '@/lib/types'
 import type { DyrkningsfaktaState } from '@/components/froebank/dyrkningsfakta-fields'
 
@@ -141,6 +142,12 @@ export function slaaGuiderOp(
   const sort = (variety ?? '').trim()
   if (!navn) return { sortsGuide: null, artsGuide: null }
 
+  // Guiderne er ALTID navngivet efter ARTEN — aldrig efter en væksttype.
+  // Brugerens artsfelt er fri tekst og kan både være flertal ("Bønner") og
+  // en type ("Stangbønne"); begge skal ende ved artsguiden `boenne`. Den
+  // oversættelse hører hjemme ét sted: arts-model.ts.
+  const artSlug = kanoniskArtsSlug(navn)
+
   // 1) Sortsguide? Eksakt stavemåde først; findes den ikke, prøves sortens
   // kanoniske alias (fx 'Eight Ball F1' → 'Eight Ball'). Kun eksplicit
   // verificerede synonymer — se sorts-alias.ts.
@@ -149,7 +156,12 @@ export function slaaGuiderOp(
     sortsGuide = guideById.get(slugify(`${navn} ${sort}`)) ?? null
     if (!sortsGuide) {
       const kanonisk = kanoniskSortsSlug(navn, sort)
-      if (kanonisk) sortsGuide = guideById.get(`${slugify(navn)}-${kanonisk}`) ?? null
+      if (kanonisk) {
+        sortsGuide =
+          guideById.get(`${slugify(navn)}-${kanonisk}`) ??
+          guideById.get(`${artSlug}-${kanonisk}`) ??
+          null
+      }
     }
   }
 
@@ -159,6 +171,7 @@ export function slaaGuiderOp(
     artsGuide = guideById.get(sortsGuide.parentGuideId) ?? null
   }
   if (!artsGuide) artsGuide = guideById.get(slugify(navn)) ?? null
+  if (!artsGuide) artsGuide = guideById.get(artSlug) ?? null
 
   return { sortsGuide, artsGuide }
 }

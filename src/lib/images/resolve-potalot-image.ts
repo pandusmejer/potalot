@@ -31,6 +31,7 @@ import { IMAGE_MANIFEST } from '@/data/image-manifest.generated'
 import { POTALOT_IMAGE_SETS_BY_ID } from '@/data/potalot-image-sets'
 import { GUIDE_IMAGE_INDEX } from '@/data/guide-image-index.generated'
 import { kanoniskSortsSlug } from '@/lib/sorts-alias'
+import { kanoniskArtsSlug, typeSlugForPose } from '@/lib/arts-model'
 import type {
   PotalotImageInput,
   PotalotImageOutput,
@@ -294,6 +295,15 @@ export function resolvePotalotImage(
  * sort — kun stavemåden er forskellig — så reglen "ingen fald til
  * beslægtet sort" holder. Aliasserne er eksplicit verificeret pr. sort
  * (sorts-alias.ts); der er bevidst ingen generel F1-afkortning.
+ *
+ * ARTSDELEN staves også på flere måder, og af samme grund: brugeren skriver
+ * "Bønner", Potalots bibliotek hedder "Bønne", og frøkortet er navngivet
+ * efter VÆKSTTYPEN ("stangboenne-cobra"). De to sidste kandidater dækker
+ * det — men kun med dækning i artsmodellen: artssluggen kommer fra et
+ * eksplicit artsalias, og typesluggen kun når typen er kendt (brugeren skrev
+ * den, eller sorten er verificeret). En pose der bare siger "Bønner" med en
+ * ukendt sort får ALDRIG en typekandidat — der findes ingen optimistisk
+ * antagelse om, at en bønne er en stangbønne. Se arts-model.ts.
  */
 function sortsSlugKandidater(
   name: string,
@@ -305,10 +315,14 @@ function sortsSlugKandidater(
   // aliasset er kun en ekstra kandidat for de sorter hvor synonymet er
   // eksplicit verificeret (se sorts-alias.ts). Ingen generel F1-regel.
   const kanonisk = kanoniskSortsSlug(name, variety)
+  const artSlug = kanoniskArtsSlug(name)
+  const typeSlug = typeSlugForPose(name, variety)
   return uniqueCompact([
     slugify(raa),
     slugify(raa.replace(/['\u2018\u2019]/g, '')),
     `${slugify(name)}-${kanonisk}`,
+    `${artSlug}-${kanonisk}`,
+    typeSlug ? `${typeSlug}-${kanonisk}` : null,
   ])
 }
 

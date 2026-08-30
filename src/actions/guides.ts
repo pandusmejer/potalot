@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import { resolvePlantGuideHref } from '@/lib/plant-detail/resolve-guide-href'
 import { normalizeGuideKey } from '@/lib/guides/normalize-key'
+import { kanoniskArtsNavn } from '@/lib/arts-model'
 import type { ImportGuideMatch } from '@/lib/guides/import-guide-match'
 import type {
   Guide, GuideQuickFacts, GuideSection, GuideCalendarRule,
@@ -98,8 +99,8 @@ function rowToGuide(row: GuideRow): Guide {
  * Matcher på den DELTE normaliseringsnøgle (normalizeGuideKey), så apostrof-
  * og whitespace-varianter i sortsnavnet ("Gardener's Delight" vs "Gardeners
  * Delight") stadig kobler til master-guiden — ikke udløser et AI-udkast.
- * ILIKE på plant_name er kun et groft prefilter; den præcise afgørelse sker på
- * den normaliserede nøgle i JS. Master-guides (user_id = NULL) vinder via
+ * Artsnavnet kanoniseres først (arts-model.ts), så "Bønner"/"Stangbønne" og
+ * bibliotekets "Bønne" mødes. Afgørelsen sker på den normaliserede nøgle i JS. Master-guides (user_id = NULL) vinder via
  * nullsFirst, dernæst ældste. Har item en SORT → kræv sortsmatch; ellers kun
  * arts-guide (variety IS NULL) — vi kobler ALDRIG en arts-guide til en sort.
  */
@@ -108,19 +109,27 @@ async function findReusableGuideId(
   plantName: string,
   variety: string | null,
 ): Promise<string | null> {
-  const nameKey = normalizeGuideKey(plantName)
+  // Artsnavnet går gennem artsmodellen FØR nøglen dannes: guiderne hedder
+  // altid arten ("Bønne"), mens posen kan hedde "Bønner" eller "Stangbønne".
+  // Uden det genererede vi et nyt AI-udkast oven på en guide, vi allerede
+  // havde.
+  const artsNavn = kanoniskArtsNavn(plantName)
+  const nameKey = normalizeGuideKey(artsNavn)
   const varietyKey = variety ? normalizeGuideKey(variety) : null
 
+  // Ingen ilike-prefilter mere: prefilteret kunne kun kende ÉN stavemåde,
+  // og et bruger-styret mønster hører ikke hjemme i et PostgREST-filter.
+  // Afgørelsen sker alligevel på den normaliserede nøgle i JS — præcis som
+  // i findExistingGuideIdsForImport, der også henter hele listen.
   const { data } = await supabase
     .from('guides')
     .select('id, plant_name, variety, user_id')
-    .ilike('plant_name', plantName)
     .order('user_id', { ascending: true, nullsFirst: true })
     .order('created_at', { ascending: true })
 
   if (!data) return null
   const match = data.find(row => {
-    if (normalizeGuideKey(row.plant_name as string) !== nameKey) return false
+    if (normalizeGuideKey(kanoniskArtsNavn(row.plant_name as string)) !== nameKey) return false
     if (varietyKey) {
       return row.variety != null && normalizeGuideKey(row.variety as string) === varietyKey
     }
@@ -175,7 +184,7 @@ export async function findExistingGuideIdsForImport(
   const sortsGuider = new Map<string, string>()
   const artsGuider = new Map<string, string>()
   for (const row of data) {
-    const navnKey = normalizeGuideKey(row.plant_name as string)
+    const navnKey = normalizeGuideKey(kanoniskArtsNavn(row.plant_name as string))
     if (!navnKey) continue
     const sort = row.variety as string | null
     if (sort) {
@@ -187,7 +196,9 @@ export async function findExistingGuideIdsForImport(
   }
 
   return par.map(({ name, variety }) => {
-    const navnKey = normalizeGuideKey(name)
+    // Samme kanonisering som ved koblingen: importens "Bønner" og
+    // bibliotekets "Bønne" er den samme art.
+    const navnKey = normalizeGuideKey(kanoniskArtsNavn(name))
     if (!navnKey) return { ...tom }
     const artsGuideId = artsGuider.get(navnKey) ?? null
     const sortKey = variety ? normalizeGuideKey(variety) : null
@@ -545,7 +556,7 @@ export async function ensureGuideForPlant(plantId: string): Promise<
     const { data: parent } = await supabase
       .from('guides')
       .select('id')
-      .ilike('plant_name', plantName)
+      .ilike('plant_name', kanoniskArtsNavn(plantName))
       .is('variety', null)
       .is('user_id', null)
       .limit(1)
@@ -785,7 +796,7 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
     const { data: parent } = await supabase
       .from('guides')
       .select('id')
-      .ilike('plant_name', plantName)
+      .ilike('plant_name', kanoniskArtsNavn(plantName))
       .is('variety', null)
       .is('user_id', null)
       .limit(1)

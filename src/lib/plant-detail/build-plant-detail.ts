@@ -38,6 +38,7 @@ import { dageSiden, formatDatoKort } from '@/lib/datetime'
 import { healthShort, heightLabel } from '@/lib/plant-log-meta'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 import { resolveNowImage, nowTypeForStatus } from '@/lib/images/resolve-now-image'
+import { kanoniskArtsSlug } from '@/lib/arts-model'
 
 /** Rangering af faser, så vi kan afgøre hvad der er sket vs. forventet. */
 const STATUS_RANK: Record<PlantStatus, number> = {
@@ -243,7 +244,9 @@ export function deriveNaeste(plant: MockPlant): DetailNaeste {
   // egnede makro (sort → art → sikker crossover) ud fra fase + motivrolle;
   // ellers falder vi til plantekort-fotoet; ellers tom streng → botanisk fyld.
   const now = resolveNowImage({
-    speciesSlug: slugify(plant.name),
+    // Artssluggen går gennem artsmodellen, så en plante brugeren har kaldt
+    // "Bønner" eller "Stangbønne" stadig finder /images/makro/boenne/.
+    speciesSlug: kanoniskArtsSlug(plant.name) || slugify(plant.name),
     varietySlug: plant.variety ? slugify(plant.variety) : null,
     stage: plant.status,
     nowType: nowTypeForStatus(plant.status),

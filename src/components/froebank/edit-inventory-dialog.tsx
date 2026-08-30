@@ -350,40 +350,50 @@ export function EditInventoryDialog({ item }: Props) {
     setError(null)
 
     startTransition(async () => {
-      const res = await updateInventoryItem(item.id, {
-        name: name.trim(),
-        latinName: latinName.trim() || undefined,
-        variety: variety.trim() || undefined,
-        supplier: supplier.trim() || undefined,
-        primaryCategoryId: primaryCat,
-        subcategoryId: subcat || undefined,
-        quantity: !isFroe && quantity ? parseInt(quantity, 10) : undefined,
-        seedCount: isFroe && seedCount ? parseInt(seedCount, 10) : undefined,
-        purchaseYear: purchaseYear ? parseInt(purchaseYear, 10) : undefined,
-        purchaseUrl: purchaseUrl.trim() || undefined,
-        expiryDate: expiryDate || undefined,
-        notes: notes.trim() || undefined,
-        sowingMonths: dyrkning.sowingMonths,
-        sowingDepthMm: dyrkning.sowingDepthMm,
-        preCultivation: dyrkning.preCultivation ?? undefined,
-        plantingOutMonths: dyrkning.plantingOutMonths,
-        harvestMonths: dyrkning.harvestMonths,
-        light: dyrkning.light ?? undefined,
-        water: dyrkning.water ?? undefined,
-        soil: dyrkning.soil.trim() || undefined,
-        germinationDays: dyrkning.germinationDays.trim() || undefined,
-        germinationTemperature: dyrkning.germinationTemperature.trim() || undefined,
-        plantSpacing: dyrkning.plantSpacing.trim() || undefined,
-        rowSpacing: dyrkning.rowSpacing.trim() || undefined,
-        imageUrls: images,
-        primaryImageUrl: primaryImage ?? undefined,
-      })
-      if ('error' in res) {
-        setError(res.error)
-        return
+      try {
+        const res = await updateInventoryItem(item.id, {
+          name: name.trim(),
+          latinName: latinName.trim() || undefined,
+          variety: variety.trim() || undefined,
+          supplier: supplier.trim() || undefined,
+          primaryCategoryId: primaryCat,
+          subcategoryId: subcat || undefined,
+          quantity: !isFroe && quantity ? parseInt(quantity, 10) : undefined,
+          seedCount: isFroe && seedCount ? parseInt(seedCount, 10) : undefined,
+          purchaseYear: purchaseYear ? parseInt(purchaseYear, 10) : undefined,
+          purchaseUrl: purchaseUrl.trim() || undefined,
+          expiryDate: expiryDate || undefined,
+          notes: notes.trim() || undefined,
+          sowingMonths: dyrkning.sowingMonths,
+          sowingDepthMm: dyrkning.sowingDepthMm,
+          preCultivation: dyrkning.preCultivation ?? undefined,
+          plantingOutMonths: dyrkning.plantingOutMonths,
+          harvestMonths: dyrkning.harvestMonths,
+          light: dyrkning.light ?? undefined,
+          water: dyrkning.water ?? undefined,
+          soil: dyrkning.soil.trim() || undefined,
+          germinationDays: dyrkning.germinationDays.trim() || undefined,
+          germinationTemperature: dyrkning.germinationTemperature.trim() || undefined,
+          plantSpacing: dyrkning.plantSpacing.trim() || undefined,
+          rowSpacing: dyrkning.rowSpacing.trim() || undefined,
+          imageUrls: images,
+          primaryImageUrl: primaryImage ?? undefined,
+        })
+        if ('error' in res) {
+          setError(res.error)
+          return
+        }
+        setOpen(false)
+        router.refresh()
+      } catch (e: unknown) {
+        // Uden dette catch blev en gem-knap, hvis serverkald aldrig nåede
+        // frem (typisk en fane der har ligget åben hen over en ny udrulning),
+        // til hele sidens "Noget gik galt" — og så lignede det, at netop den
+        // ændring var ulovlig. Samme fælde som ved "Læs billeder" (fd32064);
+        // det var det sidste ubevogtede server-kald i dialogen.
+        console.error('gem af frøposen nåede ikke frem:', e)
+        setError('Vi fik ikke svar fra Potalot, så ændringerne er ikke gemt. Prøv igen — hjælper det ikke, så genindlæs siden.')
       }
-      setOpen(false)
-      router.refresh()
     })
   }
 
