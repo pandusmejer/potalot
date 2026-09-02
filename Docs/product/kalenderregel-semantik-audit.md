@@ -1,6 +1,6 @@
 # Audit: `relativeOffsetDays` vs. `recommendedMonths` i `calendarRules`
 
-Dato: 2. september 2026 · Status: **§5 RETTET (P1) · datosemantik LÅST, ikke bygget**
+Dato: 2. september 2026 · Status: **§5 LUKKET (515e94b, pushet) · datosemantik LÅST, ikke bygget**
 Kode: `src/lib/task-generation.ts:28` (`calculateRuleDate`), kaldt fra
 `src/actions/mine-planter.ts:304`.
 
@@ -147,7 +147,7 @@ for det.
 
 ---
 
-## 5. Blokerende fejl fundet undervejs (ikke semantik) — ✅ RETTET 2/9
+## 5. Blokerende fejl fundet undervejs (ikke semantik) — ✅ LUKKET 2/9
 
 `calendar_tasks.task_type` har en CHECK-constraint med 13 værdier.
 AI-guiderne opfinder 18 andre: `care`, `sow`, `direct_sow`, `prick_out`,
@@ -189,6 +189,26 @@ giver opgaven et dyrkningsvindue, den ikke har fagligt belæg for.
 
 Effekt mod produktionsdata: 83 af 124 regler uændret, 27 mappet, 14 → `custom`,
 **0 guides ville herefter fejle** ved insert.
+
+### LUKKET — `task_type`-kontrakten (Anna 2/9, `515e94b` pushet)
+
+* DB's 13 typer er canonical.
+* Legacy-typer mappes kun med dokumenteret præcedens.
+* Ukendte typer falder til `custom`, ikke til opdigtede enums.
+* Vindue-bærende typer er særskilt bevogtet.
+* Alle skriveveje normaliserer.
+* Eksisterende guides normaliseres ved runtime.
+* AI-prompter kan ikke længere opfinde frie typer.
+* Batchfejl logges og kan ikke længere forsvinde lydløst.
+* TS-kontrakten testes direkte mod DB-constrainten.
+
+Opgaven viste sig ikke at være "ryd hallucinationer op", men **"normalisér
+historiske vokabularer uden at miste betydning"**. Det er grunden til, at
+aliaskortet har et beviskrav i stedet for en skønsliste.
+
+**Bivirkning, accepteret:** `filterRelevantTasks` frasorterer
+`sowing`/`pre_sow`, så en regel, der før hed `sow`, slap igennem filteret.
+Nu gør den ikke. Det var aldrig en feature — det var et stavebaseret smuthul.
 
 ---
 
