@@ -114,7 +114,12 @@ export const INVENTORY_STATUS_META: Record<InventoryStatus, { label: string; bad
 export const TASK_TYPE_META: Record<TaskType, { label: string; icon: string }> = {
   pre_sow:     { label: 'Forspir',       icon: 'Sprout' },
   sowing:      { label: 'Så',            icon: 'Sprout' },
-  repot:       { label: 'Omplant',       icon: 'ArrowUpRight' },
+  // Labelen beskriver typens FAKTISKE nuværende betydning: alle syv
+  // kalenderregler i live-DB der bruger repot/prick_out/pricking_out handler
+  // om prikling, og der findes nul ægte ompotnings-regler. Den er IKKE en
+  // påstand om at prikling og ompotning er samme handling — den skelnen
+  // modelleres i Docs/product/prikling-vs-ompotning-backlog.md.
+  repot:       { label: 'Prikl om',      icon: 'ArrowUpRight' },
   plant_out:   { label: 'Udplant',       icon: 'TreePine' },
   watering:    { label: 'Vand',          icon: 'Droplets' },
   fertilizing: { label: 'Gød',           icon: 'Leaf' },
