@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { LIGHT_META, WATER_META, DIFFICULTY_META, MONTHS_DA } from '@/lib/constants'
 import type { Guide } from '@/lib/types'
+import { guideTagLabels } from '@/lib/guide-tags'
 import {
   Sun, Droplets, Calendar, Sprout, TreePine, Wheat, ChevronDown,
 } from 'lucide-react'
@@ -196,9 +197,11 @@ export function QuickFactsCard({ guide, inheritedFields, species = false }: Prop
           )
         })()}
 
-        {guide.tags.length > 0 && (
+        {guideTagLabels(guide.tags).length > 0 && (
           <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pb-1 pt-3">
-            {guide.tags.map(t => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
+            {/* Tags er interne søgenøgler — de går altid gennem formatteren,
+                aldrig råt ud i badgen. Se src/lib/guide-tags.ts. */}
+            {guideTagLabels(guide.tags).map(l => <Badge key={l} variant="outline" className="text-[10px]">{l}</Badge>)}
           </div>
         )}
 

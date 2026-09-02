@@ -45,6 +45,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { ALL_GUIDES } from '@/data/guides-demo'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
 import type { Guide } from '@/lib/types'
+import { guideTagLabels } from '@/lib/guide-tags'
 import { resolvePotalotMacro, medWebpSibling } from '@/lib/images/resolve-potalot-image'
 import { ArrowLeft, Package, Sprout, ArrowRight } from 'lucide-react'
 
@@ -761,7 +762,7 @@ export async function GuideArticle({
                         margin: '0 0 10px',
                       }}
                     />
-                    {v.tags.length > 0 && (
+                    {guideTagLabels(v.tags).length > 0 && (
                       <p
                         style={{
                           fontFamily: 'var(--font-manrope)',
@@ -777,7 +778,10 @@ export async function GuideArticle({
                           textOverflow: 'ellipsis',
                         }}
                       >
-                        {v.tags.slice(0, 3).join(' · ').toLowerCase()}
+                        {/* Formatteret label, ikke den rå nøgle. Kortets minuskel-typografi
+                            er ANNA-LÅST (7/7) og bevares — det er æ/ø/å og
+                            ordadskillelsen der var lækket, ikke versalen. */}
+                        {guideTagLabels(v.tags).slice(0, 3).join(' · ').toLowerCase()}
                       </p>
                     )}
                   </div>
