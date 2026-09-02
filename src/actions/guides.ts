@@ -464,8 +464,8 @@ export async function deleteGuide(
   // Notificér berørte brugere
   if (options?.notifyAffectedUsers && affectedIds.length > 0) {
     const guidanceMsg = relinked > 0
-      ? `Dine items er automatisk re-linket til en anden guide for "${result.plant_name}".`
-      : `Dine items for "${result.plant_name}" har mistet guide-link. Find dem under "Mangler guide" i frøbanken.`
+      ? `Dine frø og planter er automatisk knyttet til en anden guide for "${result.plant_name}".`
+      : `Dine frø og planter for "${result.plant_name}" har mistet deres guide. Find dem under "Mangler guide" i frøbanken.`
     await Promise.all(
       affectedIds.map(async uid => {
         try {
@@ -704,7 +704,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
       messages: [{ role: 'user', content: userMessage }],
     })
     const textBlock = response.content.find(b => b.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') return { error: 'Tom AI-svar' }
+    if (!textBlock || textBlock.type !== 'text') return { error: 'Vi kunne ikke lave et guide-udkast lige nu. Prøv igen om lidt.' }
     raw = textBlock.text.trim()
   } catch (e: unknown) {
     return { error: fangetFejlBesked(e, 'Vi kunne ikke hente et forslag lige nu. Prøv igen om lidt.') }
@@ -718,7 +718,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
   try {
     parsed = JSON.parse(raw)
   } catch {
-    return { error: 'AI returnerede ugyldig JSON' }
+    return { error: 'Guide-udkastet kom retur i et format vi ikke kunne læse. Prøv igen.' }
   }
 
   const plantName = typeof parsed.plantName === 'string' ? parsed.plantName : input.plantName

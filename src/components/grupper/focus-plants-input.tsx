@@ -13,7 +13,7 @@ interface Props {
   placeholder?: string
 }
 
-export function FocusPlantsInput({ value, onChange, maxItems = 5, placeholder = 'Fx. Chili' }: Props) {
+export function FocusPlantsInput({ value, onChange, maxItems = 5, placeholder = 'Fx Chili' }: Props) {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)

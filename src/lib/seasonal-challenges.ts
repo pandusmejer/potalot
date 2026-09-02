@@ -93,7 +93,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     slug: 'froesamler',
     month: 9,
     title: 'Frø til næste år',
-    description: 'Sensommer er frøtid. Gem en sort fra egen have til 2027.',
+    description: 'Sensommer er frøtid. Gem en sort fra egen have til næste år.',
     prompt: 'Vis hvilke frø du har samlet og hvor de kommer fra.',
     rewardBadgeId: 's_froesamler',
   },
@@ -102,7 +102,7 @@ export const SEASONAL_CHALLENGES: SeasonalChallengeTemplate[] = [
     month: 1,
     title: 'Vinterhvile',
     description: 'Januar er stille. Hvad drømmer du om for den kommende sæson?',
-    prompt: 'Skriv et par sætninger om hvad du vil prøve i 2026.',
+    prompt: 'Skriv et par sætninger om hvad du vil prøve i år.',
     rewardBadgeId: 's_vinterhvile',
   },
 ]

@@ -70,7 +70,7 @@ export function CreateChallengeDialog({ groupId }: Props) {
             <Label>Titel *</Label>
             <Input
               value={title} onChange={e => setTitle(e.target.value)} required
-              placeholder="Fx. Bedste høst-foto i juli"
+              placeholder="Fx Bedste høst-foto i juli"
               className="mt-1.5"
             />
           </div>
@@ -83,10 +83,10 @@ export function CreateChallengeDialog({ groupId }: Props) {
             />
           </div>
           <div>
-            <Label>Prompt — hvad skal man indsende?</Label>
+            <Label>Opgave — hvad skal man indsende?</Label>
             <Textarea
               value={prompt} onChange={e => setPrompt(e.target.value)} rows={2}
-              placeholder="Fx. 'Et foto af din høst med kort beskrivelse'"
+              placeholder="Fx 'Et foto af din høst med kort beskrivelse'"
               className="mt-1.5"
             />
           </div>
@@ -103,7 +103,7 @@ export function CreateChallengeDialog({ groupId }: Props) {
           <div>
             <Label>Cover-billede (valgfri)</Label>
             <div className="mt-1.5">
-              <ImageUpload value={coverImageUrl} onChange={setCoverImageUrl} folder="chat" label="Tilføj cover" />
+              <ImageUpload value={coverImageUrl} onChange={setCoverImageUrl} folder="chat" label="Tilføj billede" />
             </div>
           </div>
 

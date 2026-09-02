@@ -110,17 +110,17 @@ export function DeleteGuideDialog({
                   <span>
                     <span className="font-medium text-foreground inline-flex items-center gap-1">
                       <Link2 className="h-3 w-3" />
-                      Auto-relink til &ldquo;{stats.replacementGuideLabel}&rdquo;
+                      Knyt automatisk til &ldquo;{stats.replacementGuideLabel}&rdquo;
                     </span>
                     <span className="block text-xs text-muted-foreground mt-0.5">
-                      Berørte items pointes til den alternative guide i stedet for at miste link.
+                      Berørte frø og planter knyttes til den alternative guide i stedet for at miste deres guide.
                     </span>
                   </span>
                 </label>
               )}
               {!hasReplacement && (
                 <p className="text-xs text-muted-foreground italic">
-                  Ingen alternativ guide med samme plantenavn findes — items mister deres guide-link og kan re-linkes manuelt af brugerne via &ldquo;Mangler guide&rdquo;-filteret.
+                  Ingen alternativ guide med samme plantenavn findes — berørte frø og planter mister deres guide, og brugerne kan selv knytte en ny til via &ldquo;Mangler guide&rdquo;-filteret.
                 </p>
               )}
 

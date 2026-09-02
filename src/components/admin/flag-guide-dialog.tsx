@@ -66,7 +66,7 @@ export function FlagGuideDialog({ guideId, guideTitle }: Props) {
               value={reason}
               onChange={e => setReason(e.target.value)}
               rows={4}
-              placeholder="Fx. 'Indeholder potentielt vildledende dosering — verificér eller ret op.'"
+              placeholder="Fx 'Indeholder potentielt vildledende dosering — verificér eller ret op.'"
               className="mt-1.5"
               required
             />

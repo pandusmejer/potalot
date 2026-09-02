@@ -45,7 +45,7 @@ async function handleUpload(request: NextRequest) {
     formData = await request.formData()
   } catch (e) {
     console.error('[api/upload] formData parse error:', e)
-    return NextResponse.json({ error: 'Ugyldig request body' }, { status: 400 })
+    return NextResponse.json({ error: 'Vi kunne ikke læse det, du sendte. Prøv igen.' }, { status: 400 })
   }
 
   const file = formData.get('file')
@@ -55,7 +55,7 @@ async function handleUpload(request: NextRequest) {
     return NextResponse.json({ error: 'Ingen fil modtaget' }, { status: 400 })
   }
   if (!folder || !VALID_FOLDERS.has(folder)) {
-    return NextResponse.json({ error: 'Ugyldig folder' }, { status: 400 })
+    return NextResponse.json({ error: 'Billedet kan ikke gemmes her.' }, { status: 400 })
   }
   if (file.size === 0) {
     return NextResponse.json({ error: 'Filen er tom' }, { status: 400 })
@@ -75,8 +75,8 @@ async function handleUpload(request: NextRequest) {
     return NextResponse.json(
       {
         error: isHeic
-          ? `iPhone-billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks ${limitMB} MB for HEIC — prøv at vælge en mindre størrelse i iPhone Kamera-indstillinger eller tag billedet om.`
-          : `Billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks ${limitMB} MB.`,
+          ? `iPhone-billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks. ${limitMB} MB for HEIC — prøv at vælge en mindre størrelse i iPhone Kamera-indstillinger eller tag billedet om.`
+          : `Billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks. ${limitMB} MB.`,
       },
       { status: 400 }
     )

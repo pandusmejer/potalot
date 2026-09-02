@@ -101,11 +101,11 @@ export function CreateSwapListingDialog({ groupId }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Plantenavn *</Label>
-              <Input value={plantName} onChange={e => setPlantName(e.target.value)} placeholder="Fx. Tomat" required className="mt-1.5" />
+              <Input value={plantName} onChange={e => setPlantName(e.target.value)} placeholder="Fx Tomat" required className="mt-1.5" />
             </div>
             <div>
               <Label>Sort</Label>
-              <Input value={variety} onChange={e => setVariety(e.target.value)} placeholder="Fx. San Marzano" className="mt-1.5" />
+              <Input value={variety} onChange={e => setVariety(e.target.value)} placeholder="Fx San Marzano" className="mt-1.5" />
             </div>
           </div>
 
@@ -115,7 +115,7 @@ export function CreateSwapListingDialog({ groupId }: Props) {
               type="number"
               value={seedCount}
               onChange={e => setSeedCount(e.target.value)}
-              placeholder="Fx. 20"
+              placeholder="Fx 20"
               className="mt-1.5"
               min="1"
             />

@@ -22,7 +22,7 @@ export async function uploadImage(
 
   if (!(file instanceof File)) return { error: 'Ingen fil' }
   if (!folder) return { error: 'Mangler folder' }
-  if (file.size > MAX_BYTES) return { error: `Billede for stort (max ${MAX_BYTES / 1024 / 1024}MB)` }
+  if (file.size > MAX_BYTES) return { error: `Billede for stort (maks. ${MAX_BYTES / 1024 / 1024} MB)` }
   if (!file.type.startsWith(ALLOWED_PREFIX)) return { error: `Ugyldig filtype: ${file.type || 'ukendt'}` }
 
   const ext =

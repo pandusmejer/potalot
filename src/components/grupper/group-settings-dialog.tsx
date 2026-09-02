@@ -118,7 +118,7 @@ export function GroupSettingsDialog({ groupId, groupType, initial }: Props) {
               value={rules}
               onChange={e => setRules(e.target.value)}
               rows={5}
-              placeholder="Fx.&#10;1. Hold debatten venlig.&#10;2. Ingen spam eller reklame."
+              placeholder="Fx&#10;1. Hold debatten venlig.&#10;2. Ingen spam eller reklame."
               className="mt-1.5"
             />
             <p className="text-[10px] text-muted-foreground mt-1">

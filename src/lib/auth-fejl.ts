@@ -5,11 +5,19 @@
  * detalje logges i konsollen.
  */
 
-const KENDTE: Array<{ moenster: RegExp; besked: string }> = [
+import { KODEORD_MIN_TEGN } from '@/lib/kodeord'
+
+type Besked = string | ((match: RegExpExecArray) => string)
+
+const KENDTE: Array<{ moenster: RegExp; besked: Besked }> = [
   { moenster: /already registered|already been registered/i, besked: 'Der findes allerede en konto med den mail.' },
   { moenster: /invalid login credentials/i, besked: 'Forkert mail eller kodeord. Brug “Glemt kodeord”, hvis du ikke kan logge ind.' },
   { moenster: /email not confirmed/i, besked: 'Kontoen er ikke bekræftet endnu. Åbn bekræftelseslinket i din mail først.' },
-  { moenster: /password should be at least/i, besked: 'Kodeordet skal være på mindst 6 tegn.' },
+  // Længdekravet er Supabase-projektets, ikke vores gæt: står tallet i
+  // serverens svar, ekkoer vi det. Potalots egne formularer afviser i
+  // forvejen alt under KODEORD_MIN_TEGN, så beskeden her er sikkerhedsnet.
+  { moenster: /password should be at least (\d+) character/i, besked: m => `Kodeordet skal være på mindst ${m[1]} tegn.` },
+  { moenster: /password should be at least/i, besked: `Kodeordet skal være på mindst ${KODEORD_MIN_TEGN} tegn.` },
   { moenster: /should be different from the old password|same password/i, besked: 'Det nye kodeord skal være forskelligt fra det gamle.' },
   { moenster: /rate limit|for security purposes/i, besked: 'For mange forsøg. Vent et øjeblik, og prøv igen.' },
   { moenster: /invalid email|unable to validate email/i, besked: 'Mailadressen ser ikke rigtig ud. Tjek den, og prøv igen.' },
@@ -17,7 +25,8 @@ const KENDTE: Array<{ moenster: RegExp; besked: string }> = [
 
 export function authFejlBesked(err: { message: string }, fallback: string): string {
   for (const { moenster, besked } of KENDTE) {
-    if (moenster.test(err.message)) return besked
+    const match = moenster.exec(err.message)
+    if (match) return typeof besked === 'function' ? besked(match) : besked
   }
   console.error('auth-fejl (vist som fallback):', err.message)
   return fallback

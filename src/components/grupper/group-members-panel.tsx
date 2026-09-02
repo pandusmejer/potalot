@@ -121,7 +121,7 @@ export function GroupMembersPanel({ groupId, groupName, initialMembers, myUserId
             <Input
               value={username}
               onChange={e => setUsername(e.target.value)}
-              placeholder="fx. anna_g"
+              placeholder="fx anna_g"
               autoComplete="off"
               spellCheck={false}
             />

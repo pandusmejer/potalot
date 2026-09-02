@@ -78,7 +78,7 @@ export default async function UdforskGrupperPage({ searchParams }: Props) {
         <Input
           name="plante"
           defaultValue={focusPlant}
-          placeholder="Find grupper med fokus på en bestemt plante (fx. Chili, Æbletræ)…"
+          placeholder="Find grupper med fokus på en bestemt plante (fx Chili, Æbletræ)…"
           className="flex-1"
         />
         {/* Bevarer eksisterende tag-filtre når man søger */}

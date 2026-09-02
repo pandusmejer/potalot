@@ -204,7 +204,7 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
     id: 'fifty_varieties',
     label: 'Sortsamler',
     description: '50 eller flere sorter i din samling.',
-    hint: 'Voks din frøbank til 50+ unikke sorter.',
+    hint: 'Udvid din frøbank til 50+ unikke sorter.',
     icon: 'Library',
     color: 'amber',
     category: 'samler',
@@ -261,7 +261,7 @@ export const BADGES: Record<BadgeId, BadgeMeta> = {
   slagteren: {
     id: 'slagteren',
     label: 'Slagteren',
-    description: 'Tre eller flere planter er gået bort før de nåede 30 dage. Lad det være et hilsen til de faldne.',
+    description: 'Tre eller flere planter er gået bort før de nåede 30 dage. Lad det være en hilsen til de faldne.',
     icon: 'Skull',
     color: 'purple',
     category: 'dyrkning',

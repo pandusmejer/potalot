@@ -99,7 +99,7 @@ export function CreateForumPostDialog({ groupId, initialVarietyId }: Props) {
             <Input
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="Fx. Mine chili spirer ikke"
+              placeholder="Fx Mine chili spirer ikke"
               required
               className="mt-1.5"
             />

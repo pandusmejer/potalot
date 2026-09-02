@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   try {
     formData = await request.formData()
   } catch (e) {
-    return NextResponse.json({ error: 'Ugyldig request body' }, { status: 400 })
+    return NextResponse.json({ error: 'Vi kunne ikke læse det, du sendte. Prøv igen.' }, { status: 400 })
   }
 
   const file = formData.get('file')
@@ -50,10 +50,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Ingen fil modtaget' }, { status: 400 })
   }
   if (!folder || !VALID_FOLDERS.has(folder)) {
-    return NextResponse.json({ error: 'Ugyldig folder' }, { status: 400 })
+    return NextResponse.json({ error: 'Billedet kan ikke gemmes her.' }, { status: 400 })
   }
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: `Billede for stort (max ${MAX_BYTES / 1024 / 1024}MB)` }, { status: 400 })
+    return NextResponse.json({ error: `Billede for stort (maks. ${MAX_BYTES / 1024 / 1024} MB)` }, { status: 400 })
   }
   if (file.size === 0) {
     return NextResponse.json({ error: 'Filen er tom' }, { status: 400 })

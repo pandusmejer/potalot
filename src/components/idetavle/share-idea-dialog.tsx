@@ -151,7 +151,7 @@ export function ShareIdeaDialog({ ideaId, ideaTitle, initialCount }: Props) {
                 <Input
                   value={username}
                   onChange={e => setUsername(e.target.value)}
-                  placeholder="fx. anna_g"
+                  placeholder="fx anna_g"
                   autoComplete="off"
                   spellCheck={false}
                 />

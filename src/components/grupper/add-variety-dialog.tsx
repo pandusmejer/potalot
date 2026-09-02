@@ -66,16 +66,16 @@ export function AddVarietyDialog({ groupId }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Plantenavn *</Label>
-              <Input value={plantName} onChange={e => setPlantName(e.target.value)} placeholder="Fx. Chili" required className="mt-1.5" />
+              <Input value={plantName} onChange={e => setPlantName(e.target.value)} placeholder="Fx Chili" required className="mt-1.5" />
             </div>
             <div>
               <Label>Sort</Label>
-              <Input value={variety} onChange={e => setVariety(e.target.value)} placeholder="Fx. Jalapeño" className="mt-1.5" />
+              <Input value={variety} onChange={e => setVariety(e.target.value)} placeholder="Fx Jalapeño" className="mt-1.5" />
             </div>
           </div>
           <div>
             <Label>Latinsk navn</Label>
-            <Input value={latinName} onChange={e => setLatinName(e.target.value)} placeholder="Fx. Capsicum annuum" className="mt-1.5" />
+            <Input value={latinName} onChange={e => setLatinName(e.target.value)} placeholder="Fx Capsicum annuum" className="mt-1.5" />
           </div>
           <div>
             <Label>Beskrivelse</Label>

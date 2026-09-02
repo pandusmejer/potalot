@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { UserPlus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { KODEORD_MIN_TEGN, KODEORD_KRAV_TEKST, KODEORD_FOR_KORT } from '@/lib/kodeord'
 
 export function SignupForm() {
   const [pending, startTransition] = useTransition()
@@ -21,8 +22,8 @@ export function SignupForm() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (password.length < 8) {
-      setError('Kodeord skal være mindst 8 tegn')
+    if (password.length < KODEORD_MIN_TEGN) {
+      setError(KODEORD_FOR_KORT)
       return
     }
     if (password !== confirm) {
@@ -92,10 +93,10 @@ export function SignupForm() {
               onChange={e => setPassword(e.target.value)}
               required
               autoComplete="new-password"
-              minLength={8}
+              minLength={KODEORD_MIN_TEGN}
               className="mt-1.5"
             />
-            <p className="text-xs text-muted-foreground mt-1">Mindst 8 tegn.</p>
+            <p className="text-xs text-muted-foreground mt-1">{KODEORD_KRAV_TEKST}</p>
           </div>
 
           <div>

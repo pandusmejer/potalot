@@ -31,6 +31,9 @@ export function AddIdeaDialog() {
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState<Idea['status']>('idea')
   const [targetYear, setTargetYear] = useState('')
+  // Et målår er altid fremad: eksemplet skal derfor følge kalenderen, ikke
+  // stå og pege på et år der er overstået.
+  const naesteAar = new Date().getFullYear() + 1
   const [tagsInput, setTagsInput] = useState('')
   const [imageUrl, setImageUrl] = useState<string | null>(null)
 
@@ -91,7 +94,7 @@ export function AddIdeaDialog() {
             <Input
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="Fx. Byg drivhus"
+              placeholder="Fx Byg drivhus"
               required
               className="mt-1.5"
             />
@@ -127,7 +130,7 @@ export function AddIdeaDialog() {
                 type="number"
                 value={targetYear}
                 onChange={e => setTargetYear(e.target.value)}
-                placeholder="Fx. 2027"
+                placeholder={`Fx ${naesteAar}`}
                 className="mt-1.5"
               />
             </div>

@@ -63,7 +63,7 @@ export function SectionsEditor({ value, onChange }: Props) {
                     const autoKey = section.key === '' || section.key.startsWith('sektion_') || section.key === slugify(value[idx].title ?? '')
                     update(idx, autoKey ? { title, key: slugify(title) } : { title })
                   }}
-                  placeholder="Fx. Såning"
+                  placeholder="Fx Såning"
                   className="mt-1"
                 />
               </div>

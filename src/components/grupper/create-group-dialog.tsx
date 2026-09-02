@@ -112,7 +112,7 @@ export function CreateGroupDialog() {
             <Input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder={groupType === 'private' ? 'Fx. Familien Mejer' : 'Fx. Permakultur i villahaven'}
+              placeholder={groupType === 'private' ? 'Fx Familien Mejer' : 'Fx Permakultur i villahaven'}
               required
               className="mt-1.5"
             />
