@@ -29,6 +29,7 @@ import {
 import { aktuelMaaned } from '@/lib/datetime'
 import { MONTHS_DA, PLANT_STATUS_META } from '@/lib/constants'
 import { challengesForMonth } from '@/lib/seasonal-challenges'
+import { formatKategori } from '@/lib/kalender/kategori-label'
 import { cn } from '@/lib/utils'
 import { hideGeneralTask } from '@/actions/aarshjul'
 import { createTask } from '@/actions/havekalender'
@@ -651,17 +652,23 @@ function UserTaskRow({ task }: { task: UserGardenTask }) {
  * Bruges til hero'ens 'månedens fokus'-tags.
  */
 function topCategories(tasks: GeneralGardenTask[], month: number, n: number): string[] {
+  // Der tælles på LABELEN, ikke på den rå nøgle: `hoest` og `høst` er samme
+  // kategori og skal ikke dele stemmerne mellem sig. Lag 3 ("Andet") er ikke
+  // et fokus og udelades — hero'en siger hvad måneden handler om, ikke
+  // hvad databasen ikke kunne fortolke.
   const counts = new Map<string, number>()
   for (const t of tasks) {
     if (t.month !== month || t.isHiddenByMe || !t.category) continue
-    counts.set(t.category, (counts.get(t.category) ?? 0) + 1)
+    const { label, lag } = formatKategori(t.category)
+    if (lag === 3) continue
+    counts.set(label, (counts.get(label) ?? 0) + 1)
   }
   // På lige antal: vis de mest "hero-værdige" kategorier først
   // (så fx Maj giver Drivhus/Udplantning/Blomster, ikke en
   // tilfældig Map-rækkefølge).
   const PRIO = [
-    'drivhus', 'udplantning', 'blomster', 'såning', 'saaning',
-    'køkkenhave', 'koekkenhave', 'høst', 'hoest', 'biodiversitet',
+    'drivhus', 'udplantning', 'blomster', 'såning',
+    'køkkenhave', 'høst', 'biodiversitet',
   ]
   const prio = (c: string) => {
     const i = PRIO.indexOf(c.toLowerCase())

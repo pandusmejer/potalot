@@ -13,13 +13,11 @@
  * fallback for gøremålene, indtil (hvis nogensinde) admin-DB tages i brug.
  */
 
-export type GardenTaskCategory =
-  | 'jord'
-  | 'saaning'
-  | 'hoest'
-  | 'pleje'
-  | 'beskyttelse'
-  | 'planlaegning'
+// Kategori-enum og labels bor i kategori-label.ts sammen med den tre-lags
+// formatter (ANNA-LÅST 2/9). Re-eksporteres her, så eksisterende importstier
+// virker — der er kun ÉN definition.
+export { CATEGORY_LABELS, type GardenTaskCategory } from './kategori-label'
+import type { GardenTaskCategory } from './kategori-label'
 
 export interface MonthlyGardenTask {
   title: string
@@ -33,16 +31,6 @@ export interface MonthlyGardenCopy {
   shortText: string
   longText: string
   tasks: MonthlyGardenTask[]
-}
-
-/** Visuelle labels til kategori-chips. Ikke "greb". */
-export const CATEGORY_LABELS: Record<GardenTaskCategory, string> = {
-  jord: 'Jord',
-  saaning: 'Såning',
-  hoest: 'Høst',
-  pleje: 'Pleje',
-  beskyttelse: 'Beskyt',
-  planlaegning: 'Plan',
 }
 
 export const MONTHLY_GARDEN_COPY: Record<number, MonthlyGardenCopy> = {

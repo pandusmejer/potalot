@@ -25,6 +25,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import type { GeneralGardenTask } from '@/lib/types'
 import { MONTHS_DA } from '@/lib/constants'
 import { MONTHLY_GARDEN_COPY } from '@/lib/kalender/maaneds-copy'
+import { kategoriLabel } from '@/lib/kalender/kategori-label'
 import { effektivPlannerGruppe } from '@/lib/kalender/tidsvindue'
 import { guideHref } from '@/lib/guides/guide-href'
 import {
@@ -1115,11 +1116,12 @@ function plannerGroupFromTask(task: GeneralGardenTask): PlannerGroupId {
   return 'goer_nu'
 }
 
+/**
+ * Kategorien vises aldrig råt. Den lokale versalisering blev erstattet af den
+ * delte tre-lags formatter, så `saaning` bliver "Såning" og ikke "Saaning".
+ */
 function humanCategory(category: string): string {
-  return category
-    .replaceAll('_', ' ')
-    .replaceAll('-', ' ')
-    .replace(/^\w/, letter => letter.toUpperCase())
+  return kategoriLabel(category)
 }
 
 function slugify(value: string): string {

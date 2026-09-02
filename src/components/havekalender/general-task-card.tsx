@@ -9,6 +9,7 @@ import {
   Lightbulb, AlertTriangle, Loader2,
 } from 'lucide-react'
 import { TASK_PRIORITY_META } from '@/lib/constants'
+import { kategoriLabel } from '@/lib/kalender/kategori-label'
 import { addGeneralTasksToCalendar } from '@/actions/year-wheel'
 import { hideGeneralTask, unhideGeneralTask } from '@/actions/aarshjul'
 import type { GeneralGardenTask } from '@/lib/types'
@@ -101,7 +102,9 @@ export function GeneralTaskCard({ task, alreadyAdded, year, soft = false }: Prop
             <p className="font-medium text-foreground">{task.title}</p>
             {!soft && isHigh && <Badge variant="warning" className="text-[10px]">{pri.label}</Badge>}
             {!soft && task.category && (
-              <Badge variant="outline" className="text-[10px]">{task.category}</Badge>
+              /* Kategorien er en intern nøgle — den går altid gennem den
+                 tre-lags formatter. Se src/lib/kalender/kategori-label.ts. */
+              <Badge variant="outline" className="text-[10px]">{kategoriLabel(task.category)}</Badge>
             )}
             {alreadyAdded && (
               <Badge variant="success" className="text-[10px] gap-0.5">
