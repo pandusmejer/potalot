@@ -20,7 +20,10 @@ import {
 import { formatDatoMedAar } from '@/lib/datetime'
 import { cn } from '@/lib/utils'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
-import { gruppensForsidefoto, poseStatusForSort, erUdloebet } from '@/lib/froebank-grupper'
+import {
+  gruppensForsidefoto, poseStatusForSort, erUdloebet,
+  froeTilbageIPose, beholdningForPoser,
+} from '@/lib/froebank-grupper'
 import { irrelevanteDyrkningsfelter } from '@/lib/froebank-feltrelevans'
 import {
   ArrowLeft, Calendar, BookOpen, Sprout, ArrowRight,
@@ -65,6 +68,19 @@ export default async function InventoryDetailPage({ params }: Props) {
   // ikke ubrugelige, og posen skjules aldrig.
   const poseStatus = poseStatusForSort(froeposer)
   const denneErUdloebet = erUdloebet(item.expiryDate)
+
+  // Siden ER én fysisk frøpose (ruten er posens id, og redigér/slet/så
+  // rammer netop denne række). Guide, frøkort og dyrkningsfakta er derimod
+  // sortens og deles af poserne — derfor skal beholdningen sige HØJT hvilket
+  // niveau den taler om, når sorten ligger i flere poser: heroen viser
+  // POSENS tal, gridets kort viser SORTENS. To rigtige tal, to niveauer.
+  //
+  // Ingen tredje udregning: posens rest kommer fra `froeTilbageIPose`, og
+  // sortens sum fra `beholdningForPoser` — præcis de funktioner frøkortets
+  // ring også bruger. null betyder stadig ukendt, aldrig 0.
+  const flerePoser = froeposer.length > 1
+  const poseTilbage = froeTilbageIPose(item)
+  const sortensBeholdning = flerePoser ? beholdningForPoser(froeposer) : null
   const nogenUdloebet = froeposer.some((p) => poseStatus.get(p.id)?.udloebet)
   const UDLOEB_HJAELP = 'Frø kan stadig spire efter bedst før-datoen. Prøv dem gerne, hvis de ser fine ud.'
 
@@ -118,7 +134,7 @@ export default async function InventoryDetailPage({ params }: Props) {
   // Opslaget sker på navn+sort ved HVER visning: får Potalot et frøkort til
   // sorten efter posen blev oprettet, dukker det op af sig selv. Ingen
   // redigering, ingen gem, intet skrevet til databasen.
-  const forsidefoto = froeposer.length > 1
+  const forsidefoto = flerePoser
     ? gruppensForsidefoto(froeposer)
     : item.primaryImageId
   const heroResolved = resolveSeedCard({
@@ -330,10 +346,13 @@ export default async function InventoryDetailPage({ params }: Props) {
                       skifter fra metadata til status/sæson, så heroen svarer
                       "kan jeg bruge det nu?" uden at gentage Detaljer-boksen. */}
                   <dl className="divide-y divide-[rgba(101,94,71,0.14)]">
-                    {item.seedCount != null && (
+                    {poseTilbage != null && (
                       <div className="pt-[6px] first:pt-0 pb-[16px] last:pb-0 mb-[10px] last:mb-0">
-                        <dt style={detailLabel}>Frø tilbage</dt>
-                        <dd className="mt-1" style={detailValue}>{item.seedsRemaining ?? item.seedCount}</dd>
+                        {/* Ligger sorten i flere poser, siger labelen hvilken
+                            beholdning tallet er: heroen er POSENS, ikke sortens.
+                            Med én pose er de to det samme, og labelen er uændret. */}
+                        <dt style={detailLabel}>{flerePoser ? 'Tilbage i denne pose' : 'Frø tilbage'}</dt>
+                        <dd className="mt-1" style={detailValue}>{poseTilbage}</dd>
                       </div>
                     )}
                     {item.seedsSown != null && item.seedsSown > 0 && (
@@ -499,7 +518,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           Poserne slås aldrig sammen: hver har sin leverandør, årgang, udløb
           og antal, og redigeres hver for sig. Sortens guide, frøkort og
           dyrkningsdata er derimod fælles og står i afsnittene ovenfor. */}
-      {froeposer.length > 1 && (
+      {flerePoser && (
         <Card
           style={{
             background: 'linear-gradient(180deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.08) 100%), #F7F1E4',
@@ -515,7 +534,14 @@ export default async function InventoryDetailPage({ params }: Props) {
             </CardTitle>
             <p style={{ fontSize: 13, lineHeight: 1.35, color: 'rgba(38,51,33,0.62)', marginBottom: 16 }}>
               Du har {froeposer.length} poser af {item.name}
-              {item.variety ? ` ${item.variety}` : ''}.
+              {item.variety ? ` ${item.variety}` : ''}
+              {/* Sortens samlede beholdning står HER, hvor sortsniveauet bor —
+                  samme tal som frøbank-kortets ring, samme udregning. Er
+                  antallet ukendt på alle poser, siges der intet; 0 er derimod
+                  et ægte tal og skal skrives. */}
+              {sortensBeholdning?.tilbage != null
+                ? ` — ${sortensBeholdning.tilbage} frø tilbage i alt.`
+                : '.'}
             </p>
           </CardHeader>
           <CardContent className="!p-0 space-y-2">
@@ -621,7 +647,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           {item.seedCount != null && (
             <Fact
               label="Frø"
-              value={`${item.seedCount} (${item.seedsSown ?? 0} sået, ${item.seedsRemaining ?? item.seedCount} tilbage)`}
+              value={`${item.seedCount} (${item.seedsSown ?? 0} sået, ${poseTilbage} tilbage)`}
               tone="secondary"
             />
           )}
@@ -652,7 +678,7 @@ export default async function InventoryDetailPage({ params }: Props) {
             />
           )}
         </CardContent>
-        {denneErUdloebet && froeposer.length < 2 && (
+        {denneErUdloebet && !flerePoser && (
           <p style={{ marginTop: 18, fontSize: 13, lineHeight: 1.45, color: 'rgba(38,51,33,0.62)' }}>
             {UDLOEB_HJAELP}
           </p>

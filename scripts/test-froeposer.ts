@@ -19,6 +19,7 @@ import {
   poseInfoForViste,
 } from '@/lib/froebank-grupper'
 import type { InventoryItem } from '@/lib/types'
+import { readFileSync } from 'node:fs'
 
 let bestået = 0
 let fejlet = 0
@@ -305,6 +306,65 @@ function main() {
     // Én pose pr. sort → ingen poseoplysninger, kortet er uændret.
     tjek('sort med én pose får ingen PoseInfo',
       poseInfoForViste(grupperEfterSort([p1]), [p1]).size === 0)
+  }
+
+  console.log('\n[Detaljeside] sort med flere poser — to niveauer, to tal')
+  {
+    // Samme Squash Eight Ball. Oversigtskortet viser SORTENS 18; åbner man
+    // et kort, lander man på ÉN pose (kortet linker til gruppens hoved), og
+    // heroen viser den poses eget tal. Begge er rigtige — derfor skal
+    // niveauet stå i UI'et, ikke gættes af brugeren.
+    const p1 = pose({ id: 'p1', name: 'Squash', variety: 'Eight Ball', seedCount: 10 })
+    const p2 = pose({ id: 'p2', name: 'Squash', variety: 'Eight Ball F1', seedCount: 8, seedsSown: 2, seedsRemaining: 6 })
+    const p3 = pose({ id: 'p3', name: 'Squash', variety: 'Eight Ball F1', seedCount: 2 })
+    const froeposer = [p1, p2, p3]
+
+    // Heroens tal = den ÅBNEDE poses rest, hentet af froeTilbageIPose —
+    // ikke af et håndskrevet seedsRemaining ?? seedCount.
+    tjek('heroen på pose 1 viser posens 10', froeTilbageIPose(p1) === 10)
+    tjek('heroen på pose 2 viser 6 (8 minus 2 sået)', froeTilbageIPose(p2) === 6)
+
+    // Sortens sum på detaljesiden er PRÆCIS kortets — samme funktion.
+    const sortens = beholdningForPoser(froeposer)
+    tjek('detaljesidens sortssum er kortets 18 af 20',
+      sortens.tilbage === 18 && sortens.iAlt === 20)
+    tjek('samme ring-procent som kortet: 90 %', beholdningProcent(sortens) === 90)
+
+    // Selve tvetydigheden: posens tal ER et andet end sortens. Så længe det
+    // er tilfældet, SKAL heroen sige hvilket niveau den taler om.
+    tjek('posens tal ≠ sortens tal → niveauet skal stå i UI\'et',
+      froeTilbageIPose(p1) !== sortens.tilbage)
+
+    // Én pose: de to niveauer falder sammen, og siden er uændret.
+    const enPose = beholdningForPoser([p1])
+    tjek('sort med én pose: pose = sort, ingen niveaumarkør nødvendig',
+      enPose.tilbage === froeTilbageIPose(p1))
+
+    // Ukendt ≠ 0, og 0 ≠ ukendt — på begge niveauer.
+    const uden = pose({ id: 'p9', name: 'Squash', variety: 'Eight Ball' })
+    tjek('pose uden antal: heroen viser ingenting (null), ikke 0',
+      froeTilbageIPose(uden) === null)
+    const tom = pose({ id: 'p0', name: 'Squash', variety: 'Eight Ball', seedCount: 4, seedsSown: 4, seedsRemaining: 0 })
+    tjek('tom pose: heroen viser 0', froeTilbageIPose(tom) === 0)
+    tjek('tom sort giver tom ring, ikke neutral',
+      beholdningProcent(beholdningForPoser([tom])) === 0)
+    tjek('sort uden tal giver null (neutral ring), ikke 0',
+      beholdningProcent(beholdningForPoser([uden])) === null)
+  }
+
+  console.log('\n[Detaljeside] kilden bruger den fælles beregning')
+  {
+    // Vagt mod at regnestykket bliver skrevet i hånden igen: det var netop
+    // et inline `seedsRemaining ?? seedCount` i heroen, der kunne sige noget
+    // andet end frøkortets ring.
+    const kilde = readFileSync('src/app/(app)/froebank/[id]/page.tsx', 'utf-8')
+    tjek('detaljesiden har ingen egen beholdnings-matematik',
+      !/seedsRemaining\s*\?\?\s*item\.seedCount/.test(kilde))
+    tjek('detaljesiden bruger froeTilbageIPose', kilde.includes('froeTilbageIPose(item)'))
+    tjek('sortens sum kommer fra beholdningForPoser',
+      kilde.includes('beholdningForPoser(froeposer)'))
+    tjek('heroen mærker niveauet, når sorten har flere poser',
+      kilde.includes('Tilbage i denne pose'))
   }
 
   console.log('\n[Stabilitet] samme input → samme svar')
