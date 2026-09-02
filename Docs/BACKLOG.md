@@ -37,6 +37,30 @@ editorial note: "188 frø tilbage. Nok til cirka 17 sæsoner." —
 eller endnu mere Potalot: "Du kommer sandsynligvis ikke til at
 mangle frø foreløbig."
 
+### Månedens udfordring i Kalenderen er parkeret i kode (sept. 2026)
+
+`src/components/havekalender/kalender-client.tsx:383` indeholder en
+færdigbygget blok bag `{false && …}`: eyebrow "Månedens udfordring",
+kort med `challengesForMonth(valgtMaaned)` og link til `/havelandskab`.
+Den har været slået fra siden cc96eb9 (29. maj 2026) — tre måneder, så
+det er en parkering, ikke en midlertidig toggle.
+
+Det er **død produktfunktionalitet, ikke korrektur.** Tekst-auditten 2/9
+lod den bevidst ligge: den skal enten genoplives eller slettes, og den
+skal ikke oversættes undervejs.
+
+Beslutningen der mangler: skal Kalenderen overhovedet vise en indgang
+til sæsonudfordringerne, nu hvor `/havelandskab` findes som selvstændig
+flade? Hvis ja, skal blokken QA'es mod nuværende data (den blev bygget
+før udfordringerne fik deres egen side). Hvis nej, skal den slettes
+sammen med `challengesForMonth`-importen.
+
+Bemærk: blokken er også det eneste sted i repoet, der bruger ordene
+"Månedens udfordring" og "sæsonudfordringer". Slettes den, forsvinder
+den danske term fra kodebasen — så skal terminologien i
+`Docs/content/potalot-terminologi.md` (punkt 1, Udfordringer) bære den
+alene.
+
 ## Havens stue — V9-features (12. juni 2026, principper låst i havebog.md)
 
 Annas "design et sted man har lyst til at være"-prompt. Hero V2

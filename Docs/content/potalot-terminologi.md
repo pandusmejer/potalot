@@ -116,3 +116,61 @@ som blind masse-erstatning.
 8. **Humor bevares**, når den bærer Potalots stemme ("Vi interesserer os
    mere for dine tomater end dine persondata", "Haven er glæde, ikke et
    KPI-projekt").
+
+## Tekst-audit 2/9 2026 — nye låste regler (Anna)
+
+1. **Udfordringer, ikke Challenges.** Fanen hedder *Udfordringer*,
+   singularis *Udfordring*, og copy bøjes naturligt på dansk ("Opret en
+   udfordring", "Ingen aktive udfordringer i denne måned"). Interne
+   route-, type- og kategorinavne (`challenges`, `challenge_entries`,
+   `unreadByCategory.challenges`) bliver stående — vi retter
+   brugerfladen, ikke kontrakten.
+
+2. **Kategori-formatteren er tre-lags.** `general_garden_tasks.category`
+   må ALDRIG vises rå. Rækkefølgen er:
+   - **Lag 1 — kendt:** canonical værdi eller *dokumenteret* alias →
+     label fra `CATEGORY_LABELS`.
+   - **Lag 2 — ukendt, men sikker dansk:** normaliseres **kun
+     typografisk** (versalisering; gendannelse af æ/ø/å når den
+     ASCII-strippede tvilling af et eksisterende dansk ord er
+     dokumenteret) og vises. `drivhus` → *Drivhus*. `klargoering` →
+     *Klargøring*, fordi `klargøring` findes i forvejen.
+   - **Lag 3 — ukendt og slug-/kodeagtig:** → *Andet* + log til
+     redaktionel oprydning.
+
+   **Lag 2 er typografi, aldrig semantik.** At gætte at
+   `vinterklargoering` "nok betyder" en bestemt canonical kategori er
+   forbudt, medmindre aliaset er dokumenteret i lag 1. Vi genskaber
+   bogstaver, vi opfinder ikke betydning.
+
+   De 6 canonical kategorier er fortsat systemets officielle sæt. De
+   ~118 produktionsrækker, hvis kategori er et *sted*, en *plantetype*
+   eller en *anledning* (drivhus, græsplæne, blomster, biodiversitet,
+   halloween …), er en anden akse, der aldrig er blevet modelleret — de
+   overlever via lag 2, indtil nogen beslutter, om aksen skal findes.
+   Ingen prod-datawrites i denne omgang.
+
+3. **`repot` hedder "Prikl om".** Alle nuværende anvendelser af typen er
+   prikling, og runtime behandler dem allerede sådan. Labelen beskriver
+   den faktiske betydning — den er ikke en påstand om, at prikling og
+   ompotning er samme handling. Den skelnen skal modelleres rigtigt
+   senere: se `Docs/product/prikling-vs-ompotning-backlog.md`. Ingen
+   `task_type`-kontraktændring i en korrektur-batch.
+
+4. **Interne ASCII-nøgler er ikke datafejl.** Flere af Potalots enums
+   bruger ASCII som intern repræsentation — kategori-nøglerne
+   `saaning`, `hoest`, `planlaegning`, `jord`, `pleje`, `beskyttelse`,
+   guide-tags som `varmekraevende`, slugs fra `slugifySted()`. Det er
+   *kanoniske identifikatorer*, ikke fordansket tekst der er gået i
+   stykker, og de skal blive i ASCII: de er nøgler i kode, data og URL'er.
+
+   Fejlen er aldrig, at nøglen er ASCII. Fejlen er, at UI'et viser den
+   råt. **Enhver enum-, slug- eller nøgleværdi skal gennem en formatter,
+   før den bliver til synlig tekst** — og findes der ingen label for en
+   værdi, er det formatterens ansvar at falde tilbage, ikke visningens
+   at improvisere.
+
+   Konsekvensen er praktisk: når `saaning` optræder i en badge, er
+   rettelsen at kalde `CATEGORY_LABELS` — ikke at skrive om i databasen.
+   En "æ/ø/å-oprydning" i en nøglekolonne ødelægger kontrakten uden at
+   løse noget.
