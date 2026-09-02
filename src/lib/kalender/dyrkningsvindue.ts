@@ -90,16 +90,25 @@ export function sidsteDagIMaaned(aar: number, maaned: number): number {
 // ── Canonical vindue ─────────────────────────────────────────────────────
 
 export type VindueKilde =
-  /** Repoets guidebibliotek — samme opslag som reminder-relevans. */
+  /** Kun canonical dokumenterer handlingen — reglen tier eller er identisk. */
   | 'canonical'
+  /** Reglen indsnævrede canonical: det effektive vindue er fællesmængden. */
+  | 'canonical_indsnaevret'
+  /** Reglen modsiger canonical (tom fællesmængde) — canonical vandt. */
+  | 'canonical_konflikt'
   /** Reglens egen `recommendedMonths` (legacy, kun når canonical tier). */
   | 'regel'
   /** Hverken canonical eller regel dokumenterer et vindue. */
   | 'intet'
 
 export interface Vindue {
+  /** Det EFFEKTIVE vindue — det, datoen faktisk skal ligge i. */
   maaneder: number[]
   kilde: VindueKilde
+  /** Den ydre faglige grænse, når biblioteket kendte handlingen. */
+  canonical: number[] | null
+  /** Reglens egen liste, når den havde én. */
+  regel: number[] | null
 }
 
 /**
@@ -130,12 +139,44 @@ export function resolveCanoniskVindue(
 }
 
 /**
- * Vinduet i låst rækkefølge: canonical → reglens `recommendedMonths` → intet.
+ * Det effektive vindue — canonical som ydre grænse, reglen som præcisering.
  *
- * Fallbacket til reglens eget vindue er bevidst legacy: 9 af 21 private
- * AI-guides handler om arter, repobiblioteket slet ikke kender, og dér er
- * reglens egen månedsliste det eneste dokument, der findes. Det er bedre
- * end ingenting — men det taber, så snart biblioteket har et svar.
+ * ── Produktreglen (Anna 2/9, revideret) ──────────────────────────────────
+ *   Canonical dyrkningsvindue er den ydre faglige grænse. En regels
+ *   `recommendedMonths` må INDSNÆVRE det, men aldrig udvide det.
+ *
+ * Rækkefølgen:
+ *
+ *   1. Begge findes → fællesmængden. Er den ikke tom, er den det effektive
+ *      vindue. Er den tom, vinder canonical, og konflikten markeres.
+ *   2. Kun canonical → canonical.
+ *   3. Kun reglen → reglen (legacy fallback).
+ *   4. Ingen af dem → intet vindue; kalderen bevarer gammel adfærd.
+ *
+ * ── Hvorfor fællesmængde og ikke "canonical vinder altid" ────────────────
+ * De to lister svarer på forskellige spørgsmål. Canonical siger, hvornår
+ * arten KAN høstes; reglen siger, hvornår netop DENNE handling hører
+ * hjemme. "Grav dahlia-knolde op før frost" med `[10,11]` inden for
+ * canonical `[7,8,9,10]` er ikke en modsigelse — det er en præcisering, og
+ * at lade canonical vinde ville datere sæsonafslutningen til 1. juli.
+ *
+ * ── Hvorfor fællesmængde og ikke "delmængde" ─────────────────────────────
+ * En delmængde-test ville falde igennem ved delvist overlap ([10,11] mod
+ * [7,8,9,10] er ikke en delmængde) og efterlade os uden regel for det
+ * hyppigste tilfælde. Fællesmængden håndterer identisk, delmængde og
+ * delvist overlap med én operation — og efterlader præcis ÉN entydig
+ * fejlklasse: nul overlap.
+ *
+ * ── Hvorfor tom fællesmængde ikke bare vælger den ene ────────────────────
+ * Nul overlap er ikke en præcisering, det er to kilder, der er uenige om
+ * fagligheden (Tomat Lucky Tiger: reglen siger [10], biblioteket siger
+ * høsten slutter i september). Canonical vinder — den ydre grænse er den
+ * dokumenterede — men `kilde` bærer `canonical_konflikt` med ud, så
+ * uenigheden kan tælles og rettes i dataene i stedet for at forsvinde.
+ *
+ * Fællesmængde er ren MEDLEMSKAB, som alt andet her: diskontinuerte lister
+ * og vinduer over årsskiftet falder ud af sig selv, fordi vi aldrig regner
+ * fra-til.
  */
 export function resolveVindue(
   opgavetype: string,
@@ -144,11 +185,33 @@ export function resolveVindue(
   recommendedMonths: number[] | undefined | null,
 ): Vindue {
   const canonical = resolveCanoniskVindue(opgavetype, plantName, variety)
-  if (canonical) return { maaneder: canonical, kilde: 'canonical' }
-  if (recommendedMonths && recommendedMonths.length > 0) {
-    return { maaneder: [...recommendedMonths].sort((a, b) => a - b), kilde: 'regel' }
+  const regel = recommendedMonths && recommendedMonths.length > 0
+    ? [...new Set(recommendedMonths)].sort((a, b) => a - b)
+    : null
+
+  if (canonical && regel) {
+    const snit = canonical.filter(m => regel.includes(m))
+    if (snit.length > 0) {
+      return {
+        maaneder: snit,
+        // Identiske lister er ikke en indsnævring — kilden skal kunne
+        // skelne "reglen tilføjede information" fra "reglen gentog den".
+        kilde: snit.length === canonical.length ? 'canonical' : 'canonical_indsnaevret',
+        canonical, regel,
+      }
+    }
+    return { maaneder: canonical, kilde: 'canonical_konflikt', canonical, regel }
   }
-  return { maaneder: [], kilde: 'intet' }
+
+  if (canonical) return { maaneder: canonical, kilde: 'canonical', canonical, regel: null }
+
+  // Legacy fallback: 9 af 21 private AI-guides handler om arter, repoets
+  // bibliotek slet ikke kender, og dér er reglens egen månedsliste det
+  // eneste dokument, der findes. Bedre end ingenting — men den taber sin
+  // rolle som autoritet, så snart biblioteket har et svar.
+  if (regel) return { maaneder: regel, kilde: 'regel', canonical: null, regel }
+
+  return { maaneder: [], kilde: 'intet', canonical: null, regel: null }
 }
 
 // ── Placering inde i vinduet ─────────────────────────────────────────────

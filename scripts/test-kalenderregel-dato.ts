@@ -158,17 +158,55 @@ tjek('en type uden vindue-mapping har intet canonical vindue',
 tjek('ukendt art → guiderne tier',
   resolveCanoniskVindue('plant_out', 'Akshindebæger', null), null)
 
-tjek('canonical [7,8,9,10] slår reglens divergerende [8,9,10]',
-  resolveVindue('harvest', 'Chili', 'Padron', [8, 9, 10]),
-  { maaneder: [7, 8, 9, 10], kilde: 'canonical' })
+// ── Præcedensen (Anna 2/9, revideret) ──────────────────────────────────
+// Canonical er den YDRE grænse. Reglen må indsnævre den, aldrig udvide den.
+// Det effektive vindue er fællesmængden — ét udtryk, der dækker identisk,
+// ægte delmængde og delvist overlap, og efterlader præcis én fejlklasse.
+console.log('\n[Præcedens · reglen må indsnævre canonical, aldrig udvide det]')
+
+tjek('identiske vinduer → canonical, ingen indsnævring at melde',
+  resolveVindue('harvest', 'Chili', 'Padron', [7, 8, 9, 10]),
+  { maaneder: [7, 8, 9, 10], kilde: 'canonical', canonical: [7, 8, 9, 10], regel: [7, 8, 9, 10] })
+tjek('reglen er ÆGTE delmængde → reglen vinder som præcisering',
+  resolveVindue('harvest', 'Chili', 'Padron', [9, 10]),
+  { maaneder: [9, 10], kilde: 'canonical_indsnaevret', canonical: [7, 8, 9, 10], regel: [9, 10] })
+tjek('DELVIST overlap → fællesmængden, ikke den ene liste',
+  resolveVindue('harvest', 'Chili', 'Padron', [10, 11]),
+  { maaneder: [10], kilde: 'canonical_indsnaevret', canonical: [7, 8, 9, 10], regel: [10, 11] })
+tjek('reglen prøver at UDVIDE canonical → kun det, canonical dækker',
+  resolveVindue('harvest', 'Chili', 'Padron', [6, 7, 8, 9, 10, 11, 12]).maaneder, [7, 8, 9, 10])
+tjek('NUL overlap → canonical vinder, og konflikten bæres med ud',
+  resolveVindue('harvest', 'Tomat', 'Ananas', [10]),
+  { maaneder: [7, 8, 9], kilde: 'canonical_konflikt', canonical: [7, 8, 9], regel: [10] })
+tjek('DISKONTINUERT canonical: fællesmængden respekterer hullet',
+  // Hvidløgs udplantning er [2,3,10,11,12]. Reglen [3,4,5,6,10] overlapper
+  // i marts og oktober — ikke i det, der ligner et interval imellem.
+  resolveVindue('plant_out', 'Hvidløg', null, [3, 4, 5, 6, 10]),
+  { maaneder: [3, 10], kilde: 'canonical_indsnaevret',
+    canonical: [2, 3, 10, 11, 12], regel: [3, 4, 5, 6, 10] })
+tjek('ÅRSSKIFTE: fællesmængden er medlemskab, ikke fra-til',
+  resolveVindue('plant_out', 'Hvidløg', null, [11, 12, 1]),
+  // Reglens liste sorteres på vej ind ([11,12,1] → [1,11,12]); januar
+  // falder ud, fordi den ikke er medlem af canonical. Ingen fra-til.
+  { maaneder: [11, 12], kilde: 'canonical_indsnaevret',
+    canonical: [2, 3, 10, 11, 12], regel: [1, 11, 12] })
+tjek('… og et årsskifte-vindue helt uden overlap er stadig en konflikt',
+  resolveVindue('plant_out', 'Hvidløg', null, [6, 7, 8]).kilde, 'canonical_konflikt')
+
+console.log('\n[Præcedens · når kun den ene kilde findes]')
 tjek('canonical mangler → reglens recommendedMonths som legacy fallback',
   resolveVindue('plant_out', 'Akshindebæger', null, [6, 7]),
-  { maaneder: [6, 7], kilde: 'regel' })
+  { maaneder: [6, 7], kilde: 'regel', canonical: null, regel: [6, 7] })
+tjek('reglen mangler → canonical alene',
+  resolveVindue('plant_out', 'Chili', 'Padron', null),
+  { maaneder: [5, 6], kilde: 'canonical', canonical: [5, 6], regel: null })
 tjek('begge mangler → intet vindue',
   resolveVindue('plant_out', 'Akshindebæger', null, []),
-  { maaneder: [], kilde: 'intet' })
+  { maaneder: [], kilde: 'intet', canonical: null, regel: null })
 tjek('legacy fallback sorteres, så clamp aldrig ser en rodet liste',
   resolveVindue('plant_out', 'Akshindebæger', null, [7, 3, 5]).maaneder, [3, 5, 7])
+tjek('dubletter i reglens liste påvirker ikke resultatet',
+  resolveVindue('plant_out', 'Akshindebæger', null, [5, 5, 6]).maaneder, [5, 6])
 
 // ─────────────────────────────────────────────────────────────────────────
 console.log('\n[beregnRegelDato · offsettets tre udfald]')
@@ -265,25 +303,39 @@ console.log('\n[Regressionstest · Chili/Padrón, sagen der startede det hele]')
       sowDate: '2026-03-20', idag: '2026-03-20' })),
     { dato: '2026-05-29', grund: 'offset_i_vindue' })
 
-  // Høst: reglen siger [8,9,10], canonical siger [7,8,9,10]. Offset +150
-  // fra 2/2 giver 2/7. Havde vi dateret efter reglens eget vindue, var den
-  // blevet skubbet til 1/8 — canonical accepterer den, som den er. Det er
-  // testen på, at canonical faktisk VINDER, og ikke bare bliver slået op.
+  // Høst: reglen siger [8,9,10], canonical siger [7,8,9,10]. Reglen er en
+  // ægte delmængde — altså en præcisering — så det effektive vindue er
+  // [8,9,10]. Offset +150 fra 2/2 giver 2/7, som falder uden for og
+  // clampes til 1/8. Canonical er grænsen; reglen er skarpheden.
   const hoest = dato({
     taskType: 'harvest', recommendedMonths: [8, 9, 10], offset: 150,
     sowDate: '2026-02-02', idag: '2026-02-02',
   })
-  tjek('Høst Padrón: 2/7 står — canonical [7,8,9,10] rummer juli',
-    kort(hoest), { dato: '2026-07-02', grund: 'offset_i_vindue' })
-  tjek('… høstvinduet kommer fra biblioteket, ikke fra reglen',
+  tjek('Høst Padrón: 2/7 clampes til 1/8 — reglen indsnævrer canonical',
+    kort(hoest), { dato: '2026-08-01', grund: 'offset_clampet_frem' })
+  tjek('… vinduet er fællesmængden, og kilden siger det',
     { vindue: hoest.vindue, kilde: hoest.vindueKilde },
-    { vindue: [7, 8, 9, 10], kilde: 'canonical' })
-  tjek('… og reglens egen [8,9,10] ville have flyttet den en måned (kontrolprøve)',
-    clampTilVindue('2026-07-02', [8, 9, 10], '2026-02-02').dato, '2026-08-01')
+    { vindue: [8, 9, 10], kilde: 'canonical_indsnaevret' })
+  tjek('… uden reglens præcisering ville juli være tilladt (kontrolprøve)',
+    clampTilVindue('2026-07-02', [7, 8, 9, 10], '2026-02-02').retning, 'i_vindue')
   tjek('sået 20/3 → høst 17/8 ligger i vinduet og står uændret',
     kort(dato({ taskType: 'harvest', recommendedMonths: [8, 9, 10], offset: 150,
       sowDate: '2026-03-20', idag: '2026-03-20' })),
     { dato: '2026-08-17', grund: 'offset_i_vindue' })
+
+  // De tre fund fra effektmålingen — uden en eneste specialcase.
+  tjek('"Grav dahlia-knolde op før frost": [10,11] ∩ [7,8,9,10] = [10] → 1/10, ikke 1/7',
+    kort(dato({ plantName: 'Dahlia', variety: 'Night Silence', taskType: 'harvest',
+      recommendedMonths: [10, 11], offset: null, sowDate: '2026-04-10', idag: '2026-04-10' })),
+    { dato: '2026-10-01', grund: 'vinduets_aabning' })
+  tjek('"Høst alle frugter før frost" på tomat: [10] ∩ [7,8,9] er TOM → konflikt',
+    dato({ plantName: 'Tomat', variety: 'Lucky Tiger', taskType: 'harvest',
+      recommendedMonths: [10], offset: null, sowDate: '2026-03-10', idag: '2026-03-10' }).vindueKilde,
+    'canonical_konflikt')
+  tjek('… og konflikten dateres på canonical, ikke på den afviste regel',
+    kort(dato({ plantName: 'Tomat', variety: 'Lucky Tiger', taskType: 'harvest',
+      recommendedMonths: [10], offset: null, sowDate: '2026-03-10', idag: '2026-03-10' })),
+    { dato: '2026-07-01', grund: 'vinduets_aabning' })
 }
 
 console.log('\n[Regressionstest · ægte diskontinuert canonical vindue (hvidløg)]')
@@ -325,7 +377,8 @@ console.log('\n[Hele vejen · generateTasksFromGuide]')
     plantName: 'Chili', variety: 'Padron', idag: '2026-02-02',
   })
   tjek('alle tre regler bliver til opgaver',
-    tidligt.map(t => t.date), ['2026-05-01', '2026-07-02', '2026-06-01'])
+    // Høsten: reglens [8,9,10] indsnævrer canonical [7,8,9,10] → 2/7 clampes til 1/8.
+    tidligt.map(t => t.date), ['2026-05-01', '2026-08-01', '2026-06-01'])
   tjek('typerne er stadig normaliseret undervejs',
     tidligt.map(t => t.taskType), ['plant_out', 'harvest', 'watering'])
 

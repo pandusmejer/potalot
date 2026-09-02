@@ -372,7 +372,10 @@ bedømmes mod. Ingen ny månedsmotor, ingen kopieret mapping.
 
 **Rækkefølgen, som den står i koden:**
 
-1. Vindue: canonical → reglens `recommendedMonths` (legacy) → intet.
+1. Vindue: canonical som ydre grænse; reglens `recommendedMonths` må
+   INDSNÆVRE den (fællesmængden), aldrig udvide den. Tom fællesmængde →
+   canonical vinder, konflikten logges. Kun canonical → canonical. Kun
+   reglen → legacy fallback. Ingen af dem → intet.
 2. Offsetdato beregnes kun ved `trigger === 'sowingDate'` — uændret. De ti
    regler med `plantOutDate`/`plantingDate` regner fra en dato, generatoren
    ikke har; at aktivere dem nu ville være at opfinde et udgangspunkt.
@@ -401,7 +404,7 @@ ikke migreret (§9 punkt C — separat spor).
 
 ### Testsuite
 
-`scripts/test-kalenderregel-dato.ts` (68 assertions, tilføjet til `npm test`)
+`scripts/test-kalenderregel-dato.ts` (80 assertions, tilføjet til `npm test`)
 kører mod ÆGTE canonical data, ikke fixtures — samme princip som
 `test-reminder-relevans.ts`. Den vogter invarianten:
 
@@ -411,7 +414,9 @@ Bredeste vagt: 5 arter × 4 vindue-bærende typer × 12 så-måneder × 7 offset
 = 1.344 beregnede datoer, alle inden for deres canonical vindue. Derudover
 dækkes hvert punkt fra §9: dato i/før/efter vindue, diskontinuert vindue,
 vindue over årsskifte, canonical vs. divergerende `recommendedMonths`,
-legacy fallback, ingen vinduer, intet offset, tilbagevirkende registrering
+legacy fallback, ingen vinduer, intet offset, hele præcedensmatricen
+(identiske vinduer, ægte delmængde, delvist overlap, forsøg på udvidelse,
+nul overlap, diskontinuert canonical, årsskifte), tilbagevirkende registrering
 mens vinduet er åbent og efter det er lukket, samt Chili/Padrón udplantning
 og høst som regressionstest. Hvidløgs `plantingOutMonths` `[2,3,10,11,12]`
 bruges som ægte diskontinuert vindue over årsskiftet — ikke en fixture.
@@ -419,6 +424,58 @@ bruges som ægte diskontinuert vindue over årsskiftet — ikke en fixture.
 `scripts/test-opgavetype-kontrakt.ts` fik ét tillæg: et eksplicit `idag`, så
 en test om `task_type` ikke afhænger af, hvornår den køres. Kontrakten fra
 §5 er ellers urørt.
+
+### Vinduespræcedens — ANNA-LÅST 2/9 (revideret efter første effektmåling)
+
+> Canonical dyrkningsvindue er den ydre faglige grænse. En regels
+> `recommendedMonths` må indsnævre det, men aldrig udvide det.
+
+1. Begge findes → **fællesmængden**. Ikke tom → effektivt vindue. Tom →
+   canonical vinder, og konflikten markeres (`canonical_konflikt`) og logges.
+2. Kun canonical → canonical.
+3. Kun reglen → legacy fallback.
+4. Ingen af dem → eksisterende fallback-adfærd.
+
+Fællesmængde, ikke delmængde. En delmængde-test falder igennem ved delvist
+overlap ([10,11] mod [7,8,9,10] er ikke en delmængde) og efterlader os uden
+regel for et af de hyppigste tilfælde. Fællesmængden dækker identisk,
+delmængde og delvist overlap med én operation — og efterlader præcis ÉN
+entydig fejlklasse: nul overlap. Det er dér, en reel datakonflikt bliver
+synlig i stedet for at blive afgjort på må og få.
+
+De to lister svarer på forskellige spørgsmål. Canonical siger, hvornår arten
+KAN høstes; reglen siger, hvornår netop DENNE handling hører hjemme. "Grav
+knolde op før frost" `[10,11]` inden for canonical `[7,8,9,10]` er ikke en
+modsigelse — det er en præcisering.
+
+Ingen specialcases for frost, Dahlia eller Lucky Tiger.
+
+### Præcedensen mod produktionsdata (124 regler)
+
+| | Antal |
+|---|---|
+| reglen INDSNÆVRER canonical (delmængde eller delvist overlap) | **16** |
+| — heraf delvist overlap (reglen pegede også uden for canonical) | **7** |
+| reglen er IDENTISK med canonical (ingen ny information) | 36 |
+| **NUL overlap → konflikt** | **1** |
+| kun reglen (canonical tier — legacy fallback) | 71 |
+| kun canonical / ingen af dem | 0 |
+
+**Den ene nul-overlap-regel:**
+
+```
+Tomat · Lucky Tiger — "Høst alle frugler før frost" (harvest)
+  regel [10] ∩ canonical [7,8,9] = ∅ → canonical bruges, konflikten logges
+```
+
+Reglen siger oktober; biblioteket siger, at tomathøsten slutter i september.
+Det er ikke en præcisering, det er uenighed — og den skal rettes i dataene
+(enten tomatguidens `harvestMonths` eller reglen), ikke i motoren. Runtime
+logger den nu som `[task-generation] vindue-konflikt …`.
+
+De 16 indsnævringer omfatter bl.a. Dahlia ×2 ("før frost" → `[10]`), Chili
+Padrón forspiring og høst, Tomat Ananas høst, Agurk Beit Alpha forspiring,
+Bønner Cobra høst og Chili Jalapeño høst.
 
 ### Read-only effektmåling mod produktionsdata
 
@@ -429,46 +486,27 @@ kombinationer pr. scenarie.
 
 | | registreret samme dag som såning | registreret 2/9 (tilbagevirkende) |
 |---|---|---|
-| samme dato som før | 966 | 157 |
-| anden dato | **211** (44 distinkte regler) | 73 (6 regler) |
+| samme dato som før | 1.013 | 205 |
+| anden dato | **164** (43 distinkte regler) | 25 (5 regler) |
 | oprettes ikke længere | **0** | **0** |
-| oprettes nu, blev tabt før | 99 (15 regler) | 526 (42 regler) |
-| droppet i begge | 0 | 520 |
+| oprettes nu, blev tabt før | 99 (15 regler) | 510 (40 regler) |
+| droppet i begge | 0 | 536 |
 
-Ingen regel mister sin opgave. De to reelle ændringer er (a) datoer, der
-rykker ind i vinduet, og (b) tilbagevirkende registreringer, der nu
-producerer opgaver dateret til registreringsdagen i stedet for ingenting.
+Ingen regel mister sin opgave. Retningen: 135 datoer skubbes senere, 29
+trækkes tidligere. Efter præcedens-revisionen er de tre "før frost"-regler
+væk fra listen over store tilbagetræk — kun to tilbage over 30 dage:
 
-**Én uventet effekt, som IKKE er specialcaset (venter Annas beslutning):**
+* **Tomat Lucky Tiger — "Høst alle frugter før frost"**, op til 92 dage.
+  Det er nul-overlap-konflikten ovenfor, og den er tilsigtet synlig:
+  canonical vinder, indtil dataene rettes.
+* **Agurk Beit Alpha — "Udplant agurk udendørs"**, op til 33 dage. Offset
+  +35 clampes ind i `[5,6]`.
 
-Tre "før frost"-regler bliver trukket **tidligere**, ikke senere:
+Største enkeltudsving er nu et syntetisk tilfælde: Dahlia "Indgrav knolde"
+sået i november giver 1/10 året efter i stedet for 1/11. Dahlia har ingen
+dokumenterede sådatoer i DB, så målingen prøver alle 12 måneder — en
+november-såning af dahlia forekommer ikke i praksis.
 
-| Regel | Reglens vindue | Canonical vindue | Gammel → ny |
-|---|---|---|---|
-| Dahlia · Night Silence — Indgrav dahlia-knolde før frost | [10,11] | høst [7,8,9,10] | 1/10 → 1/7 |
-| Dahlia — Grav knolde op før hård frost | [10,11] | høst [7,8,9,10] | 1/10 → 1/7 |
-| Tomat · Lucky Tiger — Høst alle frugler før frost | [10] | høst [7,8,9] | 1/10 → 1/7 |
-
-Mekanikken er præcis den låste: `harvest_tubers` → `harvest` (§5-aliaskortet),
-`harvest` bærer høstvinduet, reglen har intet offset, og regel 8 dateres til
-vinduets **åbning**. Fagligt er "grav knolde op før frost" ikke en
-høststart — det er en sæsonafslutning, og de to deler task_type men ikke
-timing.
-
-Det er ikke en fejl i implementeringen, og det løses ikke med en Dahlia-
-undtagelse. Det er samme klasse problem som §5: ét vokabular bærer to
-betydninger. Mulige veje, alle uden for denne tråd:
-
-* lade reglens `recommendedMonths` vinde, når den er en ÆGTE delmængde af
-  canonical (her: [10,11] ⊂ [7,8,9,10] — reglen er mere præcis, ikke i
-  modstrid), eller
-* en egen opgavetype for sæsonafslutning, eller
-* datamigration af de tre regler.
-
-Første mulighed er den mindste og ville også løse Tomat Lucky Tiger. Den
-ændrer dog princip 2's ubetingede "canonical vinder" til "canonical vinder,
-medmindre reglen indsnævrer inden for det" — og det er en produktbeslutning,
-ikke en implementeringsdetalje.
-
-**Status:** kode + tests grønne (`npm test`, `tsc --noEmit`, `eslint`).
-Ingen datawrites, ingen cleanup af `calendar_tasks`, ikke pushet.
+**Status:** kode + tests grønne (`npm test` med 80 assertions i den nye
+suite, `tsc --noEmit`, `eslint`). Ingen datawrites, ingen cleanup af
+`calendar_tasks`, ikke pushet.

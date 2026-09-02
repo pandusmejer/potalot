@@ -17,7 +17,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { beregnRegelDato } from '@/lib/task-generation'
 import { normaliserOpgavetype } from '@/lib/kalender/opgavetype'
-import { delDato, plusDage, samlDato } from '@/lib/kalender/dyrkningsvindue'
+import { delDato, plusDage, samlDato, resolveVindue } from '@/lib/kalender/dyrkningsvindue'
 import type { GuideCalendarRule } from '@/lib/types'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -59,6 +59,59 @@ async function main() {
   if (error) { console.error(error); process.exit(1) }
 
   const guides = (data as Raekke[]).filter(g => (g.calendar_rules?.length ?? 0) > 0)
+
+  // ── Vinduespræcedensen, regel for regel ──────────────────────────────
+  // Canonical er den ydre grænse; reglen må indsnævre den, aldrig udvide.
+  // Her tælles hvor ofte hver af de fire situationer faktisk optræder.
+  {
+    const klasser = new Map<string, string[]>()
+    const konflikter: string[] = []
+    for (const g of guides) {
+      for (const rule of g.calendar_rules ?? []) {
+        const opgavetype = normaliserOpgavetype(rule.taskType).type
+        const v = resolveVindue(opgavetype, g.plant_name, g.variety, rule.recommendedMonths)
+        const navn = `${g.plant_name}${g.variety ? ' · ' + g.variety : ''} — ${rule.title} (${opgavetype})`
+        let klasse: string = v.kilde
+        if (v.kilde === 'canonical' && v.regel) klasse = 'canonical_identisk'
+        else if (v.kilde === 'canonical' && !v.regel) klasse = 'canonical_reglen_tier'
+        ;(klasser.get(klasse) ?? klasser.set(klasse, []).get(klasse)!).push(navn)
+        if (v.kilde === 'canonical_konflikt') {
+          konflikter.push(`${navn}\n        regel ${JSON.stringify(v.regel)} ∩ canonical ${JSON.stringify(v.canonical)} = ∅ → canonical bruges`)
+        }
+      }
+    }
+    const etiket: Record<string, string> = {
+      canonical_indsnaevret: 'reglen INDSNÆVRER canonical (delmængde eller delvist overlap)',
+      canonical_identisk: 'reglen er IDENTISK med canonical (ingen ny information)',
+      canonical_reglen_tier: 'kun canonical (reglen har ingen recommendedMonths)',
+      canonical_konflikt: 'NUL overlap → konflikt, canonical bruges',
+      regel: 'kun reglen (canonical tier — legacy fallback)',
+      intet: 'hverken canonical eller regel',
+    }
+    console.log(`\n${'═'.repeat(72)}\nVINDUESPRÆCEDENS · alle ${guides.reduce((n, g) => n + (g.calendar_rules?.length ?? 0), 0)} regler\n${'═'.repeat(72)}`)
+    for (const k of Object.keys(etiket)) {
+      console.log(`  ${String(klasser.get(k)?.length ?? 0).padStart(4)}  ${etiket[k]}`)
+    }
+    // Delvist overlap er den delmængde af "indsnævrer", hvor reglen også
+    // pegede uden for canonical — dvs. hvor den både præciserede OG tog fejl.
+    let delvist = 0
+    for (const g of guides) {
+      for (const rule of g.calendar_rules ?? []) {
+        const v = resolveVindue(normaliserOpgavetype(rule.taskType).type, g.plant_name, g.variety, rule.recommendedMonths)
+        if (v.kilde === 'canonical_indsnaevret' && v.regel!.some(m => !v.canonical!.includes(m))) delvist++
+      }
+    }
+    console.log(`\n  heraf DELVIST overlap (reglen pegede også uden for canonical): ${delvist}`)
+    if (konflikter.length > 0) {
+      console.log(`\n  Nul-overlap-regler (${konflikter.length}) — skal rettes i dataene:`)
+      for (const k of konflikter) console.log(`    · ${k}`)
+    }
+    const ind = klasser.get('canonical_indsnaevret') ?? []
+    if (ind.length > 0) {
+      console.log(`\n  Regler hvor indsnævringen ændrer vinduet (${ind.length}):`)
+      for (const k of ind) console.log(`    · ${k}`)
+    }
+  }
 
   // Scenarier for registreringsdagen. (a) isolerer datosemantikken;
   // (b) viser hvad den tilbagevirkende regel gør en konkret dag.

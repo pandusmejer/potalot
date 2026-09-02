@@ -89,6 +89,9 @@ export interface RegelDato {
  * Rækkefølgen er låst:
  *
  *   1. Vinduet slås op canonical (samme resolvers som reminder-relevans).
+ *      Har reglen også en `recommendedMonths`, må den INDSNÆVRE canonical,
+ *      aldrig udvide det: det effektive vindue er fællesmængden. Er den tom,
+ *      vinder canonical, og konflikten logges. Se dyrkningsvindue.ts.
  *   2. Mangler canonical → reglens egen `recommendedMonths` (legacy).
  *   3. Mangler også det → gammel adfærd, uændret.
  *   4. Offsetdatoen beregnes.
@@ -200,9 +203,23 @@ export function generateTasksFromGuide(input: {
     // bedømmes mod.
     const opgavetype = normaliserOpgavetype(rule.taskType).type
 
-    const { dato } = beregnRegelDato({
+    const { dato, vindueKilde, vindue } = beregnRegelDato({
       rule, opgavetype, sowDate: input.sowDate, plantName, variety, idag,
     })
+
+    // Nul overlap mellem reglens vindue og bibliotekets: de to kilder er
+    // uenige om fagligheden, ikke om præcisionen. Canonical vinder, men
+    // uenigheden må ikke forsvinde lydløst — det var præcis den slags
+    // tavshed, der holdt generatoren ude af drift i §5.
+    if (vindueKilde === 'canonical_konflikt') {
+      console.warn(
+        `[task-generation] vindue-konflikt i guide ${input.guide.id}: "${rule.title}" `
+        + `(${opgavetype}) anbefaler ${JSON.stringify(rule.recommendedMonths)}, men `
+        + `${plantName}${variety ? ' ' + variety : ''} har canonical `
+        + `${JSON.stringify(vindue)}. Canonical bruges.`,
+      )
+    }
+
     if (!dato) continue
 
     tasks.push({
