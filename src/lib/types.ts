@@ -488,6 +488,14 @@ export interface GuideCalendarRule {
   title: string
   recommendedMonths?: number[]
   trigger?: 'sowingDate' | 'germinationDate' | 'plantingOutDate'
+  /**
+   * @deprecated LEGACY (Anna 2/9). Feltet står ikke i guidekontrakten og
+   * stammer fra ét eksempel i AI-prompten, som modellen kopierede 54 gange.
+   * Det dokumenterede dyrkningsvindue bestemmer datoen; offsettet placerer
+   * kun opgaven INDEN I vinduet og kan aldrig flytte den ud af det.
+   * Læsestøtte bevares for eksisterende guides — nye må ikke sætte det.
+   * Se task-generation.ts og Docs/product/kalenderregel-semantik-audit.md.
+   */
   relativeOffsetDays?: number
   condition?: string
   priority: TaskPriority

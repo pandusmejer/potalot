@@ -175,6 +175,10 @@ console.log('\n[Blandet guide vælter ikke længere hele batchen]')
       { taskType: 'harvest_tubers', title: 'Grav op', recommendedMonths: [10], priority: 'high' },
     ]),
     sowDate: '2026-03-01', plantId: 'p1', inventoryItemId: 'i1',
+    // Eksplicit registreringsdag: dateringen respekterer nu dyrkningsvinduet
+    // og dropper opgaver, hvis vindue er lukket (test-kalenderregel-dato.ts).
+    // Uden den ville DENNE test om task_type afhænge af, hvornår den køres.
+    idag: '2026-03-01',
   })
   tjek('alle tre regler blev til opgaver', opgaver.length, 3)
   tjek('typerne er normaliseret undervejs',

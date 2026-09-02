@@ -658,10 +658,14 @@ Format (alle felter valgfri undtagen plantName, summary):
   ],
   "calendarRules": [
     {"taskType": "pre_sow", "title": "Forspir tomat", "recommendedMonths": [3,4], "trigger": "sowingDate", "priority": "high"},
-    {"taskType": "plant_out", "title": "Udplant", "recommendedMonths": [5,6], "trigger": "sowingDate", "relativeOffsetDays": 35, "priority": "high"},
-    {"taskType": "harvest", "title": "Høst", "recommendedMonths": [7,8,9], "trigger": "sowingDate", "relativeOffsetDays": 90, "priority": "medium"}
+    {"taskType": "plant_out", "title": "Udplant", "recommendedMonths": [5,6], "trigger": "sowingDate", "priority": "high"},
+    {"taskType": "harvest", "title": "Høst", "recommendedMonths": [7,8,9], "trigger": "sowingDate", "priority": "medium"}
   ]
 }
+
+En kalenderregel dateres udelukkende af "recommendedMonths". Brug ALDRIG
+"relativeOffsetDays" — feltet er udgået. Angiv i stedet de måneder, hvor
+handlingen faktisk hører hjemme.
 
 taskType SKAL være én af præcis disse 13 værdier — opfind aldrig nye:
 pre_sow, sowing, repot, plant_out, watering, fertilizing, pruning,

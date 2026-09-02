@@ -1,10 +1,25 @@
 /**
  * Task-generation: omsætter en guides calendarRules til konkrete kalender-opgaver
  * baseret på en plantes så-dato.
+ *
+ * Datosemantikken bor i `beregnRegelDato` nedenfor (afløser den gamle
+ * `calculateRuleDate`, som lod `relativeOffsetDays` returnere først og
+ * dermed ignorere `recommendedMonths` helt). Vinduerne selv — opslag,
+ * clamp og kant-regler — bor i kalender/dyrkningsvindue.ts.
+ * Baggrund: Docs/product/kalenderregel-semantik-audit.md
  */
 
 import type { Guide, GuideCalendarRule, CalendarTask, TaskType, TaskPriority } from './types'
 import { normaliserOpgavetype, erCanoniskOpgavetype } from './kalender/opgavetype'
+import {
+  clampTilVindue,
+  delDato,
+  foersteDatoIVindue,
+  idagKbh,
+  plusDage,
+  resolveVindue,
+  type VindueKilde,
+} from './kalender/dyrkningsvindue'
 
 export interface GeneratedTaskInput {
   title: string
@@ -19,43 +34,135 @@ export interface GeneratedTaskInput {
   description?: string
 }
 
+export interface RegelDatoKontekst {
+  rule: GuideCalendarRule
+  /** Den NORMALISEREDE opgavetype — den der lander i `calendar_tasks`. */
+  opgavetype: TaskType
+  /** Plantens så-dato (YYYY-MM-DD). */
+  sowDate: string
+  /** `plants_v2.name` — opslagsnøglen relevansmotoren senere bruger. */
+  plantName: string
+  /** `plants_v2.variety`, hvis sorten kendes. */
+  variety: string | null
+  /** Registreringsdagen (YYYY-MM-DD). Eksplicit, så beregningen er ren. */
+  idag: string
+}
+
+export type RegelDatoGrund =
+  /** Offsetdatoen lå i vinduet og står uændret — dag og det hele. */
+  | 'offset_i_vindue'
+  /** Offsetdatoen lå før vinduet → første dag i nærmeste gyldige måned. */
+  | 'offset_clampet_frem'
+  /** Offsetdatoen lå efter vinduet → sidste dag i nærmeste gyldige måned. */
+  | 'offset_clampet_tilbage'
+  /** Intet vindue nogen steder: offsettet står alene, som før. */
+  | 'offset_uden_vindue'
+  /** Ingen offset → vinduets åbning fra såningsmåneden. */
+  | 'vinduets_aabning'
+  /** Datoen lå i fortiden, men vinduet er stadig åbent → registreringsdagen. */
+  | 'omdateret_til_idag'
+  /** Datoen lå i fortiden og vinduet er lukket → opgaven oprettes ikke. */
+  | 'droppet_vindue_lukket'
+  /** Fortidsdato uden dokumenteret vindue → droppet, som det gamle filter gjorde. */
+  | 'droppet_fortid_uden_vindue'
+  /** Hverken vindue eller offset — reglen kan ikke dateres. */
+  | 'ingen_dato'
+
+export interface RegelDato {
+  /** `null` = opgaven skal IKKE oprettes. */
+  dato: string | null
+  grund: RegelDatoGrund
+  /** Vinduet der afgjorde det — tomt array når intet blev fundet. */
+  vindue: number[] | null
+  vindueKilde: VindueKilde
+  /** Offsettets rå ønskedato, før vinduet fik lov at rette. Til audit. */
+  oensket: string | null
+}
+
 /**
- * Beregn dato for en kalenderregel baseret på så-dato.
+ * Dato for én kalenderregel.
  *
- * To slags regler:
- * 1. trigger='sowingDate' + relativeOffsetDays: dato = sowDate + N dage
- * 2. recommendedMonths: dato = første dag i næste måned i listen ≥ såningsmåned
+ * ── Produktreglen (Anna 2/9, audit §8-§9) ────────────────────────────────
+ *   Det dokumenterede dyrkningsvindue bestemmer, hvornår en maskinafledt
+ *   opgave må ligge. `relativeOffsetDays` placerer den kun INDEN I vinduet.
+ *
+ * Rækkefølgen er låst:
+ *
+ *   1. Vinduet slås op canonical (samme resolvers som reminder-relevans).
+ *   2. Mangler canonical → reglens egen `recommendedMonths` (legacy).
+ *   3. Mangler også det → gammel adfærd, uændret.
+ *   4. Offsetdatoen beregnes.
+ *   5. Ligger den i vinduet → den står.
+ *   6. Ligger den udenfor → clamp til nærmeste gyldige kant.
+ *   7. Intet offset → vinduets åbning.
+ *   8. Dato i fortiden: vinduet stadig åbent → `idag`; ellers ingen opgave.
+ *
+ * ── Hvorfor `relativeOffsetDays` ikke er en autoritet ────────────────────
+ * Feltet står ikke i guidekontrakten. Ingen af de 176 redaktionelle guides
+ * bruger det. Alle 54 forekomster stammer fra private AI-guides, som har
+ * kopieret ét eksempel i AI-prompten 54 gange — og 41 af de 44 virksomme
+ * regler kunne producere en dato uden for deres eget dokumenterede vindue.
+ * Læsestøtten bliver stående, fordi dataene findes live; men vinduet
+ * bestemmer. Nye guides genererer ikke længere feltet (guides.ts,
+ * guides-admin.ts).
+ *
+ * ── Hvorfor `trigger` stadig gater offsettet ─────────────────────────────
+ * Kun `trigger === 'sowingDate'` bruger offsettet, præcis som før. De ti
+ * regler med `plantOutDate`/`germinationDate` regner fra en dato,
+ * generatoren ikke har — at aktivere dem nu ville være at opfinde et
+ * udgangspunkt, ikke at rette en fejl. De dateres på vinduet.
  */
-export function calculateRuleDate(rule: GuideCalendarRule, sowDate: string): string | null {
-  // Trigger-baseret (offset fra såning)
-  if (rule.trigger === 'sowingDate' && rule.relativeOffsetDays != null) {
-    const d = new Date(sowDate + 'T00:00:00')
-    d.setDate(d.getDate() + rule.relativeOffsetDays)
-    return d.toISOString().split('T')[0]
+export function beregnRegelDato(k: RegelDatoKontekst): RegelDato {
+  const vindue = resolveVindue(
+    k.opgavetype, k.plantName, k.variety, k.rule.recommendedMonths,
+  )
+  const harVindue = vindue.kilde !== 'intet'
+
+  const oensket =
+    k.rule.trigger === 'sowingDate' && k.rule.relativeOffsetDays != null
+      ? plusDage(k.sowDate, k.rule.relativeOffsetDays)
+      : null
+
+  const svar = (dato: string | null, grund: RegelDatoGrund): RegelDato => ({
+    dato, grund, vindue: harVindue ? vindue.maaneder : null,
+    vindueKilde: vindue.kilde, oensket,
+  })
+
+  let dato: string | null
+  let grund: RegelDatoGrund
+
+  if (!harVindue) {
+    // Ingen dokumentation nogen steder. Bevar adfærden præcis som den var.
+    if (!oensket) return svar(null, 'ingen_dato')
+    dato = oensket
+    grund = 'offset_uden_vindue'
+  } else if (oensket) {
+    // Så-datoen er gulvet: en opgave afledt af en såning kan ikke ligge før
+    // såningen, uanset hvor nær en tidligere vindueskant måtte være.
+    const clamp = clampTilVindue(oensket, vindue.maaneder, k.sowDate)
+    dato = clamp.dato
+    grund = clamp.retning === 'i_vindue'
+      ? 'offset_i_vindue'
+      : clamp.retning === 'frem' ? 'offset_clampet_frem' : 'offset_clampet_tilbage'
+  } else {
+    dato = foersteDatoIVindue(vindue.maaneder, k.sowDate)
+    if (!dato) return svar(null, 'ingen_dato')
+    grund = 'vinduets_aabning'
   }
 
-  // Måneds-baseret
-  if (rule.recommendedMonths && rule.recommendedMonths.length > 0) {
-    const sowD = new Date(sowDate + 'T00:00:00')
-    const sowMonth = sowD.getMonth() + 1            // 1-12
-    const sowYear = sowD.getFullYear()
-
-    const sortedMonths = [...rule.recommendedMonths].sort((a, b) => a - b)
-
-    // Find første måned ≥ såningsmåned (samme år)
-    let targetMonth = sortedMonths.find(m => m >= sowMonth)
-    let targetYear = sowYear
-
-    if (!targetMonth) {
-      // Wrap til næste år
-      targetMonth = sortedMonths[0]
-      targetYear = sowYear + 1
+  // ── Tilbagevirkende registrering (Anna 2/9, punkt B) ───────────────────
+  // Det gamle værn var `.filter(t => t.date >= idag)` i mine-planter.ts —
+  // et kalender-snit uden faglighed. Det beholdt en udplantning dateret
+  // 13/04 (fremtidig, men uden for vinduet) og kasserede en dateret 1/5,
+  // som stadig var relevant den 1. juni. Vinduet afgør nu relevansen.
+  if (dato < k.idag) {
+    if (harVindue && vindue.maaneder.includes(delDato(k.idag).maaned)) {
+      return svar(k.idag, 'omdateret_til_idag')
     }
-
-    return `${targetYear}-${String(targetMonth).padStart(2, '0')}-01`
+    return svar(null, harVindue ? 'droppet_vindue_lukket' : 'droppet_fortid_uden_vindue')
   }
 
-  return null
+  return svar(dato, grund)
 }
 
 /**
@@ -66,22 +173,41 @@ export function generateTasksFromGuide(input: {
   sowDate: string
   plantId: string
   inventoryItemId: string
+  /**
+   * Plantens navn/sort — `plants_v2.name`/`.variety`, altså PRÆCIS de
+   * værdier reminder-relevans senere slår op på. Guidens egen identitet er
+   * kun fallback: den kan divergere fra frøposen, og så ville opgaven blive
+   * dateret efter ét vindue og bedømt mod et andet.
+   */
+  plantName?: string
+  variety?: string | null
+  /** Registreringsdagen. Default: i dag i dansk tid, som SQL'ens v_today. */
+  idag?: string
 }): GeneratedTaskInput[] {
   const tasks: GeneratedTaskInput[] = []
+  const plantName = input.plantName ?? input.guide.plantName
+  const variety = input.variety !== undefined ? input.variety : (input.guide.variety ?? null)
+  const idag = input.idag ?? idagKbh()
 
   for (const rule of input.guide.calendarRules) {
-    const date = calculateRuleDate(rule, input.sowDate)
-    if (!date) continue
-
     // Guiderne i basen bærer stadig gamle/opfundne typer (de 22 private
     // AI-guides er ikke migreret). Normaliseringen ved skrivning dækker kun
     // NYE guides, så vi normaliserer også her — ellers ville en enkelt gammel
     // regel fortsat kunne vælte hele task-batchen. Se opgavetype.ts.
+    //
+    // Den skal desuden ske FØR datoberegningen: vindue-opslaget sker på den
+    // canoniske type, så opgaven dateres efter det vindue, den bagefter
+    // bedømmes mod.
     const opgavetype = normaliserOpgavetype(rule.taskType).type
+
+    const { dato } = beregnRegelDato({
+      rule, opgavetype, sowDate: input.sowDate, plantName, variety, idag,
+    })
+    if (!dato) continue
 
     tasks.push({
       title: rule.title,
-      date,
+      date: dato,
       taskType: opgavetype,
       priority: rule.priority,
       source: 'guide',

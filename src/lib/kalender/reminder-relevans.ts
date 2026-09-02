@@ -58,8 +58,13 @@ export const MASKINAFLEDT_KILDE = 'guide'
  * `weeding`, `repot`, `maintenance`, `planning`, `custom`) har intet
  * dokumenteret vindue i quickFacts — de er pleje, ikke timing — og
  * filtreres derfor ALDRIG. Det er tavshed efter hensigten, ikke et hul.
+ *
+ * Eksporteret, fordi task-generation nu DATERER efter samme vindue, som
+ * relevansmotoren senere BEDØMMER opgaven mod. Kortet må findes ét sted —
+ * to kopier ville genskabe præcis det to-korpus-split, dateringen led af
+ * (Docs/product/kalenderregel-semantik-audit.md §4).
  */
-const VINDUE_FOR_OPGAVETYPE: Record<string, FroebankVinduesHandling | 'harvest'> = {
+export const VINDUE_FOR_OPGAVETYPE: Record<string, FroebankVinduesHandling | 'harvest'> = {
   plant_out: 'plant_out',
   pre_sow: 'pre_sow',
   sowing: 'direct_sow',
@@ -115,8 +120,9 @@ export interface Relevans {
  * En opgave FØR sit vindue er lige så irrelevant som en efter: guiden siger
  * maj-juni, og i april er udplantning ikke meningsfuld endnu. Det er kun
  * relevant for forfaldne opgaver — og en forfalden opgave før sit eget
- * vindue betyder, at datoen var forkert fra fødslen (se backlog: generatoren
- * lader `relativeOffsetDays` vinde over `recommendedMonths`).
+ * vindue betyder, at datoen var forkert fra fødslen — dét hul lukkede
+ * task-generation 2/9, hvor `relativeOffsetDays` blev gjort underordnet
+ * det dokumenterede vindue.
  */
 export function vurderReminderRelevans(
   kandidat: ReminderKandidat,

@@ -1,8 +1,9 @@
 # Audit: `relativeOffsetDays` vs. `recommendedMonths` i `calendarRules`
 
-Dato: 2. september 2026 · Status: **§5 LUKKET (515e94b, pushet) · datosemantik LÅST, ikke bygget**
-Kode: `src/lib/task-generation.ts:28` (`calculateRuleDate`), kaldt fra
-`src/actions/mine-planter.ts:304`.
+Dato: 2. september 2026 · Status: **§5 LUKKET (515e94b, pushet) · datosemantik
+BYGGET + testet + effektmålt (§11), ikke pushet, ingen datawrites**
+Kode: `src/lib/task-generation.ts` (`beregnRegelDato`) +
+`src/lib/kalender/dyrkningsvindue.ts`, kaldt fra `src/actions/mine-planter.ts`.
 
 ---
 
@@ -354,3 +355,120 @@ Datoberegningen har fortsat ingen suite. Implementationstråden bør lande
 reglen ovenfor med en suite, der vogter invarianten "ingen maskinafledt dato
 uden for sit dokumenterede vindue" — samme mønster som
 `test-reminder-relevans.ts`.
+
+---
+
+## 11. Implementering — LUKKET i kode 2/9 (ikke pushet, ingen datawrites)
+
+`calculateRuleDate` er afløst af `beregnRegelDato` (`src/lib/task-generation.ts`).
+Vinduerne selv — opslag, clamp og kantregler — bor i
+`src/lib/kalender/dyrkningsvindue.ts`.
+
+**Ét vindue, to sider.** `VINDUE_FOR_OPGAVETYPE` er nu eksporteret fra
+`reminder-relevans.ts` og importeret af dateringen. Resolverne er de samme
+(`resolveFroebankVinduer` / `resolveHoestMaaneder`). To-korpus-splittet i §4
+er dermed lukket: en opgave dateres efter præcis det vindue, den bagefter
+bedømmes mod. Ingen ny månedsmotor, ingen kopieret mapping.
+
+**Rækkefølgen, som den står i koden:**
+
+1. Vindue: canonical → reglens `recommendedMonths` (legacy) → intet.
+2. Offsetdato beregnes kun ved `trigger === 'sowingDate'` — uændret. De ti
+   regler med `plantOutDate`/`plantingDate` regner fra en dato, generatoren
+   ikke har; at aktivere dem nu ville være at opfinde et udgangspunkt.
+3. I vinduet → står. Uden for → clamp til nærmeste gyldige kant (første dag
+   frem, sidste dag tilbage). Uafgjort → den kommende kant.
+4. Så-datoen er gulv: en opgave afledt af en såning kan ikke ligge før den.
+5. Intet offset → vinduets åbning fra såningsmåneden (uændret semantik).
+6. Dato i fortiden: vinduet omfatter registreringsmåneden → `idag`; ellers
+   oprettes opgaven ikke. Det erstatter `.filter(t => t.date >= idag)` i
+   `mine-planter.ts`, som nu er fjernet.
+
+**Opslagsnøglen er PLANTENS navn/sort** (`inv.name`/`inv.variety` — de
+værdier `plants_v2` oprettes med), ikke guidens. Guidens identitet er kun
+fallback. Ellers ville dateringen slå ét vindue op og relevansmotoren et
+andet.
+
+**Sidegevinst:** al datoaritmetik er UTC. Den gamle beregning blandede lokal
+midnat (`new Date(iso + 'T00:00:00')`) med `toISOString()` og skred én dag på
+en maskine i dansk sommertid. Serveren kører UTC, så prod var uberørt — men
+tests og lokal kørsel var det ikke.
+
+**Prompterne:** `relativeOffsetDays` er fjernet fra output-eksemplet i både
+`guides.ts` og `guides-admin.ts`, med en eksplicit forbudslinje. Feltet er
+`@deprecated` i `types.ts`. Læsestøtten består; de 54 eksisterende regler er
+ikke migreret (§9 punkt C — separat spor).
+
+### Testsuite
+
+`scripts/test-kalenderregel-dato.ts` (68 assertions, tilføjet til `npm test`)
+kører mod ÆGTE canonical data, ikke fixtures — samme princip som
+`test-reminder-relevans.ts`. Den vogter invarianten:
+
+> Ingen maskinafledt dato uden for sit dokumenterede vindue.
+
+Bredeste vagt: 5 arter × 4 vindue-bærende typer × 12 så-måneder × 7 offsets
+= 1.344 beregnede datoer, alle inden for deres canonical vindue. Derudover
+dækkes hvert punkt fra §9: dato i/før/efter vindue, diskontinuert vindue,
+vindue over årsskifte, canonical vs. divergerende `recommendedMonths`,
+legacy fallback, ingen vinduer, intet offset, tilbagevirkende registrering
+mens vinduet er åbent og efter det er lukket, samt Chili/Padrón udplantning
+og høst som regressionstest. Hvidløgs `plantingOutMonths` `[2,3,10,11,12]`
+bruges som ægte diskontinuert vindue over årsskiftet — ikke en fixture.
+
+`scripts/test-opgavetype-kontrakt.ts` fik ét tillæg: et eksplicit `idag`, så
+en test om `task_type` ikke afhænger af, hvornår den køres. Kontrakten fra
+§5 er ellers urørt.
+
+### Read-only effektmåling mod produktionsdata
+
+`scripts/audit-kalenderregel-dato.ts` læser `guides` (kun `select`) og
+regner hver regel igennem begge semantikker. 27 guides, 124 regler, hver
+kørt mod guidens egne dokumenterede sådatoer (dag 1/10/20/28) = 1.276
+kombinationer pr. scenarie.
+
+| | registreret samme dag som såning | registreret 2/9 (tilbagevirkende) |
+|---|---|---|
+| samme dato som før | 966 | 157 |
+| anden dato | **211** (44 distinkte regler) | 73 (6 regler) |
+| oprettes ikke længere | **0** | **0** |
+| oprettes nu, blev tabt før | 99 (15 regler) | 526 (42 regler) |
+| droppet i begge | 0 | 520 |
+
+Ingen regel mister sin opgave. De to reelle ændringer er (a) datoer, der
+rykker ind i vinduet, og (b) tilbagevirkende registreringer, der nu
+producerer opgaver dateret til registreringsdagen i stedet for ingenting.
+
+**Én uventet effekt, som IKKE er specialcaset (venter Annas beslutning):**
+
+Tre "før frost"-regler bliver trukket **tidligere**, ikke senere:
+
+| Regel | Reglens vindue | Canonical vindue | Gammel → ny |
+|---|---|---|---|
+| Dahlia · Night Silence — Indgrav dahlia-knolde før frost | [10,11] | høst [7,8,9,10] | 1/10 → 1/7 |
+| Dahlia — Grav knolde op før hård frost | [10,11] | høst [7,8,9,10] | 1/10 → 1/7 |
+| Tomat · Lucky Tiger — Høst alle frugler før frost | [10] | høst [7,8,9] | 1/10 → 1/7 |
+
+Mekanikken er præcis den låste: `harvest_tubers` → `harvest` (§5-aliaskortet),
+`harvest` bærer høstvinduet, reglen har intet offset, og regel 8 dateres til
+vinduets **åbning**. Fagligt er "grav knolde op før frost" ikke en
+høststart — det er en sæsonafslutning, og de to deler task_type men ikke
+timing.
+
+Det er ikke en fejl i implementeringen, og det løses ikke med en Dahlia-
+undtagelse. Det er samme klasse problem som §5: ét vokabular bærer to
+betydninger. Mulige veje, alle uden for denne tråd:
+
+* lade reglens `recommendedMonths` vinde, når den er en ÆGTE delmængde af
+  canonical (her: [10,11] ⊂ [7,8,9,10] — reglen er mere præcis, ikke i
+  modstrid), eller
+* en egen opgavetype for sæsonafslutning, eller
+* datamigration af de tre regler.
+
+Første mulighed er den mindste og ville også løse Tomat Lucky Tiger. Den
+ændrer dog princip 2's ubetingede "canonical vinder" til "canonical vinder,
+medmindre reglen indsnævrer inden for det" — og det er en produktbeslutning,
+ikke en implementeringsdetalje.
+
+**Status:** kode + tests grønne (`npm test`, `tsc --noEmit`, `eslint`).
+Ingen datawrites, ingen cleanup af `calendar_tasks`, ikke pushet.

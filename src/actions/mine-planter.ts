@@ -8,6 +8,7 @@ import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
   partitionerPaaOpgavetype,
 } from '@/lib/task-generation'
+import { idagKbh } from '@/lib/kalender/dyrkningsvindue'
 import { getAllGuides, ensureGuideForPlant } from '@/actions/guides'
 import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
 import {
@@ -296,18 +297,27 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
       allGuides
     )
     if (guide) {
-      // Ved en TILBAGEVIRKENDE såning (sådato i fortiden) ville guidens gøremål
-      // lande i fortiden og oversvømme kalenderen som "forsinket". Dem opretter
-      // vi ikke — Potalot ved ikke om brugeren allerede har gjort dem (Anna
-      // 16/7). Kun gøremål på/efter i dag lægges i kalenderen; historiske
-      // milepæle kan indhentes manuelt (HistorikIndhent).
-      const idagStr = new Date().toISOString().slice(0, 10)
+      // TILBAGEVIRKENDE såning: et gøremål, hvis dato er passeret, må ikke
+      // oversvømme kalenderen som "forsinket" (Anna 16/7). Snittet lå
+      // tidligere HER som `.filter(t => t.date >= idag)` — et rent
+      // kalender-snit, der beholdt forkerte fremtidige datoer og kasserede
+      // rigtige, hvis vindue stadig var åbent. Beslutningen er nu flyttet
+      // ind i beregnRegelDato, hvor vinduet kan afgøre den: stadig åbent →
+      // opgaven dateres til i dag, lukket → den oprettes ikke.
+      //
+      // `plantName`/`variety` er frøposens — de samme værdier, planten
+      // oprettes med (plants_v2.name/.variety) og relevansmotoren senere
+      // slår op på. Ellers ville opgaven dateres efter ét vindue og
+      // bedømmes mod et andet.
       const generated = filterRelevantTasks(generateTasksFromGuide({
         guide,
         sowDate: input.date,
         plantId,
         inventoryItemId: inv.id as string,
-      })).filter(t => t.date >= idagStr)
+        plantName: inv.name,
+        variety: inv.variety,
+        idag: idagKbh(),
+      }))
       // Isoleret validering FØR insert. Indsættelsen er ét batch, så en
       // enkelt række med en `task_type` uden for CHECK-constrainten afviste
       // tidligere ALLE gyldige opgaver i samme guide — lydløst. Nu frasorteres
