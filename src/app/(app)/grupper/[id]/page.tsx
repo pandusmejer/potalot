@@ -261,7 +261,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabTriggerWithBadge value="billeder" label="Billeder" unreadCount={0} groupId={group.id} />
               <TabTriggerWithBadge
                 value="challenges"
-                label="Challenges"
+                label="Udfordringer"
                 unreadCount={unreadByCategory.challenges}
                 category="challenges"
                 groupId={group.id}
@@ -277,7 +277,7 @@ export default async function GroupDetailPage({ params }: Props) {
               <TabTriggerWithBadge value="froebytte" label="Frøbytte" unreadCount={unreadByCategory.swap} category="swap" groupId={group.id} />
               <TabTriggerWithBadge
                 value="challenges"
-                label="Challenges"
+                label="Udfordringer"
                 unreadCount={unreadByCategory.challenges}
                 category="challenges"
                 groupId={group.id}

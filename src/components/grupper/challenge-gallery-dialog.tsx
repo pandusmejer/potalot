@@ -63,7 +63,7 @@ export function ChallengeGalleryDialog({
 
         {!loading && entries && entries.length === 0 && (
           <p className="text-sm text-muted-foreground italic text-center py-8">
-            Vær den første til at bidrage til denne challenge.
+            Vær den første til at bidrage til denne udfordring.
           </p>
         )}
 

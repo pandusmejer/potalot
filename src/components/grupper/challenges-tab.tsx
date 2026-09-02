@@ -43,10 +43,10 @@ export function ChallengesTab({ groupId, challenges, isMember, isOwner }: Props)
       {challenges.length === 0 ? (
         <EmptyState
           icon={<Trophy className="h-8 w-8" />}
-          title="Ingen challenges endnu"
+          title="Ingen udfordringer endnu"
           description={isOwner
-            ? 'Opret en challenge for at samle gruppen om en udfordring — fx månedens høst-foto.'
-            : 'Når ejeren opretter en challenge, kan du deltage her.'}
+            ? 'Opret en udfordring for at samle gruppen om noget fælles — fx månedens høst-foto.'
+            : 'Når ejeren opretter en udfordring, kan du deltage her.'}
         />
       ) : (
         <>

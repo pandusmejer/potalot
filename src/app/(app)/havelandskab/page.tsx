@@ -55,7 +55,7 @@ export default async function HavelandskabPage() {
               Deltag i sæsonens fælles rytme
             </h2>
             <p className="text-sm text-foreground/80 mt-1 leading-relaxed max-w-xl">
-              Sæson-challenges roterer med året — &ldquo;Forspirings-marts&rdquo;,
+              Sæsonens udfordringer roterer med året — &ldquo;Forspirings-marts&rdquo;,
               &ldquo;Tomatmaj&rdquo;, &ldquo;Første tomat i hus&rdquo;.
               Indsend dit bidrag og se hvad andre har gjort. Ingen vinder —
               kun en samlet stemning af måneden.
@@ -64,12 +64,12 @@ export default async function HavelandskabPage() {
         </CardContent>
       </Card>
 
-      {/* Aktive challenges */}
+      {/* Aktive udfordringer */}
       {challenges.length === 0 ? (
         <EmptyState
           icon={<Trophy className="h-8 w-8" />}
-          title="Ingen aktive challenges i denne måned"
-          description="Sæson-challenges roterer med årets måneder. Kig forbi næste måned."
+          title="Ingen aktive udfordringer i denne måned"
+          description="Sæsonens udfordringer roterer med årets måneder. Kig forbi næste måned."
         />
       ) : (
         <div className="space-y-3">

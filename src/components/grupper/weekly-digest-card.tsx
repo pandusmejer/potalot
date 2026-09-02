@@ -16,7 +16,7 @@ export function WeeklyDigestCard({ digest, groupName, isInterest }: Props) {
   if (digest.swapsCreated > 0) items.push({ icon: Gift, value: digest.swapsCreated, label: digest.swapsCreated === 1 ? 'frøbytte' : 'frøbytter' })
   if (isInterest && digest.newVarieties > 0) items.push({ icon: Sprout, value: digest.newVarieties, label: digest.newVarieties === 1 ? 'ny sort' : 'nye sorter' })
   if (digest.imagesShared > 0) items.push({ icon: ImageIcon, value: digest.imagesShared, label: digest.imagesShared === 1 ? 'billede' : 'billeder' })
-  if (digest.challengeEntries > 0) items.push({ icon: Trophy, value: digest.challengeEntries, label: digest.challengeEntries === 1 ? 'challenge-bidrag' : 'challenge-bidrag' })
+  if (digest.challengeEntries > 0) items.push({ icon: Trophy, value: digest.challengeEntries, label: digest.challengeEntries === 1 ? 'bidrag til udfordring' : 'bidrag til udfordringer' })
   if (digest.newMembers > 0) items.push({ icon: UserPlus, value: digest.newMembers, label: digest.newMembers === 1 ? 'nyt medlem' : 'nye medlemmer' })
 
   const totalActivity = items.reduce((s, i) => s + i.value, 0)

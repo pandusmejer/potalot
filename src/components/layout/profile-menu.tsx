@@ -45,8 +45,8 @@ export function ProfileMenu({ profile }: { profile: Profile }) {
         <DropdownMenuItem asChild>
           <Link href="/profil"><User className="h-4 w-4" /> Min profil</Link>
         </DropdownMenuItem>
-        {/* SKJULT INDTIL VIDERE: Mine grupper + Havelandskab (Communities/
-            Challenges-funktioner). Designes og lanceres på et senere
+        {/* SKJULT INDTIL VIDERE: Mine grupper + Havelandskab (fællesskabs-
+            og udfordrings-funktioner). Designes og lanceres på et senere
             tidspunkt — kerneproduktet med 5 hovedmenupunkter først. */}
         <DropdownMenuItem asChild>
           <Link href="/idetavle"><Lightbulb className="h-4 w-4" /> Min idétavle</Link>

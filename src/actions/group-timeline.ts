@@ -261,7 +261,7 @@ export async function getGroupTimeline(groupId: string, limit = 50): Promise<Tim
       body: r.description,
       imageUrl: r.cover_image_url,
       link: `/grupper/${groupId}`,
-      chips: ['Challenge'],
+      chips: ['Udfordring'],
     })
   }
 
@@ -279,11 +279,11 @@ export async function getGroupTimeline(groupId: string, limit = 50): Promise<Tim
       createdAt: r.created_at,
       actorUserId: r.user_id,
       actorLabel: '',
-      title: `indsendte bidrag til "${c?.title ?? 'challenge'}"`,
+      title: `indsendte bidrag til "${c?.title ?? 'en udfordring'}"`,
       body: r.caption,
       imageUrl: r.image_url,
       link: `/grupper/${groupId}`,
-      chips: ['Challenge-bidrag'],
+      chips: ['Bidrag til udfordring'],
     })
   }
 

@@ -53,13 +53,13 @@ export function CreateChallengeDialog({ groupId }: Props) {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus className="h-4 w-4" />
-          Ny challenge
+          Ny udfordring
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogTitle className="flex items-center gap-2">
           <Trophy className="h-4 w-4 text-amber-600" />
-          Opret challenge
+          Opret udfordring
         </DialogTitle>
         <DialogDescription>
           En tidsbegrænset udfordring som medlemmer kan deltage i ved at indsende et bidrag.
@@ -78,7 +78,7 @@ export function CreateChallengeDialog({ groupId }: Props) {
             <Label>Beskrivelse</Label>
             <Textarea
               value={description} onChange={e => setDescription(e.target.value)} rows={2}
-              placeholder="Hvad handler challengen om?"
+              placeholder="Hvad handler udfordringen om?"
               className="mt-1.5"
             />
           </div>
@@ -97,7 +97,7 @@ export function CreateChallengeDialog({ groupId }: Props) {
               className="mt-1.5"
             />
             <p className="text-[10px] text-muted-foreground mt-1">
-              Ingen slutdato = challengen kører til den manuelt slettes.
+              Ingen slutdato = udfordringen kører, til den slettes manuelt.
             </p>
           </div>
           <div>
@@ -112,7 +112,7 @@ export function CreateChallengeDialog({ groupId }: Props) {
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Annullér</Button>
             <Button type="submit" disabled={pending || !title.trim()}>
-              {pending ? 'Opretter…' : 'Opret challenge'}
+              {pending ? 'Opretter…' : 'Opret udfordring'}
             </Button>
           </DialogFooter>
         </form>

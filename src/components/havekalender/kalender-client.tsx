@@ -377,7 +377,7 @@ export function KalenderClient({ tasks, plants, inventory, generalTasks, userTas
       />
 
       {/* 7 · ENGAGEMENT — månedens udfordring.
-          SKJULT INDTIL VIDERE: communities + challenges-funktioner
+          SKJULT INDTIL VIDERE: fællesskabs- + udfordrings-funktioner
           er midlertidigt dektiveret per user-direktion (haven-i-fokus
           retning, ikke gamification). Hele blokken bevares som
           kommenteret kode klar til genaktivering. */}
