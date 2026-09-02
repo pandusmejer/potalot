@@ -1,7 +1,8 @@
 # Audit: `relativeOffsetDays` vs. `recommendedMonths` i `calendarRules`
 
-Dato: 2. september 2026 · Status: **§5 LUKKET (515e94b, pushet) · datosemantik
-BYGGET + testet + effektmålt (§11), ikke pushet, ingen datawrites**
+Dato: 2. september 2026 · Status: **HELE SPORET LUKKET 2/9** — §5
+`task_type`-kontrakten (515e94b) og §11 datosemantik + vinduespræcedens
+(aa62395 + 645396f), alt pushet. Ingen datawrites foretaget.
 Kode: `src/lib/task-generation.ts` (`beregnRegelDato`) +
 `src/lib/kalender/dyrkningsvindue.ts`, kaldt fra `src/actions/mine-planter.ts`.
 
@@ -507,6 +508,31 @@ sået i november giver 1/10 året efter i stedet for 1/11. Dahlia har ingen
 dokumenterede sådatoer i DB, så målingen prøver alle 12 måneder — en
 november-såning af dahlia forekommer ikke i praksis.
 
-**Status:** kode + tests grønne (`npm test` med 80 assertions i den nye
-suite, `tsc --noEmit`, `eslint`). Ingen datawrites, ingen cleanup af
-`calendar_tasks`, ikke pushet.
+### LUKKET — `calculateRuleDate`-sporet (Anna 2/9)
+
+Kriterierne er opfyldt:
+
+* canonical dyrkningsvindue styrer dateringen
+* reglens vindue må indsnævre via fællesmængde, aldrig udvide
+* nul overlap logges som konflikt i stedet for at blive afgjort tavst
+* `relativeOffsetDays` kan ikke trække en opgave uden for gyldigt vindue
+* tilbagevirkende registreringer afgøres semantisk, ikke af kalendersnit
+* nye AI-guides producerer ikke længere `relativeOffsetDays`
+* eksisterende guides har legacy-læsestøtte
+* 80 assertions + `npm test`, `tsc --noEmit` og `eslint` grønne
+* ingen prod-datawrites
+
+Opgaven viste sig ikke at være "ret en branch-rækkefølge", men **"afgør
+hvilken kilde der har lov til at bestemme hvad"**. Derfor bærer motoren nu
+en præcedens (canonical = ydre grænse, reglen = præcisering) i stedet for en
+vinder — og derfor er nul overlap en *synlig fejlklasse* frem for en tavs
+afgørelse. Det var read-only-auditten, ikke koden, der fandt begge de
+semantiske fejl inden produktion.
+
+**Åben P2-dataopgave, ikke motorarbejde:** Tomat Lucky Tiger,
+`regel [10] ∩ canonical [7,8,9] = ∅`. Skal afgøres redaktionelt — er
+tomatguidens `harvestMonths` for snævert, eller er reglens `[10]` forkert?
+Kalenderkoden skal ikke tage den beslutning.
+
+**Ikke gjort, bevidst:** ingen cleanup af eksisterende `calendar_tasks`,
+ingen migration af de 54 legacy-offsets.
