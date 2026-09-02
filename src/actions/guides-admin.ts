@@ -8,6 +8,7 @@ import type {
   GuideQuickFacts, GuideSection, GuideCalendarRule,
   PrimaryCategoryId, Difficulty,
 } from '@/lib/types'
+import { normaliserKalenderregler } from '@/lib/kalender/opgavetype'
 
 export interface MasterGuideInput {
   plantName: string
@@ -47,7 +48,7 @@ export async function createMasterGuide(
       tags: input.tags ?? [],
       quick_facts: input.quickFacts ?? {},
       sections: input.sections ?? [],
-      calendar_rules: input.calendarRules ?? [],
+      calendar_rules: normaliserKalenderregler(input.calendarRules ?? []).regler,
       source_links: input.sourceLinks ?? [],
       primary_image_url: input.primaryImageUrl ?? null,
       is_ai_generated: false,
@@ -83,7 +84,7 @@ export async function updateMasterGuide(
       tags: input.tags ?? [],
       quick_facts: input.quickFacts ?? {},
       sections: input.sections ?? [],
-      calendar_rules: input.calendarRules ?? [],
+      calendar_rules: normaliserKalenderregler(input.calendarRules ?? []).regler,
       source_links: input.sourceLinks ?? [],
       primary_image_url: input.primaryImageUrl ?? null,
       updated_at: new Date().toISOString(),
@@ -542,6 +543,12 @@ Format (alle felter valgfri undtagen plantName, summary):
   ]
 }
 
+taskType SKAL være én af præcis disse 13 værdier — opfind aldrig nye:
+pre_sow, sowing, repot, plant_out, watering, fertilizing, pruning,
+pest_check, harvest, weeding, maintenance, planning, custom
+Passer handlingen ikke i én af dem, brug "maintenance" (pasning) eller
+"custom". Skriv IKKE fx "care", "prick_out", "harden_off" eller "bloom".
+
 Skriv på dansk. Vær konkret og realistisk for danske vækstforhold.
 Returnér KUN gyldig JSON, ingen markdown, ingen forklaringer.`
 
@@ -644,7 +651,16 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
     fields.sections = parsed.sections as GuideSection[]
   }
   if (Array.isArray(parsed.calendarRules)) {
-    fields.calendarRules = parsed.calendarRules as GuideCalendarRule[]
+    // Udkastet vises for admin FØR gem — så normaliseringen skal ske her,
+    // ellers ser admin en taskType, der aldrig når basen. Se opgavetype.ts.
+    const kalender = normaliserKalenderregler(parsed.calendarRules)
+    if (kalender.aendringer.length > 0) {
+      console.warn(
+        `[guide-admin-ai] normaliserede ${kalender.aendringer.length} taskType(r):`,
+        kalender.aendringer.map(a => `${a.titel}: ${a.fra} → ${a.til} (${a.kilde})`).join(' · '),
+      )
+    }
+    fields.calendarRules = kalender.regler as GuideCalendarRule[]
   }
   return { fields }
 }

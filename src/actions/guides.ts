@@ -13,6 +13,7 @@ import type {
   Guide, GuideQuickFacts, GuideSection, GuideCalendarRule,
   PrimaryCategoryId, Difficulty, GuideStatus, GuideVisibility, GuideReviewStatus, GuideLevel,
 } from '@/lib/types'
+import { normaliserKalenderregler } from '@/lib/kalender/opgavetype'
 
 interface GuideRow {
   id: string
@@ -277,7 +278,7 @@ export async function createGuide(input: CreateGuideInput): Promise<{ id: string
       tags: input.tags ?? [],
       quick_facts: input.quickFacts ?? {},
       sections: input.sections ?? [],
-      calendar_rules: input.calendarRules ?? [],
+      calendar_rules: normaliserKalenderregler(input.calendarRules ?? []).regler,
       source_links: input.sourceLinks ?? [],
       is_ai_generated: input.isAiGenerated ?? false,
       status: 'published',
@@ -324,7 +325,7 @@ export async function cloneGuideToOwn(
       tags: src.tags ?? [],
       quick_facts: src.quick_facts ?? {},
       sections: src.sections ?? [],
-      calendar_rules: src.calendar_rules ?? [],
+      calendar_rules: normaliserKalenderregler(src.calendar_rules ?? []).regler,
       source_links: src.source_links ?? [],
       primary_image_url: src.primary_image_url,
       is_ai_generated: false,
@@ -381,7 +382,7 @@ export async function updateUserGuide(
     tags: input.tags ?? [],
     quick_facts: input.quickFacts ?? {},
     sections: input.sections ?? [],
-    calendar_rules: input.calendarRules ?? [],
+    calendar_rules: normaliserKalenderregler(input.calendarRules ?? []).regler,
     source_links: input.sourceLinks ?? [],
     updated_at: new Date().toISOString(),
   }
@@ -662,6 +663,12 @@ Format (alle felter valgfri undtagen plantName, summary):
   ]
 }
 
+taskType SKAL være én af præcis disse 13 værdier — opfind aldrig nye:
+pre_sow, sowing, repot, plant_out, watering, fertilizing, pruning,
+pest_check, harvest, weeding, maintenance, planning, custom
+Passer handlingen ikke i én af dem, brug "maintenance" (pasning) eller
+"custom". Skriv IKKE fx "care", "prick_out", "harden_off" eller "bloom".
+
 Skriv på dansk. Vær konkret og realistisk for danske vækstforhold.
 Returnér KUN gyldig JSON, ingen markdown, ingen forklaringer.`
 
@@ -717,6 +724,17 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
   // Sorten hænger under sin art via parent_guide_id når en master-art findes.
   const isSort = Boolean((variety && variety.trim()) || input.parentGuideId)
 
+  // Opgavetype-kontrakten: modellen finder jævnligt på typer, databasen ikke
+  // accepterer (`care`, `prick_out`, `bloom` …). De normaliseres FØR skrivning,
+  // så en AI-guide aldrig kan lande ugyldig i basen. Se opgavetype.ts.
+  const kalender = normaliserKalenderregler(parsed.calendarRules)
+  if (kalender.aendringer.length > 0) {
+    console.warn(
+      `[guide-ai] normaliserede ${kalender.aendringer.length} taskType(r) for "${plantName}":`,
+      kalender.aendringer.map(a => `${a.titel}: ${a.fra} → ${a.til} (${a.kilde})`).join(' · '),
+    )
+  }
+
   const { data, error } = await supabase
     .from('guides')
     .insert({
@@ -732,7 +750,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
       tags: Array.isArray(parsed.tags) ? parsed.tags : [],
       quick_facts: parsed.quickFacts ?? {},
       sections: Array.isArray(parsed.sections) ? parsed.sections : [],
-      calendar_rules: Array.isArray(parsed.calendarRules) ? parsed.calendarRules : [],
+      calendar_rules: kalender.regler,
       is_ai_generated: true,
       status: 'published',
     })

@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
 import {
   generateTasksFromGuide, resolveGuideForInventory, filterRelevantTasks,
+  partitionerPaaOpgavetype,
 } from '@/lib/task-generation'
 import { getAllGuides, ensureGuideForPlant } from '@/actions/guides'
 import { deleteImage as deleteImageFromStorage } from '@/actions/storage'
@@ -307,8 +308,20 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
         plantId,
         inventoryItemId: inv.id as string,
       })).filter(t => t.date >= idagStr)
-      if (generated.length > 0) {
-        const taskRows = generated.map(t => ({
+      // Isoleret validering FØR insert. Indsættelsen er ét batch, så en
+      // enkelt række med en `task_type` uden for CHECK-constrainten afviste
+      // tidligere ALLE gyldige opgaver i samme guide — lydløst. Nu frasorteres
+      // den, resten oprettes, og afvigelsen logges. Se opgavetype.ts.
+      const { gyldige, ugyldige } = partitionerPaaOpgavetype(generated)
+      if (ugyldige.length > 0) {
+        console.error(
+          `[task-generation] ${ugyldige.length} opgave(r) fra guide ${guide.id} har en task_type `
+          + `uden for kontrakten og springes over:`,
+          ugyldige.map(t => `${t.title} (${t.taskType})`).join(' · '),
+        )
+      }
+      if (gyldige.length > 0) {
+        const taskRows = gyldige.map(t => ({
           user_id: userId,
           title: t.title,
           date: t.date,
@@ -323,7 +336,16 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
           is_recurring: false,
         }))
         const { error: taskErr } = await supabase.from('calendar_tasks').insert(taskRows)
-        if (!taskErr) tasksCreated = taskRows.length
+        if (taskErr) {
+          // Må ALDRIG forsvinde igen: det var den slugte fejl her, der gjorde
+          // generatoren tavst virkningsløs for 19 af 22 private guides.
+          console.error(
+            `[task-generation] kunne ikke oprette ${taskRows.length} opgave(r) for plante ${plantId}:`,
+            taskErr,
+          )
+        } else {
+          tasksCreated = taskRows.length
+        }
       }
     }
   }

@@ -4,6 +4,7 @@
  */
 
 import type { Guide, GuideCalendarRule, CalendarTask, TaskType, TaskPriority } from './types'
+import { normaliserOpgavetype, erCanoniskOpgavetype } from './kalender/opgavetype'
 
 export interface GeneratedTaskInput {
   title: string
@@ -72,10 +73,16 @@ export function generateTasksFromGuide(input: {
     const date = calculateRuleDate(rule, input.sowDate)
     if (!date) continue
 
+    // Guiderne i basen bærer stadig gamle/opfundne typer (de 22 private
+    // AI-guides er ikke migreret). Normaliseringen ved skrivning dækker kun
+    // NYE guides, så vi normaliserer også her — ellers ville en enkelt gammel
+    // regel fortsat kunne vælte hele task-batchen. Se opgavetype.ts.
+    const opgavetype = normaliserOpgavetype(rule.taskType).type
+
     tasks.push({
       title: rule.title,
       date,
-      taskType: rule.taskType,
+      taskType: opgavetype,
       priority: rule.priority,
       source: 'guide',
       sourceId: input.guide.id,
@@ -121,6 +128,32 @@ export function resolveGuideForInventory(
   )
 
   return partial ?? null
+}
+
+/**
+ * Sidste vagt før DB: del opgaverne i dem `calendar_tasks` kan tage imod, og
+ * dem den vil afvise.
+ *
+ * ── Hvorfor den findes ───────────────────────────────────────────────────
+ * Indsættelsen er ét batch. Før normaliseringen kunne ÉN regel med en
+ * opfunden `taskType` få hele batchen afvist — 19 af 22 private guides bar
+ * mindst én, og fejlen blev slugt uden log. Brugeren fik nul opgaver og
+ * ingen besked.
+ *
+ * Efter normaliseringen bør `ugyldige` altid være tom. Vagten bliver stående
+ * alligevel: den gør et fremtidigt hul til en log-linje og et delvist
+ * resultat i stedet for til en tavs nul-batch.
+ */
+export function partitionerPaaOpgavetype(tasks: GeneratedTaskInput[]): {
+  gyldige: GeneratedTaskInput[]
+  ugyldige: GeneratedTaskInput[]
+} {
+  const gyldige: GeneratedTaskInput[] = []
+  const ugyldige: GeneratedTaskInput[] = []
+  for (const t of tasks) {
+    (erCanoniskOpgavetype(t.taskType) ? gyldige : ugyldige).push(t)
+  }
+  return { gyldige, ugyldige }
 }
 
 /**
