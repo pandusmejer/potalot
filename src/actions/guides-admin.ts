@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked, fangetFejlBesked } from '@/lib/data-fejl'
 import { requireAdmin } from '@/lib/auth'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { revalidatePath } from 'next/cache'
@@ -57,7 +58,7 @@ export async function createMasterGuide(
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette master-guide' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette master-guide') }
 
   revalidatePath('/admin/guides')
   revalidatePath('/guides')
@@ -92,7 +93,7 @@ export async function updateMasterGuide(
     .eq('id', id)
     .is('user_id', null)
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme guiden. Prøv igen.') }
 
   revalidatePath('/admin/guides')
   revalidatePath('/guides')
@@ -156,7 +157,7 @@ export async function promoteGuideToMaster(
       p_guide_id: options.replaceExistingMasterId,
       p_replacement_guide_id: guideId,
     })
-    if (relinkErr) return { error: `Kunne ikke erstatte eksisterende master: ${relinkErr.message}` }
+    if (relinkErr) return { error: dataFejlBesked(relinkErr, 'Kunne ikke erstatte den eksisterende master-guide. Prøv igen.') }
   }
 
   // Promovér: fjern user_id, marker admin som creator
@@ -168,7 +169,7 @@ export async function promoteGuideToMaster(
       updated_at: new Date().toISOString(),
     })
     .eq('id', guideId)
-  if (updErr) return { error: updErr.message }
+  if (updErr) return { error: dataFejlBesked(updErr, 'Kunne ikke promovere guiden. Prøv igen.') }
 
   revalidatePath('/admin/guides')
   revalidatePath('/guides')
@@ -410,7 +411,7 @@ export async function flagUserGuide(
       delete_at: deleteAt.toISOString(),
     })
     .eq('id', guideId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke flage guiden. Prøv igen.') }
 
   revalidatePath('/admin/guides')
   revalidatePath(`/guides/${guideId}`)
@@ -429,7 +430,7 @@ export async function unflagGuide(guideId: string): Promise<{ ok: true } | { err
       delete_at: null,
     })
     .eq('id', guideId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke fjerne flaget. Prøv igen.') }
   revalidatePath('/admin/guides')
   revalidatePath(`/guides/${guideId}`)
   return { ok: true }
@@ -600,7 +601,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
     if (!textBlock || textBlock.type !== 'text') return { error: 'Tomt AI-svar' }
     raw = textBlock.text.trim()
   } catch (e: unknown) {
-    return { error: `AI-fejl: ${e instanceof Error ? e.message : 'ukendt'}` }
+    return { error: fangetFejlBesked(e, 'Vi kunne ikke hente et forslag lige nu. Prøv igen om lidt.') }
   }
 
   const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/)

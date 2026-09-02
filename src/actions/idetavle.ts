@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { Idea } from '@/lib/types'
@@ -77,7 +78,7 @@ export async function createIdea(input: CreateIdeaInput): Promise<{ id: string }
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette idé' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette idé') }
 
   revalidatePath('/idetavle')
   return { id: data.id as string }
@@ -106,7 +107,7 @@ export async function updateIdea(
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme idéen. Prøv igen.') }
   revalidatePath('/idetavle')
   return { ok: true }
 }
@@ -120,7 +121,7 @@ export async function deleteIdea(id: string): Promise<{ ok: true } | { error: st
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette idéen. Prøv igen.') }
   revalidatePath('/idetavle')
   return { ok: true }
 }

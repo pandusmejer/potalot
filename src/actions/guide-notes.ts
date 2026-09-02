@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -38,7 +39,7 @@ export async function saveMyGuideNote(
       .delete()
       .eq('user_id', userId)
       .eq('guide_id', guideId)
-    if (error) return { error: error.message }
+    if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette din note. Prøv igen.') }
   } else {
     const { error } = await supabase
       .from('user_guide_notes')
@@ -48,7 +49,7 @@ export async function saveMyGuideNote(
         note: trimmed,
         updated_at: new Date().toISOString(),
       })
-    if (error) return { error: error.message }
+    if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme din note. Prøv igen.') }
   }
 
   revalidatePath(`/guides/${guideId}`)

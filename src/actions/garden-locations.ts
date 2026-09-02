@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { GardenLocation } from '@/lib/types'
@@ -96,7 +97,7 @@ export async function createGardenLocation(
     .select('*')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette stedet' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette stedet') }
 
   revalidatePath('/mine-planter')
   return { ok: true, location: rowToLocation(data as GardenLocationRow) }
@@ -131,7 +132,7 @@ export async function updateGardenLocation(
     .update(patch)
     .eq('id', input.id)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme voksestedet. Prøv igen.') }
 
   revalidatePath('/mine-planter')
   revalidatePath(`/mine-planter/sted/${input.id}`)

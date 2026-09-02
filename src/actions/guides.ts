@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked, fangetFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { revalidatePath } from 'next/cache'
@@ -285,7 +286,7 @@ export async function createGuide(input: CreateGuideInput): Promise<{ id: string
     })
     .select('id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette guide' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette guide') }
 
   revalidatePath('/guides')
   return { id: data.id as string }
@@ -334,7 +335,7 @@ export async function cloneGuideToOwn(
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke kopiere guide' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke kopiere guide') }
 
   // master_apprentice-badge: brugeren har klonet en master til personlig version
   const { maybeAwardMasterApprentice } = await import('@/actions/badges')
@@ -396,7 +397,7 @@ export async function updateUserGuide(
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme guiden. Prøv igen.') }
   revalidatePath('/guides')
   revalidatePath(`/guides/${id}`)
   return { ok: true }
@@ -415,7 +416,7 @@ export async function getGuideUsageStats(id: string): Promise<GuideUsageStats | 
   await requireUser()
   const supabase = await createClient()
   const { data, error } = await supabase.rpc('guide_usage_stats', { p_guide_id: id })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke hente, hvor guiden er i brug. Prøv igen.') }
   const raw = data as Record<string, unknown> | null
   if (!raw) return { error: 'Ingen data' }
   if (typeof raw.error === 'string') return { error: raw.error }
@@ -447,7 +448,7 @@ export async function deleteGuide(
     p_guide_id: id,
     p_replacement_guide_id: options?.replacementGuideId ?? null,
   })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette guiden. Prøv igen.') }
   const result = data as {
     plant_name: string
     affected_user_ids: string[]
@@ -610,7 +611,7 @@ export async function attachGuideToInventory(
     .update({ guide_id: guideId, updated_at: new Date().toISOString() })
     .eq('id', inventoryId)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke knytte guiden til frøposen. Prøv igen.') }
   revalidatePath(`/froebank/${inventoryId}`)
   revalidatePath('/froebank')
   return { ok: true }
@@ -706,7 +707,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
     if (!textBlock || textBlock.type !== 'text') return { error: 'Tom AI-svar' }
     raw = textBlock.text.trim()
   } catch (e: unknown) {
-    return { error: `AI-fejl: ${e instanceof Error ? e.message : 'ukendt'}` }
+    return { error: fangetFejlBesked(e, 'Vi kunne ikke hente et forslag lige nu. Prøv igen om lidt.') }
   }
 
   // Strip evt. markdown
@@ -761,7 +762,7 @@ ${input.primaryCategoryId ? `- Kategori: ${input.primaryCategoryId}` : ''}`
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme guide' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke gemme guide') }
 
   revalidatePath('/guides')
   return { id: data.id as string }

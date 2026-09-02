@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -226,7 +227,7 @@ export async function createVariety(input: {
     .single()
   if (error || !data) {
     if (error?.code === '23505') return { error: 'Denne sort er allerede tilføjet til gruppen' }
-    return { error: error?.message ?? 'Kunne ikke oprette sort' }
+    return { error: dataFejlBesked(error, 'Kunne ikke oprette sort') }
   }
   revalidatePath(`/grupper/${input.groupId}`)
   const { maybeAwardCurator } = await import('@/actions/badges')
@@ -246,7 +247,7 @@ export async function deleteVariety(varietyId: string): Promise<{ ok: true } | {
     .from('group_varieties')
     .delete()
     .eq('id', varietyId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke fjerne sorten fra gruppen. Prøv igen.') }
   if (v?.group_id) revalidatePath(`/grupper/${v.group_id}`)
   return { ok: true }
 }
@@ -263,7 +264,7 @@ export async function setVarietyStatus(input: {
     const { error } = await supabase
       .from('user_variety_status')
       .insert({ user_id: userId, variety_id: input.varietyId, status: input.status })
-    if (error && error.code !== '23505') return { error: error.message }
+    if (error && error.code !== '23505') return { error: dataFejlBesked(error, 'Kunne ikke gemme din status på sorten. Prøv igen.') }
     if (input.status === 'dyrker') {
       const { maybeAwardGreenThumb } = await import('@/actions/badges')
       maybeAwardGreenThumb(userId).catch(() => {})
@@ -275,7 +276,7 @@ export async function setVarietyStatus(input: {
       .eq('user_id', userId)
       .eq('variety_id', input.varietyId)
       .eq('status', input.status)
-    if (error) return { error: error.message }
+    if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme din status på sorten. Prøv igen.') }
   }
 
   // Find group_id for revalidation

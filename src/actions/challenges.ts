@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -198,7 +199,7 @@ export async function createChallenge(input: {
     })
     .select('id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette challenge' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette challenge') }
   revalidatePath(`/grupper/${input.groupId}`)
   return { id: data.id as string }
 }
@@ -212,7 +213,7 @@ export async function deleteChallenge(challengeId: string): Promise<{ ok: true }
     .eq('id', challengeId)
     .maybeSingle()
   const { error } = await supabase.from('challenges').delete().eq('id', challengeId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette udfordringen. Prøv igen.') }
   if (c?.group_id) revalidatePath(`/grupper/${c.group_id}`)
   return { ok: true }
 }
@@ -242,7 +243,7 @@ export async function submitChallengeEntry(input: {
     )
     .select('id, challenge_id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme bidrag' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke gemme bidrag') }
 
   // Find challenge-context for revalidation + reward-badge tildeling
   const { data: c } = await supabase
@@ -456,7 +457,7 @@ export async function withdrawChallengeEntry(entryId: string): Promise<{ ok: tru
     .eq('id', entryId)
     .maybeSingle()
   const { error } = await supabase.from('challenge_entries').delete().eq('id', entryId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke trække dit bidrag tilbage. Prøv igen.') }
   type Ref = { group_id: string }
   const ref = e?.challenges as Ref | Ref[] | undefined
   const groupId = Array.isArray(ref) ? ref[0]?.group_id : ref?.group_id

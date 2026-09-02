@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -39,7 +40,7 @@ export async function getOrCreateInvitationToken(
   const supabase = await createClient()
   const { data, error } = await supabase
     .rpc('get_or_create_group_invitation', { p_group_id: groupId })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke lave et invitationslink. Prøv igen.') }
   return { token: data as string }
 }
 
@@ -50,7 +51,7 @@ export async function rotateInvitationToken(
   const supabase = await createClient()
   const { data, error } = await supabase
     .rpc('rotate_group_invitation', { p_group_id: groupId })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke forny invitationslinket. Prøv igen.') }
   return { token: data as string }
 }
 
@@ -90,7 +91,7 @@ export async function submitJoinRequest(input: {
   const supabase = await createClient()
   const { data, error } = await supabase
     .rpc('submit_join_request', { p_token: input.token, p_message: input.message ?? null })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke sende din anmodning. Prøv igen.') }
   if (!data) return { error: 'Kunne ikke indsende anmodning' }
   revalidatePath(`/grupper/${data}`)
   return { groupId: data as string }
@@ -128,7 +129,7 @@ export async function approveJoinRequest(
   const supabase = await createClient()
   const { error } = await supabase
     .rpc('approve_join_request', { p_group_id: groupId, p_user_id: userId })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke godkende anmodningen. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }
@@ -144,7 +145,7 @@ export async function declineJoinRequest(
     .delete()
     .eq('group_id', groupId)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke afvise anmodningen. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }

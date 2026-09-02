@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
@@ -399,6 +400,9 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
       })
       .select('id')
       .single()
+    // Intern helper: fejlen logges af kalderen og vises ALDRIG for brugeren
+    // (kaldestederne svarer med deres egen danske besked). Derfor ingen
+    // dataFejlBesked her — det er ikke en brugerrettet streng.
     return { data: data as { id: string } | null, error: error?.message ?? null }
   }
 }
@@ -486,7 +490,7 @@ export async function opretEgenPlante(
     .single()
 
   if (error || !plant) {
-    return { error: error?.message ?? 'Kunne ikke oprette plante.' }
+    return { error: dataFejlBesked(error, 'Kunne ikke oprette plante.') }
   }
   const plantId = (plant as { id: string }).id
 
@@ -687,7 +691,7 @@ export async function deletePlantLog(
     .delete()
     .eq('id', logId)
     .eq('user_id', userId)
-  if (delErr) return { error: delErr.message }
+  if (delErr) return { error: dataFejlBesked(delErr, 'Kunne ikke slette logindførslen. Prøv igen.') }
 
   // Ryd op i Storage — best effort, ignorér fejl
   const urls = (row.image_urls as string[] | null) ?? []

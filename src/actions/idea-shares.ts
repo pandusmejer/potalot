@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { Idea } from '@/lib/types'
@@ -74,7 +75,7 @@ export async function shareIdeaByUsername(
     if (error.code === '23505') {
       return { error: `Idéen er allerede delt med ${pickLabel(target)}` }
     }
-    return { error: error.message }
+    return { error: dataFejlBesked(error, 'Kunne ikke dele idéen. Prøv igen.') }
   }
 
   revalidatePath('/idetavle')
@@ -106,7 +107,7 @@ export async function unshareIdea(
     .delete()
     .eq('idea_id', ideaId)
     .eq('recipient_user_id', recipientUserId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke stoppe delingen. Prøv igen.') }
 
   revalidatePath('/idetavle')
   return { ok: true }
@@ -165,7 +166,7 @@ export async function shareIdeaWithGroup(
     .insert({ idea_id: ideaId, group_id: groupId, shared_by_user_id: userId })
   if (error) {
     if (error.code === '23505') return { error: 'Idéen er allerede delt med denne gruppe' }
-    return { error: error.message }
+    return { error: dataFejlBesked(error, 'Kunne ikke dele idéen med gruppen. Prøv igen.') }
   }
 
   revalidatePath('/idetavle')
@@ -192,7 +193,7 @@ export async function unshareIdeaFromGroup(
     .delete()
     .eq('idea_id', ideaId)
     .eq('group_id', groupId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke stoppe delingen med gruppen. Prøv igen.') }
 
   revalidatePath('/idetavle')
   return { ok: true }

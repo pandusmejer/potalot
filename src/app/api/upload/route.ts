@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { dataFejlBesked, fangetFejlBesked } from '@/lib/data-fejl'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     const stack = e instanceof Error ? e.stack : undefined
     console.error('[api/upload] uncaught error:', msg, stack)
     return NextResponse.json(
-      { error: `Server-fejl ved upload: ${msg}` },
+      { error: fangetFejlBesked(e, 'Billedet kunne ikke uploades. Prøv igen.') },
       { status: 500 }
     )
   }
@@ -102,14 +103,13 @@ async function handleUpload(request: NextRequest) {
         ext = 'jpg'
         contentType = 'image/jpeg'
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : 'ukendt'
-        console.error('[api/upload] HEIC convert failed:', msg, {
+        console.error('[api/upload] HEIC convert failed:', e instanceof Error ? e.message : e, {
           fileName: file.name,
           fileSize: file.size,
           fileType: file.type,
         })
         return NextResponse.json(
-          { error: `HEIC-konvertering fejlede: ${msg}. Prøv at vælge billedet i et andet format (Indstillinger → Kamera → Formater → Mest kompatibel) eller tag billedet om.` },
+          { error: 'Billedet kunne ikke konverteres fra HEIC. Vælg billedet i et andet format (Indstillinger → Kamera → Formater → Mest kompatibel), eller tag billedet om.' },
           { status: 400 }
         )
       }
@@ -127,13 +127,12 @@ async function handleUpload(request: NextRequest) {
       contentType = file.type || 'image/jpeg'
     }
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'ukendt fejl'
-    console.error('[api/upload] image processing failed:', msg, {
+    console.error('[api/upload] image processing failed:', e instanceof Error ? e.message : e, {
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
     })
-    return NextResponse.json({ error: `Billedbehandling fejlede: ${msg}` }, { status: 400 })
+    return NextResponse.json({ error: fangetFejlBesked(e, 'Billedet kunne ikke behandles. Prøv et andet billede.') }, { status: 400 })
   }
 
   const path = `${user.id}/${folder}/${crypto.randomUUID()}.${ext}`
@@ -148,7 +147,7 @@ async function handleUpload(request: NextRequest) {
 
   if (error) {
     console.error('[api/upload] storage upload failed:', error)
-    return NextResponse.json({ error: `Storage: ${error.message}` }, { status: 500 })
+    return NextResponse.json({ error: dataFejlBesked(error, 'Billedet kunne ikke gemmes. Prøv igen.') }, { status: 500 })
   }
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)

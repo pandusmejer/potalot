@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -52,7 +53,7 @@ export async function reportContent(input: {
     })
   if (error) {
     if (error.code === '23505') return { error: 'Du har allerede rapporteret dette indhold' }
-    return { error: error.message }
+    return { error: dataFejlBesked(error, 'Kunne ikke sende rapporten. Prøv igen.') }
   }
   revalidatePath(`/grupper/${input.groupId}`)
   return { ok: true }
@@ -111,14 +112,14 @@ export async function resolveReport(input: {
     }
     const table = tableMap[input.targetType]
     const { error: delErr } = await supabase.from(table).delete().eq('id', input.targetId)
-    if (delErr) return { error: `Kunne ikke slette indhold: ${delErr.message}` }
+    if (delErr) return { error: dataFejlBesked(delErr, 'Kunne ikke slette indholdet. Prøv igen.') }
   }
 
   const { error } = await supabase
     .from('content_reports')
     .update({ status: input.decision, resolved_at: new Date().toISOString(), resolved_by: userId })
     .eq('id', input.reportId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke afslutte rapporten. Prøv igen.') }
   revalidatePath(`/grupper/${input.groupId}`)
   return { ok: true }
 }
@@ -136,7 +137,7 @@ export async function blockUser(blockedUserId: string): Promise<{ ok: true } | {
     .insert({ blocker_user_id: userId, blocked_user_id: blockedUserId })
   if (error) {
     if (error.code === '23505') return { ok: true }
-    return { error: error.message }
+    return { error: dataFejlBesked(error, 'Kunne ikke blokere brugeren. Prøv igen.') }
   }
   return { ok: true }
 }
@@ -149,7 +150,7 @@ export async function unblockUser(blockedUserId: string): Promise<{ ok: true } |
     .delete()
     .eq('blocker_user_id', userId)
     .eq('blocked_user_id', blockedUserId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke ophæve blokeringen. Prøv igen.') }
   return { ok: true }
 }
 
@@ -201,7 +202,7 @@ export async function updateGroupSettings(input: {
     .from('user_groups')
     .update(update)
     .eq('id', input.groupId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme gruppens indstillinger. Prøv igen.') }
   revalidatePath(`/grupper/${input.groupId}`)
   revalidatePath('/grupper/udforsk')
   return { ok: true }

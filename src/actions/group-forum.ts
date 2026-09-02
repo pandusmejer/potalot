@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { ForumPostType, ForumCategoryId } from '@/lib/constants'
@@ -197,7 +198,7 @@ export async function createForumPost(input: {
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke oprette opslag' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke oprette opslag') }
   revalidatePath(`/grupper/${input.groupId}`)
   // Fire-and-forget badge-tildeling
   const { maybeAwardFirstPost } = await import('@/actions/badges')
@@ -215,7 +216,7 @@ export async function deleteForumPost(
     .from('forum_posts')
     .delete()
     .eq('id', postId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette indlægget. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }
@@ -231,7 +232,7 @@ export async function togglePostPinned(
     .from('forum_posts')
     .update({ is_pinned: pinned })
     .eq('id', postId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke ændre, om indlægget er fastgjort. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }
@@ -247,7 +248,7 @@ export async function togglePostLocked(
     .from('forum_posts')
     .update({ is_locked: locked })
     .eq('id', postId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke ændre, om indlægget er låst. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }
@@ -272,7 +273,7 @@ export async function postReply(input: {
     })
     .select('id')
     .single()
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme svar' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke gemme svar') }
 
   // Hent post-ets group_id til revalidation
   const { data: post } = await supabase
@@ -294,7 +295,7 @@ export async function deleteReply(
     .from('forum_replies')
     .delete()
     .eq('id', replyId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette svaret. Prøv igen.') }
 
   const { data: post } = await supabase
     .from('forum_posts')
@@ -315,7 +316,7 @@ export async function markBestReply(
     .from('forum_posts')
     .update({ best_reply_id: replyId })
     .eq('id', postId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke markere bedste svar. Prøv igen.') }
 
   const { data: post } = await supabase
     .from('forum_posts')

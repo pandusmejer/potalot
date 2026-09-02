@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -82,7 +83,7 @@ export async function createGroup(input: {
       p_tags: input.tags ?? [],
       p_focus_plants: cleanFocusPlants,
     })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke oprette gruppen. Prøv igen.') }
   if (!data) return { error: 'Kunne ikke oprette gruppe' }
 
   revalidatePath('/grupper')
@@ -113,7 +114,7 @@ export async function joinOpenGroup(groupId: string): Promise<{ ok: true } | { e
   await requireUser()
   const supabase = await createClient()
   const { error } = await supabase.rpc('join_open_group', { p_group_id: groupId })
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke melde dig ind i gruppen. Prøv igen.') }
   revalidatePath('/grupper')
   revalidatePath('/grupper/udforsk')
   revalidatePath(`/grupper/${groupId}`)
@@ -138,7 +139,7 @@ export async function updateGroup(
     })
     .eq('id', groupId)
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme ændringerne. Prøv igen.') }
   revalidatePath('/grupper')
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
@@ -151,7 +152,7 @@ export async function deleteGroup(groupId: string): Promise<{ ok: true } | { err
     .from('user_groups')
     .delete()
     .eq('id', groupId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette gruppen. Prøv igen.') }
   revalidatePath('/grupper')
   return { ok: true }
 }
@@ -180,7 +181,7 @@ export async function addGroupMember(
     .insert({ group_id: groupId, user_id: target.id, role: 'member' })
   if (error) {
     if (error.code === '23505') return { error: 'Brugeren er allerede medlem' }
-    return { error: error.message }
+    return { error: dataFejlBesked(error, 'Kunne ikke tilføje medlemmet. Prøv igen.') }
   }
 
   revalidatePath(`/grupper/${groupId}`)
@@ -206,7 +207,7 @@ export async function removeGroupMember(
     .delete()
     .eq('group_id', groupId)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke fjerne medlemmet. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }
@@ -223,7 +224,7 @@ export async function leaveGroup(groupId: string): Promise<{ ok: true } | { erro
     .delete()
     .eq('group_id', groupId)
     .eq('user_id', userId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke melde dig ud af gruppen. Prøv igen.') }
   revalidatePath('/grupper')
   return { ok: true }
 }

@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import {
@@ -191,7 +192,7 @@ export async function markNotificationRead(id: string): Promise<{ ok: true } | {
     .from('notifications')
     .update({ is_read: true })
     .eq('id', id)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke markere påmindelsen som læst. Prøv igen.') }
   revalidatePath('/grupper')
   return { ok: true }
 }
@@ -204,7 +205,7 @@ export async function markAllNotificationsRead(): Promise<{ ok: true } | { error
     .update({ is_read: true })
     .eq('user_id', userId)
     .eq('is_read', false)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke markere påmindelserne som læst. Prøv igen.') }
   revalidatePath('/')
   revalidatePath('/grupper')
   return { ok: true }
@@ -224,7 +225,7 @@ export async function markGroupNotificationsRead(groupId: string): Promise<{ ok:
     .eq('user_id', userId)
     .eq('is_read', false)
     .eq('group_id', groupId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke markere gruppens påmindelser som læst. Prøv igen.') }
   revalidatePath('/grupper')
   return { ok: true }
 }
@@ -309,7 +310,7 @@ export async function markGroupCategoryNotificationsRead(
     .eq('is_read', false)
     .eq('group_id', groupId)
     .in('type', types)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke markere påmindelserne som læst. Prøv igen.') }
   revalidatePath('/grupper')
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
@@ -319,6 +320,6 @@ export async function deleteNotification(id: string): Promise<{ ok: true } | { e
   await requireUser()
   const supabase = await createClient()
   const { error } = await supabase.from('notifications').delete().eq('id', id)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette påmindelsen. Prøv igen.') }
   return { ok: true }
 }

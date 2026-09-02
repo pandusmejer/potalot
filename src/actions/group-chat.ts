@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { createTask } from '@/actions/havekalender'
@@ -85,7 +86,7 @@ export async function postChatMessage(input: {
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke sende besked' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke sende besked') }
 
   revalidatePath(`/grupper/${input.groupId}`)
   return { id: data.id as string }
@@ -101,7 +102,7 @@ export async function deleteChatMessage(
     .from('group_chat_messages')
     .delete()
     .eq('id', messageId)
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette beskeden. Prøv igen.') }
   revalidatePath(`/grupper/${groupId}`)
   return { ok: true }
 }

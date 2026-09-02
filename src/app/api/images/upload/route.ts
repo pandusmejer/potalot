@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { dataFejlBesked, fangetFejlBesked } from '@/lib/data-fejl'
 import sharp from 'sharp'
 import heicConvert from 'heic-convert'
 import { createClient } from '@/lib/supabase/server'
@@ -70,8 +71,7 @@ export async function POST(request: NextRequest) {
       })
       buffer = Buffer.from(converted)
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'ukendt fejl'
-      return NextResponse.json({ error: `Kunne ikke konvertere HEIC: ${msg}` }, { status: 500 })
+      return NextResponse.json({ error: fangetFejlBesked(e, 'Billedet kunne ikke konverteres fra HEIC. Prøv et andet format.') }, { status: 500 })
     }
   }
 
@@ -91,8 +91,7 @@ export async function POST(request: NextRequest) {
       .jpeg({ quality: 70, mozjpeg: true })
       .toBuffer()
   } catch (e) {
-    const msg = e instanceof Error ? e.message : 'ukendt fejl'
-    return NextResponse.json({ error: `Kunne ikke processere billedet: ${msg}` }, { status: 500 })
+    return NextResponse.json({ error: fangetFejlBesked(e, 'Billedet kunne ikke behandles. Prøv et andet billede.') }, { status: 500 })
   }
 
   // 3. Upload begge til Supabase Storage
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
   ])
 
   if (mainUp.error) {
-    return NextResponse.json({ error: `Storage-fejl: ${mainUp.error.message}` }, { status: 500 })
+    return NextResponse.json({ error: dataFejlBesked(mainUp.error, 'Billedet kunne ikke gemmes. Prøv igen.') }, { status: 500 })
   }
   if (thumbUp.error) {
     // Main lykkedes, thumb fejlede — accepter alligevel

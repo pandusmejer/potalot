@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type {
@@ -277,7 +278,7 @@ export async function completeTask(id: string): Promise<
     .eq('id', id)
     .eq('user_id', userId)
 
-  if (updErr) return { error: updErr.message }
+  if (updErr) return { error: dataFejlBesked(updErr, 'Kunne ikke markere opgaven som klaret. Prøv igen.') }
 
   revalidatePath('/kalender')
   revalidatePath('/')
@@ -315,7 +316,7 @@ export async function completeTaskWithLog(input: {
     .eq('id', input.taskId)
     .eq('user_id', userId)
 
-  if (updErr) return { error: updErr.message }
+  if (updErr) return { error: dataFejlBesked(updErr, 'Kunne ikke gemme opgaven. Prøv igen.') }
 
   // 2. Opret log-entry
   const { error: logErr } = await supabase

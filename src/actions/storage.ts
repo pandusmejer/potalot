@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 
 const BUCKET = 'media'
@@ -36,7 +37,7 @@ export async function uploadImage(
     .from(BUCKET)
     .upload(path, file, { contentType: file.type, upsert: false })
 
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme billedet. Prøv igen.') }
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
   return { url: data.publicUrl }
@@ -51,6 +52,6 @@ export async function deleteImage(url: string): Promise<{ ok: true } | { error: 
   const path = url.slice(idx + marker.length)
 
   const { error } = await supabase.storage.from(BUCKET).remove([path])
-  if (error) return { error: error.message }
+  if (error) return { error: dataFejlBesked(error, 'Kunne ikke slette billedet. Prøv igen.') }
   return { ok: true }
 }

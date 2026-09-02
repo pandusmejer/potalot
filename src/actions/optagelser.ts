@@ -19,6 +19,7 @@
  */
 
 import { requireUser } from '@/lib/auth'
+import { dataFejlBesked } from '@/lib/data-fejl'
 import { createClient } from '@/lib/supabase/server'
 import { beregnSaeson } from '@/lib/havebog-saeson'
 import { createPlantLog } from '@/actions/mine-planter'
@@ -93,7 +94,7 @@ export async function gemOptagelse(
     .select('id')
     .single()
 
-  if (error || !data) return { error: error?.message ?? 'Kunne ikke gemme optagelsen' }
+  if (error || !data) return { error: dataFejlBesked(error, 'Kunne ikke gemme optagelsen') }
   return { id: data.id as string }
 }
 
