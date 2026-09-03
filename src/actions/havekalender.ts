@@ -420,7 +420,10 @@ function mapTaskTypeToLogType(taskType: TaskType): PlantLogType | null {
   }
 }
 
-/** Overskrift til den log, "Føj til log?" opretter. Prikling får sin egen. */
-export function mapTaskTypeToLogTitle(taskType: TaskType, taskTitle: string): string {
+/**
+ * Overskrift til den log, "Føj til log?" opretter. Prikling får sin egen.
+ * (Ikke eksporteret: 'use server'-filer må kun eksportere async-funktioner.)
+ */
+function mapTaskTypeToLogTitle(taskType: TaskType, taskTitle: string): string {
   return taskType === 'repot' ? 'Priklet om' : taskTitle
 }
