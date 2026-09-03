@@ -598,7 +598,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 )}
                 <div className="flex gap-2 flex-wrap">
                   <Button asChild>
-                    <Link href={`/froebank/${scanCreatedId}`}>{scanIncomplete ? 'Åbn og udfyld' : 'Se i frøbank'}</Link>
+                    <Link href={`/froebank/${scanCreatedId}`}>{scanIncomplete ? 'Åbn og udfyld' : 'Se i Frøbanken'}</Link>
                   </Button>
                   <Button variant="outline" onClick={() => {
                     setScanImages([]); setScanPrimary(null); setScanStage('idle')
@@ -707,7 +707,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                 )}
                 <div className="flex gap-2 flex-wrap">
                   <Button asChild>
-                    <Link href={`/froebank/${scanCreatedId}`}>Se i frøbank</Link>
+                    <Link href={`/froebank/${scanCreatedId}`}>Se i Frøbanken</Link>
                   </Button>
                   <Button variant="outline" onClick={() => {
                     setLinkUrl(''); setScanStage('idle')

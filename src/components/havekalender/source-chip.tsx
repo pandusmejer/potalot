@@ -12,7 +12,7 @@ const sans = 'var(--font-manrope)'
 export function taskSourceLabel(source: TaskSource): string | null {
   switch (source) {
     case 'plant': return 'Fra planter'
-    case 'inventory': return 'Fra frøbank'
+    case 'inventory': return 'Fra Frøbanken'
     case 'guide': return 'Fra guide'
     case 'general': return 'Sæson'
     case 'manual': return 'Egen'

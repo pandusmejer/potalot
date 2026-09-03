@@ -383,7 +383,7 @@ export const DEMO_ON_THIS_DAY: OnThisDayEntry[] = [
     yearsAgo: 2,
     plantName: 'Tomat',
     variety: 'San Marzano',
-    text: 'Du noterede: "Spirerne er stærkere end sidste år — solen flytter sig pænt over jorden."',
+    text: 'Du noterede: «Spirerne er stærkere end sidste år — solen flytter sig pænt over jorden.»',
   },
 ]
 
@@ -640,12 +640,12 @@ export interface InspirerForslag {
 export const DEMO_INSPIRER: InspirerForslag = {
   kicker: 'Prøv næste år',
   navn: 'Malwina jordbær',
-  begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+  begrundelse: 'Forlænger sæsonen 4–6 uger efter Korona.',
   billede: '/images/frokort/jordbaer-korona.png',
   kandidater: [
     {
       navn: 'Malwina jordbær',
-      begrundelse: 'Forlænger sæsonen 4-6 uger efter Korona.',
+      begrundelse: 'Forlænger sæsonen 4–6 uger efter Korona.',
       billede: '/images/frokort/jordbaer-korona.png',
       titel: 'Malwina', undertitel: 'Senere sort', href: '/froebank',
     },

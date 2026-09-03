@@ -38,13 +38,13 @@ const LAANT_ERFARING_BY_MONTH: LaantErfaring[] = [
   // Februar
   {
     paaDenneDag: 'På denne tid af året sår mange dyrkere chili og peberfrugt indendørs — de langsomste sorter først.',
-    historik: 'Chili og peberfrugt hører til sæsonens tidligste såninger — typisk 10-21 dage om at spire ved stuevarme.',
+    historik: 'Chili og peberfrugt hører til sæsonens tidligste såninger — typisk 10–21 dage om at spire ved stuevarme.',
     ligeNu: 'De tidligste såninger står i vindueskarme landet over netop nu.',
   },
   // Marts
   {
     paaDenneDag: 'På denne tid af året forspirer mange dyrkere deres tomater — marts er den klassiske tomatmåned.',
-    historik: 'Tomater sået i marts giver typisk høst fra sidst i juli — omkring 110-130 dage fra frø til frugt.',
+    historik: 'Tomater sået i marts giver typisk høst fra sidst i juli — omkring 110–130 dage fra frø til frugt.',
     ligeNu: 'Marts er forspirings-måneden — vindueskarmene fyldes med såbakker.',
   },
   // April
@@ -62,7 +62,7 @@ const LAANT_ERFARING_BY_MONTH: LaantErfaring[] = [
   // Juni
   {
     paaDenneDag: 'På denne tid af året begynder mange dyrkere at hærde tomater og chili af før udplantning.',
-    historik: 'Den typiske danske dyrker høster de første tomater 110-130 dage efter såning — for marts-såninger vil det sige fra sidst i juli.',
+    historik: 'Den typiske danske dyrker høster de første tomater 110–130 dage efter såning — for marts-såninger vil det sige fra sidst i juli.',
     ligeNu: 'De fleste varmekrævende sorter kommer i jorden i disse uger — jorden er varm nok nu.',
   },
   // Juli

@@ -17,6 +17,7 @@ import { join } from 'node:path'
 import { authFejlBesked } from '@/lib/auth-fejl'
 import { KODEORD_MIN_TEGN, KODEORD_KRAV_TEKST, KODEORD_FOR_KORT } from '@/lib/kodeord'
 import { SEASONAL_CHALLENGES } from '@/lib/seasonal-challenges'
+import { laantErfaring, havevisdomPulje } from '@/lib/havevisdom'
 
 let bestaaet = 0
 let fejlet = 0
@@ -130,6 +131,7 @@ console.log('\n[Rettede sprogfejl må ikke genopstå]')
     { moenster: /'Tom AI-svar'/, hvorfor: 'intetkøn: "Tomt AI-svar"' },
     { moenster: /\}MB\b/, hvorfor: 'enheden skrives med mellemrum: "maks. 8 MB"' },
     { moenster: /\bmax \d/, hvorfor: 'dansk forkortelse er "maks."' },
+    { moenster: /\betc\./, hvorfor: 'dansk forkortelse er "osv." (Batch 4)' },
   ]
   for (const { moenster, hvorfor } of FORBUDT) {
     const traef: string[] = []
@@ -140,6 +142,32 @@ console.log('\n[Rettede sprogfejl må ikke genopstå]')
     }
     tjek(`${moenster.source} — ${hvorfor}`, traef.length === 0, traef.join('\n      '))
   }
+}
+
+// ------------------------------------------------------- batch 4 (P3-polish)
+
+/**
+ * Batch 4 (3/9 2026) rettede typografi ét sted ad gangen — bevidst ingen
+ * globale regler for tankestreg/ellipse/citationstegn (de kræver en halv
+ * parser for at undgå falske positiver). Vagten dækker kun det, der kan
+ * udtrykkes sikkert: to konkrete komponenter og ét kurateret datasæt.
+ */
+console.log('\n[Frøbanken er produktnavnet, når en kilde-etiket peger på den]')
+{
+  const chip = udenKommentarer(readFileSync('src/components/havekalender/source-chip.tsx', 'utf8')).join('\n')
+  tjek("source-chip: inventory-kilden hedder 'Fra Frøbanken'",
+    chip.includes("'Fra Frøbanken'") && !/'Fra frøbank'/.test(chip))
+  const iHavenNu = udenKommentarer(readFileSync('src/components/havekalender/i-haven-nu.tsx', 'utf8')).join('\n')
+  tjek("i-haven-nu: frøbank-invitationens meta hedder 'Fra Frøbanken'",
+    iHavenNu.includes("'Fra Frøbanken'") && !/'Fra frøbank'/.test(iHavenNu))
+}
+
+console.log('\n[Havevisdom er kurateret prosa — talintervaller skrives med tankestreg]')
+for (let m = 1; m <= 12; m++) {
+  const e = laantErfaring(m)
+  const tekst = [e.paaDenneDag, e.historik, e.ligeNu, ...havevisdomPulje(m)].join(' ')
+  const fund = tekst.match(/\d+-\d+/)
+  tjek(`måned ${m}`, fund === null, fund ? `fandt "${fund[0]}" — skriv "${fund[0].replace('-', '–')}"` : '')
 }
 
 console.log(`\n${fejlet === 0 ? '✓' : '✗'} dansk-copy: ${bestaaet} bestået, ${fejlet} fejlet\n`)

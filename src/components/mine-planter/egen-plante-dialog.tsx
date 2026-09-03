@@ -70,7 +70,7 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
 
   function submit() {
     setError(null)
-    if (!name.trim()) { setError('Skriv mindst en art, fx "Tomat".'); return }
+    if (!name.trim()) { setError('Skriv mindst en art, fx “Tomat”.'); return }
     startTransition(async () => {
       const res = await opretEgenPlante({
         name: name.trim(),

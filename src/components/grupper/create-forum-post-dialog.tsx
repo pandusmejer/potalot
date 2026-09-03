@@ -111,7 +111,7 @@ export function CreateForumPostDialog({ groupId, initialVarietyId }: Props) {
               value={body}
               onChange={e => setBody(e.target.value)}
               rows={5}
-              placeholder="Beskriv din situation, hvad du har prøvet, etc."
+              placeholder="Beskriv din situation, hvad du har prøvet, osv."
               className="mt-1.5"
             />
           </div>

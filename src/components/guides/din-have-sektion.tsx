@@ -234,7 +234,7 @@ export function DinHaveSektion({
                 <Package className="h-3.5 w-3.5" />
                 {isSpecies
                   ? `Se ${plantName.toLowerCase()}sorter`
-                  : 'Tilføj til frøbank'}
+                  : 'Tilføj til Frøbanken'}
               </Link>
               <Link
                 href="/mine-planter"

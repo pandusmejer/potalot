@@ -63,7 +63,7 @@ export async function markDerivedTaskDone(
       date: today,
       type: 'note',
       title: input.taskTitle || null,
-      note: 'Markeret som udført fra "I haven i dag".',
+      note: 'Markeret som udført fra “I haven i dag”.',
     })
     .select('id')
     .single()
