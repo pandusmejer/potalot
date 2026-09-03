@@ -228,3 +228,48 @@ separate kontrakter og skal ikke ensrettes.
   `Docs/product/plantestadie-state-machine-backlog.md`
 - UserMode vs. NotificationProfile:
   `Docs/product/notifikationsprofil-vs-usermode-backlog.md`
+
+## Batch 4 — typografi og Frøbanken (Anna 3/9 2026)
+
+Målt i `src/` (ekskl. auto-genererede datasæt) før noget blev rettet.
+Konventionerne fandtes allerede — Batch 4 skrev dem ned og lukkede de få
+afvigelser i levende bruger-copy.
+
+| Tegn | Potalot-konvention | Målt |
+|---|---|---|
+| Tankestreg | **" — "** (lang tankestreg med mellemrum) | 2.553 mod 7 " – " |
+| Talinterval | **en dash uden mellemrum**: `10–21 dage`, `3–20 tegn`, `A–Å` | 63 |
+| Ellipse | **`…`** (ét tegn) i kurateret copy | 136 mod 0 `...` i prosa |
+| Citationstegn om navne, labels, filnavne | **“ ”** — `fx “Tomat”`, `Kunne ikke gemme “fil.jpg”` | 14 |
+| Citat af brugerens egne ord | **« »** — `Du sagde: «…»`, `Du noterede: «…»` | 4 |
+| Forkortelse | **osv.** (aldrig "etc.") | — |
+
+**Inputformat-undtagelsen.** Placeholders, Excel-skabelonen og demo-poser,
+der viser *hvad brugeren skal skrive* (`fx 7-14 dage`, `18-22 °C`),
+beholder bindestreg: `parseGerminationDays` i `afledninger.ts` læser kun
+bindestreg, og placeholderen må ikke lære brugeren et format, motoren
+ikke forstår. Udvides parseren, følger placeholderen med. Samme gælder
+Gartner-/udtræksprompter — de beskriver dataformatet, ikke brugerfladen.
+
+**Ingen globale vagter.** Tankestreg, ellipse og citationstegn kan ikke
+skelnes sikkert fra kode uden en halv parser. `test-dansk-copy.ts` vagter
+kun det, der kan udtrykkes sikkert: `etc.` i copy, de to kilde-etiketter
+nedenfor og havevisdommens intervaller.
+
+### Frøbanken vs. frøbank
+
+| Betydning | Form | Eksempler |
+|---|---|---|
+| Produktområdet (navigation, CTA, kildeangivelse) | **Frøbanken** | Se Frøbanken · Tilføj til Frøbanken · Flyt til Frøbanken · Oprettet fra Frøbanken · **Fra Frøbanken** |
+| Områdets eget navn på fanen/i overskriften | **Frøbank** / **Din Frøbank** / **Min Frøbank** | bottom-nav, hero-titel, Excel-ark, "Din Frøbank er tom" |
+| Generisk begreb — samlingen som ting | **frøbank** | Udvid din frøbank · I din frøbank · Din frøbank er vokset · Hold styr på frøbank |
+
+Kildeangivelsen på en opgave (`TaskSource` = `inventory`) peger på
+brugerens konkrete frøpost i Frøbanken — ikke på en kildetype. Derfor
+**Fra Frøbanken** i både `source-chip.tsx` og `i-haven-nu.tsx`. Chippen
+renderes i versaler, så forskellen brugeren ser, er den bestemte form.
+
+Ikke rørt (bevidst): statuslabelen `i_froebank` = "I frøbank" (en status,
+ikke en kilde eller CTA) og returetiketten "tilbage til frøbank" i
+tilføj-flowet. Begge følger den generiske læsning; vil Anna have dem som
+produktnavn, er det én linje hver.
