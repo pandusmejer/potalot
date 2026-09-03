@@ -241,7 +241,7 @@ export async function updateTask(input: UpdateTaskInput): Promise<{ ok: true } |
     console.error('updateTask fejlede:', error)
     return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
   }
-  if (!data) return { error: 'Opgave ikke fundet' }
+  if (!data) return { error: 'Vi kunne ikke finde opgaven. Måske er den allerede slettet.' }
 
   revalidatePath('/kalender')
   revalidatePath('/')
@@ -254,7 +254,14 @@ export async function updateTask(input: UpdateTaskInput): Promise<{ ok: true } |
  * UI kan prompt'e om at oprette en log-entry.
  */
 export async function completeTask(id: string): Promise<
-  | { ok: true; linkedPlantId: string | null; suggestedLogType: PlantLogType | null; taskTitle: string }
+  | {
+      ok: true
+      linkedPlantId: string | null
+      suggestedLogType: PlantLogType | null
+      /** Overskriften loggen får i Plantens historie (se mapTaskTypeToLogTitle). */
+      suggestedLogTitle: string
+      taskTitle: string
+    }
   | { error: string }
 > {
   const { id: userId } = await requireUser(); const supabase = await createClient()
@@ -266,7 +273,7 @@ export async function completeTask(id: string): Promise<
     .eq('user_id', userId)
     .single()
 
-  if (fetchErr || !task) return { error: 'Opgave ikke fundet' }
+  if (fetchErr || !task) return { error: 'Vi kunne ikke finde opgaven. Måske er den allerede slettet.' }
 
   const { error: updErr } = await supabase
     .from('calendar_tasks')
@@ -288,6 +295,7 @@ export async function completeTask(id: string): Promise<
     ok: true,
     linkedPlantId: task.linked_plant_id,
     suggestedLogType: mapTaskTypeToLogType(task.task_type as TaskType),
+    suggestedLogTitle: mapTaskTypeToLogTitle(task.task_type as TaskType, task.title),
     taskTitle: task.title,
   }
 }
@@ -385,11 +393,23 @@ export async function deleteTask(id: string): Promise<{ ok: true } | { error: st
 // Mapping: opgave-type → log-type
 // ============================================
 
+/**
+ * Opgavetype → log-type, når brugeren siger ja til "Føj til log?".
+ *
+ * `repot` er prikling (alle kalenderregler, TASK_STAGE, dagens-fokus — se
+ * Docs/product/prikling-vs-ompotning-backlog.md), men log-typen `repotting`
+ * er ompotning ("Pottet om" i historikken, milepæl, kompetencen
+ * "Ompotning"). De to må ikke mødes: en fuldført prikle-opgave logges derfor
+ * som en neutral `note` med egen overskrift "Priklet om" (samme mønster som
+ * afledte fokus-opgaver i plant-tasks.ts). Overskriften bærer handlingen;
+ * linked_task_id bærer sporet tilbage til opgaven. En rigtig log-type for
+ * prikling hører til den backlog-opgave, der splitter de to typer.
+ */
 function mapTaskTypeToLogType(taskType: TaskType): PlantLogType | null {
   switch (taskType) {
     case 'sowing':       return 'sowing'
     case 'pre_sow':      return 'sowing'
-    case 'repot':        return 'repotting'
+    case 'repot':        return 'note'
     case 'plant_out':    return 'planting_out'
     case 'watering':     return 'watering'
     case 'fertilizing':  return 'fertilizing'
@@ -398,4 +418,9 @@ function mapTaskTypeToLogType(taskType: TaskType): PlantLogType | null {
     case 'harvest':      return 'harvest'
     default:             return null
   }
+}
+
+/** Overskrift til den log, "Føj til log?" opretter. Prikling får sin egen. */
+export function mapTaskTypeToLogTitle(taskType: TaskType, taskTitle: string): string {
+  return taskType === 'repot' ? 'Priklet om' : taskTitle
 }

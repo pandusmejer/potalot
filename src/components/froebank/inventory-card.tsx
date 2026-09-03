@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MONTHS_DA, PRIMARY_CATEGORIES, manglerOplysninger } from '@/lib/constants'
+import { MONTHS_DA, PRIMARY_CATEGORIES, LIGHT_META, manglerOplysninger } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
 import type { InventoryItem } from '@/lib/types'
 import { Sprout, Check, ArrowDownToLine, Sun, Hourglass } from 'lucide-react'
@@ -56,10 +56,6 @@ function formatSaadybde(mm: number | null | undefined): string {
   if (mm === 0) return 'Overflade'
   if (mm < 10) return `${mm} mm`
   return `${(mm / 10).toLocaleString('da-DK')} cm`
-}
-
-const LIGHT_LABEL: Record<string, string> = {
-  full_sun: 'Sol', partial_shade: 'Halvskygge', shade: 'Skygge',
 }
 
 /**
@@ -136,7 +132,7 @@ export function InventoryCard({
     raekkevidde
       ? { label: 'Rækker', value: raekkevidde.text, Icon: Hourglass }
       : { label: 'Sådybde', value: formatSaadybde(item.sowingDepthMm), Icon: ArrowDownToLine },
-    { label: 'Placering', value: item.light ? (LIGHT_LABEL[item.light] ?? '—') : '—', Icon: Sun },
+    { label: 'Placering', value: item.light ? (LIGHT_META[item.light]?.label ?? '—') : '—', Icon: Sun },
   ]
 
   const inner = (

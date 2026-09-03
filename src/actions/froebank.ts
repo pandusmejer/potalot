@@ -357,7 +357,7 @@ export async function toggleFavorite(id: string): Promise<{ ok: true; isFavorite
     .eq('user_id', userId)
     .single()
 
-  if (!current) return { error: 'Frøposten blev ikke fundet.' }
+  if (!current) return { error: 'Vi kunne ikke finde frøposten. Måske er den allerede slettet.' }
 
   const newValue = !current.is_favorite
   const { error } = await supabase
@@ -387,7 +387,7 @@ export async function togglePinned(id: string): Promise<{ ok: true; isPinned: bo
     .eq('user_id', userId)
     .single()
 
-  if (!current) return { error: 'Frøposten blev ikke fundet.' }
+  if (!current) return { error: 'Vi kunne ikke finde frøposten. Måske er den allerede slettet.' }
 
   const newValue = !current.is_pinned
   const { error } = await supabase

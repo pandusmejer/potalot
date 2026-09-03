@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import type { Guide } from '@/lib/types'
+import { soegeArter } from '@/lib/arts-model'
 import { Search, ChevronRight, ArrowUpRight, Leaf } from 'lucide-react'
 import { resolvePotalotImage, medWebpSibling } from '@/lib/images/resolve-potalot-image'
 import { getRecentlyRead, type RecentRead } from '@/lib/guides/recently-read'
@@ -660,8 +661,10 @@ function UdforskBiblioteket({
   const VIS_FOERST = 20
   const [visAlle, setVisAlle] = useState(false)
   useEffect(() => { setVisAlle(false) }, [q])
+  const aliasArter = soegeArter(q).map(a => a.toLowerCase())
   const matches = (g: Guide) =>
     g.plantName.toLowerCase().includes(q) ||
+    aliasArter.includes(g.plantName.toLowerCase()) ||
     (g.variety?.toLowerCase().includes(q) ?? false) ||
     (g.latinName?.toLowerCase().includes(q) ?? false) ||
     g.summary.toLowerCase().includes(q) ||

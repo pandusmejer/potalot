@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { Plant, PlantStatus } from '@/lib/types'
+import { STAGE_SHORT_LABEL } from '@/lib/plant-stages'
 import { resolvePotalotImage } from '@/lib/images/resolve-potalot-image'
 
 const sans = 'var(--font-manrope)'
@@ -181,7 +182,7 @@ function getPlantAction(plant: Plant): Aktion | null {
 
   // Spire der har stået længe i sin startbakke → trænger til mere plads
   if (plant.status === 'spirer' && dageSiden(plant.sowDate) >= 35) {
-    return { label: 'Skal ompottes', color: '#A6C77F' }
+    return { label: 'Skal prikles om', color: '#A6C77F' }
   }
 
   // Aktiv plante uden logning i over 4 uger → blødt skub om at logge
@@ -404,16 +405,13 @@ function VaekstLinje({
   actionLabel?: string
   actionColor?: string
 }) {
-  const stages: PlantStatus[] = ['saaet', 'spirer', 'klar_til_udplantning', 'udplantet', 'hoestklar']
-  const labels = ['Sået', 'Spirer', 'Klar', 'Udplantet', 'Høstklar']
-  const currentIdx = stages.indexOf(status)
-  const effectiveIdx = currentIdx >= 0
-    ? currentIdx
-    : status === 'i_vaekst'
-      ? 1
-      : -1
+  // Samme rækkefølge som STAGE_ORDER, uden planlagt/afsluttet (de har ingen
+  // vækstlinje). `i_vaekst` er et rigtigt trin — en plante i vækst må aldrig
+  // fremstilles som "Spirer". Labels kommer fra den fælles korte tabel.
+  const stages: PlantStatus[] = ['saaet', 'spirer', 'i_vaekst', 'klar_til_udplantning', 'udplantet', 'hoestklar']
+  const effectiveIdx = stages.indexOf(status)
 
-  const visLabel = actionLabel ?? (effectiveIdx >= 0 ? labels[effectiveIdx] : null)
+  const visLabel = actionLabel ?? (effectiveIdx >= 0 ? STAGE_SHORT_LABEL[stages[effectiveIdx]] : null)
   const visColor = actionColor ?? 'rgba(255,255,255,0.88)'
 
   return (

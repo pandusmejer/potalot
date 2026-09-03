@@ -127,7 +127,7 @@ export async function promoteGuideToMaster(
     .select('id, plant_name, variety, user_id')
     .eq('id', guideId)
     .maybeSingle()
-  if (guideErr || !guide) return { error: 'Guide ikke fundet' }
+  if (guideErr || !guide) return { error: 'Vi kunne ikke finde guiden. Måske er den allerede slettet.' }
   if (guide.user_id === null) return { error: 'Guiden er allerede master' }
 
   // Tjek for eksisterende master med samme plant_name + variety
@@ -538,8 +538,8 @@ Format (alle felter valgfri undtagen plantName, summary):
     {"key": "problems", "title": "Almindelige problemer", "body": "..."}
   ],
   "calendarRules": [
-    {"taskType": "pre_sow", "title": "Forspir", "recommendedMonths": [3,4], "trigger": "sowingDate", "priority": "high"},
-    {"taskType": "plant_out", "title": "Udplant", "recommendedMonths": [5,6], "trigger": "sowingDate", "priority": "high"},
+    {"taskType": "pre_sow", "title": "Forkultivér", "recommendedMonths": [3,4], "trigger": "sowingDate", "priority": "high"},
+    {"taskType": "plant_out", "title": "Plant ud", "recommendedMonths": [5,6], "trigger": "sowingDate", "priority": "high"},
     {"taskType": "harvest", "title": "Høst", "recommendedMonths": [7,8,9], "trigger": "sowingDate", "priority": "medium"}
   ]
 }

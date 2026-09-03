@@ -27,6 +27,7 @@ export function TaskRow({ task, compact = false, showSource = false }: { task: C
     plantId: string
     logType: PlantLogType
     title: string
+    logTitle: string
   } | null>(null)
 
   const typeMeta = TASK_TYPE_META[task.taskType]
@@ -47,6 +48,7 @@ export function TaskRow({ task, compact = false, showSource = false }: { task: C
             plantId: res.linkedPlantId,
             logType: res.suggestedLogType,
             title: res.taskTitle,
+            logTitle: res.suggestedLogTitle,
           })
         } else {
           router.refresh()
@@ -139,6 +141,7 @@ export function TaskRow({ task, compact = false, showSource = false }: { task: C
           plantId={logPrompt.plantId}
           taskTitle={logPrompt.title}
           suggestedLogType={logPrompt.logType}
+          suggestedLogTitle={logPrompt.logTitle}
         />
       )}
     </>

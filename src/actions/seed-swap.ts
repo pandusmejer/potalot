@@ -203,7 +203,7 @@ export async function requestSwap(input: {
     .select('group_id')
     .eq('id', input.listingId)
     .maybeSingle()
-  if (!listing) return { error: 'Opslag findes ikke' }
+  if (!listing) return { error: 'Vi kunne ikke finde opslaget. Måske er det allerede slettet.' }
 
   const { error } = await supabase
     .from('seed_swap_requests')
@@ -234,7 +234,7 @@ export async function resolveSwapRequest(
     .select('listing_id, seed_swap_listings!inner(group_id, user_id)')
     .eq('id', requestId)
     .maybeSingle()
-  if (!req) return { error: 'Forespørgsel findes ikke' }
+  if (!req) return { error: 'Vi kunne ikke finde forespørgslen. Måske er den allerede slettet.' }
 
   const { error } = await supabase
     .from('seed_swap_requests')

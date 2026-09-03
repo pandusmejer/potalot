@@ -165,7 +165,7 @@ export async function behandlOptagelse(
     .eq('id', optagelseId)
     .eq('user_id', userId)
     .single()
-  if (!note) return { error: 'Optagelsen findes ikke' }
+  if (!note) return { error: 'Vi kunne ikke finde optagelsen. Måske er den allerede slettet.' }
   const optagetDato = (note.recorded_at as string).slice(0, 10)
 
   let createdLogId: string | null = null

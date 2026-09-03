@@ -212,7 +212,7 @@ function RaekkeFormular({
         <Input id={`lev-${raekke.rowNumber}`} value={form.supplier} onChange={saet('supplier')} placeholder="Ikke udfyldt" />
       </Felt>
       <div className="grid grid-cols-2 gap-2">
-        <Felt id={`aar-${raekke.rowNumber}`} label="Årgang">
+        <Felt id={`aar-${raekke.rowNumber}`} label="Købsår">
           <Input id={`aar-${raekke.rowNumber}`} value={form.purchaseYear} onChange={saet('purchaseYear')} inputMode="numeric" placeholder="Ikke udfyldt" />
         </Felt>
         <Felt id={`antal-${raekke.rowNumber}`} label="Antal frø">

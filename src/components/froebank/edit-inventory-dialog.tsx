@@ -416,11 +416,11 @@ export function EditInventoryDialog({ item }: Props) {
           }}
         >
           <Pencil className="h-4 w-4" strokeWidth={1.9} />
-          Rediger
+          Redigér
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-xl">
-        <DialogTitle>Rediger {item.name}</DialogTitle>
+        <DialogTitle>Redigér {item.name}</DialogTitle>
         <DialogDescription>Ret felter for denne frøpose/batch.</DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-3">

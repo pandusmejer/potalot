@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Lock, Check, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { KODEORD_MIN_TEGN, KODEORD_KRAV_TEKST, KODEORD_FOR_KORT } from '@/lib/kodeord'
+import { KODEORD_MIN_TEGN, KODEORD_KRAV_TEKST, KODEORD_FOR_KORT, KODEORD_MATCHER_IKKE } from '@/lib/kodeord'
 
 export function ResetPasswordForm() {
   const router = useRouter()
@@ -74,7 +74,7 @@ export function ResetPasswordForm() {
       return
     }
     if (password !== confirm) {
-      setError('De to kodeord matcher ikke')
+      setError(KODEORD_MATCHER_IKKE)
       return
     }
     startTransition(async () => {

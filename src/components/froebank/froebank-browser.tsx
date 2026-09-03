@@ -20,6 +20,7 @@ import { InventoryArchiveStack } from './inventory-archive-stack'
 import { SeedBankFolderPanel } from './seed-bank-folder-panel'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { PRIMARY_CATEGORY_IDS } from '@/lib/constants'
+import { soegeArter } from '@/lib/arts-model'
 import {
   grupperEfterSort, poseInfoForViste, sortsNoegle, erBedstFoerNaer,
 } from '@/lib/froebank-grupper'
@@ -183,12 +184,14 @@ export function FroebankBrowser({ inventory }: Props) {
 
     if (search.trim()) {
       const q = search.toLowerCase()
+      // Artsalias: "georgine" finder poser, der hedder Dahlia (arts-model.ts).
+      const aliasArter = soegeArter(q).map(a => a.toLowerCase())
       list = list.filter((i) => {
         const hay = [i.name, i.latinName, i.variety, i.supplier, i.notes]
           .filter(Boolean)
           .join(' ')
           .toLowerCase()
-        return hay.includes(q)
+        return hay.includes(q) || aliasArter.includes((i.name ?? '').toLowerCase())
       })
     }
 

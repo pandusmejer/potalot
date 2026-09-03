@@ -21,7 +21,14 @@ export function GuideCard({
 }) {
   const cat = guide.primaryCategoryId ? PRIMARY_CATEGORIES[guide.primaryCategoryId] : undefined
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
-  const sowingPeriod = formatMonths(guide.quickFacts.sowingMonths.length ? guide.quickFacts.sowingMonths : guide.quickFacts.directSowingMonths)
+  // Chippen skal sige, HVILKEN handling månederne er: `directSowingMonths` er
+  // direkte såning ("Sås"), `sowingMonths` er forkultiveringsvinduet
+  // ("Forkultiveres"). Én label må ikke dække to felter.
+  const sowingChip = guide.quickFacts.directSowingMonths.length
+    ? `Sås ${formatMonths(guide.quickFacts.directSowingMonths)}`
+    : guide.quickFacts.sowingMonths.length
+      ? `Forkultiveres ${formatMonths(guide.quickFacts.sowingMonths)}`
+      : null
   const isMaster = guide.visibility === 'public'
 
   return (
@@ -94,9 +101,9 @@ export function GuideCard({
                   {difficultyMeta.label}
                 </span>
               )}
-              {sowingPeriod && (
+              {sowingChip && (
                 <span className="inline-flex items-center text-[10px] px-2 py-0.5 rounded-full border border-border bg-card">
-                  Sås {sowingPeriod}
+                  {sowingChip}
                 </span>
               )}
             </div>

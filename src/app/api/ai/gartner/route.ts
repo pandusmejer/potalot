@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import { GUIDE_FACTS } from '@/data/guide-facts-index.generated'
 import { PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
+import { PLANT_STATUS_META } from '@/lib/constants'
 import type { PlantLog } from '@/lib/types'
 
 /**
@@ -115,7 +116,7 @@ async function bygKontekst(input: GartnerRequest): Promise<{
         plant.plantingOutDate ? `plantet ud ${plant.plantingOutDate}` : null,
         plant.location ? `sted: ${plant.location}` : null,
         `antal: ${plant.quantity}`,
-        `status: ${plant.status}`,
+        `status: ${PLANT_STATUS_META[plant.status]?.label ?? plant.status}`,
       ].filter(Boolean)
       dele.push(info.join(' · '))
 

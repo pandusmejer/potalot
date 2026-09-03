@@ -693,7 +693,7 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                     <Check className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-serif text-lg text-foreground">Oprettet i {scanTarget === 'oenskeliste' ? 'ønskeliste' : 'frøbank'}</p>
+                    <p className="font-serif text-lg text-foreground">Oprettet i {scanTarget === 'oenskeliste' ? 'ønskelisten' : 'frøbanken'}</p>
                     <p className="text-sm text-muted-foreground">{scanName}</p>
                   </div>
                 </div>

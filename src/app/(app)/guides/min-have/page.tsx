@@ -95,7 +95,7 @@ export default async function MinHavePage() {
             margin: '8px 0 0',
           }}
         >
-          {items.length} {items.length === 1 ? 'guide' : 'guider'} · art og sort
+          {items.length} {items.length === 1 ? 'guide' : 'guides'} · art og sort
         </p>
       </header>
 

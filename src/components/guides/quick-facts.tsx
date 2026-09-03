@@ -60,7 +60,11 @@ export function QuickFactsCard({ guide, inheritedFields, species = false }: Prop
           {qf.growthType && (
             <Fact label="Vækstform" value={qf.growthType} />
           )}
-          {qf.preCultivation !== undefined && (
+          {/* `sowingMonths` er kontraktens FORKULTIVERINGS-vindue (pre_sow);
+              direkte såning har sit eget felt. Er vinduet udfyldt, bærer
+              månederne svaret på "forkultivering?" — Ja/Nej-linjen vises
+              kun, når der ikke er et vindue at vise. */}
+          {qf.preCultivation !== undefined && qf.sowingMonths.length === 0 && (
             <Fact
               label="Forkultivering"
               value={qf.preCultivation ? 'Ja' : 'Nej'}
@@ -69,7 +73,7 @@ export function QuickFactsCard({ guide, inheritedFields, species = false }: Prop
           )}
           {qf.sowingMonths.length > 0 && (
             <Fact
-              label="Såning"
+              label="Forkultivering"
               value={formatMonths(qf.sowingMonths)}
               icon={<Calendar className="h-3.5 w-3.5" />}
             />
@@ -224,13 +228,13 @@ function SpeciesQuickFacts({ guide }: { guide: Guide }) {
   const difficultyMeta = DIFFICULTY_META[guide.difficulty]
 
   const facts = [
-    qf.preCultivation !== undefined && {
+    qf.preCultivation !== undefined && qf.sowingMonths.length === 0 && {
       label: 'Forkultivering',
       value: qf.preCultivation ? 'Ja' : 'Nej',
       icon: <Sprout className="h-3.5 w-3.5" />,
     },
     qf.sowingMonths.length > 0 && {
-      label: 'Såning',
+      label: 'Forkultivering',
       value: formatMonths(qf.sowingMonths),
       icon: <Calendar className="h-3.5 w-3.5" />,
     },

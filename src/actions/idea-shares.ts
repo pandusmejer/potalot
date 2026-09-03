@@ -62,7 +62,7 @@ export async function shareIdeaByUsername(
     .eq('id', ideaId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!idea) return { error: 'Idé ikke fundet' }
+  if (!idea) return { error: 'Vi kunne ikke finde idéen. Måske er den allerede slettet.' }
 
   const { error } = await supabase
     .from('idea_shares')
@@ -100,7 +100,7 @@ export async function unshareIdea(
     .eq('id', ideaId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!idea) return { error: 'Idé ikke fundet' }
+  if (!idea) return { error: 'Vi kunne ikke finde idéen. Måske er den allerede slettet.' }
 
   const { error } = await supabase
     .from('idea_shares')
@@ -159,7 +159,7 @@ export async function shareIdeaWithGroup(
     .eq('id', ideaId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!idea) return { error: 'Idé ikke fundet' }
+  if (!idea) return { error: 'Vi kunne ikke finde idéen. Måske er den allerede slettet.' }
 
   const { error } = await supabase
     .from('idea_group_shares')
@@ -186,7 +186,7 @@ export async function unshareIdeaFromGroup(
     .eq('id', ideaId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!idea) return { error: 'Idé ikke fundet' }
+  if (!idea) return { error: 'Vi kunne ikke finde idéen. Måske er den allerede slettet.' }
 
   const { error } = await supabase
     .from('idea_group_shares')

@@ -37,7 +37,7 @@ export const PRIMARY_CATEGORIES: Record<PrimaryCategoryId, PrimaryCategory> = {
   buske:          { id: 'buske',          name: 'Buske',                  icon: 'TreeDeciduous', isSystem: true },
   traeer:         { id: 'traeer',         name: 'Træer',                  icon: 'Trees',       isSystem: true },
   stauder:        { id: 'stauder',        name: 'Stauder',                icon: 'Flower2',     isSystem: true },
-  indkoebsliste:  { id: 'indkoebsliste',  name: 'Indkøbs- og ønskeliste', icon: 'ShoppingCart', isSystem: true },
+  indkoebsliste:  { id: 'indkoebsliste',  name: 'Ønskeliste', icon: 'ShoppingCart', isSystem: true },
   favoritter:     { id: 'favoritter',     name: 'Favoritter',             icon: 'Star',        isSystem: true, isDynamic: true },
 }
 
@@ -112,7 +112,7 @@ export const INVENTORY_STATUS_META: Record<InventoryStatus, { label: string; bad
 // ============================================
 
 export const TASK_TYPE_META: Record<TaskType, { label: string; icon: string }> = {
-  pre_sow:     { label: 'Forspir',       icon: 'Sprout' },
+  pre_sow:     { label: 'Forkultivér',   icon: 'Sprout' },
   sowing:      { label: 'Så',            icon: 'Sprout' },
   // Labelen beskriver typens FAKTISKE nuværende betydning: alle syv
   // kalenderregler i live-DB der bruger repot/prick_out/pricking_out handler
@@ -120,7 +120,7 @@ export const TASK_TYPE_META: Record<TaskType, { label: string; icon: string }> =
   // påstand om at prikling og ompotning er samme handling — den skelnen
   // modelleres i Docs/product/prikling-vs-ompotning-backlog.md.
   repot:       { label: 'Prikl om',      icon: 'ArrowUpRight' },
-  plant_out:   { label: 'Udplant',       icon: 'TreePine' },
+  plant_out:   { label: 'Plant ud',      icon: 'TreePine' },
   watering:    { label: 'Vand',          icon: 'Droplets' },
   fertilizing: { label: 'Gød',           icon: 'Leaf' },
   pruning:     { label: 'Beskær',        icon: 'Scissors' },

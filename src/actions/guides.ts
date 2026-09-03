@@ -519,7 +519,7 @@ export async function ensureGuideForPlant(plantId: string): Promise<
     .eq('id', plantId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!plant) return { error: 'Plant not found' }
+  if (!plant) return { error: 'Vi kunne ikke finde planten. Måske er den allerede slettet.' }
   if (plant.guide_id) return { ok: true, alreadyAttached: true }
 
   const plantName = (plant.name as string).trim()
@@ -658,8 +658,8 @@ Format (alle felter valgfri undtagen plantName, summary):
     {"key": "problems", "title": "Almindelige problemer", "body": "..."}
   ],
   "calendarRules": [
-    {"taskType": "pre_sow", "title": "Forspir tomat", "recommendedMonths": [3,4], "trigger": "sowingDate", "priority": "high"},
-    {"taskType": "plant_out", "title": "Udplant", "recommendedMonths": [5,6], "trigger": "sowingDate", "priority": "high"},
+    {"taskType": "pre_sow", "title": "Forkultivér tomat", "recommendedMonths": [3,4], "trigger": "sowingDate", "priority": "high"},
+    {"taskType": "plant_out", "title": "Plant ud", "recommendedMonths": [5,6], "trigger": "sowingDate", "priority": "high"},
     {"taskType": "harvest", "title": "Høst", "recommendedMonths": [7,8,9], "trigger": "sowingDate", "priority": "medium"}
   ]
 }
@@ -790,7 +790,7 @@ export async function ensureGuideForInventoryItem(inventoryId: string): Promise<
     .eq('id', inventoryId)
     .eq('user_id', userId)
     .maybeSingle()
-  if (!item) return { error: 'Item not found' }
+  if (!item) return { error: 'Vi kunne ikke finde frøposten. Måske er den allerede slettet.' }
   if (item.guide_id) return { ok: true, alreadyAttached: true }
 
   const plantName = (item.name as string).trim()

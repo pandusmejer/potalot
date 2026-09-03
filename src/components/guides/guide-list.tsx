@@ -6,6 +6,7 @@ import { GuideCard } from './guide-card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PRIMARY_CATEGORIES } from '@/lib/constants'
 import type { Guide, PrimaryCategoryId } from '@/lib/types'
+import { soegeArter } from '@/lib/arts-model'
 import { Search, BookOpen, ShieldCheck, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -57,8 +58,10 @@ export function GuideList({ guides, inFroebank, isAdmin = false, canDeleteOwnGui
     }
     if (search.trim()) {
       const q = search.toLowerCase()
+      const aliasArter = soegeArter(q).map(a => a.toLowerCase())
       list = list.filter(g =>
         g.plantName.toLowerCase().includes(q) ||
+        aliasArter.includes(g.plantName.toLowerCase()) ||
         g.variety?.toLowerCase().includes(q) ||
         g.latinName?.toLowerCase().includes(q) ||
         g.summary.toLowerCase().includes(q) ||

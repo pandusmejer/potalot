@@ -402,8 +402,8 @@ export const COLUMN_ALIASES: Record<string, string[]> = {
 
 /** Menneskelige navne til måneds-advarslerne. */
 export const MAANED_FELT_LABEL: Record<'sowingMonths' | 'plantingOutMonths' | 'harvestMonths', string> = {
-  sowingMonths: 'Såmåneder',
-  plantingOutMonths: 'Udplantning',
+  sowingMonths: 'Sås',
+  plantingOutMonths: 'Plant ud',
   harvestMonths: 'Høst',
 }
 
@@ -567,15 +567,15 @@ const FELT_LABELS: Partial<Record<keyof ImportValues, string>> = {
   primaryCategoryId: 'Kategori',
   seedCount: 'Antal frø',
   quantity: 'Antal stk',
-  purchaseYear: 'Årgang',
+  purchaseYear: 'Købsår',
   purchaseDate: 'Købsdato',
   expiryDate: 'Bedst før',
   purchaseUrl: 'Link',
   notes: 'Noter',
-  sowingMonths: 'Såmåneder',
+  sowingMonths: 'Sås',
   sowingDepthMm: 'Sådybde',
   preCultivation: 'Forkultivering',
-  plantingOutMonths: 'Udplantning',
+  plantingOutMonths: 'Plant ud',
   harvestMonths: 'Høst',
   light: 'Lys',
   water: 'Vand',
@@ -605,7 +605,7 @@ function vis(v: unknown): string {
   if (v === 'partial_shade') return 'halvskygge'
   if (v === 'shade') return 'skygge'
   if (v === 'low') return 'lidt'
-  if (v === 'regular') return 'jævnt'
+  if (v === 'regular') return 'regelmæssig'
   if (v === 'high') return 'meget'
   return String(v)
 }

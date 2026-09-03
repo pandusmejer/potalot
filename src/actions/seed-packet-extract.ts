@@ -22,7 +22,7 @@ Felter at udtrække:
 - variety: sort (fx "San Marzano", "Black Cherry")
 - supplier: leverandør/mærke (fx "Nelson Garden", "Impecta")
 - seedCount: antal frø i posen som heltal (kun hvis tydeligt angivet)
-- purchaseYear: det årstal posen er pakket til / sæsonmærket med som heltal — KUN hvis det står tydeligt på posen eller siden. Gæt ALDRIG på indeværende år.
+- purchaseYear: KØBSÅRET som heltal — KUN hvis posen eller siden faktisk angiver et købs-/anskaffelsesår, eller konteksten entydigt dokumenterer det (fx en ordrebekræftelse med dato). Et produktions-, pakke- eller sæsonår ("Pakket for sæson 2026", "Best before") er IKKE købsår og må ALDRIG bruges som det. Kan købsåret ikke bestemmes, skal feltet være null. Gæt ALDRIG på indeværende år.
 - sowingMonths: array af måned-numre (1-12) hvor frøet sås
 - plantingOutMonths: array af måned-numre (1-12) hvor det udplantes
 - harvestMonths: array af måned-numre (1-12) hvor det høstes

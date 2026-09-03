@@ -200,7 +200,7 @@ export async function saaFroeFraInventory(input: SaaFroeInput): Promise<
     .eq('user_id', userId)
     .single()
 
-  if (invErr || !invItem) return { error: 'Frøposten blev ikke fundet.' }
+  if (invErr || !invItem) return { error: 'Vi kunne ikke finde frøposten. Måske er den allerede slettet.' }
   const inv = invItem as { id: string; name: string; variety: string | null; guide_id: string | null; status: string }
   let guideImageUrl: string | null = null
   if (inv.guide_id) {
@@ -661,7 +661,7 @@ export async function updatePlantLog(input: {
     console.error('updatePlantLog fejlede:', error)
     return { error: 'Kunne ikke gemme ændringerne. Prøv igen.' }
   }
-  if (!data) return { error: 'Loggen blev ikke fundet, eller du har ikke adgang til den.' }
+  if (!data) return { error: 'Vi kunne ikke finde loggen. Måske er den allerede slettet.' }
 
   const plantId = data.plant_id as string
   revalidatePath(`/mine-planter/${plantId}`)
@@ -684,7 +684,7 @@ export async function deletePlantLog(
     console.error('deletePlantLog opslag fejlede:', fetchErr)
     return { error: 'Kunne ikke slette loggen. Prøv igen.' }
   }
-  if (!row) return { error: 'Loggen blev ikke fundet.' }
+  if (!row) return { error: 'Vi kunne ikke finde loggen. Måske er den allerede slettet.' }
 
   const { error: delErr } = await supabase
     .from('plant_logs_v2')

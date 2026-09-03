@@ -102,6 +102,19 @@ export interface ArtsPost {
  */
 export const ARTS_MODEL: ArtsPost[] = [
   {
+    art: 'Dahlia',
+    aliaser: ['Dahliaer', 'Georgine', 'Georginer'],
+    begrundelse:
+      'Dahlia er Potalots kanoniske artsnavn (artsguiden `dahlia`, latin ' +
+      'Dahlia, kategori knolde). "Georgine" er det ældre danske navn for ' +
+      'præcis samme art — guiden skriver selv, at begge betegnelser bruges. ' +
+      'Aliaset koster ingen dyrkningsviden: samme plante, samme knolde, ' +
+      'samme guide. Det findes, så en bruger der søger eller skriver ' +
+      '"georgine" bliver fundet af resolveren; Potalots egen prosa må ' +
+      'fortsat sige georginer, hvor det falder naturligt (Batch 3, 3/9 2026).',
+    typer: [],
+  },
+  {
     art: 'Bønne',
     aliaser: ['Bønner'],
     begrundelse:
@@ -252,6 +265,23 @@ for (const post of ARTS_MODEL) {
 const SORTS_TYPE_KORT = new Map(
   SORTS_TYPER.map(s => [`${normaliser(s.art)}|${normaliser(s.sort)}`, s]),
 )
+
+/**
+ * Søgehjælper: hvilke kanoniske arter matcher en delvist skrevet søgning?
+ *
+ * "georg" → ['Dahlia'], "skole" → ['Agurk']. Bruges af fritekst-søgning i
+ * Frøbanken og guide-biblioteket, så et alias finder arten uden at nogen
+ * data eller slugs ændres. Kræver mindst 3 tegn — ellers matcher alt.
+ */
+export function soegeArter(q: string | null | undefined): string[] {
+  const n = normaliser(q)
+  if (n.length < 3) return []
+  const arter = new Set<string>()
+  for (const [navn, post] of NAVNE_KORT) {
+    if (post.type === null && navn.includes(n)) arter.add(post.art.art)
+  }
+  return [...arter]
+}
 
 /** Resultatet af et artsopslag. Ukendte navne returneres uændret. */
 export interface ArtsOpslag {

@@ -15,3 +15,6 @@ export const KODEORD_KRAV_TEKST = `Mindst ${KODEORD_MIN_TEGN} tegn.`
 
 /** Fejlbesked når brugerens kodeord er for kort. */
 export const KODEORD_FOR_KORT = `Kodeord skal være mindst ${KODEORD_MIN_TEGN} tegn`
+
+/** Fejlbesked når gentagelsen ikke er identisk med kodeordet. */
+export const KODEORD_MATCHER_IKKE = 'De to kodeord matcher ikke'

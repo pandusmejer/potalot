@@ -107,7 +107,7 @@ export function DineEgneGuides({ guides }: { guides: Guide[] }) {
             <span
               style={{ fontFamily: plex, fontWeight: 600, fontSize: 18, lineHeight: 1.1, color: '#24301F' }}
             >
-              {guides.length} {guides.length === 1 ? 'guide' : 'guider'} lavet til dine sorter
+              {guides.length} {guides.length === 1 ? 'guide' : 'guides'} lavet til dine sorter
             </span>
             {/* Konkrete sortsnavne = beviset. Mørkere end almindelig hjælpetekst. */}
             <span

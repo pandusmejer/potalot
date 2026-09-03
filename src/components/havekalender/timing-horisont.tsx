@@ -327,7 +327,7 @@ function PlanteRække({
  */
 function FaseLegend() {
   const items: { phase: TimelinePhase; label: string }[] = [
-    { phase: 'forspiring',  label: 'Forspir' },
+    { phase: 'forspiring',  label: 'Forkultivér' },
     { phase: 'saaning',     label: 'Så' },
     { phase: 'udplantning', label: 'Plant ud' },
     { phase: 'host',        label: 'Høst' },

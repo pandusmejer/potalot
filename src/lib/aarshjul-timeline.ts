@@ -17,7 +17,7 @@ export interface TimelinePhaseRange {
   phase: TimelinePhase
   /** Måneder 1-12 hvor fasen er aktiv */
   months: number[]
-  /** Dansk label vist på bar'en: "Forspir", "Så", "Plant ud", "Høst" */
+  /** Dansk label vist på bar'en: "Forkultivér", "Så", "Plant ud", "Høst" */
   label: string
 }
 
@@ -44,7 +44,7 @@ function inventoryToTimelineEntry(item: InventoryItem): TimelineEntry | null {
       phases.push({
         phase: 'forspiring',
         months: [...item.sowingMonths].sort((a, b) => a - b),
-        label: 'Forspir',
+        label: 'Forkultivér',
       })
     } else {
       phases.push({
@@ -95,7 +95,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Tomat',
     variety: 'Cherry Sweetie',
     phases: [
-      { phase: 'forspiring',  months: [3, 4],          label: 'Forspir' },
+      { phase: 'forspiring',  months: [3, 4],          label: 'Forkultivér' },
       { phase: 'udplantning', months: [5, 6],          label: 'Plant ud' },
       { phase: 'host',        months: [7, 8, 9, 10],   label: 'Høst' },
     ],
@@ -105,7 +105,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Agurk',
     variety: 'Marketmore',
     phases: [
-      { phase: 'forspiring',  months: [4],             label: 'Forspir' },
+      { phase: 'forspiring',  months: [4],             label: 'Forkultivér' },
       { phase: 'udplantning', months: [5, 6],          label: 'Plant ud' },
       { phase: 'host',        months: [7, 8, 9],       label: 'Høst' },
     ],
@@ -115,7 +115,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Squash',
     variety: 'Patty Pan',
     phases: [
-      { phase: 'forspiring',  months: [4],             label: 'Forspir' },
+      { phase: 'forspiring',  months: [4],             label: 'Forkultivér' },
       { phase: 'udplantning', months: [5, 6],          label: 'Plant ud' },
       { phase: 'host',        months: [7, 8, 9],       label: 'Høst' },
     ],
@@ -143,7 +143,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Bønne',
     variety: 'Borlotti',
     phases: [
-      { phase: 'forspiring',  months: [4],             label: 'Forspir' },
+      { phase: 'forspiring',  months: [4],             label: 'Forkultivér' },
       { phase: 'saaning',     months: [5, 6],          label: 'Så' },
       { phase: 'host',        months: [7, 8, 9],       label: 'Høst' },
     ],
@@ -180,7 +180,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Peberfrugt',
     variety: 'California Wonder',
     phases: [
-      { phase: 'forspiring',  months: [2, 3],          label: 'Forspir' },
+      { phase: 'forspiring',  months: [2, 3],          label: 'Forkultivér' },
       { phase: 'udplantning', months: [5, 6],          label: 'Plant ud' },
       { phase: 'host',        months: [8, 9, 10],      label: 'Høst' },
     ],
@@ -190,7 +190,7 @@ const FORSLAG_TIMELINE: Omit<TimelineEntry, 'source'>[] = [
     plant: 'Græskar',
     variety: 'Hokkaido',
     phases: [
-      { phase: 'forspiring',  months: [4],             label: 'Forspir' },
+      { phase: 'forspiring',  months: [4],             label: 'Forkultivér' },
       { phase: 'udplantning', months: [5, 6],          label: 'Plant ud' },
       { phase: 'host',        months: [9, 10],         label: 'Høst' },
     ],

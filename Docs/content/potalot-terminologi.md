@@ -174,3 +174,57 @@ som blind masse-erstatning.
    rettelsen at kalde `CATEGORY_LABELS` — ikke at skrive om i databasen.
    En "æ/ø/å-oprydning" i en nøglekolonne ødelægger kontrakten uden at
    løse noget.
+
+## Batch 3 — terminologisk integritet (Anna 3/9 2026)
+
+Målt før rettet: hvert par nedenfor er tjekket mod datamodel, live-DB og
+kaldesteder (`Docs/content/batch-3-terminologi-beslutningsrapport.md`).
+Reglen bag batchen: **samme ord kan dække to ting, og to ord kan dække én
+ting — ensret aldrig på ordlyd alene.**
+
+| Begreb | Potalot-standard |
+|---|---|
+| Frøposens år | **Købsår** (feltet `purchase_year`). Import-headeren må stadig sige "årgang"; brugerfladen siger aldrig Årgang. Datoen hedder **Købsdato**. |
+| Købsår i AI-udtræk | Kun når posen/siden faktisk angiver et købs-/anskaffelsesår. Produktions-, pakke- eller sæsonår er **ikke** købsår; kan det ikke bestemmes, er feltet tomt. |
+| Kategorien `indkoebsliste` | **Ønskeliste** (id'et er uændret). "Gem til senere" er Gartnerens gemte svar — en anden model, et andet ord. |
+| Opgavetypen `pre_sow` | **Forkultivér** (verbet), **Forkultivering** (feltet). "Forspir" kun i regeltitler, hvor det er fagligt korrekt (læggekartofler, knolde). |
+| Opgavetypen `plant_out` | **Plant ud** (verbet), **Plant ud** (feltlabel), **Udplantet** (log/status). Aldrig "Udplant". |
+| Guidens `sowingMonths` | Er kontraktens **forkultiveringsvindue** og hedder **Forkultivering** i faktaboksen. `directSowingMonths` hedder **Direkte såning**. Ordet "Såning" alene bruges ikke som feltlabel — det er bredere end feltet. |
+| Prikling ↔ ompotning | To handlinger. Opgaven `repot` = **Prikl om**; log-typen `repotting` = **Pottet om**. En fuldført prikle-opgave logges som neutral log med overskriften **Priklet om** — aldrig som `repotting`. Kalenderens spirer-stadie siger **Skal prikles om**. Modellen splittes i `Docs/product/prikling-vs-ompotning-backlog.md`. |
+| Lys/vand-labels | Altid `LIGHT_META` / `WATER_META` — ingen lokale tabeller. `regular` = **regelmæssig**. |
+| Enums i prompter | Statusnøgler går gennem `PLANT_STATUS_META`, før de sendes til Gartneren (regel 4 fra 2/9 gælder også AI-kontekst). |
+| Georgine / Dahlia | **Dahlia** er canonical art; **Georgine/Georginer** er artsalias (arts-model.ts). Prosa må sige georginer, hvor det falder naturligt. |
+| Aftenerne / aftnerne | Begge korrekte. Ingen regel. |
+
+### Valideringscopy — fem skabeloner
+
+Native `required` beholdes, hvor det er den faktiske mekanisme; browserens
+tekst er lokaliseret og tilgængelig. Skabelonerne gælder de app-fejl,
+brugeren faktisk kan nå.
+
+| Fejltype | Skabelon |
+|---|---|
+| Tomt felt | "Skriv et/en [felt]." · "Vælg [ting]." |
+| Længde | "[Felt] må højst være N tegn." · "[Felt] skal være mindst N tegn." |
+| Format | "Indtast et gyldigt [X] ([format])." |
+| Interval | "Højst N [ting] pr. [enhed]." |
+| Findes ikke | "Vi kunne ikke finde [ting]. Måske er den allerede slettet." |
+
+Ingen central valideringshjælper: beskeden varierer kun på feltnavnet, og
+det er det, en helper ville skjule. Kodeordstekster har dog én kilde
+(`src/lib/kodeord.ts`).
+
+### Uploadgrænser (D4)
+
+Én levende billedvej (`/api/upload`). Bucketten er den reelle grænse:
+**10 MB**, og route, klient og copy skal sige det samme tal
+(`src/lib/upload-graenser.ts`). HEIC har sin egen, dokumenterede grænse
+(konverterings-hukommelse). Excel (5 MB) og diktafon (25 MB / 120 s) er
+separate kontrakter og skal ikke ensrettes.
+
+### Parkeret som model-backlog (ikke korrektur)
+
+- Stadiet før udplantning og 35-dages-reglen:
+  `Docs/product/plantestadie-state-machine-backlog.md`
+- UserMode vs. NotificationProfile:
+  `Docs/product/notifikationsprofil-vs-usermode-backlog.md`

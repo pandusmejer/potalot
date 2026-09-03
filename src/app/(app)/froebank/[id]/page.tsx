@@ -653,7 +653,7 @@ export default async function InventoryDetailPage({ params }: Props) {
           )}
           {item.seedCount == null && item.quantity != null && <Fact label="Antal" value={`${item.quantity} stk`} tone="secondary" />}
           {item.purchaseYear && <Fact label="Købsår" value={String(item.purchaseYear)} tone="secondary" />}
-          {item.purchaseDate && !item.purchaseYear && <Fact label="Indkøbsdato" value={formatDatoMedAar(item.purchaseDate)} tone="secondary" />}
+          {item.purchaseDate && !item.purchaseYear && <Fact label="Købsdato" value={formatDatoMedAar(item.purchaseDate)} tone="secondary" />}
           {item.expiryDate && (
             <Fact
               label="Bedst før"

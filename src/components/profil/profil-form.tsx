@@ -118,7 +118,7 @@ export function ProfilForm({ initialProfile }: Props) {
                 </>
               ) : (
                 <Button type="button" onClick={() => setEditing(true)}>
-                  Rediger
+                  Redigér
                 </Button>
               )}
             </div>

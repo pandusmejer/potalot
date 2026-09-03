@@ -19,13 +19,15 @@ interface Props {
   plantId: string
   taskTitle: string
   suggestedLogType: PlantLogType
+  /** Overskriften loggen får; falder tilbage til opgavens titel. */
+  suggestedLogTitle?: string
 }
 
 /**
  * Vises efter en opgave med linket plante er markeret udført.
  * Spørger: "Vil du tilføje dette til dyrkningsloggen?"
  */
-export function CompleteTaskDialog({ open, onClose, taskId, plantId, taskTitle, suggestedLogType }: Props) {
+export function CompleteTaskDialog({ open, onClose, taskId, plantId, taskTitle, suggestedLogType, suggestedLogTitle }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [note, setNote] = useState('')
@@ -36,7 +38,7 @@ export function CompleteTaskDialog({ open, onClose, taskId, plantId, taskTitle, 
         taskId,
         plantId,
         logType: suggestedLogType,
-        logTitle: taskTitle,
+        logTitle: suggestedLogTitle ?? taskTitle,
         logNote: note.trim() || undefined,
       })
       if (!('error' in res)) {
