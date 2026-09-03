@@ -286,3 +286,55 @@ P3-tegnsætning, tankestreger, `etc.`/`...`, guide-editorial sweep,
 guide-tag-oprydning, kategori-data-cleanup, `{false && …}`-blokken,
 Lucky Tiger, Frøbank-provenance, øvrige kalenderbacklogs. Ingen
 prod-datawrites, ingen migrations.
+
+---
+
+## Fase 2 — status (3/9 2026)
+
+Annas valg 3/9 (D1 delvist, D2 prompt, D3 godkendt, D4 10 MB + sletning,
+D5 Forkultivering/Plant ud, D6 parkeret, D7 rettes, D8 godkendt, D9 alias,
+D10 kun rester, D11 parkeret) er implementeret i tre lokale commits oven
+på `074cf10`:
+
+| Commit | Indhold |
+|---|---|
+| `5a7291f` | Terminologi: alle KLAR-punkter + de godkendte B-fund (D1 log-bro, D5 faktaboks/kort, D7 vækstlinje, D9 alias + søgning), valideringsskabeloner, backlog-docs for D6 og D11, ny vagt `scripts/test-terminologi-batch3.ts` |
+| `7e85e80` | Build-fix: hjælper i `'use server'`-fil må ikke eksporteres |
+| `d4ad646` | D4 cleanup (separat, jf. Anna): `src/lib/upload-graenser.ts`, 10 MB i route + klient + copy, de to døde uploadveje slettet |
+
+**D1, verificeret før valg:** logmodellen har en neutral log med egen
+tekst (`type: 'note'` + `title`, som fokus-flowet i `plant-tasks.ts`
+allerede bruger; `logHeading` viser titlen). En fuldført `repot`-opgave
+logges nu sådan med overskriften **"Priklet om"** og `linked_task_id`.
+Konsekvens: handlingen står korrekt i Plantens historie, men tæller ikke
+som milepæl/kompetence (det ville have været "Pottet om"/"Ompotning",
+altså forkert). En rigtig log-type for prikling (`pricking_out`) kræver
+CHECK-udvidelse oven på 00060 og hører til
+`prikling-vs-ompotning-backlog.md`.
+
+**D7, eksisterende mapping:** `VaekstLinje` havde fem trin (saaet, spirer,
+klar_til_udplantning, udplantet, hoestklar) og sendte `i_vaekst` til
+indeks 1 ("Spirer"). Mindst invasive korrekte løsning: `i_vaekst` er nu
+sit eget trin (seks segmenter, samme rækkefølge som `STAGE_ORDER`), og
+labels hentes fra `STAGE_SHORT_LABEL`. `StageProgress` er ikke genoplivet.
+
+**Verifikation:** `npm test` grøn (alle suites; ny vagt 43/43) ·
+`tsc --noEmit` grøn · `next build` grøn (259 sider) · lint 152 → 151
+problemer (én advarsel færre, ingen nye).
+
+**Genmålt read-only efter implementering** (src/, ekskl. genererede filer):
+Årgang 0 · "Indkøbs- og ønskeliste" 0 · 'Forspir' som label 0 · 'Udplant'
+0 · "Skal ompottes" 0 · `label="Såning"` 0 · engelske "not found" 0 ·
+"ikke fundet"/"findes ikke" i actions 0 · 'guider' 0 · "Rediger" uden
+accent 0 i brugerflade (3 i admin, bevidst) · `20 * 1024` 0 · lokal
+`'Sol'`-label 0 · "jævnt" 0 · repot → repotting 0. georgin* står 6
+steder i prosa, bevidst.
+
+**Bevidst ikke rørt:** ~30 uopnåelige tomt-felt-strenge (Anna: ingen
+ceremoniel omskrivning) · "Skal udplantes" i Kalenderen (venter på D6) ·
+`next-plant-task.ts` 14/35-dages-gæt (D6-backlog) · MILESTONE_LABEL-
+nøglerne i `havebog.ts` (dødt, dokumenteret i sidefund) · TaskSource
+"Fra frøbank"/"Fra Frøbanken" (ingen lås endnu) · aftenerne/aftnerne.
+
+**Ikke pushet.** `074cf10..d4ad646` ligger lokalt; docs-committet rider
+med kode-pushet, når Anna har godkendt.
