@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2, Star } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { compressImage } from '@/lib/compress-image'
+import { billedeForStortBesked } from '@/lib/upload-graenser'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -21,8 +22,10 @@ interface Props {
 }
 
 /**
- * Upload flere billeder. Sender rå fil til /api/images/upload som
- * håndterer HEIC→JPEG-konvertering, EXIF-rotation, resize og thumbnail.
+ * Upload flere billeder: komprimér klient-side, send hver fil til
+ * /api/upload (den eneste levende uploadvej), som konverterer HEIC og
+ * lægger filen i Supabase Storage. Størrelsesgrænsen tjekkes her OG i
+ * routen med samme tal og samme tekst (src/lib/upload-graenser.ts).
  */
 export function MultiImageUpload({
   value,
@@ -68,6 +71,11 @@ export function MultiImageUpload({
           // Komprimér klient-side først — sparer båndbredde + sikrer at
           // server ikke ser tunge filer der kan OOM Netlify Functions
           const compressed = await compressImage(file)
+          const forStor = billedeForStortBesked(compressed)
+          if (forStor) {
+            errors.push(forStor)
+            continue
+          }
           setDebug(`Uploader “${compressed.name}” …`)
           const fd = new FormData()
           fd.append('file', compressed)

@@ -2,15 +2,14 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { dataFejlBesked, fangetFejlBesked } from '@/lib/data-fejl'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
+import { billedeForStortBesked, erHeic } from '@/lib/upload-graenser'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
 const BUCKET = 'media'
-const MAX_BYTES = 20 * 1024 * 1024
-// HEIC-konvertering er CPU-tung. Sæt en lavere grænse for HEIC så vi
-// ikke OOM'er Netlify Functions (1024 MB heap).
-const MAX_BYTES_HEIC = 12 * 1024 * 1024
+// Størrelsesgrænserne bor i src/lib/upload-graenser.ts (10 MB = bucketten,
+// 12 MB HEIC = konverterings-hukommelse) og deles med klienten.
 const VALID_FOLDERS = new Set(['froebank', 'planter', 'log', 'profil', 'idetavle', 'chat', 'guides'])
 
 /**
@@ -62,24 +61,11 @@ async function handleUpload(request: NextRequest) {
   }
 
   const nameLower = file.name.toLowerCase()
-  const isHeic =
-    nameLower.endsWith('.heic') ||
-    nameLower.endsWith('.heif') ||
-    file.type === 'image/heic' ||
-    file.type === 'image/heif'
+  const isHeic = erHeic(file)
 
-  // Strammere grænse for HEIC pga. memory ved konvertering
-  const maxBytes = isHeic ? MAX_BYTES_HEIC : MAX_BYTES
-  if (file.size > maxBytes) {
-    const limitMB = Math.floor(maxBytes / 1024 / 1024)
-    return NextResponse.json(
-      {
-        error: isHeic
-          ? `iPhone-billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks. ${limitMB} MB for HEIC — prøv at vælge en mindre størrelse i iPhone Kamera-indstillinger eller tag billedet om.`
-          : `Billede for stort (${(file.size / 1024 / 1024).toFixed(1)} MB). Maks. ${limitMB} MB.`,
-      },
-      { status: 400 }
-    )
+  const forStor = billedeForStortBesked(file)
+  if (forStor) {
+    return NextResponse.json({ error: forStor }, { status: 400 })
   }
 
   let body: Uint8Array

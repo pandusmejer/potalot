@@ -5,43 +5,14 @@ import { dataFejlBesked } from '@/lib/data-fejl'
 import { requireUser } from '@/lib/auth'
 
 const BUCKET = 'media'
-const MAX_BYTES = 10 * 1024 * 1024
-// Accept all common image formats. iPhone-kamera leverer ofte HEIC/HEIF.
-// Vi afviser stadig non-image typer.
-const ALLOWED_PREFIX = 'image/'
 
+/**
+ * Mapperne i bucketten. Selve uploaden sker i /api/upload (Route Handler,
+ * fordi HEIC-konvertering og filstørrelse ikke passer i en Server Action);
+ * her bor kun sletning. Den gamle uploadImage-action havde nul kaldere og
+ * blev fjernet i Batch 3 (D4).
+ */
 export type UploadFolder = 'froebank' | 'planter' | 'log' | 'profil' | 'idetavle' | 'chat' | 'guides'
-
-export async function uploadImage(
-  formData: FormData
-): Promise<{ url: string } | { error: string }> {
-  const { id: userId } = await requireUser()
-
-  const file = formData.get('file')
-  const folder = formData.get('folder') as UploadFolder | null
-
-  if (!(file instanceof File)) return { error: 'Ingen fil' }
-  if (!folder) return { error: 'Mangler folder' }
-  if (file.size > MAX_BYTES) return { error: `Billede for stort (maks. ${MAX_BYTES / 1024 / 1024} MB)` }
-  if (!file.type.startsWith(ALLOWED_PREFIX)) return { error: `Ugyldig filtype: ${file.type || 'ukendt'}` }
-
-  const ext =
-    file.type === 'image/png' ? 'png' :
-    file.type === 'image/webp' ? 'webp' :
-    file.type === 'image/heic' ? 'heic' :
-    file.type === 'image/heif' ? 'heif' : 'jpg'
-  const path = `${userId}/${folder}/${crypto.randomUUID()}.${ext}`
-
-  const supabase = await createClient()
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(path, file, { contentType: file.type, upsert: false })
-
-  if (error) return { error: dataFejlBesked(error, 'Kunne ikke gemme billedet. Prøv igen.') }
-
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
-  return { url: data.publicUrl }
-}
 
 export async function deleteImage(url: string): Promise<{ ok: true } | { error: string }> {
   await requireUser()

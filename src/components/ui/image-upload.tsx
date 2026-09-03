@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Camera, X, Loader2 } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { compressImage } from '@/lib/compress-image'
+import { billedeForStortBesked } from '@/lib/upload-graenser'
 
 interface Props {
   value: string | null
@@ -15,9 +16,10 @@ interface Props {
 }
 
 /**
- * Upload ét billede via uploadImage server action — samme pattern som
- * fik profilbillede-upload til at virke. Sender rå fil til Supabase
- * Storage uden server-side billedprocessering.
+ * Upload ét billede: komprimér klient-side, send til /api/upload (den
+ * eneste levende uploadvej), som konverterer HEIC og lægger filen i
+ * Supabase Storage. Størrelsesgrænsen tjekkes her OG i routen med samme
+ * tal og samme tekst (src/lib/upload-graenser.ts).
  */
 export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede', capture }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -39,6 +41,11 @@ export function ImageUpload({ value, onChange, folder, label = 'Tilføj billede'
         // Komprimér klient-side først — sparer båndbredde + sikrer at
         // server ikke ser tunge filer der kan OOM Netlify Functions
         const compressed = await compressImage(file)
+        const forStor = billedeForStortBesked(compressed)
+        if (forStor) {
+          setError(forStor)
+          return
+        }
         const fd = new FormData()
         fd.append('file', compressed)
         fd.append('folder', folder)

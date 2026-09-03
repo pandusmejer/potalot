@@ -17,11 +17,12 @@
  *   4. artsalias Georgine → Dahlia (genfinding uden dataændring)
  */
 
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { TASK_TYPE_META, PRIMARY_CATEGORIES, LIGHT_META } from '@/lib/constants'
 import { KODEORD_MATCHER_IKKE } from '@/lib/kodeord'
 import { kanoniskArtsNavn, kanoniskArtsSlug, soegeArter } from '@/lib/arts-model'
+import { MAKS_BILLEDE_MB, MAKS_BILLEDE_BYTES, MAKS_HEIC_MB, MAKS_HEIC_BYTES, billedeForStortBesked } from '@/lib/upload-graenser'
 
 let bestaaet = 0
 let fejlet = 0
@@ -117,7 +118,35 @@ tjek("søgning på 'skole' finder Agurk (Skoleagurk-aliaset)", soegeArter('skole
 tjek('for korte søgninger matcher ingenting', soegeArter('ge').length === 0)
 tjek("'Dahlia' er fortsat sit eget kanoniske navn", kanoniskArtsNavn('Dahlia') === 'Dahlia')
 
-console.log('\n5. Statisk scanning af brugerrettet copy i src/')
+const ALLE = filer('src')
+const ALLE_FOR_D4 = ALLE
+
+console.log('\n5. Uploadgrænser (D4): én levende vej, ét tal')
+const bucketSql = laes('supabase/migrations/00024_relax_media_bucket.sql')
+tjek(`bucketgrænsen i 00024 er ${MAKS_BILLEDE_MB} MB — samme tal som koden lover`,
+  bucketSql.includes(`file_size_limit = ${MAKS_BILLEDE_BYTES}`))
+const uploadRoute = laes('src/app/api/upload/route.ts')
+tjek('/api/upload henter grænsen fra upload-graenser.ts (ingen hardcodet MAX_BYTES)',
+  uploadRoute.includes("from '@/lib/upload-graenser'") && !/MAX_BYTES\s*=/.test(uploadRoute))
+for (const k of ['src/components/ui/image-upload.tsx', 'src/components/ui/multi-image-upload.tsx']) {
+  const kilde = laes(k)
+  tjek(`${k.split('/').pop()} tjekker størrelsen med samme funktion som routen`,
+    kilde.includes('billedeForStortBesked(compressed)') && kilde.includes("fetch('/api/upload'"))
+}
+tjek('den døde route /api/images/upload findes ikke længere', !existsSync('src/app/api/images'))
+tjek('storage.ts eksporterer ikke længere uploadImage (nul kaldere)',
+  !laes('src/actions/storage.ts').includes('export async function uploadImage'))
+tjek('ingen kode refererer til /api/images/upload',
+  ALLE_FOR_D4.every(sti => !udenKommentarer(laes(sti)).includes('/api/images/upload')))
+tjek("fejlteksten siger 'Maks. 10 MB' for et almindeligt billede",
+  billedeForStortBesked({ size: MAKS_BILLEDE_BYTES + 1, name: 'x.jpg', type: 'image/jpeg' }) === `Billede for stort (10.0 MB). Maks. ${MAKS_BILLEDE_MB} MB.`)
+tjek('et billede på præcis grænsen må uploades',
+  billedeForStortBesked({ size: MAKS_BILLEDE_BYTES, name: 'x.jpg', type: 'image/jpeg' }) === null)
+tjek(`HEIC har sin egen grænse (${MAKS_HEIC_MB} MB) med iPhone-råd i teksten`,
+  billedeForStortBesked({ size: MAKS_HEIC_BYTES + 1, name: 'IMG_1.HEIC', type: '' })?.includes('HEIC') === true
+  && billedeForStortBesked({ size: MAKS_BILLEDE_BYTES + 1, name: 'IMG_1.HEIC', type: '' }) === null)
+
+console.log('\n6. Statisk scanning af brugerrettet copy i src/')
 const FORBUDT: Array<{ moenster: RegExp; hvorfor: string; kun?: RegExp }> = [
   { moenster: /Indkøbs- og ønskeliste/, hvorfor: "kategorien hedder 'Ønskeliste' (Batch 3, D8)" },
   { moenster: /label="Årgang"|'Årgang'/, hvorfor: "feltet hedder 'Købsår' (Batch 3, D2)" },
@@ -127,7 +156,6 @@ const FORBUDT: Array<{ moenster: RegExp; hvorfor: string; kun?: RegExp }> = [
   { moenster: /'Skal ompottes'/, hvorfor: "spirer-stadiet prikles om — ompotning er en anden handling (D1)" },
   { moenster: /\? 'guide' : 'guider'/, hvorfor: "flertal er 'guides' (standard 11/8)" },
 ]
-const ALLE = filer('src')
 for (const f of FORBUDT) {
   const ramte: string[] = []
   for (const sti of ALLE) {

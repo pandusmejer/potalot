@@ -59,7 +59,7 @@ export function sortsNoegle(item: Pick<InventoryItem, 'name' | 'variety' | 'prim
  * Er denne `primaryImageId` brugerens EGET foto?
  *
  * Kanonisk regel, ikke filnavns-heuristik: alle uploads i Potalot går
- * gennem /api/upload, /api/images/upload eller actions/storage.ts, og de
+ * gennem /api/upload (den eneste levende uploadvej), og den
  * returnerer ALTID en absolut Supabase-storage-URL. Et lokalt
  * `/images/…` har derfor aldrig kunnet komme fra en bruger — det er et
  * Potalot-billede, der er skrevet ind i rækken (fx de gamle
