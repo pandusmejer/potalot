@@ -92,6 +92,15 @@ export const MVP_PLANTER = {
   dyrkningsKort: MVP_MODE,
 } as const
 
+/**
+ * Fase 3 — Opgaver. Én enkel visning (Nu / Kommende / Udført) i stedet for
+ * hele kalenderen. Kalenderen, årshjulet og al opgavelogik ligger urørt og
+ * vender tilbage, når MVP slås fra.
+ */
+export const MVP_OPGAVER = {
+  enkelVisning: MVP_MODE,
+} as const
+
 /** Skjulte menupunkter og genveje uden for bundnavigationen. */
 export const MVP_SKJUL = {
   /** "Min idétavle" i profilmenuen. */

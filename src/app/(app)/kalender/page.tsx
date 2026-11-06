@@ -1,5 +1,8 @@
 import { Suspense } from 'react'
 import { KalenderClient } from '@/components/havekalender/kalender-client'
+import { OpgaverMvp } from '@/components/havekalender/opgaver-mvp'
+import { MVP_OPGAVER } from '@/lib/mvp-config'
+import { aktuelAar, aktuelMaaned, idag } from '@/lib/datetime'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { CalendarDays } from 'lucide-react'
 import { getAllTasks } from '@/actions/havekalender'
@@ -81,6 +84,29 @@ async function KalenderIndhold() {
       guideId: p.guideId, name: p.name, variety: p.variety, preferredSrc: p.primaryImageId,
     })
     if (source !== 'fallback') plantImages[p.id] = src
+  }
+
+  // MVP 1.0, fase 3 (mvp-config.ts): Nu / Kommende / Udført i stedet for hele
+  // kalenderen. Samme data og samme dagens-fokus som kalenderen — kun
+  // visningen er en anden. Kalenderen nedenfor er urørt og bruges, når MVP
+  // slås fra. (Inspiration-forslagene herunder bruges ikke af MVP-visningen.)
+  if (MVP_OPGAVER.enkelVisning) {
+    return (
+      <OpgaverMvp
+        tasks={tasks}
+        dagensFokus={dagensFokus}
+        generalTasks={generalTasks}
+        userTasks={userTasks}
+        alerts={alerts}
+        aktivePlanter={plants
+          .filter(p => !p.isArchived)
+          .map(p => ({ id: p.id, name: p.name, variety: p.variety }))}
+        today={idag()}
+        month={aktuelMaaned()}
+        year={aktuelAar()}
+        canPersist={me !== null}
+      />
+    )
   }
 
   // ── KAL-0110 (Anna 25/8, P1): Inspiration-mappens Frøbank-fane ──────────
