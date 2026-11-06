@@ -124,3 +124,33 @@ sortskombinationer.
 "Du har 4 høstklare auberginer → moussaka, baba ganoush."
 Kræver: høstklar-afledning pr. art (findes delvist i afledninger)
 + kurateret opskrifts-mapping pr. art (IKKE ekstern API i MVP).
+
+## MVP 1.0 — opfølgning efter release (nov. 2026)
+
+### 15 døde guide-links til teknikguides, der endnu ikke findes (fundet 6/11 2026)
+
+**Status:** EKSISTERENDE fejl — findes identisk med MVP til og fra og i den oprindelige app; ikke introduceret af MVP og **ikke en blokering** for MVP 1.0 (Annas beslutning 6/11). Vi bygger IKKE de manglende guides nu.
+
+**Senere opgave:** skjul eller ret de døde links, **uden at slette guideindhold**. Kilden er `:::guide`-blokke i `content/guides/*.md` (felterne `slug:` + `title:`), som renderes som link-kort. Det rammer ikke datamodellen: slug'en peger bare på en guide, der ikke er oprettet. Mulige veje (afgøres senere): (a) opret guiden, (b) lad rendereren skjule et link-kort, hvis `slug` ikke findes, (c) re-peg til en eksisterende guide. Aldrig filler. Hænger sammen med guide-auditens "2A2 døde links" (`Docs/content/guide-audit-2026-09/`).
+
+**Fundet ved:** crawl af Frøbank, Mine planter og alle 176 guides (≈ 228 sider, 448 unikke interne links): 15 destinationer giver 404, alle fra guide-sider. Alle 194 billeder er i orden. Linjenumre gælder indholdet på `release/mvp-1.0` (= `origin/main`); på lokal `main` kan de være forskudt af de fem ikke-frigivne guide-commits.
+
+| Destination (404) | Linktitel i blokken | Kilde (guide-side) | Kildefil:linje (`slug:`) |
+|---|---|---|---|
+| `/guides/knibning-af-agurker` | Sådan kniber du agurker | `/guides/agurk` | `content/guides/agurk.md:131` |
+| `/guides/bestoevning-af-agurker` | Sådan bestøver du agurker | `/guides/agurk` | `content/guides/agurk.md:153` |
+| `/guides/forspiring-af-dahlia` | Forspiring af dahlia | `/guides/dahlia` | `content/guides/dahlia.md:126` |
+| `/guides/plukning-af-dahlia` | Få flere blomster | `/guides/dahlia` | `content/guides/dahlia.md:177` |
+| `/guides/buketter-med-dahlia` | Høst dahlia til buketter | `/guides/dahlia` | `content/guides/dahlia.md:205` |
+| `/guides/overvintring-af-dahlia` | Sådan overvintrer du dahlia | `/guides/dahlia` | `content/guides/dahlia.md:233` |
+| `/guides/opbinding-af-dahlia` | Sådan støtter du høje dahlia | `/guides/dahlia-cafe-au-lait` | `content/guides/dahlia-cafe-au-lait.md:113` |
+| `/guides/dahlia-bishop-of-llandaff` | Mød Dahlia Bishop of Llandaff | `/guides/dahlia-cafe-au-lait` | `content/guides/dahlia-cafe-au-lait.md:147` |
+| `/guides/forspiring` | Sådan forspirer du | `/guides/chili` | `content/guides/chili.md:125` |
+| `/guides/ompotning` | Sådan ompotter du | `/guides/chili` | `content/guides/chili.md:141` |
+| `/guides/haerdning-af-planter` | Sådan hærder du planter | `/guides/chili` | `content/guides/chili.md:157` |
+| `/guides/goedning-af-chili` | Sådan gøder du chili | `/guides/chili` | `content/guides/chili.md:173` |
+| `/guides/overvintring-af-chili` | Lær at overvintre chili / Sådan overvintrer du chili | `/guides/chili-habanero-orange` | `content/guides/chili-habanero-orange.md:119` |
+| `/guides/goedning-af-peberfrugt` | Sådan gøder du peberfrugter | `/guides/peberfrugt` | `content/guides/peberfrugt.md:144` |
+| `/guides/opbinding-af-peberfrugt` | Sådan støtter du peberfrugter | `/guides/peberfrugt` · `/guides/peberfrugt-california-wonder` · `/guides/peberfrugt-corno-di-toro-rosso` | `content/guides/peberfrugt.md:152` · `peberfrugt-california-wonder.md:100` · `peberfrugt-corno-di-toro-rosso.md:101` |
+
+(15 destinationer, 17 kildelinks: `opbinding-af-peberfrugt` er linket fra tre guides.) Metode til genkørsel: crawl alle `/guides/<id>` og tjek status på hvert internt link; en regressionstest, der fejler på nye døde guide-slugs, kan tilføjes, når de 15 er håndteret.

@@ -274,7 +274,7 @@ function renderEditorial(
 }
 
 function PlantDyrkningsKort({ plant, log }: { plant: MockPlant; log: LogContext }) {
-  const guide = kortGuideForPlante(plant.name, plant.variety)
+  const guide = kortGuideForPlante(plant.name, plant.variety, plant.guideId)
   // Opgaver hører til en rigtig dyrkning — demo-planter har ingen i databasen.
   const visOpgaver = log.canLog && (log.opgaver?.length ?? 0) > 0
   if (!guide && !visOpgaver) return null

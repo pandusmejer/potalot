@@ -60,8 +60,10 @@ function saadybde(mm: number | undefined): string | null {
 export function kortGuideForPlante(
   name: string,
   variety?: string | null,
+  /** Plantens eksplicitte guide-kobling; samme opslag som "Læs hele guiden"-linket. */
+  guideId?: string | null,
 ): KortGuide | null {
-  const { sortsGuide, artsGuide } = slaaGuiderOp(name, variety)
+  const { sortsGuide, artsGuide } = slaaGuiderOp(name, variety, guideId)
   if (!sortsGuide && !artsGuide) return null
 
   const sortQF: QF | null = sortsGuide?.quickFacts ?? null

@@ -227,6 +227,22 @@ function main() {
     }
   }
 
+  console.log('\n[Se guide] eksplicit guideId: kun hvis guiden findes (ellers artsguide, aldrig et dødt link)')
+  {
+    const guides = [
+      { id: 'boenne', plantName: 'Bønne', variety: null, guideLevel: 'species' } as unknown as Guide,
+      { id: 'chili-habanero-orange', plantName: 'Chili', variety: 'Habanero Orange', guideLevel: 'variety' } as unknown as Guide,
+    ]
+    tjek('Neckargold: koblingen til en guide, der ikke findes, falder tilbage til artsguiden',
+      resolvePlantGuideHref({ guideId: 'stangboenne-neckargold', name: 'Stangbønne', variety: 'Neckargold' }, guides) === '/guides/boenne')
+    tjek('en kobling til en guide, der FINDES, bevares (sortsguide)',
+      resolvePlantGuideHref({ guideId: 'chili-habanero-orange', name: 'Chili', variety: 'Habanero' }, guides) === '/guides/chili-habanero-orange')
+    tjek('en brugerguide (UUID) bevares, også selv om den ikke er i det statiske bibliotek',
+      resolvePlantGuideHref({ guideId: '8b9a7c1e-2f3d-4a5b-9c6d-7e8f9a0b1c2d', name: 'Tomat', variety: null }, guides) === '/guides/8b9a7c1e-2f3d-4a5b-9c6d-7e8f9a0b1c2d')
+    tjek('ukendt kobling uden nogen art/sort-match → /guides (linket dør aldrig)',
+      resolvePlantGuideHref({ guideId: 'findes-ikke', name: 'Opfundet Plante', variety: null }, guides) === '/guides')
+  }
+
   console.log('\n[Frøbankens guide-fald] tom kobling må ikke betyde intet link')
   {
     // Sådan ser Annas faktiske DB ud: master-artsguiden "Bønne" + det

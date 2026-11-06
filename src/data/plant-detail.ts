@@ -93,6 +93,10 @@ export interface PlantDetail {
   sammenligning: DetailSammenligning | null
 }
 
+// Filnavne ret 6/11 2026 til de EKSISTERENDE fotos (de gamle navne y-led/blad-dug/
+// frugtknop/klase/umodne fandtes aldrig → 404). Motiverne er kontrolleret mod
+// beskrivelserne: led-haar = Y-formet stængelled, blad = blad med dug, tidlig-frugt =
+// tidlig frugtsætning, klase-umodne = grøn klase, sigle-umoden = enkelt grøn frugt.
 const MAKRO_SM = '/images/makro/tomat-san-marzano'
 
 /**
@@ -128,7 +132,7 @@ export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
       timing: 'forventes om 8–14 dage',
       beskrivelse: 'San Marzano går nu fra vegetativ vækst til blomstring.',
       denneUge: ['Fjern sideskud', 'Bind planten op', 'Hold jorden jævnt fugtig', 'Gød hver 7.–10. dag'],
-      fotoSrc: `${MAKRO_SM}/frugtknop.jpg`,
+      fotoSrc: `${MAKRO_SM}/tidlig-frugt.jpg`,
       fotoAlt: 'Begyndende blomsterknop på San Marzano',
     },
     tidslinjeNoter: {
@@ -138,11 +142,11 @@ export const PLANT_DETAIL_OVERRIDES: Record<string, PlantDetailOverride> = {
       Høst: 'De første klaser sætter allerede — høst nærmer sig.',
     },
     billeder: [
-      { src: `${MAKRO_SM}/y-led.jpg`, alt: 'Kraftigt Y-led på stænglen' },
-      { src: `${MAKRO_SM}/blad-dug.jpg`, alt: 'Morgendug på bladene' },
-      { src: `${MAKRO_SM}/frugtknop.jpg`, alt: 'Første frugtknop' },
-      { src: `${MAKRO_SM}/klase.jpg`, alt: 'Klase med unge frugter' },
-      { src: `${MAKRO_SM}/umodne.jpg`, alt: 'Umodne grønne San Marzano' },
+      { src: `${MAKRO_SM}/led-haar.jpg`, alt: 'Kraftigt Y-led på stænglen' },
+      { src: `${MAKRO_SM}/blad.jpg`, alt: 'Morgendug på bladene' },
+      { src: `${MAKRO_SM}/tidlig-frugt.jpg`, alt: 'Første frugtknop' },
+      { src: `${MAKRO_SM}/klase-umodne.jpg`, alt: 'Klase med unge frugter' },
+      { src: `${MAKRO_SM}/sigle-umoden.jpg`, alt: 'Umodne grønne San Marzano' },
     ],
     sammenligning: {
       // Ingen "de fleste San Marzano"-sammenligning uden kontrolleret

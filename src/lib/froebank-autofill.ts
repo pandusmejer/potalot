@@ -137,6 +137,13 @@ function resolveFelt<K extends keyof GuideQuickFacts>(
 export function slaaGuiderOp(
   name: string,
   variety?: string | null,
+  /**
+   * Plantens EKSPLICITTE guide-kobling (fx 'chili-habanero-orange'). Er den sat og
+   * findes guiden, vinder den over navnematch — så plantesidens korte guide og dens
+   * "Læs hele guiden"-link (resolvePlantGuideHref) altid peger på SAMME guide.
+   * Uden guideId (frøposer) er opførslen uændret.
+   */
+  guideId?: string | null,
 ): { sortsGuide: GuideFactsEntry | null; artsGuide: GuideFactsEntry | null } {
   const navn = name.trim()
   const sort = (variety ?? '').trim()
@@ -151,8 +158,9 @@ export function slaaGuiderOp(
   // 1) Sortsguide? Eksakt stavemåde først; findes den ikke, prøves sortens
   // kanoniske alias (fx 'Eight Ball F1' → 'Eight Ball'). Kun eksplicit
   // verificerede synonymer — se sorts-alias.ts.
-  let sortsGuide: GuideFactsEntry | null = null
-  if (sort) {
+  const eksplicit = guideId ? guideById.get(guideId) ?? null : null
+  let sortsGuide: GuideFactsEntry | null = eksplicit?.variety ? eksplicit : null
+  if (!sortsGuide && sort) {
     sortsGuide = guideById.get(slugify(`${navn} ${sort}`)) ?? null
     if (!sortsGuide) {
       const kanonisk = kanoniskSortsSlug(navn, sort)
@@ -166,8 +174,8 @@ export function slaaGuiderOp(
   }
 
   // 2) Artsguide — direkte match, eller sortsguidens parent.
-  let artsGuide: GuideFactsEntry | null = null
-  if (sortsGuide?.parentGuideId) {
+  let artsGuide: GuideFactsEntry | null = eksplicit && !eksplicit.variety ? eksplicit : null
+  if (!artsGuide && sortsGuide?.parentGuideId) {
     artsGuide = guideById.get(sortsGuide.parentGuideId) ?? null
   }
   if (!artsGuide) artsGuide = guideById.get(slugify(navn)) ?? null
