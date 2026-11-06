@@ -67,6 +67,19 @@ export function erSkjultIMvp(pathname: string): boolean {
   )
 }
 
+/**
+ * Fase 1 — Min frøbank. Hvert punkt kan slås fra for sig; med MVP slået
+ * fra er alle false, og frøbanken er mappestakken præcis som før.
+ */
+export const MVP_FROEBANK = {
+  /** Kompakt liste med thumbnails i stedet for mappestakken. */
+  kompaktListe: MVP_MODE,
+  /** Artsfilter + sortering på sortsnavn og beholdning. */
+  artsfilterOgSortering: MVP_MODE,
+  /** Skjul den sensoriske stemningsnote under frøbanken (ren dekoration). */
+  skjulStemningsnote: MVP_MODE,
+} as const
+
 /** Skjulte menupunkter og genveje uden for bundnavigationen. */
 export const MVP_SKJUL = {
   /** "Min idétavle" i profilmenuen. */

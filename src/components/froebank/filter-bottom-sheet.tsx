@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import type { PrimaryCategoryId } from '@/lib/types'
+import { MVP_FROEBANK } from '@/lib/mvp-config'
 
 export type SmartFilter =
   | 'mangler-guide'
@@ -24,7 +25,8 @@ export type SmartFilter =
   | 'mangler-billede'
   | 'naesten-tom'
 
-export type SortOrder = 'standard' | 'az' | 'za' | 'recent' | 'expiry'
+/** 'stock' (færrest frø først) findes kun i MVP'ens kompakte frøbank. */
+export type SortOrder = 'standard' | 'az' | 'za' | 'recent' | 'expiry' | 'stock'
 
 const VIS_OPTIONS: { id: SmartFilter; label: string }[] = [
   { id: 'udloeber-snart', label: 'Udløber snart' },
@@ -45,6 +47,10 @@ const TYPE_OPTIONS: { id: PrimaryCategoryId; label: string }[] = [
 const SORT_OPTIONS: { id: SortOrder; label: string }[] = [
   { id: 'recent', label: 'Senest tilføjet' },
   { id: 'expiry', label: 'Udløber først' },
+  // MVP 1.0: beholdningssortering. Uden MVP er listen de oprindelige fire.
+  ...(MVP_FROEBANK.artsfilterOgSortering
+    ? [{ id: 'stock' as const, label: 'Færrest frø først' }]
+    : []),
   { id: 'az', label: 'Alfabetisk A–Å' },
   { id: 'za', label: 'Alfabetisk Å–A' },
 ]

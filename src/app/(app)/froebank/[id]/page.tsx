@@ -30,6 +30,8 @@ import {
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
 import { guideHref } from '@/lib/guides/guide-href'
+import { MVP_MODE } from '@/lib/mvp-config'
+import { UDLOEBET_FORKLARING } from '@/lib/froebank-liste'
 import { findArtsGuide } from '@/lib/guides/find-arts-guide'
 
 interface Props {
@@ -82,7 +84,11 @@ export default async function InventoryDetailPage({ params }: Props) {
   const poseTilbage = froeTilbageIPose(item)
   const sortensBeholdning = flerePoser ? beholdningForPoser(froeposer) : null
   const nogenUdloebet = froeposer.some((p) => poseStatus.get(p.id)?.udloebet)
-  const UDLOEB_HJAELP = 'Frø kan stadig spire efter bedst før-datoen. Prøv dem gerne, hvis de ser fine ud.'
+  // MVP 1.0: forklaringen til UDLØBET er den låste formulering fra 6/11
+  // (samme tekst som i den kompakte liste). Uden MVP står den oprindelige.
+  const UDLOEB_HJAELP = MVP_MODE
+    ? UDLOEBET_FORKLARING
+    : 'Frø kan stadig spire efter bedst før-datoen. Prøv dem gerne, hvis de ser fine ud.'
 
   const linkedPlants = allPlants.filter(p => p.sourceElementId === item.id)
   const linkedTasks = allTasks

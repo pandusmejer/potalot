@@ -10,6 +10,7 @@ import { hentBackfillForslag } from '@/actions/froebank-backfill'
 import { Package } from 'lucide-react'
 import { pickGardenNote } from '@/lib/garden-notes'
 import { aktuelMaaned } from '@/lib/datetime'
+import { MVP_FROEBANK } from '@/lib/mvp-config'
 
 export const dynamic = 'force-dynamic'
 
@@ -84,9 +85,12 @@ async function FroebankIndhold() {
       {/* Svævende sansenote efter samlingen — som en stille åndepause
           når brugeren har bladret gennem alle sine kort. Per
           HAVEN_SOM_SANCTUARY.md: "i bunden af et langt scroll". */}
-      <div className="pt-6 pb-8">
-        <HaveStemning text={stemningNote} />
-      </div>
+      {/* MVP 1.0: stemningsnoten er ren dekoration og skjules (mvp-config.ts). */}
+      {!MVP_FROEBANK.skjulStemningsnote && (
+        <div className="pt-6 pb-8">
+          <HaveStemning text={stemningNote} />
+        </div>
+      )}
     </div>
   )
 }

@@ -25,6 +25,12 @@ import {
   grupperEfterSort, poseInfoForViste, sortsNoegle, erBedstFoerNaer,
 } from '@/lib/froebank-grupper'
 import { parseDate } from '@/lib/datetime'
+import { MVP_FROEBANK } from '@/lib/mvp-config'
+import {
+  artsNoegle, artsValg, maengdeForSort, sammenlignArtOgSort, sammenlignMaengde,
+  sammenlignSortsnavn,
+} from '@/lib/froebank-liste'
+import { FroebankKompakt, type KompaktRaekke } from './froebank-kompakt'
 import {
   FilterBottomSheet,
   type SmartFilter,
@@ -76,6 +82,9 @@ export function FroebankBrowser({ inventory }: Props) {
   })
   const [search, setSearch] = useState('')
   const [subcat, setSubcat] = useState<string>('alle')
+  // MVP 1.0: artsfilter (artsmodellens kanoniske slug). 'alle' = intet filter.
+  // Sættes kun fra den kompakte liste, så uden MVP er det altid 'alle'.
+  const [art, setArt] = useState<string>('alle')
   const [filtersOpen, setFiltersOpen] = useState(false)
   // Sorteringsorden: 'standard' (pinned→favorit→alfabetisk),
   // 'az' (A→Å) eller 'za' (Å→A).
@@ -145,6 +154,14 @@ export function FroebankBrowser({ inventory }: Props) {
     return map
   }, [kanoniskeGrupper])
 
+  // Sortens samlede beholdning (frø, ellers styk) til beholdningssorteringen.
+  // null = ukendt — sorteres sidst, aldrig som 0.
+  const maengdePrSort = useMemo(() => {
+    const map = new Map<string, number | null>()
+    for (const g of kanoniskeGrupper) map.set(g.noegle, maengdeForSort(g).antal)
+    return map
+  }, [kanoniskeGrupper])
+
   const filtered = useMemo(() => {
     let list = inventory
 
@@ -159,6 +176,12 @@ export function FroebankBrowser({ inventory }: Props) {
       const hs = HERO_SUBCATEGORIES.find((h) => h.id === subcat)
       const ids = hs ? hs.match : [subcat]
       list = list.filter((i) => i.subcategoryId != null && ids.includes(i.subcategoryId))
+    }
+
+    // MVP 1.0: artsfilter. Går gennem artsmodellen, så "Skoleagurk" og
+    // "Agurk" er samme art her, præcis som de er samme mappe i grupperingen.
+    if (art !== 'alle') {
+      list = list.filter((i) => artsNoegle(i) === art)
     }
 
     if (smartFilters.has('mangler-guide')) {
@@ -208,6 +231,30 @@ export function FroebankBrowser({ inventory }: Props) {
       return diff !== 0 && Number.isFinite(diff) ? diff : byName(a, b)
     }
 
+    // Færrest først; ukendt antal sidst. Beholdningen er SORTENS (alle poser).
+    if (sortOrder === 'stock') {
+      return [...list].sort((a, b) =>
+        sammenlignMaengde(
+          maengdePrSort.get(sortsNoegle(a)) ?? null,
+          maengdePrSort.get(sortsNoegle(b)) ?? null,
+        ) || sammenlignArtOgSort(a, b),
+      )
+    }
+
+    // MVP 1.0: A–Å/Å–A sorterer på SORTSNAVN, og standardrækkefølgen skiller
+    // ens arter på sort. Uden MVP gælder reglerne nedenfor uændret (artsnavn).
+    if (MVP_FROEBANK.artsfilterOgSortering) {
+      if (sortOrder === 'az') return [...list].sort(sammenlignSortsnavn)
+      if (sortOrder === 'za') return [...list].sort((a, b) => sammenlignSortsnavn(b, a))
+      if (sortOrder === 'standard') {
+        return [...list].sort((a, b) => {
+          if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1
+          if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
+          return sammenlignArtOgSort(a, b)
+        })
+      }
+    }
+
     if (sortOrder === 'recent') return [...list].sort(byCreatedAt)
     if (sortOrder === 'expiry') return [...list].sort(byExpiry)
     if (sortOrder === 'az') return [...list].sort(byName)
@@ -219,7 +266,7 @@ export function FroebankBrowser({ inventory }: Props) {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
       return byName(a, b)
     })
-  }, [inventory, activeCategory, subcat, search, smartFilters, sortOrder, froeTilbagePrSort, bedstFoerNaerSorter])
+  }, [inventory, activeCategory, subcat, art, search, smartFilters, sortOrder, froeTilbagePrSort, maengdePrSort, bedstFoerNaerSorter])
 
   // Samme sort, flere fysiske frøposer: stakken viser ÉN mappe pr. sort
   // (art + sort), ikke pr. pose. Poserne bevares som selvstændige rækker —
@@ -363,8 +410,99 @@ export function FroebankBrowser({ inventory }: Props) {
   function resetFilters() {
     setActiveCategory('fro')
     setSubcat('alle')
+    setArt('alle')
     setSmartFilters(new Set())
     setSortOrder('standard')
+  }
+
+  // Filterarket deles af mappestakken og MVP'ens kompakte liste.
+  const filterSheet = (
+    <FilterBottomSheet
+      open={filtersOpen}
+      onClose={() => setFiltersOpen(false)}
+      category={activeCategory}
+      smartFilters={smartFilters}
+      sortOrder={sortOrder}
+      subcategoryOptions={subcategoryChips}
+      activeSubcategory={subcat}
+      onSelectSubcategory={(id) => setSubcat(id)}
+      onSelectCategory={(id) => {
+        setActiveCategory(id)
+        setSubcat('alle')
+        setArt('alle')
+      }}
+      onToggleSmart={toggleSmart}
+      onClearSmart={() => setSmartFilters(new Set())}
+      onSelectSort={setSortOrder}
+      onReset={resetFilters}
+    />
+  )
+
+  // ── MVP 1.0: kompakt liste (mvp-config.ts) ─────────────────────────────
+  // Samme filtrerede, sorterede og grupperede data som mappestakken — kun
+  // visningen er en anden. Mappestakken nedenfor er urørt og bruges, når
+  // MVP er slået fra.
+  if (MVP_FROEBANK.kompaktListe) {
+    const kanoniskEfterNoegle = new Map(kanoniskeGrupper.map((g) => [g.noegle, g]))
+    const raekker: KompaktRaekke[] = grupper.map((g) => ({
+      item: g.hoved,
+      gruppe: kanoniskEfterNoegle.get(g.noegle) ?? g,
+    }))
+    // Arterne i den aktive kategori — uafhængigt af søgning og øvrige filtre,
+    // så vælgeren ikke skrumper, mens man filtrerer.
+    const arter = artsValg(
+      activeCategory === 'favoritter'
+        ? inventory.filter((i) => i.isFavorite)
+        : inventory.filter((i) => i.primaryCategoryId === activeCategory),
+    )
+    // Sorteringen vælges i listens egen vælger; chips viser kun de øvrige
+    // filtre fra filterarket, så de kan ses og fjernes uden at åbne arket.
+    const filterChips = [
+      ...(activeSubcategoryLabel ? [{ id: 'subcat', label: activeSubcategoryLabel }] : []),
+      ...activeFilterChips.filter((c) => !c.id.startsWith('sort-')),
+    ]
+    return (
+      <div className="space-y-4">
+        <FroebankKompakt
+          raekker={raekker}
+          antalSorter={kanoniskeGrupper.length}
+          antalPoser={inventory.length}
+          antalUdloeberSnart={expiringSoonCount}
+          erTomBank={inventory.length === 0}
+          soegning={search}
+          onSoegning={setSearch}
+          kategorier={categoryCounts}
+          aktivKategori={activeCategory}
+          onKategori={(id) => {
+            setActiveCategory(id as PrimaryCategoryId)
+            setSubcat('alle')
+            setArt('alle')
+          }}
+          arter={arter}
+          aktivArt={art}
+          onArt={setArt}
+          sortering={sortOrder}
+          onSortering={setSortOrder}
+          udloeberSnartAktiv={smartFilters.has('udloeber-snart')}
+          onToggleUdloeberSnart={() => toggleSmart('udloeber-snart')}
+          filterChips={filterChips}
+          onFjernFilterChip={(id) => (id === 'subcat' ? setSubcat('alle') : removeFilterChip(id))}
+          onAabnFiltre={() => setFiltersOpen(true)}
+          onNulstil={() => {
+            resetFilters()
+            setSearch('')
+          }}
+        />
+        {activeCategory === 'indkoebsliste' && (
+          <PageIntroNote
+            id="oenskeliste"
+            title="Din ønskeliste"
+            body="Gem sorter, du overvejer at dyrke. Når du er klar, kan du flytte dem direkte til Frøbanken."
+          />
+        )}
+        {filterSheet}
+      </div>
+    )
   }
 
   return (
@@ -433,24 +571,7 @@ export function FroebankBrowser({ inventory }: Props) {
 
       {/* Filterknappen i mappen åbner dette bottom sheet (ikke længere et
           inline-panel under mappen, som brød arkiv-illusionen). */}
-      <FilterBottomSheet
-        open={filtersOpen}
-        onClose={() => setFiltersOpen(false)}
-        category={activeCategory}
-        smartFilters={smartFilters}
-        sortOrder={sortOrder}
-        subcategoryOptions={subcategoryChips}
-        activeSubcategory={subcat}
-        onSelectSubcategory={(id) => setSubcat(id)}
-        onSelectCategory={(id) => {
-          setActiveCategory(id)
-          setSubcat('alle')
-        }}
-        onToggleSmart={toggleSmart}
-        onClearSmart={() => setSmartFilters(new Set())}
-        onSelectSort={setSortOrder}
-        onReset={resetFilters}
-      />
+      {filterSheet}
     </div>
   )
 }
