@@ -90,6 +90,8 @@ export const MVP_PLANTER = {
   kompaktListe: MVP_MODE,
   /** Kort dyrkningsguide + kommende opgaver øverst på plantens detaljeside. */
   dyrkningsKort: MVP_MODE,
+  /** "Dyrk flere": ny dyrkning af samme art og sort fra plantens detaljeside. */
+  dyrkFlere: MVP_MODE,
 } as const
 
 /**
@@ -99,6 +101,12 @@ export const MVP_PLANTER = {
  */
 export const MVP_OPGAVER = {
   enkelVisning: MVP_MODE,
+  /**
+   * Tekst på knapper, der fører til /kalender (plantesiden og frøsedelsiden).
+   * MVP'ens navigation kalder området "Opgaver", så knappen følger med; uden
+   * MVP er teksten uændret. Linkmålet er /kalender i begge tilfælde.
+   */
+  knapTekst: MVP_MODE ? 'Se opgaver' : 'Se kalender',
 } as const
 
 /** Skjulte menupunkter og genveje uden for bundnavigationen. */

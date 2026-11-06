@@ -17,7 +17,8 @@ import { FROEPOSE_UDEN_NAVN } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
 import { createInventoryItem } from '@/actions/froebank'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
-import { extractSeedPacketFields, extractSeedFromUrl, type ExtractedSeedFields } from '@/actions/seed-packet-extract'
+import { extractSeedPacketFields, extractSeedFromUrl } from '@/actions/seed-packet-extract'
+import type { ExtractedSeedFields } from '@/lib/seed-packet-fields'
 import { parseInventoryFile, confirmImportInventory, readImportLinks } from '@/actions/inventory-import'
 import {
   byggImportPreview, unikkeLinks, LINK_CHUNK,

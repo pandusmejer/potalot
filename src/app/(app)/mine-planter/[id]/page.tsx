@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import { PlantCard } from '@/components/mine-planter/plant-card'
 import { PlantKarakter } from '@/components/mine-planter/plant-karakter'
 import { PlantNaeste } from '@/components/mine-planter/plant-naeste'
+import { DyrkFlere } from '@/components/mine-planter/dyrk-flere'
+import { getGardenLocations } from '@/actions/garden-locations'
 import { PlantTidslinje } from '@/components/mine-planter/plant-tidslinje'
 import { PlantGalleri } from '@/components/mine-planter/plant-galleri'
 import { PlantFotoManager } from '@/components/mine-planter/plant-foto-manager'
@@ -27,7 +29,7 @@ import { getPlant, getPlantLogs } from '@/actions/mine-planter'
 import { getTasksForPlant } from '@/actions/havekalender'
 import { PlantKortGuide, PlantOpgaverKort } from '@/components/mine-planter/plant-dyrkningskort'
 import { kortGuideForPlante } from '@/lib/plante-kort-guide'
-import { MVP_PLANTER } from '@/lib/mvp-config'
+import { MVP_OPGAVER, MVP_PLANTER } from '@/lib/mvp-config'
 import { idag } from '@/lib/datetime'
 import { PlanteAdmin } from '@/components/mine-planter/plante-admin'
 import { HistorikIndhent } from '@/components/mine-planter/historik-indhent'
@@ -52,6 +54,8 @@ interface LogContext {
   vurderinger?: Record<string, string>
   /** Plantens opgaver — kun hentet når MVP's dyrkningskort er slået til. */
   opgaver?: import('@/lib/types').CalendarTask[]
+  /** Dyrkningssteder til "Dyrk flere" uden frøpose (kun hentet når den vises). */
+  gardenLocations?: import('@/lib/types').GardenLocation[]
 }
 
 interface Props {
@@ -84,12 +88,14 @@ export default async function PlanteDetailPage({ params }: Props) {
   const realPlant = await getPlant(id)
   if (realPlant) {
     // Logget ind med egen plante → hent rigtige logs + tillad logging.
-    const [logs, vurderinger, opgaver] = await Promise.all([
+    const [logs, vurderinger, opgaver, gardenLocations] = await Promise.all([
       getPlantLogs(realPlant.id),
       getGartnerVurderinger(realPlant.id),
       MVP_PLANTER.dyrkningsKort ? getTasksForPlant(realPlant.id) : Promise.resolve([]),
+      // Kun nødvendig, når "Dyrk flere" falder tilbage til "en plante, du allerede har".
+      MVP_PLANTER.dyrkFlere && !realPlant.sourceElementId ? getGardenLocations() : Promise.resolve([]),
     ])
-    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true, vurderinger, opgaver })
+    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true, vurderinger, opgaver, gardenLocations })
   }
 
   // 2) Demo-fallback: kig i mock-bibliotek (anonym → ingen skrivning).
@@ -240,6 +246,18 @@ function renderEditorial(
         </Link>
       )}
 
+      {/* MVP 1.0: "Dyrk flere" — en NY dyrkning af samme art og sort. Genbruger
+          Så-flowet (med frøpose, source_inventory_id bevares) eller "en plante,
+          du allerede har" (uden). Den nuværende dyrkning ændres ikke. */}
+      {MVP_PLANTER.dyrkFlere && log.canLog && (
+        <DyrkFlere
+          name={plant.name}
+          variety={plant.variety ?? null}
+          sourceInventoryId={plant.sourceElementId ?? null}
+          gardenLocations={log.gardenLocations ?? []}
+        />
+      )}
+
       {/* MVP 1.0: kort dyrkningsguide + kommende opgaver lige under kilden.
           Guiden er de eksisterende quickFacts (sort → art); opgaverne er de
           eksisterende calendar_tasks for planten. Begge tier uden data. */}
@@ -252,7 +270,7 @@ function renderEditorial(
 
       {/* KARAKTER = sektion 2, lige efter hero (Annas valg). */}
       {karakter && <PlantKarakter karakter={karakter} />}
-      <PlantNaeste naeste={detail.naeste} />
+      <PlantNaeste naeste={detail.naeste} kalenderLabel={MVP_OPGAVER.knapTekst} />
       <PlantTidslinje milestones={detail.tidslinje} />
       {detail.sammenligning && <PlantSammenligning data={detail.sammenligning} />}
 

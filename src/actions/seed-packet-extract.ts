@@ -10,7 +10,6 @@ import {
   type ExtractedSeedFields,
 } from '@/lib/seed-packet-fields'
 
-export type { ExtractedSeedFields }
 
 const SYSTEM_PROMPT = `Du er en assistent der læser danske og europæiske frøposer.
 Få information ud af billedet og returnér JSON med felter du er sikker på.

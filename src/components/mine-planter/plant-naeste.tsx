@@ -25,9 +25,12 @@ const STREG = 'rgba(36,48,31,0.08)'
 export function PlantNaeste({
   naeste,
   kalenderHref = '/kalender',
+  kalenderLabel = 'Se kalender',
 }: {
   naeste: DetailNaeste
   kalenderHref?: string
+  /** Knapteksten; MVP-visningen kalder området "Opgaver" (mvp-config). */
+  kalenderLabel?: string
 }) {
   return (
     <>
@@ -191,7 +194,7 @@ export function PlantNaeste({
             }}
           >
             <CalendarDays className="h-4 w-4" strokeWidth={2} style={{ color: GREEN }} aria-hidden />
-            Se kalender
+            {kalenderLabel}
             <ChevronRight className="h-4 w-4" strokeWidth={2} style={{ color: 'rgba(36,48,31,0.45)' }} aria-hidden />
           </Link>
         </div>

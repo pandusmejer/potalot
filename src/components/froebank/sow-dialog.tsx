@@ -21,10 +21,16 @@ interface Props {
   suggestedLocations?: GrowingLocation[]
   /** Sort-/artsnavn til den ærlige bekræftelse ("Padron er i Mine planter"). */
   itemLabel?: string
+  /**
+   * "Dyrk flere": opret ALTID en ny dyrkning (mergeStrategy 'new'). Den
+   * eksisterende plante røres ikke, og brugeren bliver ikke spurgt, om
+   * såningen skal føjes til den.
+   */
+  altidNyDyrkning?: boolean
   children?: React.ReactNode
 }
 
-export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel, children }: Props) {
+export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel, altidNyDyrkning = false, children }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -77,7 +83,7 @@ export function SowDialog({ inventoryItemId, suggestedLocations = [], itemLabel,
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    submit()
+    submit(altidNyDyrkning ? 'new' : undefined)
   }
 
   return (

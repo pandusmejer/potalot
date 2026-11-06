@@ -25,6 +25,8 @@ interface Props {
    * Bruges i onboarding, hvor brugeren skal blive på opsætnings-fladen.
    */
   onCreated?: (id: string) => void
+  /** Forudfyld art og sort (fx "Dyrk flere" fra en plante uden frøpose). */
+  defaults?: { name?: string; variety?: string | null }
 }
 
 type DatoMode = 'exact' | 'approx' | 'unknown'
@@ -38,15 +40,15 @@ type DatoMode = 'exact' | 'approx' | 'unknown'
  * ingen falske placeholder-poster. Startdato kan være præcis, cirka (måned)
  * eller ukendt — vi opfinder ikke en dato.
  */
-export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props) {
+export function EgenPlanteDialog({ gardenLocations, children, onCreated, defaults }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const [name, setName] = useState('')
+  const [name, setName] = useState(defaults?.name ?? '')
   const [type, setType] = useState('')
-  const [sort, setSort] = useState('')
+  const [sort, setSort] = useState(defaults?.variety ?? '')
   const [quantity, setQuantity] = useState('1')
   const [location, setLocation] = useState('')
   const [datoMode, setDatoMode] = useState<DatoMode>('approx')
@@ -57,7 +59,7 @@ export function EgenPlanteDialog({ gardenLocations, children, onCreated }: Props
   const [observation, setObservation] = useState('')
 
   function reset() {
-    setName(''); setType(''); setSort(''); setQuantity('1'); setLocation('')
+    setName(defaults?.name ?? ''); setType(''); setSort(defaults?.variety ?? ''); setQuantity('1'); setLocation('')
     setDatoMode('approx'); setExactDate(idag()); setApproxMonth(idag().slice(0, 7))
     setImages([]); setPrimary(null); setObservation(''); setError(null)
   }

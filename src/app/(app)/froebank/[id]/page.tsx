@@ -30,7 +30,7 @@ import {
   MapPin, Droplets, Sun, Ruler, ArrowDown, ExternalLink,
 } from 'lucide-react'
 import { guideHref } from '@/lib/guides/guide-href'
-import { MVP_MODE } from '@/lib/mvp-config'
+import { MVP_MODE, MVP_OPGAVER } from '@/lib/mvp-config'
 import { UDLOEBET_FORKLARING } from '@/lib/froebank-liste'
 import { findArtsGuide } from '@/lib/guides/find-arts-guide'
 
@@ -712,7 +712,7 @@ export default async function InventoryDetailPage({ params }: Props) {
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link href="/kalender">
-                Se kalender <ArrowRight className="h-3 w-3" />
+                {MVP_OPGAVER.knapTekst} <ArrowRight className="h-3 w-3" />
               </Link>
             </Button>
           </CardHeader>
