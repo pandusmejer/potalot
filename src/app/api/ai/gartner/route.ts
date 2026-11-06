@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { getAnthropicClient, CLAUDE_HAIKU } from '@/lib/anthropic/client'
 import { createClient } from '@/lib/supabase/server'
-import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { getPlant, getPlantLogs, getAllPlants } from '@/actions/mine-planter'
+import { getAllInventoryItems } from '@/actions/froebank'
+import { getGardenWeather } from '@/actions/weather'
+import {
+  afgoerKvote, bygPersonligKontekst, dagligtLoft, harSamtykke, kontekstHeader,
+  KONTEKST_HEADER, type KontekstMaerke,
+} from '@/lib/gartner-kontekst'
 import { GUIDE_FACTS } from '@/data/guide-facts-index.generated'
 import { PLANT_LOG_LABEL } from '@/lib/plant-log-meta'
 import { PLANT_STATUS_META } from '@/lib/constants'
@@ -78,6 +84,7 @@ Relevant guide
 - Ved almindelige videns-spørgsmål (ikke problemer) svarer du i 1-3 korte afsnit uden labels — stadig kort og konkret.
 - Ved en GENEREL plantevurdering (brugeren har IKKE meldt et problem): start med 1-2 sætninger om plantens overordnede tilstand ud fra alder, sort, sted og historik. Brug derefter labelen "Hold øje med" med 2-3 punkter over det vigtigste fremadrettet. Brug KUN problem-strukturen ("Det ligner"/"Mulige årsager"/"Gør dette nu"), hvis historikken faktisk viser et konkret problem. Opfind aldrig et problem.
 - Du hjælper brugeren fra en bestemt placering i Potalot. Brug altid den medsendte kontekst som allerede kendt information. Spørg ALDRIG brugeren om art, sort, plante eller problem, hvis oplysningerne findes i konteksten. Stil kun et opklarende spørgsmål, når en nødvendig oplysning reelt mangler. Svar på det niveau, brugeren befinder sig på.
+- Indeholder konteksten brugerens frøbank, planter, sted eller vejr, er det kendt information: brug den, når den er relevant for spørgsmålet, men nævn kun det, der står i konteksten, og opfind aldrig frø, planter eller vejr. Skeln altid mellem vejret LIGE NU og generelle dyrkningsperioder (de gælder Danmark som helhed, ikke dette sted).
 - Mangler en AFGØRENDE oplysning, må du IKKE udfylde hullet med et gæt. Fortæl kort, hvad der kan vurderes ud fra den eksisterende information, og stil højst ét konkret opklarende spørgsmål (efter strukturen, som sidste linje).
 - Ren tekst uden markdown: ingen **fed**, ingen overskrifter med #, ingen emojis.
 - Du kan IKKE se billeder i denne samtale — bed i stedet brugeren beskrive, hvad de ser, hvis det er nødvendigt.
@@ -99,9 +106,11 @@ function formaterLog(log: PlantLog): string {
 async function bygKontekst(input: GartnerRequest): Promise<{
   kontekst: string
   plantIds: string[]
+  maerker: KontekstMaerke[]
 }> {
   const dele: string[] = []
   const plantIds: string[] = []
+  const maerker: KontekstMaerke[] = []
 
   if (input.plantId) {
     const [plant, logs] = await Promise.all([
@@ -110,6 +119,7 @@ async function bygKontekst(input: GartnerRequest): Promise<{
     ])
     if (plant) {
       plantIds.push(plant.id)
+      maerker.push('plante')
       const info = [
         `Plante: ${plant.name}${plant.variety ? ` '${plant.variety}'` : ''}`,
         plant.sowDate ? `sået ${plant.sowDate}` : null,
@@ -141,6 +151,7 @@ async function bygKontekst(input: GartnerRequest): Promise<{
   if (input.guideId) {
     const guide = GUIDE_FACTS.find(g => g.id === input.guideId)
     if (guide) {
+      maerker.push('guide')
       if (guide.variety) {
         // Sortsguide: sortens egne fakta + NEDARVEDE artsfakta (Anna 9/8:
         // "Tomat · Sungold" er bedre kontekst end "tomat" alene).
@@ -164,7 +175,56 @@ async function bygKontekst(input: GartnerRequest): Promise<{
     }
   }
 
-  return { kontekst: dele.join('\n\n'), plantIds }
+  return { kontekst: dele.join('\n\n'), plantIds, maerker }
+}
+
+/**
+ * Den personlige kontekst (frøbank, planter, sted, vejr) — KUN med gemt
+ * samtykke, læst fra databasen ved hvert kald med brugerens egen session.
+ * Fail closed: fejl, manglende kolonne (migration ikke kørt) eller andet end
+ * `true` = intet personligt hentes. Reglerne bor i lib/gartner-kontekst.ts.
+ */
+async function bygPersonligKontekstFraDb(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<{ tekst: string; maerker: KontekstMaerke[] }> {
+  let samtykke = false
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('ai_personlig_kontekst')
+      .eq('id', userId)
+      .maybeSingle()
+    samtykke = !error && harSamtykke(data)
+  } catch {
+    samtykke = false
+  }
+  if (!samtykke) return { tekst: '', maerker: [] }
+
+  // Hver kilde har sin egen fallback: mangler én, sendes de øvrige stadig.
+  const [inventory, plants, vejr] = await Promise.all([
+    getAllInventoryItems().catch(() => []),
+    getAllPlants().catch(() => []),
+    getGardenWeather().catch(() => null),
+  ])
+
+  const kontekst = bygPersonligKontekst({
+    samtykke,
+    froe: inventory
+      .filter(i => i.primaryCategoryId !== 'indkoebsliste')
+      .map(i => ({ navn: i.name, sort: i.variety, antal: i.seedCount ?? i.quantity ?? null })),
+    planter: plants
+      .filter(p => !p.isArchived)
+      .map(p => ({
+        navn: p.name,
+        sort: p.variety,
+        status: PLANT_STATUS_META[p.status]?.label ?? null,
+        saaedato: p.sowDate ?? null,
+      })),
+    stednavn: vejr?.locationName ?? null,
+    vejr: vejr ? { tempC: vejr.tempC, beskrivelse: vejr.label } : null,
+  })
+  return { tekst: kontekst.tekst, maerker: kontekst.brugt }
 }
 
 function kompaktQuickFacts(qf: (typeof GUIDE_FACTS)[number]['quickFacts']): string | null {
@@ -239,7 +299,27 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { kontekst, plantIds } = await bygKontekst(body)
+  // DAGSLOFT (migration D, spec: Docs/product/fase4-migrationer/D-gartner-dagsloft.md):
+  // reservér spørgsmålet ATOMISK, FØR vi bruger leverandøren. Må aldrig fejle
+  // åbent — kan tælleren ikke læses (DB nede, funktion/tabel mangler), afvises
+  // spørgsmålet uden at nå Anthropic. Uafhængigt af samtykke og analyse.
+  const loft = dagligtLoft(process.env.GARTNER_DAGLIGT_LOFT)
+  let kvoteSvar: { data: unknown; error: unknown } | null = null
+  try {
+    kvoteSvar = await supabase.rpc('reserver_gartner_spoergsmaal', { p_graense: loft })
+  } catch (err) {
+    console.error('gartner-kvote: kald fejlede:', err)
+  }
+  const kvote = afgoerKvote(kvoteSvar, loft)
+  if (!kvote.ok) {
+    if (kvote.status === 503) console.error('gartner-kvote: afvist (fail closed):', kvoteSvar?.error ?? 'ukendt svar')
+    return NextResponse.json({ error: kvote.fejl, besked: kvote.besked }, { status: kvote.status })
+  }
+
+  const { kontekst: sideKontekst, plantIds, maerker: sideMaerker } = await bygKontekst(body)
+  const personlig = await bygPersonligKontekstFraDb(supabase, user.id)
+  const kontekst = [sideKontekst, personlig.tekst].filter(Boolean).join('\n\n')
+  const maerker: KontekstMaerke[] = [...sideMaerker, ...personlig.maerker]
 
   const intent = body.intent ?? (body.logId ? 'problem' : 'general')
 
@@ -279,6 +359,10 @@ export async function POST(request: NextRequest) {
         controller.close()
 
         // Gem som historik — best-effort, må aldrig påvirke svaret.
+        // KUN vurderinger bundet til en logpost gemmes (Anna 6/11): frie
+        // spørgsmål ("Spørg Potalot", guider) lagres ikke længere. Eksisterende
+        // historik er urørt.
+        if (!body.logId) return
         try {
           await supabase.from('ai_conversations').insert({
             user_id: user.id,
@@ -306,6 +390,8 @@ export async function POST(request: NextRequest) {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'no-store',
+      // Gennemsigtighed: HVILKE områder der blev brugt — aldrig indholdet.
+      [KONTEKST_HEADER]: kontekstHeader(maerker),
     },
   })
 }

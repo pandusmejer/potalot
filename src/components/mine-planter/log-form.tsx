@@ -192,6 +192,8 @@ export function LogForm({ plantId, log, trigger, defaultType }: Props) {
             <GartnerSvarPanel
               tilstand={gartner.tilstand}
               svar={gartner.svar}
+              besked={gartner.besked}
+              brugt={gartner.brugt}
               plantId={plantId}
               intent={gartnerValgt ? 'general' : 'problem'}
               // Gem-titlen bærer problemets egne ord ("Lus på blade") — et

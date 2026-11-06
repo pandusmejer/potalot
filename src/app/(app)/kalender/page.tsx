@@ -1,6 +1,12 @@
 import { Suspense } from 'react'
 import { KalenderClient } from '@/components/havekalender/kalender-client'
 import { OpgaverMvp } from '@/components/havekalender/opgaver-mvp'
+// MVP-toppen genbruger den LÅSTE Havebog-hero 1:1 (månedsfoto, sæsontæller,
+// bølge, dato) — ingen kopi, ingen ændring af de låste komponenter.
+import { HavebogHero } from '@/components/havebog/havebog-hero'
+import { HavebogDateline } from '@/components/havebog/havebog-dateline'
+import { getHavebogData } from '@/actions/havebog'
+import { DEMO_HERO_NARRATIVE } from '@/data/havebog-demo'
 import { MVP_OPGAVER } from '@/lib/mvp-config'
 import { aktuelAar, aktuelMaaned, idag } from '@/lib/datetime'
 import { PageIntroNote } from '@/components/ui/page-intro-note'
@@ -38,7 +44,7 @@ export default function KalenderPage() {
 }
 
 async function KalenderIndhold() {
-  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, vejr, me, completions] = await Promise.all([
+  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, vejr, me, completions, havebogData] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
@@ -49,6 +55,9 @@ async function KalenderIndhold() {
     getVejrPools(),
     getCurrentUser(),
     getTaskCompletionsForDate(),
+    // Kun MVP-visningen bruger Havebog-heroens sæsontæller (heroNarrative).
+    // Den oprindelige kalender henter intet ekstra.
+    MVP_OPGAVER.enkelVisning ? getHavebogData() : Promise.resolve(null),
   ])
 
   // Kalenderens hjerne — dagens 1-3 vigtigste handlinger (lib/kalender/
@@ -91,21 +100,45 @@ async function KalenderIndhold() {
   // visningen er en anden. Kalenderen nedenfor er urørt og bruges, når MVP
   // slås fra. (Inspiration-forslagene herunder bruges ikke af MVP-visningen.)
   if (MVP_OPGAVER.enkelVisning) {
+    // ⚠️ ANNA-LÅST (13/7, tag havebog-hero-laast-13-07): toppen af Opgaver er
+    // Havebog-heroen genbrugt uændret — månedens foto, sæsontæller (samme
+    // narrative som Havebog; ingen tæller før noget er sået), den låste bølge
+    // og datolinjen med PRÆCIS samme placering (marginTop -141) som på
+    // Havebog. Anonyme ser demo-narrativen, ligesom på Havebog.
+    const heroNarrative = havebogData ? havebogData.heroNarrative : DEMO_HERO_NARRATIVE
     return (
-      <OpgaverMvp
-        tasks={tasks}
-        dagensFokus={dagensFokus}
-        generalTasks={generalTasks}
-        userTasks={userTasks}
-        alerts={alerts}
-        aktivePlanter={plants
-          .filter(p => !p.isArchived)
-          .map(p => ({ id: p.id, name: p.name, variety: p.variety }))}
-        today={idag()}
-        month={aktuelMaaned()}
-        year={aktuelAar()}
-        canPersist={me !== null}
-      />
+      <div className="pb-16">
+        <HavebogHero narrative={heroNarrative} />
+        <div
+          style={{
+            marginTop: -141,
+            position: 'relative',
+            zIndex: 20,
+            paddingLeft: 'clamp(12px, 3.5cqw, 16px)',
+          }}
+        >
+          <HavebogDateline />
+        </div>
+        {/* Selve opgavevisningen starter UNDER bølgen. Datolinjen er løftet
+            141px op i heroen (låst), så flowet efter den ligger bag bølgens
+            fyld — paddingTop skubber overskriften fri af bølgen. */}
+        <div style={{ paddingTop: 108 }}>
+          <OpgaverMvp
+            tasks={tasks}
+            dagensFokus={dagensFokus}
+            generalTasks={generalTasks}
+            userTasks={userTasks}
+            alerts={alerts}
+            aktivePlanter={plants
+              .filter(p => !p.isArchived)
+              .map(p => ({ id: p.id, name: p.name, variety: p.variety }))}
+            today={idag()}
+            month={aktuelMaaned()}
+            year={aktuelAar()}
+            canPersist={me !== null}
+          />
+        </div>
+      </div>
     )
   }
 

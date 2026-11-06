@@ -42,7 +42,7 @@ export function SpoergGartneren({
   // Det FAKTISK stillede spørgsmål (inputfeltet kan redigeres bagefter) —
   // gemmes sammen med svaret ved "Gem til senere".
   const [stillet, setStillet] = useState('')
-  const { tilstand, svar, spoerg } = useGartner()
+  const { tilstand, svar, spoerg, besked, brugt } = useGartner()
 
   const artLav = artPlural?.toLowerCase()
   const beskrivelse = sortNavn
@@ -196,7 +196,7 @@ export function SpoergGartneren({
         </button>
       </div>
 
-      <GartnerSvarPanel tilstand={tilstand} svar={svar} question={stillet} guideId={guideId} />
+      <GartnerSvarPanel tilstand={tilstand} svar={svar} besked={besked} brugt={brugt} question={stillet} guideId={guideId} />
     </section>
   )
 }

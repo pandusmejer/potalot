@@ -17,6 +17,7 @@ import { resolveGuideLink } from '@/lib/gartner-guide-link'
 import { createPlantLog } from '@/actions/mine-planter'
 import { createTask } from '@/actions/havekalender'
 import { saveGartnerSvar } from '@/actions/gartner-gemte'
+import { KONTEKST_HEADER, kontekstBrugtTekst } from '@/lib/gartner-kontekst'
 
 const sans = 'var(--font-manrope)'
 
@@ -130,6 +131,10 @@ export function GartnerSvarTekst({ svar }: { svar: string }) {
 export function useGartner() {
   const [tilstand, setTilstand] = useState<Tilstand>('idle')
   const [svar, setSvar] = useState('')
+  // Serverens egen besked ved dagsloft (429) / utilgængelig (503) — og hvad
+  // svaret byggede på (X-Gartner-Kontekst), så brugeren kan se det.
+  const [besked, setBesked] = useState<string | null>(null)
+  const [brugt, setBrugt] = useState<string | null>(null)
   const kører = useRef(false)
 
   const spoerg = useCallback(async (question: string, kontekst?: GartnerKontekst) => {
@@ -140,6 +145,8 @@ export function useGartner() {
     }
     kører.current = true
     setSvar('')
+    setBesked(null)
+    setBrugt(null)
     setTilstand('streamer')
     try {
       const res = await fetch('/api/ai/gartner', {
@@ -148,7 +155,14 @@ export function useGartner() {
         body: JSON.stringify({ question, ...kontekst }),
       })
       if (res.status === 401) { setTilstand('login'); return }
+      if (res.status === 429 || res.status === 503) {
+        const json = await res.json().catch(() => null) as { besked?: unknown } | null
+        setBesked(typeof json?.besked === 'string' ? json.besked : null)
+        setTilstand('fejl')
+        return
+      }
       if (!res.ok || !res.body) { setTilstand('fejl'); return }
+      setBrugt(kontekstBrugtTekst(res.headers.get(KONTEKST_HEADER)))
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       for (;;) {
@@ -164,9 +178,9 @@ export function useGartner() {
     }
   }, [])
 
-  const nulstil = useCallback(() => { setTilstand('idle'); setSvar('') }, [])
+  const nulstil = useCallback(() => { setTilstand('idle'); setSvar(''); setBesked(null); setBrugt(null) }, [])
 
-  return { tilstand, svar, spoerg, nulstil }
+  return { tilstand, svar, spoerg, nulstil, besked, brugt }
 }
 
 /** Lokal dags-dato som YYYY-MM-DD (ikke UTC — 23:30 i DK er stadig i dag). */
@@ -436,9 +450,15 @@ export function GartnerSvarPanel({
   question,
   guideId,
   fraLog = false,
+  besked,
+  brugt,
 }: {
   tilstand: Tilstand
   svar: string
+  /** Serverens besked ved dagsloft/utilgængelig (erstatter standardteksten). */
+  besked?: string | null
+  /** "Gartneren brugte: dine frø, …" — kun når personlig kontekst indgik. */
+  brugt?: string | null
   /** Sat → cirkel-lukningen vises efter svaret (log/opgave/løst). */
   plantId?: string
   intent?: 'general' | 'problem'
@@ -491,7 +511,7 @@ export function GartnerSvarPanel({
 
       {tilstand === 'fejl' && (
         <p style={{ fontFamily: sans, fontSize: 13.5, lineHeight: 1.5, color: '#4A4438', margin: 0 }}>
-          Gartneren kunne ikke svare lige nu. Prøv igen om lidt.
+          {besked ?? 'Gartneren kunne ikke svare lige nu. Prøv igen om lidt.'}
         </p>
       )}
 
@@ -507,6 +527,12 @@ export function GartnerSvarPanel({
             <span aria-hidden style={{ opacity: 0.45 }}>{svar ? ' ▍' : 'Gartneren ser på det …'}</span>
           )}
         </div>
+      )}
+
+      {tilstand === 'faerdig' && brugt && (
+        <p style={{ fontFamily: sans, fontSize: 12, lineHeight: 1.4, color: 'rgba(36,48,31,0.55)', margin: '10px 0 0' }}>
+          {brugt}
+        </p>
       )}
 
       {tilstand === 'faerdig' && svar.trim() && (
@@ -632,7 +658,7 @@ export function GartnerHandling({
    * titel, "Lus på blade") — så det gemte kort aldrig er anonymt. */
   gemTitel?: string
 }) {
-  const { tilstand, svar, spoerg } = useGartner()
+  const { tilstand, svar, spoerg, besked, brugt } = useGartner()
 
   return (
     <div>
@@ -668,6 +694,8 @@ export function GartnerHandling({
       <GartnerSvarPanel
         tilstand={tilstand}
         svar={svar}
+        besked={besked}
+        brugt={brugt}
         plantId={kontekst?.plantId}
         intent={kontekst?.intent ?? 'problem'}
         question={question ?? gemTitel}
