@@ -100,29 +100,23 @@ async function KalenderIndhold() {
   // visningen er en anden. Kalenderen nedenfor er urørt og bruges, når MVP
   // slås fra. (Inspiration-forslagene herunder bruges ikke af MVP-visningen.)
   if (MVP_OPGAVER.enkelVisning) {
-    // ⚠️ ANNA-LÅST (13/7, tag havebog-hero-laast-13-07): toppen af Opgaver er
-    // Havebog-heroen genbrugt uændret — månedens foto, sæsontæller (samme
-    // narrative som Havebog; ingen tæller før noget er sået), den låste bølge
-    // og datolinjen med PRÆCIS samme placering (marginTop -141) som på
-    // Havebog. Anonyme ser demo-narrativen, ligesom på Havebog.
+    // Toppen af Opgaver genbruger den LÅSTE Havebog-hero uændret (tag
+    // havebog-hero-laast-13-07): månedens foto med sæsontælleren PÅ billedet og
+    // den låste bølge. Datolinjen (HavebogDateline, uændret) står UNDER bølgen på
+    // den lyse baggrund (Anna 6/11) — i normalt flow efter heroen, ikke løftet op
+    // i fotoet som på Havebog. Anonyme ser demo-narrativen, ligesom på Havebog.
     const heroNarrative = havebogData ? havebogData.heroNarrative : DEMO_HERO_NARRATIVE
     return (
       <div className="pb-16">
         <HavebogHero narrative={heroNarrative} />
-        <div
-          style={{
-            marginTop: -141,
-            position: 'relative',
-            zIndex: 20,
-            paddingLeft: 'clamp(12px, 3.5cqw, 16px)',
-          }}
-        >
+        {/* Datolinjen rykket (Anna 6/11): 11 mm + 3 mm = 14 mm (≈53 px) op og
+            2 mm (≈7,5 px) mod højre i forhold til Havebogs akse. position/zIndex
+            som på Havebog, så bølgen ikke dækker datoen. Opgavelisten holder
+            sin plads; luften dato → "Opgaver" er halveret (81 → 37 px, Anna 6/11). */}
+        <div style={{ marginTop: -41, position: 'relative', zIndex: 20, paddingLeft: 'calc(clamp(12px, 3.5cqw, 16px) + 7.5px)' }}>
           <HavebogDateline />
         </div>
-        {/* Selve opgavevisningen starter UNDER bølgen. Datolinjen er løftet
-            141px op i heroen (låst), så flowet efter den ligger bag bølgens
-            fyld — paddingTop skubber overskriften fri af bølgen. */}
-        <div style={{ paddingTop: 108 }}>
+        <div style={{ paddingTop: 37 }}>
           <OpgaverMvp
             tasks={tasks}
             dagensFokus={dagensFokus}

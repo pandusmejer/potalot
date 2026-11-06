@@ -31,9 +31,10 @@ const manrope = Manrope({
 const gabarito = Gabarito({
   variable: '--font-gabarito',
   subsets: ['latin'],
-  // Font-audit 5/8: kun 500 (plantekort-navne) og 800 (dagens fokus) bruges
-  // reelt — de øvrige vægte kostede filer/preloads uden at blive renderet.
-  weight: ['500', '800'],
+  // Font-audit 5/8: kun 500 (plantekort-navne) og 800 (dagens fokus) blev brugt.
+  // 600 tilføjet 6/11 (Anna): MVP-overskrifter og sortsnavne beder om 600 — uden
+  // en ægte 600 vælger browseren 800 (ExtraBold), som er for tungt.
+  weight: ['500', '600', '800'],
 })
 
 // IBM Plex Sans Condensed + Mono — KUN Guides-fanen i kalenderen: giver
