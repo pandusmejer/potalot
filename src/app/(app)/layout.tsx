@@ -6,6 +6,7 @@ import { getProfile } from '@/actions/profil'
 import { getNavState } from '@/actions/nav-state'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
+import { MVP_MODE, MVP_LANDING } from '@/lib/mvp-config'
 
 /** Async ø: opgave-badgen streames ind — navigationen venter ikke på tælleren. */
 async function BottomNavMedTal() {
@@ -20,7 +21,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // MIDT i onboarding, hvor onboarded stadig er false. Ellers bouncer scan/Excel
   // fra onboarding-shellen tilbage til /onboarding ("der sker ingenting").
   const pathname = (await headers()).get('x-pathname') ?? ''
-  if (profile && !profile.onboarded && !pathname.startsWith('/froebank')) {
+  // MVP 1.0: Min frøbank er nu LANDINGSSIDEN. Var hele /froebank fortsat
+  // undtaget, ville en ny bruger lande dér og aldrig møde onboarding (før
+  // landede man på /, som ikke er undtaget). Derfor undtages i MVP'en kun
+  // underruterne (/froebank/tilfoej, /froebank/[id]) — præcis dem
+  // onboarding-flowet bruger. Uden MVP er undtagelsen uændret.
+  const undtagetFraOnboarding = MVP_MODE
+    ? pathname.startsWith(`${MVP_LANDING}/`)
+    : pathname.startsWith('/froebank')
+  if (profile && !profile.onboarded && !undtagetFraOnboarding) {
     redirect('/onboarding')
   }
 

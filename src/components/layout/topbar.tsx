@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import { getUnreadCount } from '@/actions/notifications'
 import { getGardenWeather } from '@/actions/weather'
 import type { Profile } from '@/lib/types'
+import { MVP_SKJUL } from '@/lib/mvp-config'
 
 /** Async ø: badge-tallet streames ind — klokken selv venter ikke. */
 async function BellMedTal() {
@@ -59,7 +60,9 @@ export function Topbar({ profile }: { profile: Profile | null }) {
           </Link>
           {profile ? (
             <div className="flex items-center gap-1.5">
-              <TrykOgTalKnap />
+              {/* MVP 1.0: diktafonen er skjult (mvp-config.ts) — noterne
+                  lander i Havebog, som ikke er en del af MVP'en. */}
+              {!MVP_SKJUL.diktafonITopbar && <TrykOgTalKnap />}
               <Suspense fallback={<NotificationBell initialUnreadCount={0} />}>
                 <BellMedTal />
               </Suspense>

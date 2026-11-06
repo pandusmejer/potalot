@@ -6,8 +6,9 @@ import { usePathname } from 'next/navigation'
 import { getNavState } from '@/actions/nav-state'
 import { harAuthCookie } from '@/lib/auth-cookie'
 import {
-  NotebookText, Sprout, Package, CalendarDays, BookOpen,
+  NotebookText, Sprout, Package, CalendarDays, BookOpen, ListChecks, MessageCircle,
 } from 'lucide-react'
+import { MVP_MODE, MVP_NAV, type MvpNavId } from '@/lib/mvp-config'
 
 interface Props {
   criticalTaskCount: number
@@ -34,6 +35,22 @@ const BASE_ITEMS = [
   { href: '/kalender', label: 'Kalender', icon: CalendarDays },
   { href: '/guides', label: 'Guides', icon: BookOpen },
 ] as const
+
+/** MVP 1.0: ikon pr. navigationspunkt (punkterne selv bor i mvp-config.ts). */
+const MVP_IKONER: Record<MvpNavId, typeof Package> = {
+  froebank: Package,
+  planter: Sprout,
+  opgaver: ListChecks,
+  spoerg: MessageCircle,
+}
+
+/**
+ * Hvilke punkter vises? MVP'en viser fire (mvp-config.ts); med
+ * NEXT_PUBLIC_MVP_MODE=off vises de oprindelige fem (BASE_ITEMS) uændret.
+ */
+const NAV_ITEMS: readonly { href: string; label: string; icon: typeof Package }[] = MVP_MODE
+  ? MVP_NAV.map((p) => ({ href: p.href, label: p.label, icon: MVP_IKONER[p.id] }))
+  : BASE_ITEMS
 
 /**
  * Mobile bottom-nav. Navigationen svarer på ÉT spørgsmål: hvor står jeg nu?
@@ -72,7 +89,7 @@ export function BottomNav({ criticalTaskCount: initialCount }: Props) {
       style={{ background: NAV.bg, borderTop: `1px solid ${NAV.border}` }}
     >
       <div className="mx-auto flex w-full max-w-[390px] items-stretch justify-around px-1.5 py-1">
-        {BASE_ITEMS.map((item) => {
+        {NAV_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
           const showBadge = item.href === '/kalender' && criticalTaskCount > 0

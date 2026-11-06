@@ -9,6 +9,7 @@ import { TrykOgTalKnap } from '@/components/havebog/tryk-og-tal-knap'
 import { getProfile } from '@/actions/profil'
 import { harAuthCookie } from '@/lib/auth-cookie'
 import type { Profile } from '@/lib/types'
+import { MVP_SKJUL } from '@/lib/mvp-config'
 
 /**
  * Topbarens højre side når serveren IKKE kendte en profil — dvs. anonyme
@@ -35,7 +36,7 @@ export function TopbarAuthOmraade() {
     if (!profile) return <div aria-hidden className="h-9" />
     return (
       <div className="flex items-center gap-1.5">
-        <TrykOgTalKnap />
+        {!MVP_SKJUL.diktafonITopbar && <TrykOgTalKnap />}
         <NotificationBell initialUnreadCount={0} fetchCountOnMount />
         <ProfileMenu profile={profile} />
       </div>

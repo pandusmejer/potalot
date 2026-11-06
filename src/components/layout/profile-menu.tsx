@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User, Lightbulb, Settings, LogOut, ShieldCheck } from 'lucide-react'
 import type { Profile } from '@/lib/types'
 import { signOut } from '@/actions/auth'
+import { MVP_SKJUL } from '@/lib/mvp-config'
 
 /**
  * Sekundær menu — profil, grupper, idétavle, indstillinger.
@@ -48,9 +49,12 @@ export function ProfileMenu({ profile }: { profile: Profile }) {
         {/* SKJULT INDTIL VIDERE: Mine grupper + Havelandskab (fællesskabs-
             og udfordrings-funktioner). Designes og lanceres på et senere
             tidspunkt — kerneproduktet med 5 hovedmenupunkter først. */}
-        <DropdownMenuItem asChild>
-          <Link href="/idetavle"><Lightbulb className="h-4 w-4" /> Min idétavle</Link>
-        </DropdownMenuItem>
+        {/* MVP 1.0: idétavlen er skjult (mvp-config.ts) — ikke slettet. */}
+        {!MVP_SKJUL.idetavleIProfilmenu && (
+          <DropdownMenuItem asChild>
+            <Link href="/idetavle"><Lightbulb className="h-4 w-4" /> Min idétavle</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/indstillinger"><Settings className="h-4 w-4" /> Indstillinger</Link>

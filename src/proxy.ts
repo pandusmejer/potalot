@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { MVP_LANDING, erSkjultIMvp } from '@/lib/mvp-config'
 
 /**
  * Proxy (tidligere middleware): refresher Supabase-session-cookies på hver
@@ -95,6 +96,22 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
+  }
+
+  // MVP 1.0 (mvp-config.ts): forsiden og de skjulte sektioner omdirigeres
+  // til Min frøbank. Står EFTER ?code=-sikkerhedsnettet og login-reglerne
+  // ovenfor, så magic links og beskyttede ruter opfører sig som før. Med
+  // NEXT_PUBLIC_MVP_MODE=off er erSkjultIMvp altid false → intet ændres.
+  // Query-parametre droppes bevidst: de hører til den skjulte side.
+  if (erSkjultIMvp(pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = MVP_LANDING
+    url.search = ''
+    // Forsiden er den mest brugte indgang: en netop fornyet session må ikke
+    // gå tabt i omdirigeringen, så cookies fra session-refresh følger med.
+    const omdirigering = NextResponse.redirect(url)
+    response.cookies.getAll().forEach((cookie) => omdirigering.cookies.set(cookie))
+    return omdirigering
   }
 
   return response
