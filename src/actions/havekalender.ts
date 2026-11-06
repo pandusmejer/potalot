@@ -78,19 +78,19 @@ async function enrichWithPlantNames(
 
   const { data: plants } = await supabase
     .from('plants_v2')
-    .select('id, name, variety')
+    .select('id, name, variety, location')
     .in('id', plantIds)
 
-  const byId = new Map<string, { name: string; variety: string | null }>()
-  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null }[]) {
-    byId.set(p.id, { name: p.name, variety: p.variety })
+  const byId = new Map<string, { name: string; variety: string | null; location: string | null }>()
+  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null; location: string | null }[]) {
+    byId.set(p.id, { name: p.name, variety: p.variety, location: p.location })
   }
 
   return tasks.map(t => {
     if (!t.linkedPlantId) return t
     const info = byId.get(t.linkedPlantId)
     return info
-      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety }
+      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety, linkedPlantLocation: info.location }
       : t
   })
 }
@@ -110,7 +110,7 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
       .order('date', { ascending: true }),
     supabase
       .from('plants_v2')
-      .select('id, name, variety')
+      .select('id, name, variety, location')
       .eq('user_id', user.id),
   ])
 
@@ -119,15 +119,15 @@ export async function getAllTasks(): Promise<CalendarTask[]> {
     return []
   }
 
-  const byId = new Map<string, { name: string; variety: string | null }>()
-  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null }[]) {
-    byId.set(p.id, { name: p.name, variety: p.variety })
+  const byId = new Map<string, { name: string; variety: string | null; location: string | null }>()
+  for (const p of (plants ?? []) as { id: string; name: string; variety: string | null; location: string | null }[]) {
+    byId.set(p.id, { name: p.name, variety: p.variety, location: p.location })
   }
   return (data as TaskRow[]).map(rowToTask).map(t => {
     if (!t.linkedPlantId) return t
     const info = byId.get(t.linkedPlantId)
     return info
-      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety }
+      ? { ...t, linkedPlantName: info.name, linkedPlantVariety: info.variety, linkedPlantLocation: info.location }
       : t
   })
 }

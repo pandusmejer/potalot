@@ -23,6 +23,7 @@ import { EgenPlanteDialog } from '@/components/mine-planter/egen-plante-dialog'
 import { PLANT_STATUS_META } from '@/lib/constants'
 import { formatDatoKort, formatDatoMedAar, parseDate } from '@/lib/datetime'
 import { resolvePlantCard } from '@/lib/images/resolve-potalot-image'
+import { ThumbImg } from '@/components/ui/thumb-img'
 import { plantColor } from '@/lib/plant-color'
 import { erOpgaveForsinket, grupperPlanter, naesteOpgavePrPlante } from '@/lib/plante-oversigt'
 import type { CalendarTask, GardenLocation, Plant } from '@/lib/types'
@@ -162,14 +163,10 @@ function Raekke({ plant, kontekst }: { plant: Plant; kontekst: Kontekst }) {
         style={{ background: field }}
       >
         {harBillede ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <ThumbImg
             src={billede.src}
-            alt=""
             width={48}
             height={60}
-            loading="lazy"
-            decoding="async"
             className="h-full w-full object-cover"
           />
         ) : (

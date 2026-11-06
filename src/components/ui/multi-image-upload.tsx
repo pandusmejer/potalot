@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
-import { Camera, X, Loader2, Star } from 'lucide-react'
+import { Camera, Image as ImageIcon, X, Loader2, Star } from 'lucide-react'
 import { deleteImage, type UploadFolder } from '@/actions/storage'
 import { compressImage } from '@/lib/compress-image'
 import { billedeForStortBesked } from '@/lib/upload-graenser'
@@ -19,6 +19,12 @@ interface Props {
   label?: string
   /** "environment" tvinger bagkamera, undlad for OS-picker (kamera + bibliotek). */
   capture?: 'user' | 'environment'
+  /**
+   * To tydelige knapper side om side: "Tag foto" (bagkamera, ét billede ad
+   * gangen) og "Vælg fra fotos" (telefonens fotobibliotek, flere ad gangen).
+   * Begge bruger samme komprimering, upload og billedliste. Overstyrer `capture`.
+   */
+  kameraOgFotos?: boolean
 }
 
 /**
@@ -35,8 +41,10 @@ export function MultiImageUpload({
   maxImages = 8,
   label = 'Tilføj billede',
   capture,
+  kameraOgFotos = false,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const kameraRef = useRef<HTMLInputElement>(null)
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [debug, setDebug] = useState<string | null>(null)
@@ -140,6 +148,18 @@ export function MultiImageUpload({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img loading="lazy" decoding="async" src={url} alt="" className="w-full h-full object-cover" />
+                {/* På telefon findes ingen hover: i scanningsforløbet skal "fjern"
+                    altid være synlig, så et forkert billede kan tages væk. */}
+                {kameraOgFotos && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(url)}
+                    className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-background/90 shadow-sm"
+                    aria-label="Fjern billede"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
                   {!isPrimary && (
                     <button
@@ -172,7 +192,57 @@ export function MultiImageUpload({
         </div>
       )}
 
-      {value.length < maxImages && (
+      {value.length < maxImages && kameraOgFotos && (
+        <>
+          <input
+            ref={kameraRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleFiles}
+            className="hidden"
+          />
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFiles}
+            className="hidden"
+          />
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 w-full"
+              onClick={() => kameraRef.current?.click()}
+              disabled={pending}
+            >
+              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+              Tag foto
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 w-full"
+              onClick={() => inputRef.current?.click()}
+              disabled={pending}
+            >
+              {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+              Vælg fra fotos
+            </Button>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            {pending
+              ? 'Uploader…'
+              : value.length === 0
+                ? 'Forsiden og bagsiden af posen giver det bedste resultat.'
+                : `${value.length} af ${maxImages} billeder valgt. Tilføj flere, eller fjern et forkert billede ovenfor.`}
+          </p>
+        </>
+      )}
+
+      {value.length < maxImages && !kameraOgFotos && (
         <>
           <input
             ref={inputRef}

@@ -125,7 +125,7 @@ async function KalenderIndhold() {
             alerts={alerts}
             aktivePlanter={plants
               .filter(p => !p.isArchived)
-              .map(p => ({ id: p.id, name: p.name, variety: p.variety }))}
+              .map(p => ({ id: p.id, name: p.name, variety: p.variety, location: p.location }))}
             today={idag()}
             month={aktuelMaaned()}
             year={aktuelAar()}

@@ -14,6 +14,8 @@ export type UserMode = 'maalrettet' | 'afslappet' | 'minimal'
 export interface Profile {
   id: string
   username: string
+  /** Visningsnavn (profiles.display_name) — kan afvige fra username. */
+  displayName?: string | null
   email: string
   avatarUrl?: string | null
   userMode: UserMode
@@ -306,6 +308,8 @@ export interface CalendarTask {
   linkedPlantName?: string | null
   /** Den linkede plantes sort, beriget af loaderen. */
   linkedPlantVariety?: string | null
+  /** Plantens dyrkningssted (plants_v2.location), beriget af loaderen — ingen kolonne på opgaven. */
+  linkedPlantLocation?: string | null
   linkedInventoryItemId?: string | null
   linkedGuideId?: string | null
 

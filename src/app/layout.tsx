@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Cormorant_Garamond, Manrope, Gabarito, IBM_Plex_Sans_Condensed, IBM_Plex_Mono, Libre_Baskerville } from 'next/font/google'
 import './globals.css'
+import { MVP_MODE } from '@/lib/mvp-config'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -105,6 +106,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  // Gør env(safe-area-inset-bottom) til en rigtig værdi på iPhone (uden
+  // viewport-fit=cover er den altid 0). Bundnavigationen bruger den som
+  // padding, så faneteksten ikke ligger under hjemmeindikatoren.
+  viewportFit: MVP_MODE ? 'cover' : undefined,
 }
 
 /**

@@ -53,6 +53,31 @@ const NAV_ITEMS: readonly { href: string; label: string; icon: typeof Package }[
   : BASE_ITEMS
 
 /**
+ * Trykflader og typografi. MVP'en bruger store, lige brede felter (accepttest
+ * 6/11: de gamle var for tætte og svære at ramme); med MVP slået fra er
+ * størrelserne præcis som før.
+ */
+const STIL = MVP_MODE
+  ? {
+      raekke: 'mx-auto flex w-full max-w-[390px] items-stretch gap-0.5 px-1.5 pb-1 pt-1.5',
+      felt: 'relative flex min-h-[60px] min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 no-underline',
+      ikon: 24,
+      ikonStreg: { aktiv: 2.3, inaktiv: 2.0 },
+      tekst: 'whitespace-nowrap text-[12px] leading-none',
+      vaegt: { aktiv: 700, inaktiv: 500 },
+      badge: 'absolute right-3 top-1.5',
+    }
+  : {
+      raekke: 'mx-auto flex w-full max-w-[390px] items-stretch justify-around px-1.5 py-1',
+      felt: 'relative flex flex-1 flex-col items-center justify-center gap-[3px] rounded-2xl py-1',
+      ikon: 21,
+      ikonStreg: { aktiv: 2.3, inaktiv: 2.1 },
+      tekst: 'whitespace-nowrap text-[10px]',
+      vaegt: { aktiv: 600, inaktiv: 500 },
+      badge: 'absolute right-1.5 top-0',
+    }
+
+/**
  * Mobile bottom-nav. Navigationen svarer på ÉT spørgsmål: hvor står jeg nu?
  * - Fem ligestillede elementer, ingen center-FAB, ingen orange indikator.
  * - Præcis ÉN fremhævelse ad gangen = aktiv side (lys salvie-capsule).
@@ -88,7 +113,7 @@ export function BottomNav({ criticalTaskCount: initialCount }: Props) {
       className="fixed bottom-0 left-1/2 z-40 w-full max-w-[390px] -translate-x-1/2 safe-area-pb"
       style={{ background: NAV.bg, borderTop: `1px solid ${NAV.border}` }}
     >
-      <div className="mx-auto flex w-full max-w-[390px] items-stretch justify-around px-1.5 py-1">
+      <div className={STIL.raekke}>
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
@@ -99,22 +124,24 @@ export function BottomNav({ criticalTaskCount: initialCount }: Props) {
             <Link
               key={item.href}
               href={item.href}
-              className="relative flex flex-1 flex-col items-center justify-center gap-[3px] rounded-2xl py-1"
+              aria-current={active ? 'page' : undefined}
+              className={STIL.felt}
               style={{ background: active ? NAV.activeBg : 'transparent' }}
             >
               <Icon
-                style={{ height: 21, width: 21, color }}
-                strokeWidth={active ? 2.3 : 2.1}
+                style={{ height: STIL.ikon, width: STIL.ikon, color }}
+                strokeWidth={active ? STIL.ikonStreg.aktiv : STIL.ikonStreg.inaktiv}
+                aria-hidden
               />
               <span
-                className="whitespace-nowrap text-[10px]"
-                style={{ color, fontWeight: active ? 600 : 500, letterSpacing: '0.01em' }}
+                className={STIL.tekst}
+                style={{ color, fontWeight: active ? STIL.vaegt.aktiv : STIL.vaegt.inaktiv, letterSpacing: '0.01em' }}
               >
                 {item.label}
               </span>
               {showBadge && (
                 <span
-                  className="absolute right-1.5 top-0 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-semibold"
+                  className={`${STIL.badge} inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-semibold`}
                   style={{ background: '#B4694A', color: '#FBF3E7' }}
                 >
                   {criticalTaskCount}

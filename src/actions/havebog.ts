@@ -13,6 +13,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
+import { getProfile } from '@/actions/profil'
 import { havevisdomPulje, forventningsLinje, laantErfaring } from '@/lib/havevisdom'
 import { inspirationsSaetninger } from '@/lib/inspiration'
 import { byggDagensHistorie, type Opdagelse } from '@/lib/havebog-dagens-historie'
@@ -607,7 +608,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
   // fallback. Hvis noget går galt, returnerer vi null → demo-data
   // overtager i page.tsx (bedre end at blokere siden).
   try {
-    const [logsRes, plantsRes, inventoryRes, profilRes] = await Promise.all([
+    const [logsRes, plantsRes, inventoryRes, profil] = await Promise.all([
       supabase
         .from('plant_logs_v2')
         .select('id, plant_id, date, type, title, note, image_urls')
@@ -628,11 +629,9 @@ export async function getHavebogData(): Promise<HavebogData | null> {
         .from('inventory_items')
         .select('name, variety, subcategory_id')
         .eq('user_id', me.id),
-      supabase
-        .from('profiles')
-        .select('display_name')
-        .eq('id', me.id)
-        .maybeSingle(),
+      // Visningsnavnet kommer fra den request-cachede getProfile() — layoutet
+      // henter profilen i forvejen, så det ekstra profiles-opslag er sparet.
+      getProfile(),
     ])
 
     const logs = (logsRes.data ?? []) as PlantLogRow[]
@@ -641,7 +640,7 @@ export async function getHavebogData(): Promise<HavebogData | null> {
     const inventoryCount = inventoryItems.length
     // V9 (personlig hilsen): fornavn = første ord af display_name
     const fornavn =
-      profilRes.data?.display_name?.trim().split(/\s+/)[0] || null
+      profil?.displayName?.trim().split(/\s+/)[0] || null
 
     const plantById = new Map(plants.map(p => [p.id, p]))
     const plantName = (id: string): string => plantById.get(id)?.name ?? '—'

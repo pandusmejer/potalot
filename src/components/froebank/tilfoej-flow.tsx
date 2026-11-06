@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { FROEPOSE_UDEN_NAVN } from '@/lib/constants'
 import type { PrimaryCategoryId } from '@/lib/types'
+import { MVP_MODE } from '@/lib/mvp-config'
 import { createInventoryItem } from '@/actions/froebank'
 import { harKurateretFroekort } from '@/lib/images/resolve-potalot-image'
 import { extractSeedPacketFields, extractSeedFromUrl } from '@/actions/seed-packet-extract'
@@ -407,8 +408,8 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
       {/* SELECT */}
       {mode === 'select' && (
         <div className="grid grid-cols-2 gap-2">
-          <ChoiceCard icon={<Camera className="h-5 w-5" />} title="Tag billede" subtitle="Brug kamera" onClick={() => setMode('camera')} />
-          <ChoiceCard icon={<ImageIcon className="h-5 w-5" />} title="Upload billede" subtitle="Fra kamerarulle" onClick={() => setMode('library')} />
+          <ChoiceCard icon={<Camera className="h-5 w-5" />} title={MVP_MODE ? 'Tag foto' : 'Tag billede'} subtitle="Brug kamera" onClick={() => setMode('camera')} />
+          <ChoiceCard icon={<ImageIcon className="h-5 w-5" />} title={MVP_MODE ? 'Vælg fra fotos' : 'Upload billede'} subtitle={MVP_MODE ? 'Fra dit fotobibliotek' : 'Fra kamerarulle'} onClick={() => setMode('library')} />
           <ChoiceCard icon={<Link2 className="h-5 w-5" />} title="Indsæt link" subtitle="Webshop-side" onClick={() => setMode('link')} />
           <ChoiceCard icon={<FileSpreadsheet className="h-5 w-5" />} title="Excel" subtitle="Importér fil" onClick={() => setMode('excel')} />
           <ChoiceCard icon={<FileText className="h-5 w-5" />} title="Manuel" subtitle="Indtast selv" onClick={() => setMode('manuel')} />
@@ -421,7 +422,9 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
         <Card>
           <CardContent className="space-y-4 py-5">
             <p className="text-sm text-muted-foreground">
-              {mode === 'camera' ? 'Tag et billede af frøposen' : 'Vælg billeder af frøposens forside og bagside'}, så Potalot kan læse oplysningerne og oprette frøet i {scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}.
+              {MVP_MODE
+                ? 'Tag foto af frøposen, eller vælg billeder fra dine fotos'
+                : mode === 'camera' ? 'Tag et billede af frøposen' : 'Vælg billeder af frøposens forside og bagside'}, så Potalot kan læse oplysningerne og oprette frøet i {scanTarget === 'oenskeliste' ? 'ønskelisten' : 'Frøbanken'}.
             </p>
 
             {scanStage === 'idle' && scanImages.length === 0 && (
@@ -450,8 +453,12 @@ export function TilfoejFlow({ initialMode, returnTo = '/froebank', returnLabel =
                   onChange={handleScanImagesChange}
                   folder="froebank"
                   maxImages={4}
-                  capture={mode === 'camera' ? 'environment' : undefined}
-                  label={mode === 'camera' ? 'Tag billede' : 'Vælg billede(r)'}
+                  {...(MVP_MODE
+                    ? { kameraOgFotos: true }
+                    : {
+                        capture: mode === 'camera' ? ('environment' as const) : undefined,
+                        label: mode === 'camera' ? 'Tag billede' : 'Vælg billede(r)',
+                      })}
                 />
                 {scanImages.length > 0 && (
                   <Button onClick={handleScanStart} disabled={pending} className="w-full">

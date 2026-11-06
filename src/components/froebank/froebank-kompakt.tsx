@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button'
 import { INVENTORY_STATUS_META, manglerOplysninger } from '@/lib/constants'
 import { plantColor } from '@/lib/plant-color'
 import { resolveSeedCard } from '@/lib/images/resolve-potalot-image'
+import { ThumbImg } from '@/components/ui/thumb-img'
 import type { SortsGruppe } from '@/lib/froebank-grupper'
 import {
   maengdeForSort, maengdeTekst, udloebForSort, udloebMaerkat, udloebTekst,
@@ -304,21 +305,18 @@ function Raekke({ raekke }: { raekke: KompaktRaekke }) {
       href={`/froebank/${item.id}`}
       className="flex items-center gap-3 px-3 py-2.5 no-underline transition-colors hover:bg-accent/30 active:bg-accent/40"
     >
-      {/* Thumbnail 48×60 (frøkortets 4:5-format). Originalfilen er uændret;
-          browseren skalerer, og loading="lazy" holder store samlinger lette. */}
+      {/* Thumbnail 48×60 (frøkortets 4:5-format). Brugerens egne fotos hentes
+          i lille udgave (ThumbImg → /_next/image); originalen er uændret og
+          bruges af detaljevisningen. loading="lazy" holder store samlinger lette. */}
       <span
         className="relative block h-[60px] w-[48px] shrink-0 overflow-hidden rounded-lg"
         style={{ background: field }}
       >
         {harBillede ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <ThumbImg
             src={billede.src}
-            alt=""
             width={48}
             height={60}
-            loading="lazy"
-            decoding="async"
             className="h-full w-full object-cover"
           />
         ) : (

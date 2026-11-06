@@ -55,7 +55,7 @@ interface Props {
   generalTasks: GeneralGardenTask[]
   userTasks: UserGardenTask[]
   alerts: GardenAlert[]
-  aktivePlanter: { id: string; name: string; variety?: string | null }[]
+  aktivePlanter: { id: string; name: string; variety?: string | null; location?: string | null }[]
   /** Dagens dato, måned og år fra serveren — stabilt mellem server og klient. */
   today: string
   month: number
@@ -75,9 +75,20 @@ export function OpgaverMvp(props: Props) {
 
   // Afledte råd afkrydses med det samme og flytter sig til Udført.
   const dine = o.nu.dine.filter((r) => r.type === 'opgave' || !isDone(r.handling))
+  // Kræver handling: forsinkede opgaver for sig (øverst), resten under "Nu".
+  const forsinkede = dine.filter((r) => r.type === 'opgave' && r.forsinket)
+  const nuRaekker = dine.filter((r) => !(r.type === 'opgave' && r.forsinket))
   const vedligehold = o.nu.vedligehold.filter((h) => !isDone(h))
   const udfoertAfledte = o.udfoert.afledte.filter(isDone)
   const udfoertAntal = o.udfoert.opgaver.length + udfoertAfledte.length
+
+  // Dyrkningsstedet pr. plante (fra plants_v2.location — allerede hentet til
+  // siden, ingen ekstra forespørgsel). Skelner to dyrkninger af samme sort.
+  const stedFor = new Map<string, string>()
+  for (const pl of aktivePlanter) {
+    const s = pl.location?.trim()
+    if (s) stedFor.set(pl.id, s)
+  }
 
   const maanedNavn = MONTHS_DA[month - 1].full
   const naeste = efterfoelgendeMaaned(month, year)
@@ -116,22 +127,25 @@ export function OpgaverMvp(props: Props) {
         </TabsList>
 
         {/* ── NU ─────────────────────────────────────────────────────── */}
-        <TabsContent value="nu" className="space-y-5">
+        <TabsContent value="nu" className="space-y-9">
           {/* Vejret er kontekst: de eksisterende varsler, kun når der er et. */}
           <GardenAlerts alerts={alerts} />
 
           {dine.length > 0 ? (
-            <div className="space-y-2">
-              <Overskrift>Dine opgaver</Overskrift>
-              <ul className="overflow-hidden rounded-2xl border border-border bg-card">
-                {dine.map((r, i) => (
-                  <li key={raekkeNoegle(r)} className={i > 0 ? 'border-t border-border/70' : undefined}>
-                    {r.type === 'opgave'
-                      ? <OpgaveRaekke task={r.task} forsinket={r.forsinket} today={today} />
-                      : <AfledtRaekke handling={r.handling} done={isDone(r.handling)} onToggle={() => toggle(r.handling)} />}
-                  </li>
-                ))}
-              </ul>
+            <div className="space-y-4">
+              <Sektion titel="Kræver handling" antal={dine.length} />
+              {forsinkede.length > 0 && (
+                <div className="space-y-1.5">
+                  <Underoverskrift>Forsinket</Underoverskrift>
+                  <DineListe rows={forsinkede} today={today} stedFor={stedFor} isDone={isDone} toggle={toggle} />
+                </div>
+              )}
+              {nuRaekker.length > 0 && (
+                <div className="space-y-1.5">
+                  {forsinkede.length > 0 && <Underoverskrift>Nu</Underoverskrift>}
+                  <DineListe rows={nuRaekker} today={today} stedFor={stedFor} isDone={isDone} toggle={toggle} />
+                </div>
+              )}
             </div>
           ) : (
             <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-center text-[14px] leading-relaxed text-muted-foreground">
@@ -150,7 +164,7 @@ export function OpgaverMvp(props: Props) {
               <ul className="border-t border-border/70">
                 {vedligehold.map((h, i) => (
                   <li key={h.taskKey} className={i > 0 ? 'border-t border-border/70' : undefined}>
-                    <AfledtRaekke handling={h} done={false} onToggle={() => toggle(h)} />
+                    <AfledtRaekke handling={h} done={false} onToggle={() => toggle(h)} sted={h.plantId ? stedFor.get(h.plantId) ?? null : null} />
                   </li>
                 ))}
               </ul>
@@ -168,14 +182,14 @@ export function OpgaverMvp(props: Props) {
         </TabsContent>
 
         {/* ── KOMMENDE ───────────────────────────────────────────────── */}
-        <TabsContent value="kommende" className="space-y-5">
+        <TabsContent value="kommende" className="space-y-9">
           {o.kommende.opgaver.length > 0 ? (
-            <div className="space-y-2">
-              <Overskrift>Planlagt</Overskrift>
+            <div className="space-y-3">
+              <Sektion titel="Planlagt" antal={o.kommende.opgaver.length} />
               <ul className="overflow-hidden rounded-2xl border border-border bg-card">
                 {o.kommende.opgaver.map((t, i) => (
                   <li key={t.id} className={i > 0 ? 'border-t border-border/70' : undefined}>
-                    <OpgaveRaekke task={t} forsinket={false} today={today} medDato />
+                    <OpgaveRaekke task={t} forsinket={false} today={today} medDato sted={t.linkedPlantId ? stedFor.get(t.linkedPlantId) ?? t.linkedPlantLocation ?? null : null} />
                   </li>
                 ))}
               </ul>
@@ -202,12 +216,12 @@ export function OpgaverMvp(props: Props) {
             <ul className="overflow-hidden rounded-2xl border border-border bg-card">
               {udfoertAfledte.map((h, i) => (
                 <li key={h.taskKey} className={i > 0 ? 'border-t border-border/70' : undefined}>
-                  <AfledtRaekke handling={h} done onToggle={() => toggle(h)} />
+                  <AfledtRaekke handling={h} done onToggle={() => toggle(h)} sted={h.plantId ? stedFor.get(h.plantId) ?? null : null} />
                 </li>
               ))}
               {o.udfoert.opgaver.map((t, i) => (
                 <li key={t.id} className={i > 0 || udfoertAfledte.length > 0 ? 'border-t border-border/70' : undefined}>
-                  <UdfoertRaekke task={t} />
+                  <UdfoertRaekke task={t} sted={t.linkedPlantId ? stedFor.get(t.linkedPlantId) ?? t.linkedPlantLocation ?? null : null} />
                 </li>
               ))}
             </ul>
@@ -240,6 +254,66 @@ function Overskrift({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** Sektionstitel: tydelig forskel i størrelse og vægt mod gruppelabels. */
+function Sektion({ titel, antal }: { titel: string; antal?: number }) {
+  return (
+    <div className="flex items-baseline gap-2 px-1">
+      <h2 className="text-[17px] leading-tight text-foreground" style={{ fontFamily: gabarito, fontWeight: 600 }}>
+        {titel}
+      </h2>
+      {antal !== undefined && antal > 0 && (
+        <span className="text-[13px] tabular-nums text-muted-foreground">{antal}</span>
+      )}
+    </div>
+  )
+}
+
+/** Gruppelabel under en sektion (Forsinket / Nu). */
+function Underoverskrift({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+      {children}
+    </h3>
+  )
+}
+
+/** "Kræver handling"-rækkerne: opgaver og afledte plante-råd. */
+function DineListe({
+  rows, today, stedFor, isDone, toggle,
+}: {
+  rows: DineRaekke[]
+  today: string
+  stedFor: Map<string, string>
+  isDone: (h: FokusHandling) => boolean
+  toggle: (h: FokusHandling) => void
+}) {
+  return (
+    <ul className="overflow-hidden rounded-2xl border border-border bg-card">
+      {rows.map((r, i) => (
+        <li key={raekkeNoegle(r)} className={i > 0 ? 'border-t border-border/70' : undefined}>
+          {r.type === 'opgave'
+            ? (
+              <OpgaveRaekke
+                task={r.task}
+                forsinket={r.forsinket}
+                today={today}
+                sted={r.task.linkedPlantId ? stedFor.get(r.task.linkedPlantId) ?? r.task.linkedPlantLocation ?? null : null}
+              />
+            )
+            : (
+              <AfledtRaekke
+                handling={r.handling}
+                done={isDone(r.handling)}
+                onToggle={() => toggle(r.handling)}
+                sted={r.handling.plantId ? stedFor.get(r.handling.plantId) ?? null : null}
+              />
+            )}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function Taeller({ children }: { children: React.ReactNode }) {
   return (
     <span className="rounded-full bg-primary/12 px-1.5 text-[11px] font-semibold tabular-nums text-primary">
@@ -254,12 +328,14 @@ function Taeller({ children }: { children: React.ReactNode }) {
 
 /** En opgave fra calendar_tasks. Afkrydsning = completeTask (+ log-spørgsmål ved plante). */
 function OpgaveRaekke({
-  task, forsinket, today, medDato = false,
+  task, forsinket, today, medDato = false, sted = null,
 }: {
   task: CalendarTask
   forsinket: boolean
   today: string
   medDato?: boolean
+  /** Plantens dyrkningssted — skelner to dyrkninger af samme sort. */
+  sted?: string | null
 }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
@@ -312,6 +388,7 @@ function OpgaveRaekke({
             ) : (
               typeLabel
             )}
+            {task.linkedPlantId && sted ? ` · ${sted}` : ''}
           </p>
         </div>
         {/* Rediger/slet kun på brugerens EGNE opgaver. */}
@@ -335,11 +412,13 @@ function OpgaveRaekke({
 
 /** Et afledt plante-råd ("Pluk Tomat nu"). Afkrydsning gemmes for i dag. */
 function AfledtRaekke({
-  handling, done, onToggle,
+  handling, done, onToggle, sted = null,
 }: {
   handling: FokusHandling
   done: boolean
   onToggle: () => void
+  /** Plantens dyrkningssted — skelner to dyrkninger af samme sort. */
+  sted?: string | null
 }) {
   return (
     <div className="flex items-start gap-3 px-3 py-3">
@@ -362,7 +441,7 @@ function AfledtRaekke({
           {done ? 'Udført i dag' : handling.hvorfor}
         </span>
         <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground/80">
-          Fra dine planter
+          Fra dine planter{sted ? ` · ${sted}` : ''}
         </span>
       </Link>
     </div>
@@ -370,7 +449,7 @@ function AfledtRaekke({
 }
 
 /** En udført opgave med mulighed for at fortryde. */
-function UdfoertRaekke({ task }: { task: CalendarTask }) {
+function UdfoertRaekke({ task, sted = null }: { task: CalendarTask; sted?: string | null }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const plante = task.linkedPlantId
@@ -399,6 +478,7 @@ function UdfoertRaekke({ task }: { task: CalendarTask }) {
           ) : (
             opgaveTypeLabel(task)
           )}
+          {task.linkedPlantId && sted ? ` · ${sted}` : ''}
         </p>
       </div>
     </div>
@@ -425,14 +505,16 @@ function ForslagListe({
   const rest = forslag.length - synlige.length
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 border-t border-border/60 pt-7">
       <div className="px-1">
-        <Overskrift>{titel}</Overskrift>
+        <h2 className="text-[15px] leading-tight text-foreground/75" style={{ fontFamily: gabarito, fontWeight: 600 }}>
+          {titel}
+        </h2>
         <p className="mt-0.5 text-[12.5px] text-muted-foreground">{hjaelp}</p>
       </div>
-      <ul className="overflow-hidden rounded-2xl border border-dashed border-border bg-card/60">
-        {synlige.map((f, i) => (
-          <li key={forslagNoegle(f)} className={i > 0 ? 'border-t border-dashed border-border/80' : undefined}>
+      <ul className="divide-y divide-border/50">
+        {synlige.map((f) => (
+          <li key={forslagNoegle(f)}>
             <ForslagRaekke forslag={f} maaned={maaned} year={year} canPersist={canPersist} />
           </li>
         ))}
@@ -469,7 +551,7 @@ function ForslagRaekke({
   if (forslag.type === 'froebank') {
     const h = forslag.handling
     return (
-      <Link href={h.href} className="block px-3 py-3 no-underline">
+      <Link href={h.href} className="block px-1 py-3 no-underline">
         <span className="block text-[15px] font-semibold leading-snug text-foreground">{h.titel}</span>
         <span className="mt-0.5 block text-[12.5px] leading-snug text-muted-foreground">{h.hvorfor}</span>
         <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground/80">
@@ -481,7 +563,7 @@ function ForslagRaekke({
 
   if (forslag.type === 'eget') {
     return (
-      <div className="px-3 py-3">
+      <div className="px-1 py-3">
         <p className="text-[15px] font-semibold leading-snug text-foreground">{forslag.task.title}</p>
         <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground/80">
           Dit eget gøremål · {maaned}
@@ -509,7 +591,7 @@ function ForslagRaekke({
   }
 
   return (
-    <div className={`px-3 py-3 ${pending ? 'opacity-60' : ''}`}>
+    <div className={`px-1 py-3 ${pending ? 'opacity-60' : ''}`}>
       <p className="text-[15px] font-semibold leading-snug text-foreground">{g.title}</p>
       <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground/80">
         Generel haveopgave · {maaned}

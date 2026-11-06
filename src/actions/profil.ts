@@ -26,6 +26,7 @@ function rowToProfile(row: ProfileRow, email: string | null): Profile {
   return {
     id: row.id,
     username: row.username ?? row.display_name ?? 'Bruger',
+    displayName: row.display_name ?? null,
     email: email ?? '',
     avatarUrl: row.avatar_url,
     userMode: (row.user_mode ?? 'afslappet') as UserMode,
