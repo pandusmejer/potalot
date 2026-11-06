@@ -24,6 +24,11 @@ import {
 } from '@/data/mock-plants'
 import type { Plant, PlantLog } from '@/lib/types'
 import { getPlant, getPlantLogs } from '@/actions/mine-planter'
+import { getTasksForPlant } from '@/actions/havekalender'
+import { PlantKortGuide, PlantOpgaverKort } from '@/components/mine-planter/plant-dyrkningskort'
+import { kortGuideForPlante } from '@/lib/plante-kort-guide'
+import { MVP_PLANTER } from '@/lib/mvp-config'
+import { idag } from '@/lib/datetime'
 import { PlanteAdmin } from '@/components/mine-planter/plante-admin'
 import { HistorikIndhent } from '@/components/mine-planter/historik-indhent'
 import { IMPORTED_GUIDES } from '@/data/guides-imported'
@@ -45,6 +50,8 @@ interface LogContext {
   canLog: boolean
   /** Gemte Gartner-vurderinger pr. logId (Anna 8/8: child-indhold i tidslinjen). */
   vurderinger?: Record<string, string>
+  /** Plantens opgaver — kun hentet når MVP's dyrkningskort er slået til. */
+  opgaver?: import('@/lib/types').CalendarTask[]
 }
 
 interface Props {
@@ -77,11 +84,12 @@ export default async function PlanteDetailPage({ params }: Props) {
   const realPlant = await getPlant(id)
   if (realPlant) {
     // Logget ind med egen plante → hent rigtige logs + tillad logging.
-    const [logs, vurderinger] = await Promise.all([
+    const [logs, vurderinger, opgaver] = await Promise.all([
       getPlantLogs(realPlant.id),
       getGartnerVurderinger(realPlant.id),
+      MVP_PLANTER.dyrkningsKort ? getTasksForPlant(realPlant.id) : Promise.resolve([]),
     ])
-    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true, vurderinger })
+    return renderDetail(toMockShape(realPlant), null, { logs, canLog: true, vurderinger, opgaver })
   }
 
   // 2) Demo-fallback: kig i mock-bibliotek (anonym → ingen skrivning).
@@ -232,6 +240,11 @@ function renderEditorial(
         </Link>
       )}
 
+      {/* MVP 1.0: kort dyrkningsguide + kommende opgaver lige under kilden.
+          Guiden er de eksisterende quickFacts (sort → art); opgaverne er de
+          eksisterende calendar_tasks for planten. Begge tier uden data. */}
+      {MVP_PLANTER.dyrkningsKort && <PlantDyrkningsKort plant={plant} log={log} />}
+
       {/* Indhent historik ved tilbagevirkende oprettelse (frivilligt, skippbart). */}
       {visIndhent && (
         <HistorikIndhent plantId={plant.id} registrerede={registrerede} />
@@ -257,6 +270,24 @@ function renderEditorial(
           isArchived={plant.isArchived}
         />
     </article>
+  )
+}
+
+function PlantDyrkningsKort({ plant, log }: { plant: MockPlant; log: LogContext }) {
+  const guide = kortGuideForPlante(plant.name, plant.variety)
+  // Opgaver hører til en rigtig dyrkning — demo-planter har ingen i databasen.
+  const visOpgaver = log.canLog && (log.opgaver?.length ?? 0) > 0
+  if (!guide && !visOpgaver) return null
+  return (
+    <>
+      {visOpgaver && <PlantOpgaverKort tasks={log.opgaver ?? []} today={idag()} />}
+      {guide && (
+        <PlantKortGuide
+          guide={guide}
+          guideHref={resolvePlantGuideHref(plant, IMPORTED_GUIDES)}
+        />
+      )}
+    </>
   )
 }
 

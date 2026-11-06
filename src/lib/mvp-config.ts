@@ -80,6 +80,18 @@ export const MVP_FROEBANK = {
   skjulStemningsnote: MVP_MODE,
 } as const
 
+/**
+ * Fase 2 — Mine planter. Mine planter viser, hvad brugeren DYRKER lige nu;
+ * Frøbanken viser, hvad man HAR. Med MVP slået fra er begge false, og
+ * plantesiderne er præcis som før.
+ */
+export const MVP_PLANTER = {
+  /** Kompakt dyrkningsliste i stedet for forsidens hero/podium/arts-rækker. */
+  kompaktListe: MVP_MODE,
+  /** Kort dyrkningsguide + kommende opgaver øverst på plantens detaljeside. */
+  dyrkningsKort: MVP_MODE,
+} as const
+
 /** Skjulte menupunkter og genveje uden for bundnavigationen. */
 export const MVP_SKJUL = {
   /** "Min idétavle" i profilmenuen. */

@@ -1,5 +1,9 @@
 import { Suspense } from 'react'
 import { MinePlanterClient } from '@/components/mine-planter/mine-planter-client'
+import { PlanterKompakt } from '@/components/mine-planter/planter-kompakt'
+import { getAllTasks } from '@/actions/havekalender'
+import { mockPlants } from '@/data/mock-plants'
+import { MVP_PLANTER } from '@/lib/mvp-config'
 import { getAllPlants } from '@/actions/mine-planter'
 import { getTaskCompletionsForDate } from '@/actions/plant-tasks'
 import { getGardenLocations } from '@/actions/garden-locations'
@@ -39,12 +43,32 @@ export default function MinePlanterPage() {
 
 async function MinePlanterIndhold() {
   const today = new Date().toISOString().slice(0, 10)
-  const [plants, doneTaskKeys, gardenLocations, user] = await Promise.all([
+  const [plants, doneTaskKeys, gardenLocations, user, tasks] = await Promise.all([
     getAllPlants(),
     getTaskCompletionsForDate(today),
     getGardenLocations(),
     getCurrentUser(),
+    // Opgaver hentes kun til MVP'ens "næste opgave" — den oprindelige side
+    // bruger dem ikke, så den betaler ikke for forespørgslen.
+    MVP_PLANTER.kompaktListe ? getAllTasks() : Promise.resolve([]),
   ])
+
+  // MVP 1.0: kompakt dyrkningsliste (mvp-config.ts). Samme data som den
+  // oprindelige side; kun visningen er en anden. Demo (anonym uden planter)
+  // ser mock-planterne, præcis som på den oprindelige side.
+  if (MVP_PLANTER.kompaktListe) {
+    const erDemo = !user && plants.length === 0
+    return (
+      <PlanterKompakt
+        plants={erDemo ? mockPlants : plants}
+        tasks={tasks}
+        gardenLocations={gardenLocations}
+        today={today}
+        isLoggedIn={!!user}
+      />
+    )
+  }
+
   return (
     <>
       <div className="mb-5">
