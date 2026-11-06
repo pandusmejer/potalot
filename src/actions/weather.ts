@@ -2,6 +2,7 @@
 
 import { getProfile } from '@/actions/profil'
 import { codeMeta, tidsbucket, type WeatherIcon } from '@/lib/weather-codes'
+import { findPostnummer } from '@/lib/postnummer'
 
 export interface LocationHit {
   name: string
@@ -12,32 +13,18 @@ export interface LocationHit {
 }
 
 /**
- * Slå et dansk postnummer op via DAWA (Danmarks Adressers Web API —
- * officielt, gratis, ingen nøgle). Returnerer postnummerets visuelle
- * center som koordinat. Ingen adresse — kun postnummer-niveau.
+ * Slå et dansk postnummer op i den lokale, versionerede tabel (GeoNames,
+ * CC BY 4.0 — se data/kilder/README.md). DAWA er lukket (HTTP 410).
+ * Returnerer et omtrentligt punkt for postnummerområdet. Ingen adresse —
+ * kun postnummer-niveau.
+ *
+ * null = postnummeret findes ikke eller kan ikke bruges (ugyldigt format,
+ * ukendt, eller ikke-geografisk fx 0xxx). Selve opslaget er lokalt og kan ikke
+ * fejle teknisk; fejler SERVERKALDET, kaster det hos kalderen, som viser en
+ * anden besked (POSTNR_TEKNISK_FEJL).
  */
 export async function lookupPostnummer(postnr: string): Promise<LocationHit | null> {
-  const nr = postnr.trim()
-  if (!/^\d{4}$/.test(nr)) return null
-  try {
-    const res = await fetch(
-      `https://api.dataforsyningen.dk/postnumre/${nr}`,
-      { next: { revalidate: 604800 } } // postnumre ændrer sig stort set aldrig — cache en uge
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    // visueltcenter er [lon, lat]
-    const center: [number, number] | undefined = data.visueltcenter
-    if (!center || center.length !== 2) return null
-    return {
-      name: data.navn ?? nr,
-      postnr: data.nr ?? nr,
-      longitude: center[0],
-      latitude: center[1],
-    }
-  } catch {
-    return null
-  }
+  return findPostnummer(postnr)
 }
 
 export interface GardenWeather {

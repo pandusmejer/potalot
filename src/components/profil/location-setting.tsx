@@ -8,11 +8,13 @@ import { Input } from '@/components/ui/input'
 import { MapPin, Check, Loader2, X } from 'lucide-react'
 import { lookupPostnummer } from '@/actions/weather'
 import { getProfile, updateProfile } from '@/actions/profil'
+import { POSTNR_TEKNISK_FEJL } from '@/lib/postnummer-tekster'
+import { PostnrKreditering } from '@/components/profil/postnr-kreditering'
 
 /**
  * "Havens placering" — sættes via dansk postnummer.
  *
- * Postnummer → koordinat via DAWA (officielt dansk adresse-API).
+ * Postnummer → omtrentlig koordinat via lokal tabel (GeoNames, CC BY 4.0).
  * Vi gemmer kun postnummer-niveau koordinat, aldrig adresse.
  */
 export function LocationSetting() {
@@ -38,7 +40,14 @@ export function LocationSetting() {
       return
     }
     startTransition(async () => {
-      const hit = await lookupPostnummer(nr)
+      let hit: Awaited<ReturnType<typeof lookupPostnummer>>
+      try {
+        hit = await lookupPostnummer(nr)
+      } catch {
+        // Serverkaldet fejlede — noget andet end et ugyldigt postnummer.
+        setError(POSTNR_TEKNISK_FEJL)
+        return
+      }
       if (!hit) {
         setError(`Kunne ikke finde postnummer ${nr}. Tjek, om det er skrevet korrekt.`)
         return
@@ -135,6 +144,7 @@ export function LocationSetting() {
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
+        <PostnrKreditering />
       </CardContent>
     </Card>
   )

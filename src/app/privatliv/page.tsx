@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { KONTAKT_EMAIL, ANSVARLIG, SIDST_OPDATERET } from '@/lib/contact'
+import { PostnrKreditering } from '@/components/profil/postnr-kreditering'
 
 export const metadata = { title: 'Privatliv og data — Potalot' }
 
@@ -75,6 +76,10 @@ export default function PrivatlivPage() {
               database og filopbevaring, og Netlify, som driver appen. Adgangen
               er beskyttet, og brugere kan kun se deres egne data.
             </p>
+          </Section>
+
+          <Section title="Kilder">
+            <PostnrKreditering stor />
           </Section>
 
           <Section title="Kontakt">

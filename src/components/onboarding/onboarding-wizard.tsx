@@ -12,6 +12,8 @@ import {
   type GrowerProfile, type NotificationProfile, type SeasonStatus,
 } from '@/actions/profil'
 import { lookupPostnummer } from '@/actions/weather'
+import { POSTNR_TEKNISK_FEJL } from '@/lib/postnummer-tekster'
+import { PostnrKreditering } from '@/components/profil/postnr-kreditering'
 import type { GardenLocation } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -166,7 +168,15 @@ export function OnboardingWizard({
     if (!/^\d{4}$/.test(postnr.trim())) { setLocError('Indtast et gyldigt dansk postnummer (4 cifre).'); return }
     setLocStatus('looking')
     startTransition(async () => {
-      const hit = await lookupPostnummer(postnr.trim())
+      let hit: Awaited<ReturnType<typeof lookupPostnummer>>
+      try {
+        hit = await lookupPostnummer(postnr.trim())
+      } catch {
+        // Serverkaldet fejlede — noget andet end et ugyldigt postnummer.
+        setLocStatus('idle')
+        setLocError(POSTNR_TEKNISK_FEJL)
+        return
+      }
       setLocStatus('idle')
       if (!hit) { setLocError('Kunne ikke finde det postnummer. Tjek det, eller spring over.'); return }
       setLoc({ latitude: hit.latitude, longitude: hit.longitude, locationName: hit.name })
@@ -253,6 +263,7 @@ export function OnboardingWizard({
                   {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Find'}
                 </Button>
               </div>
+              <PostnrKreditering />
             </div>
 
             {locError && <p className="text-sm text-destructive">{locError}</p>}

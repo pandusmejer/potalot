@@ -7,4 +7,4 @@
  */
 export const KONTAKT_EMAIL = 'rasmusvind@gmail.com'
 export const ANSVARLIG = 'Potalot'
-export const SIDST_OPDATERET = 'juli 2026'
+export const SIDST_OPDATERET = '6. november 2026'
