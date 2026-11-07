@@ -17,6 +17,26 @@ function tjek(navn: string, ok: boolean) {
 }
 
 const IDAG = '2026-11-06'
+
+// Klokken er fastlåst. `bygOpgaveOversigt` får dagens dato som parameter (today),
+// men om en opgave er FORSINKET afgøres af erForsinketOpgave → dageSiden, som
+// læser den rigtige systemtid. Uden fastlåsning afhang testen af, hvilken dag
+// den kørte på: da kalenderen rullede videre fra den 6. november, blev "i dag"
+// (den 6.) pludselig forsinket, og to checks fejlede uden at koden var ændret.
+// Fastlåst til LOKAL middag, så den lokale dato er IDAG i alle tidszoner.
+const RigtigDate = Date
+function saetKlokke(aar: number, maaned: number, dag: number) {
+  const fast = new RigtigDate(aar, maaned - 1, dag, 12, 0, 0).getTime()
+  globalThis.Date = new Proxy(RigtigDate, {
+    construct(maal, args, nyMaal) {
+      return args.length === 0 ? new maal(fast) : Reflect.construct(maal, args, nyMaal)
+    },
+    get(maal, prop, modtager) {
+      return prop === 'now' ? () => fast : Reflect.get(maal, prop, modtager)
+    },
+  }) as DateConstructor
+}
+saetKlokke(2026, 11, 6)
 let n = 0
 function opgave(o: Partial<CalendarTask> & { date: string }): CalendarTask {
   n++
@@ -79,6 +99,12 @@ console.log('\n2. Nu: forsinkede og aktuelle opgaver')
   tjek('forsinket først, så dato', titler.join() === 'Forsinket,I dag,I morgen,Om 7 dage')
   tjek('forsinket-flaget sættes på den forsinkede', o.nu.dine[0].type === 'opgave' && (o.nu.dine[0] as { forsinket: boolean }).forsinket)
   tjek('i dag er ikke forsinket', (o.nu.dine[1] as { forsinket: boolean }).forsinket === false)
+  // Skellet mellem forsinket og dagens opgave følger dagen, ikke et fast tal: den samme
+  // opgave er "i dag" den 6. og forsinket den 7. (klokken flyttes en dag frem).
+  saetKlokke(2026, 11, 7)
+  const dagenEfter = bygg({ tasks: [opgave({ date: IDAG, title: 'Samme opgave' })], today: '2026-11-07' })
+  tjek('den samme opgave er forsinket dagen efter', (dagenEfter.nu.dine[0] as { forsinket: boolean }).forsinket === true)
+  saetKlokke(2026, 11, 6)
   tjek('om 7 dage er stadig Nu; om 8 dage er Kommende', o.nu.dine.length === 4 && o.kommende.opgaver.length === 1 && o.kommende.opgaver[0].title === 'Om 8 dage')
   const retro = opgave({ date: '2026-10-05', createdAt: '2026-11-01T08:00:00Z', title: 'Lagt i fortiden af systemet' })
   const r = bygg({ tasks: [retro] })
