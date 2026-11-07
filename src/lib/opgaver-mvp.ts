@@ -124,6 +124,111 @@ export function fjernDubletter(tasks: CalendarTask[]): CalendarTask[] {
 }
 
 // ─────────────────────────────────────────────────────────────
+// Gruppering efter dyrkning
+// ─────────────────────────────────────────────────────────────
+
+/** En blok i en opgaveliste: en gruppe under én dyrkning, eller en enkeltstående række. */
+export type Gruppering<T> =
+  | { type: 'gruppe'; plantId: string; items: T[] }
+  | { type: 'enkelt'; item: T }
+
+/**
+ * Saml rækker, der hører til SAMME plante-id, i én gruppe — kun når mindst to
+ * rækker deler id'et. Alt andet står som enkeltstående række.
+ *
+ * Der grupperes ALDRIG på sort, sted eller dato: to dyrkninger af samme sort
+ * (fx Engelsk spinat i drivhus og på friland) har hvert sit plante-id og
+ * forbliver to grupper, også når titel og dato er ens.
+ *
+ * Uden `datoOf` bevares inputtets rækkefølge: en gruppe står, hvor dens første
+ * række stod, og rækkerne i gruppen holder inputtets rækkefølge (bruges til
+ * Udført, hvor den seneste afslutning står øverst).
+ *
+ * Med `datoOf` sorteres kronologisk, så brugeren kan se, hvad der skal gøres
+ * først: rækkerne i hver gruppe står efter dato, og blokkene (grupper og
+ * enkeltstående rækker) står efter deres TIDLIGSTE dato. Ved lige dato gælder
+ * inputtets rækkefølge (prioritet), fordi sorteringen er stabil.
+ */
+export function grupperEfterPlante<T>(
+  items: readonly T[],
+  plantIdOf: (item: T) => string | null | undefined,
+  datoOf?: (item: T) => string,
+): Gruppering<T>[] {
+  const antal = new Map<string, number>()
+  for (const it of items) {
+    const id = plantIdOf(it)
+    if (id) antal.set(id, (antal.get(id) ?? 0) + 1)
+  }
+  const grupper = new Map<string, Extract<Gruppering<T>, { type: 'gruppe' }>>()
+  const ud: Gruppering<T>[] = []
+  for (const it of items) {
+    const id = plantIdOf(it)
+    if (id && (antal.get(id) ?? 0) >= 2) {
+      let g = grupper.get(id)
+      if (!g) {
+        g = { type: 'gruppe', plantId: id, items: [] }
+        grupper.set(id, g)
+        ud.push(g)
+      }
+      g.items.push(it)
+    } else {
+      ud.push({ type: 'enkelt', item: it })
+    }
+  }
+  if (!datoOf) return ud
+
+  const dato = datoOf
+  for (const b of ud) {
+    if (b.type === 'gruppe') b.items = [...b.items].sort((x, y) => dato(x).localeCompare(dato(y)))
+  }
+  const tidligste = (b: Gruppering<T>) => (b.type === 'gruppe' ? dato(b.items[0]) : dato(b.item))
+  return [...ud].sort((x, y) => tidligste(x).localeCompare(tidligste(y)))
+}
+
+/** Et element i en rendret liste: en dyrkningsgruppe, eller enkeltstående rækker, der deler ét kort. */
+export type ListeElement<T> =
+  | { art: 'gruppe'; plantId: string; items: T[] }
+  | { art: 'enkelte'; items: T[] }
+
+/** Grupperingen som liste-elementer: enkeltstående rækker, der følger efter hinanden, deler ét kort. */
+export function bygListeElementer<T>(
+  items: readonly T[],
+  plantIdOf: (item: T) => string | null | undefined,
+  datoOf?: (item: T) => string,
+): ListeElement<T>[] {
+  const ud: ListeElement<T>[] = []
+  for (const b of grupperEfterPlante(items, plantIdOf, datoOf)) {
+    if (b.type === 'gruppe') {
+      ud.push({ art: 'gruppe', plantId: b.plantId, items: b.items })
+    } else {
+      const sidste = ud[ud.length - 1]
+      if (sidste && sidste.art === 'enkelte') sidste.items.push(b.item)
+      else ud.push({ art: 'enkelte', items: [b.item] })
+    }
+  }
+  return ud
+}
+
+/**
+ * Sorteringsdatoen for en række under "Kræver handling". En forsinket opgave
+ * sorteres på sin RIGTIGE dato (den mest forsinkede først); en opgave lagt i
+ * fortiden af systemet (ikke "forsinket") og afledte råd gælder i dag.
+ */
+export function raekkeDato(r: DineRaekke, today: string): string {
+  if (r.type === 'afledt') return today
+  if (r.forsinket) return r.task.date
+  return r.task.date < today ? today : r.task.date
+}
+
+/** Forsinkede opgaver for sig (øverst), alt andet under "Nu". Antallet ændres aldrig. */
+export function opdelForsinkede(dine: readonly DineRaekke[]): { forsinkede: DineRaekke[]; nu: DineRaekke[] } {
+  return {
+    forsinkede: dine.filter((r) => r.type === 'opgave' && r.forsinket),
+    nu: dine.filter((r) => !(r.type === 'opgave' && r.forsinket)),
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
 // Oversigten
 // ─────────────────────────────────────────────────────────────
 

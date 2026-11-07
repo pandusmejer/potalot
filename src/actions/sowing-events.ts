@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { requireUser, getCurrentUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import type { SowingEvent } from '@/lib/types'
+import type { DyrkningSaaning } from '@/lib/dyrkning-info'
 
 interface SowingEventRow {
   id: string
@@ -33,6 +34,31 @@ function rowToEvent(row: SowingEventRow): SowingEvent {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
+}
+
+/**
+ * Alle brugerens såninger — kun de felter Opgaver bruger til at skelne
+ * dyrkninger ("Sået i", placering, dato). Ét læsende opslag, afgrænset til
+ * brugeren (og af RLS); læses parallelt med resten af Opgaver-siden.
+ */
+export async function getSowingEventsForUser(): Promise<DyrkningSaaning[]> {
+  const user = await getCurrentUser()
+  if (!user) return []
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('sowing_events')
+    .select('plant_id, container_type, location, sowing_date, created_at')
+    .eq('user_id', user.id)
+    .order('sowing_date', { ascending: true })
+
+  if (error) return []
+  return (data as Pick<SowingEventRow, 'plant_id' | 'container_type' | 'location' | 'sowing_date' | 'created_at'>[]).map((r) => ({
+    plantId: r.plant_id,
+    containerType: r.container_type,
+    location: r.location,
+    sowingDate: r.sowing_date,
+    createdAt: r.created_at,
+  }))
 }
 
 export async function getSowingEventsForPlant(plantId: string): Promise<SowingEvent[]> {

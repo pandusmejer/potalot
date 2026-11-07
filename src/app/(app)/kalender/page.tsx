@@ -13,6 +13,8 @@ import { PageIntroNote } from '@/components/ui/page-intro-note'
 import { CalendarDays } from 'lucide-react'
 import { getAllTasks } from '@/actions/havekalender'
 import { getAllPlants } from '@/actions/mine-planter'
+import { getSowingEventsForUser } from '@/actions/sowing-events'
+import { byggDyrkninger } from '@/lib/dyrkning-info'
 import { getAllInventoryItems } from '@/actions/froebank'
 import { getAllGuides } from '@/actions/guides'
 import { getGeneralGardenTasks, getUserGardenTasks } from '@/actions/aarshjul'
@@ -44,7 +46,7 @@ export default function KalenderPage() {
 }
 
 async function KalenderIndhold() {
-  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, vejr, me, completions, havebogData] = await Promise.all([
+  const [tasks, plants, inventory, guides, generalTasks, userTasks, alerts, vejr, me, completions, havebogData, saaninger] = await Promise.all([
     getAllTasks(),
     getAllPlants(),
     getAllInventoryItems(),
@@ -58,6 +60,8 @@ async function KalenderIndhold() {
     // Kun MVP-visningen bruger Havebog-heroens sæsontæller (heroNarrative).
     // Den oprindelige kalender henter intet ekstra.
     MVP_OPGAVER.enkelVisning ? getHavebogData() : Promise.resolve(null),
+    // Såningerne ("Sået i", placering) skiller to dyrkninger af samme sort — kun MVP-visningen bruger dem.
+    MVP_OPGAVER.enkelVisning ? getSowingEventsForUser() : Promise.resolve([]),
   ])
 
   // Kalenderens hjerne — dagens 1-3 vigtigste handlinger (lib/kalender/
@@ -125,7 +129,8 @@ async function KalenderIndhold() {
             alerts={alerts}
             aktivePlanter={plants
               .filter(p => !p.isArchived)
-              .map(p => ({ id: p.id, name: p.name, variety: p.variety, location: p.location }))}
+              .map(p => ({ id: p.id, name: p.name, variety: p.variety }))}
+            dyrkninger={byggDyrkninger(plants, saaninger)}
             today={idag()}
             month={aktuelMaaned()}
             year={aktuelAar()}
